@@ -175,7 +175,6 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
           ],
         ),
         const Divider(),
-        // Root Node "Mundo"
         ListTile(
           leading: const Icon(Icons.public),
           title: const Text(

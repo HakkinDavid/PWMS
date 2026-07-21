@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/catalog_item.dart';
@@ -25,7 +26,7 @@ class SpeciesTile extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
-        onTap: onTap,
+        onTap: onTap ?? () => context.push('/catalog/${species.id}'),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Container(

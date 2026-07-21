@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/create_entity_sheet.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../domain/location_node.dart';
@@ -105,10 +106,20 @@ class LocationsGraphScreen extends ConsumerWidget {
 
   void _reparentLocationNode(BuildContext context, WidgetRef ref, LocationNode node) async {
     final newParentId = await LocationTreePicker.show(context, initialSelectedId: node.parentLocationId);
-    if (newParentId == node.id) return; // Self-parenting check
+    if (newParentId == node.id) return;
 
     await ref.read(locationRepositoryProvider).moveNode(node.id, newParentId);
     ref.read(locationNodeListProvider.notifier).loadNodes();
+  }
+
+  // Rule #1: Recursively aggregate total item counts in this location + all child locations
+  int _getRecursiveItemCount(LocationNode node, List<LocationNode> allNodes, List<WorldEntity> entities) {
+    int selfCount = entities.where((e) => e.locationId == node.id).length;
+    final children = allNodes.where((n) => n.parentLocationId == node.id);
+    for (final child in children) {
+      selfCount += _getRecursiveItemCount(child, allNodes, entities);
+    }
+    return selfCount;
   }
 
   Widget _buildTreeTile(BuildContext context, WidgetRef ref, LocationNode node, List<LocationNode> allNodes, int depth) {
@@ -116,9 +127,9 @@ class LocationsGraphScreen extends ConsumerWidget {
     final entitiesState = ref.watch(entityListProvider);
     final theme = Theme.of(context);
 
-    int count = 0;
+    int totalCount = 0;
     entitiesState.whenData((entities) {
-      count = entities.where((e) => e.locationId == node.id).length;
+      totalCount = _getRecursiveItemCount(node, allNodes, entities);
     });
 
     return Card(
@@ -130,7 +141,7 @@ class LocationsGraphScreen extends ConsumerWidget {
           child: Icon(children.isNotEmpty ? Icons.folder : Icons.location_on, color: theme.colorScheme.secondary),
         ),
         title: Text(node.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text('$count objetos almacenados'),
+        subtitle: Text('$totalCount objetos en esta ubicación e hijas'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -154,13 +165,21 @@ class LocationsGraphScreen extends ConsumerWidget {
           ],
         ),
         children: [
-          if (children.isNotEmpty)
+          if (children.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(AppStrings.childLocationsTitle, style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 12.0, right: 12.0),
               child: Column(
                 children: children.map((c) => _buildTreeTile(context, ref, c, allNodes, depth + 1)).toList(),
               ),
             ),
+          ],
 
           ListTile(
             title: Text(AppStrings.storedObjectsTitle, style: theme.textTheme.labelLarge),

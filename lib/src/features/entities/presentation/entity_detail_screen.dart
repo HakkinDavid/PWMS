@@ -1,52 +1,21 @@
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_file_plus/open_file_plus.dart';
-import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
-import '../domain/attachment.dart';
+import '../../catalog/presentation/species_detail_view.dart';
 import '../domain/entity_template.dart';
 import 'edit_entity_sheet.dart';
-import '../../relations/presentation/add_relation_sheet.dart';
 
-class EntityDetailScreen extends ConsumerStatefulWidget {
+class EntityDetailScreen extends ConsumerWidget {
   final String entityId;
 
   const EntityDetailScreen({super.key, required this.entityId});
 
   @override
-  ConsumerState<EntityDetailScreen> createState() => _EntityDetailScreenState();
-}
-
-class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
-  Future<void> _pickAndAddDocument(String speciesId) async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null && result.files.single.path != null) {
-      final file = result.files.single;
-      final storage = ref.read(fileStorageServiceProvider);
-      final savedRelativePath = await storage.saveFile(file.path!);
-
-      final attachment = Attachment(
-        id: const Uuid().v4(),
-        speciesId: speciesId, // Belongs to Catalog Species!
-        filePath: savedRelativePath,
-        fileName: file.name,
-        fileType: file.extension ?? 'doc',
-        createdAt: DateTime.now(),
-      );
-
-      await ref.read(entityRepositoryProvider).addAttachment(attachment);
-      ref.invalidate(speciesAttachmentsProvider(speciesId));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final entityAsync = ref.watch(entityDetailProvider(widget.entityId));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entityAsync = ref.watch(entityDetailProvider(entityId));
     final catalogState = ref.watch(catalogListProvider);
     final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
@@ -77,320 +46,180 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             });
           }
 
-          // Rule #4: Attachments belong to speciesId (Catalog Species)!
-          final attachmentsAsync = ref.watch(speciesAttachmentsProvider(species.id));
-
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 260.0,
-                floating: false,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    species.name,
-                    style: const TextStyle(
-                      shadows: [Shadow(color: Colors.black87, blurRadius: 8)],
+          // Instance-specific Header (Location card & Quantity controls)
+          final instanceHeader = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Quantity controls if template allows quantity
+              if (template.hasQuantity) ...[
+                Row(
+                  children: [
+                    Text(
+                      AppStrings.quantityLabel,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  background: FutureBuilder<String>(
-                    future: species.mainPhotoPath != null
-                        ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
-                        : Future.value(''),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                        return Image.file(
-                          File(snapshot.data!),
-                          fit: BoxFit.cover,
-                        );
-                      }
-                      return Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              theme.colorScheme.primary,
-                              theme.colorScheme.secondary,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                    const Spacer(),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.secondary.withAlpha(30),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.colorScheme.secondary.withAlpha(80)),
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove, size: 16),
+                            onPressed: () async {
+                              final currentQty = entity.quantity ?? 1.0;
+                              final newQty = currentQty - 1.0;
+                              if (newQty <= 0) {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text(AppStrings.deleteConfirmationTitle),
+                                    content: Text('${AppStrings.zeroQuantityMessage} "${species.name}"?'),
+                                    actions: [
+                                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(ctx, true),
+                                        child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                                if (confirm == true) {
+                                  await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
+                                  ref.read(entityListProvider.notifier).loadEntities();
+                                  if (context.mounted) context.pop();
+                                }
+                              } else {
+                                final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
+                                await ref.read(entityListProvider.notifier).saveEntity(updated);
+                              }
+                            },
                           ),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            template.icon,
-                            size: 80,
-                            color: Colors.white.withAlpha(150),
+                          Text(
+                            '${entity.quantity ?? 1.0} ${entity.unit ?? species.defaultUnit ?? ""}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.secondary,
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                          IconButton(
+                            icon: const Icon(Icons.add, size: 16),
+                            onPressed: () async {
+                              final currentQty = entity.quantity ?? 0.0;
+                              final newQty = currentQty + 1.0;
+                              final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
+                              await ref.read(entityListProvider.notifier).saveEntity(updated);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                actions: [
-                  IconButton(
-                    icon: Icon(entity.isArchived ? Icons.unarchive : Icons.archive_outlined),
-                    onPressed: () async {
-                      final updated = entity.copyWith(isArchived: !entity.isArchived, updatedAt: DateTime.now());
-                      await ref.read(entityListProvider.notifier).saveEntity(updated);
-                    },
-                    tooltip: entity.isArchived ? AppStrings.unarchive : AppStrings.archive,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => EditEntitySheet.show(context, entity),
-                    tooltip: AppStrings.edit,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                    onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: const Text(AppStrings.deleteConfirmationTitle),
-                          content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
-                          actions: [
-                            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                const SizedBox(height: 16),
+              ],
+
+              // Location Node Card
+              Card(
+                color: theme.cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withAlpha(30),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.account_tree_outlined, color: Colors.amber),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.locationGraphNode,
+                              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12),
+                            ),
+                            Text(
+                              locationName,
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                      );
-
-                      if (confirm == true) {
-                        await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
-                        await ref.read(activityLoggerServiceProvider).logEntityDeleted(entity.id, species.name);
-                        ref.read(entityListProvider.notifier).loadEntities();
-
-                        if (context.mounted) {
-                          context.pop();
-                        }
-                      }
-                    },
-                  ),
-                ],
-              ),
-
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primary.withAlpha(40),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(template.icon, size: 16, color: theme.colorScheme.primary),
-                                const SizedBox(width: 6),
-                                Text(
-                                  species.type,
-                                  style: TextStyle(
-                                    color: theme.colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (species.barcode != null && species.barcode!.isNotEmpty)
-                            Chip(
-                              avatar: const Icon(Icons.qr_code_scanner, size: 14),
-                              label: Text(species.barcode!),
-                            ),
-                          if (template.hasQuantity)
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.secondary.withAlpha(30),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: theme.colorScheme.secondary.withAlpha(80)),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                                    icon: const Icon(Icons.remove, size: 16),
-                                    onPressed: () async {
-                                      final currentQty = entity.quantity ?? 1.0;
-                                      final newQty = currentQty - 1.0;
-                                      if (newQty <= 0) {
-                                        final confirm = await showDialog<bool>(
-                                          context: context,
-                                          builder: (ctx) => AlertDialog(
-                                            title: const Text(AppStrings.deleteConfirmationTitle),
-                                            content: Text('${AppStrings.zeroQuantityMessage} "${species.name}"?'),
-                                            actions: [
-                                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(ctx, true),
-                                                child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-
-                                        if (confirm == true) {
-                                          await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
-                                          ref.read(entityListProvider.notifier).loadEntities();
-                                          if (context.mounted) context.pop();
-                                        }
-                                      } else {
-                                        final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
-                                        await ref.read(entityListProvider.notifier).saveEntity(updated);
-                                      }
-                                    },
-                                  ),
-                                  Text(
-                                    '${entity.quantity ?? 1.0} ${entity.unit ?? species.defaultUnit ?? ""}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: theme.colorScheme.secondary,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                                    icon: const Icon(Icons.add, size: 16),
-                                    onPressed: () async {
-                                      final currentQty = entity.quantity ?? 0.0;
-                                      final newQty = currentQty + 1.0;
-                                      final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
-                                      await ref.read(entityListProvider.notifier).saveEntity(updated);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Location Card
-                      Card(
-                        color: theme.cardColor,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.amber.withAlpha(30),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(Icons.account_tree_outlined, color: Colors.amber),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      AppStrings.locationGraphNode,
-                                      style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12),
-                                    ),
-                                    Text(
-                                      locationName,
-                                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      if (entity.notes != null && entity.notes!.isNotEmpty) ...[
-                        Text(AppStrings.notesLabel, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
-                        Text(entity.notes!, style: theme.textTheme.bodyMedium),
-                        const SizedBox(height: 24),
-                      ],
-
-                      if (species.description != null && species.description!.isNotEmpty) ...[
-                        Text(AppStrings.masterDescription, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
-                        Text(species.description!, style: theme.textTheme.bodyMedium),
-                        const SizedBox(height: 24),
-                      ],
-
-                      // Quick Action Buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => AddRelationSheet.show(context, entity),
-                              icon: const Icon(Icons.link),
-                              label: const Text(AppStrings.link),
-                              style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => _pickAndAddDocument(species.id),
-                              icon: const Icon(Icons.attach_file),
-                              label: const Text(AppStrings.attachFile),
-                              style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Species Attachments
-                      Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 12),
-                      attachmentsAsync.when(
-                        data: (attachments) {
-                          if (attachments.isEmpty) {
-                            return const Text(AppStrings.emptyAttachments, style: TextStyle(color: Colors.grey));
-                          }
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: attachments.length,
-                            itemBuilder: (context, idx) {
-                              final att = attachments[idx];
-                              return ListTile(
-                                leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf),
-                                title: Text(att.fileName),
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.open_in_new),
-                                  onPressed: () async {
-                                    final path = await ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath);
-                                    await OpenFile.open(path);
-                                  },
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        loading: () => const CircularProgressIndicator(),
-                        error: (err, _) => Text('Error: $err'),
                       ),
                     ],
                   ),
                 ),
+              ),
+            ],
+          );
+
+          // Instance-specific Footer (Notes / Serial)
+          final instanceFooter = (entity.notes != null && entity.notes!.isNotEmpty)
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppStrings.notesLabel, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Text(entity.notes!, style: theme.textTheme.bodyMedium),
+                  ],
+                )
+              : null;
+
+          return SpeciesDetailView(
+            species: species,
+            instanceSpecificsHeader: instanceHeader,
+            instanceSpecificsFooter: instanceFooter,
+            actions: [
+              IconButton(
+                icon: Icon(entity.isArchived ? Icons.unarchive : Icons.archive_outlined),
+                onPressed: () async {
+                  final updated = entity.copyWith(isArchived: !entity.isArchived, updatedAt: DateTime.now());
+                  await ref.read(entityListProvider.notifier).saveEntity(updated);
+                },
+                tooltip: entity.isArchived ? AppStrings.unarchive : AppStrings.archive,
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () => EditEntitySheet.show(context, entity),
+                tooltip: AppStrings.edit,
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text(AppStrings.deleteConfirmationTitle),
+                      content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirm == true) {
+                    await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
+                    await ref.read(activityLoggerServiceProvider).logEntityDeleted(entity.id, species.name);
+                    ref.read(entityListProvider.notifier).loadEntities();
+
+                    if (context.mounted) {
+                      context.pop();
+                    }
+                  }
+                },
               ),
             ],
           );

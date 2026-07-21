@@ -17,12 +17,19 @@ class AppStrings {
   static const confirm = 'Confirmar';
   static const close = 'Cerrar';
 
+  // Tabs & Navigation Shell
+  static const tabHome = 'Inicio';
+  static const tabEntities = 'Objetos';
+  static const tabLocations = 'Ubicaciones';
+  static const tabCatalog = 'Catálogo';
+  static const tabSearch = 'Buscar';
+
   // Home Screen
   static const recentEntitiesTitle = 'Objetos recientes';
   static const collectionsTitle = 'Colecciones del mundo';
   static const activityTitle = 'Historial de actividad';
-  static const universeCatalogTitle = 'Universo de Objetos';
-  static const locationsTitle = 'Grafo de Ubicaciones';
+  static const universeCatalogTitle = 'Universo de objetos';
+  static const locationsTitle = 'Grafo de ubicaciones';
 
   // Entity Types
   static const typeObject = 'Objeto';
@@ -52,18 +59,19 @@ class AppStrings {
   static const saveChangesAction = 'Guardar cambios';
 
   // Catalog
-  static const catalogTitle = 'Catálogo Maestro';
-  static const newSpeciesTitle = 'Nueva Especie';
+  static const catalogTitle = 'Catálogo maestro';
+  static const newSpeciesTitle = 'Nueva especie';
   static const createSpeciesHeader = 'Crear especie en catálogo';
   static const saveSpeciesAction = 'Guardar especie';
   static const instantiateAction = 'Instanciar';
   static const emptyCatalog = 'El catálogo está vacío';
   static const singleInstanceError = 'Este elemento ya existe en tu mundo';
 
-  // Locations Graph
+  // Locations Graph & Children
   static const locationsGraphTitle = 'Ubicaciones';
-  static const newLocationTitle = 'Nueva Ubicación';
-  static const newSubLocationTitle = 'Nueva Sub-ubicación';
+  static const newLocationTitle = 'Nueva ubicación';
+  static const newSubLocationTitle = 'Nueva ubicación hija';
+  static const childLocationsTitle = 'Ubicaciones hijas';
   static const createNodeHeader = 'Crear ubicación';
   static const locationNameLabel = 'Nombre de ubicación';
   static const locationDescriptionLabel = 'Descripción de ubicación';
@@ -78,8 +86,8 @@ class AppStrings {
   static const attachmentsTitle = 'Archivos y documentos adjuntos';
   static const emptyAttachments = 'Sin archivos adjuntos';
   static const deleteConfirmationTitle = 'Eliminar elemento';
-  static const deleteConfirmationMessage = 'Deseas eliminar este elemento de tu mundo';
-  static const zeroQuantityMessage = 'La cantidad llegó a cero. Deseas eliminar el elemento';
+  static const deleteConfirmationMessage = '¿Deseas eliminar este elemento de tu mundo?';
+  static const zeroQuantityMessage = 'La cantidad llegó a cero. ¿Deseas eliminar el elemento?';
 
   // Relations
   static const relationsTitle = 'Relación dirigida';

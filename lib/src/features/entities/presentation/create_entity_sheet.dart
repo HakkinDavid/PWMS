@@ -6,9 +6,11 @@ import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/presentation/species_tile.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../domain/entity_template.dart';
 import '../domain/world_entity.dart';
+import 'instantiate_species_sheet.dart';
 
 class CreateEntitySheet extends ConsumerStatefulWidget {
   final String? initialLocationId;
@@ -99,6 +101,69 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
     });
   }
 
+  // Rules #3 & #4: Opens master catalog picker reusing SpeciesTile and transitions directly to InstantiateSpeciesSheet
+  void _openCatalogPicker() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final catalogItems = ref.read(catalogListProvider).asData?.value ?? [];
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(ctx).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          padding: const EdgeInsets.all(24),
+          child: SizedBox(
+            height: MediaQuery.of(ctx).size.height * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppStrings.chooseFromCatalog,
+                  style: Theme.of(ctx).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: catalogItems.isEmpty
+                      ? const Center(child: Text(AppStrings.emptyCatalog))
+                      : ListView.builder(
+                          itemCount: catalogItems.length,
+                          itemBuilder: (c, idx) {
+                            final item = catalogItems[idx];
+                            return SpeciesTile(
+                              species: item,
+                              onInstantiate: () {
+                                Navigator.pop(ctx);
+                                Navigator.pop(context); // Close CreateEntitySheet
+                                InstantiateSpeciesSheet.show(
+                                  context,
+                                  species: item,
+                                  initialLocationId: _selectedLocationId,
+                                );
+                              },
+                              onTap: () {
+                                Navigator.pop(ctx);
+                                Navigator.pop(context);
+                                InstantiateSpeciesSheet.show(
+                                  context,
+                                  species: item,
+                                  initialLocationId: _selectedLocationId,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _pickLocationFromTree() async {
     final selectedId = await LocationTreePicker.show(context, initialSelectedId: _selectedLocationId);
     setState(() {
@@ -146,7 +211,6 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
         );
       }
 
-      // Rule #5: Single Instance Restriction for Non-countable Abstract Species
       final template = EntityTemplateRegistry.getTemplate(_selectedType);
       if (!template.hasQuantity) {
         final existingEntities = ref.read(entityListProvider).asData?.value ?? [];
@@ -260,7 +324,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
             ),
             const SizedBox(height: 12),
 
-            // Select from Master Catalog
+            // Select from Master Catalog (Reuses SpeciesTile UI and transitions to InstantiateSpeciesSheet)
             catalogState.when(
               data: (items) {
                 if (items.isEmpty) return const SizedBox.shrink();
@@ -269,26 +333,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                   child: ActionChip(
                     avatar: const Icon(Icons.auto_awesome, size: 16),
                     label: const Text(AppStrings.chooseFromCatalog),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (ctx, i) {
-                            final item = items[i];
-                            return ListTile(
-                              leading: const Icon(Icons.category),
-                              title: Text(item.name),
-                              subtitle: Text('${item.brand ?? ""} • ${item.type}'),
-                              onTap: () {
-                                Navigator.pop(ctx);
-                                _selectFromCatalog(item);
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
+                    onPressed: _openCatalogPicker,
                   ),
                 );
               },
@@ -386,7 +431,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Reusable Location Picker Button
+            // Location Picker
             Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             InkWell(

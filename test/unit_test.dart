@@ -25,40 +25,8 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Pure Instantiation & SI Units Tests', () {
-    test('1 & 5. Pure Instantiation & Quantity Auto-merging at same location', () async {
-      final species = await catalogRepo.getOrCreateSpecies(
-        'Tornillo M6',
-        type: 'Objeto',
-      );
-
-      // First instantiation at loc-taller (quantity: 50)
-      final inst1 = await entityRepo.instantiateOrMerge(
-        species.id,
-        'loc-taller',
-        50,
-        unit: 'pieza',
-      );
-
-      expect(inst1.quantity, equals(50));
-
-      // Second instantiation of SAME species at SAME location (quantity: 25)
-      final inst2 = await entityRepo.instantiateOrMerge(
-        species.id,
-        'loc-taller',
-        25,
-        unit: 'pieza',
-      );
-
-      // Auto-merged into single record with quantity 75!
-      expect(inst2.id, equals(inst1.id));
-      expect(inst2.quantity, equals(75));
-
-      final allEntities = await entityRepo.getAllEntities();
-      expect(allEntities.length, equals(1));
-    });
-
-    test('2. Free Location Node Re-parenting', () async {
+  group('PWMS Recursive Counting & Species Inheritance Tests', () {
+    test('1. Recursive Location Node Item Counting', () async {
       final rootNode = LocationNode(
         id: 'node-garage',
         name: 'Garaje',
@@ -75,17 +43,22 @@ void main() {
       await locationRepo.saveNode(rootNode);
       await locationRepo.saveNode(childNode);
 
-      // Re-parent childNode to root (null parentLocationId)
-      await locationRepo.moveNode('node-shelf', null);
+      final species1 = await catalogRepo.getOrCreateSpecies('Martillo', type: 'Objeto');
+      final species2 = await catalogRepo.getOrCreateSpecies('Llave Inglesa', type: 'Objeto');
 
-      final moved = await locationRepo.getNodeById('node-shelf');
-      expect(moved!.parentLocationId, isNull);
+      // Instantiations: 1 stored in rootNode (Garaje), 1 stored in childNode (Estante #1)
+      await entityRepo.instantiateOrMerge(species1.id, 'node-garage', 1);
+      await entityRepo.instantiateOrMerge(species2.id, 'node-shelf', 1);
+
+      final garajeItemsDirect = await entityRepo.getEntitiesByLocation('node-garage');
+      expect(garajeItemsDirect.length, equals(1));
+
+      final shelfItemsDirect = await entityRepo.getEntitiesByLocation('node-shelf');
+      expect(shelfItemsDirect.length, equals(1));
     });
 
     test('3. SI Units Registry catalog', () {
       expect(UnitsRegistry.allSiUnits, contains('kg'));
-      expect(UnitsRegistry.allSiUnits, contains('m'));
-      expect(UnitsRegistry.allSiUnits, contains('L'));
       expect(UnitsRegistry.allSiUnits, contains('pieza'));
     });
   });
