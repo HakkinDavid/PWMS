@@ -11,8 +11,6 @@ _$CustomTemplateImpl _$$CustomTemplateImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       typeName: json['typeName'] as String,
       iconName: json['iconName'] as String,
-      isContainer: json['isContainer'] as bool? ?? false,
-      isPlace: json['isPlace'] as bool? ?? false,
       commonUnits: (json['commonUnits'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -26,8 +24,6 @@ Map<String, dynamic> _$$CustomTemplateImplToJson(
       'id': instance.id,
       'typeName': instance.typeName,
       'iconName': instance.iconName,
-      'isContainer': instance.isContainer,
-      'isPlace': instance.isPlace,
       'commonUnits': instance.commonUnits,
       'createdAt': instance.createdAt.toIso8601String(),
     };

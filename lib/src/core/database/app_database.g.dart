@@ -3,6 +3,365 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
+class $LocationsTableTable extends LocationsTable
+    with TableInfo<$LocationsTableTable, LocationsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocationsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _parentLocationIdMeta =
+      const VerificationMeta('parentLocationId');
+  @override
+  late final GeneratedColumn<String> parentLocationId = GeneratedColumn<String>(
+      'parent_location_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES locations_table (id)'));
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+      'icon', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, parentLocationId, description, icon, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'locations_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<LocationsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('parent_location_id')) {
+      context.handle(
+          _parentLocationIdMeta,
+          parentLocationId.isAcceptableOrUnknown(
+              data['parent_location_id']!, _parentLocationIdMeta));
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('icon')) {
+      context.handle(
+          _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LocationsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocationsTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      parentLocationId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}parent_location_id']),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      icon: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}icon']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $LocationsTableTable createAlias(String alias) {
+    return $LocationsTableTable(attachedDatabase, alias);
+  }
+}
+
+class LocationsTableData extends DataClass
+    implements Insertable<LocationsTableData> {
+  final String id;
+  final String name;
+  final String? parentLocationId;
+  final String? description;
+  final String? icon;
+  final DateTime createdAt;
+  const LocationsTableData(
+      {required this.id,
+      required this.name,
+      this.parentLocationId,
+      this.description,
+      this.icon,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || parentLocationId != null) {
+      map['parent_location_id'] = Variable<String>(parentLocationId);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || icon != null) {
+      map['icon'] = Variable<String>(icon);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  LocationsTableCompanion toCompanion(bool nullToAbsent) {
+    return LocationsTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      parentLocationId: parentLocationId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentLocationId),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory LocationsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocationsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      parentLocationId: serializer.fromJson<String?>(json['parentLocationId']),
+      description: serializer.fromJson<String?>(json['description']),
+      icon: serializer.fromJson<String?>(json['icon']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'parentLocationId': serializer.toJson<String?>(parentLocationId),
+      'description': serializer.toJson<String?>(description),
+      'icon': serializer.toJson<String?>(icon),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  LocationsTableData copyWith(
+          {String? id,
+          String? name,
+          Value<String?> parentLocationId = const Value.absent(),
+          Value<String?> description = const Value.absent(),
+          Value<String?> icon = const Value.absent(),
+          DateTime? createdAt}) =>
+      LocationsTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        parentLocationId: parentLocationId.present
+            ? parentLocationId.value
+            : this.parentLocationId,
+        description: description.present ? description.value : this.description,
+        icon: icon.present ? icon.value : this.icon,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  LocationsTableData copyWithCompanion(LocationsTableCompanion data) {
+    return LocationsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      parentLocationId: data.parentLocationId.present
+          ? data.parentLocationId.value
+          : this.parentLocationId,
+      description:
+          data.description.present ? data.description.value : this.description,
+      icon: data.icon.present ? data.icon.value : this.icon,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocationsTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('parentLocationId: $parentLocationId, ')
+          ..write('description: $description, ')
+          ..write('icon: $icon, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, parentLocationId, description, icon, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocationsTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.parentLocationId == this.parentLocationId &&
+          other.description == this.description &&
+          other.icon == this.icon &&
+          other.createdAt == this.createdAt);
+}
+
+class LocationsTableCompanion extends UpdateCompanion<LocationsTableData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> parentLocationId;
+  final Value<String?> description;
+  final Value<String?> icon;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const LocationsTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.parentLocationId = const Value.absent(),
+    this.description = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocationsTableCompanion.insert({
+    required String id,
+    required String name,
+    this.parentLocationId = const Value.absent(),
+    this.description = const Value.absent(),
+    this.icon = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        createdAt = Value(createdAt);
+  static Insertable<LocationsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? parentLocationId,
+    Expression<String>? description,
+    Expression<String>? icon,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (parentLocationId != null) 'parent_location_id': parentLocationId,
+      if (description != null) 'description': description,
+      if (icon != null) 'icon': icon,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocationsTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String?>? parentLocationId,
+      Value<String?>? description,
+      Value<String?>? icon,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return LocationsTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      parentLocationId: parentLocationId ?? this.parentLocationId,
+      description: description ?? this.description,
+      icon: icon ?? this.icon,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (parentLocationId.present) {
+      map['parent_location_id'] = Variable<String>(parentLocationId.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocationsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('parentLocationId: $parentLocationId, ')
+          ..write('description: $description, ')
+          ..write('icon: $icon, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $CatalogTableTable extends CatalogTable
     with TableInfo<$CatalogTableTable, CatalogTableData> {
   @override
@@ -19,6 +378,13 @@ class $CatalogTableTable extends CatalogTable
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('Objeto / Herramienta'));
   static const VerificationMeta _brandMeta = const VerificationMeta('brand');
   @override
   late final GeneratedColumn<String> brand = GeneratedColumn<String>(
@@ -36,19 +402,25 @@ class $CatalogTableTable extends CatalogTable
   late final GeneratedColumn<String> mainPhotoPath = GeneratedColumn<String>(
       'main_photo_path', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _defaultTypeMeta =
-      const VerificationMeta('defaultType');
-  @override
-  late final GeneratedColumn<String> defaultType = GeneratedColumn<String>(
-      'default_type', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('Objeto / Herramienta'));
   static const VerificationMeta _barcodeMeta =
       const VerificationMeta('barcode');
   @override
   late final GeneratedColumn<String> barcode = GeneratedColumn<String>(
       'barcode', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _customAttributesMeta =
+      const VerificationMeta('customAttributes');
+  @override
+  late final GeneratedColumn<String> customAttributes = GeneratedColumn<String>(
+      'custom_attributes', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('{}'));
+  static const VerificationMeta _defaultUnitMeta =
+      const VerificationMeta('defaultUnit');
+  @override
+  late final GeneratedColumn<String> defaultUnit = GeneratedColumn<String>(
+      'default_unit', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
@@ -60,11 +432,13 @@ class $CatalogTableTable extends CatalogTable
   List<GeneratedColumn> get $columns => [
         id,
         name,
+        type,
         brand,
         description,
         mainPhotoPath,
-        defaultType,
         barcode,
+        customAttributes,
+        defaultUnit,
         createdAt
       ];
   @override
@@ -88,6 +462,10 @@ class $CatalogTableTable extends CatalogTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('type')) {
+      context.handle(
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+    }
     if (data.containsKey('brand')) {
       context.handle(
           _brandMeta, brand.isAcceptableOrUnknown(data['brand']!, _brandMeta));
@@ -104,15 +482,21 @@ class $CatalogTableTable extends CatalogTable
           mainPhotoPath.isAcceptableOrUnknown(
               data['main_photo_path']!, _mainPhotoPathMeta));
     }
-    if (data.containsKey('default_type')) {
-      context.handle(
-          _defaultTypeMeta,
-          defaultType.isAcceptableOrUnknown(
-              data['default_type']!, _defaultTypeMeta));
-    }
     if (data.containsKey('barcode')) {
       context.handle(_barcodeMeta,
           barcode.isAcceptableOrUnknown(data['barcode']!, _barcodeMeta));
+    }
+    if (data.containsKey('custom_attributes')) {
+      context.handle(
+          _customAttributesMeta,
+          customAttributes.isAcceptableOrUnknown(
+              data['custom_attributes']!, _customAttributesMeta));
+    }
+    if (data.containsKey('default_unit')) {
+      context.handle(
+          _defaultUnitMeta,
+          defaultUnit.isAcceptableOrUnknown(
+              data['default_unit']!, _defaultUnitMeta));
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -133,16 +517,20 @@ class $CatalogTableTable extends CatalogTable
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      type: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
       brand: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}brand']),
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
       mainPhotoPath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}main_photo_path']),
-      defaultType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}default_type'])!,
       barcode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}barcode']),
+      customAttributes: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}custom_attributes'])!,
+      defaultUnit: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}default_unit']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -158,26 +546,31 @@ class CatalogTableData extends DataClass
     implements Insertable<CatalogTableData> {
   final String id;
   final String name;
+  final String type;
   final String? brand;
   final String? description;
   final String? mainPhotoPath;
-  final String defaultType;
   final String? barcode;
+  final String customAttributes;
+  final String? defaultUnit;
   final DateTime createdAt;
   const CatalogTableData(
       {required this.id,
       required this.name,
+      required this.type,
       this.brand,
       this.description,
       this.mainPhotoPath,
-      required this.defaultType,
       this.barcode,
+      required this.customAttributes,
+      this.defaultUnit,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
     if (!nullToAbsent || brand != null) {
       map['brand'] = Variable<String>(brand);
     }
@@ -187,9 +580,12 @@ class CatalogTableData extends DataClass
     if (!nullToAbsent || mainPhotoPath != null) {
       map['main_photo_path'] = Variable<String>(mainPhotoPath);
     }
-    map['default_type'] = Variable<String>(defaultType);
     if (!nullToAbsent || barcode != null) {
       map['barcode'] = Variable<String>(barcode);
+    }
+    map['custom_attributes'] = Variable<String>(customAttributes);
+    if (!nullToAbsent || defaultUnit != null) {
+      map['default_unit'] = Variable<String>(defaultUnit);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -199,6 +595,7 @@ class CatalogTableData extends DataClass
     return CatalogTableCompanion(
       id: Value(id),
       name: Value(name),
+      type: Value(type),
       brand:
           brand == null && nullToAbsent ? const Value.absent() : Value(brand),
       description: description == null && nullToAbsent
@@ -207,10 +604,13 @@ class CatalogTableData extends DataClass
       mainPhotoPath: mainPhotoPath == null && nullToAbsent
           ? const Value.absent()
           : Value(mainPhotoPath),
-      defaultType: Value(defaultType),
       barcode: barcode == null && nullToAbsent
           ? const Value.absent()
           : Value(barcode),
+      customAttributes: Value(customAttributes),
+      defaultUnit: defaultUnit == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultUnit),
       createdAt: Value(createdAt),
     );
   }
@@ -221,11 +621,13 @@ class CatalogTableData extends DataClass
     return CatalogTableData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
       brand: serializer.fromJson<String?>(json['brand']),
       description: serializer.fromJson<String?>(json['description']),
       mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
-      defaultType: serializer.fromJson<String>(json['defaultType']),
       barcode: serializer.fromJson<String?>(json['barcode']),
+      customAttributes: serializer.fromJson<String>(json['customAttributes']),
+      defaultUnit: serializer.fromJson<String?>(json['defaultUnit']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -235,11 +637,13 @@ class CatalogTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
       'brand': serializer.toJson<String?>(brand),
       'description': serializer.toJson<String?>(description),
       'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
-      'defaultType': serializer.toJson<String>(defaultType),
       'barcode': serializer.toJson<String?>(barcode),
+      'customAttributes': serializer.toJson<String>(customAttributes),
+      'defaultUnit': serializer.toJson<String?>(defaultUnit),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -247,36 +651,44 @@ class CatalogTableData extends DataClass
   CatalogTableData copyWith(
           {String? id,
           String? name,
+          String? type,
           Value<String?> brand = const Value.absent(),
           Value<String?> description = const Value.absent(),
           Value<String?> mainPhotoPath = const Value.absent(),
-          String? defaultType,
           Value<String?> barcode = const Value.absent(),
+          String? customAttributes,
+          Value<String?> defaultUnit = const Value.absent(),
           DateTime? createdAt}) =>
       CatalogTableData(
         id: id ?? this.id,
         name: name ?? this.name,
+        type: type ?? this.type,
         brand: brand.present ? brand.value : this.brand,
         description: description.present ? description.value : this.description,
         mainPhotoPath:
             mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
-        defaultType: defaultType ?? this.defaultType,
         barcode: barcode.present ? barcode.value : this.barcode,
+        customAttributes: customAttributes ?? this.customAttributes,
+        defaultUnit: defaultUnit.present ? defaultUnit.value : this.defaultUnit,
         createdAt: createdAt ?? this.createdAt,
       );
   CatalogTableData copyWithCompanion(CatalogTableCompanion data) {
     return CatalogTableData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
       brand: data.brand.present ? data.brand.value : this.brand,
       description:
           data.description.present ? data.description.value : this.description,
       mainPhotoPath: data.mainPhotoPath.present
           ? data.mainPhotoPath.value
           : this.mainPhotoPath,
-      defaultType:
-          data.defaultType.present ? data.defaultType.value : this.defaultType,
       barcode: data.barcode.present ? data.barcode.value : this.barcode,
+      customAttributes: data.customAttributes.present
+          ? data.customAttributes.value
+          : this.customAttributes,
+      defaultUnit:
+          data.defaultUnit.present ? data.defaultUnit.value : this.defaultUnit,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -286,62 +698,72 @@ class CatalogTableData extends DataClass
     return (StringBuffer('CatalogTableData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('type: $type, ')
           ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('mainPhotoPath: $mainPhotoPath, ')
-          ..write('defaultType: $defaultType, ')
           ..write('barcode: $barcode, ')
+          ..write('customAttributes: $customAttributes, ')
+          ..write('defaultUnit: $defaultUnit, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, brand, description, mainPhotoPath,
-      defaultType, barcode, createdAt);
+  int get hashCode => Object.hash(id, name, type, brand, description,
+      mainPhotoPath, barcode, customAttributes, defaultUnit, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is CatalogTableData &&
           other.id == this.id &&
           other.name == this.name &&
+          other.type == this.type &&
           other.brand == this.brand &&
           other.description == this.description &&
           other.mainPhotoPath == this.mainPhotoPath &&
-          other.defaultType == this.defaultType &&
           other.barcode == this.barcode &&
+          other.customAttributes == this.customAttributes &&
+          other.defaultUnit == this.defaultUnit &&
           other.createdAt == this.createdAt);
 }
 
 class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   final Value<String> id;
   final Value<String> name;
+  final Value<String> type;
   final Value<String?> brand;
   final Value<String?> description;
   final Value<String?> mainPhotoPath;
-  final Value<String> defaultType;
   final Value<String?> barcode;
+  final Value<String> customAttributes;
+  final Value<String?> defaultUnit;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const CatalogTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.type = const Value.absent(),
     this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.mainPhotoPath = const Value.absent(),
-    this.defaultType = const Value.absent(),
     this.barcode = const Value.absent(),
+    this.customAttributes = const Value.absent(),
+    this.defaultUnit = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CatalogTableCompanion.insert({
     required String id,
     required String name,
+    this.type = const Value.absent(),
     this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.mainPhotoPath = const Value.absent(),
-    this.defaultType = const Value.absent(),
     this.barcode = const Value.absent(),
+    this.customAttributes = const Value.absent(),
+    this.defaultUnit = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -350,22 +772,26 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   static Insertable<CatalogTableData> custom({
     Expression<String>? id,
     Expression<String>? name,
+    Expression<String>? type,
     Expression<String>? brand,
     Expression<String>? description,
     Expression<String>? mainPhotoPath,
-    Expression<String>? defaultType,
     Expression<String>? barcode,
+    Expression<String>? customAttributes,
+    Expression<String>? defaultUnit,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (type != null) 'type': type,
       if (brand != null) 'brand': brand,
       if (description != null) 'description': description,
       if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
-      if (defaultType != null) 'default_type': defaultType,
       if (barcode != null) 'barcode': barcode,
+      if (customAttributes != null) 'custom_attributes': customAttributes,
+      if (defaultUnit != null) 'default_unit': defaultUnit,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -374,21 +800,25 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   CatalogTableCompanion copyWith(
       {Value<String>? id,
       Value<String>? name,
+      Value<String>? type,
       Value<String?>? brand,
       Value<String?>? description,
       Value<String?>? mainPhotoPath,
-      Value<String>? defaultType,
       Value<String?>? barcode,
+      Value<String>? customAttributes,
+      Value<String?>? defaultUnit,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
     return CatalogTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      type: type ?? this.type,
       brand: brand ?? this.brand,
       description: description ?? this.description,
       mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
-      defaultType: defaultType ?? this.defaultType,
       barcode: barcode ?? this.barcode,
+      customAttributes: customAttributes ?? this.customAttributes,
+      defaultUnit: defaultUnit ?? this.defaultUnit,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -403,6 +833,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
     if (brand.present) {
       map['brand'] = Variable<String>(brand.value);
     }
@@ -412,11 +845,14 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     if (mainPhotoPath.present) {
       map['main_photo_path'] = Variable<String>(mainPhotoPath.value);
     }
-    if (defaultType.present) {
-      map['default_type'] = Variable<String>(defaultType.value);
-    }
     if (barcode.present) {
       map['barcode'] = Variable<String>(barcode.value);
+    }
+    if (customAttributes.present) {
+      map['custom_attributes'] = Variable<String>(customAttributes.value);
+    }
+    if (defaultUnit.present) {
+      map['default_unit'] = Variable<String>(defaultUnit.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -432,365 +868,13 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     return (StringBuffer('CatalogTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('type: $type, ')
           ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('mainPhotoPath: $mainPhotoPath, ')
-          ..write('defaultType: $defaultType, ')
           ..write('barcode: $barcode, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $PlacesTableTable extends PlacesTable
-    with TableInfo<$PlacesTableTable, PlacesTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $PlacesTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
-  @override
-  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
-      'icon', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _parentPlaceIdMeta =
-      const VerificationMeta('parentPlaceId');
-  @override
-  late final GeneratedColumn<String> parentPlaceId = GeneratedColumn<String>(
-      'parent_place_id', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, description, icon, parentPlaceId, createdAt];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'places_table';
-  @override
-  VerificationContext validateIntegrity(Insertable<PlacesTableData> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
-    }
-    if (data.containsKey('icon')) {
-      context.handle(
-          _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
-    }
-    if (data.containsKey('parent_place_id')) {
-      context.handle(
-          _parentPlaceIdMeta,
-          parentPlaceId.isAcceptableOrUnknown(
-              data['parent_place_id']!, _parentPlaceIdMeta));
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PlacesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlacesTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description']),
-      icon: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}icon']),
-      parentPlaceId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}parent_place_id']),
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-    );
-  }
-
-  @override
-  $PlacesTableTable createAlias(String alias) {
-    return $PlacesTableTable(attachedDatabase, alias);
-  }
-}
-
-class PlacesTableData extends DataClass implements Insertable<PlacesTableData> {
-  final String id;
-  final String name;
-  final String? description;
-  final String? icon;
-  final String? parentPlaceId;
-  final DateTime createdAt;
-  const PlacesTableData(
-      {required this.id,
-      required this.name,
-      this.description,
-      this.icon,
-      this.parentPlaceId,
-      required this.createdAt});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['name'] = Variable<String>(name);
-    if (!nullToAbsent || description != null) {
-      map['description'] = Variable<String>(description);
-    }
-    if (!nullToAbsent || icon != null) {
-      map['icon'] = Variable<String>(icon);
-    }
-    if (!nullToAbsent || parentPlaceId != null) {
-      map['parent_place_id'] = Variable<String>(parentPlaceId);
-    }
-    map['created_at'] = Variable<DateTime>(createdAt);
-    return map;
-  }
-
-  PlacesTableCompanion toCompanion(bool nullToAbsent) {
-    return PlacesTableCompanion(
-      id: Value(id),
-      name: Value(name),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
-      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
-      parentPlaceId: parentPlaceId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(parentPlaceId),
-      createdAt: Value(createdAt),
-    );
-  }
-
-  factory PlacesTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PlacesTableData(
-      id: serializer.fromJson<String>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      description: serializer.fromJson<String?>(json['description']),
-      icon: serializer.fromJson<String?>(json['icon']),
-      parentPlaceId: serializer.fromJson<String?>(json['parentPlaceId']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'name': serializer.toJson<String>(name),
-      'description': serializer.toJson<String?>(description),
-      'icon': serializer.toJson<String?>(icon),
-      'parentPlaceId': serializer.toJson<String?>(parentPlaceId),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-    };
-  }
-
-  PlacesTableData copyWith(
-          {String? id,
-          String? name,
-          Value<String?> description = const Value.absent(),
-          Value<String?> icon = const Value.absent(),
-          Value<String?> parentPlaceId = const Value.absent(),
-          DateTime? createdAt}) =>
-      PlacesTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        description: description.present ? description.value : this.description,
-        icon: icon.present ? icon.value : this.icon,
-        parentPlaceId:
-            parentPlaceId.present ? parentPlaceId.value : this.parentPlaceId,
-        createdAt: createdAt ?? this.createdAt,
-      );
-  PlacesTableData copyWithCompanion(PlacesTableCompanion data) {
-    return PlacesTableData(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      description:
-          data.description.present ? data.description.value : this.description,
-      icon: data.icon.present ? data.icon.value : this.icon,
-      parentPlaceId: data.parentPlaceId.present
-          ? data.parentPlaceId.value
-          : this.parentPlaceId,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlacesTableData(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('description: $description, ')
-          ..write('icon: $icon, ')
-          ..write('parentPlaceId: $parentPlaceId, ')
-          ..write('createdAt: $createdAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, name, description, icon, parentPlaceId, createdAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PlacesTableData &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.description == this.description &&
-          other.icon == this.icon &&
-          other.parentPlaceId == this.parentPlaceId &&
-          other.createdAt == this.createdAt);
-}
-
-class PlacesTableCompanion extends UpdateCompanion<PlacesTableData> {
-  final Value<String> id;
-  final Value<String> name;
-  final Value<String?> description;
-  final Value<String?> icon;
-  final Value<String?> parentPlaceId;
-  final Value<DateTime> createdAt;
-  final Value<int> rowid;
-  const PlacesTableCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.description = const Value.absent(),
-    this.icon = const Value.absent(),
-    this.parentPlaceId = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  PlacesTableCompanion.insert({
-    required String id,
-    required String name,
-    this.description = const Value.absent(),
-    this.icon = const Value.absent(),
-    this.parentPlaceId = const Value.absent(),
-    required DateTime createdAt,
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        name = Value(name),
-        createdAt = Value(createdAt);
-  static Insertable<PlacesTableData> custom({
-    Expression<String>? id,
-    Expression<String>? name,
-    Expression<String>? description,
-    Expression<String>? icon,
-    Expression<String>? parentPlaceId,
-    Expression<DateTime>? createdAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (description != null) 'description': description,
-      if (icon != null) 'icon': icon,
-      if (parentPlaceId != null) 'parent_place_id': parentPlaceId,
-      if (createdAt != null) 'created_at': createdAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  PlacesTableCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? name,
-      Value<String?>? description,
-      Value<String?>? icon,
-      Value<String?>? parentPlaceId,
-      Value<DateTime>? createdAt,
-      Value<int>? rowid}) {
-    return PlacesTableCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      icon: icon ?? this.icon,
-      parentPlaceId: parentPlaceId ?? this.parentPlaceId,
-      createdAt: createdAt ?? this.createdAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
-    }
-    if (icon.present) {
-      map['icon'] = Variable<String>(icon.value);
-    }
-    if (parentPlaceId.present) {
-      map['parent_place_id'] = Variable<String>(parentPlaceId.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlacesTableCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('description: $description, ')
-          ..write('icon: $icon, ')
-          ..write('parentPlaceId: $parentPlaceId, ')
+          ..write('customAttributes: $customAttributes, ')
+          ..write('defaultUnit: $defaultUnit, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -813,55 +897,20 @@ class $EntitiesTableTable extends EntitiesTable
       const VerificationMeta('speciesId');
   @override
   late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
-      'species_id', aliasedName, true,
+      'species_id', aliasedName, false,
       type: DriftSqlType.string,
-      requiredDuringInsert: false,
+      requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES catalog_table (id)'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  static const VerificationMeta _locationIdMeta =
+      const VerificationMeta('locationId');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _aliasMeta = const VerificationMeta('alias');
-  @override
-  late final GeneratedColumn<String> alias = GeneratedColumn<String>(
-      'alias', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
-  @override
-  late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _mainPhotoPathMeta =
-      const VerificationMeta('mainPhotoPath');
-  @override
-  late final GeneratedColumn<String> mainPhotoPath = GeneratedColumn<String>(
-      'main_photo_path', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-      'notes', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _placeIdMeta =
-      const VerificationMeta('placeId');
-  @override
-  late final GeneratedColumn<String> placeId = GeneratedColumn<String>(
-      'place_id', aliasedName, true,
+  late final GeneratedColumn<String> locationId = GeneratedColumn<String>(
+      'location_id', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES places_table (id)'));
-  static const VerificationMeta _parentEntityIdMeta =
-      const VerificationMeta('parentEntityId');
-  @override
-  late final GeneratedColumn<String> parentEntityId = GeneratedColumn<String>(
-      'parent_entity_id', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES entities_table (id)'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES locations_table (id)'));
   static const VerificationMeta _quantityMeta =
       const VerificationMeta('quantity');
   @override
@@ -873,20 +922,11 @@ class $EntitiesTableTable extends EntitiesTable
   late final GeneratedColumn<String> unit = GeneratedColumn<String>(
       'unit', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _barcodeMeta =
-      const VerificationMeta('barcode');
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
-  late final GeneratedColumn<String> barcode = GeneratedColumn<String>(
-      'barcode', aliasedName, true,
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _customAttributesMeta =
-      const VerificationMeta('customAttributes');
-  @override
-  late final GeneratedColumn<String> customAttributes = GeneratedColumn<String>(
-      'custom_attributes', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('{}'));
   static const VerificationMeta _isArchivedMeta =
       const VerificationMeta('isArchived');
   @override
@@ -897,13 +937,6 @@ class $EntitiesTableTable extends EntitiesTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_archived" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
-  @override
-  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
-      'tags', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -920,19 +953,11 @@ class $EntitiesTableTable extends EntitiesTable
   List<GeneratedColumn> get $columns => [
         id,
         speciesId,
-        name,
-        alias,
-        type,
-        mainPhotoPath,
-        notes,
-        placeId,
-        parentEntityId,
+        locationId,
         quantity,
         unit,
-        barcode,
-        customAttributes,
+        notes,
         isArchived,
-        tags,
         createdAt,
         updatedAt
       ];
@@ -954,42 +979,14 @@ class $EntitiesTableTable extends EntitiesTable
     if (data.containsKey('species_id')) {
       context.handle(_speciesIdMeta,
           speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_speciesIdMeta);
     }
-    if (data.containsKey('alias')) {
+    if (data.containsKey('location_id')) {
       context.handle(
-          _aliasMeta, alias.isAcceptableOrUnknown(data['alias']!, _aliasMeta));
-    }
-    if (data.containsKey('type')) {
-      context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
-    } else if (isInserting) {
-      context.missing(_typeMeta);
-    }
-    if (data.containsKey('main_photo_path')) {
-      context.handle(
-          _mainPhotoPathMeta,
-          mainPhotoPath.isAcceptableOrUnknown(
-              data['main_photo_path']!, _mainPhotoPathMeta));
-    }
-    if (data.containsKey('notes')) {
-      context.handle(
-          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
-    }
-    if (data.containsKey('place_id')) {
-      context.handle(_placeIdMeta,
-          placeId.isAcceptableOrUnknown(data['place_id']!, _placeIdMeta));
-    }
-    if (data.containsKey('parent_entity_id')) {
-      context.handle(
-          _parentEntityIdMeta,
-          parentEntityId.isAcceptableOrUnknown(
-              data['parent_entity_id']!, _parentEntityIdMeta));
+          _locationIdMeta,
+          locationId.isAcceptableOrUnknown(
+              data['location_id']!, _locationIdMeta));
     }
     if (data.containsKey('quantity')) {
       context.handle(_quantityMeta,
@@ -999,25 +996,15 @@ class $EntitiesTableTable extends EntitiesTable
       context.handle(
           _unitMeta, unit.isAcceptableOrUnknown(data['unit']!, _unitMeta));
     }
-    if (data.containsKey('barcode')) {
-      context.handle(_barcodeMeta,
-          barcode.isAcceptableOrUnknown(data['barcode']!, _barcodeMeta));
-    }
-    if (data.containsKey('custom_attributes')) {
+    if (data.containsKey('notes')) {
       context.handle(
-          _customAttributesMeta,
-          customAttributes.isAcceptableOrUnknown(
-              data['custom_attributes']!, _customAttributesMeta));
+          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
     }
     if (data.containsKey('is_archived')) {
       context.handle(
           _isArchivedMeta,
           isArchived.isAcceptableOrUnknown(
               data['is_archived']!, _isArchivedMeta));
-    }
-    if (data.containsKey('tags')) {
-      context.handle(
-          _tagsMeta, tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta));
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1043,33 +1030,17 @@ class $EntitiesTableTable extends EntitiesTable
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       speciesId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}species_id']),
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      alias: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}alias']),
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      mainPhotoPath: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}main_photo_path']),
-      notes: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
-      placeId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}place_id']),
-      parentEntityId: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}parent_entity_id']),
+          .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
+      locationId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}location_id']),
       quantity: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}quantity']),
       unit: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}unit']),
-      barcode: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}barcode']),
-      customAttributes: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}custom_attributes'])!,
+      notes: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
       isArchived: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_archived'])!,
-      tags: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}tags'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -1086,63 +1057,31 @@ class $EntitiesTableTable extends EntitiesTable
 class EntitiesTableData extends DataClass
     implements Insertable<EntitiesTableData> {
   final String id;
-  final String? speciesId;
-  final String name;
-  final String? alias;
-  final String type;
-  final String? mainPhotoPath;
-  final String? notes;
-  final String? placeId;
-  final String? parentEntityId;
+  final String speciesId;
+  final String? locationId;
   final double? quantity;
   final String? unit;
-  final String? barcode;
-  final String customAttributes;
+  final String? notes;
   final bool isArchived;
-  final String tags;
   final DateTime createdAt;
   final DateTime updatedAt;
   const EntitiesTableData(
       {required this.id,
-      this.speciesId,
-      required this.name,
-      this.alias,
-      required this.type,
-      this.mainPhotoPath,
-      this.notes,
-      this.placeId,
-      this.parentEntityId,
+      required this.speciesId,
+      this.locationId,
       this.quantity,
       this.unit,
-      this.barcode,
-      required this.customAttributes,
+      this.notes,
       required this.isArchived,
-      required this.tags,
       required this.createdAt,
       required this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    if (!nullToAbsent || speciesId != null) {
-      map['species_id'] = Variable<String>(speciesId);
-    }
-    map['name'] = Variable<String>(name);
-    if (!nullToAbsent || alias != null) {
-      map['alias'] = Variable<String>(alias);
-    }
-    map['type'] = Variable<String>(type);
-    if (!nullToAbsent || mainPhotoPath != null) {
-      map['main_photo_path'] = Variable<String>(mainPhotoPath);
-    }
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
-    }
-    if (!nullToAbsent || placeId != null) {
-      map['place_id'] = Variable<String>(placeId);
-    }
-    if (!nullToAbsent || parentEntityId != null) {
-      map['parent_entity_id'] = Variable<String>(parentEntityId);
+    map['species_id'] = Variable<String>(speciesId);
+    if (!nullToAbsent || locationId != null) {
+      map['location_id'] = Variable<String>(locationId);
     }
     if (!nullToAbsent || quantity != null) {
       map['quantity'] = Variable<double>(quantity);
@@ -1150,12 +1089,10 @@ class EntitiesTableData extends DataClass
     if (!nullToAbsent || unit != null) {
       map['unit'] = Variable<String>(unit);
     }
-    if (!nullToAbsent || barcode != null) {
-      map['barcode'] = Variable<String>(barcode);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
     }
-    map['custom_attributes'] = Variable<String>(customAttributes);
     map['is_archived'] = Variable<bool>(isArchived);
-    map['tags'] = Variable<String>(tags);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1164,34 +1101,17 @@ class EntitiesTableData extends DataClass
   EntitiesTableCompanion toCompanion(bool nullToAbsent) {
     return EntitiesTableCompanion(
       id: Value(id),
-      speciesId: speciesId == null && nullToAbsent
+      speciesId: Value(speciesId),
+      locationId: locationId == null && nullToAbsent
           ? const Value.absent()
-          : Value(speciesId),
-      name: Value(name),
-      alias:
-          alias == null && nullToAbsent ? const Value.absent() : Value(alias),
-      type: Value(type),
-      mainPhotoPath: mainPhotoPath == null && nullToAbsent
-          ? const Value.absent()
-          : Value(mainPhotoPath),
-      notes:
-          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
-      placeId: placeId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(placeId),
-      parentEntityId: parentEntityId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(parentEntityId),
+          : Value(locationId),
       quantity: quantity == null && nullToAbsent
           ? const Value.absent()
           : Value(quantity),
       unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
-      barcode: barcode == null && nullToAbsent
-          ? const Value.absent()
-          : Value(barcode),
-      customAttributes: Value(customAttributes),
+      notes:
+          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
       isArchived: Value(isArchived),
-      tags: Value(tags),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1202,20 +1122,12 @@ class EntitiesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return EntitiesTableData(
       id: serializer.fromJson<String>(json['id']),
-      speciesId: serializer.fromJson<String?>(json['speciesId']),
-      name: serializer.fromJson<String>(json['name']),
-      alias: serializer.fromJson<String?>(json['alias']),
-      type: serializer.fromJson<String>(json['type']),
-      mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
-      notes: serializer.fromJson<String?>(json['notes']),
-      placeId: serializer.fromJson<String?>(json['placeId']),
-      parentEntityId: serializer.fromJson<String?>(json['parentEntityId']),
+      speciesId: serializer.fromJson<String>(json['speciesId']),
+      locationId: serializer.fromJson<String?>(json['locationId']),
       quantity: serializer.fromJson<double?>(json['quantity']),
       unit: serializer.fromJson<String?>(json['unit']),
-      barcode: serializer.fromJson<String?>(json['barcode']),
-      customAttributes: serializer.fromJson<String>(json['customAttributes']),
+      notes: serializer.fromJson<String?>(json['notes']),
       isArchived: serializer.fromJson<bool>(json['isArchived']),
-      tags: serializer.fromJson<String>(json['tags']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1225,20 +1137,12 @@ class EntitiesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'speciesId': serializer.toJson<String?>(speciesId),
-      'name': serializer.toJson<String>(name),
-      'alias': serializer.toJson<String?>(alias),
-      'type': serializer.toJson<String>(type),
-      'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
-      'notes': serializer.toJson<String?>(notes),
-      'placeId': serializer.toJson<String?>(placeId),
-      'parentEntityId': serializer.toJson<String?>(parentEntityId),
+      'speciesId': serializer.toJson<String>(speciesId),
+      'locationId': serializer.toJson<String?>(locationId),
       'quantity': serializer.toJson<double?>(quantity),
       'unit': serializer.toJson<String?>(unit),
-      'barcode': serializer.toJson<String?>(barcode),
-      'customAttributes': serializer.toJson<String>(customAttributes),
+      'notes': serializer.toJson<String?>(notes),
       'isArchived': serializer.toJson<bool>(isArchived),
-      'tags': serializer.toJson<String>(tags),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1246,40 +1150,22 @@ class EntitiesTableData extends DataClass
 
   EntitiesTableData copyWith(
           {String? id,
-          Value<String?> speciesId = const Value.absent(),
-          String? name,
-          Value<String?> alias = const Value.absent(),
-          String? type,
-          Value<String?> mainPhotoPath = const Value.absent(),
-          Value<String?> notes = const Value.absent(),
-          Value<String?> placeId = const Value.absent(),
-          Value<String?> parentEntityId = const Value.absent(),
+          String? speciesId,
+          Value<String?> locationId = const Value.absent(),
           Value<double?> quantity = const Value.absent(),
           Value<String?> unit = const Value.absent(),
-          Value<String?> barcode = const Value.absent(),
-          String? customAttributes,
+          Value<String?> notes = const Value.absent(),
           bool? isArchived,
-          String? tags,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
       EntitiesTableData(
         id: id ?? this.id,
-        speciesId: speciesId.present ? speciesId.value : this.speciesId,
-        name: name ?? this.name,
-        alias: alias.present ? alias.value : this.alias,
-        type: type ?? this.type,
-        mainPhotoPath:
-            mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
-        notes: notes.present ? notes.value : this.notes,
-        placeId: placeId.present ? placeId.value : this.placeId,
-        parentEntityId:
-            parentEntityId.present ? parentEntityId.value : this.parentEntityId,
+        speciesId: speciesId ?? this.speciesId,
+        locationId: locationId.present ? locationId.value : this.locationId,
         quantity: quantity.present ? quantity.value : this.quantity,
         unit: unit.present ? unit.value : this.unit,
-        barcode: barcode.present ? barcode.value : this.barcode,
-        customAttributes: customAttributes ?? this.customAttributes,
+        notes: notes.present ? notes.value : this.notes,
         isArchived: isArchived ?? this.isArchived,
-        tags: tags ?? this.tags,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -1287,26 +1173,13 @@ class EntitiesTableData extends DataClass
     return EntitiesTableData(
       id: data.id.present ? data.id.value : this.id,
       speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
-      name: data.name.present ? data.name.value : this.name,
-      alias: data.alias.present ? data.alias.value : this.alias,
-      type: data.type.present ? data.type.value : this.type,
-      mainPhotoPath: data.mainPhotoPath.present
-          ? data.mainPhotoPath.value
-          : this.mainPhotoPath,
-      notes: data.notes.present ? data.notes.value : this.notes,
-      placeId: data.placeId.present ? data.placeId.value : this.placeId,
-      parentEntityId: data.parentEntityId.present
-          ? data.parentEntityId.value
-          : this.parentEntityId,
+      locationId:
+          data.locationId.present ? data.locationId.value : this.locationId,
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       unit: data.unit.present ? data.unit.value : this.unit,
-      barcode: data.barcode.present ? data.barcode.value : this.barcode,
-      customAttributes: data.customAttributes.present
-          ? data.customAttributes.value
-          : this.customAttributes,
+      notes: data.notes.present ? data.notes.value : this.notes,
       isArchived:
           data.isArchived.present ? data.isArchived.value : this.isArchived,
-      tags: data.tags.present ? data.tags.value : this.tags,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1317,19 +1190,11 @@ class EntitiesTableData extends DataClass
     return (StringBuffer('EntitiesTableData(')
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
-          ..write('name: $name, ')
-          ..write('alias: $alias, ')
-          ..write('type: $type, ')
-          ..write('mainPhotoPath: $mainPhotoPath, ')
-          ..write('notes: $notes, ')
-          ..write('placeId: $placeId, ')
-          ..write('parentEntityId: $parentEntityId, ')
+          ..write('locationId: $locationId, ')
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
-          ..write('barcode: $barcode, ')
-          ..write('customAttributes: $customAttributes, ')
+          ..write('notes: $notes, ')
           ..write('isArchived: $isArchived, ')
-          ..write('tags: $tags, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1337,126 +1202,69 @@ class EntitiesTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      speciesId,
-      name,
-      alias,
-      type,
-      mainPhotoPath,
-      notes,
-      placeId,
-      parentEntityId,
-      quantity,
-      unit,
-      barcode,
-      customAttributes,
-      isArchived,
-      tags,
-      createdAt,
-      updatedAt);
+  int get hashCode => Object.hash(id, speciesId, locationId, quantity, unit,
+      notes, isArchived, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is EntitiesTableData &&
           other.id == this.id &&
           other.speciesId == this.speciesId &&
-          other.name == this.name &&
-          other.alias == this.alias &&
-          other.type == this.type &&
-          other.mainPhotoPath == this.mainPhotoPath &&
-          other.notes == this.notes &&
-          other.placeId == this.placeId &&
-          other.parentEntityId == this.parentEntityId &&
+          other.locationId == this.locationId &&
           other.quantity == this.quantity &&
           other.unit == this.unit &&
-          other.barcode == this.barcode &&
-          other.customAttributes == this.customAttributes &&
+          other.notes == this.notes &&
           other.isArchived == this.isArchived &&
-          other.tags == this.tags &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
 
 class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   final Value<String> id;
-  final Value<String?> speciesId;
-  final Value<String> name;
-  final Value<String?> alias;
-  final Value<String> type;
-  final Value<String?> mainPhotoPath;
-  final Value<String?> notes;
-  final Value<String?> placeId;
-  final Value<String?> parentEntityId;
+  final Value<String> speciesId;
+  final Value<String?> locationId;
   final Value<double?> quantity;
   final Value<String?> unit;
-  final Value<String?> barcode;
-  final Value<String> customAttributes;
+  final Value<String?> notes;
   final Value<bool> isArchived;
-  final Value<String> tags;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const EntitiesTableCompanion({
     this.id = const Value.absent(),
     this.speciesId = const Value.absent(),
-    this.name = const Value.absent(),
-    this.alias = const Value.absent(),
-    this.type = const Value.absent(),
-    this.mainPhotoPath = const Value.absent(),
-    this.notes = const Value.absent(),
-    this.placeId = const Value.absent(),
-    this.parentEntityId = const Value.absent(),
+    this.locationId = const Value.absent(),
     this.quantity = const Value.absent(),
     this.unit = const Value.absent(),
-    this.barcode = const Value.absent(),
-    this.customAttributes = const Value.absent(),
+    this.notes = const Value.absent(),
     this.isArchived = const Value.absent(),
-    this.tags = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   EntitiesTableCompanion.insert({
     required String id,
-    this.speciesId = const Value.absent(),
-    required String name,
-    this.alias = const Value.absent(),
-    required String type,
-    this.mainPhotoPath = const Value.absent(),
-    this.notes = const Value.absent(),
-    this.placeId = const Value.absent(),
-    this.parentEntityId = const Value.absent(),
+    required String speciesId,
+    this.locationId = const Value.absent(),
     this.quantity = const Value.absent(),
     this.unit = const Value.absent(),
-    this.barcode = const Value.absent(),
-    this.customAttributes = const Value.absent(),
+    this.notes = const Value.absent(),
     this.isArchived = const Value.absent(),
-    this.tags = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        name = Value(name),
-        type = Value(type),
+        speciesId = Value(speciesId),
         createdAt = Value(createdAt),
         updatedAt = Value(updatedAt);
   static Insertable<EntitiesTableData> custom({
     Expression<String>? id,
     Expression<String>? speciesId,
-    Expression<String>? name,
-    Expression<String>? alias,
-    Expression<String>? type,
-    Expression<String>? mainPhotoPath,
-    Expression<String>? notes,
-    Expression<String>? placeId,
-    Expression<String>? parentEntityId,
+    Expression<String>? locationId,
     Expression<double>? quantity,
     Expression<String>? unit,
-    Expression<String>? barcode,
-    Expression<String>? customAttributes,
+    Expression<String>? notes,
     Expression<bool>? isArchived,
-    Expression<String>? tags,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -1464,19 +1272,11 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (speciesId != null) 'species_id': speciesId,
-      if (name != null) 'name': name,
-      if (alias != null) 'alias': alias,
-      if (type != null) 'type': type,
-      if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
-      if (notes != null) 'notes': notes,
-      if (placeId != null) 'place_id': placeId,
-      if (parentEntityId != null) 'parent_entity_id': parentEntityId,
+      if (locationId != null) 'location_id': locationId,
       if (quantity != null) 'quantity': quantity,
       if (unit != null) 'unit': unit,
-      if (barcode != null) 'barcode': barcode,
-      if (customAttributes != null) 'custom_attributes': customAttributes,
+      if (notes != null) 'notes': notes,
       if (isArchived != null) 'is_archived': isArchived,
-      if (tags != null) 'tags': tags,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1485,39 +1285,23 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
 
   EntitiesTableCompanion copyWith(
       {Value<String>? id,
-      Value<String?>? speciesId,
-      Value<String>? name,
-      Value<String?>? alias,
-      Value<String>? type,
-      Value<String?>? mainPhotoPath,
-      Value<String?>? notes,
-      Value<String?>? placeId,
-      Value<String?>? parentEntityId,
+      Value<String>? speciesId,
+      Value<String?>? locationId,
       Value<double?>? quantity,
       Value<String?>? unit,
-      Value<String?>? barcode,
-      Value<String>? customAttributes,
+      Value<String?>? notes,
       Value<bool>? isArchived,
-      Value<String>? tags,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
       Value<int>? rowid}) {
     return EntitiesTableCompanion(
       id: id ?? this.id,
       speciesId: speciesId ?? this.speciesId,
-      name: name ?? this.name,
-      alias: alias ?? this.alias,
-      type: type ?? this.type,
-      mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
-      notes: notes ?? this.notes,
-      placeId: placeId ?? this.placeId,
-      parentEntityId: parentEntityId ?? this.parentEntityId,
+      locationId: locationId ?? this.locationId,
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,
-      barcode: barcode ?? this.barcode,
-      customAttributes: customAttributes ?? this.customAttributes,
+      notes: notes ?? this.notes,
       isArchived: isArchived ?? this.isArchived,
-      tags: tags ?? this.tags,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1533,26 +1317,8 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     if (speciesId.present) {
       map['species_id'] = Variable<String>(speciesId.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (alias.present) {
-      map['alias'] = Variable<String>(alias.value);
-    }
-    if (type.present) {
-      map['type'] = Variable<String>(type.value);
-    }
-    if (mainPhotoPath.present) {
-      map['main_photo_path'] = Variable<String>(mainPhotoPath.value);
-    }
-    if (notes.present) {
-      map['notes'] = Variable<String>(notes.value);
-    }
-    if (placeId.present) {
-      map['place_id'] = Variable<String>(placeId.value);
-    }
-    if (parentEntityId.present) {
-      map['parent_entity_id'] = Variable<String>(parentEntityId.value);
+    if (locationId.present) {
+      map['location_id'] = Variable<String>(locationId.value);
     }
     if (quantity.present) {
       map['quantity'] = Variable<double>(quantity.value);
@@ -1560,17 +1326,11 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     if (unit.present) {
       map['unit'] = Variable<String>(unit.value);
     }
-    if (barcode.present) {
-      map['barcode'] = Variable<String>(barcode.value);
-    }
-    if (customAttributes.present) {
-      map['custom_attributes'] = Variable<String>(customAttributes.value);
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
     }
     if (isArchived.present) {
       map['is_archived'] = Variable<bool>(isArchived.value);
-    }
-    if (tags.present) {
-      map['tags'] = Variable<String>(tags.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -1589,19 +1349,11 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     return (StringBuffer('EntitiesTableCompanion(')
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
-          ..write('name: $name, ')
-          ..write('alias: $alias, ')
-          ..write('type: $type, ')
-          ..write('mainPhotoPath: $mainPhotoPath, ')
-          ..write('notes: $notes, ')
-          ..write('placeId: $placeId, ')
-          ..write('parentEntityId: $parentEntityId, ')
+          ..write('locationId: $locationId, ')
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
-          ..write('barcode: $barcode, ')
-          ..write('customAttributes: $customAttributes, ')
+          ..write('notes: $notes, ')
           ..write('isArchived: $isArchived, ')
-          ..write('tags: $tags, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -2669,26 +2421,6 @@ class $CustomTemplatesTableTable extends CustomTemplatesTable
   late final GeneratedColumn<String> iconName = GeneratedColumn<String>(
       'icon_name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _isContainerMeta =
-      const VerificationMeta('isContainer');
-  @override
-  late final GeneratedColumn<bool> isContainer = GeneratedColumn<bool>(
-      'is_container', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_container" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _isPlaceMeta =
-      const VerificationMeta('isPlace');
-  @override
-  late final GeneratedColumn<bool> isPlace = GeneratedColumn<bool>(
-      'is_place', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_place" IN (0, 1))'),
-      defaultValue: const Constant(false));
   static const VerificationMeta _commonUnitsMeta =
       const VerificationMeta('commonUnits');
   @override
@@ -2705,7 +2437,7 @@ class $CustomTemplatesTableTable extends CustomTemplatesTable
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, typeName, iconName, isContainer, isPlace, commonUnits, createdAt];
+      [id, typeName, iconName, commonUnits, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2733,16 +2465,6 @@ class $CustomTemplatesTableTable extends CustomTemplatesTable
           iconName.isAcceptableOrUnknown(data['icon_name']!, _iconNameMeta));
     } else if (isInserting) {
       context.missing(_iconNameMeta);
-    }
-    if (data.containsKey('is_container')) {
-      context.handle(
-          _isContainerMeta,
-          isContainer.isAcceptableOrUnknown(
-              data['is_container']!, _isContainerMeta));
-    }
-    if (data.containsKey('is_place')) {
-      context.handle(_isPlaceMeta,
-          isPlace.isAcceptableOrUnknown(data['is_place']!, _isPlaceMeta));
     }
     if (data.containsKey('common_units')) {
       context.handle(
@@ -2772,10 +2494,6 @@ class $CustomTemplatesTableTable extends CustomTemplatesTable
           .read(DriftSqlType.string, data['${effectivePrefix}type_name'])!,
       iconName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}icon_name'])!,
-      isContainer: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_container'])!,
-      isPlace: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_place'])!,
       commonUnits: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}common_units'])!,
       createdAt: attachedDatabase.typeMapping
@@ -2794,16 +2512,12 @@ class CustomTemplatesTableData extends DataClass
   final String id;
   final String typeName;
   final String iconName;
-  final bool isContainer;
-  final bool isPlace;
   final String commonUnits;
   final DateTime createdAt;
   const CustomTemplatesTableData(
       {required this.id,
       required this.typeName,
       required this.iconName,
-      required this.isContainer,
-      required this.isPlace,
       required this.commonUnits,
       required this.createdAt});
   @override
@@ -2812,8 +2526,6 @@ class CustomTemplatesTableData extends DataClass
     map['id'] = Variable<String>(id);
     map['type_name'] = Variable<String>(typeName);
     map['icon_name'] = Variable<String>(iconName);
-    map['is_container'] = Variable<bool>(isContainer);
-    map['is_place'] = Variable<bool>(isPlace);
     map['common_units'] = Variable<String>(commonUnits);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -2824,8 +2536,6 @@ class CustomTemplatesTableData extends DataClass
       id: Value(id),
       typeName: Value(typeName),
       iconName: Value(iconName),
-      isContainer: Value(isContainer),
-      isPlace: Value(isPlace),
       commonUnits: Value(commonUnits),
       createdAt: Value(createdAt),
     );
@@ -2838,8 +2548,6 @@ class CustomTemplatesTableData extends DataClass
       id: serializer.fromJson<String>(json['id']),
       typeName: serializer.fromJson<String>(json['typeName']),
       iconName: serializer.fromJson<String>(json['iconName']),
-      isContainer: serializer.fromJson<bool>(json['isContainer']),
-      isPlace: serializer.fromJson<bool>(json['isPlace']),
       commonUnits: serializer.fromJson<String>(json['commonUnits']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -2851,8 +2559,6 @@ class CustomTemplatesTableData extends DataClass
       'id': serializer.toJson<String>(id),
       'typeName': serializer.toJson<String>(typeName),
       'iconName': serializer.toJson<String>(iconName),
-      'isContainer': serializer.toJson<bool>(isContainer),
-      'isPlace': serializer.toJson<bool>(isPlace),
       'commonUnits': serializer.toJson<String>(commonUnits),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -2862,16 +2568,12 @@ class CustomTemplatesTableData extends DataClass
           {String? id,
           String? typeName,
           String? iconName,
-          bool? isContainer,
-          bool? isPlace,
           String? commonUnits,
           DateTime? createdAt}) =>
       CustomTemplatesTableData(
         id: id ?? this.id,
         typeName: typeName ?? this.typeName,
         iconName: iconName ?? this.iconName,
-        isContainer: isContainer ?? this.isContainer,
-        isPlace: isPlace ?? this.isPlace,
         commonUnits: commonUnits ?? this.commonUnits,
         createdAt: createdAt ?? this.createdAt,
       );
@@ -2881,9 +2583,6 @@ class CustomTemplatesTableData extends DataClass
       id: data.id.present ? data.id.value : this.id,
       typeName: data.typeName.present ? data.typeName.value : this.typeName,
       iconName: data.iconName.present ? data.iconName.value : this.iconName,
-      isContainer:
-          data.isContainer.present ? data.isContainer.value : this.isContainer,
-      isPlace: data.isPlace.present ? data.isPlace.value : this.isPlace,
       commonUnits:
           data.commonUnits.present ? data.commonUnits.value : this.commonUnits,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -2896,8 +2595,6 @@ class CustomTemplatesTableData extends DataClass
           ..write('id: $id, ')
           ..write('typeName: $typeName, ')
           ..write('iconName: $iconName, ')
-          ..write('isContainer: $isContainer, ')
-          ..write('isPlace: $isPlace, ')
           ..write('commonUnits: $commonUnits, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -2905,8 +2602,8 @@ class CustomTemplatesTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, typeName, iconName, isContainer, isPlace, commonUnits, createdAt);
+  int get hashCode =>
+      Object.hash(id, typeName, iconName, commonUnits, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2914,8 +2611,6 @@ class CustomTemplatesTableData extends DataClass
           other.id == this.id &&
           other.typeName == this.typeName &&
           other.iconName == this.iconName &&
-          other.isContainer == this.isContainer &&
-          other.isPlace == this.isPlace &&
           other.commonUnits == this.commonUnits &&
           other.createdAt == this.createdAt);
 }
@@ -2925,8 +2620,6 @@ class CustomTemplatesTableCompanion
   final Value<String> id;
   final Value<String> typeName;
   final Value<String> iconName;
-  final Value<bool> isContainer;
-  final Value<bool> isPlace;
   final Value<String> commonUnits;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
@@ -2934,8 +2627,6 @@ class CustomTemplatesTableCompanion
     this.id = const Value.absent(),
     this.typeName = const Value.absent(),
     this.iconName = const Value.absent(),
-    this.isContainer = const Value.absent(),
-    this.isPlace = const Value.absent(),
     this.commonUnits = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2944,8 +2635,6 @@ class CustomTemplatesTableCompanion
     required String id,
     required String typeName,
     required String iconName,
-    this.isContainer = const Value.absent(),
-    this.isPlace = const Value.absent(),
     this.commonUnits = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
@@ -2957,8 +2646,6 @@ class CustomTemplatesTableCompanion
     Expression<String>? id,
     Expression<String>? typeName,
     Expression<String>? iconName,
-    Expression<bool>? isContainer,
-    Expression<bool>? isPlace,
     Expression<String>? commonUnits,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -2967,8 +2654,6 @@ class CustomTemplatesTableCompanion
       if (id != null) 'id': id,
       if (typeName != null) 'type_name': typeName,
       if (iconName != null) 'icon_name': iconName,
-      if (isContainer != null) 'is_container': isContainer,
-      if (isPlace != null) 'is_place': isPlace,
       if (commonUnits != null) 'common_units': commonUnits,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -2979,8 +2664,6 @@ class CustomTemplatesTableCompanion
       {Value<String>? id,
       Value<String>? typeName,
       Value<String>? iconName,
-      Value<bool>? isContainer,
-      Value<bool>? isPlace,
       Value<String>? commonUnits,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
@@ -2988,8 +2671,6 @@ class CustomTemplatesTableCompanion
       id: id ?? this.id,
       typeName: typeName ?? this.typeName,
       iconName: iconName ?? this.iconName,
-      isContainer: isContainer ?? this.isContainer,
-      isPlace: isPlace ?? this.isPlace,
       commonUnits: commonUnits ?? this.commonUnits,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -3007,12 +2688,6 @@ class CustomTemplatesTableCompanion
     }
     if (iconName.present) {
       map['icon_name'] = Variable<String>(iconName.value);
-    }
-    if (isContainer.present) {
-      map['is_container'] = Variable<bool>(isContainer.value);
-    }
-    if (isPlace.present) {
-      map['is_place'] = Variable<bool>(isPlace.value);
     }
     if (commonUnits.present) {
       map['common_units'] = Variable<String>(commonUnits.value);
@@ -3032,8 +2707,6 @@ class CustomTemplatesTableCompanion
           ..write('id: $id, ')
           ..write('typeName: $typeName, ')
           ..write('iconName: $iconName, ')
-          ..write('isContainer: $isContainer, ')
-          ..write('isPlace: $isPlace, ')
           ..write('commonUnits: $commonUnits, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -3045,8 +2718,8 @@ class CustomTemplatesTableCompanion
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $LocationsTableTable locationsTable = $LocationsTableTable(this);
   late final $CatalogTableTable catalogTable = $CatalogTableTable(this);
-  late final $PlacesTableTable placesTable = $PlacesTableTable(this);
   late final $EntitiesTableTable entitiesTable = $EntitiesTableTable(this);
   late final $RelationsTableTable relationsTable = $RelationsTableTable(this);
   late final $AttachmentsTableTable attachmentsTable =
@@ -3060,8 +2733,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+        locationsTable,
         catalogTable,
-        placesTable,
         entitiesTable,
         relationsTable,
         attachmentsTable,
@@ -3070,15 +2743,384 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       ];
 }
 
+typedef $$LocationsTableTableCreateCompanionBuilder = LocationsTableCompanion
+    Function({
+  required String id,
+  required String name,
+  Value<String?> parentLocationId,
+  Value<String?> description,
+  Value<String?> icon,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$LocationsTableTableUpdateCompanionBuilder = LocationsTableCompanion
+    Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String?> parentLocationId,
+  Value<String?> description,
+  Value<String?> icon,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+final class $$LocationsTableTableReferences extends BaseReferences<
+    _$AppDatabase, $LocationsTableTable, LocationsTableData> {
+  $$LocationsTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $LocationsTableTable _parentLocationIdTable(_$AppDatabase db) =>
+      db.locationsTable.createAlias($_aliasNameGenerator(
+          db.locationsTable.parentLocationId, db.locationsTable.id));
+
+  $$LocationsTableTableProcessedTableManager? get parentLocationId {
+    final $_column = $_itemColumn<String>('parent_location_id');
+    if ($_column == null) return null;
+    final manager = $$LocationsTableTableTableManager($_db, $_db.locationsTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_parentLocationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$EntitiesTableTable, List<EntitiesTableData>>
+      _entitiesTableRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.entitiesTable,
+              aliasName: $_aliasNameGenerator(
+                  db.locationsTable.id, db.entitiesTable.locationId));
+
+  $$EntitiesTableTableProcessedTableManager get entitiesTableRefs {
+    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
+        .filter((f) => f.locationId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_entitiesTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$LocationsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $LocationsTableTable> {
+  $$LocationsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get icon => $composableBuilder(
+      column: $table.icon, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  $$LocationsTableTableFilterComposer get parentLocationId {
+    final $$LocationsTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentLocationId,
+        referencedTable: $db.locationsTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$LocationsTableTableFilterComposer(
+              $db: $db,
+              $table: $db.locationsTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> entitiesTableRefs(
+      Expression<bool> Function($$EntitiesTableTableFilterComposer f) f) {
+    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.locationId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$LocationsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocationsTableTable> {
+  $$LocationsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get icon => $composableBuilder(
+      column: $table.icon, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  $$LocationsTableTableOrderingComposer get parentLocationId {
+    final $$LocationsTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentLocationId,
+        referencedTable: $db.locationsTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$LocationsTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.locationsTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$LocationsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocationsTableTable> {
+  $$LocationsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<String> get icon =>
+      $composableBuilder(column: $table.icon, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$LocationsTableTableAnnotationComposer get parentLocationId {
+    final $$LocationsTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentLocationId,
+        referencedTable: $db.locationsTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$LocationsTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.locationsTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> entitiesTableRefs<T extends Object>(
+      Expression<T> Function($$EntitiesTableTableAnnotationComposer a) f) {
+    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.locationId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$LocationsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $LocationsTableTable,
+    LocationsTableData,
+    $$LocationsTableTableFilterComposer,
+    $$LocationsTableTableOrderingComposer,
+    $$LocationsTableTableAnnotationComposer,
+    $$LocationsTableTableCreateCompanionBuilder,
+    $$LocationsTableTableUpdateCompanionBuilder,
+    (LocationsTableData, $$LocationsTableTableReferences),
+    LocationsTableData,
+    PrefetchHooks Function({bool parentLocationId, bool entitiesTableRefs})> {
+  $$LocationsTableTableTableManager(
+      _$AppDatabase db, $LocationsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocationsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocationsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocationsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> parentLocationId = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String?> icon = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              LocationsTableCompanion(
+            id: id,
+            name: name,
+            parentLocationId: parentLocationId,
+            description: description,
+            icon: icon,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            Value<String?> parentLocationId = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String?> icon = const Value.absent(),
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              LocationsTableCompanion.insert(
+            id: id,
+            name: name,
+            parentLocationId: parentLocationId,
+            description: description,
+            icon: icon,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$LocationsTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {parentLocationId = false, entitiesTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (entitiesTableRefs) db.entitiesTable
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (parentLocationId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.parentLocationId,
+                    referencedTable: $$LocationsTableTableReferences
+                        ._parentLocationIdTable(db),
+                    referencedColumn: $$LocationsTableTableReferences
+                        ._parentLocationIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (entitiesTableRefs)
+                    await $_getPrefetchedData<LocationsTableData,
+                            $LocationsTableTable, EntitiesTableData>(
+                        currentTable: table,
+                        referencedTable: $$LocationsTableTableReferences
+                            ._entitiesTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$LocationsTableTableReferences(db, table, p0)
+                                .entitiesTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.locationId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$LocationsTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $LocationsTableTable,
+    LocationsTableData,
+    $$LocationsTableTableFilterComposer,
+    $$LocationsTableTableOrderingComposer,
+    $$LocationsTableTableAnnotationComposer,
+    $$LocationsTableTableCreateCompanionBuilder,
+    $$LocationsTableTableUpdateCompanionBuilder,
+    (LocationsTableData, $$LocationsTableTableReferences),
+    LocationsTableData,
+    PrefetchHooks Function({bool parentLocationId, bool entitiesTableRefs})>;
 typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
     Function({
   required String id,
   required String name,
+  Value<String> type,
   Value<String?> brand,
   Value<String?> description,
   Value<String?> mainPhotoPath,
-  Value<String> defaultType,
   Value<String?> barcode,
+  Value<String> customAttributes,
+  Value<String?> defaultUnit,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -3086,11 +3128,13 @@ typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
     Function({
   Value<String> id,
   Value<String> name,
+  Value<String> type,
   Value<String?> brand,
   Value<String?> description,
   Value<String?> mainPhotoPath,
-  Value<String> defaultType,
   Value<String?> barcode,
+  Value<String> customAttributes,
+  Value<String?> defaultUnit,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -3130,6 +3174,9 @@ class $$CatalogTableTableFilterComposer
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnFilters(column));
+
   ColumnFilters<String> get brand => $composableBuilder(
       column: $table.brand, builder: (column) => ColumnFilters(column));
 
@@ -3139,11 +3186,15 @@ class $$CatalogTableTableFilterComposer
   ColumnFilters<String> get mainPhotoPath => $composableBuilder(
       column: $table.mainPhotoPath, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get defaultType => $composableBuilder(
-      column: $table.defaultType, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<String> get barcode => $composableBuilder(
       column: $table.barcode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get customAttributes => $composableBuilder(
+      column: $table.customAttributes,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get defaultUnit => $composableBuilder(
+      column: $table.defaultUnit, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -3185,6 +3236,9 @@ class $$CatalogTableTableOrderingComposer
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get brand => $composableBuilder(
       column: $table.brand, builder: (column) => ColumnOrderings(column));
 
@@ -3195,11 +3249,15 @@ class $$CatalogTableTableOrderingComposer
       column: $table.mainPhotoPath,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get defaultType => $composableBuilder(
-      column: $table.defaultType, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get barcode => $composableBuilder(
       column: $table.barcode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get customAttributes => $composableBuilder(
+      column: $table.customAttributes,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get defaultUnit => $composableBuilder(
+      column: $table.defaultUnit, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
@@ -3220,6 +3278,9 @@ class $$CatalogTableTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
   GeneratedColumn<String> get brand =>
       $composableBuilder(column: $table.brand, builder: (column) => column);
 
@@ -3229,11 +3290,14 @@ class $$CatalogTableTableAnnotationComposer
   GeneratedColumn<String> get mainPhotoPath => $composableBuilder(
       column: $table.mainPhotoPath, builder: (column) => column);
 
-  GeneratedColumn<String> get defaultType => $composableBuilder(
-      column: $table.defaultType, builder: (column) => column);
-
   GeneratedColumn<String> get barcode =>
       $composableBuilder(column: $table.barcode, builder: (column) => column);
+
+  GeneratedColumn<String> get customAttributes => $composableBuilder(
+      column: $table.customAttributes, builder: (column) => column);
+
+  GeneratedColumn<String> get defaultUnit => $composableBuilder(
+      column: $table.defaultUnit, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3285,44 +3349,52 @@ class $$CatalogTableTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<String> type = const Value.absent(),
             Value<String?> brand = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<String?> mainPhotoPath = const Value.absent(),
-            Value<String> defaultType = const Value.absent(),
             Value<String?> barcode = const Value.absent(),
+            Value<String> customAttributes = const Value.absent(),
+            Value<String?> defaultUnit = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               CatalogTableCompanion(
             id: id,
             name: name,
+            type: type,
             brand: brand,
             description: description,
             mainPhotoPath: mainPhotoPath,
-            defaultType: defaultType,
             barcode: barcode,
+            customAttributes: customAttributes,
+            defaultUnit: defaultUnit,
             createdAt: createdAt,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
             required String name,
+            Value<String> type = const Value.absent(),
             Value<String?> brand = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<String?> mainPhotoPath = const Value.absent(),
-            Value<String> defaultType = const Value.absent(),
             Value<String?> barcode = const Value.absent(),
+            Value<String> customAttributes = const Value.absent(),
+            Value<String?> defaultUnit = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
           }) =>
               CatalogTableCompanion.insert(
             id: id,
             name: name,
+            type: type,
             brand: brand,
             description: description,
             mainPhotoPath: mainPhotoPath,
-            defaultType: defaultType,
             barcode: barcode,
+            customAttributes: customAttributes,
+            defaultUnit: defaultUnit,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -3373,296 +3445,15 @@ typedef $$CatalogTableTableProcessedTableManager = ProcessedTableManager<
     (CatalogTableData, $$CatalogTableTableReferences),
     CatalogTableData,
     PrefetchHooks Function({bool entitiesTableRefs})>;
-typedef $$PlacesTableTableCreateCompanionBuilder = PlacesTableCompanion
-    Function({
-  required String id,
-  required String name,
-  Value<String?> description,
-  Value<String?> icon,
-  Value<String?> parentPlaceId,
-  required DateTime createdAt,
-  Value<int> rowid,
-});
-typedef $$PlacesTableTableUpdateCompanionBuilder = PlacesTableCompanion
-    Function({
-  Value<String> id,
-  Value<String> name,
-  Value<String?> description,
-  Value<String?> icon,
-  Value<String?> parentPlaceId,
-  Value<DateTime> createdAt,
-  Value<int> rowid,
-});
-
-final class $$PlacesTableTableReferences
-    extends BaseReferences<_$AppDatabase, $PlacesTableTable, PlacesTableData> {
-  $$PlacesTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$EntitiesTableTable, List<EntitiesTableData>>
-      _entitiesTableRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.entitiesTable,
-              aliasName: $_aliasNameGenerator(
-                  db.placesTable.id, db.entitiesTable.placeId));
-
-  $$EntitiesTableTableProcessedTableManager get entitiesTableRefs {
-    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
-        .filter((f) => f.placeId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_entitiesTableRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
-
-class $$PlacesTableTableFilterComposer
-    extends Composer<_$AppDatabase, $PlacesTableTable> {
-  $$PlacesTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get icon => $composableBuilder(
-      column: $table.icon, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get parentPlaceId => $composableBuilder(
-      column: $table.parentPlaceId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
-
-  Expression<bool> entitiesTableRefs(
-      Expression<bool> Function($$EntitiesTableTableFilterComposer f) f) {
-    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.entitiesTable,
-        getReferencedColumn: (t) => t.placeId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableFilterComposer(
-              $db: $db,
-              $table: $db.entitiesTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$PlacesTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $PlacesTableTable> {
-  $$PlacesTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get icon => $composableBuilder(
-      column: $table.icon, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get parentPlaceId => $composableBuilder(
-      column: $table.parentPlaceId,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
-}
-
-class $$PlacesTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $PlacesTableTable> {
-  $$PlacesTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
-
-  GeneratedColumn<String> get icon =>
-      $composableBuilder(column: $table.icon, builder: (column) => column);
-
-  GeneratedColumn<String> get parentPlaceId => $composableBuilder(
-      column: $table.parentPlaceId, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  Expression<T> entitiesTableRefs<T extends Object>(
-      Expression<T> Function($$EntitiesTableTableAnnotationComposer a) f) {
-    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.entitiesTable,
-        getReferencedColumn: (t) => t.placeId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableAnnotationComposer(
-              $db: $db,
-              $table: $db.entitiesTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$PlacesTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PlacesTableTable,
-    PlacesTableData,
-    $$PlacesTableTableFilterComposer,
-    $$PlacesTableTableOrderingComposer,
-    $$PlacesTableTableAnnotationComposer,
-    $$PlacesTableTableCreateCompanionBuilder,
-    $$PlacesTableTableUpdateCompanionBuilder,
-    (PlacesTableData, $$PlacesTableTableReferences),
-    PlacesTableData,
-    PrefetchHooks Function({bool entitiesTableRefs})> {
-  $$PlacesTableTableTableManager(_$AppDatabase db, $PlacesTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$PlacesTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$PlacesTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$PlacesTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String?> description = const Value.absent(),
-            Value<String?> icon = const Value.absent(),
-            Value<String?> parentPlaceId = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              PlacesTableCompanion(
-            id: id,
-            name: name,
-            description: description,
-            icon: icon,
-            parentPlaceId: parentPlaceId,
-            createdAt: createdAt,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String name,
-            Value<String?> description = const Value.absent(),
-            Value<String?> icon = const Value.absent(),
-            Value<String?> parentPlaceId = const Value.absent(),
-            required DateTime createdAt,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              PlacesTableCompanion.insert(
-            id: id,
-            name: name,
-            description: description,
-            icon: icon,
-            parentPlaceId: parentPlaceId,
-            createdAt: createdAt,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$PlacesTableTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: ({entitiesTableRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (entitiesTableRefs) db.entitiesTable
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (entitiesTableRefs)
-                    await $_getPrefetchedData<PlacesTableData,
-                            $PlacesTableTable, EntitiesTableData>(
-                        currentTable: table,
-                        referencedTable: $$PlacesTableTableReferences
-                            ._entitiesTableRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$PlacesTableTableReferences(db, table, p0)
-                                .entitiesTableRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.placeId == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$PlacesTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PlacesTableTable,
-    PlacesTableData,
-    $$PlacesTableTableFilterComposer,
-    $$PlacesTableTableOrderingComposer,
-    $$PlacesTableTableAnnotationComposer,
-    $$PlacesTableTableCreateCompanionBuilder,
-    $$PlacesTableTableUpdateCompanionBuilder,
-    (PlacesTableData, $$PlacesTableTableReferences),
-    PlacesTableData,
-    PrefetchHooks Function({bool entitiesTableRefs})>;
 typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
     Function({
   required String id,
-  Value<String?> speciesId,
-  required String name,
-  Value<String?> alias,
-  required String type,
-  Value<String?> mainPhotoPath,
-  Value<String?> notes,
-  Value<String?> placeId,
-  Value<String?> parentEntityId,
+  required String speciesId,
+  Value<String?> locationId,
   Value<double?> quantity,
   Value<String?> unit,
-  Value<String?> barcode,
-  Value<String> customAttributes,
+  Value<String?> notes,
   Value<bool> isArchived,
-  Value<String> tags,
   required DateTime createdAt,
   required DateTime updatedAt,
   Value<int> rowid,
@@ -3670,20 +3461,12 @@ typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
 typedef $$EntitiesTableTableUpdateCompanionBuilder = EntitiesTableCompanion
     Function({
   Value<String> id,
-  Value<String?> speciesId,
-  Value<String> name,
-  Value<String?> alias,
-  Value<String> type,
-  Value<String?> mainPhotoPath,
-  Value<String?> notes,
-  Value<String?> placeId,
-  Value<String?> parentEntityId,
+  Value<String> speciesId,
+  Value<String?> locationId,
   Value<double?> quantity,
   Value<String?> unit,
-  Value<String?> barcode,
-  Value<String> customAttributes,
+  Value<String?> notes,
   Value<bool> isArchived,
-  Value<String> tags,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
   Value<int> rowid,
@@ -3698,9 +3481,9 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
       db.catalogTable.createAlias(
           $_aliasNameGenerator(db.entitiesTable.speciesId, db.catalogTable.id));
 
-  $$CatalogTableTableProcessedTableManager? get speciesId {
-    final $_column = $_itemColumn<String>('species_id');
-    if ($_column == null) return null;
+  $$CatalogTableTableProcessedTableManager get speciesId {
+    final $_column = $_itemColumn<String>('species_id')!;
+
     final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_speciesIdTable($_db));
@@ -3709,31 +3492,16 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $PlacesTableTable _placeIdTable(_$AppDatabase db) =>
-      db.placesTable.createAlias(
-          $_aliasNameGenerator(db.entitiesTable.placeId, db.placesTable.id));
+  static $LocationsTableTable _locationIdTable(_$AppDatabase db) =>
+      db.locationsTable.createAlias($_aliasNameGenerator(
+          db.entitiesTable.locationId, db.locationsTable.id));
 
-  $$PlacesTableTableProcessedTableManager? get placeId {
-    final $_column = $_itemColumn<String>('place_id');
+  $$LocationsTableTableProcessedTableManager? get locationId {
+    final $_column = $_itemColumn<String>('location_id');
     if ($_column == null) return null;
-    final manager = $$PlacesTableTableTableManager($_db, $_db.placesTable)
+    final manager = $$LocationsTableTableTableManager($_db, $_db.locationsTable)
         .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_placeIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static $EntitiesTableTable _parentEntityIdTable(_$AppDatabase db) =>
-      db.entitiesTable.createAlias($_aliasNameGenerator(
-          db.entitiesTable.parentEntityId, db.entitiesTable.id));
-
-  $$EntitiesTableTableProcessedTableManager? get parentEntityId {
-    final $_column = $_itemColumn<String>('parent_entity_id');
-    if ($_column == null) return null;
-    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_parentEntityIdTable($_db));
+    final item = $_typedResult.readTableOrNull(_locationIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -3801,39 +3569,17 @@ class $$EntitiesTableTableFilterComposer
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get alias => $composableBuilder(
-      column: $table.alias, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get mainPhotoPath => $composableBuilder(
-      column: $table.mainPhotoPath, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get notes => $composableBuilder(
-      column: $table.notes, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<double> get quantity => $composableBuilder(
       column: $table.quantity, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get unit => $composableBuilder(
       column: $table.unit, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get barcode => $composableBuilder(
-      column: $table.barcode, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get customAttributes => $composableBuilder(
-      column: $table.customAttributes,
-      builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get isArchived => $composableBuilder(
       column: $table.isArchived, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get tags => $composableBuilder(
-      column: $table.tags, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -3861,38 +3607,18 @@ class $$EntitiesTableTableFilterComposer
     return composer;
   }
 
-  $$PlacesTableTableFilterComposer get placeId {
-    final $$PlacesTableTableFilterComposer composer = $composerBuilder(
+  $$LocationsTableTableFilterComposer get locationId {
+    final $$LocationsTableTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.placeId,
-        referencedTable: $db.placesTable,
+        getCurrentColumn: (t) => t.locationId,
+        referencedTable: $db.locationsTable,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$PlacesTableTableFilterComposer(
+            $$LocationsTableTableFilterComposer(
               $db: $db,
-              $table: $db.placesTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$EntitiesTableTableFilterComposer get parentEntityId {
-    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.parentEntityId,
-        referencedTable: $db.entitiesTable,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableFilterComposer(
-              $db: $db,
-              $table: $db.entitiesTable,
+              $table: $db.locationsTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -3977,40 +3703,17 @@ class $$EntitiesTableTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get alias => $composableBuilder(
-      column: $table.alias, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get mainPhotoPath => $composableBuilder(
-      column: $table.mainPhotoPath,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get notes => $composableBuilder(
-      column: $table.notes, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<double> get quantity => $composableBuilder(
       column: $table.quantity, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get unit => $composableBuilder(
       column: $table.unit, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get barcode => $composableBuilder(
-      column: $table.barcode, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get customAttributes => $composableBuilder(
-      column: $table.customAttributes,
-      builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<bool> get isArchived => $composableBuilder(
       column: $table.isArchived, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get tags => $composableBuilder(
-      column: $table.tags, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
@@ -4038,38 +3741,18 @@ class $$EntitiesTableTableOrderingComposer
     return composer;
   }
 
-  $$PlacesTableTableOrderingComposer get placeId {
-    final $$PlacesTableTableOrderingComposer composer = $composerBuilder(
+  $$LocationsTableTableOrderingComposer get locationId {
+    final $$LocationsTableTableOrderingComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.placeId,
-        referencedTable: $db.placesTable,
+        getCurrentColumn: (t) => t.locationId,
+        referencedTable: $db.locationsTable,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$PlacesTableTableOrderingComposer(
+            $$LocationsTableTableOrderingComposer(
               $db: $db,
-              $table: $db.placesTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$EntitiesTableTableOrderingComposer get parentEntityId {
-    final $$EntitiesTableTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.parentEntityId,
-        referencedTable: $db.entitiesTable,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableOrderingComposer(
-              $db: $db,
-              $table: $db.entitiesTable,
+              $table: $db.locationsTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4091,38 +3774,17 @@ class $$EntitiesTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get alias =>
-      $composableBuilder(column: $table.alias, builder: (column) => column);
-
-  GeneratedColumn<String> get type =>
-      $composableBuilder(column: $table.type, builder: (column) => column);
-
-  GeneratedColumn<String> get mainPhotoPath => $composableBuilder(
-      column: $table.mainPhotoPath, builder: (column) => column);
-
-  GeneratedColumn<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => column);
-
   GeneratedColumn<double> get quantity =>
       $composableBuilder(column: $table.quantity, builder: (column) => column);
 
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
 
-  GeneratedColumn<String> get barcode =>
-      $composableBuilder(column: $table.barcode, builder: (column) => column);
-
-  GeneratedColumn<String> get customAttributes => $composableBuilder(
-      column: $table.customAttributes, builder: (column) => column);
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
 
   GeneratedColumn<bool> get isArchived => $composableBuilder(
       column: $table.isArchived, builder: (column) => column);
-
-  GeneratedColumn<String> get tags =>
-      $composableBuilder(column: $table.tags, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -4150,38 +3812,18 @@ class $$EntitiesTableTableAnnotationComposer
     return composer;
   }
 
-  $$PlacesTableTableAnnotationComposer get placeId {
-    final $$PlacesTableTableAnnotationComposer composer = $composerBuilder(
+  $$LocationsTableTableAnnotationComposer get locationId {
+    final $$LocationsTableTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.placeId,
-        referencedTable: $db.placesTable,
+        getCurrentColumn: (t) => t.locationId,
+        referencedTable: $db.locationsTable,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$PlacesTableTableAnnotationComposer(
+            $$LocationsTableTableAnnotationComposer(
               $db: $db,
-              $table: $db.placesTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$EntitiesTableTableAnnotationComposer get parentEntityId {
-    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.parentEntityId,
-        referencedTable: $db.entitiesTable,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableAnnotationComposer(
-              $db: $db,
-              $table: $db.entitiesTable,
+              $table: $db.locationsTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4267,8 +3909,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
     EntitiesTableData,
     PrefetchHooks Function(
         {bool speciesId,
-        bool placeId,
-        bool parentEntityId,
+        bool locationId,
         bool sourceRelations,
         bool targetRelations,
         bool attachmentsTableRefs})> {
@@ -4284,20 +3925,12 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               $$EntitiesTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<String?> speciesId = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String?> alias = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<String?> mainPhotoPath = const Value.absent(),
-            Value<String?> notes = const Value.absent(),
-            Value<String?> placeId = const Value.absent(),
-            Value<String?> parentEntityId = const Value.absent(),
+            Value<String> speciesId = const Value.absent(),
+            Value<String?> locationId = const Value.absent(),
             Value<double?> quantity = const Value.absent(),
             Value<String?> unit = const Value.absent(),
-            Value<String?> barcode = const Value.absent(),
-            Value<String> customAttributes = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
             Value<bool> isArchived = const Value.absent(),
-            Value<String> tags = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -4305,39 +3938,23 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               EntitiesTableCompanion(
             id: id,
             speciesId: speciesId,
-            name: name,
-            alias: alias,
-            type: type,
-            mainPhotoPath: mainPhotoPath,
-            notes: notes,
-            placeId: placeId,
-            parentEntityId: parentEntityId,
+            locationId: locationId,
             quantity: quantity,
             unit: unit,
-            barcode: barcode,
-            customAttributes: customAttributes,
+            notes: notes,
             isArchived: isArchived,
-            tags: tags,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
-            Value<String?> speciesId = const Value.absent(),
-            required String name,
-            Value<String?> alias = const Value.absent(),
-            required String type,
-            Value<String?> mainPhotoPath = const Value.absent(),
-            Value<String?> notes = const Value.absent(),
-            Value<String?> placeId = const Value.absent(),
-            Value<String?> parentEntityId = const Value.absent(),
+            required String speciesId,
+            Value<String?> locationId = const Value.absent(),
             Value<double?> quantity = const Value.absent(),
             Value<String?> unit = const Value.absent(),
-            Value<String?> barcode = const Value.absent(),
-            Value<String> customAttributes = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
             Value<bool> isArchived = const Value.absent(),
-            Value<String> tags = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
             Value<int> rowid = const Value.absent(),
@@ -4345,19 +3962,11 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               EntitiesTableCompanion.insert(
             id: id,
             speciesId: speciesId,
-            name: name,
-            alias: alias,
-            type: type,
-            mainPhotoPath: mainPhotoPath,
-            notes: notes,
-            placeId: placeId,
-            parentEntityId: parentEntityId,
+            locationId: locationId,
             quantity: quantity,
             unit: unit,
-            barcode: barcode,
-            customAttributes: customAttributes,
+            notes: notes,
             isArchived: isArchived,
-            tags: tags,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -4370,8 +3979,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {speciesId = false,
-              placeId = false,
-              parentEntityId = false,
+              locationId = false,
               sourceRelations = false,
               targetRelations = false,
               attachmentsTableRefs = false}) {
@@ -4405,25 +4013,14 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
                         $$EntitiesTableTableReferences._speciesIdTable(db).id,
                   ) as T;
                 }
-                if (placeId) {
+                if (locationId) {
                   state = state.withJoin(
                     currentTable: table,
-                    currentColumn: table.placeId,
+                    currentColumn: table.locationId,
                     referencedTable:
-                        $$EntitiesTableTableReferences._placeIdTable(db),
+                        $$EntitiesTableTableReferences._locationIdTable(db),
                     referencedColumn:
-                        $$EntitiesTableTableReferences._placeIdTable(db).id,
-                  ) as T;
-                }
-                if (parentEntityId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.parentEntityId,
-                    referencedTable:
-                        $$EntitiesTableTableReferences._parentEntityIdTable(db),
-                    referencedColumn: $$EntitiesTableTableReferences
-                        ._parentEntityIdTable(db)
-                        .id,
+                        $$EntitiesTableTableReferences._locationIdTable(db).id,
                   ) as T;
                 }
 
@@ -4490,8 +4087,7 @@ typedef $$EntitiesTableTableProcessedTableManager = ProcessedTableManager<
     EntitiesTableData,
     PrefetchHooks Function(
         {bool speciesId,
-        bool placeId,
-        bool parentEntityId,
+        bool locationId,
         bool sourceRelations,
         bool targetRelations,
         bool attachmentsTableRefs})>;
@@ -5341,8 +4937,6 @@ typedef $$CustomTemplatesTableTableCreateCompanionBuilder
   required String id,
   required String typeName,
   required String iconName,
-  Value<bool> isContainer,
-  Value<bool> isPlace,
   Value<String> commonUnits,
   required DateTime createdAt,
   Value<int> rowid,
@@ -5352,8 +4946,6 @@ typedef $$CustomTemplatesTableTableUpdateCompanionBuilder
   Value<String> id,
   Value<String> typeName,
   Value<String> iconName,
-  Value<bool> isContainer,
-  Value<bool> isPlace,
   Value<String> commonUnits,
   Value<DateTime> createdAt,
   Value<int> rowid,
@@ -5376,12 +4968,6 @@ class $$CustomTemplatesTableTableFilterComposer
 
   ColumnFilters<String> get iconName => $composableBuilder(
       column: $table.iconName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isContainer => $composableBuilder(
-      column: $table.isContainer, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isPlace => $composableBuilder(
-      column: $table.isPlace, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get commonUnits => $composableBuilder(
       column: $table.commonUnits, builder: (column) => ColumnFilters(column));
@@ -5408,12 +4994,6 @@ class $$CustomTemplatesTableTableOrderingComposer
   ColumnOrderings<String> get iconName => $composableBuilder(
       column: $table.iconName, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get isContainer => $composableBuilder(
-      column: $table.isContainer, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get isPlace => $composableBuilder(
-      column: $table.isPlace, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get commonUnits => $composableBuilder(
       column: $table.commonUnits, builder: (column) => ColumnOrderings(column));
 
@@ -5438,12 +5018,6 @@ class $$CustomTemplatesTableTableAnnotationComposer
 
   GeneratedColumn<String> get iconName =>
       $composableBuilder(column: $table.iconName, builder: (column) => column);
-
-  GeneratedColumn<bool> get isContainer => $composableBuilder(
-      column: $table.isContainer, builder: (column) => column);
-
-  GeneratedColumn<bool> get isPlace =>
-      $composableBuilder(column: $table.isPlace, builder: (column) => column);
 
   GeneratedColumn<String> get commonUnits => $composableBuilder(
       column: $table.commonUnits, builder: (column) => column);
@@ -5485,8 +5059,6 @@ class $$CustomTemplatesTableTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> typeName = const Value.absent(),
             Value<String> iconName = const Value.absent(),
-            Value<bool> isContainer = const Value.absent(),
-            Value<bool> isPlace = const Value.absent(),
             Value<String> commonUnits = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -5495,8 +5067,6 @@ class $$CustomTemplatesTableTableTableManager extends RootTableManager<
             id: id,
             typeName: typeName,
             iconName: iconName,
-            isContainer: isContainer,
-            isPlace: isPlace,
             commonUnits: commonUnits,
             createdAt: createdAt,
             rowid: rowid,
@@ -5505,8 +5075,6 @@ class $$CustomTemplatesTableTableTableManager extends RootTableManager<
             required String id,
             required String typeName,
             required String iconName,
-            Value<bool> isContainer = const Value.absent(),
-            Value<bool> isPlace = const Value.absent(),
             Value<String> commonUnits = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
@@ -5515,8 +5083,6 @@ class $$CustomTemplatesTableTableTableManager extends RootTableManager<
             id: id,
             typeName: typeName,
             iconName: iconName,
-            isContainer: isContainer,
-            isPlace: isPlace,
             commonUnits: commonUnits,
             createdAt: createdAt,
             rowid: rowid,
@@ -5549,10 +5115,10 @@ typedef $$CustomTemplatesTableTableProcessedTableManager
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$LocationsTableTableTableManager get locationsTable =>
+      $$LocationsTableTableTableManager(_db, _db.locationsTable);
   $$CatalogTableTableTableManager get catalogTable =>
       $$CatalogTableTableTableManager(_db, _db.catalogTable);
-  $$PlacesTableTableTableManager get placesTable =>
-      $$PlacesTableTableTableManager(_db, _db.placesTable);
   $$EntitiesTableTableTableManager get entitiesTable =>
       $$EntitiesTableTableTableManager(_db, _db.entitiesTable);
   $$RelationsTableTableTableManager get relationsTable =>

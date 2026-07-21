@@ -53,24 +53,6 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
 
       await ref.read(relationRepositoryProvider).addRelation(relation);
 
-      // Semantic behavior effect: If GUARDADO_EN or PERTENECE_A, update containment hierarchy automatically!
-      if (_relationType == 'GUARDADO_EN' || _relationType == 'PERTENECE_A') {
-        final updatedSource = widget.sourceEntity.copyWith(
-          parentEntityId: _targetEntityId,
-          updatedAt: DateTime.now(),
-        );
-        await ref.read(entityListProvider.notifier).saveEntity(updatedSource);
-      }
-
-      final targetEntity = await ref.read(entityRepositoryProvider).getEntityById(_targetEntityId!);
-
-      // Audit log
-      await ref.read(activityLoggerServiceProvider).logRelationAdded(
-            widget.sourceEntity.name,
-            targetEntity?.name ?? 'Elemento',
-            _relationType,
-          );
-
       ref.invalidate(entityRelationsProvider(widget.sourceEntity.id));
       ref.invalidate(entityRelationsProvider(_targetEntityId!));
       ref.read(entityListProvider.notifier).loadEntities();
@@ -98,7 +80,12 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
   @override
   Widget build(BuildContext context) {
     final entitiesState = ref.watch(entityListProvider);
+    final catalogState = ref.watch(catalogListProvider);
     final theme = Theme.of(context);
+
+    final catalogItems = catalogState.asData?.value ?? [];
+    final sourceSpecies = catalogItems.where((c) => c.id == widget.sourceEntity.speciesId).firstOrNull;
+    final sourceName = sourceSpecies?.name ?? 'Objeto Origen';
 
     return Container(
       decoration: BoxDecoration(
@@ -137,7 +124,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
               children: [
                 const TextSpan(text: 'Origen: '),
                 TextSpan(
-                  text: '"${widget.sourceEntity.name}"',
+                  text: '"$sourceName"',
                   style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                 ),
               ],
@@ -160,21 +147,16 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           ),
           const SizedBox(height: 16),
 
-          // Target Entity Selector (Rule #9 - GUARDADO_EN targets only Places and Containers)
+          // Target Entity Selector
           Text('Destino del vínculo:', style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
           entitiesState.when(
             data: (entities) {
               List<WorldEntity> candidates = entities.where((e) => e.id != widget.sourceEntity.id).toList();
-              if (_relationType == 'GUARDADO_EN') {
-                candidates = candidates.where((e) => e.isPlace || e.isContainer).toList();
-              }
               if (candidates.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(_relationType == 'GUARDADO_EN'
-                      ? 'No hay lugares ni contenedores disponibles para guardar este elemento.'
-                      : 'No hay otros elementos disponibles para relacionar.'),
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text('No hay otros elementos disponibles para relacionar.'),
                 );
               }
 
@@ -184,12 +166,14 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
                   prefixIcon: Icon(Icons.category_outlined),
                   hintText: 'Selecciona elemento destino',
                 ),
-                items: candidates
-                    .map((e) => DropdownMenuItem(
-                          value: e.id,
-                          child: Text('${e.name} (${e.type})'),
-                        ))
-                    .toList(),
+                items: candidates.map((e) {
+                  final sp = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
+                  final name = sp?.name ?? 'Objeto Destino';
+                  return DropdownMenuItem(
+                    value: e.id,
+                    child: Text(name),
+                  );
+                }).toList(),
                 onChanged: (val) => setState(() => _targetEntityId = val),
               );
             },

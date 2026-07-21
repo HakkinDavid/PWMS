@@ -8,11 +8,13 @@ class CatalogItem with _$CatalogItem {
   const factory CatalogItem({
     required String id,
     required String name,
+    @Default('Objeto / Herramienta') String type,
     String? brand,
     String? description,
     String? mainPhotoPath,
-    @Default('Objeto / Herramienta') String defaultType,
     String? barcode,
+    @Default({}) Map<String, dynamic> customAttributes,
+    String? defaultUnit,
     required DateTime createdAt,
   }) = _CatalogItem;
 

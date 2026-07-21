@@ -106,9 +106,9 @@ class CatalogScreen extends ConsumerWidget {
                       final item = CatalogItem(
                         id: const Uuid().v4(),
                         name: name,
+                        type: type,
                         brand: brandCtrl.text.trim().isNotEmpty ? brandCtrl.text.trim() : null,
                         description: descCtrl.text.trim().isNotEmpty ? descCtrl.text.trim() : null,
-                        defaultType: type,
                         barcode: barcodeCtrl.text.trim().isNotEmpty ? barcodeCtrl.text.trim() : null,
                         createdAt: DateTime.now(),
                       );
@@ -187,7 +187,7 @@ class CatalogScreen extends ConsumerWidget {
                     child: Icon(Icons.auto_awesome, color: theme.colorScheme.primary),
                   ),
                   title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('${item.brand ?? "Sin marca"} • ${item.defaultType}'),
+                  subtitle: Text('${item.brand ?? "Sin marca"} • ${item.type}'),
                   trailing: ElevatedButton.icon(
                     onPressed: () {
                       CreateEntitySheet.show(context);

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/world_entity.dart';
+import '../../locations/domain/location_node.dart';
 
 class MoveEntitySheet extends ConsumerStatefulWidget {
   final WorldEntity entity;
@@ -23,95 +24,56 @@ class MoveEntitySheet extends ConsumerStatefulWidget {
 }
 
 class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
-  String? _selectedDestinationId;
-  bool _isDestinationContainer = false;
+  String? _selectedLocationId;
+  bool _creatingNewLocation = false;
+  final _newLocationController = TextEditingController();
   bool _isMoving = false;
-  final _newPlaceController = TextEditingController();
-  bool _creatingNewPlace = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedDestinationId = widget.entity.parentEntityId ?? widget.entity.placeId;
+    _selectedLocationId = widget.entity.locationId;
   }
 
   @override
   void dispose() {
-    _newPlaceController.dispose();
+    _newLocationController.dispose();
     super.dispose();
   }
 
-  Future<void> _createNewPlace() async {
-    final name = _newPlaceController.text.trim();
+  Future<void> _createNewLocation() async {
+    final name = _newLocationController.text.trim();
     if (name.isEmpty) return;
 
-    final placeId = const Uuid().v4();
-    final newPlaceEntity = WorldEntity(
-      id: placeId,
+    final id = const Uuid().v4();
+    final node = LocationNode(
+      id: id,
       name: name,
-      type: 'Lugar',
-      isPlace: true,
-      isContainer: true,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
     );
 
-    await ref.read(entityListProvider.notifier).saveEntity(newPlaceEntity);
-    await ref.read(activityLoggerServiceProvider).logEntityCreated(placeId, name, 'Lugar');
-
+    await ref.read(locationNodeListProvider.notifier).saveNode(node);
     setState(() {
-      _selectedDestinationId = placeId;
-      _isDestinationContainer = false;
-      _creatingNewPlace = false;
-      _newPlaceController.clear();
+      _selectedLocationId = id;
+      _creatingNewLocation = false;
+      _newLocationController.clear();
     });
   }
 
   Future<void> _confirmMove() async {
     setState(() => _isMoving = true);
-
     try {
-      final repo = ref.read(entityRepositoryProvider);
-      final places = await ref.read(placeRepositoryProvider).getAllPlaces();
-      final allEntities = await repo.getAllEntities();
+      await ref.read(entityRepositoryProvider).moveEntity(widget.entity.id, _selectedLocationId);
 
-      String oldLocationName = 'Sin ubicación';
-      if (widget.entity.placeId != null) {
-        final p = places.where((x) => x.id == widget.entity.placeId).firstOrNull;
-        if (p != null) oldLocationName = p.name;
-      } else if (widget.entity.parentEntityId != null) {
-        final e = allEntities.where((x) => x.id == widget.entity.parentEntityId).firstOrNull;
-        if (e != null) oldLocationName = e.name;
-      }
+      final catalogItems = ref.read(catalogListProvider).asData?.value ?? [];
+      final species = catalogItems.where((c) => c.id == widget.entity.speciesId).firstOrNull;
+      final name = species?.name ?? 'Objeto';
 
-      String newLocationName = 'Sin ubicación';
-      String? newPlaceId;
-      String? newParentId;
-
-      if (_selectedDestinationId != null) {
-        if (_isDestinationContainer) {
-          newParentId = _selectedDestinationId;
-          final targetEnt = allEntities.where((e) => e.id == _selectedDestinationId).firstOrNull;
-          if (targetEnt != null) {
-            newLocationName = targetEnt.name;
-            newPlaceId = targetEnt.placeId;
-          }
-        } else {
-          newPlaceId = _selectedDestinationId;
-          final p = places.where((x) => x.id == _selectedDestinationId).firstOrNull;
-          if (p != null) newLocationName = p.name;
-        }
-      }
-
-      // Execute cascade move
-      await repo.moveEntity(widget.entity.id, newPlaceId: newPlaceId, newParentId: newParentId);
-
-      // Log movement history
       await ref.read(activityLoggerServiceProvider).logEntityMoved(
             widget.entity.id,
-            widget.entity.name,
-            oldLocationName,
-            newLocationName,
+            name,
+            'Ubicación previa',
+            'Nueva ubicación en Grafo',
           );
 
       ref.read(entityListProvider.notifier).loadEntities();
@@ -120,7 +82,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Ubicación de "${widget.entity.name}" actualizada a "$newLocationName"'),
+            content: Text('"$name" trasladado exitosamente en el Grafo'),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
@@ -128,7 +90,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al trasladar: $e')),
+          SnackBar(content: Text('Error al mover: $e')),
         );
       }
     } finally {
@@ -138,8 +100,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
 
   @override
   Widget build(BuildContext context) {
-    final placesState = ref.watch(placeListProvider);
-    final entitiesState = ref.watch(entityListProvider);
+    final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
 
     return Container(
@@ -169,133 +130,66 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Trasladar "${widget.entity.name}"',
+            'Trasladar en el Grafo',
             style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Selecciona el lugar o contenedor donde estará ubicado este elemento.',
-            style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
 
-          if (_creatingNewPlace) ...[
+          Text('Selecciona la nueva ubicación o contenedor:', style: theme.textTheme.labelLarge),
+          const SizedBox(height: 8),
+
+          locationsState.when(
+            data: (nodes) {
+              return DropdownButtonFormField<String?>(
+                initialValue: _selectedLocationId,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.account_tree_outlined),
+                ),
+                items: [
+                  const DropdownMenuItem<String?>(value: null, child: Text('Mundo (Raíz)')),
+                  ...nodes.map((n) => DropdownMenuItem<String?>(value: n.id, child: Text(n.name))),
+                ],
+                onChanged: (val) => setState(() => _selectedLocationId = val),
+              );
+            },
+            loading: () => const CircularProgressIndicator(),
+            error: (err, _) => Text('Error: $err'),
+          ),
+          const SizedBox(height: 12),
+
+          if (!_creatingNewLocation)
+            TextButton.icon(
+              onPressed: () => setState(() => _creatingNewLocation = true),
+              icon: const Icon(Icons.add_location_alt_outlined),
+              label: const Text('Crear nueva ubicación sobre la marcha'),
+            )
+          else ...[
             Row(
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _newPlaceController,
+                    controller: _newLocationController,
                     autofocus: true,
                     decoration: const InputDecoration(
-                      labelText: 'Nuevo lugar',
-                      hintText: 'Ej. Taller, Armario principal...',
+                      labelText: 'Nombre de la ubicación',
+                      hintText: 'Ej. Estantería #3, Garaje...',
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
-                IconButton.filled(
-                  icon: const Icon(Icons.check),
-                  onPressed: _createNewPlace,
+                IconButton(
+                  icon: const Icon(Icons.check_circle, color: Colors.green),
+                  onPressed: _createNewLocation,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => setState(() => _creatingNewPlace = false),
+                  icon: const Icon(Icons.cancel_outlined, color: Colors.grey),
+                  onPressed: () => setState(() => _creatingNewLocation = false),
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-          ] else ...[
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: () => setState(() => _creatingNewPlace = true),
-                icon: const Icon(Icons.add_location_alt_outlined),
-                label: const Text('Crear nuevo lugar'),
-              ),
             ),
           ],
 
-          Flexible(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                ListTile(
-                  title: const Text('Sin Ubicación'),
-                  leading: Icon(
-                    _selectedDestinationId == null ? Icons.radio_button_checked : Icons.radio_button_off,
-                    color: _selectedDestinationId == null ? theme.colorScheme.primary : theme.disabledColor,
-                  ),
-                  onTap: () => setState(() {
-                    _selectedDestinationId = null;
-                    _isDestinationContainer = false;
-                  }),
-                ),
-
-                // Registered Places Section
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 12, bottom: 4),
-                  child: Text('Lugares', style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
-                ),
-                placesState.when(
-                  data: (places) => Column(
-                    children: places.map((p) {
-                      final isSel = _selectedDestinationId == p.id && !_isDestinationContainer;
-                      return ListTile(
-                        title: Text(p.name),
-                        leading: Icon(
-                          isSel ? Icons.radio_button_checked : Icons.radio_button_off,
-                          color: isSel ? theme.colorScheme.primary : theme.disabledColor,
-                        ),
-                        onTap: () => setState(() {
-                          _selectedDestinationId = p.id;
-                          _isDestinationContainer = false;
-                        }),
-                      );
-                    }).toList(),
-                  ),
-                  loading: () => const CircularProgressIndicator(),
-                  error: (err, _) => Text('Error: $err'),
-                ),
-
-                // Registered Containers Section (Caja, Estante, Maletín)
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 12, bottom: 4),
-                  child: Text('Contenedores (Cajas, Estantes, Maletines)', style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.secondary)),
-                ),
-                entitiesState.when(
-                  data: (entities) {
-                    final containers = entities.where((e) => e.id != widget.entity.id && (e.isContainer || e.isPlace)).toList();
-                    if (containers.isEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.only(left: 16, top: 4, bottom: 8),
-                        child: Text('No hay contenedores registrados aún.', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                      );
-                    }
-                    return Column(
-                      children: containers.map((c) {
-                        final isSel = _selectedDestinationId == c.id && _isDestinationContainer;
-                        return ListTile(
-                          title: Text('${c.name} (${c.type})'),
-                          leading: Icon(
-                            isSel ? Icons.radio_button_checked : Icons.radio_button_off,
-                            color: isSel ? theme.colorScheme.secondary : theme.disabledColor,
-                          ),
-                          onTap: () => setState(() {
-                            _selectedDestinationId = c.id;
-                            _isDestinationContainer = true;
-                          }),
-                        );
-                      }).toList(),
-                    );
-                  },
-                  loading: () => const CircularProgressIndicator(),
-                  error: (err, _) => Text('Error: $err'),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
             height: 50,

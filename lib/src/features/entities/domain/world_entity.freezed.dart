@@ -21,24 +21,14 @@ WorldEntity _$WorldEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$WorldEntity {
   String get id => throw _privateConstructorUsedError;
-  String? get speciesId =>
-      throw _privateConstructorUsedError; // Link to Universe Catalog species item
-  String get name => throw _privateConstructorUsedError;
-  String? get alias => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-  String? get mainPhotoPath => throw _privateConstructorUsedError;
-  String? get notes => throw _privateConstructorUsedError;
-  String? get placeId => throw _privateConstructorUsedError;
-  String? get parentEntityId => throw _privateConstructorUsedError;
+  String get speciesId =>
+      throw _privateConstructorUsedError; // Link to Catalog species
+  String? get locationId =>
+      throw _privateConstructorUsedError; // Link to Location Graph node
   double? get quantity => throw _privateConstructorUsedError;
   String? get unit => throw _privateConstructorUsedError;
-  String? get barcode => throw _privateConstructorUsedError;
-  Map<String, dynamic> get customAttributes =>
-      throw _privateConstructorUsedError;
+  String? get notes => throw _privateConstructorUsedError;
   bool get isArchived => throw _privateConstructorUsedError;
-  bool get isContainer => throw _privateConstructorUsedError;
-  bool get isPlace => throw _privateConstructorUsedError;
-  List<String> get tags => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
 
@@ -60,22 +50,12 @@ abstract class $WorldEntityCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String? speciesId,
-      String name,
-      String? alias,
-      String type,
-      String? mainPhotoPath,
-      String? notes,
-      String? placeId,
-      String? parentEntityId,
+      String speciesId,
+      String? locationId,
       double? quantity,
       String? unit,
-      String? barcode,
-      Map<String, dynamic> customAttributes,
+      String? notes,
       bool isArchived,
-      bool isContainer,
-      bool isPlace,
-      List<String> tags,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -96,22 +76,12 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
   @override
   $Res call({
     Object? id = null,
-    Object? speciesId = freezed,
-    Object? name = null,
-    Object? alias = freezed,
-    Object? type = null,
-    Object? mainPhotoPath = freezed,
-    Object? notes = freezed,
-    Object? placeId = freezed,
-    Object? parentEntityId = freezed,
+    Object? speciesId = null,
+    Object? locationId = freezed,
     Object? quantity = freezed,
     Object? unit = freezed,
-    Object? barcode = freezed,
-    Object? customAttributes = null,
+    Object? notes = freezed,
     Object? isArchived = null,
-    Object? isContainer = null,
-    Object? isPlace = null,
-    Object? tags = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -120,37 +90,13 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      speciesId: freezed == speciesId
+      speciesId: null == speciesId
           ? _value.speciesId
           : speciesId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      alias: freezed == alias
-          ? _value.alias
-          : alias // ignore: cast_nullable_to_non_nullable
-              as String?,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      mainPhotoPath: freezed == mainPhotoPath
-          ? _value.mainPhotoPath
-          : mainPhotoPath // ignore: cast_nullable_to_non_nullable
-              as String?,
-      notes: freezed == notes
-          ? _value.notes
-          : notes // ignore: cast_nullable_to_non_nullable
-              as String?,
-      placeId: freezed == placeId
-          ? _value.placeId
-          : placeId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      parentEntityId: freezed == parentEntityId
-          ? _value.parentEntityId
-          : parentEntityId // ignore: cast_nullable_to_non_nullable
+      locationId: freezed == locationId
+          ? _value.locationId
+          : locationId // ignore: cast_nullable_to_non_nullable
               as String?,
       quantity: freezed == quantity
           ? _value.quantity
@@ -160,30 +106,14 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String?,
-      barcode: freezed == barcode
-          ? _value.barcode
-          : barcode // ignore: cast_nullable_to_non_nullable
+      notes: freezed == notes
+          ? _value.notes
+          : notes // ignore: cast_nullable_to_non_nullable
               as String?,
-      customAttributes: null == customAttributes
-          ? _value.customAttributes
-          : customAttributes // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
       isArchived: null == isArchived
           ? _value.isArchived
           : isArchived // ignore: cast_nullable_to_non_nullable
               as bool,
-      isContainer: null == isContainer
-          ? _value.isContainer
-          : isContainer // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPlace: null == isPlace
-          ? _value.isPlace
-          : isPlace // ignore: cast_nullable_to_non_nullable
-              as bool,
-      tags: null == tags
-          ? _value.tags
-          : tags // ignore: cast_nullable_to_non_nullable
-              as List<String>,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -206,22 +136,12 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String? speciesId,
-      String name,
-      String? alias,
-      String type,
-      String? mainPhotoPath,
-      String? notes,
-      String? placeId,
-      String? parentEntityId,
+      String speciesId,
+      String? locationId,
       double? quantity,
       String? unit,
-      String? barcode,
-      Map<String, dynamic> customAttributes,
+      String? notes,
       bool isArchived,
-      bool isContainer,
-      bool isPlace,
-      List<String> tags,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -240,22 +160,12 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? speciesId = freezed,
-    Object? name = null,
-    Object? alias = freezed,
-    Object? type = null,
-    Object? mainPhotoPath = freezed,
-    Object? notes = freezed,
-    Object? placeId = freezed,
-    Object? parentEntityId = freezed,
+    Object? speciesId = null,
+    Object? locationId = freezed,
     Object? quantity = freezed,
     Object? unit = freezed,
-    Object? barcode = freezed,
-    Object? customAttributes = null,
+    Object? notes = freezed,
     Object? isArchived = null,
-    Object? isContainer = null,
-    Object? isPlace = null,
-    Object? tags = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -264,37 +174,13 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      speciesId: freezed == speciesId
+      speciesId: null == speciesId
           ? _value.speciesId
           : speciesId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      alias: freezed == alias
-          ? _value.alias
-          : alias // ignore: cast_nullable_to_non_nullable
-              as String?,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      mainPhotoPath: freezed == mainPhotoPath
-          ? _value.mainPhotoPath
-          : mainPhotoPath // ignore: cast_nullable_to_non_nullable
-              as String?,
-      notes: freezed == notes
-          ? _value.notes
-          : notes // ignore: cast_nullable_to_non_nullable
-              as String?,
-      placeId: freezed == placeId
-          ? _value.placeId
-          : placeId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      parentEntityId: freezed == parentEntityId
-          ? _value.parentEntityId
-          : parentEntityId // ignore: cast_nullable_to_non_nullable
+      locationId: freezed == locationId
+          ? _value.locationId
+          : locationId // ignore: cast_nullable_to_non_nullable
               as String?,
       quantity: freezed == quantity
           ? _value.quantity
@@ -304,30 +190,14 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String?,
-      barcode: freezed == barcode
-          ? _value.barcode
-          : barcode // ignore: cast_nullable_to_non_nullable
+      notes: freezed == notes
+          ? _value.notes
+          : notes // ignore: cast_nullable_to_non_nullable
               as String?,
-      customAttributes: null == customAttributes
-          ? _value._customAttributes
-          : customAttributes // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
       isArchived: null == isArchived
           ? _value.isArchived
           : isArchived // ignore: cast_nullable_to_non_nullable
               as bool,
-      isContainer: null == isContainer
-          ? _value.isContainer
-          : isContainer // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPlace: null == isPlace
-          ? _value.isPlace
-          : isPlace // ignore: cast_nullable_to_non_nullable
-              as bool,
-      tags: null == tags
-          ? _value._tags
-          : tags // ignore: cast_nullable_to_non_nullable
-              as List<String>,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -345,26 +215,14 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
 class _$WorldEntityImpl implements _WorldEntity {
   const _$WorldEntityImpl(
       {required this.id,
-      this.speciesId,
-      required this.name,
-      this.alias,
-      required this.type,
-      this.mainPhotoPath,
-      this.notes,
-      this.placeId,
-      this.parentEntityId,
+      required this.speciesId,
+      this.locationId,
       this.quantity,
       this.unit,
-      this.barcode,
-      final Map<String, dynamic> customAttributes = const {},
+      this.notes,
       this.isArchived = false,
-      this.isContainer = false,
-      this.isPlace = false,
-      final List<String> tags = const [],
       required this.createdAt,
-      required this.updatedAt})
-      : _customAttributes = customAttributes,
-        _tags = tags;
+      required this.updatedAt});
 
   factory _$WorldEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$WorldEntityImplFromJson(json);
@@ -372,55 +230,20 @@ class _$WorldEntityImpl implements _WorldEntity {
   @override
   final String id;
   @override
-  final String? speciesId;
-// Link to Universe Catalog species item
+  final String speciesId;
+// Link to Catalog species
   @override
-  final String name;
-  @override
-  final String? alias;
-  @override
-  final String type;
-  @override
-  final String? mainPhotoPath;
-  @override
-  final String? notes;
-  @override
-  final String? placeId;
-  @override
-  final String? parentEntityId;
+  final String? locationId;
+// Link to Location Graph node
   @override
   final double? quantity;
   @override
   final String? unit;
   @override
-  final String? barcode;
-  final Map<String, dynamic> _customAttributes;
-  @override
-  @JsonKey()
-  Map<String, dynamic> get customAttributes {
-    if (_customAttributes is EqualUnmodifiableMapView) return _customAttributes;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_customAttributes);
-  }
-
+  final String? notes;
   @override
   @JsonKey()
   final bool isArchived;
-  @override
-  @JsonKey()
-  final bool isContainer;
-  @override
-  @JsonKey()
-  final bool isPlace;
-  final List<String> _tags;
-  @override
-  @JsonKey()
-  List<String> get tags {
-    if (_tags is EqualUnmodifiableListView) return _tags;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tags);
-  }
-
   @override
   final DateTime createdAt;
   @override
@@ -428,7 +251,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, speciesId: $speciesId, name: $name, alias: $alias, type: $type, mainPhotoPath: $mainPhotoPath, notes: $notes, placeId: $placeId, parentEntityId: $parentEntityId, quantity: $quantity, unit: $unit, barcode: $barcode, customAttributes: $customAttributes, isArchived: $isArchived, isContainer: $isContainer, isPlace: $isPlace, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, quantity: $quantity, unit: $unit, notes: $notes, isArchived: $isArchived, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -439,27 +262,14 @@ class _$WorldEntityImpl implements _WorldEntity {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.speciesId, speciesId) ||
                 other.speciesId == speciesId) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.alias, alias) || other.alias == alias) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.mainPhotoPath, mainPhotoPath) ||
-                other.mainPhotoPath == mainPhotoPath) &&
-            (identical(other.notes, notes) || other.notes == notes) &&
-            (identical(other.placeId, placeId) || other.placeId == placeId) &&
-            (identical(other.parentEntityId, parentEntityId) ||
-                other.parentEntityId == parentEntityId) &&
+            (identical(other.locationId, locationId) ||
+                other.locationId == locationId) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
-            (identical(other.barcode, barcode) || other.barcode == barcode) &&
-            const DeepCollectionEquality()
-                .equals(other._customAttributes, _customAttributes) &&
+            (identical(other.notes, notes) || other.notes == notes) &&
             (identical(other.isArchived, isArchived) ||
                 other.isArchived == isArchived) &&
-            (identical(other.isContainer, isContainer) ||
-                other.isContainer == isContainer) &&
-            (identical(other.isPlace, isPlace) || other.isPlace == isPlace) &&
-            const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -468,28 +278,8 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hashAll([
-        runtimeType,
-        id,
-        speciesId,
-        name,
-        alias,
-        type,
-        mainPhotoPath,
-        notes,
-        placeId,
-        parentEntityId,
-        quantity,
-        unit,
-        barcode,
-        const DeepCollectionEquality().hash(_customAttributes),
-        isArchived,
-        isContainer,
-        isPlace,
-        const DeepCollectionEquality().hash(_tags),
-        createdAt,
-        updatedAt
-      ]);
+  int get hashCode => Object.hash(runtimeType, id, speciesId, locationId,
+      quantity, unit, notes, isArchived, createdAt, updatedAt);
 
   /// Create a copy of WorldEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -510,22 +300,12 @@ class _$WorldEntityImpl implements _WorldEntity {
 abstract class _WorldEntity implements WorldEntity {
   const factory _WorldEntity(
       {required final String id,
-      final String? speciesId,
-      required final String name,
-      final String? alias,
-      required final String type,
-      final String? mainPhotoPath,
-      final String? notes,
-      final String? placeId,
-      final String? parentEntityId,
+      required final String speciesId,
+      final String? locationId,
       final double? quantity,
       final String? unit,
-      final String? barcode,
-      final Map<String, dynamic> customAttributes,
+      final String? notes,
       final bool isArchived,
-      final bool isContainer,
-      final bool isPlace,
-      final List<String> tags,
       required final DateTime createdAt,
       required final DateTime updatedAt}) = _$WorldEntityImpl;
 
@@ -535,37 +315,17 @@ abstract class _WorldEntity implements WorldEntity {
   @override
   String get id;
   @override
-  String? get speciesId; // Link to Universe Catalog species item
+  String get speciesId; // Link to Catalog species
   @override
-  String get name;
-  @override
-  String? get alias;
-  @override
-  String get type;
-  @override
-  String? get mainPhotoPath;
-  @override
-  String? get notes;
-  @override
-  String? get placeId;
-  @override
-  String? get parentEntityId;
+  String? get locationId; // Link to Location Graph node
   @override
   double? get quantity;
   @override
   String? get unit;
   @override
-  String? get barcode;
-  @override
-  Map<String, dynamic> get customAttributes;
+  String? get notes;
   @override
   bool get isArchived;
-  @override
-  bool get isContainer;
-  @override
-  bool get isPlace;
-  @override
-  List<String> get tags;
   @override
   DateTime get createdAt;
   @override

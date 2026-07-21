@@ -9,8 +9,6 @@ class CustomTemplate with _$CustomTemplate {
     required String id,
     required String typeName,
     required String iconName,
-    @Default(false) bool isContainer,
-    @Default(false) bool isPlace,
     @Default([]) List<String> commonUnits,
     required DateTime createdAt,
   }) = _CustomTemplate;

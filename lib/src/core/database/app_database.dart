@@ -5,24 +5,13 @@ part 'app_database.g.dart';
 
 // Tables
 
-class EntitiesTable extends Table {
+class LocationsTable extends Table {
   TextColumn get id => text()();
-  TextColumn get speciesId => text().nullable().references(CatalogTable, #id)(); // Universe Catalog Species link
   TextColumn get name => text()();
-  TextColumn get alias => text().nullable()();
-  TextColumn get type => text()(); // Real-world perceived concept
-  TextColumn get mainPhotoPath => text().nullable()();
-  TextColumn get notes => text().nullable()();
-  TextColumn get placeId => text().nullable().references(PlacesTable, #id)();
-  TextColumn get parentEntityId => text().nullable().references(EntitiesTable, #id)(); // Hierarchical containment
-  RealColumn get quantity => real().nullable()(); // Countable / Measurable
-  TextColumn get unit => text().nullable()(); // Unit of measurement
-  TextColumn get barcode => text().nullable()(); // Barcode / QR Code
-  TextColumn get customAttributes => text().withDefault(const Constant('{}'))(); // JSON key-value map
-  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
-  TextColumn get tags => text().withDefault(const Constant(''))();
+  TextColumn get parentLocationId => text().nullable().references(LocationsTable, #id)(); // Graph containment
+  TextColumn get description => text().nullable()();
+  TextColumn get icon => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -31,24 +20,29 @@ class EntitiesTable extends Table {
 class CatalogTable extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
+  TextColumn get type => text().withDefault(const Constant('Objeto / Herramienta'))();
   TextColumn get brand => text().nullable()();
   TextColumn get description => text().nullable()();
   TextColumn get mainPhotoPath => text().nullable()();
-  TextColumn get defaultType => text().withDefault(const Constant('Objeto / Herramienta'))();
   TextColumn get barcode => text().nullable()();
+  TextColumn get customAttributes => text().withDefault(const Constant('{}'))(); // JSON key-value map
+  TextColumn get defaultUnit => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
 }
 
-class PlacesTable extends Table {
+class EntitiesTable extends Table {
   TextColumn get id => text()();
-  TextColumn get name => text()();
-  TextColumn get description => text().nullable()();
-  TextColumn get icon => text().nullable()();
-  TextColumn get parentPlaceId => text().nullable()();
+  TextColumn get speciesId => text().references(CatalogTable, #id)(); // Universe Catalog Species link
+  TextColumn get locationId => text().nullable().references(LocationsTable, #id)(); // Location Graph Node
+  RealColumn get quantity => real().nullable()(); // Countable / Measurable
+  TextColumn get unit => text().nullable()(); // Unit of measurement
+  TextColumn get notes => text().nullable()(); // Instance custom note / serial number
+  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -95,8 +89,6 @@ class CustomTemplatesTable extends Table {
   TextColumn get id => text()();
   TextColumn get typeName => text()();
   TextColumn get iconName => text()();
-  BoolColumn get isContainer => boolean().withDefault(const Constant(false))();
-  BoolColumn get isPlace => boolean().withDefault(const Constant(false))();
   TextColumn get commonUnits => text().withDefault(const Constant('[]'))(); // JSON array
   DateTimeColumn get createdAt => dateTime()();
 
@@ -105,9 +97,9 @@ class CustomTemplatesTable extends Table {
 }
 
 @DriftDatabase(tables: [
-  EntitiesTable,
+  LocationsTable,
   CatalogTable,
-  PlacesTable,
+  EntitiesTable,
   RelationsTable,
   AttachmentsTable,
   HistoryEventsTable,

@@ -23,8 +23,6 @@ mixin _$CustomTemplate {
   String get id => throw _privateConstructorUsedError;
   String get typeName => throw _privateConstructorUsedError;
   String get iconName => throw _privateConstructorUsedError;
-  bool get isContainer => throw _privateConstructorUsedError;
-  bool get isPlace => throw _privateConstructorUsedError;
   List<String> get commonUnits => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
@@ -48,8 +46,6 @@ abstract class $CustomTemplateCopyWith<$Res> {
       {String id,
       String typeName,
       String iconName,
-      bool isContainer,
-      bool isPlace,
       List<String> commonUnits,
       DateTime createdAt});
 }
@@ -72,8 +68,6 @@ class _$CustomTemplateCopyWithImpl<$Res, $Val extends CustomTemplate>
     Object? id = null,
     Object? typeName = null,
     Object? iconName = null,
-    Object? isContainer = null,
-    Object? isPlace = null,
     Object? commonUnits = null,
     Object? createdAt = null,
   }) {
@@ -90,14 +84,6 @@ class _$CustomTemplateCopyWithImpl<$Res, $Val extends CustomTemplate>
           ? _value.iconName
           : iconName // ignore: cast_nullable_to_non_nullable
               as String,
-      isContainer: null == isContainer
-          ? _value.isContainer
-          : isContainer // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPlace: null == isPlace
-          ? _value.isPlace
-          : isPlace // ignore: cast_nullable_to_non_nullable
-              as bool,
       commonUnits: null == commonUnits
           ? _value.commonUnits
           : commonUnits // ignore: cast_nullable_to_non_nullable
@@ -122,8 +108,6 @@ abstract class _$$CustomTemplateImplCopyWith<$Res>
       {String id,
       String typeName,
       String iconName,
-      bool isContainer,
-      bool isPlace,
       List<String> commonUnits,
       DateTime createdAt});
 }
@@ -144,8 +128,6 @@ class __$$CustomTemplateImplCopyWithImpl<$Res>
     Object? id = null,
     Object? typeName = null,
     Object? iconName = null,
-    Object? isContainer = null,
-    Object? isPlace = null,
     Object? commonUnits = null,
     Object? createdAt = null,
   }) {
@@ -162,14 +144,6 @@ class __$$CustomTemplateImplCopyWithImpl<$Res>
           ? _value.iconName
           : iconName // ignore: cast_nullable_to_non_nullable
               as String,
-      isContainer: null == isContainer
-          ? _value.isContainer
-          : isContainer // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPlace: null == isPlace
-          ? _value.isPlace
-          : isPlace // ignore: cast_nullable_to_non_nullable
-              as bool,
       commonUnits: null == commonUnits
           ? _value._commonUnits
           : commonUnits // ignore: cast_nullable_to_non_nullable
@@ -189,8 +163,6 @@ class _$CustomTemplateImpl implements _CustomTemplate {
       {required this.id,
       required this.typeName,
       required this.iconName,
-      this.isContainer = false,
-      this.isPlace = false,
       final List<String> commonUnits = const [],
       required this.createdAt})
       : _commonUnits = commonUnits;
@@ -204,12 +176,6 @@ class _$CustomTemplateImpl implements _CustomTemplate {
   final String typeName;
   @override
   final String iconName;
-  @override
-  @JsonKey()
-  final bool isContainer;
-  @override
-  @JsonKey()
-  final bool isPlace;
   final List<String> _commonUnits;
   @override
   @JsonKey()
@@ -224,7 +190,7 @@ class _$CustomTemplateImpl implements _CustomTemplate {
 
   @override
   String toString() {
-    return 'CustomTemplate(id: $id, typeName: $typeName, iconName: $iconName, isContainer: $isContainer, isPlace: $isPlace, commonUnits: $commonUnits, createdAt: $createdAt)';
+    return 'CustomTemplate(id: $id, typeName: $typeName, iconName: $iconName, commonUnits: $commonUnits, createdAt: $createdAt)';
   }
 
   @override
@@ -237,9 +203,6 @@ class _$CustomTemplateImpl implements _CustomTemplate {
                 other.typeName == typeName) &&
             (identical(other.iconName, iconName) ||
                 other.iconName == iconName) &&
-            (identical(other.isContainer, isContainer) ||
-                other.isContainer == isContainer) &&
-            (identical(other.isPlace, isPlace) || other.isPlace == isPlace) &&
             const DeepCollectionEquality()
                 .equals(other._commonUnits, _commonUnits) &&
             (identical(other.createdAt, createdAt) ||
@@ -248,15 +211,8 @@ class _$CustomTemplateImpl implements _CustomTemplate {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      typeName,
-      iconName,
-      isContainer,
-      isPlace,
-      const DeepCollectionEquality().hash(_commonUnits),
-      createdAt);
+  int get hashCode => Object.hash(runtimeType, id, typeName, iconName,
+      const DeepCollectionEquality().hash(_commonUnits), createdAt);
 
   /// Create a copy of CustomTemplate
   /// with the given fields replaced by the non-null parameter values.
@@ -280,8 +236,6 @@ abstract class _CustomTemplate implements CustomTemplate {
       {required final String id,
       required final String typeName,
       required final String iconName,
-      final bool isContainer,
-      final bool isPlace,
       final List<String> commonUnits,
       required final DateTime createdAt}) = _$CustomTemplateImpl;
 
@@ -294,10 +248,6 @@ abstract class _CustomTemplate implements CustomTemplate {
   String get typeName;
   @override
   String get iconName;
-  @override
-  bool get isContainer;
-  @override
-  bool get isPlace;
   @override
   List<String> get commonUnits;
   @override

@@ -23,8 +23,8 @@ class CustomTemplateEditorSheet extends ConsumerStatefulWidget {
 class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditorSheet> {
   final _nameController = TextEditingController();
   final _unitsController = TextEditingController();
-  bool _isContainer = false;
-  bool _isPlace = false;
+  final String _selectedIcon = 'build';
+  bool _isSaving = false;
 
   @override
   void dispose() {
@@ -33,36 +33,42 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
     super.dispose();
   }
 
-  Future<void> _saveTemplate() async {
+  Future<void> _save() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) return;
 
-    final units = _unitsController.text
-        .split(',')
-        .map((u) => u.trim())
-        .where((u) => u.isNotEmpty)
-        .toList();
+    setState(() => _isSaving = true);
 
-    final template = CustomTemplate(
-      id: const Uuid().v4(),
-      typeName: name,
-      iconName: _isPlace ? 'place' : (_isContainer ? 'inventory_2' : 'category'),
-      isContainer: _isContainer,
-      isPlace: _isPlace,
-      commonUnits: units,
-      createdAt: DateTime.now(),
-    );
+    try {
+      final unitsStr = _unitsController.text.trim();
+      final unitsList = unitsStr.isNotEmpty
+          ? unitsStr.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList()
+          : <String>[];
 
-    await ref.read(entityRepositoryProvider).saveCustomTemplate(template);
-
-    if (mounted) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Plantilla "$name" creada exitosamente'),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
+      final template = CustomTemplate(
+        id: const Uuid().v4(),
+        typeName: name,
+        iconName: _selectedIcon,
+        commonUnits: unitsList,
+        createdAt: DateTime.now(),
       );
+
+      await ref.read(entityRepositoryProvider).saveCustomTemplate(template);
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Plantilla "$name" guardada')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
@@ -96,10 +102,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
             ),
           ),
           const SizedBox(height: 16),
-          Text(
-            'Crear Nueva Plantilla o Tipo',
-            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
+          Text('Crear Plantilla Personalizada', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
 
           TextField(
@@ -107,8 +110,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
             autofocus: true,
             decoration: const InputDecoration(
               labelText: 'Nombre de la plantilla / tipo',
-              hintText: 'Ej. Componente Electrónico, Medicamento, Instrumento...',
-              prefixIcon: Icon(Icons.style),
+              hintText: 'Ej. Herramienta Eléctrica, Dispositivo...',
             ),
           ),
           const SizedBox(height: 12),
@@ -116,36 +118,25 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
           TextField(
             controller: _unitsController,
             decoration: const InputDecoration(
-              labelText: 'Unidades de medida personalizadas (coma)',
-              hintText: 'Ej. cajas, amperios, litros, rollos',
-              prefixIcon: Icon(Icons.straighten),
+              labelText: 'Unidades de medida habituales (separadas por coma)',
+              hintText: 'Ej. piezas, kg, metros',
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 24),
 
-          SwitchListTile(
-            title: const Text('¿Es un Contenedor? (Puede contener elementos)'),
-            value: _isContainer,
-            onChanged: (val) => setState(() => _isContainer = val),
-          ),
-          SwitchListTile(
-            title: const Text('¿Es un Lugar del Mundo?'),
-            value: _isPlace,
-            onChanged: (val) => setState(() => _isPlace = val),
-          ),
-
-          const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: _saveTemplate,
+              onPressed: _isSaving ? null : _save,
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.colorScheme.primary,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
-              child: const Text('Guardar Plantilla', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              child: _isSaving
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Guardar Plantilla', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

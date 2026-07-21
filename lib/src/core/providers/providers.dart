@@ -5,8 +5,8 @@ import '../../features/entities/domain/i_entity_repository.dart';
 import '../../features/entities/infrastructure/entity_repository.dart';
 import '../../features/entities/domain/world_entity.dart';
 import '../../features/entities/domain/attachment.dart';
-import '../../features/places/domain/i_place_repository.dart';
-import '../../features/places/infrastructure/place_repository.dart';
+import '../../features/locations/domain/location_node.dart';
+import '../../features/locations/infrastructure/location_repository.dart';
 import '../../features/relations/domain/i_relation_repository.dart';
 import '../../features/relations/infrastructure/relation_repository.dart';
 import '../../features/relations/domain/entity_relation.dart';
@@ -38,8 +38,8 @@ final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
   return CatalogRepository(ref.watch(databaseProvider));
 });
 
-final placeRepositoryProvider = Provider<IPlaceRepository>((ref) {
-  return PlaceRepository(ref.watch(databaseProvider));
+final locationRepositoryProvider = Provider<LocationRepository>((ref) {
+  return LocationRepository(ref.watch(databaseProvider));
 });
 
 final relationRepositoryProvider = Provider<IRelationRepository>((ref) {
@@ -54,7 +54,43 @@ final activityLoggerServiceProvider = Provider<ActivityLoggerService>((ref) {
   return ActivityLoggerService(ref.watch(historyRepositoryProvider));
 });
 
-// State Notifiers & Async Providers
+// Location Graph State
+class LocationNodeListNotifier extends StateNotifier<AsyncValue<List<LocationNode>>> {
+  final LocationRepository _repository;
+
+  LocationNodeListNotifier(this._repository) : super(const AsyncValue.loading()) {
+    loadNodes();
+  }
+
+  Future<void> loadNodes() async {
+    state = const AsyncValue.loading();
+    try {
+      final list = await _repository.getAllNodes();
+      state = AsyncValue.data(list);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> saveNode(LocationNode node) async {
+    await _repository.saveNode(node);
+    await loadNodes();
+  }
+
+  Future<void> deleteNode(String id) async {
+    await _repository.deleteNode(id);
+    await loadNodes();
+  }
+}
+
+final locationNodeListProvider = StateNotifierProvider<LocationNodeListNotifier, AsyncValue<List<LocationNode>>>((ref) {
+  return LocationNodeListNotifier(ref.watch(locationRepositoryProvider));
+});
+
+// Legacy placeListProvider mapped directly to Location Nodes for backward compatibility
+final placeListProvider = Provider<AsyncValue<List<LocationNode>>>((ref) {
+  return ref.watch(locationNodeListProvider);
+});
 
 // All Entities State
 class EntityListNotifier extends StateNotifier<AsyncValue<List<WorldEntity>>> {
@@ -89,52 +125,6 @@ final entityListProvider = StateNotifierProvider<EntityListNotifier, AsyncValue<
   return EntityListNotifier(ref.watch(entityRepositoryProvider));
 });
 
-// Unified Places Provider derived directly from EntityListProvider (Single Source of Truth)
-final placeListProvider = Provider<AsyncValue<List<WorldEntity>>>((ref) {
-  final entitiesState = ref.watch(entityListProvider);
-  return entitiesState.whenData((entities) {
-    return entities.where((e) => e.isPlace || e.type.toLowerCase() == 'lugar').toList();
-  });
-});
-
-// Recent Entities Provider
-final recentEntitiesProvider = FutureProvider<List<WorldEntity>>((ref) async {
-  ref.watch(entityListProvider); // Auto refresh when entity list changes
-  final repo = ref.watch(entityRepositoryProvider);
-  return repo.getRecentEntities(limit: 10);
-});
-
-// Recent Activity Provider
-final recentActivityProvider = FutureProvider<List<ActivityEvent>>((ref) async {
-  ref.watch(entityListProvider); // Auto refresh when entities change
-  final repo = ref.watch(historyRepositoryProvider);
-  return repo.getRecentEvents(limit: 15);
-});
-
-// Search Query State
-final searchQueryProvider = StateProvider<String>((ref) => '');
-
-// Real-time Filtered Search Provider
-final searchResultsProvider = FutureProvider<List<WorldEntity>>((ref) async {
-  final query = ref.watch(searchQueryProvider);
-  final repo = ref.watch(entityRepositoryProvider);
-  ref.watch(entityListProvider); // Auto refresh on edits
-  return repo.searchEntities(query);
-});
-
-// Entity Detail Provider
-final entityDetailProvider = FutureProvider.family<WorldEntity?, String>((ref, id) async {
-  ref.watch(entityListProvider);
-  final repo = ref.watch(entityRepositoryProvider);
-  return repo.getEntityById(id);
-});
-
-// Entity Attachments Provider
-final entityAttachmentsProvider = FutureProvider.family<List<Attachment>, String>((ref, entityId) async {
-  final repo = ref.watch(entityRepositoryProvider);
-  return repo.getAttachments(entityId);
-});
-
 // Universe Catalog State
 class CatalogListNotifier extends StateNotifier<AsyncValue<List<CatalogItem>>> {
   final CatalogRepository _repository;
@@ -166,6 +156,44 @@ class CatalogListNotifier extends StateNotifier<AsyncValue<List<CatalogItem>>> {
 
 final catalogListProvider = StateNotifierProvider<CatalogListNotifier, AsyncValue<List<CatalogItem>>>((ref) {
   return CatalogListNotifier(ref.watch(catalogRepositoryProvider));
+});
+
+// Recent Entities Provider
+final recentEntitiesProvider = FutureProvider<List<WorldEntity>>((ref) async {
+  ref.watch(entityListProvider);
+  final repo = ref.watch(entityRepositoryProvider);
+  return repo.getRecentEntities(limit: 10);
+});
+
+// Recent Activity Provider
+final recentActivityProvider = FutureProvider<List<ActivityEvent>>((ref) async {
+  ref.watch(entityListProvider);
+  final repo = ref.watch(historyRepositoryProvider);
+  return repo.getRecentEvents(limit: 15);
+});
+
+// Search Query State
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
+// Real-time Filtered Search Provider
+final searchResultsProvider = FutureProvider<List<WorldEntity>>((ref) async {
+  final query = ref.watch(searchQueryProvider);
+  final repo = ref.watch(entityRepositoryProvider);
+  ref.watch(entityListProvider);
+  return repo.searchEntities(query);
+});
+
+// Entity Detail Provider
+final entityDetailProvider = FutureProvider.family<WorldEntity?, String>((ref, id) async {
+  ref.watch(entityListProvider);
+  final repo = ref.watch(entityRepositoryProvider);
+  return repo.getEntityById(id);
+});
+
+// Entity Attachments Provider
+final entityAttachmentsProvider = FutureProvider.family<List<Attachment>, String>((ref, entityId) async {
+  final repo = ref.watch(entityRepositoryProvider);
+  return repo.getAttachments(entityId);
 });
 
 // Entity Relations Provider

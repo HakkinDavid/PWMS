@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/entities/presentation/entity_detail_screen.dart';
 import '../../features/search/presentation/search_screen.dart';
-import '../../features/places/presentation/places_screen.dart';
+import '../../features/locations/presentation/locations_graph_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 
 final appRouter = GoRouter(
@@ -25,7 +25,11 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/places',
-      builder: (context, state) => const PlacesScreen(),
+      builder: (context, state) => const LocationsGraphScreen(),
+    ),
+    GoRoute(
+      path: '/locations',
+      builder: (context, state) => const LocationsGraphScreen(),
     ),
     GoRoute(
       path: '/catalog',

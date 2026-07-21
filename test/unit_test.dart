@@ -1,156 +1,95 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/entity_template.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
-import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
-import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
+import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
+import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
 
 void main() {
   late AppDatabase db;
   late EntityRepository entityRepo;
   late CatalogRepository catalogRepo;
-  late RelationRepository relationRepo;
+  late LocationRepository locationRepo;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     db = AppDatabase(NativeDatabase.memory());
     entityRepo = EntityRepository(db);
     catalogRepo = CatalogRepository(db);
-    relationRepo = RelationRepository(db);
+    locationRepo = LocationRepository(db);
   });
 
   tearDown(() async {
     await db.close();
   });
 
-  group('PWMS 12 Refinements Domain Tests', () {
-    test('Rule #3: Container Location Inheritance (Seguirlo)', () async {
-      // Create Place: Garaje
-      final garaje = WorldEntity(
-        id: 'place-garaje',
+  group('PWMS Location Graph & Catalog Architecture Tests', () {
+    test('Location Graph Node Creation & Hierarchy', () async {
+      final nodeGarage = LocationNode(
+        id: 'loc-garaje',
         name: 'Garaje Principal',
-        type: 'Lugar',
-        isPlace: true,
-        isContainer: true,
         createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
       );
-      await entityRepo.saveEntity(garaje);
 
-      // Create Container: Caja de Herramientas inside Garaje Principal
-      final box = WorldEntity(
-        id: 'box-tools',
-        name: 'Caja Metálica',
-        type: 'Contenedor',
-        placeId: 'place-garaje',
-        isContainer: true,
+      final nodeShelf = LocationNode(
+        id: 'loc-estante',
+        name: 'Estante #1',
+        parentLocationId: 'loc-garaje',
         createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
       );
-      await entityRepo.saveEntity(box);
 
-      // Create Item: Llave Inglesa inside Caja Metálica without specifying placeId
-      final wrench = WorldEntity(
-        id: 'item-wrench',
-        name: 'Llave Inglesa 12"',
+      await locationRepo.saveNode(nodeGarage);
+      await locationRepo.saveNode(nodeShelf);
+
+      final allNodes = await locationRepo.getAllNodes();
+      expect(allNodes.length, equals(2));
+
+      final subNodes = await locationRepo.getSubNodes('loc-garaje');
+      expect(subNodes.length, equals(1));
+      expect(subNodes.first.name, equals('Estante #1'));
+    });
+
+    test('Catalog Auto-Species Registration & Instance Linking', () async {
+      final species = await catalogRepo.getOrCreateSpecies(
+        'Multímetro Fluke 87V',
         type: 'Objeto / Herramienta',
-        parentEntityId: 'box-tools',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      await entityRepo.saveEntity(wrench);
-
-      // Verify item automatically inherited location place-garaje from container
-      final savedWrench = await entityRepo.getEntityById('item-wrench');
-      expect(savedWrench!.placeId, equals('place-garaje'));
-    });
-
-    test('Rule #4 & #5: Strict Template Rules for Quantities', () async {
-      final placeTemplate = EntityTemplateRegistry.getTemplate('Lugar');
-      expect(placeTemplate.hasQuantity, isFalse);
-      expect(placeTemplate.canBeInContainer, isFalse);
-
-      final containerTemplate = EntityTemplateRegistry.getTemplate('Contenedor');
-      expect(containerTemplate.hasQuantity, isFalse);
-      expect(containerTemplate.canBeInContainer, isTrue);
-
-      final objectTemplate = EntityTemplateRegistry.getTemplate('Objeto / Herramienta');
-      expect(objectTemplate.hasQuantity, isTrue);
-      expect(objectTemplate.canBeInContainer, isTrue);
-    });
-
-    test('Rule #9: GUARDADO_EN Relation targets Places or Containers only', () async {
-      final box = WorldEntity(
-        id: 'caja-1',
-        name: 'Caja Plástica',
-        type: 'Contenedor',
-        isContainer: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      final item = WorldEntity(
-        id: 'item-1',
-        name: 'Multímetro',
-        type: 'Objeto / Herramienta',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      await entityRepo.saveEntity(box);
-      await entityRepo.saveEntity(item);
-
-      final relation = EntityRelation(
-        id: 'rel-1',
-        sourceEntityId: 'item-1',
-        targetEntityId: 'caja-1',
-        relationType: 'GUARDADO_EN',
-        createdAt: DateTime.now(),
-      );
-
-      await relationRepo.addRelation(relation);
-
-      final rels = await relationRepo.getRelationsForEntity('item-1');
-      expect(rels.length, equals(1));
-      expect(rels.first.relationType, equals('GUARDADO_EN'));
-    });
-
-    test('Rule #12: Universe Catalog (Species vs Instance Separation)', () async {
-      final species = CatalogItem(
-        id: 'species-fluke-87v',
-        name: 'Multímetro Fluke 87V',
         brand: 'Fluke',
-        description: 'Multímetro Industrial TRMS',
-        defaultType: 'Objeto / Herramienta',
         barcode: '750998877',
-        createdAt: DateTime.now(),
       );
 
-      await catalogRepo.saveCatalogItem(species);
-      final catalogList = await catalogRepo.getAllCatalogItems();
-      expect(catalogList.length, equals(1));
-      expect(catalogList.first.name, equals('Multímetro Fluke 87V'));
+      expect(species.name, equals('Multímetro Fluke 87V'));
+      expect(species.brand, equals('Fluke'));
 
-      // Instantiate species into user's world
-      final instance1 = WorldEntity(
-        id: 'instance-taller',
+      // Create Instance stored at location node
+      final instance = WorldEntity(
+        id: 'inst-1',
         speciesId: species.id,
-        name: species.name,
-        type: species.defaultType,
-        barcode: species.barcode,
+        locationId: 'loc-estante',
         quantity: 1,
         unit: 'pieza',
+        notes: 'Serie: #998877-A',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      await entityRepo.saveEntity(instance1);
-      final savedInstance = await entityRepo.getEntityById('instance-taller');
-      expect(savedInstance!.speciesId, equals('species-fluke-87v'));
+      await entityRepo.saveEntity(instance);
+      final retrieved = await entityRepo.getEntityById('inst-1');
+
+      expect(retrieved, isNotNull);
+      expect(retrieved!.speciesId, equals(species.id));
+      expect(retrieved.locationId, equals('loc-estante'));
+      expect(retrieved.quantity, equals(1));
+    });
+
+    test('Template Streamlining & HasQuantity rule', () async {
+      final objectTpl = EntityTemplateRegistry.getTemplate('Objeto / Herramienta');
+      expect(objectTpl.hasQuantity, isTrue);
+
+      final docTpl = EntityTemplateRegistry.getTemplate('Documento');
+      expect(docTpl.hasQuantity, isFalse);
     });
   });
 }

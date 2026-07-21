@@ -10,11 +10,14 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
     _$CatalogItemImpl(
       id: json['id'] as String,
       name: json['name'] as String,
+      type: json['type'] as String? ?? 'Objeto / Herramienta',
       brand: json['brand'] as String?,
       description: json['description'] as String?,
       mainPhotoPath: json['mainPhotoPath'] as String?,
-      defaultType: json['defaultType'] as String? ?? 'Objeto / Herramienta',
       barcode: json['barcode'] as String?,
+      customAttributes:
+          json['customAttributes'] as Map<String, dynamic>? ?? const {},
+      defaultUnit: json['defaultUnit'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
@@ -22,10 +25,12 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'type': instance.type,
       'brand': instance.brand,
       'description': instance.description,
       'mainPhotoPath': instance.mainPhotoPath,
-      'defaultType': instance.defaultType,
       'barcode': instance.barcode,
+      'customAttributes': instance.customAttributes,
+      'defaultUnit': instance.defaultUnit,
       'createdAt': instance.createdAt.toIso8601String(),
     };

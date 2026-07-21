@@ -256,47 +256,56 @@ class HomeScreen extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: theme.dividerColor),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(14),
-                                      child: FutureBuilder<String>(
-                                        future: entity.mainPhotoPath != null
-                                            ? ref.read(fileStorageServiceProvider).getAbsolutePath(entity.mainPhotoPath!)
-                                            : Future.value(''),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                            return Image.file(
-                                              File(snapshot.data!),
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                            );
-                                          }
-                                          return Container(
-                                            color: theme.colorScheme.primary.withAlpha(30),
-                                            child: Center(
-                                              child: Icon(Icons.category, color: theme.colorScheme.primary),
-                                            ),
-                                          );
-                                        },
+                              child: Consumer(
+                                builder: (context, ref, _) {
+                                  final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
+                                  final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
+                                  final name = species?.name ?? 'Objeto';
+                                  final type = species?.type ?? 'Objeto / Herramienta';
+
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(14),
+                                          child: FutureBuilder<String>(
+                                            future: species?.mainPhotoPath != null
+                                                ? ref.read(fileStorageServiceProvider).getAbsolutePath(species!.mainPhotoPath!)
+                                                : Future.value(''),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                                                return Image.file(
+                                                  File(snapshot.data!),
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              }
+                                              return Container(
+                                                color: theme.colorScheme.primary.withAlpha(30),
+                                                child: Center(
+                                                  child: Icon(Icons.category, color: theme.colorScheme.primary),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    entity.name,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    entity.type,
-                                    style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
-                                  ),
-                                ],
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        name,
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        type,
+                                        style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                             ),
                           );

@@ -22,11 +22,14 @@ CatalogItem _$CatalogItemFromJson(Map<String, dynamic> json) {
 mixin _$CatalogItem {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  String get type => throw _privateConstructorUsedError;
   String? get brand => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   String? get mainPhotoPath => throw _privateConstructorUsedError;
-  String get defaultType => throw _privateConstructorUsedError;
   String? get barcode => throw _privateConstructorUsedError;
+  Map<String, dynamic> get customAttributes =>
+      throw _privateConstructorUsedError;
+  String? get defaultUnit => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this CatalogItem to a JSON map.
@@ -48,11 +51,13 @@ abstract class $CatalogItemCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
+      String type,
       String? brand,
       String? description,
       String? mainPhotoPath,
-      String defaultType,
       String? barcode,
+      Map<String, dynamic> customAttributes,
+      String? defaultUnit,
       DateTime createdAt});
 }
 
@@ -73,11 +78,13 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? type = null,
     Object? brand = freezed,
     Object? description = freezed,
     Object? mainPhotoPath = freezed,
-    Object? defaultType = null,
     Object? barcode = freezed,
+    Object? customAttributes = null,
+    Object? defaultUnit = freezed,
     Object? createdAt = null,
   }) {
     return _then(_value.copyWith(
@@ -88,6 +95,10 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String,
       brand: freezed == brand
           ? _value.brand
@@ -101,13 +112,17 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
           ? _value.mainPhotoPath
           : mainPhotoPath // ignore: cast_nullable_to_non_nullable
               as String?,
-      defaultType: null == defaultType
-          ? _value.defaultType
-          : defaultType // ignore: cast_nullable_to_non_nullable
-              as String,
       barcode: freezed == barcode
           ? _value.barcode
           : barcode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customAttributes: null == customAttributes
+          ? _value.customAttributes
+          : customAttributes // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
+      defaultUnit: freezed == defaultUnit
+          ? _value.defaultUnit
+          : defaultUnit // ignore: cast_nullable_to_non_nullable
               as String?,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -128,11 +143,13 @@ abstract class _$$CatalogItemImplCopyWith<$Res>
   $Res call(
       {String id,
       String name,
+      String type,
       String? brand,
       String? description,
       String? mainPhotoPath,
-      String defaultType,
       String? barcode,
+      Map<String, dynamic> customAttributes,
+      String? defaultUnit,
       DateTime createdAt});
 }
 
@@ -151,11 +168,13 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? type = null,
     Object? brand = freezed,
     Object? description = freezed,
     Object? mainPhotoPath = freezed,
-    Object? defaultType = null,
     Object? barcode = freezed,
+    Object? customAttributes = null,
+    Object? defaultUnit = freezed,
     Object? createdAt = null,
   }) {
     return _then(_$CatalogItemImpl(
@@ -166,6 +185,10 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String,
       brand: freezed == brand
           ? _value.brand
@@ -179,13 +202,17 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
           ? _value.mainPhotoPath
           : mainPhotoPath // ignore: cast_nullable_to_non_nullable
               as String?,
-      defaultType: null == defaultType
-          ? _value.defaultType
-          : defaultType // ignore: cast_nullable_to_non_nullable
-              as String,
       barcode: freezed == barcode
           ? _value.barcode
           : barcode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customAttributes: null == customAttributes
+          ? _value._customAttributes
+          : customAttributes // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
+      defaultUnit: freezed == defaultUnit
+          ? _value.defaultUnit
+          : defaultUnit // ignore: cast_nullable_to_non_nullable
               as String?,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -201,12 +228,15 @@ class _$CatalogItemImpl implements _CatalogItem {
   const _$CatalogItemImpl(
       {required this.id,
       required this.name,
+      this.type = 'Objeto / Herramienta',
       this.brand,
       this.description,
       this.mainPhotoPath,
-      this.defaultType = 'Objeto / Herramienta',
       this.barcode,
-      required this.createdAt});
+      final Map<String, dynamic> customAttributes = const {},
+      this.defaultUnit,
+      required this.createdAt})
+      : _customAttributes = customAttributes;
 
   factory _$CatalogItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$CatalogItemImplFromJson(json);
@@ -216,22 +246,33 @@ class _$CatalogItemImpl implements _CatalogItem {
   @override
   final String name;
   @override
+  @JsonKey()
+  final String type;
+  @override
   final String? brand;
   @override
   final String? description;
   @override
   final String? mainPhotoPath;
   @override
-  @JsonKey()
-  final String defaultType;
-  @override
   final String? barcode;
+  final Map<String, dynamic> _customAttributes;
+  @override
+  @JsonKey()
+  Map<String, dynamic> get customAttributes {
+    if (_customAttributes is EqualUnmodifiableMapView) return _customAttributes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_customAttributes);
+  }
+
+  @override
+  final String? defaultUnit;
   @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'CatalogItem(id: $id, name: $name, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, defaultType: $defaultType, barcode: $barcode, createdAt: $createdAt)';
+    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, defaultUnit: $defaultUnit, createdAt: $createdAt)';
   }
 
   @override
@@ -241,22 +282,35 @@ class _$CatalogItemImpl implements _CatalogItem {
             other is _$CatalogItemImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.brand, brand) || other.brand == brand) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.mainPhotoPath, mainPhotoPath) ||
                 other.mainPhotoPath == mainPhotoPath) &&
-            (identical(other.defaultType, defaultType) ||
-                other.defaultType == defaultType) &&
             (identical(other.barcode, barcode) || other.barcode == barcode) &&
+            const DeepCollectionEquality()
+                .equals(other._customAttributes, _customAttributes) &&
+            (identical(other.defaultUnit, defaultUnit) ||
+                other.defaultUnit == defaultUnit) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, brand, description,
-      mainPhotoPath, defaultType, barcode, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      type,
+      brand,
+      description,
+      mainPhotoPath,
+      barcode,
+      const DeepCollectionEquality().hash(_customAttributes),
+      defaultUnit,
+      createdAt);
 
   /// Create a copy of CatalogItem
   /// with the given fields replaced by the non-null parameter values.
@@ -278,11 +332,13 @@ abstract class _CatalogItem implements CatalogItem {
   const factory _CatalogItem(
       {required final String id,
       required final String name,
+      final String type,
       final String? brand,
       final String? description,
       final String? mainPhotoPath,
-      final String defaultType,
       final String? barcode,
+      final Map<String, dynamic> customAttributes,
+      final String? defaultUnit,
       required final DateTime createdAt}) = _$CatalogItemImpl;
 
   factory _CatalogItem.fromJson(Map<String, dynamic> json) =
@@ -293,15 +349,19 @@ abstract class _CatalogItem implements CatalogItem {
   @override
   String get name;
   @override
+  String get type;
+  @override
   String? get brand;
   @override
   String? get description;
   @override
   String? get mainPhotoPath;
   @override
-  String get defaultType;
-  @override
   String? get barcode;
+  @override
+  Map<String, dynamic> get customAttributes;
+  @override
+  String? get defaultUnit;
   @override
   DateTime get createdAt;
 
