@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/world_entity.dart';
-import '../../places/domain/place.dart';
 
 class MoveEntitySheet extends ConsumerStatefulWidget {
   final WorldEntity entity;
@@ -47,13 +46,19 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
     if (name.isEmpty) return;
 
     final placeId = const Uuid().v4();
-    final newPlace = Place(
+    final newPlaceEntity = WorldEntity(
       id: placeId,
       name: name,
+      type: 'Lugar',
+      isPlace: true,
+      isContainer: true,
       createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
 
-    await ref.read(placeListProvider.notifier).savePlace(newPlace);
+    await ref.read(entityListProvider.notifier).saveEntity(newPlaceEntity);
+    await ref.read(activityLoggerServiceProvider).logEntityCreated(placeId, name, 'Lugar');
+
     setState(() {
       _selectedDestinationId = placeId;
       _isDestinationContainer = false;

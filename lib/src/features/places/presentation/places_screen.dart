@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
-import '../domain/place.dart';
+import '../../entities/domain/world_entity.dart';
 
 class PlacesScreen extends ConsumerWidget {
   const PlacesScreen({super.key});
@@ -62,7 +62,7 @@ class PlacesScreen extends ConsumerWidget {
               TextField(
                 controller: descController,
                 decoration: const InputDecoration(
-                  labelText: 'Descripción (Opcional)',
+                  labelText: 'Descripción / Notas (Opcional)',
                   hintText: 'Ej. Estantería superior izquierda',
                   prefixIcon: Icon(Icons.notes_outlined),
                 ),
@@ -76,14 +76,21 @@ class PlacesScreen extends ConsumerWidget {
                     final name = nameController.text.trim();
                     if (name.isEmpty) return;
 
-                    final newPlace = Place(
-                      id: const Uuid().v4(),
+                    final placeId = const Uuid().v4();
+                    final placeEntity = WorldEntity(
+                      id: placeId,
                       name: name,
-                      description: descController.text.trim().isNotEmpty ? descController.text.trim() : null,
+                      type: 'Lugar',
+                      notes: descController.text.trim().isNotEmpty ? descController.text.trim() : null,
+                      isPlace: true,
+                      isContainer: true,
                       createdAt: DateTime.now(),
+                      updatedAt: DateTime.now(),
                     );
 
-                    await ref.read(placeListProvider.notifier).savePlace(newPlace);
+                    await ref.read(entityListProvider.notifier).saveEntity(placeEntity);
+                    await ref.read(activityLoggerServiceProvider).logEntityCreated(placeId, name, 'Lugar');
+
                     if (ctx.mounted) Navigator.pop(ctx);
                   },
                   style: ElevatedButton.styleFrom(
@@ -153,16 +160,14 @@ class PlacesScreen extends ConsumerWidget {
 
               int count = 0;
               entitiesState.whenData((entities) {
-                count = entities.where((e) => e.placeId == place.id).length;
+                count = entities.where((e) => e.id != place.id && (e.placeId == place.id || e.parentEntityId == place.id)).length;
               });
 
               return Card(
                 child: InkWell(
                   borderRadius: BorderRadius.circular(20),
                   onTap: () {
-                    // Filter search by place name
-                    ref.read(searchQueryProvider.notifier).state = place.name;
-                    context.push('/search');
+                    context.push('/entity/${place.id}');
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),

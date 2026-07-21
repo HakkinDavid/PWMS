@@ -66,7 +66,6 @@ class HomeScreen extends ConsumerWidget {
         child: RefreshIndicator(
           onRefresh: () async {
             ref.read(entityListProvider.notifier).loadEntities();
-            ref.read(placeListProvider.notifier).loadPlaces();
             ref.invalidate(recentEntitiesProvider);
             ref.invalidate(recentActivityProvider);
           },

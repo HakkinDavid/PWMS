@@ -4,8 +4,6 @@ import 'package:platinum_world_management_system/src/core/database/app_database.
 import 'package:platinum_world_management_system/src/features/entities/domain/entity_template.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
-import 'package:platinum_world_management_system/src/features/places/domain/place.dart';
-import 'package:platinum_world_management_system/src/features/places/infrastructure/place_repository.dart';
 import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
 import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
@@ -14,7 +12,6 @@ import 'package:platinum_world_management_system/src/features/history/applicatio
 void main() {
   late AppDatabase db;
   late EntityRepository entityRepo;
-  late PlaceRepository placeRepo;
   late RelationRepository relationRepo;
   late HistoryRepository historyRepo;
   late ActivityLoggerService loggerService;
@@ -23,7 +20,6 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     db = AppDatabase(NativeDatabase.memory());
     entityRepo = EntityRepository(db);
-    placeRepo = PlaceRepository(db);
     relationRepo = RelationRepository(db);
     historyRepo = HistoryRepository(db);
     loggerService = ActivityLoggerService(historyRepo);
@@ -33,20 +29,26 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Living Domain Model Tests', () {
-    test('Create and retrieve Place & Container templates', () async {
-      final place = Place(
+  group('PWMS Unified Living Domain Model Tests', () {
+    test('Create and retrieve Place as WorldEntity', () async {
+      final placeEntity = WorldEntity(
         id: 'place-1',
         name: 'Taller Principal',
-        description: 'Zona de herramientas',
+        type: 'Lugar',
+        notes: 'Zona de herramientas',
+        isPlace: true,
+        isContainer: true,
         createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
 
-      await placeRepo.savePlace(place);
-      final retrieved = await placeRepo.getPlaceById('place-1');
+      await entityRepo.saveEntity(placeEntity);
+      final retrieved = await entityRepo.getEntityById('place-1');
 
       expect(retrieved, isNotNull);
       expect(retrieved!.name, equals('Taller Principal'));
+      expect(retrieved.type, equals('Lugar'));
+      expect(retrieved.isPlace, isTrue);
 
       final boxTemplate = EntityTemplateRegistry.getTemplate('Caja / Contenedor');
       expect(boxTemplate.isContainer, isTrue);
@@ -55,8 +57,16 @@ void main() {
 
     test('Hierarchical containment and cascade movement', () async {
       // Create Place: Taller
-      final place = Place(id: 'place-taller', name: 'Taller', createdAt: DateTime.now());
-      await placeRepo.savePlace(place);
+      final place = WorldEntity(
+        id: 'place-taller',
+        name: 'Taller',
+        type: 'Lugar',
+        isPlace: true,
+        isContainer: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await entityRepo.saveEntity(place);
 
       // Create Container: Caja Roja inside Taller
       final containerBox = WorldEntity(
@@ -90,8 +100,16 @@ void main() {
       expect(contentsOfBox.first.name, equals('Taladro Bosch'));
 
       // Move Caja Roja to Estudio
-      final newPlace = Place(id: 'place-estudio', name: 'Estudio', createdAt: DateTime.now());
-      await placeRepo.savePlace(newPlace);
+      final newPlace = WorldEntity(
+        id: 'place-estudio',
+        name: 'Estudio',
+        type: 'Lugar',
+        isPlace: true,
+        isContainer: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await entityRepo.saveEntity(newPlace);
 
       await entityRepo.moveEntity('box-1', newPlaceId: 'place-estudio');
 

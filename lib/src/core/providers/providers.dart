@@ -7,7 +7,6 @@ import '../../features/entities/domain/world_entity.dart';
 import '../../features/entities/domain/attachment.dart';
 import '../../features/places/domain/i_place_repository.dart';
 import '../../features/places/infrastructure/place_repository.dart';
-import '../../features/places/domain/place.dart';
 import '../../features/relations/domain/i_relation_repository.dart';
 import '../../features/relations/infrastructure/relation_repository.dart';
 import '../../features/relations/domain/entity_relation.dart';
@@ -83,32 +82,12 @@ final entityListProvider = StateNotifierProvider<EntityListNotifier, AsyncValue<
   return EntityListNotifier(ref.watch(entityRepositoryProvider));
 });
 
-// Places State
-class PlaceListNotifier extends StateNotifier<AsyncValue<List<Place>>> {
-  final IPlaceRepository _repository;
-
-  PlaceListNotifier(this._repository) : super(const AsyncValue.loading()) {
-    loadPlaces();
-  }
-
-  Future<void> loadPlaces() async {
-    state = const AsyncValue.loading();
-    try {
-      final list = await _repository.getAllPlaces();
-      state = AsyncValue.data(list);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
-  }
-
-  Future<void> savePlace(Place place) async {
-    await _repository.savePlace(place);
-    await loadPlaces();
-  }
-}
-
-final placeListProvider = StateNotifierProvider<PlaceListNotifier, AsyncValue<List<Place>>>((ref) {
-  return PlaceListNotifier(ref.watch(placeRepositoryProvider));
+// Unified Places Provider derived directly from EntityListProvider (Single Source of Truth)
+final placeListProvider = Provider<AsyncValue<List<WorldEntity>>>((ref) {
+  final entitiesState = ref.watch(entityListProvider);
+  return entitiesState.whenData((entities) {
+    return entities.where((e) => e.isPlace || e.type.toLowerCase() == 'lugar').toList();
+  });
 });
 
 // Recent Entities Provider
