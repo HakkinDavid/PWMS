@@ -51,14 +51,12 @@ class HomeScreen extends ConsumerWidget {
     final recentActivityAsync = ref.watch(recentActivityProvider);
 
     final collections = [
-      {'name': 'Herramientas', 'icon': Icons.build, 'query': 'Herramienta'},
+      {'name': 'Herramientas', 'icon': Icons.build, 'query': 'Objeto'},
       {'name': 'Lugares', 'icon': Icons.place, 'route': '/places'},
+      {'name': 'Universo Objetos', 'icon': Icons.public, 'route': '/catalog'},
       {'name': 'Documentos', 'icon': Icons.description, 'query': 'Documento'},
-      {'name': 'Proyectos', 'icon': Icons.work, 'query': 'Proyecto'},
-      {'name': 'Ideas', 'icon': Icons.lightbulb, 'query': 'Idea'},
+      {'name': 'Proyectos/Ideas', 'icon': Icons.lightbulb, 'query': 'Proyecto'},
       {'name': 'Recuerdos', 'icon': Icons.star, 'query': 'Recuerdo'},
-      {'name': 'Vehículos', 'icon': Icons.directions_car, 'query': 'Vehículo'},
-      {'name': 'Animales', 'icon': Icons.pets, 'query': 'Animal'},
     ];
 
     return Scaffold(

@@ -147,7 +147,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
           final template = EntityTemplateRegistry.getTemplate(entity.type);
           final placesState = ref.watch(placeListProvider);
-          String placeName = 'Sin ubicación asignada';
+          String placeName = 'Mundo';
           if (entity.placeId != null) {
             placesState.whenData((places) {
               final found = places.where((p) => p.id == entity.placeId).firstOrNull;
@@ -163,6 +163,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               // Hero Photo / Header
               SliverAppBar(
                 expandedHeight: 260.0,
+                floating: false,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
@@ -323,25 +324,83 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               avatar: const Icon(Icons.qr_code_scanner, size: 14),
                               label: Text(entity.barcode!),
                             ),
-                          // Quantity +/- controls
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.secondary.withAlpha(30),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: theme.colorScheme.secondary.withAlpha(80)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                                  icon: const Icon(Icons.remove, size: 16),
-                                  onPressed: () async {
-                                    final currentQty = entity.quantity ?? 1.0;
-                                    if (currentQty > 0) {
+                          // Quantity +/- controls (Rule #8 - Restar unidades a 0 equivale a eliminar)
+                          if (template.hasQuantity)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondary.withAlpha(30),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: theme.colorScheme.secondary.withAlpha(80)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                                    icon: const Icon(Icons.remove, size: 16),
+                                    onPressed: () async {
+                                      final currentQty = entity.quantity ?? 1.0;
                                       final newQty = currentQty - 1.0;
+                                      if (newQty <= 0) {
+                                        final confirm = await showDialog<bool>(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: const Text('¿Eliminar elemento?'),
+                                            content: Text('La cantidad llegó a 0. ¿Deseas eliminar "${entity.name}" de tu mundo?'),
+                                            actions: [
+                                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(ctx, true),
+                                                child: const Text('Eliminar', style: TextStyle(color: Colors.redAccent)),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+
+                                        if (confirm == true) {
+                                          await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
+                                          await ref.read(activityLoggerServiceProvider).logEntityDeleted(entity.id, entity.name);
+                                          ref.read(entityListProvider.notifier).loadEntities();
+
+                                          if (context.mounted) {
+                                            context.pop();
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text('"${entity.name}" eliminado de tu mundo')),
+                                            );
+                                          }
+                                        }
+                                      } else {
+                                        final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
+                                        await ref.read(entityListProvider.notifier).saveEntity(updated);
+                                        await ref.read(activityLoggerServiceProvider).logQuantityConsumed(
+                                              entity.id,
+                                              entity.name,
+                                              newQty,
+                                              entity.unit ?? 'unidades',
+                                            );
+                                      }
+                                    },
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => _showConsumeQuantityDialog(entity),
+                                    child: Text(
+                                      '${entity.quantity ?? 1.0} ${entity.unit ?? "unidades"}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.colorScheme.secondary,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                                    icon: const Icon(Icons.add, size: 16),
+                                    onPressed: () async {
+                                      final currentQty = entity.quantity ?? 0.0;
+                                      final newQty = currentQty + 1.0;
                                       final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
                                       await ref.read(entityListProvider.notifier).saveEntity(updated);
                                       await ref.read(activityLoggerServiceProvider).logQuantityConsumed(
@@ -350,40 +409,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                             newQty,
                                             entity.unit ?? 'unidades',
                                           );
-                                    }
-                                  },
-                                ),
-                                GestureDetector(
-                                  onTap: () => _showConsumeQuantityDialog(entity),
-                                  child: Text(
-                                    '${entity.quantity ?? 1.0} ${entity.unit ?? "unidades"}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: theme.colorScheme.secondary,
-                                      fontSize: 13,
-                                    ),
+                                    },
                                   ),
-                                ),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                                  icon: const Icon(Icons.add, size: 16),
-                                  onPressed: () async {
-                                    final currentQty = entity.quantity ?? 0.0;
-                                    final newQty = currentQty + 1.0;
-                                    final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
-                                    await ref.read(entityListProvider.notifier).saveEntity(updated);
-                                    await ref.read(activityLoggerServiceProvider).logQuantityConsumed(
-                                          entity.id,
-                                          entity.name,
-                                          newQty,
-                                          entity.unit ?? 'unidades',
-                                        );
-                                  },
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
                       const SizedBox(height: 20),

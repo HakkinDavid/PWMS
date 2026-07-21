@@ -21,6 +21,8 @@ WorldEntity _$WorldEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$WorldEntity {
   String get id => throw _privateConstructorUsedError;
+  String? get speciesId =>
+      throw _privateConstructorUsedError; // Link to Universe Catalog species item
   String get name => throw _privateConstructorUsedError;
   String? get alias => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
@@ -58,6 +60,7 @@ abstract class $WorldEntityCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
+      String? speciesId,
       String name,
       String? alias,
       String type,
@@ -93,6 +96,7 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
   @override
   $Res call({
     Object? id = null,
+    Object? speciesId = freezed,
     Object? name = null,
     Object? alias = freezed,
     Object? type = null,
@@ -116,6 +120,10 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      speciesId: freezed == speciesId
+          ? _value.speciesId
+          : speciesId // ignore: cast_nullable_to_non_nullable
+              as String?,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -198,6 +206,7 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
+      String? speciesId,
       String name,
       String? alias,
       String type,
@@ -231,6 +240,7 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? speciesId = freezed,
     Object? name = null,
     Object? alias = freezed,
     Object? type = null,
@@ -254,6 +264,10 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      speciesId: freezed == speciesId
+          ? _value.speciesId
+          : speciesId // ignore: cast_nullable_to_non_nullable
+              as String?,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -331,6 +345,7 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
 class _$WorldEntityImpl implements _WorldEntity {
   const _$WorldEntityImpl(
       {required this.id,
+      this.speciesId,
       required this.name,
       this.alias,
       required this.type,
@@ -356,6 +371,9 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   final String id;
+  @override
+  final String? speciesId;
+// Link to Universe Catalog species item
   @override
   final String name;
   @override
@@ -410,7 +428,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, name: $name, alias: $alias, type: $type, mainPhotoPath: $mainPhotoPath, notes: $notes, placeId: $placeId, parentEntityId: $parentEntityId, quantity: $quantity, unit: $unit, barcode: $barcode, customAttributes: $customAttributes, isArchived: $isArchived, isContainer: $isContainer, isPlace: $isPlace, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, speciesId: $speciesId, name: $name, alias: $alias, type: $type, mainPhotoPath: $mainPhotoPath, notes: $notes, placeId: $placeId, parentEntityId: $parentEntityId, quantity: $quantity, unit: $unit, barcode: $barcode, customAttributes: $customAttributes, isArchived: $isArchived, isContainer: $isContainer, isPlace: $isPlace, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -419,6 +437,8 @@ class _$WorldEntityImpl implements _WorldEntity {
         (other.runtimeType == runtimeType &&
             other is _$WorldEntityImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.speciesId, speciesId) ||
+                other.speciesId == speciesId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.alias, alias) || other.alias == alias) &&
             (identical(other.type, type) || other.type == type) &&
@@ -448,26 +468,28 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      name,
-      alias,
-      type,
-      mainPhotoPath,
-      notes,
-      placeId,
-      parentEntityId,
-      quantity,
-      unit,
-      barcode,
-      const DeepCollectionEquality().hash(_customAttributes),
-      isArchived,
-      isContainer,
-      isPlace,
-      const DeepCollectionEquality().hash(_tags),
-      createdAt,
-      updatedAt);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        speciesId,
+        name,
+        alias,
+        type,
+        mainPhotoPath,
+        notes,
+        placeId,
+        parentEntityId,
+        quantity,
+        unit,
+        barcode,
+        const DeepCollectionEquality().hash(_customAttributes),
+        isArchived,
+        isContainer,
+        isPlace,
+        const DeepCollectionEquality().hash(_tags),
+        createdAt,
+        updatedAt
+      ]);
 
   /// Create a copy of WorldEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -488,6 +510,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 abstract class _WorldEntity implements WorldEntity {
   const factory _WorldEntity(
       {required final String id,
+      final String? speciesId,
       required final String name,
       final String? alias,
       required final String type,
@@ -511,6 +534,8 @@ abstract class _WorldEntity implements WorldEntity {
 
   @override
   String get id;
+  @override
+  String? get speciesId; // Link to Universe Catalog species item
   @override
   String get name;
   @override

@@ -4,19 +4,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
+import '../../catalog/domain/catalog_item.dart';
 import '../domain/entity_template.dart';
 import '../domain/world_entity.dart';
+import 'custom_attribute_editor_dialog.dart';
 import 'custom_template_editor_sheet.dart';
 
 class CreateEntitySheet extends ConsumerStatefulWidget {
-  const CreateEntitySheet({super.key});
+  final String? initialPlaceId;
+  final String? initialParentEntityId;
 
-  static Future<void> show(BuildContext context) {
+  const CreateEntitySheet({
+    super.key,
+    this.initialPlaceId,
+    this.initialParentEntityId,
+  });
+
+  static Future<void> show(
+    BuildContext context, {
+    String? initialPlaceId,
+    String? initialParentEntityId,
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const CreateEntitySheet(),
+      builder: (_) => CreateEntitySheet(
+        initialPlaceId: initialPlaceId,
+        initialParentEntityId: initialParentEntityId,
+      ),
     );
   }
 
@@ -32,23 +48,41 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
   final _qtyController = TextEditingController();
   final _unitController = TextEditingController();
 
-  String _selectedType = 'Herramienta';
+  String _selectedType = 'Objeto / Herramienta';
   String? _selectedPlaceId;
+  String? _selectedParentId;
+  String? _speciesId;
   XFile? _selectedImage;
+  Map<String, dynamic> _customAttrs = {};
+  bool _showMore = false;
   bool _isSaving = false;
 
-  final List<String> _defaultTypes = [
-    'Herramienta',
-    'Caja / Contenedor',
-    'Documento',
-    'Vehículo',
-    'Animal',
-    'Proyecto',
-    'Idea',
-    'Recuerdo',
+  final List<String> _entityTypes = [
+    'Objeto / Herramienta',
+    'Contenedor',
     'Lugar',
-    'Otro',
+    'Documento',
+    'Proyecto / Idea',
+    'Recuerdo',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPlaceId = widget.initialPlaceId;
+    _selectedParentId = widget.initialParentEntityId;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _notesController.dispose();
+    _tagsController.dispose();
+    _barcodeController.dispose();
+    _qtyController.dispose();
+    _unitController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -56,6 +90,16 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
     if (image != null) {
       setState(() => _selectedImage = image);
     }
+  }
+
+  void _selectFromCatalog(CatalogItem item) {
+    setState(() {
+      _speciesId = item.id;
+      _nameController.text = item.name;
+      _selectedType = item.defaultType;
+      if (item.barcode != null) _barcodeController.text = item.barcode!;
+      if (item.description != null) _notesController.text = item.description!;
+    });
   }
 
   Future<void> _save() async {
@@ -87,39 +131,39 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
           .where((t) => t.isNotEmpty)
           .toList();
 
-      final double? parsedQty = double.tryParse(_qtyController.text.trim());
-      final String? parsedUnit = _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
+      final template = EntityTemplateRegistry.getTemplate(_selectedType);
 
-      final isContainer = EntityTemplateRegistry.isContainer(_selectedType);
-      final isPlace = EntityTemplateRegistry.isPlace(_selectedType);
+      final double? parsedQty = template.hasQuantity ? double.tryParse(_qtyController.text.trim()) : null;
+      final String? parsedUnit = template.hasQuantity && _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
 
       final newEntity = WorldEntity(
         id: entityId,
+        speciesId: _speciesId,
         name: finalName,
         type: _selectedType,
         mainPhotoPath: relativePhotoPath,
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
         placeId: _selectedPlaceId,
+        parentEntityId: template.canBeInContainer ? _selectedParentId : null,
         quantity: parsedQty,
         unit: parsedUnit,
         barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
-        isContainer: isContainer,
-        isPlace: isPlace,
+        customAttributes: _customAttrs,
+        isContainer: template.isContainer,
+        isPlace: template.isPlace,
         tags: tagsList,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
       await ref.read(entityListProvider.notifier).saveEntity(newEntity);
-
-      // Auto log event
       await ref.read(activityLoggerServiceProvider).logEntityCreated(entityId, finalName, _selectedType);
 
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('"$finalName" registrado exitosamente en tu mundo'),
+            content: Text('"$finalName" registrado en tu mundo'),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
@@ -136,20 +180,12 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
   }
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _notesController.dispose();
-    _tagsController.dispose();
-    _barcodeController.dispose();
-    _qtyController.dispose();
-    _unitController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final placesState = ref.watch(placeListProvider);
+    final entitiesState = ref.watch(entityListProvider);
+    final catalogState = ref.watch(catalogListProvider);
     final theme = Theme.of(context);
+    final template = EntityTemplateRegistry.getTemplate(_selectedType);
 
     return Container(
       decoration: BoxDecoration(
@@ -191,9 +227,45 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
-            // Photo Area
+            // Catalog Quick Import Button (Rule #12 Universe Catalog)
+            catalogState.when(
+              data: (catalogItems) {
+                if (catalogItems.isEmpty) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: ActionChip(
+                    avatar: const Icon(Icons.auto_awesome, size: 16),
+                    label: const Text('Elegir del Universo de Objetos (Catálogo)'),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) => ListView.builder(
+                          itemCount: catalogItems.length,
+                          itemBuilder: (ctx, i) {
+                            final item = catalogItems[i];
+                            return ListTile(
+                              leading: const Icon(Icons.category),
+                              title: Text(item.name),
+                              subtitle: Text(item.brand ?? item.defaultType),
+                              onTap: () {
+                                Navigator.pop(ctx);
+                                _selectFromCatalog(item);
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+            ),
+
+            // Photo Capture Picker
             GestureDetector(
               onTap: () {
                 showModalBottomSheet(
@@ -263,20 +335,9 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                 prefixIcon: Icon(Icons.edit),
               ),
             ),
-            const SizedBox(height: 12),
-
-            // Barcode Field
-            TextField(
-              controller: _barcodeController,
-              decoration: const InputDecoration(
-                labelText: 'Código de barras / Identificador (Opcional)',
-                hintText: 'Ej. 750123456789',
-                prefixIcon: Icon(Icons.qr_code_scanner),
-              ),
-            ),
             const SizedBox(height: 16),
 
-            // Type Selector Chips + Add Custom Type button
+            // Reactive Type Selector Chips
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -289,78 +350,84 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
               ],
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              height: 44,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: _defaultTypes.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  final type = _defaultTypes[index];
-                  final isSelected = type == _selectedType;
-                  return ChoiceChip(
-                    label: Text(type),
-                    selected: isSelected,
-                    onSelected: (val) {
-                      if (val) setState(() => _selectedType = type);
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _entityTypes.map((type) {
+                final isSelected = type == _selectedType;
+                return ChoiceChip(
+                  label: Text(type),
+                  selected: isSelected,
+                  onSelected: (val) {
+                    if (val) setState(() => _selectedType = type);
+                  },
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+
+            // Container Selection (Rule #2 & #3 - Container selection & Inheritance)
+            if (template.canBeInContainer) ...[
+              Text('Contenedor (Caja / Estante / Maletín)', style: theme.textTheme.labelLarge),
+              const SizedBox(height: 8),
+              entitiesState.when(
+                data: (entities) {
+                  final containers = entities.where((e) => e.isContainer).toList();
+                  return DropdownButtonFormField<String?>(
+                    initialValue: _selectedParentId,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.inventory_2_outlined),
+                      hintText: 'Sin contenedor asignado',
+                    ),
+                    items: [
+                      const DropdownMenuItem<String?>(value: null, child: Text('Sin contenedor')),
+                      ...containers.map((c) => DropdownMenuItem<String?>(
+                            value: c.id,
+                            child: Text(c.name),
+                          )),
+                    ],
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedParentId = val;
+                        if (val != null) {
+                          final parentContainer = entities.where((e) => e.id == val).firstOrNull;
+                          if (parentContainer?.placeId != null) {
+                            _selectedPlaceId = parentContainer!.placeId;
+                          }
+                        }
+                      });
                     },
                   );
                 },
+                loading: () => const CircularProgressIndicator(),
+                error: (err, _) => Text('Error: $err'),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
+            ],
 
-            // Quantities & Units
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _qtyController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Cantidad',
-                      hintText: 'Ej. 10, 1',
-                      prefixIcon: Icon(Icons.numbers),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: _unitController,
-                    decoration: const InputDecoration(
-                      labelText: 'Unidad',
-                      hintText: 'Ej. piezas, kg, litros',
-                      prefixIcon: Icon(Icons.straighten),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Location Selector Dropdown
-            Text('Ubicación (Lugar)', style: theme.textTheme.labelLarge),
+            // Location Selector Dropdown (Rule #1 - "Mundo" Default, Rule #3 - Disabled if container assigned)
+            Text('Ubicación en tu Mundo', style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             placesState.when(
               data: (places) {
+                final bool isInheritedFromContainer = _selectedParentId != null;
                 return DropdownButtonFormField<String?>(
                   initialValue: _selectedPlaceId,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.place_outlined),
-                    hintText: 'Sin ubicación asignada',
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.place_outlined),
+                    hintText: isInheritedFromContainer ? 'Heredado del contenedor' : 'Mundo',
                   ),
                   items: [
                     const DropdownMenuItem<String?>(
                       value: null,
-                      child: Text('Sin ubicación'),
+                      child: Text('Mundo'),
                     ),
                     ...places.map((p) => DropdownMenuItem<String?>(
                           value: p.id,
                           child: Text(p.name),
                         )),
                   ],
-                  onChanged: (val) => setState(() => _selectedPlaceId = val),
+                  onChanged: isInheritedFromContainer ? null : (val) => setState(() => _selectedPlaceId = val),
                 );
               },
               loading: () => const CircularProgressIndicator(),
@@ -368,18 +435,102 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Tags
-            TextField(
-              controller: _tagsController,
-              decoration: const InputDecoration(
-                labelText: 'Etiquetas (separadas por coma)',
-                hintText: 'Ej. trabajo, urgente, garaje',
-                prefixIcon: Icon(Icons.label_outlined),
+            // Quantities & Units (Rule #4 - Only for physical countable/measurable objects)
+            if (template.hasQuantity) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _qtyController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Cantidad',
+                        hintText: 'Ej. 10, 1',
+                        prefixIcon: Icon(Icons.numbers),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: _unitController,
+                      decoration: const InputDecoration(
+                        labelText: 'Unidad',
+                        hintText: 'Ej. piezas, kg, metros',
+                        prefixIcon: Icon(Icons.straighten),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // Toggle "Mostrar más" / "Mostrar menos" (Rule #6 - Form Parity)
+            Center(
+              child: TextButton.icon(
+                onPressed: () => setState(() => _showMore = !_showMore),
+                icon: Icon(_showMore ? Icons.expand_less : Icons.expand_more),
+                label: Text(_showMore ? 'Mostrar menos' : 'Mostrar campos adicionales'),
               ),
             ),
+
+            if (_showMore) ...[
+              const SizedBox(height: 12),
+              // Barcode Field
+              TextField(
+                controller: _barcodeController,
+                decoration: const InputDecoration(
+                  labelText: 'Código de barras / Identificador',
+                  hintText: 'Ej. 750123456789',
+                  prefixIcon: Icon(Icons.qr_code_scanner),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Custom Attributes
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Atributos Personalizados (${_customAttrs.length})', style: theme.textTheme.labelLarge),
+                  TextButton.icon(
+                    onPressed: () async {
+                      final res = await CustomAttributeEditorDialog.show(context, initialAttributes: _customAttrs);
+                      if (res != null) setState(() => _customAttrs = res);
+                    },
+                    icon: const Icon(Icons.tune, size: 16),
+                    label: const Text('Administrar'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Notes
+              TextField(
+                controller: _notesController,
+                maxLines: 2,
+                decoration: const InputDecoration(
+                  labelText: 'Notas',
+                  hintText: 'Detalles u observaciones...',
+                  prefixIcon: Icon(Icons.notes),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Tags
+              TextField(
+                controller: _tagsController,
+                decoration: const InputDecoration(
+                  labelText: 'Etiquetas (separadas por coma)',
+                  hintText: 'Ej. trabajo, urgente',
+                  prefixIcon: Icon(Icons.label_outlined),
+                ),
+              ),
+            ],
+
             const SizedBox(height: 24),
 
-            // Action Button
+            // Save Action Button
             SizedBox(
               width: double.infinity,
               height: 54,
@@ -392,10 +543,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                 ),
                 child: _isSaving
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        'Guardar en tu Mundo',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                    : const Text('Guardar en tu Mundo', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

@@ -15,6 +15,9 @@ import '../../features/history/infrastructure/history_repository.dart';
 import '../../features/history/domain/activity_event.dart';
 import '../../features/history/application/activity_logger_service.dart';
 
+import '../../features/catalog/domain/catalog_item.dart';
+import '../../features/catalog/infrastructure/catalog_repository.dart';
+
 // Singletons / Core Services
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -29,6 +32,10 @@ final fileStorageServiceProvider = Provider<FileStorageService>((ref) {
 // Repositories
 final entityRepositoryProvider = Provider<IEntityRepository>((ref) {
   return EntityRepository(ref.watch(databaseProvider));
+});
+
+final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
+  return CatalogRepository(ref.watch(databaseProvider));
 });
 
 final placeRepositoryProvider = Provider<IPlaceRepository>((ref) {
@@ -126,6 +133,39 @@ final entityDetailProvider = FutureProvider.family<WorldEntity?, String>((ref, i
 final entityAttachmentsProvider = FutureProvider.family<List<Attachment>, String>((ref, entityId) async {
   final repo = ref.watch(entityRepositoryProvider);
   return repo.getAttachments(entityId);
+});
+
+// Universe Catalog State
+class CatalogListNotifier extends StateNotifier<AsyncValue<List<CatalogItem>>> {
+  final CatalogRepository _repository;
+
+  CatalogListNotifier(this._repository) : super(const AsyncValue.loading()) {
+    loadCatalog();
+  }
+
+  Future<void> loadCatalog() async {
+    state = const AsyncValue.loading();
+    try {
+      final list = await _repository.getAllCatalogItems();
+      state = AsyncValue.data(list);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> saveCatalogItem(CatalogItem item) async {
+    await _repository.saveCatalogItem(item);
+    await loadCatalog();
+  }
+
+  Future<void> deleteCatalogItem(String id) async {
+    await _repository.deleteCatalogItem(id);
+    await loadCatalog();
+  }
+}
+
+final catalogListProvider = StateNotifierProvider<CatalogListNotifier, AsyncValue<List<CatalogItem>>>((ref) {
+  return CatalogListNotifier(ref.watch(catalogRepositoryProvider));
 });
 
 // Entity Relations Provider

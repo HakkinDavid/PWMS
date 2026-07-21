@@ -7,6 +7,7 @@ part 'app_database.g.dart';
 
 class EntitiesTable extends Table {
   TextColumn get id => text()();
+  TextColumn get speciesId => text().nullable().references(CatalogTable, #id)(); // Universe Catalog Species link
   TextColumn get name => text()();
   TextColumn get alias => text().nullable()();
   TextColumn get type => text()(); // Real-world perceived concept
@@ -22,6 +23,20 @@ class EntitiesTable extends Table {
   TextColumn get tags => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class CatalogTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get brand => text().nullable()();
+  TextColumn get description => text().nullable()();
+  TextColumn get mainPhotoPath => text().nullable()();
+  TextColumn get defaultType => text().withDefault(const Constant('Objeto / Herramienta'))();
+  TextColumn get barcode => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -91,6 +106,7 @@ class CustomTemplatesTable extends Table {
 
 @DriftDatabase(tables: [
   EntitiesTable,
+  CatalogTable,
   PlacesTable,
   RelationsTable,
   AttachmentsTable,

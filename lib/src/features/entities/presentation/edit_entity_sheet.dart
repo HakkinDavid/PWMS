@@ -36,6 +36,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
 
   late String _selectedType;
   String? _selectedPlaceId;
+  String? _selectedParentId;
   String? _newPhotoPath;
   bool _removePhoto = false;
   late Map<String, dynamic> _customAttrs;
@@ -43,16 +44,12 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
   bool _isSaving = false;
 
   final List<String> _entityTypes = [
-    'Herramienta',
-    'Caja / Contenedor',
-    'Documento',
-    'Vehículo',
-    'Animal',
-    'Proyecto',
-    'Idea',
-    'Recuerdo',
+    'Objeto / Herramienta',
+    'Contenedor',
     'Lugar',
-    'Otro',
+    'Documento',
+    'Proyecto / Idea',
+    'Recuerdo',
   ];
 
   @override
@@ -68,6 +65,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
 
     _selectedType = widget.entity.type;
     _selectedPlaceId = widget.entity.placeId;
+    _selectedParentId = widget.entity.parentEntityId;
     _customAttrs = Map<String, dynamic>.from(widget.entity.customAttributes);
     _isArchived = widget.entity.isArchived;
   }
@@ -115,8 +113,9 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
           .where((t) => t.isNotEmpty)
           .toList();
 
-      final double? parsedQty = double.tryParse(_qtyController.text.trim());
-      final String? parsedUnit = _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
+      final template = EntityTemplateRegistry.getTemplate(_selectedType);
+      final double? parsedQty = template.hasQuantity ? double.tryParse(_qtyController.text.trim()) : null;
+      final String? parsedUnit = template.hasQuantity && _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
       final String? parsedBarcode = _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null;
 
       String? finalPhotoPath = widget.entity.mainPhotoPath;
@@ -126,9 +125,6 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
         finalPhotoPath = _newPhotoPath;
       }
 
-      final isContainer = EntityTemplateRegistry.isContainer(_selectedType);
-      final isPlace = EntityTemplateRegistry.isPlace(_selectedType);
-
       final updatedEntity = widget.entity.copyWith(
         name: name,
         alias: _aliasController.text.trim().isNotEmpty ? _aliasController.text.trim() : null,
@@ -136,25 +132,20 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
         mainPhotoPath: finalPhotoPath,
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
         placeId: _selectedPlaceId,
+        parentEntityId: template.canBeInContainer ? _selectedParentId : null,
         quantity: parsedQty,
         unit: parsedUnit,
         barcode: parsedBarcode,
         customAttributes: _customAttrs,
         isArchived: _isArchived,
-        isContainer: isContainer,
-        isPlace: isPlace,
+        isContainer: template.isContainer,
+        isPlace: template.isPlace,
         tags: tagsList,
         updatedAt: DateTime.now(),
       );
 
       await ref.read(entityListProvider.notifier).saveEntity(updatedEntity);
-
-      // Audit log
-      await ref.read(activityLoggerServiceProvider).logEntityEdited(
-            widget.entity.id,
-            name,
-            details: 'Metadatos, etiquetas y atributos actualizados',
-          );
+      await ref.read(activityLoggerServiceProvider).logEntityEdited(widget.entity.id, name);
 
       if (mounted) {
         Navigator.pop(context);
@@ -179,7 +170,9 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
   @override
   Widget build(BuildContext context) {
     final placesState = ref.watch(placeListProvider);
+    final entitiesState = ref.watch(entityListProvider);
     final theme = Theme.of(context);
+    final template = EntityTemplateRegistry.getTemplate(_selectedType);
 
     return Container(
       decoration: BoxDecoration(
@@ -304,7 +297,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             const SizedBox(height: 16),
 
             // Type Selector
-            Text('Plantilla de Tipo', style: theme.textTheme.labelLarge),
+            Text('Tipo de Elemento', style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               initialValue: _selectedType,
@@ -316,34 +309,96 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Quantities & Units
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _qtyController,
-                    keyboardType: TextInputType.number,
+            // Container Selection (Rule #2 & #3)
+            if (template.canBeInContainer) ...[
+              Text('Contenedor (Caja / Estante / Maletín)', style: theme.textTheme.labelLarge),
+              const SizedBox(height: 8),
+              entitiesState.when(
+                data: (entities) {
+                  final containers = entities.where((e) => e.isContainer && e.id != widget.entity.id).toList();
+                  return DropdownButtonFormField<String?>(
+                    initialValue: _selectedParentId,
                     decoration: const InputDecoration(
-                      labelText: 'Cantidad',
-                      hintText: 'Ej. 10, 2.5',
-                      prefixIcon: Icon(Icons.numbers),
+                      prefixIcon: Icon(Icons.inventory_2_outlined),
+                      hintText: 'Sin contenedor asignado',
                     ),
+                    items: [
+                      const DropdownMenuItem<String?>(value: null, child: Text('Sin contenedor')),
+                      ...containers.map((c) => DropdownMenuItem<String?>(value: c.id, child: Text(c.name))),
+                    ],
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedParentId = val;
+                        if (val != null) {
+                          final parentContainer = entities.where((e) => e.id == val).firstOrNull;
+                          if (parentContainer?.placeId != null) {
+                            _selectedPlaceId = parentContainer!.placeId;
+                          }
+                        }
+                      });
+                    },
+                  );
+                },
+                loading: () => const CircularProgressIndicator(),
+                error: (err, _) => Text('Error: $err'),
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // Location (Rule #1 - "Mundo", Rule #3 - Inherited if container set)
+            Text('Ubicación en tu Mundo', style: theme.textTheme.labelLarge),
+            const SizedBox(height: 8),
+            placesState.when(
+              data: (places) {
+                final bool isInheritedFromContainer = _selectedParentId != null;
+                return DropdownButtonFormField<String?>(
+                  initialValue: _selectedPlaceId,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.place_outlined),
+                    hintText: isInheritedFromContainer ? 'Heredado del contenedor' : 'Mundo',
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: _unitController,
-                    decoration: const InputDecoration(
-                      labelText: 'Unidad',
-                      hintText: 'Ej. piezas, kg, metros',
-                      prefixIcon: Icon(Icons.straighten),
-                    ),
-                  ),
-                ),
-              ],
+                  items: [
+                    const DropdownMenuItem<String?>(value: null, child: Text('Mundo')),
+                    ...places.map((p) => DropdownMenuItem<String?>(value: p.id, child: Text(p.name))),
+                  ],
+                  onChanged: isInheritedFromContainer ? null : (val) => setState(() => _selectedPlaceId = val),
+                );
+              },
+              loading: () => const CircularProgressIndicator(),
+              error: (err, _) => Text('Error: $err'),
             ),
             const SizedBox(height: 16),
+
+            // Quantities & Units (Rule #4 - Only for physical objects)
+            if (template.hasQuantity) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _qtyController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Cantidad',
+                        hintText: 'Ej. 10, 2.5',
+                        prefixIcon: Icon(Icons.numbers),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: _unitController,
+                      decoration: const InputDecoration(
+                        labelText: 'Unidad',
+                        hintText: 'Ej. piezas, kg, metros',
+                        prefixIcon: Icon(Icons.straighten),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
 
             // Custom Attributes trigger button & chip list
             Row(
@@ -353,34 +408,12 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
                 TextButton.icon(
                   onPressed: () async {
                     final res = await CustomAttributeEditorDialog.show(context, initialAttributes: _customAttrs);
-                    if (res != null) {
-                      setState(() => _customAttrs = res);
-                    }
+                    if (res != null) setState(() => _customAttrs = res);
                   },
                   icon: const Icon(Icons.tune, size: 16),
                   label: const Text('Administrar Atributos'),
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-
-            // Location
-            Text('Ubicación (Lugar)', style: theme.textTheme.labelLarge),
-            const SizedBox(height: 8),
-            placesState.when(
-              data: (places) {
-                return DropdownButtonFormField<String?>(
-                  initialValue: _selectedPlaceId,
-                  decoration: const InputDecoration(prefixIcon: Icon(Icons.place_outlined)),
-                  items: [
-                    const DropdownMenuItem<String?>(value: null, child: Text('Sin ubicación')),
-                    ...places.map((p) => DropdownMenuItem<String?>(value: p.id, child: Text(p.name))),
-                  ],
-                  onChanged: (val) => setState(() => _selectedPlaceId = val),
-                );
-              },
-              loading: () => const CircularProgressIndicator(),
-              error: (err, _) => Text('Error: $err'),
             ),
             const SizedBox(height: 16),
 

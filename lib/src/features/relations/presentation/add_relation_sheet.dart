@@ -160,16 +160,21 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           ),
           const SizedBox(height: 16),
 
-          // Target Entity Selector
+          // Target Entity Selector (Rule #9 - GUARDADO_EN targets only Places and Containers)
           Text('Destino del vínculo:', style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
           entitiesState.when(
             data: (entities) {
-              final candidates = entities.where((e) => e.id != widget.sourceEntity.id).toList();
+              List<WorldEntity> candidates = entities.where((e) => e.id != widget.sourceEntity.id).toList();
+              if (_relationType == 'GUARDADO_EN') {
+                candidates = candidates.where((e) => e.isPlace || e.isContainer).toList();
+              }
               if (candidates.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text('No hay otros elementos disponibles para relacionar.'),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(_relationType == 'GUARDADO_EN'
+                      ? 'No hay lugares ni contenedores disponibles para guardar este elemento.'
+                      : 'No hay otros elementos disponibles para relacionar.'),
                 );
               }
 

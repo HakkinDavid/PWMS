@@ -3,6 +3,447 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
+class $CatalogTableTable extends CatalogTable
+    with TableInfo<$CatalogTableTable, CatalogTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CatalogTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _brandMeta = const VerificationMeta('brand');
+  @override
+  late final GeneratedColumn<String> brand = GeneratedColumn<String>(
+      'brand', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _mainPhotoPathMeta =
+      const VerificationMeta('mainPhotoPath');
+  @override
+  late final GeneratedColumn<String> mainPhotoPath = GeneratedColumn<String>(
+      'main_photo_path', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _defaultTypeMeta =
+      const VerificationMeta('defaultType');
+  @override
+  late final GeneratedColumn<String> defaultType = GeneratedColumn<String>(
+      'default_type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('Objeto / Herramienta'));
+  static const VerificationMeta _barcodeMeta =
+      const VerificationMeta('barcode');
+  @override
+  late final GeneratedColumn<String> barcode = GeneratedColumn<String>(
+      'barcode', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        brand,
+        description,
+        mainPhotoPath,
+        defaultType,
+        barcode,
+        createdAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'catalog_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<CatalogTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('brand')) {
+      context.handle(
+          _brandMeta, brand.isAcceptableOrUnknown(data['brand']!, _brandMeta));
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('main_photo_path')) {
+      context.handle(
+          _mainPhotoPathMeta,
+          mainPhotoPath.isAcceptableOrUnknown(
+              data['main_photo_path']!, _mainPhotoPathMeta));
+    }
+    if (data.containsKey('default_type')) {
+      context.handle(
+          _defaultTypeMeta,
+          defaultType.isAcceptableOrUnknown(
+              data['default_type']!, _defaultTypeMeta));
+    }
+    if (data.containsKey('barcode')) {
+      context.handle(_barcodeMeta,
+          barcode.isAcceptableOrUnknown(data['barcode']!, _barcodeMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CatalogTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CatalogTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      brand: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}brand']),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      mainPhotoPath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}main_photo_path']),
+      defaultType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}default_type'])!,
+      barcode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}barcode']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $CatalogTableTable createAlias(String alias) {
+    return $CatalogTableTable(attachedDatabase, alias);
+  }
+}
+
+class CatalogTableData extends DataClass
+    implements Insertable<CatalogTableData> {
+  final String id;
+  final String name;
+  final String? brand;
+  final String? description;
+  final String? mainPhotoPath;
+  final String defaultType;
+  final String? barcode;
+  final DateTime createdAt;
+  const CatalogTableData(
+      {required this.id,
+      required this.name,
+      this.brand,
+      this.description,
+      this.mainPhotoPath,
+      required this.defaultType,
+      this.barcode,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || brand != null) {
+      map['brand'] = Variable<String>(brand);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || mainPhotoPath != null) {
+      map['main_photo_path'] = Variable<String>(mainPhotoPath);
+    }
+    map['default_type'] = Variable<String>(defaultType);
+    if (!nullToAbsent || barcode != null) {
+      map['barcode'] = Variable<String>(barcode);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  CatalogTableCompanion toCompanion(bool nullToAbsent) {
+    return CatalogTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      brand:
+          brand == null && nullToAbsent ? const Value.absent() : Value(brand),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      mainPhotoPath: mainPhotoPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mainPhotoPath),
+      defaultType: Value(defaultType),
+      barcode: barcode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(barcode),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory CatalogTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CatalogTableData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      brand: serializer.fromJson<String?>(json['brand']),
+      description: serializer.fromJson<String?>(json['description']),
+      mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
+      defaultType: serializer.fromJson<String>(json['defaultType']),
+      barcode: serializer.fromJson<String?>(json['barcode']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'brand': serializer.toJson<String?>(brand),
+      'description': serializer.toJson<String?>(description),
+      'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
+      'defaultType': serializer.toJson<String>(defaultType),
+      'barcode': serializer.toJson<String?>(barcode),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  CatalogTableData copyWith(
+          {String? id,
+          String? name,
+          Value<String?> brand = const Value.absent(),
+          Value<String?> description = const Value.absent(),
+          Value<String?> mainPhotoPath = const Value.absent(),
+          String? defaultType,
+          Value<String?> barcode = const Value.absent(),
+          DateTime? createdAt}) =>
+      CatalogTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        brand: brand.present ? brand.value : this.brand,
+        description: description.present ? description.value : this.description,
+        mainPhotoPath:
+            mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
+        defaultType: defaultType ?? this.defaultType,
+        barcode: barcode.present ? barcode.value : this.barcode,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  CatalogTableData copyWithCompanion(CatalogTableCompanion data) {
+    return CatalogTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      brand: data.brand.present ? data.brand.value : this.brand,
+      description:
+          data.description.present ? data.description.value : this.description,
+      mainPhotoPath: data.mainPhotoPath.present
+          ? data.mainPhotoPath.value
+          : this.mainPhotoPath,
+      defaultType:
+          data.defaultType.present ? data.defaultType.value : this.defaultType,
+      barcode: data.barcode.present ? data.barcode.value : this.barcode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CatalogTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('brand: $brand, ')
+          ..write('description: $description, ')
+          ..write('mainPhotoPath: $mainPhotoPath, ')
+          ..write('defaultType: $defaultType, ')
+          ..write('barcode: $barcode, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, brand, description, mainPhotoPath,
+      defaultType, barcode, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CatalogTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.brand == this.brand &&
+          other.description == this.description &&
+          other.mainPhotoPath == this.mainPhotoPath &&
+          other.defaultType == this.defaultType &&
+          other.barcode == this.barcode &&
+          other.createdAt == this.createdAt);
+}
+
+class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> brand;
+  final Value<String?> description;
+  final Value<String?> mainPhotoPath;
+  final Value<String> defaultType;
+  final Value<String?> barcode;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const CatalogTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.brand = const Value.absent(),
+    this.description = const Value.absent(),
+    this.mainPhotoPath = const Value.absent(),
+    this.defaultType = const Value.absent(),
+    this.barcode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CatalogTableCompanion.insert({
+    required String id,
+    required String name,
+    this.brand = const Value.absent(),
+    this.description = const Value.absent(),
+    this.mainPhotoPath = const Value.absent(),
+    this.defaultType = const Value.absent(),
+    this.barcode = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        createdAt = Value(createdAt);
+  static Insertable<CatalogTableData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? brand,
+    Expression<String>? description,
+    Expression<String>? mainPhotoPath,
+    Expression<String>? defaultType,
+    Expression<String>? barcode,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (brand != null) 'brand': brand,
+      if (description != null) 'description': description,
+      if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
+      if (defaultType != null) 'default_type': defaultType,
+      if (barcode != null) 'barcode': barcode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CatalogTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String?>? brand,
+      Value<String?>? description,
+      Value<String?>? mainPhotoPath,
+      Value<String>? defaultType,
+      Value<String?>? barcode,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return CatalogTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      brand: brand ?? this.brand,
+      description: description ?? this.description,
+      mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
+      defaultType: defaultType ?? this.defaultType,
+      barcode: barcode ?? this.barcode,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (brand.present) {
+      map['brand'] = Variable<String>(brand.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (mainPhotoPath.present) {
+      map['main_photo_path'] = Variable<String>(mainPhotoPath.value);
+    }
+    if (defaultType.present) {
+      map['default_type'] = Variable<String>(defaultType.value);
+    }
+    if (barcode.present) {
+      map['barcode'] = Variable<String>(barcode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CatalogTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('brand: $brand, ')
+          ..write('description: $description, ')
+          ..write('mainPhotoPath: $mainPhotoPath, ')
+          ..write('defaultType: $defaultType, ')
+          ..write('barcode: $barcode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $PlacesTableTable extends PlacesTable
     with TableInfo<$PlacesTableTable, PlacesTableData> {
   @override
@@ -368,6 +809,15 @@ class $EntitiesTableTable extends EntitiesTable
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _speciesIdMeta =
+      const VerificationMeta('speciesId');
+  @override
+  late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
+      'species_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES catalog_table (id)'));
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -469,6 +919,7 @@ class $EntitiesTableTable extends EntitiesTable
   @override
   List<GeneratedColumn> get $columns => [
         id,
+        speciesId,
         name,
         alias,
         type,
@@ -499,6 +950,10 @@ class $EntitiesTableTable extends EntitiesTable
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('species_id')) {
+      context.handle(_speciesIdMeta,
+          speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta));
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -587,6 +1042,8 @@ class $EntitiesTableTable extends EntitiesTable
     return EntitiesTableData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      speciesId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}species_id']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       alias: attachedDatabase.typeMapping
@@ -629,6 +1086,7 @@ class $EntitiesTableTable extends EntitiesTable
 class EntitiesTableData extends DataClass
     implements Insertable<EntitiesTableData> {
   final String id;
+  final String? speciesId;
   final String name;
   final String? alias;
   final String type;
@@ -646,6 +1104,7 @@ class EntitiesTableData extends DataClass
   final DateTime updatedAt;
   const EntitiesTableData(
       {required this.id,
+      this.speciesId,
       required this.name,
       this.alias,
       required this.type,
@@ -665,6 +1124,9 @@ class EntitiesTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    if (!nullToAbsent || speciesId != null) {
+      map['species_id'] = Variable<String>(speciesId);
+    }
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || alias != null) {
       map['alias'] = Variable<String>(alias);
@@ -702,6 +1164,9 @@ class EntitiesTableData extends DataClass
   EntitiesTableCompanion toCompanion(bool nullToAbsent) {
     return EntitiesTableCompanion(
       id: Value(id),
+      speciesId: speciesId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(speciesId),
       name: Value(name),
       alias:
           alias == null && nullToAbsent ? const Value.absent() : Value(alias),
@@ -737,6 +1202,7 @@ class EntitiesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return EntitiesTableData(
       id: serializer.fromJson<String>(json['id']),
+      speciesId: serializer.fromJson<String?>(json['speciesId']),
       name: serializer.fromJson<String>(json['name']),
       alias: serializer.fromJson<String?>(json['alias']),
       type: serializer.fromJson<String>(json['type']),
@@ -759,6 +1225,7 @@ class EntitiesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'speciesId': serializer.toJson<String?>(speciesId),
       'name': serializer.toJson<String>(name),
       'alias': serializer.toJson<String?>(alias),
       'type': serializer.toJson<String>(type),
@@ -779,6 +1246,7 @@ class EntitiesTableData extends DataClass
 
   EntitiesTableData copyWith(
           {String? id,
+          Value<String?> speciesId = const Value.absent(),
           String? name,
           Value<String?> alias = const Value.absent(),
           String? type,
@@ -796,6 +1264,7 @@ class EntitiesTableData extends DataClass
           DateTime? updatedAt}) =>
       EntitiesTableData(
         id: id ?? this.id,
+        speciesId: speciesId.present ? speciesId.value : this.speciesId,
         name: name ?? this.name,
         alias: alias.present ? alias.value : this.alias,
         type: type ?? this.type,
@@ -817,6 +1286,7 @@ class EntitiesTableData extends DataClass
   EntitiesTableData copyWithCompanion(EntitiesTableCompanion data) {
     return EntitiesTableData(
       id: data.id.present ? data.id.value : this.id,
+      speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
       name: data.name.present ? data.name.value : this.name,
       alias: data.alias.present ? data.alias.value : this.alias,
       type: data.type.present ? data.type.value : this.type,
@@ -846,6 +1316,7 @@ class EntitiesTableData extends DataClass
   String toString() {
     return (StringBuffer('EntitiesTableData(')
           ..write('id: $id, ')
+          ..write('speciesId: $speciesId, ')
           ..write('name: $name, ')
           ..write('alias: $alias, ')
           ..write('type: $type, ')
@@ -868,6 +1339,7 @@ class EntitiesTableData extends DataClass
   @override
   int get hashCode => Object.hash(
       id,
+      speciesId,
       name,
       alias,
       type,
@@ -888,6 +1360,7 @@ class EntitiesTableData extends DataClass
       identical(this, other) ||
       (other is EntitiesTableData &&
           other.id == this.id &&
+          other.speciesId == this.speciesId &&
           other.name == this.name &&
           other.alias == this.alias &&
           other.type == this.type &&
@@ -907,6 +1380,7 @@ class EntitiesTableData extends DataClass
 
 class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   final Value<String> id;
+  final Value<String?> speciesId;
   final Value<String> name;
   final Value<String?> alias;
   final Value<String> type;
@@ -925,6 +1399,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   final Value<int> rowid;
   const EntitiesTableCompanion({
     this.id = const Value.absent(),
+    this.speciesId = const Value.absent(),
     this.name = const Value.absent(),
     this.alias = const Value.absent(),
     this.type = const Value.absent(),
@@ -944,6 +1419,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   });
   EntitiesTableCompanion.insert({
     required String id,
+    this.speciesId = const Value.absent(),
     required String name,
     this.alias = const Value.absent(),
     required String type,
@@ -967,6 +1443,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
         updatedAt = Value(updatedAt);
   static Insertable<EntitiesTableData> custom({
     Expression<String>? id,
+    Expression<String>? speciesId,
     Expression<String>? name,
     Expression<String>? alias,
     Expression<String>? type,
@@ -986,6 +1463,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (speciesId != null) 'species_id': speciesId,
       if (name != null) 'name': name,
       if (alias != null) 'alias': alias,
       if (type != null) 'type': type,
@@ -1007,6 +1485,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
 
   EntitiesTableCompanion copyWith(
       {Value<String>? id,
+      Value<String?>? speciesId,
       Value<String>? name,
       Value<String?>? alias,
       Value<String>? type,
@@ -1025,6 +1504,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       Value<int>? rowid}) {
     return EntitiesTableCompanion(
       id: id ?? this.id,
+      speciesId: speciesId ?? this.speciesId,
       name: name ?? this.name,
       alias: alias ?? this.alias,
       type: type ?? this.type,
@@ -1049,6 +1529,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (speciesId.present) {
+      map['species_id'] = Variable<String>(speciesId.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -1105,6 +1588,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   String toString() {
     return (StringBuffer('EntitiesTableCompanion(')
           ..write('id: $id, ')
+          ..write('speciesId: $speciesId, ')
           ..write('name: $name, ')
           ..write('alias: $alias, ')
           ..write('type: $type, ')
@@ -2561,6 +3045,7 @@ class CustomTemplatesTableCompanion
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $CatalogTableTable catalogTable = $CatalogTableTable(this);
   late final $PlacesTableTable placesTable = $PlacesTableTable(this);
   late final $EntitiesTableTable entitiesTable = $EntitiesTableTable(this);
   late final $RelationsTableTable relationsTable = $RelationsTableTable(this);
@@ -2575,6 +3060,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+        catalogTable,
         placesTable,
         entitiesTable,
         relationsTable,
@@ -2584,6 +3070,309 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       ];
 }
 
+typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
+    Function({
+  required String id,
+  required String name,
+  Value<String?> brand,
+  Value<String?> description,
+  Value<String?> mainPhotoPath,
+  Value<String> defaultType,
+  Value<String?> barcode,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
+    Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String?> brand,
+  Value<String?> description,
+  Value<String?> mainPhotoPath,
+  Value<String> defaultType,
+  Value<String?> barcode,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+final class $$CatalogTableTableReferences extends BaseReferences<_$AppDatabase,
+    $CatalogTableTable, CatalogTableData> {
+  $$CatalogTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$EntitiesTableTable, List<EntitiesTableData>>
+      _entitiesTableRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.entitiesTable,
+              aliasName: $_aliasNameGenerator(
+                  db.catalogTable.id, db.entitiesTable.speciesId));
+
+  $$EntitiesTableTableProcessedTableManager get entitiesTableRefs {
+    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
+        .filter((f) => f.speciesId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_entitiesTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$CatalogTableTableFilterComposer
+    extends Composer<_$AppDatabase, $CatalogTableTable> {
+  $$CatalogTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get brand => $composableBuilder(
+      column: $table.brand, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get mainPhotoPath => $composableBuilder(
+      column: $table.mainPhotoPath, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get defaultType => $composableBuilder(
+      column: $table.defaultType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get barcode => $composableBuilder(
+      column: $table.barcode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> entitiesTableRefs(
+      Expression<bool> Function($$EntitiesTableTableFilterComposer f) f) {
+    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.speciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$CatalogTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $CatalogTableTable> {
+  $$CatalogTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get brand => $composableBuilder(
+      column: $table.brand, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get mainPhotoPath => $composableBuilder(
+      column: $table.mainPhotoPath,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get defaultType => $composableBuilder(
+      column: $table.defaultType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get barcode => $composableBuilder(
+      column: $table.barcode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$CatalogTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CatalogTableTable> {
+  $$CatalogTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get brand =>
+      $composableBuilder(column: $table.brand, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<String> get mainPhotoPath => $composableBuilder(
+      column: $table.mainPhotoPath, builder: (column) => column);
+
+  GeneratedColumn<String> get defaultType => $composableBuilder(
+      column: $table.defaultType, builder: (column) => column);
+
+  GeneratedColumn<String> get barcode =>
+      $composableBuilder(column: $table.barcode, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> entitiesTableRefs<T extends Object>(
+      Expression<T> Function($$EntitiesTableTableAnnotationComposer a) f) {
+    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.speciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$CatalogTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CatalogTableTable,
+    CatalogTableData,
+    $$CatalogTableTableFilterComposer,
+    $$CatalogTableTableOrderingComposer,
+    $$CatalogTableTableAnnotationComposer,
+    $$CatalogTableTableCreateCompanionBuilder,
+    $$CatalogTableTableUpdateCompanionBuilder,
+    (CatalogTableData, $$CatalogTableTableReferences),
+    CatalogTableData,
+    PrefetchHooks Function({bool entitiesTableRefs})> {
+  $$CatalogTableTableTableManager(_$AppDatabase db, $CatalogTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CatalogTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CatalogTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CatalogTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> brand = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String?> mainPhotoPath = const Value.absent(),
+            Value<String> defaultType = const Value.absent(),
+            Value<String?> barcode = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CatalogTableCompanion(
+            id: id,
+            name: name,
+            brand: brand,
+            description: description,
+            mainPhotoPath: mainPhotoPath,
+            defaultType: defaultType,
+            barcode: barcode,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            Value<String?> brand = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String?> mainPhotoPath = const Value.absent(),
+            Value<String> defaultType = const Value.absent(),
+            Value<String?> barcode = const Value.absent(),
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CatalogTableCompanion.insert(
+            id: id,
+            name: name,
+            brand: brand,
+            description: description,
+            mainPhotoPath: mainPhotoPath,
+            defaultType: defaultType,
+            barcode: barcode,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$CatalogTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({entitiesTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (entitiesTableRefs) db.entitiesTable
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (entitiesTableRefs)
+                    await $_getPrefetchedData<CatalogTableData,
+                            $CatalogTableTable, EntitiesTableData>(
+                        currentTable: table,
+                        referencedTable: $$CatalogTableTableReferences
+                            ._entitiesTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CatalogTableTableReferences(db, table, p0)
+                                .entitiesTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.speciesId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$CatalogTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $CatalogTableTable,
+    CatalogTableData,
+    $$CatalogTableTableFilterComposer,
+    $$CatalogTableTableOrderingComposer,
+    $$CatalogTableTableAnnotationComposer,
+    $$CatalogTableTableCreateCompanionBuilder,
+    $$CatalogTableTableUpdateCompanionBuilder,
+    (CatalogTableData, $$CatalogTableTableReferences),
+    CatalogTableData,
+    PrefetchHooks Function({bool entitiesTableRefs})>;
 typedef $$PlacesTableTableCreateCompanionBuilder = PlacesTableCompanion
     Function({
   required String id,
@@ -2860,6 +3649,7 @@ typedef $$PlacesTableTableProcessedTableManager = ProcessedTableManager<
 typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
     Function({
   required String id,
+  Value<String?> speciesId,
   required String name,
   Value<String?> alias,
   required String type,
@@ -2880,6 +3670,7 @@ typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
 typedef $$EntitiesTableTableUpdateCompanionBuilder = EntitiesTableCompanion
     Function({
   Value<String> id,
+  Value<String?> speciesId,
   Value<String> name,
   Value<String?> alias,
   Value<String> type,
@@ -2902,6 +3693,21 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
     $EntitiesTableTable, EntitiesTableData> {
   $$EntitiesTableTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
+
+  static $CatalogTableTable _speciesIdTable(_$AppDatabase db) =>
+      db.catalogTable.createAlias(
+          $_aliasNameGenerator(db.entitiesTable.speciesId, db.catalogTable.id));
+
+  $$CatalogTableTableProcessedTableManager? get speciesId {
+    final $_column = $_itemColumn<String>('species_id');
+    if ($_column == null) return null;
+    final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_speciesIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
 
   static $PlacesTableTable _placeIdTable(_$AppDatabase db) =>
       db.placesTable.createAlias(
@@ -3034,6 +3840,26 @@ class $$EntitiesTableTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
       column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  $$CatalogTableTableFilterComposer get speciesId {
+    final $$CatalogTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableFilterComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   $$PlacesTableTableFilterComposer get placeId {
     final $$PlacesTableTableFilterComposer composer = $composerBuilder(
@@ -3192,6 +4018,26 @@ class $$EntitiesTableTableOrderingComposer
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
       column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
 
+  $$CatalogTableTableOrderingComposer get speciesId {
+    final $$CatalogTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   $$PlacesTableTableOrderingComposer get placeId {
     final $$PlacesTableTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -3283,6 +4129,26 @@ class $$EntitiesTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$CatalogTableTableAnnotationComposer get speciesId {
+    final $$CatalogTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   $$PlacesTableTableAnnotationComposer get placeId {
     final $$PlacesTableTableAnnotationComposer composer = $composerBuilder(
@@ -3400,7 +4266,8 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
     (EntitiesTableData, $$EntitiesTableTableReferences),
     EntitiesTableData,
     PrefetchHooks Function(
-        {bool placeId,
+        {bool speciesId,
+        bool placeId,
         bool parentEntityId,
         bool sourceRelations,
         bool targetRelations,
@@ -3417,6 +4284,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               $$EntitiesTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
+            Value<String?> speciesId = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String?> alias = const Value.absent(),
             Value<String> type = const Value.absent(),
@@ -3436,6 +4304,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
           }) =>
               EntitiesTableCompanion(
             id: id,
+            speciesId: speciesId,
             name: name,
             alias: alias,
             type: type,
@@ -3455,6 +4324,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
+            Value<String?> speciesId = const Value.absent(),
             required String name,
             Value<String?> alias = const Value.absent(),
             required String type,
@@ -3474,6 +4344,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
           }) =>
               EntitiesTableCompanion.insert(
             id: id,
+            speciesId: speciesId,
             name: name,
             alias: alias,
             type: type,
@@ -3498,7 +4369,8 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {placeId = false,
+              {speciesId = false,
+              placeId = false,
               parentEntityId = false,
               sourceRelations = false,
               targetRelations = false,
@@ -3523,6 +4395,16 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
                       dynamic,
                       dynamic,
                       dynamic>>(state) {
+                if (speciesId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.speciesId,
+                    referencedTable:
+                        $$EntitiesTableTableReferences._speciesIdTable(db),
+                    referencedColumn:
+                        $$EntitiesTableTableReferences._speciesIdTable(db).id,
+                  ) as T;
+                }
                 if (placeId) {
                   state = state.withJoin(
                     currentTable: table,
@@ -3607,7 +4489,8 @@ typedef $$EntitiesTableTableProcessedTableManager = ProcessedTableManager<
     (EntitiesTableData, $$EntitiesTableTableReferences),
     EntitiesTableData,
     PrefetchHooks Function(
-        {bool placeId,
+        {bool speciesId,
+        bool placeId,
         bool parentEntityId,
         bool sourceRelations,
         bool targetRelations,
@@ -4666,6 +5549,8 @@ typedef $$CustomTemplatesTableTableProcessedTableManager
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$CatalogTableTableTableManager get catalogTable =>
+      $$CatalogTableTableTableManager(_db, _db.catalogTable);
   $$PlacesTableTableTableManager get placesTable =>
       $$PlacesTableTableTableManager(_db, _db.placesTable);
   $$EntitiesTableTableTableManager get entitiesTable =>

@@ -7,6 +7,7 @@ part 'world_entity.g.dart';
 class WorldEntity with _$WorldEntity {
   const factory WorldEntity({
     required String id,
+    String? speciesId, // Link to Universe Catalog species item
     required String name,
     String? alias,
     required String type,

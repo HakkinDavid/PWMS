@@ -9,6 +9,7 @@ part of 'world_entity.dart';
 _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
     _$WorldEntityImpl(
       id: json['id'] as String,
+      speciesId: json['speciesId'] as String?,
       name: json['name'] as String,
       alias: json['alias'] as String?,
       type: json['type'] as String,
@@ -34,6 +35,7 @@ _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$WorldEntityImplToJson(_$WorldEntityImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'speciesId': instance.speciesId,
       'name': instance.name,
       'alias': instance.alias,
       'type': instance.type,

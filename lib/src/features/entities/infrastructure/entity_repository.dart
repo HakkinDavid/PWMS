@@ -34,6 +34,7 @@ class EntityRepository implements IEntityRepository {
 
     return WorldEntity(
       id: row.id,
+      speciesId: row.speciesId,
       name: row.name,
       alias: row.alias,
       type: row.type,
@@ -114,7 +115,6 @@ class EntityRepository implements IEntityRepository {
     final cleanQuery = queryStr.toLowerCase().trim();
     if (cleanQuery.isEmpty) return getAllEntities();
 
-    // Fetch relations for relation-based search
     final relationsRows = await _db.select(_db.relationsTable).get();
     final allEntities = await getAllEntities();
 
@@ -130,7 +130,6 @@ class EntityRepository implements IEntityRepository {
         (entry) => entry.key.toLowerCase().contains(cleanQuery) || entry.value.toString().toLowerCase().contains(cleanQuery),
       );
 
-      // Relation search: check if linked entities match query
       final relationMatch = relationsRows.any((r) {
         if (r.sourceEntityId == e.id || r.targetEntityId == e.id) {
           if (r.relationType.toLowerCase().contains(cleanQuery)) return true;
@@ -147,14 +146,26 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> saveEntity(WorldEntity entity) async {
+    String? resolvedPlaceId = entity.placeId;
+
+    // Rule #3: Container location inheritance ("Seguirlo").
+    // If entity has a parent container assigned, force its location to match the parent container's location!
+    if (entity.parentEntityId != null) {
+      final parent = await getEntityById(entity.parentEntityId!);
+      if (parent != null && parent.placeId != null) {
+        resolvedPlaceId = parent.placeId;
+      }
+    }
+
     final companion = EntitiesTableCompanion(
       id: Value(entity.id),
+      speciesId: Value(entity.speciesId),
       name: Value(entity.name),
       alias: Value(entity.alias),
       type: Value(entity.type),
       mainPhotoPath: Value(entity.mainPhotoPath),
       notes: Value(entity.notes),
-      placeId: Value(entity.placeId),
+      placeId: Value(resolvedPlaceId),
       parentEntityId: Value(entity.parentEntityId),
       quantity: Value(entity.quantity),
       unit: Value(entity.unit),
@@ -174,8 +185,16 @@ class EntityRepository implements IEntityRepository {
     final entity = await getEntityById(entityId);
     if (entity == null) return;
 
+    String? resolvedPlaceId = newPlaceId;
+    if (newParentId != null) {
+      final parent = await getEntityById(newParentId);
+      if (parent != null && parent.placeId != null) {
+        resolvedPlaceId = parent.placeId;
+      }
+    }
+
     final updated = entity.copyWith(
-      placeId: newPlaceId,
+      placeId: resolvedPlaceId,
       parentEntityId: newParentId,
       updatedAt: DateTime.now(),
     );
@@ -184,8 +203,8 @@ class EntityRepository implements IEntityRepository {
     if (entity.isContainer || entity.isPlace) {
       final children = await getEntitiesByParent(entityId);
       for (final child in children) {
-        if (newPlaceId != child.placeId) {
-          await moveEntity(child.id, newPlaceId: newPlaceId, newParentId: child.parentEntityId);
+        if (resolvedPlaceId != child.placeId) {
+          await moveEntity(child.id, newPlaceId: resolvedPlaceId, newParentId: child.parentEntityId);
         }
       }
     }
