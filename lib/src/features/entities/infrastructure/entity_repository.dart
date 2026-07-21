@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/attachment.dart';
 import '../domain/custom_template.dart';
@@ -110,6 +111,44 @@ class EntityRepository implements IEntityRepository {
     );
 
     await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
+  }
+
+  // Rule #5: Auto-merge quantity if speciesId already exists at locationId!
+  @override
+  Future<WorldEntity> instantiateOrMerge(
+    String speciesId,
+    String? locationId,
+    double addQuantity, {
+    String? notes,
+    String? unit,
+  }) async {
+    final locationEntities = await getEntitiesByLocation(locationId);
+    final existing = locationEntities.where((e) => e.speciesId == speciesId).firstOrNull;
+
+    if (existing != null) {
+      final currentQty = existing.quantity ?? 1.0;
+      final updated = existing.copyWith(
+        quantity: currentQty + addQuantity,
+        notes: (notes != null && notes.isNotEmpty) ? notes : existing.notes,
+        unit: (unit != null && unit.isNotEmpty) ? unit : existing.unit,
+        updatedAt: DateTime.now(),
+      );
+      await saveEntity(updated);
+      return updated;
+    } else {
+      final newEntity = WorldEntity(
+        id: const Uuid().v4(),
+        speciesId: speciesId,
+        locationId: locationId,
+        quantity: addQuantity,
+        unit: unit,
+        notes: notes,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await saveEntity(newEntity);
+      return newEntity;
+    }
   }
 
   @override

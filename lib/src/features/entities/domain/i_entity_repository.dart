@@ -9,6 +9,13 @@ abstract class IEntityRepository {
   Future<List<WorldEntity>> getEntitiesByLocation(String? locationId);
   Future<List<WorldEntity>> searchEntities(String query);
   Future<void> saveEntity(WorldEntity entity);
+  Future<WorldEntity> instantiateOrMerge(
+    String speciesId,
+    String? locationId,
+    double addQuantity, {
+    String? notes,
+    String? unit,
+  });
   Future<void> moveEntity(String entityId, String? newLocationId);
   Future<void> deleteEntity(String id);
 

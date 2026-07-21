@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/presentation/create_entity_sheet.dart';
+import '../../entities/presentation/entity_tile.dart';
 import '../domain/location_node.dart';
+import 'location_tree_picker.dart';
 
 class LocationsGraphScreen extends ConsumerWidget {
   const LocationsGraphScreen({super.key});
@@ -102,10 +103,17 @@ class LocationsGraphScreen extends ConsumerWidget {
     );
   }
 
+  void _reparentLocationNode(BuildContext context, WidgetRef ref, LocationNode node) async {
+    final newParentId = await LocationTreePicker.show(context, initialSelectedId: node.parentLocationId);
+    if (newParentId == node.id) return; // Self-parenting check
+
+    await ref.read(locationRepositoryProvider).moveNode(node.id, newParentId);
+    ref.read(locationNodeListProvider.notifier).loadNodes();
+  }
+
   Widget _buildTreeTile(BuildContext context, WidgetRef ref, LocationNode node, List<LocationNode> allNodes, int depth) {
     final children = allNodes.where((n) => n.parentLocationId == node.id).toList();
     final entitiesState = ref.watch(entityListProvider);
-    final catalogState = ref.watch(catalogListProvider);
     final theme = Theme.of(context);
 
     int count = 0;
@@ -127,12 +135,17 @@ class LocationsGraphScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.add_location_alt_outlined),
+              icon: const Icon(Icons.drive_file_move_outlined, size: 20),
+              tooltip: AppStrings.move,
+              onPressed: () => _reparentLocationNode(context, ref, node),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add_location_alt_outlined, size: 20),
               tooltip: AppStrings.newSubLocationTitle,
               onPressed: () => _showCreateNodeModal(context, ref, parentId: node.id),
             ),
             IconButton(
-              icon: const Icon(Icons.add_circle_outline),
+              icon: const Icon(Icons.add_circle_outline, size: 20),
               tooltip: AppStrings.createObjectHere,
               onPressed: () {
                 CreateEntitySheet.show(context, initialLocationId: node.id);
@@ -149,7 +162,6 @@ class LocationsGraphScreen extends ConsumerWidget {
               ),
             ),
 
-          // Items inside this node
           ListTile(
             title: Text(AppStrings.storedObjectsTitle, style: theme.textTheme.labelLarge),
             trailing: TextButton.icon(
@@ -168,24 +180,12 @@ class LocationsGraphScreen extends ConsumerWidget {
                 );
               }
 
-              final catalogItems = catalogState.asData?.value ?? [];
-
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: nodeEntities.length,
                 itemBuilder: (ctx, i) {
-                  final ent = nodeEntities[i];
-                  final species = catalogItems.where((c) => c.id == ent.speciesId).firstOrNull;
-                  final name = species?.name ?? 'Objeto';
-
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                    leading: const Icon(Icons.inventory_2_outlined, size: 20),
-                    title: Text(name),
-                    subtitle: Text('Cantidad: ${ent.quantity ?? 1} ${ent.unit ?? ""}'),
-                    onTap: () => context.push('/entity/${ent.id}'),
-                  );
+                  return EntityTile(entity: nodeEntities[i]);
                 },
               );
             },

@@ -53,6 +53,15 @@ class LocationRepository {
     await _db.into(_db.locationsTable).insertOnConflictUpdate(companion);
   }
 
+  Future<void> moveNode(String nodeId, String? newParentLocationId) async {
+    final node = await getNodeById(nodeId);
+    if (node == null) return;
+    if (nodeId == newParentLocationId) return; // Prevent self-parenting
+
+    final updated = node.copyWith(parentLocationId: newParentLocationId);
+    await saveNode(updated);
+  }
+
   Future<void> deleteNode(String id) async {
     await (_db.delete(_db.locationsTable)..where((t) => t.id.equals(id))).go();
   }

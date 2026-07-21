@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/units_registry.dart';
 import '../../../core/providers/providers.dart';
-import '../../entities/presentation/create_entity_sheet.dart';
+import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
+import 'species_tile.dart';
 
 class CatalogScreen extends ConsumerWidget {
   const CatalogScreen({super.key});
@@ -15,6 +17,7 @@ class CatalogScreen extends ConsumerWidget {
     final descCtrl = TextEditingController();
     final barcodeCtrl = TextEditingController();
     String type = AppStrings.typeObject;
+    String defaultUnit = UnitsRegistry.countingUnits.first;
 
     showModalBottomSheet(
       context: context,
@@ -54,6 +57,7 @@ class CatalogScreen extends ConsumerWidget {
                   style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
+
                 TextField(
                   controller: nameCtrl,
                   autofocus: true,
@@ -63,6 +67,23 @@ class CatalogScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
+
+                // SI Unit Dropdown Selector
+                DropdownButtonFormField<String>(
+                  initialValue: defaultUnit,
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.unitLabel,
+                    prefixIcon: Icon(Icons.straighten),
+                  ),
+                  items: UnitsRegistry.allSiUnits
+                      .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                      .toList(),
+                  onChanged: (val) {
+                    if (val != null) defaultUnit = val;
+                  },
+                ),
+                const SizedBox(height: 12),
+
                 TextField(
                   controller: brandCtrl,
                   decoration: const InputDecoration(
@@ -71,6 +92,7 @@ class CatalogScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
+
                 TextField(
                   controller: barcodeCtrl,
                   decoration: const InputDecoration(
@@ -79,6 +101,7 @@ class CatalogScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
+
                 TextField(
                   controller: descCtrl,
                   maxLines: 2,
@@ -88,6 +111,7 @@ class CatalogScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
+
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -103,6 +127,7 @@ class CatalogScreen extends ConsumerWidget {
                         brand: brandCtrl.text.trim().isNotEmpty ? brandCtrl.text.trim() : null,
                         description: descCtrl.text.trim().isNotEmpty ? descCtrl.text.trim() : null,
                         barcode: barcodeCtrl.text.trim().isNotEmpty ? barcodeCtrl.text.trim() : null,
+                        defaultUnit: defaultUnit,
                         createdAt: DateTime.now(),
                       );
 
@@ -160,33 +185,20 @@ class CatalogScreen extends ConsumerWidget {
             );
           }
 
-          return ListView.separated(
+          return ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: items.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = items[index];
-              return Card(
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: CircleAvatar(
-                    backgroundColor: theme.colorScheme.primary.withAlpha(30),
-                    child: Icon(Icons.auto_awesome, color: theme.colorScheme.primary),
-                  ),
-                  title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('${item.brand ?? ""} • ${item.type}'),
-                  trailing: ElevatedButton.icon(
-                    onPressed: () {
-                      // Pass initialSpecies to pre-populate CreateEntitySheet!
-                      CreateEntitySheet.show(
-                        context,
-                        initialSpecies: item,
-                      );
-                    },
-                    icon: const Icon(Icons.add, size: 16),
-                    label: const Text(AppStrings.instantiateAction),
-                  ),
-                ),
+              return SpeciesTile(
+                species: item,
+                onInstantiate: () {
+                  // Pure instantiation: quantity & location ONLY!
+                  InstantiateSpeciesSheet.show(
+                    context,
+                    species: item,
+                  );
+                },
               );
             },
           );
