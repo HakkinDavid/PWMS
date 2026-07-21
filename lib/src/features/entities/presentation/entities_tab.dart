@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
-import 'create_entity_sheet.dart';
+import 'register_object_modal.dart';
 import 'entity_tile.dart';
 
 class EntitiesTab extends ConsumerStatefulWidget {
@@ -35,7 +35,7 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'fab_entities',
-        onPressed: () => CreateEntitySheet.show(context),
+        onPressed: () => RegisterObjectModal.show(context),
         tooltip: AppStrings.registerObjectTitle,
         child: const Icon(Icons.add),
       ),

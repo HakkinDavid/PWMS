@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/presentation/species_tile.dart';
-import '../../entities/presentation/create_entity_sheet.dart';
+import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/infrastructure/location_repository.dart';
 
@@ -466,7 +466,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'fab_home',
-        onPressed: () => CreateEntitySheet.show(context),
+        onPressed: () => RegisterObjectModal.show(context),
         tooltip: AppStrings.registerObjectTitle,
         child: const Icon(Icons.add),
       ),

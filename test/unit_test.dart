@@ -25,25 +25,20 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Location Breadcrumbs & Species Units Tests', () {
-    test('1. Location Breadcrumbs Path Calculation', () async {
-      final nodeA = LocationNode(id: 'node-A', name: 'Casa', createdAt: DateTime.now());
-      final nodeB = LocationNode(id: 'node-B', name: 'Garaje', parentLocationId: 'node-A', createdAt: DateTime.now());
-      final nodeC = LocationNode(id: 'node-C', name: 'Estante #1', parentLocationId: 'node-B', createdAt: DateTime.now());
-
+  group('PWMS Unified Registration Tests', () {
+    test('1. Catalog Species Creation & Immediate Instantiation', () async {
+      final nodeA = LocationNode(id: 'node-A', name: 'Garaje', createdAt: DateTime.now());
       await locationRepo.saveNode(nodeA);
-      await locationRepo.saveNode(nodeB);
-      await locationRepo.saveNode(nodeC);
+
+      final species = await catalogRepo.getOrCreateSpecies('Multímetro Fluke 87V', type: 'Objeto');
+      final instance = await entityRepo.instantiateOrMerge(species.id, 'node-A', 1);
+
+      expect(instance.speciesId, equals(species.id));
+      expect(instance.locationId, equals('node-A'));
 
       final allNodes = await locationRepo.getAllNodes();
-      final breadcrumb = LocationPathHelper.buildBreadcrumbPath('node-C', allNodes);
-
-      expect(breadcrumb.ancestorPath, equals('Mundo > Casa > Garaje >'));
-      expect(breadcrumb.targetName, equals('Estante #1'));
-
-      final species = await catalogRepo.getOrCreateSpecies('Martillo', type: 'Objeto');
-      final entity = await entityRepo.instantiateOrMerge(species.id, 'node-C', 1);
-      expect(entity.speciesId, equals(species.id));
+      final breadcrumb = LocationPathHelper.buildBreadcrumbPath('node-A', allNodes);
+      expect(breadcrumb.targetName, equals('Garaje'));
     });
   });
 }

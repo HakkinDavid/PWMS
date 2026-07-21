@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/world_entity.dart';
-import '../../entities/presentation/create_entity_sheet.dart';
+import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../domain/location_node.dart';
 import 'location_tree_picker.dart';
@@ -159,7 +159,7 @@ class LocationsGraphScreen extends ConsumerWidget {
               icon: const Icon(Icons.add_circle_outline, size: 20),
               tooltip: AppStrings.createObjectHere,
               onPressed: () {
-                CreateEntitySheet.show(context, initialLocationId: node.id);
+                RegisterObjectModal.show(context, initialLocationId: node.id);
               },
             ),
           ],
@@ -184,7 +184,7 @@ class LocationsGraphScreen extends ConsumerWidget {
           ListTile(
             title: Text(AppStrings.storedObjectsTitle, style: theme.textTheme.labelLarge),
             trailing: TextButton.icon(
-              onPressed: () => CreateEntitySheet.show(context, initialLocationId: node.id),
+              onPressed: () => RegisterObjectModal.show(context, initialLocationId: node.id),
               icon: const Icon(Icons.add, size: 16),
               label: const Text(AppStrings.createObjectHere),
             ),
