@@ -7,15 +7,21 @@ import '../domain/location_node.dart';
 
 class LocationTreePicker extends ConsumerStatefulWidget {
   final String? initialSelectedId;
+  final String? movingNodeId; // Node being moved (for cycle prevention)
   final ValueChanged<String?> onSelected;
 
   const LocationTreePicker({
     super.key,
     this.initialSelectedId,
+    this.movingNodeId,
     required this.onSelected,
   });
 
-  static Future<String?> show(BuildContext context, {String? initialSelectedId}) {
+  static Future<String?> show(
+    BuildContext context, {
+    String? initialSelectedId,
+    String? movingNodeId,
+  }) {
     String? result = initialSelectedId;
     return showModalBottomSheet<String?>(
       context: context,
@@ -39,6 +45,7 @@ class LocationTreePicker extends ConsumerStatefulWidget {
             height: MediaQuery.of(ctx).size.height * 0.65,
             child: LocationTreePicker(
               initialSelectedId: initialSelectedId,
+              movingNodeId: movingNodeId,
               onSelected: (selectedId) {
                 result = selectedId;
                 Navigator.pop(ctx, result);
@@ -97,6 +104,10 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
   }
 
   Widget _buildTreeNode(LocationNode node, List<LocationNode> allNodes, int depth) {
+    final locationRepo = ref.read(locationRepositoryProvider);
+    final bool canSelect = widget.movingNodeId == null ||
+        locationRepo.canMoveNode(widget.movingNodeId!, node.id, allNodes);
+
     final children = allNodes.where((n) => n.parentLocationId == node.id).toList();
     final isSelected = _selectedId == node.id;
     final theme = Theme.of(context);
@@ -105,10 +116,12 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: () {
-            setState(() => _selectedId = node.id);
-            widget.onSelected(node.id);
-          },
+          onTap: canSelect
+              ? () {
+                  setState(() => _selectedId = node.id);
+                  widget.onSelected(node.id);
+                }
+              : null,
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: EdgeInsets.only(left: 12.0 * depth + 8.0, right: 8.0, top: 8.0, bottom: 8.0),
@@ -121,7 +134,9 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
                 Icon(
                   children.isNotEmpty ? Icons.folder_open : Icons.location_on_outlined,
                   size: 20,
-                  color: isSelected ? theme.colorScheme.primary : theme.iconTheme.color,
+                  color: canSelect
+                      ? (isSelected ? theme.colorScheme.primary : theme.iconTheme.color)
+                      : Colors.grey.withAlpha(100),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -129,15 +144,18 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
                     node.name,
                     style: TextStyle(
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected ? theme.colorScheme.primary : null,
+                      color: canSelect
+                          ? (isSelected ? theme.colorScheme.primary : null)
+                          : Colors.grey,
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.add, size: 18),
-                  tooltip: AppStrings.newSubLocationTitle,
-                  onPressed: () => _showAddSubLocationDialog(context, node.id),
-                ),
+                if (canSelect)
+                  IconButton(
+                    icon: const Icon(Icons.add, size: 18),
+                    tooltip: AppStrings.newSubLocationTitle,
+                    onPressed: () => _showAddSubLocationDialog(context, node.id),
+                  ),
               ],
             ),
           ),

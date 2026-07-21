@@ -56,16 +56,20 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+              path: '/search',
+              builder: (context, state) => const SearchScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: '/history',
               builder: (context, state) => const HistoryTab(),
             ),
           ],
         ),
       ],
-    ),
-    GoRoute(
-      path: '/search',
-      builder: (context, state) => const SearchScreen(),
     ),
     GoRoute(
       path: '/entity/:id',

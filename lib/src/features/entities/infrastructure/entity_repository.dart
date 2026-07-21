@@ -113,7 +113,6 @@ class EntityRepository implements IEntityRepository {
     await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
   }
 
-  // Rule #5: Auto-merge quantity if speciesId already exists at locationId!
   @override
   Future<WorldEntity> instantiateOrMerge(
     String speciesId,
@@ -153,14 +152,40 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> moveEntity(String entityId, String? newLocationId) async {
-    final entity = await getEntityById(entityId);
-    if (entity == null) return;
+    await moveOrMergeEntity(entityId, newLocationId);
+  }
 
-    final updated = entity.copyWith(
-      locationId: newLocationId,
-      updatedAt: DateTime.now(),
-    );
-    await saveEntity(updated);
+  // Rule #5: Moving an object to newLocationId merges quantity if speciesId exists there!
+  @override
+  Future<WorldEntity?> moveOrMergeEntity(String entityId, String? newLocationId) async {
+    final entity = await getEntityById(entityId);
+    if (entity == null) return null;
+    if (entity.locationId == newLocationId) return entity;
+
+    final targetLocationEntities = await getEntitiesByLocation(newLocationId);
+    final existingAtTarget = targetLocationEntities.where((e) => e.speciesId == entity.speciesId && e.id != entityId).firstOrNull;
+
+    if (existingAtTarget != null) {
+      final targetQty = existingAtTarget.quantity ?? 1.0;
+      final moveQty = entity.quantity ?? 1.0;
+      final merged = existingAtTarget.copyWith(
+        quantity: targetQty + moveQty,
+        notes: (entity.notes != null && entity.notes!.isNotEmpty)
+            ? '${existingAtTarget.notes ?? ""}\n${entity.notes}'
+            : existingAtTarget.notes,
+        updatedAt: DateTime.now(),
+      );
+      await saveEntity(merged);
+      await deleteEntity(entityId); // Remove original row
+      return merged;
+    } else {
+      final updated = entity.copyWith(
+        locationId: newLocationId,
+        updatedAt: DateTime.now(),
+      );
+      await saveEntity(updated);
+      return updated;
+    }
   }
 
   @override

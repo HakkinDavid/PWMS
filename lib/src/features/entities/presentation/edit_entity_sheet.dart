@@ -57,16 +57,20 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
       final double? parsedQty = double.tryParse(_qtyController.text.trim());
       final String? parsedUnit = _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
 
-      final updatedEntity = widget.entity.copyWith(
-        locationId: _selectedLocationId,
-        quantity: parsedQty,
-        unit: parsedUnit,
-        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-        isArchived: _isArchived,
-        updatedAt: DateTime.now(),
-      );
+      final entityRepo = ref.read(entityRepositoryProvider);
+      final mergedOrUpdated = await entityRepo.moveOrMergeEntity(widget.entity.id, _selectedLocationId);
 
-      await ref.read(entityListProvider.notifier).saveEntity(updatedEntity);
+      if (mergedOrUpdated != null) {
+        final finalEntity = mergedOrUpdated.copyWith(
+          quantity: parsedQty ?? mergedOrUpdated.quantity,
+          unit: parsedUnit ?? mergedOrUpdated.unit,
+          notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : mergedOrUpdated.notes,
+          isArchived: _isArchived,
+          updatedAt: DateTime.now(),
+        );
+        await entityRepo.saveEntity(finalEntity);
+      }
+      ref.read(entityListProvider.notifier).loadEntities();
 
       if (mounted) {
         Navigator.pop(context);

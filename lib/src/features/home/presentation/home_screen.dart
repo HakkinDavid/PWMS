@@ -7,6 +7,7 @@ import '../../../core/providers/providers.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../entities/presentation/create_entity_sheet.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
+import '../../locations/infrastructure/location_repository.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -186,8 +187,8 @@ class HomeScreen extends ConsumerWidget {
                         // Sort nodes by item count descending
                         final sortedNodes = List.of(nodes)
                           ..sort((a, b) {
-                            final countA = allEntities.where((e) => e.locationId == a.id).length;
-                            final countB = allEntities.where((e) => e.locationId == b.id).length;
+                            final countA = LocationRepository.getRecursiveItemCount(a.id, nodes, allEntities);
+                            final countB = LocationRepository.getRecursiveItemCount(b.id, nodes, allEntities);
                             return countB.compareTo(countA);
                           });
 
@@ -205,7 +206,7 @@ class HomeScreen extends ConsumerWidget {
                           itemCount: topNodes.length,
                           itemBuilder: (context, index) {
                             final node = topNodes[index];
-                            final count = allEntities.where((e) => e.locationId == node.id).length;
+                            final count = LocationRepository.getRecursiveItemCount(node.id, nodes, allEntities);
 
                             return InkWell(
                               onTap: () => context.push('/locations'),
