@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'species_magnitude.dart';
 
 part 'catalog_item.freezed.dart';
 part 'catalog_item.g.dart';
@@ -15,6 +16,7 @@ class CatalogItem with _$CatalogItem {
     String? barcode,
     @Default({}) Map<String, dynamic> customAttributes,
     String? defaultUnit,
+    @Default([]) List<SpeciesMagnitude> magnitudes,
     @Default(false) bool isUnique,
     @Default(true) bool hasMonetaryValue,
     @Default('MXN') String defaultMonetaryCurrency,

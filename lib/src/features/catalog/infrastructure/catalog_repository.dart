@@ -2,20 +2,33 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../domain/catalog_item.dart';
+import '../domain/species_magnitude.dart';
 
 class CatalogRepository {
   final AppDatabase _db;
 
   CatalogRepository(this._db);
 
-  CatalogItem _mapToDomain(CatalogTableData row) {
+  Future<CatalogItem> _mapToDomain(CatalogTableData row) async {
     Map<String, dynamic> customAttrs = {};
     if (row.customAttributes.isNotEmpty) {
       try {
         customAttrs = Map<String, dynamic>.from(jsonDecode(row.customAttributes));
       } catch (_) {}
     }
+
+    // Query 4NF Species Magnitudes (1:N)
+    final magRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(row.id))).get();
+    final magnitudes = magRows.map((m) => SpeciesMagnitude(
+      id: m.id,
+      speciesId: m.speciesId,
+      propertyName: m.propertyName,
+      magnitudeValue: m.magnitudeValue,
+      unitSymbol: m.unitSymbol,
+      createdAt: m.createdAt,
+    )).toList();
 
     return CatalogItem(
       id: row.id,
@@ -27,6 +40,7 @@ class CatalogRepository {
       barcode: row.barcode,
       customAttributes: customAttrs,
       defaultUnit: row.defaultUnit,
+      magnitudes: magnitudes,
       isUnique: row.isUnique,
       hasMonetaryValue: row.hasMonetaryValue,
       defaultMonetaryCurrency: row.defaultMonetaryCurrency,
@@ -37,13 +51,17 @@ class CatalogRepository {
   Future<List<CatalogItem>> getAllCatalogItems() async {
     final query = _db.select(_db.catalogTable)..orderBy([(t) => OrderingTerm.asc(t.name)]);
     final rows = await query.get();
-    return rows.map(_mapToDomain).toList();
+    final List<CatalogItem> results = [];
+    for (final row in rows) {
+      results.add(await _mapToDomain(row));
+    }
+    return results;
   }
 
   Future<CatalogItem?> getCatalogItemById(String id) async {
     final query = _db.select(_db.catalogTable)..where((t) => t.id.equals(id));
     final row = await query.getSingleOrNull();
-    return row != null ? _mapToDomain(row) : null;
+    return row != null ? await _mapToDomain(row) : null;
   }
 
   Future<List<CatalogItem>> searchCatalog(String queryStr) async {
@@ -97,10 +115,15 @@ class CatalogRepository {
   }
 
   Future<void> saveCatalogItem(CatalogItem item) async {
+    // Single Source of Truth Rule Check: Unique species cannot have integer counting units ("pieza")
+    if (item.defaultUnit != null && !DomainRules.isUnitAllowedForSpecies(unitSymbol: item.defaultUnit!, isUnique: item.isUnique)) {
+      throw Exception('Una Especie Única no puede asociarse con la unidad "pieza" o unidades de conteo.');
+    }
+
     final all = await getAllCatalogItems();
     final existing = await getCatalogItemById(item.id);
 
-    // Rule #20: No two species can share exact same name or main photo!
+    // Rule: No duplicate name or main photo
     final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
     if (nameDup != null) {
       throw Exception('Ya existe una especie con el nombre "${item.name}"');
@@ -113,7 +136,6 @@ class CatalogRepository {
       }
     }
 
-    // Rule #4: Name and Type cannot be changed after species creation
     final finalName = existing != null ? existing.name : item.name.trim();
     final finalType = existing != null ? existing.type : item.type;
 
@@ -133,9 +155,23 @@ class CatalogRepository {
       createdAt: Value(item.createdAt),
     );
     await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);
+
+    // Persist 4NF Species Magnitudes (1:N)
+    await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(item.id))).go();
+    for (final mag in item.magnitudes) {
+      await _db.into(_db.speciesMagnitudesTable).insert(SpeciesMagnitudesTableCompanion(
+        id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
+        speciesId: Value(item.id),
+        propertyName: Value(mag.propertyName),
+        magnitudeValue: Value(mag.magnitudeValue),
+        unitSymbol: Value(mag.unitSymbol),
+        createdAt: Value(mag.createdAt),
+      ));
+    }
   }
 
   Future<void> deleteCatalogItem(String id) async {
+    await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(id))).go();
     await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(id))).go();
   }
 }

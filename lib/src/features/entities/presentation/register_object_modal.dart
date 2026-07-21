@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/units_registry.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/species_magnitude.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../domain/entity_template.dart';
 import 'instantiate_species_sheet.dart';
@@ -51,12 +52,15 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
   final _barcodeController = TextEditingController();
   final _descController = TextEditingController();
   String _selectedType = AppStrings.typeObject;
-  String _defaultUnit = UnitsRegistry.countingUnits.first;
+  String _defaultUnit = 'kg';
   bool _isUnique = false;
   bool _hasMonetaryValue = true;
   String _currency = 'MXN';
   XFile? _selectedImage;
   bool _isSaving = false;
+
+  // Multiplicity of Magnitudes
+  final List<SpeciesMagnitude> _additionalMagnitudes = [];
 
   final List<String> _entityTypes = [
     AppStrings.typeObject,
@@ -70,6 +74,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
   void initState() {
     super.initState();
     _isCreatingNewSpecies = widget.startInCreateSpecies;
+    _updateDefaultUnit();
   }
 
   @override
@@ -79,6 +84,13 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     _barcodeController.dispose();
     _descController.dispose();
     super.dispose();
+  }
+
+  void _updateDefaultUnit() {
+    final allowed = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
+    if (!allowed.contains(_defaultUnit)) {
+      _defaultUnit = allowed.first;
+    }
   }
 
   void _applySubgroupConstraints(String type) {
@@ -93,6 +105,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
       } else {
         _hasMonetaryValue = true;
       }
+      _updateDefaultUnit();
     });
   }
 
@@ -101,10 +114,13 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
       _selectedType = base.type;
       _brandController.text = base.brand ?? '';
       _descController.text = base.description ?? '';
-      _defaultUnit = base.defaultUnit ?? UnitsRegistry.countingUnits.first;
       _isUnique = base.isUnique;
       _hasMonetaryValue = base.hasMonetaryValue;
       _currency = base.defaultMonetaryCurrency;
+      _updateDefaultUnit();
+      if (base.defaultUnit != null && DomainRules.isUnitAllowedForSpecies(unitSymbol: base.defaultUnit!, isUnique: _isUnique)) {
+        _defaultUnit = base.defaultUnit!;
+      }
       _applySubgroupConstraints(base.type);
     });
   }
@@ -126,6 +142,16 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
       return;
     }
 
+    // Single Source of Truth Rule Check (Rule #8)
+    final template = EntityTemplateRegistry.getTemplate(_selectedType);
+    final effectiveUnique = template.isAlwaysUnique || _isUnique;
+    if (template.hasQuantity && !DomainRules.isUnitAllowedForSpecies(unitSymbol: _defaultUnit, isUnique: effectiveUnique)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Una Especie Única no puede asociarse con la unidad "pieza".')),
+      );
+      return;
+    }
+
     setState(() => _isSaving = true);
 
     try {
@@ -136,8 +162,6 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         relativePhotoPath = await storage.saveFile(_selectedImage!.path);
       }
 
-      final template = EntityTemplateRegistry.getTemplate(_selectedType);
-
       final newSpecies = CatalogItem(
         id: const Uuid().v4(),
         name: name,
@@ -146,7 +170,8 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
         barcode: template.hasBarcodeAndBrand && _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
         defaultUnit: template.hasQuantity ? _defaultUnit : null,
-        isUnique: template.isAlwaysUnique || _isUnique,
+        magnitudes: _additionalMagnitudes,
+        isUnique: effectiveUnique,
         hasMonetaryValue: template.hasMonetaryValue && _hasMonetaryValue,
         defaultMonetaryCurrency: _currency,
         mainPhotoPath: relativePhotoPath,
@@ -247,7 +272,6 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     );
   }
 
-  // Pathway 1: Browse existing catalog species
   Widget _buildBrowseCatalogView(BuildContext context, AsyncValue<List<CatalogItem>> catalogState) {
     return catalogState.when(
       data: (items) {
@@ -304,16 +328,16 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     );
   }
 
-  // Pathway 2: Create new species in catalog
   Widget _buildCreateSpeciesForm(BuildContext context, ThemeData theme, AsyncValue<List<CatalogItem>> catalogState) {
     final existingItems = catalogState.asData?.value ?? [];
     final template = EntityTemplateRegistry.getTemplate(_selectedType);
+    final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: template.isAlwaysUnique || _isUnique);
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Rule #19: Pre-populate from existing species template base
+          // Pre-populate from base template
           if (existingItems.isNotEmpty) ...[
             DropdownButtonFormField<CatalogItem?>(
               decoration: const InputDecoration(
@@ -361,11 +385,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               );
             },
             child: Container(
-              height: 80,
+              height: 75,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: theme.cardColor,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: theme.dividerColor),
                 image: _selectedImage != null
                     ? DecorationImage(
@@ -378,7 +402,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add_a_photo_outlined, size: 24, color: theme.colorScheme.primary),
+                        Icon(Icons.add_a_photo_outlined, size: 22, color: theme.colorScheme.primary),
                         const SizedBox(height: 2),
                         Text(
                           AppStrings.photoLabel,
@@ -421,7 +445,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
           ),
           const SizedBox(height: 10),
 
-          // Rule #6: Unique Checkbox (Locked for Documento, Proyecto, Recuerdo)
+          // Rule #6 & #8: Unique Checkbox (No "pieza" for unique species!)
           CheckboxListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
@@ -429,10 +453,14 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             value: template.isAlwaysUnique || _isUnique,
             onChanged: template.isAlwaysUnique
                 ? null
-                : (val) => setState(() => _isUnique = val ?? false),
+                : (val) {
+                    setState(() {
+                      _isUnique = val ?? false;
+                      _updateDefaultUnit();
+                    });
+                  },
           ),
 
-          // Rule #2: Monetary Value Checkbox
           if (template.hasMonetaryValue) ...[
             CheckboxListTile(
               contentPadding: EdgeInsets.zero,
@@ -457,15 +485,15 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             ],
           ],
 
-          // SI Unit Dropdown Selector (Only if template allows quantity)
+          // SI Unit Dropdown Selector (Filtered by DomainRules)
           if (template.hasQuantity) ...[
             DropdownButtonFormField<String>(
-              initialValue: _defaultUnit,
+              initialValue: allowedUnits.contains(_defaultUnit) ? _defaultUnit : allowedUnits.first,
               decoration: const InputDecoration(
                 labelText: AppStrings.unitLabel,
                 prefixIcon: Icon(Icons.straighten),
               ),
-              items: UnitsRegistry.allSiUnits
+              items: allowedUnits
                   .map((u) => DropdownMenuItem(value: u, child: Text(u)))
                   .toList(),
               onChanged: (val) {
@@ -475,7 +503,6 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             const SizedBox(height: 10),
           ],
 
-          // Brand & Barcode (Only for Objeto)
           if (template.hasBarcodeAndBrand) ...[
             TextField(
               controller: _brandController,

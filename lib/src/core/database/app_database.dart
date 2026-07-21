@@ -3,7 +3,7 @@ import 'package:drift_flutter/drift_flutter.dart';
 
 part 'app_database.g.dart';
 
-// Tables
+// 4NF Normalized Relational Tables
 
 class LocationsTable extends Table {
   TextColumn get id => text()();
@@ -36,6 +36,19 @@ class CatalogTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+// 4NF Table: Species Magnitudes & Physical Properties (1:N)
+class SpeciesMagnitudesTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get speciesId => text().references(CatalogTable, #id)();
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Magnitud Principal"
+  RealColumn get magnitudeValue => real()();
+  TextColumn get unitSymbol => text()();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 class EntitiesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
@@ -45,6 +58,18 @@ class EntitiesTable extends Table {
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// 4NF Table: Instance Magnitudes & Physical Properties (1:N)
+class InstanceMagnitudesTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get instanceId => text().references(EntitiesTable, #id)();
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Magnitud Principal"
+  RealColumn get magnitudeValue => real()();
+  TextColumn get unitSymbol => text()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -65,7 +90,7 @@ class RelationsTable extends Table {
 
 class AttachmentsTable extends Table {
   TextColumn get id => text()();
-  TextColumn get speciesId => text().references(CatalogTable, #id)(); // Belongs to Catalog Species!
+  TextColumn get speciesId => text().references(CatalogTable, #id)();
   TextColumn get filePath => text()();
   TextColumn get fileName => text()();
   TextColumn get fileType => text()();
@@ -79,9 +104,10 @@ class FinancialTransactionsTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
   TextColumn get entityId => text().nullable()();
-  TextColumn get transactionType => text()(); // 'increment', 'instantiation', 'sale', 'decrement'
+  TextColumn get transactionType => text()(); // 'acquisition', 'sale', 'adjustment'
   RealColumn get magnitudeDelta => real()();
-  RealColumn get amount => real()();
+  RealColumn get pricePerUnit => real().nullable()();
+  RealColumn get totalAmount => real()();
   TextColumn get currency => text().withDefault(const Constant('MXN'))(); // 'MXN' or 'USD'
   BoolColumn get isSale => boolean().withDefault(const Constant(false))();
   TextColumn get notes => text().nullable()();
@@ -117,7 +143,9 @@ class CustomTemplatesTable extends Table {
 @DriftDatabase(tables: [
   LocationsTable,
   CatalogTable,
+  SpeciesMagnitudesTable,
   EntitiesTable,
+  InstanceMagnitudesTable,
   RelationsTable,
   AttachmentsTable,
   FinancialTransactionsTable,

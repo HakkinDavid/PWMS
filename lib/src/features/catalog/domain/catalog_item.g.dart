@@ -18,6 +18,10 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
       customAttributes:
           json['customAttributes'] as Map<String, dynamic>? ?? const {},
       defaultUnit: json['defaultUnit'] as String?,
+      magnitudes: (json['magnitudes'] as List<dynamic>?)
+              ?.map((e) => SpeciesMagnitude.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       isUnique: json['isUnique'] as bool? ?? false,
       hasMonetaryValue: json['hasMonetaryValue'] as bool? ?? true,
       defaultMonetaryCurrency:
@@ -36,6 +40,7 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
       'barcode': instance.barcode,
       'customAttributes': instance.customAttributes,
       'defaultUnit': instance.defaultUnit,
+      'magnitudes': instance.magnitudes,
       'isUnique': instance.isUnique,
       'hasMonetaryValue': instance.hasMonetaryValue,
       'defaultMonetaryCurrency': instance.defaultMonetaryCurrency,

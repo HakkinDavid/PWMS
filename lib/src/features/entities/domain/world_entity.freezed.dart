@@ -25,8 +25,10 @@ mixin _$WorldEntity {
       throw _privateConstructorUsedError; // Link to Catalog species
   String? get locationId =>
       throw _privateConstructorUsedError; // Link to Location Graph node
-  double? get quantity => throw _privateConstructorUsedError; // Magnitud
+  double? get quantity =>
+      throw _privateConstructorUsedError; // Primary Magnitude value
   String? get unit => throw _privateConstructorUsedError;
+  List<InstanceMagnitude> get magnitudes => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
@@ -53,6 +55,7 @@ abstract class $WorldEntityCopyWith<$Res> {
       String? locationId,
       double? quantity,
       String? unit,
+      List<InstanceMagnitude> magnitudes,
       String? notes,
       DateTime createdAt,
       DateTime updatedAt});
@@ -78,6 +81,7 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
     Object? locationId = freezed,
     Object? quantity = freezed,
     Object? unit = freezed,
+    Object? magnitudes = null,
     Object? notes = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -103,6 +107,10 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String?,
+      magnitudes: null == magnitudes
+          ? _value.magnitudes
+          : magnitudes // ignore: cast_nullable_to_non_nullable
+              as List<InstanceMagnitude>,
       notes: freezed == notes
           ? _value.notes
           : notes // ignore: cast_nullable_to_non_nullable
@@ -133,6 +141,7 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
       String? locationId,
       double? quantity,
       String? unit,
+      List<InstanceMagnitude> magnitudes,
       String? notes,
       DateTime createdAt,
       DateTime updatedAt});
@@ -156,6 +165,7 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
     Object? locationId = freezed,
     Object? quantity = freezed,
     Object? unit = freezed,
+    Object? magnitudes = null,
     Object? notes = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -181,6 +191,10 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String?,
+      magnitudes: null == magnitudes
+          ? _value._magnitudes
+          : magnitudes // ignore: cast_nullable_to_non_nullable
+              as List<InstanceMagnitude>,
       notes: freezed == notes
           ? _value.notes
           : notes // ignore: cast_nullable_to_non_nullable
@@ -206,9 +220,11 @@ class _$WorldEntityImpl implements _WorldEntity {
       this.locationId,
       this.quantity,
       this.unit,
+      final List<InstanceMagnitude> magnitudes = const [],
       this.notes,
       required this.createdAt,
-      required this.updatedAt});
+      required this.updatedAt})
+      : _magnitudes = magnitudes;
 
   factory _$WorldEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$WorldEntityImplFromJson(json);
@@ -223,9 +239,18 @@ class _$WorldEntityImpl implements _WorldEntity {
 // Link to Location Graph node
   @override
   final double? quantity;
-// Magnitud
+// Primary Magnitude value
   @override
   final String? unit;
+  final List<InstanceMagnitude> _magnitudes;
+  @override
+  @JsonKey()
+  List<InstanceMagnitude> get magnitudes {
+    if (_magnitudes is EqualUnmodifiableListView) return _magnitudes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_magnitudes);
+  }
+
   @override
   final String? notes;
   @override
@@ -235,7 +260,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, quantity: $quantity, unit: $unit, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, quantity: $quantity, unit: $unit, magnitudes: $magnitudes, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -251,6 +276,8 @@ class _$WorldEntityImpl implements _WorldEntity {
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
+            const DeepCollectionEquality()
+                .equals(other._magnitudes, _magnitudes) &&
             (identical(other.notes, notes) || other.notes == notes) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
@@ -260,8 +287,17 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, speciesId, locationId,
-      quantity, unit, notes, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      speciesId,
+      locationId,
+      quantity,
+      unit,
+      const DeepCollectionEquality().hash(_magnitudes),
+      notes,
+      createdAt,
+      updatedAt);
 
   /// Create a copy of WorldEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -286,6 +322,7 @@ abstract class _WorldEntity implements WorldEntity {
       final String? locationId,
       final double? quantity,
       final String? unit,
+      final List<InstanceMagnitude> magnitudes,
       final String? notes,
       required final DateTime createdAt,
       required final DateTime updatedAt}) = _$WorldEntityImpl;
@@ -300,9 +337,11 @@ abstract class _WorldEntity implements WorldEntity {
   @override
   String? get locationId; // Link to Location Graph node
   @override
-  double? get quantity; // Magnitud
+  double? get quantity; // Primary Magnitude value
   @override
   String? get unit;
+  @override
+  List<InstanceMagnitude> get magnitudes;
   @override
   String? get notes;
   @override

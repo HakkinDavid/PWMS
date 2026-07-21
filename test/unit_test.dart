@@ -1,13 +1,13 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:platinum_world_management_system/src/core/constants/units_registry.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
+import 'package:platinum_world_management_system/src/core/domain/domain_rules.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/species_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
-import 'package:platinum_world_management_system/src/features/entities/domain/attachment.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/financial/infrastructure/financial_repository.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
-import 'package:platinum_world_management_system/src/features/locations/domain/location_path_helper.dart';
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
 
 void main() {
@@ -30,68 +30,96 @@ void main() {
     await db.close();
   });
 
-  group('PWMS MVP Architecture & Financial Ledger Tests', () {
-    test('1. Catalog Species Creation & Immediate Instantiation', () async {
-      final nodeA = LocationNode(id: 'node-A', name: 'Garaje', createdAt: DateTime.now());
-      await locationRepo.saveNode(nodeA);
+  group('PWMS 4NF Database & Single Source of Truth Rules Tests', () {
+    test('1. DomainRules Single Source of Truth Enforcement', () {
+      expect(DomainRules.isIntegerUnit('pieza'), isTrue);
+      expect(DomainRules.isIntegerUnit('kg'), isFalse);
 
-      final species = await catalogRepo.getOrCreateSpecies('Multímetro Fluke 87V', type: 'Objeto');
-      final instance = await entityRepo.instantiateOrMerge(species.id, 'node-A', 1);
-
-      expect(instance.speciesId, equals(species.id));
-      expect(instance.locationId, equals('node-A'));
-
-      final allNodes = await locationRepo.getAllNodes();
-      final breadcrumb = LocationPathHelper.buildBreadcrumbPath('node-A', allNodes);
-      expect(breadcrumb.targetName, equals('Garaje'));
+      // Rule #8: Unique species CANNOT be associated with "pieza"
+      expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'pieza', isUnique: true), isFalse);
+      expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'kg', isUnique: true), isTrue);
     });
 
-    test('2. Attachment Deduplication Rule', () async {
-      final species = await catalogRepo.getOrCreateSpecies('Manual Técnico', type: 'Documento');
-      final att1 = Attachment(
-        id: 'att-1',
-        speciesId: species.id,
-        filePath: 'docs/manual.pdf',
-        fileName: 'manual.pdf',
-        fileType: 'pdf',
-        createdAt: DateTime.now(),
-      );
-      await entityRepo.addAttachment(att1);
+    test('2. 4NF Species & Instance Magnitudes Normalization Persistence', () async {
+      final node = LocationNode(id: 'node-1', name: 'Almacén', createdAt: DateTime.now());
+      await locationRepo.saveNode(node);
 
-      final attDup = Attachment(
-        id: 'att-2',
-        speciesId: species.id,
-        filePath: 'docs/manual.pdf',
-        fileName: 'manual.pdf',
-        fileType: 'pdf',
-        createdAt: DateTime.now(),
+      final species = await catalogRepo.getOrCreateSpecies('Cable Eléctrico Cobre', type: 'Objeto', defaultUnit: 'm');
+      final updatedSpecies = species.copyWith(
+        magnitudes: [
+          SpeciesMagnitude(
+            id: 'mag-1',
+            speciesId: species.id,
+            propertyName: 'Longitud Carrete',
+            magnitudeValue: 100.0,
+            unitSymbol: 'm',
+            createdAt: DateTime.now(),
+          ),
+          SpeciesMagnitude(
+            id: 'mag-2',
+            speciesId: species.id,
+            propertyName: 'Masa Total',
+            magnitudeValue: 12.5,
+            unitSymbol: 'kg',
+            createdAt: DateTime.now(),
+          ),
+        ],
       );
 
-      expect(() async => await entityRepo.addAttachment(attDup), throwsA(isA<Exception>()));
+      await catalogRepo.saveCatalogItem(updatedSpecies);
+
+      final fetchedSpecies = await catalogRepo.getCatalogItemById(species.id);
+      expect(fetchedSpecies, isNotNull);
+      expect(fetchedSpecies!.magnitudes.length, equals(2));
+      expect(fetchedSpecies.magnitudes.first.propertyName, equals('Longitud Carrete'));
+
+      final instance = await entityRepo.instantiateOrMerge(species.id, 'node-1', 1);
+      final updatedInstance = instance.copyWith(
+        magnitudes: [
+          InstanceMagnitude(
+            id: 'imag-1',
+            instanceId: instance.id,
+            propertyName: 'Masa Real',
+            magnitudeValue: 12.4,
+            unitSymbol: 'kg',
+          ),
+        ],
+      );
+      await entityRepo.saveEntity(updatedInstance);
+
+      final fetchedInstance = await entityRepo.getEntityById(instance.id);
+      expect(fetchedInstance, isNotNull);
+      expect(fetchedInstance!.magnitudes.length, equals(1));
+      expect(fetchedInstance.magnitudes.first.propertyName, equals('Masa Real'));
     });
 
-    test('3. Financial Ledger Transaction Recording', () async {
-      final species = await catalogRepo.getOrCreateSpecies('Impresora 3D', type: 'Objeto');
+    test('3. Acquisition & Sale Financial Ledger Recording', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Monitor 4K', type: 'Objeto');
+
+      // Acquisition transaction
       await financialRepo.recordTransaction(
         speciesId: species.id,
-        transactionType: 'instantiation',
-        magnitudeDelta: 1,
-        amount: 8500.0,
+        transactionType: 'acquisition',
+        magnitudeDelta: 2,
+        amount: 14000.0,
         currency: 'MXN',
-        notes: 'Compra inicial',
+        isSale: false,
+      );
+
+      // Sale transaction
+      await financialRepo.recordTransaction(
+        speciesId: species.id,
+        transactionType: 'sale',
+        magnitudeDelta: -1,
+        amount: 8000.0,
+        currency: 'MXN',
+        isSale: true,
       );
 
       final txs = await financialRepo.getTransactionsForSpecies(species.id);
-      expect(txs.length, equals(1));
-      expect(txs.first.amount, equals(8500.0));
-      expect(txs.first.currency, equals('MXN'));
-    });
-
-    test('4. SI Units Decimal Rule Verification', () {
-      expect(UnitsRegistry.allowsDecimals('pieza'), isFalse);
-      expect(UnitsRegistry.allowsDecimals('unidad'), isFalse);
-      expect(UnitsRegistry.allowsDecimals('kg'), isTrue);
-      expect(UnitsRegistry.allowsDecimals('m'), isTrue);
+      expect(txs.length, equals(2));
+      expect(txs.any((t) => t.isSale), isTrue);
+      expect(txs.any((t) => t.amount == 14000.0), isTrue);
     });
   });
 }

@@ -5,6 +5,7 @@ import '../../../core/database/app_database.dart';
 import '../domain/attachment.dart';
 import '../domain/custom_template.dart';
 import '../domain/i_entity_repository.dart';
+import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 
 class EntityRepository implements IEntityRepository {
@@ -12,13 +13,23 @@ class EntityRepository implements IEntityRepository {
 
   EntityRepository(this._db);
 
-  WorldEntity _mapToDomain(EntitiesTableData row) {
+  Future<WorldEntity> _mapToDomain(EntitiesTableData row) async {
+    final magRows = await (_db.select(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(row.id))).get();
+    final magnitudes = magRows.map((m) => InstanceMagnitude(
+      id: m.id,
+      instanceId: m.instanceId,
+      propertyName: m.propertyName,
+      magnitudeValue: m.magnitudeValue,
+      unitSymbol: m.unitSymbol,
+    )).toList();
+
     return WorldEntity(
       id: row.id,
       speciesId: row.speciesId,
       locationId: row.locationId,
       quantity: row.quantity,
       unit: row.unit,
+      magnitudes: magnitudes,
       notes: row.notes,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
@@ -41,14 +52,18 @@ class EntityRepository implements IEntityRepository {
     final query = _db.select(_db.entitiesTable)
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
     final rows = await query.get();
-    return rows.map(_mapToDomain).toList();
+    final List<WorldEntity> results = [];
+    for (final row in rows) {
+      results.add(await _mapToDomain(row));
+    }
+    return results;
   }
 
   @override
   Future<WorldEntity?> getEntityById(String id) async {
     final query = _db.select(_db.entitiesTable)..where((t) => t.id.equals(id));
     final row = await query.getSingleOrNull();
-    return row != null ? _mapToDomain(row) : null;
+    return row != null ? await _mapToDomain(row) : null;
   }
 
   @override
@@ -57,7 +72,11 @@ class EntityRepository implements IEntityRepository {
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
       ..limit(limit);
     final rows = await query.get();
-    return rows.map(_mapToDomain).toList();
+    final List<WorldEntity> results = [];
+    for (final row in rows) {
+      results.add(await _mapToDomain(row));
+    }
+    return results;
   }
 
   @override
@@ -69,7 +88,11 @@ class EntityRepository implements IEntityRepository {
       query.where((t) => t.locationId.equals(locationId));
     }
     final rows = await query.get();
-    return rows.map(_mapToDomain).toList();
+    final List<WorldEntity> results = [];
+    for (final row in rows) {
+      results.add(await _mapToDomain(row));
+    }
+    return results;
   }
 
   @override
@@ -108,6 +131,18 @@ class EntityRepository implements IEntityRepository {
     );
 
     await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
+
+    // Persist 4NF Instance Magnitudes (1:N)
+    await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(entity.id))).go();
+    for (final mag in entity.magnitudes) {
+      await _db.into(_db.instanceMagnitudesTable).insert(InstanceMagnitudesTableCompanion(
+        id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
+        instanceId: Value(entity.id),
+        propertyName: Value(mag.propertyName),
+        magnitudeValue: Value(mag.magnitudeValue),
+        unitSymbol: Value(mag.unitSymbol),
+      ));
+    }
   }
 
   @override
@@ -187,6 +222,7 @@ class EntityRepository implements IEntityRepository {
   @override
   Future<void> deleteEntity(String id) async {
     await (_db.delete(_db.relationsTable)..where((t) => t.sourceEntityId.equals(id) | t.targetEntityId.equals(id))).go();
+    await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(id))).go();
     await (_db.delete(_db.entitiesTable)..where((t) => t.id.equals(id))).go();
   }
 
@@ -197,7 +233,6 @@ class EntityRepository implements IEntityRepository {
     return rows.map(_mapAttachmentToDomain).toList();
   }
 
-  // Rule #5: Attachment Deduplication
   @override
   Future<void> addAttachment(Attachment attachment) async {
     final existing = await getAttachmentsForSpecies(attachment.speciesId);

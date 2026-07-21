@@ -47,7 +47,7 @@ class AppStrings {
   static const notesLabel = 'Notas de instancia';
   static const descriptionLabel = 'Descripción técnica';
   static const brandLabel = 'Marca';
-  static const isUniqueLabel = 'Especie única (no permite duplicados)';
+  static const isUniqueLabel = 'Especie única';
   static const monetaryValueLabel = 'Valor monetario';
   static const currencyLabel = 'Moneda';
   static const isSaleLabel = '¿Registrar como venta?';

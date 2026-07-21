@@ -30,6 +30,7 @@ mixin _$CatalogItem {
   Map<String, dynamic> get customAttributes =>
       throw _privateConstructorUsedError;
   String? get defaultUnit => throw _privateConstructorUsedError;
+  List<SpeciesMagnitude> get magnitudes => throw _privateConstructorUsedError;
   bool get isUnique => throw _privateConstructorUsedError;
   bool get hasMonetaryValue => throw _privateConstructorUsedError;
   String get defaultMonetaryCurrency => throw _privateConstructorUsedError;
@@ -61,6 +62,7 @@ abstract class $CatalogItemCopyWith<$Res> {
       String? barcode,
       Map<String, dynamic> customAttributes,
       String? defaultUnit,
+      List<SpeciesMagnitude> magnitudes,
       bool isUnique,
       bool hasMonetaryValue,
       String defaultMonetaryCurrency,
@@ -91,6 +93,7 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
     Object? barcode = freezed,
     Object? customAttributes = null,
     Object? defaultUnit = freezed,
+    Object? magnitudes = null,
     Object? isUnique = null,
     Object? hasMonetaryValue = null,
     Object? defaultMonetaryCurrency = null,
@@ -133,6 +136,10 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
           ? _value.defaultUnit
           : defaultUnit // ignore: cast_nullable_to_non_nullable
               as String?,
+      magnitudes: null == magnitudes
+          ? _value.magnitudes
+          : magnitudes // ignore: cast_nullable_to_non_nullable
+              as List<SpeciesMagnitude>,
       isUnique: null == isUnique
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
@@ -171,6 +178,7 @@ abstract class _$$CatalogItemImplCopyWith<$Res>
       String? barcode,
       Map<String, dynamic> customAttributes,
       String? defaultUnit,
+      List<SpeciesMagnitude> magnitudes,
       bool isUnique,
       bool hasMonetaryValue,
       String defaultMonetaryCurrency,
@@ -199,6 +207,7 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
     Object? barcode = freezed,
     Object? customAttributes = null,
     Object? defaultUnit = freezed,
+    Object? magnitudes = null,
     Object? isUnique = null,
     Object? hasMonetaryValue = null,
     Object? defaultMonetaryCurrency = null,
@@ -241,6 +250,10 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
           ? _value.defaultUnit
           : defaultUnit // ignore: cast_nullable_to_non_nullable
               as String?,
+      magnitudes: null == magnitudes
+          ? _value._magnitudes
+          : magnitudes // ignore: cast_nullable_to_non_nullable
+              as List<SpeciesMagnitude>,
       isUnique: null == isUnique
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
@@ -274,11 +287,13 @@ class _$CatalogItemImpl implements _CatalogItem {
       this.barcode,
       final Map<String, dynamic> customAttributes = const {},
       this.defaultUnit,
+      final List<SpeciesMagnitude> magnitudes = const [],
       this.isUnique = false,
       this.hasMonetaryValue = true,
       this.defaultMonetaryCurrency = 'MXN',
       required this.createdAt})
-      : _customAttributes = customAttributes;
+      : _customAttributes = customAttributes,
+        _magnitudes = magnitudes;
 
   factory _$CatalogItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$CatalogItemImplFromJson(json);
@@ -309,6 +324,15 @@ class _$CatalogItemImpl implements _CatalogItem {
 
   @override
   final String? defaultUnit;
+  final List<SpeciesMagnitude> _magnitudes;
+  @override
+  @JsonKey()
+  List<SpeciesMagnitude> get magnitudes {
+    if (_magnitudes is EqualUnmodifiableListView) return _magnitudes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_magnitudes);
+  }
+
   @override
   @JsonKey()
   final bool isUnique;
@@ -323,7 +347,7 @@ class _$CatalogItemImpl implements _CatalogItem {
 
   @override
   String toString() {
-    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, defaultUnit: $defaultUnit, isUnique: $isUnique, hasMonetaryValue: $hasMonetaryValue, defaultMonetaryCurrency: $defaultMonetaryCurrency, createdAt: $createdAt)';
+    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, defaultUnit: $defaultUnit, magnitudes: $magnitudes, isUnique: $isUnique, hasMonetaryValue: $hasMonetaryValue, defaultMonetaryCurrency: $defaultMonetaryCurrency, createdAt: $createdAt)';
   }
 
   @override
@@ -344,6 +368,8 @@ class _$CatalogItemImpl implements _CatalogItem {
                 .equals(other._customAttributes, _customAttributes) &&
             (identical(other.defaultUnit, defaultUnit) ||
                 other.defaultUnit == defaultUnit) &&
+            const DeepCollectionEquality()
+                .equals(other._magnitudes, _magnitudes) &&
             (identical(other.isUnique, isUnique) ||
                 other.isUnique == isUnique) &&
             (identical(other.hasMonetaryValue, hasMonetaryValue) ||
@@ -368,6 +394,7 @@ class _$CatalogItemImpl implements _CatalogItem {
       barcode,
       const DeepCollectionEquality().hash(_customAttributes),
       defaultUnit,
+      const DeepCollectionEquality().hash(_magnitudes),
       isUnique,
       hasMonetaryValue,
       defaultMonetaryCurrency,
@@ -400,6 +427,7 @@ abstract class _CatalogItem implements CatalogItem {
       final String? barcode,
       final Map<String, dynamic> customAttributes,
       final String? defaultUnit,
+      final List<SpeciesMagnitude> magnitudes,
       final bool isUnique,
       final bool hasMonetaryValue,
       final String defaultMonetaryCurrency,
@@ -426,6 +454,8 @@ abstract class _CatalogItem implements CatalogItem {
   Map<String, dynamic> get customAttributes;
   @override
   String? get defaultUnit;
+  @override
+  List<SpeciesMagnitude> get magnitudes;
   @override
   bool get isUnique;
   @override

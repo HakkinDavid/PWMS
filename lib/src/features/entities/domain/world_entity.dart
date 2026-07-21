@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'instance_magnitude.dart';
 
 part 'world_entity.freezed.dart';
 part 'world_entity.g.dart';
@@ -9,8 +10,9 @@ class WorldEntity with _$WorldEntity {
     required String id,
     required String speciesId, // Link to Catalog species
     String? locationId, // Link to Location Graph node
-    double? quantity, // Magnitud
+    double? quantity, // Primary Magnitude value
     String? unit,
+    @Default([]) List<InstanceMagnitude> magnitudes,
     String? notes,
     required DateTime createdAt,
     required DateTime updatedAt,

@@ -1026,6 +1026,372 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   }
 }
 
+class $SpeciesMagnitudesTableTable extends SpeciesMagnitudesTable
+    with TableInfo<$SpeciesMagnitudesTableTable, SpeciesMagnitudesTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SpeciesMagnitudesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _speciesIdMeta =
+      const VerificationMeta('speciesId');
+  @override
+  late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
+      'species_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES catalog_table (id)'));
+  static const VerificationMeta _propertyNameMeta =
+      const VerificationMeta('propertyName');
+  @override
+  late final GeneratedColumn<String> propertyName = GeneratedColumn<String>(
+      'property_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _magnitudeValueMeta =
+      const VerificationMeta('magnitudeValue');
+  @override
+  late final GeneratedColumn<double> magnitudeValue = GeneratedColumn<double>(
+      'magnitude_value', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _unitSymbolMeta =
+      const VerificationMeta('unitSymbol');
+  @override
+  late final GeneratedColumn<String> unitSymbol = GeneratedColumn<String>(
+      'unit_symbol', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, speciesId, propertyName, magnitudeValue, unitSymbol, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'species_magnitudes_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<SpeciesMagnitudesTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('species_id')) {
+      context.handle(_speciesIdMeta,
+          speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta));
+    } else if (isInserting) {
+      context.missing(_speciesIdMeta);
+    }
+    if (data.containsKey('property_name')) {
+      context.handle(
+          _propertyNameMeta,
+          propertyName.isAcceptableOrUnknown(
+              data['property_name']!, _propertyNameMeta));
+    } else if (isInserting) {
+      context.missing(_propertyNameMeta);
+    }
+    if (data.containsKey('magnitude_value')) {
+      context.handle(
+          _magnitudeValueMeta,
+          magnitudeValue.isAcceptableOrUnknown(
+              data['magnitude_value']!, _magnitudeValueMeta));
+    } else if (isInserting) {
+      context.missing(_magnitudeValueMeta);
+    }
+    if (data.containsKey('unit_symbol')) {
+      context.handle(
+          _unitSymbolMeta,
+          unitSymbol.isAcceptableOrUnknown(
+              data['unit_symbol']!, _unitSymbolMeta));
+    } else if (isInserting) {
+      context.missing(_unitSymbolMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SpeciesMagnitudesTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SpeciesMagnitudesTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      speciesId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
+      propertyName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}property_name'])!,
+      magnitudeValue: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}magnitude_value'])!,
+      unitSymbol: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}unit_symbol'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $SpeciesMagnitudesTableTable createAlias(String alias) {
+    return $SpeciesMagnitudesTableTable(attachedDatabase, alias);
+  }
+}
+
+class SpeciesMagnitudesTableData extends DataClass
+    implements Insertable<SpeciesMagnitudesTableData> {
+  final String id;
+  final String speciesId;
+  final String propertyName;
+  final double magnitudeValue;
+  final String unitSymbol;
+  final DateTime createdAt;
+  const SpeciesMagnitudesTableData(
+      {required this.id,
+      required this.speciesId,
+      required this.propertyName,
+      required this.magnitudeValue,
+      required this.unitSymbol,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['species_id'] = Variable<String>(speciesId);
+    map['property_name'] = Variable<String>(propertyName);
+    map['magnitude_value'] = Variable<double>(magnitudeValue);
+    map['unit_symbol'] = Variable<String>(unitSymbol);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SpeciesMagnitudesTableCompanion toCompanion(bool nullToAbsent) {
+    return SpeciesMagnitudesTableCompanion(
+      id: Value(id),
+      speciesId: Value(speciesId),
+      propertyName: Value(propertyName),
+      magnitudeValue: Value(magnitudeValue),
+      unitSymbol: Value(unitSymbol),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SpeciesMagnitudesTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SpeciesMagnitudesTableData(
+      id: serializer.fromJson<String>(json['id']),
+      speciesId: serializer.fromJson<String>(json['speciesId']),
+      propertyName: serializer.fromJson<String>(json['propertyName']),
+      magnitudeValue: serializer.fromJson<double>(json['magnitudeValue']),
+      unitSymbol: serializer.fromJson<String>(json['unitSymbol']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'speciesId': serializer.toJson<String>(speciesId),
+      'propertyName': serializer.toJson<String>(propertyName),
+      'magnitudeValue': serializer.toJson<double>(magnitudeValue),
+      'unitSymbol': serializer.toJson<String>(unitSymbol),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SpeciesMagnitudesTableData copyWith(
+          {String? id,
+          String? speciesId,
+          String? propertyName,
+          double? magnitudeValue,
+          String? unitSymbol,
+          DateTime? createdAt}) =>
+      SpeciesMagnitudesTableData(
+        id: id ?? this.id,
+        speciesId: speciesId ?? this.speciesId,
+        propertyName: propertyName ?? this.propertyName,
+        magnitudeValue: magnitudeValue ?? this.magnitudeValue,
+        unitSymbol: unitSymbol ?? this.unitSymbol,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  SpeciesMagnitudesTableData copyWithCompanion(
+      SpeciesMagnitudesTableCompanion data) {
+    return SpeciesMagnitudesTableData(
+      id: data.id.present ? data.id.value : this.id,
+      speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
+      propertyName: data.propertyName.present
+          ? data.propertyName.value
+          : this.propertyName,
+      magnitudeValue: data.magnitudeValue.present
+          ? data.magnitudeValue.value
+          : this.magnitudeValue,
+      unitSymbol:
+          data.unitSymbol.present ? data.unitSymbol.value : this.unitSymbol,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SpeciesMagnitudesTableData(')
+          ..write('id: $id, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('propertyName: $propertyName, ')
+          ..write('magnitudeValue: $magnitudeValue, ')
+          ..write('unitSymbol: $unitSymbol, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, speciesId, propertyName, magnitudeValue, unitSymbol, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SpeciesMagnitudesTableData &&
+          other.id == this.id &&
+          other.speciesId == this.speciesId &&
+          other.propertyName == this.propertyName &&
+          other.magnitudeValue == this.magnitudeValue &&
+          other.unitSymbol == this.unitSymbol &&
+          other.createdAt == this.createdAt);
+}
+
+class SpeciesMagnitudesTableCompanion
+    extends UpdateCompanion<SpeciesMagnitudesTableData> {
+  final Value<String> id;
+  final Value<String> speciesId;
+  final Value<String> propertyName;
+  final Value<double> magnitudeValue;
+  final Value<String> unitSymbol;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SpeciesMagnitudesTableCompanion({
+    this.id = const Value.absent(),
+    this.speciesId = const Value.absent(),
+    this.propertyName = const Value.absent(),
+    this.magnitudeValue = const Value.absent(),
+    this.unitSymbol = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SpeciesMagnitudesTableCompanion.insert({
+    required String id,
+    required String speciesId,
+    required String propertyName,
+    required double magnitudeValue,
+    required String unitSymbol,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        speciesId = Value(speciesId),
+        propertyName = Value(propertyName),
+        magnitudeValue = Value(magnitudeValue),
+        unitSymbol = Value(unitSymbol),
+        createdAt = Value(createdAt);
+  static Insertable<SpeciesMagnitudesTableData> custom({
+    Expression<String>? id,
+    Expression<String>? speciesId,
+    Expression<String>? propertyName,
+    Expression<double>? magnitudeValue,
+    Expression<String>? unitSymbol,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (speciesId != null) 'species_id': speciesId,
+      if (propertyName != null) 'property_name': propertyName,
+      if (magnitudeValue != null) 'magnitude_value': magnitudeValue,
+      if (unitSymbol != null) 'unit_symbol': unitSymbol,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SpeciesMagnitudesTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? speciesId,
+      Value<String>? propertyName,
+      Value<double>? magnitudeValue,
+      Value<String>? unitSymbol,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return SpeciesMagnitudesTableCompanion(
+      id: id ?? this.id,
+      speciesId: speciesId ?? this.speciesId,
+      propertyName: propertyName ?? this.propertyName,
+      magnitudeValue: magnitudeValue ?? this.magnitudeValue,
+      unitSymbol: unitSymbol ?? this.unitSymbol,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (speciesId.present) {
+      map['species_id'] = Variable<String>(speciesId.value);
+    }
+    if (propertyName.present) {
+      map['property_name'] = Variable<String>(propertyName.value);
+    }
+    if (magnitudeValue.present) {
+      map['magnitude_value'] = Variable<double>(magnitudeValue.value);
+    }
+    if (unitSymbol.present) {
+      map['unit_symbol'] = Variable<String>(unitSymbol.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SpeciesMagnitudesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('propertyName: $propertyName, ')
+          ..write('magnitudeValue: $magnitudeValue, ')
+          ..write('unitSymbol: $unitSymbol, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $EntitiesTableTable extends EntitiesTable
     with TableInfo<$EntitiesTableTable, EntitiesTableData> {
   @override
@@ -1450,6 +1816,338 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $InstanceMagnitudesTableTable extends InstanceMagnitudesTable
+    with TableInfo<$InstanceMagnitudesTableTable, InstanceMagnitudesTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InstanceMagnitudesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _instanceIdMeta =
+      const VerificationMeta('instanceId');
+  @override
+  late final GeneratedColumn<String> instanceId = GeneratedColumn<String>(
+      'instance_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES entities_table (id)'));
+  static const VerificationMeta _propertyNameMeta =
+      const VerificationMeta('propertyName');
+  @override
+  late final GeneratedColumn<String> propertyName = GeneratedColumn<String>(
+      'property_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _magnitudeValueMeta =
+      const VerificationMeta('magnitudeValue');
+  @override
+  late final GeneratedColumn<double> magnitudeValue = GeneratedColumn<double>(
+      'magnitude_value', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _unitSymbolMeta =
+      const VerificationMeta('unitSymbol');
+  @override
+  late final GeneratedColumn<String> unitSymbol = GeneratedColumn<String>(
+      'unit_symbol', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, instanceId, propertyName, magnitudeValue, unitSymbol];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'instance_magnitudes_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<InstanceMagnitudesTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('instance_id')) {
+      context.handle(
+          _instanceIdMeta,
+          instanceId.isAcceptableOrUnknown(
+              data['instance_id']!, _instanceIdMeta));
+    } else if (isInserting) {
+      context.missing(_instanceIdMeta);
+    }
+    if (data.containsKey('property_name')) {
+      context.handle(
+          _propertyNameMeta,
+          propertyName.isAcceptableOrUnknown(
+              data['property_name']!, _propertyNameMeta));
+    } else if (isInserting) {
+      context.missing(_propertyNameMeta);
+    }
+    if (data.containsKey('magnitude_value')) {
+      context.handle(
+          _magnitudeValueMeta,
+          magnitudeValue.isAcceptableOrUnknown(
+              data['magnitude_value']!, _magnitudeValueMeta));
+    } else if (isInserting) {
+      context.missing(_magnitudeValueMeta);
+    }
+    if (data.containsKey('unit_symbol')) {
+      context.handle(
+          _unitSymbolMeta,
+          unitSymbol.isAcceptableOrUnknown(
+              data['unit_symbol']!, _unitSymbolMeta));
+    } else if (isInserting) {
+      context.missing(_unitSymbolMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  InstanceMagnitudesTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InstanceMagnitudesTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      instanceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}instance_id'])!,
+      propertyName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}property_name'])!,
+      magnitudeValue: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}magnitude_value'])!,
+      unitSymbol: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}unit_symbol'])!,
+    );
+  }
+
+  @override
+  $InstanceMagnitudesTableTable createAlias(String alias) {
+    return $InstanceMagnitudesTableTable(attachedDatabase, alias);
+  }
+}
+
+class InstanceMagnitudesTableData extends DataClass
+    implements Insertable<InstanceMagnitudesTableData> {
+  final String id;
+  final String instanceId;
+  final String propertyName;
+  final double magnitudeValue;
+  final String unitSymbol;
+  const InstanceMagnitudesTableData(
+      {required this.id,
+      required this.instanceId,
+      required this.propertyName,
+      required this.magnitudeValue,
+      required this.unitSymbol});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['instance_id'] = Variable<String>(instanceId);
+    map['property_name'] = Variable<String>(propertyName);
+    map['magnitude_value'] = Variable<double>(magnitudeValue);
+    map['unit_symbol'] = Variable<String>(unitSymbol);
+    return map;
+  }
+
+  InstanceMagnitudesTableCompanion toCompanion(bool nullToAbsent) {
+    return InstanceMagnitudesTableCompanion(
+      id: Value(id),
+      instanceId: Value(instanceId),
+      propertyName: Value(propertyName),
+      magnitudeValue: Value(magnitudeValue),
+      unitSymbol: Value(unitSymbol),
+    );
+  }
+
+  factory InstanceMagnitudesTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InstanceMagnitudesTableData(
+      id: serializer.fromJson<String>(json['id']),
+      instanceId: serializer.fromJson<String>(json['instanceId']),
+      propertyName: serializer.fromJson<String>(json['propertyName']),
+      magnitudeValue: serializer.fromJson<double>(json['magnitudeValue']),
+      unitSymbol: serializer.fromJson<String>(json['unitSymbol']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'instanceId': serializer.toJson<String>(instanceId),
+      'propertyName': serializer.toJson<String>(propertyName),
+      'magnitudeValue': serializer.toJson<double>(magnitudeValue),
+      'unitSymbol': serializer.toJson<String>(unitSymbol),
+    };
+  }
+
+  InstanceMagnitudesTableData copyWith(
+          {String? id,
+          String? instanceId,
+          String? propertyName,
+          double? magnitudeValue,
+          String? unitSymbol}) =>
+      InstanceMagnitudesTableData(
+        id: id ?? this.id,
+        instanceId: instanceId ?? this.instanceId,
+        propertyName: propertyName ?? this.propertyName,
+        magnitudeValue: magnitudeValue ?? this.magnitudeValue,
+        unitSymbol: unitSymbol ?? this.unitSymbol,
+      );
+  InstanceMagnitudesTableData copyWithCompanion(
+      InstanceMagnitudesTableCompanion data) {
+    return InstanceMagnitudesTableData(
+      id: data.id.present ? data.id.value : this.id,
+      instanceId:
+          data.instanceId.present ? data.instanceId.value : this.instanceId,
+      propertyName: data.propertyName.present
+          ? data.propertyName.value
+          : this.propertyName,
+      magnitudeValue: data.magnitudeValue.present
+          ? data.magnitudeValue.value
+          : this.magnitudeValue,
+      unitSymbol:
+          data.unitSymbol.present ? data.unitSymbol.value : this.unitSymbol,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InstanceMagnitudesTableData(')
+          ..write('id: $id, ')
+          ..write('instanceId: $instanceId, ')
+          ..write('propertyName: $propertyName, ')
+          ..write('magnitudeValue: $magnitudeValue, ')
+          ..write('unitSymbol: $unitSymbol')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, instanceId, propertyName, magnitudeValue, unitSymbol);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InstanceMagnitudesTableData &&
+          other.id == this.id &&
+          other.instanceId == this.instanceId &&
+          other.propertyName == this.propertyName &&
+          other.magnitudeValue == this.magnitudeValue &&
+          other.unitSymbol == this.unitSymbol);
+}
+
+class InstanceMagnitudesTableCompanion
+    extends UpdateCompanion<InstanceMagnitudesTableData> {
+  final Value<String> id;
+  final Value<String> instanceId;
+  final Value<String> propertyName;
+  final Value<double> magnitudeValue;
+  final Value<String> unitSymbol;
+  final Value<int> rowid;
+  const InstanceMagnitudesTableCompanion({
+    this.id = const Value.absent(),
+    this.instanceId = const Value.absent(),
+    this.propertyName = const Value.absent(),
+    this.magnitudeValue = const Value.absent(),
+    this.unitSymbol = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InstanceMagnitudesTableCompanion.insert({
+    required String id,
+    required String instanceId,
+    required String propertyName,
+    required double magnitudeValue,
+    required String unitSymbol,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        instanceId = Value(instanceId),
+        propertyName = Value(propertyName),
+        magnitudeValue = Value(magnitudeValue),
+        unitSymbol = Value(unitSymbol);
+  static Insertable<InstanceMagnitudesTableData> custom({
+    Expression<String>? id,
+    Expression<String>? instanceId,
+    Expression<String>? propertyName,
+    Expression<double>? magnitudeValue,
+    Expression<String>? unitSymbol,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (instanceId != null) 'instance_id': instanceId,
+      if (propertyName != null) 'property_name': propertyName,
+      if (magnitudeValue != null) 'magnitude_value': magnitudeValue,
+      if (unitSymbol != null) 'unit_symbol': unitSymbol,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InstanceMagnitudesTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? instanceId,
+      Value<String>? propertyName,
+      Value<double>? magnitudeValue,
+      Value<String>? unitSymbol,
+      Value<int>? rowid}) {
+    return InstanceMagnitudesTableCompanion(
+      id: id ?? this.id,
+      instanceId: instanceId ?? this.instanceId,
+      propertyName: propertyName ?? this.propertyName,
+      magnitudeValue: magnitudeValue ?? this.magnitudeValue,
+      unitSymbol: unitSymbol ?? this.unitSymbol,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (instanceId.present) {
+      map['instance_id'] = Variable<String>(instanceId.value);
+    }
+    if (propertyName.present) {
+      map['property_name'] = Variable<String>(propertyName.value);
+    }
+    if (magnitudeValue.present) {
+      map['magnitude_value'] = Variable<double>(magnitudeValue.value);
+    }
+    if (unitSymbol.present) {
+      map['unit_symbol'] = Variable<String>(unitSymbol.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InstanceMagnitudesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('instanceId: $instanceId, ')
+          ..write('propertyName: $propertyName, ')
+          ..write('magnitudeValue: $magnitudeValue, ')
+          ..write('unitSymbol: $unitSymbol, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2177,10 +2875,17 @@ class $FinancialTransactionsTableTable extends FinancialTransactionsTable
   late final GeneratedColumn<double> magnitudeDelta = GeneratedColumn<double>(
       'magnitude_delta', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  static const VerificationMeta _pricePerUnitMeta =
+      const VerificationMeta('pricePerUnit');
   @override
-  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'amount', aliasedName, false,
+  late final GeneratedColumn<double> pricePerUnit = GeneratedColumn<double>(
+      'price_per_unit', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _totalAmountMeta =
+      const VerificationMeta('totalAmount');
+  @override
+  late final GeneratedColumn<double> totalAmount = GeneratedColumn<double>(
+      'total_amount', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _currencyMeta =
       const VerificationMeta('currency');
@@ -2217,7 +2922,8 @@ class $FinancialTransactionsTableTable extends FinancialTransactionsTable
         entityId,
         transactionType,
         magnitudeDelta,
-        amount,
+        pricePerUnit,
+        totalAmount,
         currency,
         isSale,
         notes,
@@ -2265,11 +2971,19 @@ class $FinancialTransactionsTableTable extends FinancialTransactionsTable
     } else if (isInserting) {
       context.missing(_magnitudeDeltaMeta);
     }
-    if (data.containsKey('amount')) {
-      context.handle(_amountMeta,
-          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
+    if (data.containsKey('price_per_unit')) {
+      context.handle(
+          _pricePerUnitMeta,
+          pricePerUnit.isAcceptableOrUnknown(
+              data['price_per_unit']!, _pricePerUnitMeta));
+    }
+    if (data.containsKey('total_amount')) {
+      context.handle(
+          _totalAmountMeta,
+          totalAmount.isAcceptableOrUnknown(
+              data['total_amount']!, _totalAmountMeta));
     } else if (isInserting) {
-      context.missing(_amountMeta);
+      context.missing(_totalAmountMeta);
     }
     if (data.containsKey('currency')) {
       context.handle(_currencyMeta,
@@ -2309,8 +3023,10 @@ class $FinancialTransactionsTableTable extends FinancialTransactionsTable
           DriftSqlType.string, data['${effectivePrefix}transaction_type'])!,
       magnitudeDelta: attachedDatabase.typeMapping.read(
           DriftSqlType.double, data['${effectivePrefix}magnitude_delta'])!,
-      amount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
+      pricePerUnit: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}price_per_unit']),
+      totalAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}total_amount'])!,
       currency: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}currency'])!,
       isSale: attachedDatabase.typeMapping
@@ -2335,7 +3051,8 @@ class FinancialTransactionsTableData extends DataClass
   final String? entityId;
   final String transactionType;
   final double magnitudeDelta;
-  final double amount;
+  final double? pricePerUnit;
+  final double totalAmount;
   final String currency;
   final bool isSale;
   final String? notes;
@@ -2346,7 +3063,8 @@ class FinancialTransactionsTableData extends DataClass
       this.entityId,
       required this.transactionType,
       required this.magnitudeDelta,
-      required this.amount,
+      this.pricePerUnit,
+      required this.totalAmount,
       required this.currency,
       required this.isSale,
       this.notes,
@@ -2361,7 +3079,10 @@ class FinancialTransactionsTableData extends DataClass
     }
     map['transaction_type'] = Variable<String>(transactionType);
     map['magnitude_delta'] = Variable<double>(magnitudeDelta);
-    map['amount'] = Variable<double>(amount);
+    if (!nullToAbsent || pricePerUnit != null) {
+      map['price_per_unit'] = Variable<double>(pricePerUnit);
+    }
+    map['total_amount'] = Variable<double>(totalAmount);
     map['currency'] = Variable<String>(currency);
     map['is_sale'] = Variable<bool>(isSale);
     if (!nullToAbsent || notes != null) {
@@ -2380,7 +3101,10 @@ class FinancialTransactionsTableData extends DataClass
           : Value(entityId),
       transactionType: Value(transactionType),
       magnitudeDelta: Value(magnitudeDelta),
-      amount: Value(amount),
+      pricePerUnit: pricePerUnit == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pricePerUnit),
+      totalAmount: Value(totalAmount),
       currency: Value(currency),
       isSale: Value(isSale),
       notes:
@@ -2398,7 +3122,8 @@ class FinancialTransactionsTableData extends DataClass
       entityId: serializer.fromJson<String?>(json['entityId']),
       transactionType: serializer.fromJson<String>(json['transactionType']),
       magnitudeDelta: serializer.fromJson<double>(json['magnitudeDelta']),
-      amount: serializer.fromJson<double>(json['amount']),
+      pricePerUnit: serializer.fromJson<double?>(json['pricePerUnit']),
+      totalAmount: serializer.fromJson<double>(json['totalAmount']),
       currency: serializer.fromJson<String>(json['currency']),
       isSale: serializer.fromJson<bool>(json['isSale']),
       notes: serializer.fromJson<String?>(json['notes']),
@@ -2414,7 +3139,8 @@ class FinancialTransactionsTableData extends DataClass
       'entityId': serializer.toJson<String?>(entityId),
       'transactionType': serializer.toJson<String>(transactionType),
       'magnitudeDelta': serializer.toJson<double>(magnitudeDelta),
-      'amount': serializer.toJson<double>(amount),
+      'pricePerUnit': serializer.toJson<double?>(pricePerUnit),
+      'totalAmount': serializer.toJson<double>(totalAmount),
       'currency': serializer.toJson<String>(currency),
       'isSale': serializer.toJson<bool>(isSale),
       'notes': serializer.toJson<String?>(notes),
@@ -2428,7 +3154,8 @@ class FinancialTransactionsTableData extends DataClass
           Value<String?> entityId = const Value.absent(),
           String? transactionType,
           double? magnitudeDelta,
-          double? amount,
+          Value<double?> pricePerUnit = const Value.absent(),
+          double? totalAmount,
           String? currency,
           bool? isSale,
           Value<String?> notes = const Value.absent(),
@@ -2439,7 +3166,9 @@ class FinancialTransactionsTableData extends DataClass
         entityId: entityId.present ? entityId.value : this.entityId,
         transactionType: transactionType ?? this.transactionType,
         magnitudeDelta: magnitudeDelta ?? this.magnitudeDelta,
-        amount: amount ?? this.amount,
+        pricePerUnit:
+            pricePerUnit.present ? pricePerUnit.value : this.pricePerUnit,
+        totalAmount: totalAmount ?? this.totalAmount,
         currency: currency ?? this.currency,
         isSale: isSale ?? this.isSale,
         notes: notes.present ? notes.value : this.notes,
@@ -2457,7 +3186,11 @@ class FinancialTransactionsTableData extends DataClass
       magnitudeDelta: data.magnitudeDelta.present
           ? data.magnitudeDelta.value
           : this.magnitudeDelta,
-      amount: data.amount.present ? data.amount.value : this.amount,
+      pricePerUnit: data.pricePerUnit.present
+          ? data.pricePerUnit.value
+          : this.pricePerUnit,
+      totalAmount:
+          data.totalAmount.present ? data.totalAmount.value : this.totalAmount,
       currency: data.currency.present ? data.currency.value : this.currency,
       isSale: data.isSale.present ? data.isSale.value : this.isSale,
       notes: data.notes.present ? data.notes.value : this.notes,
@@ -2473,7 +3206,8 @@ class FinancialTransactionsTableData extends DataClass
           ..write('entityId: $entityId, ')
           ..write('transactionType: $transactionType, ')
           ..write('magnitudeDelta: $magnitudeDelta, ')
-          ..write('amount: $amount, ')
+          ..write('pricePerUnit: $pricePerUnit, ')
+          ..write('totalAmount: $totalAmount, ')
           ..write('currency: $currency, ')
           ..write('isSale: $isSale, ')
           ..write('notes: $notes, ')
@@ -2483,8 +3217,18 @@ class FinancialTransactionsTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, speciesId, entityId, transactionType,
-      magnitudeDelta, amount, currency, isSale, notes, timestamp);
+  int get hashCode => Object.hash(
+      id,
+      speciesId,
+      entityId,
+      transactionType,
+      magnitudeDelta,
+      pricePerUnit,
+      totalAmount,
+      currency,
+      isSale,
+      notes,
+      timestamp);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2494,7 +3238,8 @@ class FinancialTransactionsTableData extends DataClass
           other.entityId == this.entityId &&
           other.transactionType == this.transactionType &&
           other.magnitudeDelta == this.magnitudeDelta &&
-          other.amount == this.amount &&
+          other.pricePerUnit == this.pricePerUnit &&
+          other.totalAmount == this.totalAmount &&
           other.currency == this.currency &&
           other.isSale == this.isSale &&
           other.notes == this.notes &&
@@ -2508,7 +3253,8 @@ class FinancialTransactionsTableCompanion
   final Value<String?> entityId;
   final Value<String> transactionType;
   final Value<double> magnitudeDelta;
-  final Value<double> amount;
+  final Value<double?> pricePerUnit;
+  final Value<double> totalAmount;
   final Value<String> currency;
   final Value<bool> isSale;
   final Value<String?> notes;
@@ -2520,7 +3266,8 @@ class FinancialTransactionsTableCompanion
     this.entityId = const Value.absent(),
     this.transactionType = const Value.absent(),
     this.magnitudeDelta = const Value.absent(),
-    this.amount = const Value.absent(),
+    this.pricePerUnit = const Value.absent(),
+    this.totalAmount = const Value.absent(),
     this.currency = const Value.absent(),
     this.isSale = const Value.absent(),
     this.notes = const Value.absent(),
@@ -2533,7 +3280,8 @@ class FinancialTransactionsTableCompanion
     this.entityId = const Value.absent(),
     required String transactionType,
     required double magnitudeDelta,
-    required double amount,
+    this.pricePerUnit = const Value.absent(),
+    required double totalAmount,
     this.currency = const Value.absent(),
     this.isSale = const Value.absent(),
     this.notes = const Value.absent(),
@@ -2543,7 +3291,7 @@ class FinancialTransactionsTableCompanion
         speciesId = Value(speciesId),
         transactionType = Value(transactionType),
         magnitudeDelta = Value(magnitudeDelta),
-        amount = Value(amount),
+        totalAmount = Value(totalAmount),
         timestamp = Value(timestamp);
   static Insertable<FinancialTransactionsTableData> custom({
     Expression<String>? id,
@@ -2551,7 +3299,8 @@ class FinancialTransactionsTableCompanion
     Expression<String>? entityId,
     Expression<String>? transactionType,
     Expression<double>? magnitudeDelta,
-    Expression<double>? amount,
+    Expression<double>? pricePerUnit,
+    Expression<double>? totalAmount,
     Expression<String>? currency,
     Expression<bool>? isSale,
     Expression<String>? notes,
@@ -2564,7 +3313,8 @@ class FinancialTransactionsTableCompanion
       if (entityId != null) 'entity_id': entityId,
       if (transactionType != null) 'transaction_type': transactionType,
       if (magnitudeDelta != null) 'magnitude_delta': magnitudeDelta,
-      if (amount != null) 'amount': amount,
+      if (pricePerUnit != null) 'price_per_unit': pricePerUnit,
+      if (totalAmount != null) 'total_amount': totalAmount,
       if (currency != null) 'currency': currency,
       if (isSale != null) 'is_sale': isSale,
       if (notes != null) 'notes': notes,
@@ -2579,7 +3329,8 @@ class FinancialTransactionsTableCompanion
       Value<String?>? entityId,
       Value<String>? transactionType,
       Value<double>? magnitudeDelta,
-      Value<double>? amount,
+      Value<double?>? pricePerUnit,
+      Value<double>? totalAmount,
       Value<String>? currency,
       Value<bool>? isSale,
       Value<String?>? notes,
@@ -2591,7 +3342,8 @@ class FinancialTransactionsTableCompanion
       entityId: entityId ?? this.entityId,
       transactionType: transactionType ?? this.transactionType,
       magnitudeDelta: magnitudeDelta ?? this.magnitudeDelta,
-      amount: amount ?? this.amount,
+      pricePerUnit: pricePerUnit ?? this.pricePerUnit,
+      totalAmount: totalAmount ?? this.totalAmount,
       currency: currency ?? this.currency,
       isSale: isSale ?? this.isSale,
       notes: notes ?? this.notes,
@@ -2618,8 +3370,11 @@ class FinancialTransactionsTableCompanion
     if (magnitudeDelta.present) {
       map['magnitude_delta'] = Variable<double>(magnitudeDelta.value);
     }
-    if (amount.present) {
-      map['amount'] = Variable<double>(amount.value);
+    if (pricePerUnit.present) {
+      map['price_per_unit'] = Variable<double>(pricePerUnit.value);
+    }
+    if (totalAmount.present) {
+      map['total_amount'] = Variable<double>(totalAmount.value);
     }
     if (currency.present) {
       map['currency'] = Variable<String>(currency.value);
@@ -2647,7 +3402,8 @@ class FinancialTransactionsTableCompanion
           ..write('entityId: $entityId, ')
           ..write('transactionType: $transactionType, ')
           ..write('magnitudeDelta: $magnitudeDelta, ')
-          ..write('amount: $amount, ')
+          ..write('pricePerUnit: $pricePerUnit, ')
+          ..write('totalAmount: $totalAmount, ')
           ..write('currency: $currency, ')
           ..write('isSale: $isSale, ')
           ..write('notes: $notes, ')
@@ -3335,7 +4091,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $LocationsTableTable locationsTable = $LocationsTableTable(this);
   late final $CatalogTableTable catalogTable = $CatalogTableTable(this);
+  late final $SpeciesMagnitudesTableTable speciesMagnitudesTable =
+      $SpeciesMagnitudesTableTable(this);
   late final $EntitiesTableTable entitiesTable = $EntitiesTableTable(this);
+  late final $InstanceMagnitudesTableTable instanceMagnitudesTable =
+      $InstanceMagnitudesTableTable(this);
   late final $RelationsTableTable relationsTable = $RelationsTableTable(this);
   late final $AttachmentsTableTable attachmentsTable =
       $AttachmentsTableTable(this);
@@ -3352,7 +4112,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         locationsTable,
         catalogTable,
+        speciesMagnitudesTable,
         entitiesTable,
+        instanceMagnitudesTable,
         relationsTable,
         attachmentsTable,
         financialTransactionsTable,
@@ -3767,6 +4529,25 @@ final class $$CatalogTableTableReferences extends BaseReferences<_$AppDatabase,
     $CatalogTableTable, CatalogTableData> {
   $$CatalogTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
+  static MultiTypedResultKey<$SpeciesMagnitudesTableTable,
+      List<SpeciesMagnitudesTableData>> _speciesMagnitudesTableRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.speciesMagnitudesTable,
+          aliasName: $_aliasNameGenerator(
+              db.catalogTable.id, db.speciesMagnitudesTable.speciesId));
+
+  $$SpeciesMagnitudesTableTableProcessedTableManager
+      get speciesMagnitudesTableRefs {
+    final manager = $$SpeciesMagnitudesTableTableTableManager(
+            $_db, $_db.speciesMagnitudesTable)
+        .filter((f) => f.speciesId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_speciesMagnitudesTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
   static MultiTypedResultKey<$EntitiesTableTable, List<EntitiesTableData>>
       _entitiesTableRefsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.entitiesTable,
@@ -3869,6 +4650,29 @@ class $$CatalogTableTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> speciesMagnitudesTableRefs(
+      Expression<bool> Function($$SpeciesMagnitudesTableTableFilterComposer f)
+          f) {
+    final $$SpeciesMagnitudesTableTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.speciesMagnitudesTable,
+            getReferencedColumn: (t) => t.speciesId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$SpeciesMagnitudesTableTableFilterComposer(
+                  $db: $db,
+                  $table: $db.speciesMagnitudesTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 
   Expression<bool> entitiesTableRefs(
       Expression<bool> Function($$EntitiesTableTableFilterComposer f) f) {
@@ -4038,6 +4842,29 @@ class $$CatalogTableTableAnnotationComposer
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
+  Expression<T> speciesMagnitudesTableRefs<T extends Object>(
+      Expression<T> Function($$SpeciesMagnitudesTableTableAnnotationComposer a)
+          f) {
+    final $$SpeciesMagnitudesTableTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.speciesMagnitudesTable,
+            getReferencedColumn: (t) => t.speciesId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$SpeciesMagnitudesTableTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.speciesMagnitudesTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
   Expression<T> entitiesTableRefs<T extends Object>(
       Expression<T> Function($$EntitiesTableTableAnnotationComposer a) f) {
     final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
@@ -4117,7 +4944,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
     (CatalogTableData, $$CatalogTableTableReferences),
     CatalogTableData,
     PrefetchHooks Function(
-        {bool entitiesTableRefs,
+        {bool speciesMagnitudesTableRefs,
+        bool entitiesTableRefs,
         bool attachmentsTableRefs,
         bool financialTransactionsTableRefs})> {
   $$CatalogTableTableTableManager(_$AppDatabase db, $CatalogTableTable table)
@@ -4201,12 +5029,14 @@ class $$CatalogTableTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {entitiesTableRefs = false,
+              {speciesMagnitudesTableRefs = false,
+              entitiesTableRefs = false,
               attachmentsTableRefs = false,
               financialTransactionsTableRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
+                if (speciesMagnitudesTableRefs) db.speciesMagnitudesTable,
                 if (entitiesTableRefs) db.entitiesTable,
                 if (attachmentsTableRefs) db.attachmentsTable,
                 if (financialTransactionsTableRefs)
@@ -4215,6 +5045,19 @@ class $$CatalogTableTableTableManager extends RootTableManager<
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
+                  if (speciesMagnitudesTableRefs)
+                    await $_getPrefetchedData<CatalogTableData,
+                            $CatalogTableTable, SpeciesMagnitudesTableData>(
+                        currentTable: table,
+                        referencedTable: $$CatalogTableTableReferences
+                            ._speciesMagnitudesTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CatalogTableTableReferences(db, table, p0)
+                                .speciesMagnitudesTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.speciesId == item.id),
+                        typedResults: items),
                   if (entitiesTableRefs)
                     await $_getPrefetchedData<CatalogTableData,
                             $CatalogTableTable, EntitiesTableData>(
@@ -4273,9 +5116,310 @@ typedef $$CatalogTableTableProcessedTableManager = ProcessedTableManager<
     (CatalogTableData, $$CatalogTableTableReferences),
     CatalogTableData,
     PrefetchHooks Function(
-        {bool entitiesTableRefs,
+        {bool speciesMagnitudesTableRefs,
+        bool entitiesTableRefs,
         bool attachmentsTableRefs,
         bool financialTransactionsTableRefs})>;
+typedef $$SpeciesMagnitudesTableTableCreateCompanionBuilder
+    = SpeciesMagnitudesTableCompanion Function({
+  required String id,
+  required String speciesId,
+  required String propertyName,
+  required double magnitudeValue,
+  required String unitSymbol,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$SpeciesMagnitudesTableTableUpdateCompanionBuilder
+    = SpeciesMagnitudesTableCompanion Function({
+  Value<String> id,
+  Value<String> speciesId,
+  Value<String> propertyName,
+  Value<double> magnitudeValue,
+  Value<String> unitSymbol,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+final class $$SpeciesMagnitudesTableTableReferences extends BaseReferences<
+    _$AppDatabase, $SpeciesMagnitudesTableTable, SpeciesMagnitudesTableData> {
+  $$SpeciesMagnitudesTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $CatalogTableTable _speciesIdTable(_$AppDatabase db) =>
+      db.catalogTable.createAlias($_aliasNameGenerator(
+          db.speciesMagnitudesTable.speciesId, db.catalogTable.id));
+
+  $$CatalogTableTableProcessedTableManager get speciesId {
+    final $_column = $_itemColumn<String>('species_id')!;
+
+    final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_speciesIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$SpeciesMagnitudesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SpeciesMagnitudesTableTable> {
+  $$SpeciesMagnitudesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get propertyName => $composableBuilder(
+      column: $table.propertyName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get magnitudeValue => $composableBuilder(
+      column: $table.magnitudeValue,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get unitSymbol => $composableBuilder(
+      column: $table.unitSymbol, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  $$CatalogTableTableFilterComposer get speciesId {
+    final $$CatalogTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableFilterComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SpeciesMagnitudesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SpeciesMagnitudesTableTable> {
+  $$SpeciesMagnitudesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get propertyName => $composableBuilder(
+      column: $table.propertyName,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get magnitudeValue => $composableBuilder(
+      column: $table.magnitudeValue,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get unitSymbol => $composableBuilder(
+      column: $table.unitSymbol, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  $$CatalogTableTableOrderingComposer get speciesId {
+    final $$CatalogTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SpeciesMagnitudesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SpeciesMagnitudesTableTable> {
+  $$SpeciesMagnitudesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get propertyName => $composableBuilder(
+      column: $table.propertyName, builder: (column) => column);
+
+  GeneratedColumn<double> get magnitudeValue => $composableBuilder(
+      column: $table.magnitudeValue, builder: (column) => column);
+
+  GeneratedColumn<String> get unitSymbol => $composableBuilder(
+      column: $table.unitSymbol, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$CatalogTableTableAnnotationComposer get speciesId {
+    final $$CatalogTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SpeciesMagnitudesTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SpeciesMagnitudesTableTable,
+    SpeciesMagnitudesTableData,
+    $$SpeciesMagnitudesTableTableFilterComposer,
+    $$SpeciesMagnitudesTableTableOrderingComposer,
+    $$SpeciesMagnitudesTableTableAnnotationComposer,
+    $$SpeciesMagnitudesTableTableCreateCompanionBuilder,
+    $$SpeciesMagnitudesTableTableUpdateCompanionBuilder,
+    (SpeciesMagnitudesTableData, $$SpeciesMagnitudesTableTableReferences),
+    SpeciesMagnitudesTableData,
+    PrefetchHooks Function({bool speciesId})> {
+  $$SpeciesMagnitudesTableTableTableManager(
+      _$AppDatabase db, $SpeciesMagnitudesTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SpeciesMagnitudesTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SpeciesMagnitudesTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SpeciesMagnitudesTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> speciesId = const Value.absent(),
+            Value<String> propertyName = const Value.absent(),
+            Value<double> magnitudeValue = const Value.absent(),
+            Value<String> unitSymbol = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SpeciesMagnitudesTableCompanion(
+            id: id,
+            speciesId: speciesId,
+            propertyName: propertyName,
+            magnitudeValue: magnitudeValue,
+            unitSymbol: unitSymbol,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String speciesId,
+            required String propertyName,
+            required double magnitudeValue,
+            required String unitSymbol,
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SpeciesMagnitudesTableCompanion.insert(
+            id: id,
+            speciesId: speciesId,
+            propertyName: propertyName,
+            magnitudeValue: magnitudeValue,
+            unitSymbol: unitSymbol,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$SpeciesMagnitudesTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({speciesId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (speciesId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.speciesId,
+                    referencedTable: $$SpeciesMagnitudesTableTableReferences
+                        ._speciesIdTable(db),
+                    referencedColumn: $$SpeciesMagnitudesTableTableReferences
+                        ._speciesIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$SpeciesMagnitudesTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $SpeciesMagnitudesTableTable,
+        SpeciesMagnitudesTableData,
+        $$SpeciesMagnitudesTableTableFilterComposer,
+        $$SpeciesMagnitudesTableTableOrderingComposer,
+        $$SpeciesMagnitudesTableTableAnnotationComposer,
+        $$SpeciesMagnitudesTableTableCreateCompanionBuilder,
+        $$SpeciesMagnitudesTableTableUpdateCompanionBuilder,
+        (SpeciesMagnitudesTableData, $$SpeciesMagnitudesTableTableReferences),
+        SpeciesMagnitudesTableData,
+        PrefetchHooks Function({bool speciesId})>;
 typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
     Function({
   required String id,
@@ -4334,6 +5478,25 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$InstanceMagnitudesTableTable,
+      List<InstanceMagnitudesTableData>> _instanceMagnitudesTableRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.instanceMagnitudesTable,
+          aliasName: $_aliasNameGenerator(
+              db.entitiesTable.id, db.instanceMagnitudesTable.instanceId));
+
+  $$InstanceMagnitudesTableTableProcessedTableManager
+      get instanceMagnitudesTableRefs {
+    final manager = $$InstanceMagnitudesTableTableTableManager(
+            $_db, $_db.instanceMagnitudesTable)
+        .filter((f) => f.instanceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_instanceMagnitudesTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
   }
 
   static MultiTypedResultKey<$RelationsTableTable, List<RelationsTableData>>
@@ -4434,6 +5597,29 @@ class $$EntitiesTableTableFilterComposer
                   $removeJoinBuilderFromRootComposer,
             ));
     return composer;
+  }
+
+  Expression<bool> instanceMagnitudesTableRefs(
+      Expression<bool> Function($$InstanceMagnitudesTableTableFilterComposer f)
+          f) {
+    final $$InstanceMagnitudesTableTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.instanceMagnitudesTable,
+            getReferencedColumn: (t) => t.instanceId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$InstanceMagnitudesTableTableFilterComposer(
+                  $db: $db,
+                  $table: $db.instanceMagnitudesTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
   }
 
   Expression<bool> sourceRelations(
@@ -4614,6 +5800,29 @@ class $$EntitiesTableTableAnnotationComposer
     return composer;
   }
 
+  Expression<T> instanceMagnitudesTableRefs<T extends Object>(
+      Expression<T> Function($$InstanceMagnitudesTableTableAnnotationComposer a)
+          f) {
+    final $$InstanceMagnitudesTableTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.instanceMagnitudesTable,
+            getReferencedColumn: (t) => t.instanceId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$InstanceMagnitudesTableTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.instanceMagnitudesTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
   Expression<T> sourceRelations<T extends Object>(
       Expression<T> Function($$RelationsTableTableAnnotationComposer a) f) {
     final $$RelationsTableTableAnnotationComposer composer = $composerBuilder(
@@ -4671,6 +5880,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
     PrefetchHooks Function(
         {bool speciesId,
         bool locationId,
+        bool instanceMagnitudesTableRefs,
         bool sourceRelations,
         bool targetRelations})> {
   $$EntitiesTableTableTableManager(_$AppDatabase db, $EntitiesTableTable table)
@@ -4736,11 +5946,13 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {speciesId = false,
               locationId = false,
+              instanceMagnitudesTableRefs = false,
               sourceRelations = false,
               targetRelations = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
+                if (instanceMagnitudesTableRefs) db.instanceMagnitudesTable,
                 if (sourceRelations) db.relationsTable,
                 if (targetRelations) db.relationsTable
               ],
@@ -4782,6 +5994,19 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
+                  if (instanceMagnitudesTableRefs)
+                    await $_getPrefetchedData<EntitiesTableData,
+                            $EntitiesTableTable, InstanceMagnitudesTableData>(
+                        currentTable: table,
+                        referencedTable: $$EntitiesTableTableReferences
+                            ._instanceMagnitudesTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$EntitiesTableTableReferences(db, table, p0)
+                                .instanceMagnitudesTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.instanceId == item.id),
+                        typedResults: items),
                   if (sourceRelations)
                     await $_getPrefetchedData<EntitiesTableData,
                             $EntitiesTableTable, RelationsTableData>(
@@ -4829,8 +6054,294 @@ typedef $$EntitiesTableTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function(
         {bool speciesId,
         bool locationId,
+        bool instanceMagnitudesTableRefs,
         bool sourceRelations,
         bool targetRelations})>;
+typedef $$InstanceMagnitudesTableTableCreateCompanionBuilder
+    = InstanceMagnitudesTableCompanion Function({
+  required String id,
+  required String instanceId,
+  required String propertyName,
+  required double magnitudeValue,
+  required String unitSymbol,
+  Value<int> rowid,
+});
+typedef $$InstanceMagnitudesTableTableUpdateCompanionBuilder
+    = InstanceMagnitudesTableCompanion Function({
+  Value<String> id,
+  Value<String> instanceId,
+  Value<String> propertyName,
+  Value<double> magnitudeValue,
+  Value<String> unitSymbol,
+  Value<int> rowid,
+});
+
+final class $$InstanceMagnitudesTableTableReferences extends BaseReferences<
+    _$AppDatabase, $InstanceMagnitudesTableTable, InstanceMagnitudesTableData> {
+  $$InstanceMagnitudesTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $EntitiesTableTable _instanceIdTable(_$AppDatabase db) =>
+      db.entitiesTable.createAlias($_aliasNameGenerator(
+          db.instanceMagnitudesTable.instanceId, db.entitiesTable.id));
+
+  $$EntitiesTableTableProcessedTableManager get instanceId {
+    final $_column = $_itemColumn<String>('instance_id')!;
+
+    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_instanceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$InstanceMagnitudesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $InstanceMagnitudesTableTable> {
+  $$InstanceMagnitudesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get propertyName => $composableBuilder(
+      column: $table.propertyName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get magnitudeValue => $composableBuilder(
+      column: $table.magnitudeValue,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get unitSymbol => $composableBuilder(
+      column: $table.unitSymbol, builder: (column) => ColumnFilters(column));
+
+  $$EntitiesTableTableFilterComposer get instanceId {
+    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.instanceId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$InstanceMagnitudesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $InstanceMagnitudesTableTable> {
+  $$InstanceMagnitudesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get propertyName => $composableBuilder(
+      column: $table.propertyName,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get magnitudeValue => $composableBuilder(
+      column: $table.magnitudeValue,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get unitSymbol => $composableBuilder(
+      column: $table.unitSymbol, builder: (column) => ColumnOrderings(column));
+
+  $$EntitiesTableTableOrderingComposer get instanceId {
+    final $$EntitiesTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.instanceId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$InstanceMagnitudesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $InstanceMagnitudesTableTable> {
+  $$InstanceMagnitudesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get propertyName => $composableBuilder(
+      column: $table.propertyName, builder: (column) => column);
+
+  GeneratedColumn<double> get magnitudeValue => $composableBuilder(
+      column: $table.magnitudeValue, builder: (column) => column);
+
+  GeneratedColumn<String> get unitSymbol => $composableBuilder(
+      column: $table.unitSymbol, builder: (column) => column);
+
+  $$EntitiesTableTableAnnotationComposer get instanceId {
+    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.instanceId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$InstanceMagnitudesTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $InstanceMagnitudesTableTable,
+    InstanceMagnitudesTableData,
+    $$InstanceMagnitudesTableTableFilterComposer,
+    $$InstanceMagnitudesTableTableOrderingComposer,
+    $$InstanceMagnitudesTableTableAnnotationComposer,
+    $$InstanceMagnitudesTableTableCreateCompanionBuilder,
+    $$InstanceMagnitudesTableTableUpdateCompanionBuilder,
+    (InstanceMagnitudesTableData, $$InstanceMagnitudesTableTableReferences),
+    InstanceMagnitudesTableData,
+    PrefetchHooks Function({bool instanceId})> {
+  $$InstanceMagnitudesTableTableTableManager(
+      _$AppDatabase db, $InstanceMagnitudesTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InstanceMagnitudesTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$InstanceMagnitudesTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$InstanceMagnitudesTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> instanceId = const Value.absent(),
+            Value<String> propertyName = const Value.absent(),
+            Value<double> magnitudeValue = const Value.absent(),
+            Value<String> unitSymbol = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              InstanceMagnitudesTableCompanion(
+            id: id,
+            instanceId: instanceId,
+            propertyName: propertyName,
+            magnitudeValue: magnitudeValue,
+            unitSymbol: unitSymbol,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String instanceId,
+            required String propertyName,
+            required double magnitudeValue,
+            required String unitSymbol,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              InstanceMagnitudesTableCompanion.insert(
+            id: id,
+            instanceId: instanceId,
+            propertyName: propertyName,
+            magnitudeValue: magnitudeValue,
+            unitSymbol: unitSymbol,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$InstanceMagnitudesTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({instanceId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (instanceId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.instanceId,
+                    referencedTable: $$InstanceMagnitudesTableTableReferences
+                        ._instanceIdTable(db),
+                    referencedColumn: $$InstanceMagnitudesTableTableReferences
+                        ._instanceIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$InstanceMagnitudesTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $InstanceMagnitudesTableTable,
+        InstanceMagnitudesTableData,
+        $$InstanceMagnitudesTableTableFilterComposer,
+        $$InstanceMagnitudesTableTableOrderingComposer,
+        $$InstanceMagnitudesTableTableAnnotationComposer,
+        $$InstanceMagnitudesTableTableCreateCompanionBuilder,
+        $$InstanceMagnitudesTableTableUpdateCompanionBuilder,
+        (InstanceMagnitudesTableData, $$InstanceMagnitudesTableTableReferences),
+        InstanceMagnitudesTableData,
+        PrefetchHooks Function({bool instanceId})>;
 typedef $$RelationsTableTableCreateCompanionBuilder = RelationsTableCompanion
     Function({
   required String id,
@@ -5488,7 +6999,8 @@ typedef $$FinancialTransactionsTableTableCreateCompanionBuilder
   Value<String?> entityId,
   required String transactionType,
   required double magnitudeDelta,
-  required double amount,
+  Value<double?> pricePerUnit,
+  required double totalAmount,
   Value<String> currency,
   Value<bool> isSale,
   Value<String?> notes,
@@ -5502,7 +7014,8 @@ typedef $$FinancialTransactionsTableTableUpdateCompanionBuilder
   Value<String?> entityId,
   Value<String> transactionType,
   Value<double> magnitudeDelta,
-  Value<double> amount,
+  Value<double?> pricePerUnit,
+  Value<double> totalAmount,
   Value<String> currency,
   Value<bool> isSale,
   Value<String?> notes,
@@ -5556,8 +7069,11 @@ class $$FinancialTransactionsTableTableFilterComposer
       column: $table.magnitudeDelta,
       builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<double> get amount => $composableBuilder(
-      column: $table.amount, builder: (column) => ColumnFilters(column));
+  ColumnFilters<double> get pricePerUnit => $composableBuilder(
+      column: $table.pricePerUnit, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get totalAmount => $composableBuilder(
+      column: $table.totalAmount, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get currency => $composableBuilder(
       column: $table.currency, builder: (column) => ColumnFilters(column));
@@ -5615,8 +7131,12 @@ class $$FinancialTransactionsTableTableOrderingComposer
       column: $table.magnitudeDelta,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<double> get amount => $composableBuilder(
-      column: $table.amount, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<double> get pricePerUnit => $composableBuilder(
+      column: $table.pricePerUnit,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get totalAmount => $composableBuilder(
+      column: $table.totalAmount, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get currency => $composableBuilder(
       column: $table.currency, builder: (column) => ColumnOrderings(column));
@@ -5672,8 +7192,11 @@ class $$FinancialTransactionsTableTableAnnotationComposer
   GeneratedColumn<double> get magnitudeDelta => $composableBuilder(
       column: $table.magnitudeDelta, builder: (column) => column);
 
-  GeneratedColumn<double> get amount =>
-      $composableBuilder(column: $table.amount, builder: (column) => column);
+  GeneratedColumn<double> get pricePerUnit => $composableBuilder(
+      column: $table.pricePerUnit, builder: (column) => column);
+
+  GeneratedColumn<double> get totalAmount => $composableBuilder(
+      column: $table.totalAmount, builder: (column) => column);
 
   GeneratedColumn<String> get currency =>
       $composableBuilder(column: $table.currency, builder: (column) => column);
@@ -5743,7 +7266,8 @@ class $$FinancialTransactionsTableTableTableManager extends RootTableManager<
             Value<String?> entityId = const Value.absent(),
             Value<String> transactionType = const Value.absent(),
             Value<double> magnitudeDelta = const Value.absent(),
-            Value<double> amount = const Value.absent(),
+            Value<double?> pricePerUnit = const Value.absent(),
+            Value<double> totalAmount = const Value.absent(),
             Value<String> currency = const Value.absent(),
             Value<bool> isSale = const Value.absent(),
             Value<String?> notes = const Value.absent(),
@@ -5756,7 +7280,8 @@ class $$FinancialTransactionsTableTableTableManager extends RootTableManager<
             entityId: entityId,
             transactionType: transactionType,
             magnitudeDelta: magnitudeDelta,
-            amount: amount,
+            pricePerUnit: pricePerUnit,
+            totalAmount: totalAmount,
             currency: currency,
             isSale: isSale,
             notes: notes,
@@ -5769,7 +7294,8 @@ class $$FinancialTransactionsTableTableTableManager extends RootTableManager<
             Value<String?> entityId = const Value.absent(),
             required String transactionType,
             required double magnitudeDelta,
-            required double amount,
+            Value<double?> pricePerUnit = const Value.absent(),
+            required double totalAmount,
             Value<String> currency = const Value.absent(),
             Value<bool> isSale = const Value.absent(),
             Value<String?> notes = const Value.absent(),
@@ -5782,7 +7308,8 @@ class $$FinancialTransactionsTableTableTableManager extends RootTableManager<
             entityId: entityId,
             transactionType: transactionType,
             magnitudeDelta: magnitudeDelta,
-            amount: amount,
+            pricePerUnit: pricePerUnit,
+            totalAmount: totalAmount,
             currency: currency,
             isSale: isSale,
             notes: notes,
@@ -6230,8 +7757,14 @@ class $AppDatabaseManager {
       $$LocationsTableTableTableManager(_db, _db.locationsTable);
   $$CatalogTableTableTableManager get catalogTable =>
       $$CatalogTableTableTableManager(_db, _db.catalogTable);
+  $$SpeciesMagnitudesTableTableTableManager get speciesMagnitudesTable =>
+      $$SpeciesMagnitudesTableTableTableManager(
+          _db, _db.speciesMagnitudesTable);
   $$EntitiesTableTableTableManager get entitiesTable =>
       $$EntitiesTableTableTableManager(_db, _db.entitiesTable);
+  $$InstanceMagnitudesTableTableTableManager get instanceMagnitudesTable =>
+      $$InstanceMagnitudesTableTableTableManager(
+          _db, _db.instanceMagnitudesTable);
   $$RelationsTableTableTableManager get relationsTable =>
       $$RelationsTableTableTableManager(_db, _db.relationsTable);
   $$AttachmentsTableTableTableManager get attachmentsTable =>

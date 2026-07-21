@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../domain/entity_template.dart';
@@ -63,11 +65,98 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     });
   }
 
+  Future<void> _promptAcquisitionCost(String instanceId, double addQty) async {
+    final amountCtrl = TextEditingController(text: '0.0');
+    String selectedCurrency = widget.species.defaultMonetaryCurrency;
+    bool isPerUnit = true;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (c, setStateDialog) => AlertDialog(
+          title: const Text('Costo de Adquisición'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: ChoiceChip(
+                      visualDensity: VisualDensity.compact,
+                      label: const Center(child: Text('Por pieza')),
+                      selected: isPerUnit,
+                      onSelected: (val) {
+                        if (val) setStateDialog(() => isPerUnit = true);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ChoiceChip(
+                      visualDensity: VisualDensity.compact,
+                      label: const Center(child: Text('Monto total')),
+                      selected: !isPerUnit,
+                      onSelected: (val) {
+                        if (val) setStateDialog(() => isPerUnit = false);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: amountCtrl,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: isPerUnit ? 'Precio por unidad' : 'Costo total registrado',
+                  prefixIcon: const Icon(Icons.attach_money),
+                ),
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                initialValue: selectedCurrency,
+                items: const [
+                  DropdownMenuItem(value: 'MXN', child: Text('MXN')),
+                  DropdownMenuItem(value: 'USD', child: Text('USD')),
+                ],
+                onChanged: (v) {
+                  if (v != null) setStateDialog(() => selectedCurrency = v);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Omitir')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text(AppStrings.save, style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result == true) {
+      final enteredAmount = double.tryParse(amountCtrl.text.trim()) ?? 0.0;
+      final totalAmount = isPerUnit ? (enteredAmount * addQty.abs()) : enteredAmount;
+
+      await ref.read(financialRepositoryProvider).recordTransaction(
+        speciesId: widget.species.id,
+        entityId: instanceId,
+        transactionType: 'acquisition',
+        magnitudeDelta: addQty,
+        amount: totalAmount,
+        currency: selectedCurrency,
+        isSale: false,
+      );
+    }
+  }
+
   Future<void> _confirmInstantiation() async {
     final template = EntityTemplateRegistry.getTemplate(widget.species.type);
 
-    // Single instance check for non-countable abstract templates
-    if (!template.hasQuantity) {
+    // Single instance check for non-countable abstract templates or unique species
+    if (!template.hasQuantity || widget.species.isUnique) {
       final existingEntities = ref.read(entityListProvider).asData?.value ?? [];
       final alreadyExists = existingEntities.any((e) => e.speciesId == widget.species.id);
       if (alreadyExists) {
@@ -99,6 +188,10 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       ref.read(entityListProvider.notifier).loadEntities();
       await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, widget.species.name, widget.species.type);
 
+      if (widget.species.hasMonetaryValue && mounted) {
+        await _promptAcquisitionCost(result.id, addQty);
+      }
+
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -124,6 +217,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
     final template = EntityTemplateRegistry.getTemplate(widget.species.type);
+    final isIntegerUnit = DomainRules.isIntegerUnit(widget.species.defaultUnit);
 
     String locationDisplayName = AppStrings.rootLocationName;
     if (_selectedLocationId != null) {
@@ -195,15 +289,29 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             ),
             const SizedBox(height: 16),
 
-            // Quantity (Only if template has quantity)
-            if (template.hasQuantity) ...[
-              TextField(
-                controller: _qtyController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: AppStrings.quantityLabel,
-                  suffixText: widget.species.defaultUnit ?? "",
-                  prefixIcon: const Icon(Icons.numbers),
+            // Quantity (Wheel Picker for Integer Units - Rule #3)
+            if (template.hasQuantity && !widget.species.isUnique) ...[
+              GestureDetector(
+                onTap: isIntegerUnit
+                    ? () async {
+                        final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
+                        final picked = await IntegerWheelPicker.show(context, initialValue: currentVal, minValue: 1);
+                        if (picked != null) {
+                          setState(() => _qtyController.text = '$picked');
+                        }
+                      }
+                    : null,
+                child: AbsorbPointer(
+                  absorbing: isIntegerUnit,
+                  child: TextField(
+                    controller: _qtyController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: AppStrings.quantityLabel,
+                      suffixText: widget.species.defaultUnit ?? "",
+                      prefixIcon: const Icon(Icons.numbers),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
