@@ -24,7 +24,7 @@ class SpeciesDetailView extends ConsumerWidget {
     this.actions,
   });
 
-  Future<void> _pickAndAddDocument(WidgetRef ref, String speciesId) async {
+  Future<void> _pickAndAddDocument(BuildContext context, WidgetRef ref, String speciesId) async {
     final result = await FilePicker.platform.pickFiles();
     if (result != null && result.files.single.path != null) {
       final file = result.files.single;
@@ -40,8 +40,16 @@ class SpeciesDetailView extends ConsumerWidget {
         createdAt: DateTime.now(),
       );
 
-      await ref.read(entityRepositoryProvider).addAttachment(attachment);
-      ref.invalidate(speciesAttachmentsProvider(speciesId));
+      try {
+        await ref.read(entityRepositoryProvider).addAttachment(attachment);
+        ref.invalidate(speciesAttachmentsProvider(speciesId));
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+          );
+        }
+      }
     }
   }
 
@@ -54,47 +62,68 @@ class SpeciesDetailView extends ConsumerWidget {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          expandedHeight: 260.0,
+          expandedHeight: 240.0,
           floating: false,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
               species.name,
               style: const TextStyle(
-                shadows: [Shadow(color: Colors.black87, blurRadius: 8)],
+                shadows: [Shadow(color: Colors.black87, blurRadius: 10)],
+                fontWeight: FontWeight.bold,
               ),
             ),
-            background: FutureBuilder<String>(
-              future: species.mainPhotoPath != null
-                  ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
-                  : Future.value(''),
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                  return Image.file(
-                    File(snapshot.data!),
-                    fit: BoxFit.cover,
-                  );
-                }
-                return Container(
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                FutureBuilder<String>(
+                  future: species.mainPhotoPath != null
+                      ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
+                      : Future.value(''),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                      return Image.file(
+                        File(snapshot.data!),
+                        fit: BoxFit.cover,
+                      );
+                    }
+                    return Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            theme.colorScheme.primary,
+                            theme.colorScheme.secondary,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          template.icon,
+                          size: 70,
+                          color: Colors.white.withAlpha(150),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                // Point 7: Dark contrast gradient overlay over photo
+                Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        theme.colorScheme.primary,
-                        theme.colorScheme.secondary,
+                        Colors.black.withAlpha(160),
+                        Colors.transparent,
+                        Colors.black.withAlpha(180),
                       ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
-                  child: Center(
-                    child: Icon(
-                      template.icon,
-                      size: 80,
-                      color: Colors.white.withAlpha(150),
-                    ),
-                  ),
-                );
-              },
+                ),
+              ],
             ),
           ),
           actions: actions,
@@ -102,71 +131,79 @@ class SpeciesDetailView extends ConsumerWidget {
 
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Identity Badges (Brand, Type, Barcode)
+                // Identity Badges (Brand, Type, Barcode, Uniqueness, Monetary)
                 Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withAlpha(40),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
+                        color: theme.colorScheme.primary.withAlpha(30),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: theme.colorScheme.primary.withAlpha(90)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(template.icon, size: 16, color: theme.colorScheme.primary),
-                          const SizedBox(width: 6),
+                          Icon(template.icon, size: 14, color: theme.colorScheme.primary),
+                          const SizedBox(width: 4),
                           Text(
                             species.type,
                             style: TextStyle(
                               color: theme.colorScheme.primary,
                               fontWeight: FontWeight.bold,
-                              fontSize: 13,
+                              fontSize: 12,
                             ),
                           ),
                         ],
                       ),
                     ),
+                    if (species.isUnique)
+                      const Chip(
+                        visualDensity: VisualDensity.compact,
+                        avatar: Icon(Icons.star, size: 12, color: Colors.amber),
+                        label: Text('Especie Única', style: TextStyle(fontSize: 11)),
+                      ),
                     if (species.brand != null && species.brand!.isNotEmpty)
                       Chip(
-                        avatar: const Icon(Icons.branding_watermark, size: 14),
-                        label: Text(species.brand!),
+                        visualDensity: VisualDensity.compact,
+                        avatar: const Icon(Icons.branding_watermark, size: 12),
+                        label: Text(species.brand!, style: const TextStyle(fontSize: 11)),
                       ),
                     if (species.barcode != null && species.barcode!.isNotEmpty)
                       Chip(
-                        avatar: const Icon(Icons.qr_code_scanner, size: 14),
-                        label: Text(species.barcode!),
+                        visualDensity: VisualDensity.compact,
+                        avatar: const Icon(Icons.qr_code_scanner, size: 12),
+                        label: Text(species.barcode!, style: const TextStyle(fontSize: 11)),
                       ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
 
                 // Instance Specific Header (Location Node & Quantity controls if embedded in EntityDetailScreen)
                 if (instanceSpecificsHeader != null) ...[
                   instanceSpecificsHeader!,
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 14),
                 ],
 
                 // Technical Description
                 if (species.description != null && species.description!.isNotEmpty) ...[
-                  Text(AppStrings.masterDescription, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
+                  Text(AppStrings.masterDescription, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4),
                   Text(species.description!, style: theme.textTheme.bodyMedium),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                 ],
 
                 // Instance Specific Footer (Notes / Serial)
                 if (instanceSpecificsFooter != null) ...[
                   instanceSpecificsFooter!,
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 14),
                 ],
 
                 // Attach File Action Button
@@ -174,23 +211,23 @@ class SpeciesDetailView extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: () => _pickAndAddDocument(ref, species.id),
-                        icon: const Icon(Icons.attach_file),
+                        onPressed: () => _pickAndAddDocument(context, ref, species.id),
+                        icon: const Icon(Icons.attach_file, size: 16),
                         label: const Text(AppStrings.attachFile),
-                        style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
+                        style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 10)),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 // Species Attachments List
-                Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
+                Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
                 attachmentsAsync.when(
                   data: (attachments) {
                     if (attachments.isEmpty) {
-                      return const Text(AppStrings.emptyAttachments, style: TextStyle(color: Colors.grey));
+                      return const Text(AppStrings.emptyAttachments, style: TextStyle(color: Colors.grey, fontSize: 12));
                     }
                     return ListView.builder(
                       shrinkWrap: true,
@@ -199,10 +236,11 @@ class SpeciesDetailView extends ConsumerWidget {
                       itemBuilder: (context, idx) {
                         final att = attachments[idx];
                         return ListTile(
-                          leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf),
-                          title: Text(att.fileName),
+                          dense: true,
+                          leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf, size: 20),
+                          title: Text(att.fileName, style: const TextStyle(fontSize: 13)),
                           trailing: IconButton(
-                            icon: const Icon(Icons.open_in_new),
+                            icon: const Icon(Icons.open_in_new, size: 18),
                             onPressed: () async {
                               final path = await ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath);
                               await OpenFile.open(path);

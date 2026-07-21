@@ -67,7 +67,7 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
           Expanded(
             child: entitiesState.when(
               data: (entities) {
-                var activeEntities = entities.where((e) => !e.isArchived).toList();
+                var activeEntities = entities.toList();
 
                 if (_selectedTypeFilter != 'Todos') {
                   final catalogItems = catalogState.asData?.value ?? [];

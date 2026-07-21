@@ -1,5 +1,35 @@
+class SIUnitDefinition {
+  final String symbol;
+  final bool allowDecimals;
+  final bool allowNegatives;
+
+  const SIUnitDefinition({
+    required this.symbol,
+    this.allowDecimals = true,
+    this.allowNegatives = false,
+  });
+}
+
 class UnitsRegistry {
   UnitsRegistry._();
+
+  static const Map<String, SIUnitDefinition> definitions = {
+    'pieza': SIUnitDefinition(symbol: 'pieza', allowDecimals: false),
+    'unidad': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
+    'paquete': SIUnitDefinition(symbol: 'paquete', allowDecimals: false),
+    'juego': SIUnitDefinition(symbol: 'juego', allowDecimals: false),
+    'caja': SIUnitDefinition(symbol: 'caja', allowDecimals: false),
+    'kg': SIUnitDefinition(symbol: 'kg', allowDecimals: true),
+    'g': SIUnitDefinition(symbol: 'g', allowDecimals: true),
+    'mg': SIUnitDefinition(symbol: 'mg', allowDecimals: true),
+    'm': SIUnitDefinition(symbol: 'm', allowDecimals: true),
+    'cm': SIUnitDefinition(symbol: 'cm', allowDecimals: true),
+    'mm': SIUnitDefinition(symbol: 'mm', allowDecimals: true),
+    'L': SIUnitDefinition(symbol: 'L', allowDecimals: true),
+    'mL': SIUnitDefinition(symbol: 'mL', allowDecimals: true),
+    'm³': SIUnitDefinition(symbol: 'm³', allowDecimals: true),
+    'm²': SIUnitDefinition(symbol: 'm²', allowDecimals: true),
+  };
 
   static const List<String> countingUnits = [
     'pieza',
@@ -38,4 +68,13 @@ class UnitsRegistry {
         ...volumeUnits,
         ...areaUnits,
       ];
+
+  static SIUnitDefinition getDefinition(String? unitSymbol) {
+    if (unitSymbol == null) return const SIUnitDefinition(symbol: '', allowDecimals: true);
+    return definitions[unitSymbol] ?? const SIUnitDefinition(symbol: '', allowDecimals: true);
+  }
+
+  static bool allowsDecimals(String? unitSymbol) {
+    return getDefinition(unitSymbol).allowDecimals;
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 
 class SpeciesTile extends ConsumerWidget {
@@ -18,85 +19,146 @@ class SpeciesTile extends ConsumerWidget {
     this.onTap,
   });
 
+  void _showQuickActionsMenu(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      builder: (ctx) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.visibility),
+              title: const Text('Ver detalle de especie'),
+              onTap: () {
+                Navigator.pop(ctx);
+                context.push('/catalog/${species.id}');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text(AppStrings.instantiateAction),
+              onTap: () {
+                Navigator.pop(ctx);
+                InstantiateSpeciesSheet.show(context, species: species);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              title: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+              onTap: () async {
+                Navigator.pop(ctx);
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (c) => AlertDialog(
+                    title: const Text(AppStrings.deleteConfirmationTitle),
+                    content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
+                      TextButton(
+                        onPressed: () => Navigator.pop(c, true),
+                        child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final entitiesState = ref.watch(entityListProvider);
+    final allEntities = entitiesState.asData?.value ?? [];
+    final hasInstance = allEntities.any((e) => e.speciesId == species.id);
+
+    final showInstantiateButton = !(species.isUnique && hasInstance);
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 6),
+      child: InkWell(
+        onLongPress: () => _showQuickActionsMenu(context, ref),
         onTap: onTap ?? () => context.push('/catalog/${species.id}'),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            width: 54,
-            height: 54,
-            color: theme.colorScheme.primary.withAlpha(25),
-            child: FutureBuilder<String>(
-              future: species.mainPhotoPath != null
-                  ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
-                  : Future.value(''),
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                  return Image.file(
-                    File(snapshot.data!),
-                    fit: BoxFit.cover,
-                  );
-                }
-                return Icon(Icons.auto_awesome, color: theme.colorScheme.primary);
-              },
-            ),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  color: theme.colorScheme.primary.withAlpha(20),
+                  child: FutureBuilder<String>(
+                    future: species.mainPhotoPath != null
+                        ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
+                        : Future.value(''),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                        return Image.file(
+                          File(snapshot.data!),
+                          fit: BoxFit.cover,
+                        );
+                      }
+                      return Icon(Icons.auto_awesome, color: theme.colorScheme.primary, size: 22);
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      species.name,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        if (species.brand != null && species.brand!.isNotEmpty) ...[
+                          Text(
+                            species.brand!,
+                            style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary, fontSize: 11),
+                          ),
+                          const Text(' • ', style: TextStyle(fontSize: 11)),
+                        ],
+                        Text(species.type, style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11)),
+                        if (species.isUnique) ...[
+                          const Text(' • ', style: TextStyle(fontSize: 11)),
+                          const Text('Única', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // Rule #17: Icon-only action button & Rule #18: Hide if unique and instantiated
+              if (showInstantiateButton)
+                IconButton(
+                  icon: const Icon(Icons.add, size: 20),
+                  tooltip: AppStrings.instantiateAction,
+                  onPressed: onInstantiate ??
+                      () {
+                        InstantiateSpeciesSheet.show(context, species: species);
+                      },
+                ),
+            ],
           ),
         ),
-        title: Text(
-          species.name,
-          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                if (species.brand != null && species.brand!.isNotEmpty) ...[
-                  Text(
-                    species.brand!,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary, fontSize: 12),
-                  ),
-                  const Text(' • ', style: TextStyle(fontSize: 12)),
-                ],
-                Text(species.type, style: TextStyle(color: theme.colorScheme.secondary, fontSize: 12)),
-              ],
-            ),
-            if (species.barcode != null && species.barcode!.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  const Icon(Icons.qr_code_scanner, size: 12, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Text(species.barcode!, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-                ],
-              ),
-            ],
-            if (species.description != null && species.description!.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(
-                species.description!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall,
-              ),
-            ],
-          ],
-        ),
-        trailing: onInstantiate != null
-            ? ElevatedButton.icon(
-                onPressed: onInstantiate,
-                icon: const Icon(Icons.add, size: 16),
-                label: const Text(AppStrings.instantiateAction),
-              )
-            : null,
       ),
     );
   }

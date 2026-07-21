@@ -36,11 +36,17 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/locations',
-              builder: (context, state) => const LocationsGraphScreen(),
+              builder: (context, state) {
+                final focusId = state.uri.queryParameters['focusNodeId'];
+                return LocationsGraphScreen(focusNodeId: focusId);
+              },
             ),
             GoRoute(
               path: '/places',
-              builder: (context, state) => const LocationsGraphScreen(),
+              builder: (context, state) {
+                final focusId = state.uri.queryParameters['focusNodeId'];
+                return LocationsGraphScreen(focusNodeId: focusId);
+              },
             ),
           ],
         ),

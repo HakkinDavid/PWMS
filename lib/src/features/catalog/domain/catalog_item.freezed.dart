@@ -30,6 +30,9 @@ mixin _$CatalogItem {
   Map<String, dynamic> get customAttributes =>
       throw _privateConstructorUsedError;
   String? get defaultUnit => throw _privateConstructorUsedError;
+  bool get isUnique => throw _privateConstructorUsedError;
+  bool get hasMonetaryValue => throw _privateConstructorUsedError;
+  String get defaultMonetaryCurrency => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this CatalogItem to a JSON map.
@@ -58,6 +61,9 @@ abstract class $CatalogItemCopyWith<$Res> {
       String? barcode,
       Map<String, dynamic> customAttributes,
       String? defaultUnit,
+      bool isUnique,
+      bool hasMonetaryValue,
+      String defaultMonetaryCurrency,
       DateTime createdAt});
 }
 
@@ -85,6 +91,9 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
     Object? barcode = freezed,
     Object? customAttributes = null,
     Object? defaultUnit = freezed,
+    Object? isUnique = null,
+    Object? hasMonetaryValue = null,
+    Object? defaultMonetaryCurrency = null,
     Object? createdAt = null,
   }) {
     return _then(_value.copyWith(
@@ -124,6 +133,18 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
           ? _value.defaultUnit
           : defaultUnit // ignore: cast_nullable_to_non_nullable
               as String?,
+      isUnique: null == isUnique
+          ? _value.isUnique
+          : isUnique // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasMonetaryValue: null == hasMonetaryValue
+          ? _value.hasMonetaryValue
+          : hasMonetaryValue // ignore: cast_nullable_to_non_nullable
+              as bool,
+      defaultMonetaryCurrency: null == defaultMonetaryCurrency
+          ? _value.defaultMonetaryCurrency
+          : defaultMonetaryCurrency // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -150,6 +171,9 @@ abstract class _$$CatalogItemImplCopyWith<$Res>
       String? barcode,
       Map<String, dynamic> customAttributes,
       String? defaultUnit,
+      bool isUnique,
+      bool hasMonetaryValue,
+      String defaultMonetaryCurrency,
       DateTime createdAt});
 }
 
@@ -175,6 +199,9 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
     Object? barcode = freezed,
     Object? customAttributes = null,
     Object? defaultUnit = freezed,
+    Object? isUnique = null,
+    Object? hasMonetaryValue = null,
+    Object? defaultMonetaryCurrency = null,
     Object? createdAt = null,
   }) {
     return _then(_$CatalogItemImpl(
@@ -214,6 +241,18 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
           ? _value.defaultUnit
           : defaultUnit // ignore: cast_nullable_to_non_nullable
               as String?,
+      isUnique: null == isUnique
+          ? _value.isUnique
+          : isUnique // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasMonetaryValue: null == hasMonetaryValue
+          ? _value.hasMonetaryValue
+          : hasMonetaryValue // ignore: cast_nullable_to_non_nullable
+              as bool,
+      defaultMonetaryCurrency: null == defaultMonetaryCurrency
+          ? _value.defaultMonetaryCurrency
+          : defaultMonetaryCurrency // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -228,13 +267,16 @@ class _$CatalogItemImpl implements _CatalogItem {
   const _$CatalogItemImpl(
       {required this.id,
       required this.name,
-      this.type = 'Objeto / Herramienta',
+      this.type = 'Objeto',
       this.brand,
       this.description,
       this.mainPhotoPath,
       this.barcode,
       final Map<String, dynamic> customAttributes = const {},
       this.defaultUnit,
+      this.isUnique = false,
+      this.hasMonetaryValue = true,
+      this.defaultMonetaryCurrency = 'MXN',
       required this.createdAt})
       : _customAttributes = customAttributes;
 
@@ -268,11 +310,20 @@ class _$CatalogItemImpl implements _CatalogItem {
   @override
   final String? defaultUnit;
   @override
+  @JsonKey()
+  final bool isUnique;
+  @override
+  @JsonKey()
+  final bool hasMonetaryValue;
+  @override
+  @JsonKey()
+  final String defaultMonetaryCurrency;
+  @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, defaultUnit: $defaultUnit, createdAt: $createdAt)';
+    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, defaultUnit: $defaultUnit, isUnique: $isUnique, hasMonetaryValue: $hasMonetaryValue, defaultMonetaryCurrency: $defaultMonetaryCurrency, createdAt: $createdAt)';
   }
 
   @override
@@ -293,6 +344,13 @@ class _$CatalogItemImpl implements _CatalogItem {
                 .equals(other._customAttributes, _customAttributes) &&
             (identical(other.defaultUnit, defaultUnit) ||
                 other.defaultUnit == defaultUnit) &&
+            (identical(other.isUnique, isUnique) ||
+                other.isUnique == isUnique) &&
+            (identical(other.hasMonetaryValue, hasMonetaryValue) ||
+                other.hasMonetaryValue == hasMonetaryValue) &&
+            (identical(
+                    other.defaultMonetaryCurrency, defaultMonetaryCurrency) ||
+                other.defaultMonetaryCurrency == defaultMonetaryCurrency) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
@@ -310,6 +368,9 @@ class _$CatalogItemImpl implements _CatalogItem {
       barcode,
       const DeepCollectionEquality().hash(_customAttributes),
       defaultUnit,
+      isUnique,
+      hasMonetaryValue,
+      defaultMonetaryCurrency,
       createdAt);
 
   /// Create a copy of CatalogItem
@@ -339,6 +400,9 @@ abstract class _CatalogItem implements CatalogItem {
       final String? barcode,
       final Map<String, dynamic> customAttributes,
       final String? defaultUnit,
+      final bool isUnique,
+      final bool hasMonetaryValue,
+      final String defaultMonetaryCurrency,
       required final DateTime createdAt}) = _$CatalogItemImpl;
 
   factory _CatalogItem.fromJson(Map<String, dynamic> json) =
@@ -362,6 +426,12 @@ abstract class _CatalogItem implements CatalogItem {
   Map<String, dynamic> get customAttributes;
   @override
   String? get defaultUnit;
+  @override
+  bool get isUnique;
+  @override
+  bool get hasMonetaryValue;
+  @override
+  String get defaultMonetaryCurrency;
   @override
   DateTime get createdAt;
 

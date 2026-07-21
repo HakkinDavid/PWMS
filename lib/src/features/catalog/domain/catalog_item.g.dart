@@ -10,7 +10,7 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
     _$CatalogItemImpl(
       id: json['id'] as String,
       name: json['name'] as String,
-      type: json['type'] as String? ?? 'Objeto / Herramienta',
+      type: json['type'] as String? ?? 'Objeto',
       brand: json['brand'] as String?,
       description: json['description'] as String?,
       mainPhotoPath: json['mainPhotoPath'] as String?,
@@ -18,6 +18,10 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
       customAttributes:
           json['customAttributes'] as Map<String, dynamic>? ?? const {},
       defaultUnit: json['defaultUnit'] as String?,
+      isUnique: json['isUnique'] as bool? ?? false,
+      hasMonetaryValue: json['hasMonetaryValue'] as bool? ?? true,
+      defaultMonetaryCurrency:
+          json['defaultMonetaryCurrency'] as String? ?? 'MXN',
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
@@ -32,5 +36,8 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
       'barcode': instance.barcode,
       'customAttributes': instance.customAttributes,
       'defaultUnit': instance.defaultUnit,
+      'isUnique': instance.isUnique,
+      'hasMonetaryValue': instance.hasMonetaryValue,
+      'defaultMonetaryCurrency': instance.defaultMonetaryCurrency,
       'createdAt': instance.createdAt.toIso8601String(),
     };

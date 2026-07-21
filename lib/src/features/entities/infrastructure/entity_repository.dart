@@ -20,7 +20,6 @@ class EntityRepository implements IEntityRepository {
       quantity: row.quantity,
       unit: row.unit,
       notes: row.notes,
-      isArchived: row.isArchived,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     );
@@ -55,7 +54,6 @@ class EntityRepository implements IEntityRepository {
   @override
   Future<List<WorldEntity>> getRecentEntities({int limit = 10}) async {
     final query = _db.select(_db.entitiesTable)
-      ..where((t) => t.isArchived.equals(false))
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
       ..limit(limit);
     final rows = await query.get();
@@ -105,7 +103,6 @@ class EntityRepository implements IEntityRepository {
       quantity: Value(entity.quantity),
       unit: Value(entity.unit),
       notes: Value(entity.notes),
-      isArchived: Value(entity.isArchived),
       createdAt: Value(entity.createdAt),
       updatedAt: Value(entity.updatedAt),
     );
@@ -155,7 +152,6 @@ class EntityRepository implements IEntityRepository {
     await moveOrMergeEntity(entityId, newLocationId);
   }
 
-  // Rule #5: Moving an object to newLocationId merges quantity if speciesId exists there!
   @override
   Future<WorldEntity?> moveOrMergeEntity(String entityId, String? newLocationId) async {
     final entity = await getEntityById(entityId);
@@ -176,7 +172,7 @@ class EntityRepository implements IEntityRepository {
         updatedAt: DateTime.now(),
       );
       await saveEntity(merged);
-      await deleteEntity(entityId); // Remove original row
+      await deleteEntity(entityId);
       return merged;
     } else {
       final updated = entity.copyWith(
@@ -201,8 +197,15 @@ class EntityRepository implements IEntityRepository {
     return rows.map(_mapAttachmentToDomain).toList();
   }
 
+  // Rule #5: Attachment Deduplication
   @override
   Future<void> addAttachment(Attachment attachment) async {
+    final existing = await getAttachmentsForSpecies(attachment.speciesId);
+    final isDuplicate = existing.any((a) => a.filePath == attachment.filePath || a.fileName.toLowerCase() == attachment.fileName.toLowerCase());
+    if (isDuplicate) {
+      throw Exception('Este archivo adjunto ya existe en la especie');
+    }
+
     final companion = AttachmentsTableCompanion(
       id: Value(attachment.id),
       speciesId: Value(attachment.speciesId),

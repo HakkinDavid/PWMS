@@ -27,6 +27,9 @@ class CatalogTable extends Table {
   TextColumn get barcode => text().nullable()();
   TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
   TextColumn get defaultUnit => text().nullable()();
+  BoolColumn get isUnique => boolean().withDefault(const Constant(false))();
+  BoolColumn get hasMonetaryValue => boolean().withDefault(const Constant(true))();
+  TextColumn get defaultMonetaryCurrency => text().withDefault(const Constant('MXN'))();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -40,7 +43,6 @@ class EntitiesTable extends Table {
   RealColumn get quantity => real().nullable()();
   TextColumn get unit => text().nullable()();
   TextColumn get notes => text().nullable()();
-  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -68,6 +70,22 @@ class AttachmentsTable extends Table {
   TextColumn get fileName => text()();
   TextColumn get fileType => text()();
   DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class FinancialTransactionsTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get speciesId => text().references(CatalogTable, #id)();
+  TextColumn get entityId => text().nullable()();
+  TextColumn get transactionType => text()(); // 'increment', 'instantiation', 'sale', 'decrement'
+  RealColumn get magnitudeDelta => real()();
+  RealColumn get amount => real()();
+  TextColumn get currency => text().withDefault(const Constant('MXN'))(); // 'MXN' or 'USD'
+  BoolColumn get isSale => boolean().withDefault(const Constant(false))();
+  TextColumn get notes => text().nullable()();
+  DateTimeColumn get timestamp => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -102,6 +120,7 @@ class CustomTemplatesTable extends Table {
   EntitiesTable,
   RelationsTable,
   AttachmentsTable,
+  FinancialTransactionsTable,
   HistoryEventsTable,
   CustomTemplatesTable,
 ])

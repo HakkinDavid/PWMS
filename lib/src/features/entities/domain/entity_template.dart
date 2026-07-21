@@ -20,19 +20,23 @@ class EntityTemplate {
   final String typeName;
   final IconData icon;
   final bool hasQuantity;
+  final bool hasMonetaryValue;
+  final bool hasBarcodeAndBrand;
+  final bool isAlwaysUnique;
   final TemplateViewKind primaryView;
   final List<EntityActionType> allowedActions;
   final List<String> validRelationTypes;
-  final List<String> commonUnits;
 
   const EntityTemplate({
     required this.typeName,
     required this.icon,
     this.hasQuantity = false,
+    this.hasMonetaryValue = true,
+    this.hasBarcodeAndBrand = true,
+    this.isAlwaysUnique = false,
     required this.primaryView,
     required this.allowedActions,
     required this.validRelationTypes,
-    this.commonUnits = const [],
   });
 }
 
@@ -48,19 +52,35 @@ class EntityTemplateRegistry {
   ];
 
   static const Map<String, EntityTemplate> _templates = {
-    'Objeto / Herramienta': EntityTemplate(
-      typeName: 'Objeto / Herramienta',
-      icon: Icons.build,
+    'Objeto': EntityTemplate(
+      typeName: 'Objeto',
+      icon: Icons.category,
       hasQuantity: true,
+      hasMonetaryValue: true,
+      hasBarcodeAndBrand: true,
+      isAlwaysUnique: false,
       primaryView: TemplateViewKind.details,
       allowedActions: EntityActionType.values,
       validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
-      commonUnits: ['piezas', 'unidades', 'kg', 'litros', 'metros'],
+    ),
+    'Ser vivo': EntityTemplate(
+      typeName: 'Ser vivo',
+      icon: Icons.pets,
+      hasQuantity: true,
+      hasMonetaryValue: true,
+      hasBarcodeAndBrand: false,
+      isAlwaysUnique: false,
+      primaryView: TemplateViewKind.details,
+      allowedActions: EntityActionType.values,
+      validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
     ),
     'Documento': EntityTemplate(
       typeName: 'Documento',
       icon: Icons.description,
       hasQuantity: false,
+      hasMonetaryValue: false,
+      hasBarcodeAndBrand: false,
+      isAlwaysUnique: true,
       primaryView: TemplateViewKind.documents,
       allowedActions: [
         EntityActionType.move,
@@ -72,10 +92,13 @@ class EntityTemplateRegistry {
       ],
       validRelationTypes: ['DOCUMENTA', 'GUARDADO_EN', 'PERTENECE_A'],
     ),
-    'Proyecto / Idea': EntityTemplate(
-      typeName: 'Proyecto / Idea',
+    'Proyecto': EntityTemplate(
+      typeName: 'Proyecto',
       icon: Icons.lightbulb,
       hasQuantity: false,
+      hasMonetaryValue: true,
+      hasBarcodeAndBrand: false,
+      isAlwaysUnique: true,
       primaryView: TemplateViewKind.notesAndMedia,
       allowedActions: [
         EntityActionType.edit,
@@ -90,6 +113,9 @@ class EntityTemplateRegistry {
       typeName: 'Recuerdo',
       icon: Icons.star,
       hasQuantity: false,
+      hasMonetaryValue: false,
+      hasBarcodeAndBrand: false,
+      isAlwaysUnique: true,
       primaryView: TemplateViewKind.notesAndMedia,
       allowedActions: [
         EntityActionType.move,
@@ -108,14 +134,19 @@ class EntityTemplateRegistry {
       return _templates[typeName]!;
     }
     final clean = typeName.toLowerCase();
+    if (clean.contains('ser vivo') || clean.contains('mascota') || clean.contains('planta')) return _templates['Ser vivo']!;
     if (clean.contains('doc')) return _templates['Documento']!;
-    if (clean.contains('proyect') || clean.contains('idea')) return _templates['Proyecto / Idea']!;
+    if (clean.contains('proyect') || clean.contains('idea')) return _templates['Proyecto']!;
     if (clean.contains('recuerdo')) return _templates['Recuerdo']!;
 
-    return _templates['Objeto / Herramienta']!;
+    return _templates['Objeto']!;
   }
 
   static bool hasQuantity(String typeName) {
     return getTemplate(typeName).hasQuantity;
+  }
+
+  static bool isAlwaysUnique(String typeName) {
+    return getTemplate(typeName).isAlwaysUnique;
   }
 }

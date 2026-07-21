@@ -8,6 +8,7 @@ import '../../../core/constants/units_registry.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_tile.dart';
+import '../domain/entity_template.dart';
 import 'instantiate_species_sheet.dart';
 
 class RegisterObjectModal extends ConsumerStatefulWidget {
@@ -51,11 +52,15 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
   final _descController = TextEditingController();
   String _selectedType = AppStrings.typeObject;
   String _defaultUnit = UnitsRegistry.countingUnits.first;
+  bool _isUnique = false;
+  bool _hasMonetaryValue = true;
+  String _currency = 'MXN';
   XFile? _selectedImage;
   bool _isSaving = false;
 
   final List<String> _entityTypes = [
     AppStrings.typeObject,
+    AppStrings.typeLivingBeing,
     AppStrings.typeDocument,
     AppStrings.typeProject,
     AppStrings.typeMemory,
@@ -74,6 +79,34 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     _barcodeController.dispose();
     _descController.dispose();
     super.dispose();
+  }
+
+  void _applySubgroupConstraints(String type) {
+    final template = EntityTemplateRegistry.getTemplate(type);
+    setState(() {
+      _selectedType = type;
+      if (template.isAlwaysUnique) {
+        _isUnique = true;
+      }
+      if (!template.hasMonetaryValue) {
+        _hasMonetaryValue = false;
+      } else {
+        _hasMonetaryValue = true;
+      }
+    });
+  }
+
+  void _populateFromBaseTemplate(CatalogItem base) {
+    setState(() {
+      _selectedType = base.type;
+      _brandController.text = base.brand ?? '';
+      _descController.text = base.description ?? '';
+      _defaultUnit = base.defaultUnit ?? UnitsRegistry.countingUnits.first;
+      _isUnique = base.isUnique;
+      _hasMonetaryValue = base.hasMonetaryValue;
+      _currency = base.defaultMonetaryCurrency;
+      _applySubgroupConstraints(base.type);
+    });
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -103,14 +136,19 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         relativePhotoPath = await storage.saveFile(_selectedImage!.path);
       }
 
+      final template = EntityTemplateRegistry.getTemplate(_selectedType);
+
       final newSpecies = CatalogItem(
         id: const Uuid().v4(),
         name: name,
         type: _selectedType,
-        brand: _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
+        brand: template.hasBarcodeAndBrand && _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
         description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
-        barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
-        defaultUnit: _defaultUnit,
+        barcode: template.hasBarcodeAndBrand && _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
+        defaultUnit: template.hasQuantity ? _defaultUnit : null,
+        isUnique: template.isAlwaysUnique || _isUnique,
+        hasMonetaryValue: template.hasMonetaryValue && _hasMonetaryValue,
+        defaultMonetaryCurrency: _currency,
         mainPhotoPath: relativePhotoPath,
         createdAt: DateTime.now(),
       );
@@ -128,7 +166,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
         );
       }
     } finally {
@@ -147,13 +185,13 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        left: 20,
+        right: 20,
+        top: 14,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.75,
+        height: MediaQuery.of(context).size.height * 0.78,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -167,13 +205,14 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Header Mode Switcher Tabs
             Row(
               children: [
                 Expanded(
                   child: ChoiceChip(
+                    visualDensity: VisualDensity.compact,
                     label: const Center(child: Text('Elegir del catálogo')),
                     selected: !_isCreatingNewSpecies,
                     onSelected: (val) {
@@ -184,6 +223,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: ChoiceChip(
+                    visualDensity: VisualDensity.compact,
                     label: const Center(child: Text('Crear nueva especie')),
                     selected: _isCreatingNewSpecies,
                     onSelected: (val) {
@@ -193,12 +233,12 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Body: Option 1 (Browse Catalog) vs Option 2 (Create New Species)
             Expanded(
               child: _isCreatingNewSpecies
-                  ? _buildCreateSpeciesForm(context, theme)
+                  ? _buildCreateSpeciesForm(context, theme, catalogState)
                   : _buildBrowseCatalogView(context, catalogState),
             ),
           ],
@@ -265,11 +305,32 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
   }
 
   // Pathway 2: Create new species in catalog
-  Widget _buildCreateSpeciesForm(BuildContext context, ThemeData theme) {
+  Widget _buildCreateSpeciesForm(BuildContext context, ThemeData theme, AsyncValue<List<CatalogItem>> catalogState) {
+    final existingItems = catalogState.asData?.value ?? [];
+    final template = EntityTemplateRegistry.getTemplate(_selectedType);
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Rule #19: Pre-populate from existing species template base
+          if (existingItems.isNotEmpty) ...[
+            DropdownButtonFormField<CatalogItem?>(
+              decoration: const InputDecoration(
+                labelText: 'Usar especie como plantilla base',
+                prefixIcon: Icon(Icons.copy),
+              ),
+              items: [
+                const DropdownMenuItem<CatalogItem?>(value: null, child: Text('Sin plantilla (nueva vacía)')),
+                ...existingItems.map((item) => DropdownMenuItem<CatalogItem?>(value: item, child: Text('${item.name} (${item.type})'))),
+              ],
+              onChanged: (base) {
+                if (base != null) _populateFromBaseTemplate(base);
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
+
           // Photo Picker
           GestureDetector(
             onTap: () {
@@ -300,11 +361,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               );
             },
             child: Container(
-              height: 100,
+              height: 80,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: theme.cardColor,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: theme.dividerColor),
                 image: _selectedImage != null
                     ? DecorationImage(
@@ -317,18 +378,18 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add_a_photo_outlined, size: 28, color: theme.colorScheme.primary),
-                        const SizedBox(height: 4),
+                        Icon(Icons.add_a_photo_outlined, size: 24, color: theme.colorScheme.primary),
+                        const SizedBox(height: 2),
                         Text(
                           AppStrings.photoLabel,
-                          style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
+                          style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
                         ),
                       ],
                     )
                   : null,
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
 
           TextField(
             controller: _nameController,
@@ -338,60 +399,102 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               prefixIcon: Icon(Icons.auto_awesome),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
-          // SI Unit Dropdown Selector
-          DropdownButtonFormField<String>(
-            initialValue: _defaultUnit,
-            decoration: const InputDecoration(
-              labelText: AppStrings.unitLabel,
-              prefixIcon: Icon(Icons.straighten),
-            ),
-            items: UnitsRegistry.allSiUnits
-                .map((u) => DropdownMenuItem(value: u, child: Text(u)))
-                .toList(),
-            onChanged: (val) {
-              if (val != null) setState(() => _defaultUnit = val);
-            },
-          ),
-          const SizedBox(height: 12),
-
-          // Type Chips
-          Text(AppStrings.typeLabel, style: theme.textTheme.labelLarge),
-          const SizedBox(height: 6),
+          // Subgroup Type Chips
+          Text(AppStrings.typeLabel, style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 6,
+            runSpacing: 6,
             children: _entityTypes.map((type) {
               final isSelected = type == _selectedType;
               return ChoiceChip(
-                label: Text(type),
+                visualDensity: VisualDensity.compact,
+                label: Text(type, style: const TextStyle(fontSize: 12)),
                 selected: isSelected,
                 onSelected: (val) {
-                  if (val) setState(() => _selectedType = type);
+                  if (val) _applySubgroupConstraints(type);
                 },
               );
             }).toList(),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
-          TextField(
-            controller: _brandController,
-            decoration: const InputDecoration(
-              labelText: AppStrings.brandLabel,
-              prefixIcon: Icon(Icons.branding_watermark),
-            ),
+          // Rule #6: Unique Checkbox (Locked for Documento, Proyecto, Recuerdo)
+          CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            title: const Text(AppStrings.isUniqueLabel, style: TextStyle(fontSize: 13)),
+            value: template.isAlwaysUnique || _isUnique,
+            onChanged: template.isAlwaysUnique
+                ? null
+                : (val) => setState(() => _isUnique = val ?? false),
           ),
-          const SizedBox(height: 12),
 
-          TextField(
-            controller: _barcodeController,
-            decoration: const InputDecoration(
-              labelText: AppStrings.barcodeLabel,
-              prefixIcon: Icon(Icons.qr_code),
+          // Rule #2: Monetary Value Checkbox
+          if (template.hasMonetaryValue) ...[
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              title: const Text('Permitir valor monetario', style: TextStyle(fontSize: 13)),
+              value: _hasMonetaryValue,
+              onChanged: (val) => setState(() => _hasMonetaryValue = val ?? true),
             ),
-          ),
-          const SizedBox(height: 12),
+            if (_hasMonetaryValue) ...[
+              DropdownButtonFormField<String>(
+                initialValue: _currency,
+                decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
+                items: const [
+                  DropdownMenuItem(value: 'MXN', child: Text('MXN')),
+                  DropdownMenuItem(value: 'USD', child: Text('USD')),
+                ],
+                onChanged: (val) {
+                  if (val != null) setState(() => _currency = val);
+                },
+              ),
+              const SizedBox(height: 10),
+            ],
+          ],
+
+          // SI Unit Dropdown Selector (Only if template allows quantity)
+          if (template.hasQuantity) ...[
+            DropdownButtonFormField<String>(
+              initialValue: _defaultUnit,
+              decoration: const InputDecoration(
+                labelText: AppStrings.unitLabel,
+                prefixIcon: Icon(Icons.straighten),
+              ),
+              items: UnitsRegistry.allSiUnits
+                  .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                  .toList(),
+              onChanged: (val) {
+                if (val != null) setState(() => _defaultUnit = val);
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
+
+          // Brand & Barcode (Only for Objeto)
+          if (template.hasBarcodeAndBrand) ...[
+            TextField(
+              controller: _brandController,
+              decoration: const InputDecoration(
+                labelText: AppStrings.brandLabel,
+                prefixIcon: Icon(Icons.branding_watermark),
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            TextField(
+              controller: _barcodeController,
+              decoration: const InputDecoration(
+                labelText: AppStrings.barcodeLabel,
+                prefixIcon: Icon(Icons.qr_code),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
 
           TextField(
             controller: _descController,
@@ -401,21 +504,21 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               prefixIcon: Icon(Icons.notes),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
           SizedBox(
             width: double.infinity,
-            height: 50,
+            height: 48,
             child: ElevatedButton(
               onPressed: _isSaving ? null : _saveNewSpeciesAndInstantiate,
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.colorScheme.primary,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               child: _isSaving
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Guardar e instanciar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text('Guardar e instanciar', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

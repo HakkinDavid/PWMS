@@ -14,7 +14,6 @@ _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
       quantity: (json['quantity'] as num?)?.toDouble(),
       unit: json['unit'] as String?,
       notes: json['notes'] as String?,
-      isArchived: json['isArchived'] as bool? ?? false,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
@@ -27,7 +26,6 @@ Map<String, dynamic> _$$WorldEntityImplToJson(_$WorldEntityImpl instance) =>
       'quantity': instance.quantity,
       'unit': instance.unit,
       'notes': instance.notes,
-      'isArchived': instance.isArchived,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
     };

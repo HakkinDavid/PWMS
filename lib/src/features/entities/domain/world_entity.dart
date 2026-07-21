@@ -9,10 +9,9 @@ class WorldEntity with _$WorldEntity {
     required String id,
     required String speciesId, // Link to Catalog species
     String? locationId, // Link to Location Graph node
-    double? quantity,
+    double? quantity, // Magnitud
     String? unit,
     String? notes,
-    @Default(false) bool isArchived,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _WorldEntity;

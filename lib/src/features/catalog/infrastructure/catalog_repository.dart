@@ -27,6 +27,9 @@ class CatalogRepository {
       barcode: row.barcode,
       customAttributes: customAttrs,
       defaultUnit: row.defaultUnit,
+      isUnique: row.isUnique,
+      hasMonetaryValue: row.hasMonetaryValue,
+      defaultMonetaryCurrency: row.defaultMonetaryCurrency,
       createdAt: row.createdAt,
     );
   }
@@ -59,11 +62,15 @@ class CatalogRepository {
 
   Future<CatalogItem> getOrCreateSpecies(
     String name, {
-    String type = 'Objeto / Herramienta',
+    String type = 'Objeto',
     String? brand,
     String? description,
     String? mainPhotoPath,
     String? barcode,
+    String? defaultUnit,
+    bool isUnique = false,
+    bool hasMonetaryValue = true,
+    String defaultMonetaryCurrency = 'MXN',
   }) async {
     final cleanName = name.trim();
     final all = await getAllCatalogItems();
@@ -78,6 +85,10 @@ class CatalogRepository {
       description: description,
       mainPhotoPath: mainPhotoPath,
       barcode: barcode,
+      defaultUnit: defaultUnit,
+      isUnique: isUnique,
+      hasMonetaryValue: hasMonetaryValue,
+      defaultMonetaryCurrency: defaultMonetaryCurrency,
       createdAt: DateTime.now(),
     );
 
@@ -86,16 +97,39 @@ class CatalogRepository {
   }
 
   Future<void> saveCatalogItem(CatalogItem item) async {
+    final all = await getAllCatalogItems();
+    final existing = await getCatalogItemById(item.id);
+
+    // Rule #20: No two species can share exact same name or main photo!
+    final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
+    if (nameDup != null) {
+      throw Exception('Ya existe una especie con el nombre "${item.name}"');
+    }
+
+    if (item.mainPhotoPath != null && item.mainPhotoPath!.isNotEmpty) {
+      final photoDup = all.where((c) => c.id != item.id && c.mainPhotoPath == item.mainPhotoPath).firstOrNull;
+      if (photoDup != null) {
+        throw Exception('Ya existe una especie con esta misma imagen principal');
+      }
+    }
+
+    // Rule #4: Name and Type cannot be changed after species creation
+    final finalName = existing != null ? existing.name : item.name.trim();
+    final finalType = existing != null ? existing.type : item.type;
+
     final companion = CatalogTableCompanion(
       id: Value(item.id),
-      name: Value(item.name),
-      type: Value(item.type),
+      name: Value(finalName),
+      type: Value(finalType),
       brand: Value(item.brand),
       description: Value(item.description),
       mainPhotoPath: Value(item.mainPhotoPath),
       barcode: Value(item.barcode),
       customAttributes: Value(jsonEncode(item.customAttributes)),
       defaultUnit: Value(item.defaultUnit),
+      isUnique: Value(item.isUnique),
+      hasMonetaryValue: Value(item.hasMonetaryValue),
+      defaultMonetaryCurrency: Value(item.defaultMonetaryCurrency),
       createdAt: Value(item.createdAt),
     );
     await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);

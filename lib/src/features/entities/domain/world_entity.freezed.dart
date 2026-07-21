@@ -25,10 +25,9 @@ mixin _$WorldEntity {
       throw _privateConstructorUsedError; // Link to Catalog species
   String? get locationId =>
       throw _privateConstructorUsedError; // Link to Location Graph node
-  double? get quantity => throw _privateConstructorUsedError;
+  double? get quantity => throw _privateConstructorUsedError; // Magnitud
   String? get unit => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
-  bool get isArchived => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
 
@@ -55,7 +54,6 @@ abstract class $WorldEntityCopyWith<$Res> {
       double? quantity,
       String? unit,
       String? notes,
-      bool isArchived,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -81,7 +79,6 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
     Object? quantity = freezed,
     Object? unit = freezed,
     Object? notes = freezed,
-    Object? isArchived = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -110,10 +107,6 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.notes
           : notes // ignore: cast_nullable_to_non_nullable
               as String?,
-      isArchived: null == isArchived
-          ? _value.isArchived
-          : isArchived // ignore: cast_nullable_to_non_nullable
-              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -141,7 +134,6 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
       double? quantity,
       String? unit,
       String? notes,
-      bool isArchived,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -165,7 +157,6 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
     Object? quantity = freezed,
     Object? unit = freezed,
     Object? notes = freezed,
-    Object? isArchived = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -194,10 +185,6 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.notes
           : notes // ignore: cast_nullable_to_non_nullable
               as String?,
-      isArchived: null == isArchived
-          ? _value.isArchived
-          : isArchived // ignore: cast_nullable_to_non_nullable
-              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -220,7 +207,6 @@ class _$WorldEntityImpl implements _WorldEntity {
       this.quantity,
       this.unit,
       this.notes,
-      this.isArchived = false,
       required this.createdAt,
       required this.updatedAt});
 
@@ -237,13 +223,11 @@ class _$WorldEntityImpl implements _WorldEntity {
 // Link to Location Graph node
   @override
   final double? quantity;
+// Magnitud
   @override
   final String? unit;
   @override
   final String? notes;
-  @override
-  @JsonKey()
-  final bool isArchived;
   @override
   final DateTime createdAt;
   @override
@@ -251,7 +235,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, quantity: $quantity, unit: $unit, notes: $notes, isArchived: $isArchived, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, quantity: $quantity, unit: $unit, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -268,8 +252,6 @@ class _$WorldEntityImpl implements _WorldEntity {
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
             (identical(other.notes, notes) || other.notes == notes) &&
-            (identical(other.isArchived, isArchived) ||
-                other.isArchived == isArchived) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -279,7 +261,7 @@ class _$WorldEntityImpl implements _WorldEntity {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, speciesId, locationId,
-      quantity, unit, notes, isArchived, createdAt, updatedAt);
+      quantity, unit, notes, createdAt, updatedAt);
 
   /// Create a copy of WorldEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -305,7 +287,6 @@ abstract class _WorldEntity implements WorldEntity {
       final double? quantity,
       final String? unit,
       final String? notes,
-      final bool isArchived,
       required final DateTime createdAt,
       required final DateTime updatedAt}) = _$WorldEntityImpl;
 
@@ -319,13 +300,11 @@ abstract class _WorldEntity implements WorldEntity {
   @override
   String? get locationId; // Link to Location Graph node
   @override
-  double? get quantity;
+  double? get quantity; // Magnitud
   @override
   String? get unit;
   @override
   String? get notes;
-  @override
-  bool get isArchived;
   @override
   DateTime get createdAt;
   @override

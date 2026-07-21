@@ -29,7 +29,6 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
   late TextEditingController _unitController;
 
   String? _selectedLocationId;
-  late bool _isArchived;
   bool _isSaving = false;
 
   @override
@@ -39,7 +38,6 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
     _qtyController = TextEditingController(text: widget.entity.quantity?.toString() ?? '');
     _unitController = TextEditingController(text: widget.entity.unit ?? '');
     _selectedLocationId = widget.entity.locationId;
-    _isArchived = widget.entity.isArchived;
   }
 
   @override
@@ -65,7 +63,6 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
           quantity: parsedQty ?? mergedOrUpdated.quantity,
           unit: parsedUnit ?? mergedOrUpdated.unit,
           notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : mergedOrUpdated.notes,
-          isArchived: _isArchived,
           updatedAt: DateTime.now(),
         );
         await entityRepo.saveEntity(finalEntity);
@@ -180,13 +177,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Archive Toggle
-            SwitchListTile(
-              title: const Text('Archivar elemento (Ocultar de la vista principal)'),
-              value: _isArchived,
-              onChanged: (val) => setState(() => _isArchived = val),
-            ),
-            const SizedBox(height: 16),
+
 
             // Notes / Serial
             TextField(
