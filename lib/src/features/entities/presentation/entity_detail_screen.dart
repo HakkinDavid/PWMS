@@ -5,12 +5,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/attachment.dart';
+import '../domain/entity_template.dart';
 import '../domain/world_entity.dart';
 import '../../places/presentation/move_entity_sheet.dart';
 import '../../relations/presentation/add_relation_sheet.dart';
+import 'container_contents_view.dart';
+import 'edit_entity_sheet.dart';
+import 'photo_viewer_dialog.dart';
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
   final String entityId;
@@ -22,6 +27,28 @@ class EntityDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
+  Future<void> _openFile(Attachment attachment) async {
+    final storage = ref.read(fileStorageServiceProvider);
+    final absPath = await storage.getAbsolutePath(attachment.filePath);
+    if (File(absPath).existsSync()) {
+      await OpenFile.open(absPath);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('El archivo local no fue encontrado')),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteAttachment(Attachment attachment, WorldEntity entity) async {
+    await ref.read(entityRepositoryProvider).deleteAttachment(attachment.id);
+    await ref.read(fileStorageServiceProvider).deleteFile(attachment.filePath);
+    await ref.read(activityLoggerServiceProvider).logAttachmentRemoved(entity.id, entity.name, attachment.fileName);
+
+    ref.invalidate(entityAttachmentsProvider(entity.id));
+  }
+
   Future<void> _addAttachmentFromSource(ImageSource source, WorldEntity entity) async {
     final picker = ImagePicker();
     final file = await picker.pickImage(source: source, imageQuality: 85);
@@ -70,29 +97,40 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     ref.invalidate(entityAttachmentsProvider(entity.id));
   }
 
-  IconData _getTypeIcon(String type) {
-    switch (type.toLowerCase()) {
-      case 'herramienta':
-        return Icons.build;
-      case 'caja / contenedor':
-      case 'caja':
-        return Icons.inventory_2;
-      case 'documento':
-        return Icons.description;
-      case 'vehículo':
-        return Icons.directions_car;
-      case 'animal':
-        return Icons.pets;
-      case 'proyecto':
-        return Icons.work;
-      case 'idea':
-        return Icons.lightbulb;
-      case 'recuerdo':
-        return Icons.star;
-      case 'lugar':
-        return Icons.place;
-      default:
-        return Icons.category;
+  Future<void> _showConsumeQuantityDialog(WorldEntity entity) async {
+    final controller = TextEditingController(text: entity.quantity?.toString() ?? '1');
+    final result = await showDialog<double>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Ajustar Cantidad (${entity.unit ?? "unidades"})'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          autofocus: true,
+          decoration: const InputDecoration(labelText: 'Nueva cantidad disponible'),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () {
+              final parsed = double.tryParse(controller.text.trim());
+              Navigator.pop(ctx, parsed);
+            },
+            child: const Text('Confirmar'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null) {
+      final updated = entity.copyWith(quantity: result, updatedAt: DateTime.now());
+      await ref.read(entityListProvider.notifier).saveEntity(updated);
+      await ref.read(activityLoggerServiceProvider).logQuantityConsumed(
+            entity.id,
+            entity.name,
+            result,
+            entity.unit ?? 'unidades',
+          );
     }
   }
 
@@ -108,6 +146,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             return const Center(child: Text('Elemento no encontrado en tu mundo'));
           }
 
+          final template = EntityTemplateRegistry.getTemplate(entity.type);
           final placesState = ref.watch(placeListProvider);
           String placeName = 'Sin ubicación asignada';
           if (entity.placeId != null) {
@@ -139,9 +178,33 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         : Future.value(''),
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                        return Image.file(
-                          File(snapshot.data!),
-                          fit: BoxFit.cover,
+                        return GestureDetector(
+                          onTap: () {
+                            PhotoViewerDialog.show(
+                              context,
+                              entity: entity,
+                              imagePath: snapshot.data!,
+                              onChangePhoto: () async {
+                                final picker = ImagePicker();
+                                final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+                                if (img != null) {
+                                  final rel = await ref.read(fileStorageServiceProvider).saveFile(img.path);
+                                  final upd = entity.copyWith(mainPhotoPath: rel, updatedAt: DateTime.now());
+                                  await ref.read(entityListProvider.notifier).saveEntity(upd);
+                                  await ref.read(activityLoggerServiceProvider).logPhotoChanged(entity.id, entity.name);
+                                }
+                              },
+                              onDeletePhoto: () async {
+                                final upd = entity.copyWith(mainPhotoPath: null, updatedAt: DateTime.now());
+                                await ref.read(entityListProvider.notifier).saveEntity(upd);
+                                await ref.read(activityLoggerServiceProvider).logPhotoRemoved(entity.id, entity.name);
+                              },
+                            );
+                          },
+                          child: Image.file(
+                            File(snapshot.data!),
+                            fit: BoxFit.cover,
+                          ),
                         );
                       }
                       return Container(
@@ -157,7 +220,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         ),
                         child: Center(
                           child: Icon(
-                            _getTypeIcon(entity.type),
+                            template.icon,
                             size: 80,
                             color: Colors.white.withAlpha(150),
                           ),
@@ -167,6 +230,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   ),
                 ),
                 actions: [
+                  IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () => EditEntitySheet.show(context, entity),
+                    tooltip: 'Editar elemento',
+                  ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                     onPressed: () async {
@@ -186,7 +254,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       );
 
                       if (confirm == true) {
-                        await ref.read(entityListProvider.notifier).deleteEntity(entity.id);
+                        await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
+                        await ref.read(activityLoggerServiceProvider).logEntityDeleted(entity.id, entity.name);
+                        ref.read(entityListProvider.notifier).loadEntities();
+
                         if (context.mounted) {
                           context.pop();
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -206,7 +277,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Concept Badge & Location Row
+                      // Concept Badge & Quantity Row
                       Row(
                         children: [
                           Container(
@@ -218,7 +289,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                             ),
                             child: Row(
                               children: [
-                                Icon(_getTypeIcon(entity.type), size: 16, color: theme.colorScheme.primary),
+                                Icon(template.icon, size: 16, color: theme.colorScheme.primary),
                                 const SizedBox(width: 6),
                                 Text(
                                   entity.type,
@@ -231,6 +302,14 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               ],
                             ),
                           ),
+                          const SizedBox(width: 12),
+                          if (entity.quantity != null) ...[
+                            ActionChip(
+                              avatar: const Icon(Icons.inventory_sharp, size: 14),
+                              label: Text('${entity.quantity} ${entity.unit ?? "unidades"}'),
+                              onPressed: () => _showConsumeQuantityDialog(entity),
+                            ),
+                          ],
                           const Spacer(),
                           Text(
                             'Creado: ${DateFormat('dd/MM/yyyy').format(entity.createdAt)}',
@@ -286,6 +365,12 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
+
+                      // Template View Container: Display contained items if container or place
+                      if (entity.isContainer || entity.isPlace || template.primaryView == TemplateViewKind.contents) ...[
+                        ContainerContentsView(parentEntity: entity),
+                        const SizedBox(height: 24),
+                      ],
 
                       // Quick Action Row
                       Row(
@@ -383,7 +468,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         const SizedBox(height: 24),
                       ],
 
-                      // Attachments Gallery
+                      // Attachments Gallery with Open and Delete capabilities
                       Text('Fotografías y Archivos', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       attachmentsAsync.when(
@@ -392,7 +477,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                             return Text('Sin archivos adjuntos aún.', style: theme.textTheme.bodyMedium);
                           }
                           return SizedBox(
-                            height: 100,
+                            height: 110,
                             child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               itemCount: attachments.length,
@@ -402,39 +487,63 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                 return FutureBuilder<String>(
                                   future: ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath),
                                   builder: (context, snapshot) {
-                                    if (snapshot.hasData && att.fileType == 'image' && File(snapshot.data!).existsSync()) {
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Image.file(
-                                          File(snapshot.data!),
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      );
-                                    }
-                                    return Container(
-                                      width: 100,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        color: theme.cardColor,
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: theme.dividerColor),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          const Icon(Icons.insert_drive_file, size: 32),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            att.fileName,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(fontSize: 10),
-                                            textAlign: TextAlign.center,
+                                    final hasFile = snapshot.hasData && File(snapshot.data!).existsSync();
+                                    return Stack(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () => _openFile(att),
+                                          child: Container(
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                              color: theme.cardColor,
+                                              borderRadius: BorderRadius.circular(16),
+                                              border: Border.all(color: theme.dividerColor),
+                                            ),
+                                            child: hasFile && att.fileType == 'image'
+                                                ? ClipRRect(
+                                                    borderRadius: BorderRadius.circular(16),
+                                                    child: Image.file(
+                                                      File(snapshot.data!),
+                                                      width: 100,
+                                                      height: 100,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                : Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Icon(
+                                                        att.fileType == 'image' ? Icons.image : Icons.insert_drive_file,
+                                                        size: 32,
+                                                        color: theme.colorScheme.primary,
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        att.fileName,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: const TextStyle(fontSize: 10),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ],
+                                                  ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        Positioned(
+                                          top: 2,
+                                          right: 2,
+                                          child: CircleAvatar(
+                                            radius: 12,
+                                            backgroundColor: Colors.black.withAlpha(180),
+                                            child: IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: const Icon(Icons.close, size: 14, color: Colors.white),
+                                              onPressed: () => _deleteAttachment(att, entity),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     );
                                   },
                                 );
@@ -447,8 +556,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Linked Relations section
-                      Text('Relaciones en tu Mundo', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      // Linked Directed Relations section
+                      Text('Relaciones Dirigidas', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       relationsAsync.when(
                         data: (relations) {
@@ -457,18 +566,34 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                           }
                           return Column(
                             children: relations.map((rel) {
-                              final otherId = rel.sourceEntityId == entity.id ? rel.targetEntityId : rel.sourceEntityId;
+                              final isSource = rel.sourceEntityId == entity.id;
+                              final otherId = isSource ? rel.targetEntityId : rel.sourceEntityId;
                               final otherEntityAsync = ref.watch(entityDetailProvider(otherId));
+
+                              final displayRelation = isSource ? rel.relationType : 'recibe ${rel.relationType}';
 
                               return Card(
                                 margin: const EdgeInsets.only(bottom: 8),
                                 child: ListTile(
-                                  leading: const Icon(Icons.link, color: Colors.indigoAccent),
-                                  title: Text(rel.relationType),
+                                  leading: const Icon(Icons.swap_horiz, color: Colors.indigoAccent),
+                                  title: Text(displayRelation, style: const TextStyle(fontWeight: FontWeight.bold)),
                                   subtitle: otherEntityAsync.when(
                                     data: (other) => Text(other?.name ?? 'Elemento desconocido'),
                                     loading: () => const Text('Cargando...'),
                                     error: (_, __) => const Text('Error'),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.close, size: 18, color: Colors.redAccent),
+                                    onPressed: () async {
+                                      await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
+                                      final other = await ref.read(entityRepositoryProvider).getEntityById(otherId);
+                                      await ref.read(activityLoggerServiceProvider).logRelationRemoved(
+                                            entity.name,
+                                            other?.name ?? 'Elemento',
+                                            rel.relationType,
+                                          );
+                                      ref.invalidate(entityRelationsProvider(entity.id));
+                                    },
                                   ),
                                   onTap: () {
                                     context.push('/entity/$otherId');

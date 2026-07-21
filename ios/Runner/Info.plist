@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>PWMS necesita acceso a la cámara para tomar fotografías de tus elementos y registrarlas en tu mundo.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>PWMS necesita acceso a la galería para adjuntar imágenes a tus elementos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>PWMS necesita guardar imágenes capturadas en la galería.</string>
 </dict>
 </plist>

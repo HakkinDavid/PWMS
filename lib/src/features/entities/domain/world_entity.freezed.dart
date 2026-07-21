@@ -27,6 +27,14 @@ mixin _$WorldEntity {
   String? get mainPhotoPath => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
   String? get placeId => throw _privateConstructorUsedError;
+  String? get parentEntityId =>
+      throw _privateConstructorUsedError; // Containment parent ID (can be place or container entity)
+  double? get quantity =>
+      throw _privateConstructorUsedError; // Countable or measurable quantity
+  String? get unit =>
+      throw _privateConstructorUsedError; // Unit of measurement (e.g. piezas, kg, litros)
+  bool get isContainer => throw _privateConstructorUsedError;
+  bool get isPlace => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
@@ -55,6 +63,11 @@ abstract class $WorldEntityCopyWith<$Res> {
       String? mainPhotoPath,
       String? notes,
       String? placeId,
+      String? parentEntityId,
+      double? quantity,
+      String? unit,
+      bool isContainer,
+      bool isPlace,
       List<String> tags,
       DateTime createdAt,
       DateTime updatedAt});
@@ -82,6 +95,11 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
     Object? mainPhotoPath = freezed,
     Object? notes = freezed,
     Object? placeId = freezed,
+    Object? parentEntityId = freezed,
+    Object? quantity = freezed,
+    Object? unit = freezed,
+    Object? isContainer = null,
+    Object? isPlace = null,
     Object? tags = null,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -115,6 +133,26 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.placeId
           : placeId // ignore: cast_nullable_to_non_nullable
               as String?,
+      parentEntityId: freezed == parentEntityId
+          ? _value.parentEntityId
+          : parentEntityId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as double?,
+      unit: freezed == unit
+          ? _value.unit
+          : unit // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isContainer: null == isContainer
+          ? _value.isContainer
+          : isContainer // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPlace: null == isPlace
+          ? _value.isPlace
+          : isPlace // ignore: cast_nullable_to_non_nullable
+              as bool,
       tags: null == tags
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -147,6 +185,11 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
       String? mainPhotoPath,
       String? notes,
       String? placeId,
+      String? parentEntityId,
+      double? quantity,
+      String? unit,
+      bool isContainer,
+      bool isPlace,
       List<String> tags,
       DateTime createdAt,
       DateTime updatedAt});
@@ -172,6 +215,11 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
     Object? mainPhotoPath = freezed,
     Object? notes = freezed,
     Object? placeId = freezed,
+    Object? parentEntityId = freezed,
+    Object? quantity = freezed,
+    Object? unit = freezed,
+    Object? isContainer = null,
+    Object? isPlace = null,
     Object? tags = null,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -205,6 +253,26 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.placeId
           : placeId // ignore: cast_nullable_to_non_nullable
               as String?,
+      parentEntityId: freezed == parentEntityId
+          ? _value.parentEntityId
+          : parentEntityId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as double?,
+      unit: freezed == unit
+          ? _value.unit
+          : unit // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isContainer: null == isContainer
+          ? _value.isContainer
+          : isContainer // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPlace: null == isPlace
+          ? _value.isPlace
+          : isPlace // ignore: cast_nullable_to_non_nullable
+              as bool,
       tags: null == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -232,6 +300,11 @@ class _$WorldEntityImpl implements _WorldEntity {
       this.mainPhotoPath,
       this.notes,
       this.placeId,
+      this.parentEntityId,
+      this.quantity,
+      this.unit,
+      this.isContainer = false,
+      this.isPlace = false,
       final List<String> tags = const [],
       required this.createdAt,
       required this.updatedAt})
@@ -254,6 +327,21 @@ class _$WorldEntityImpl implements _WorldEntity {
   final String? notes;
   @override
   final String? placeId;
+  @override
+  final String? parentEntityId;
+// Containment parent ID (can be place or container entity)
+  @override
+  final double? quantity;
+// Countable or measurable quantity
+  @override
+  final String? unit;
+// Unit of measurement (e.g. piezas, kg, litros)
+  @override
+  @JsonKey()
+  final bool isContainer;
+  @override
+  @JsonKey()
+  final bool isPlace;
   final List<String> _tags;
   @override
   @JsonKey()
@@ -270,7 +358,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, name: $name, alias: $alias, type: $type, mainPhotoPath: $mainPhotoPath, notes: $notes, placeId: $placeId, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, name: $name, alias: $alias, type: $type, mainPhotoPath: $mainPhotoPath, notes: $notes, placeId: $placeId, parentEntityId: $parentEntityId, quantity: $quantity, unit: $unit, isContainer: $isContainer, isPlace: $isPlace, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -286,6 +374,14 @@ class _$WorldEntityImpl implements _WorldEntity {
                 other.mainPhotoPath == mainPhotoPath) &&
             (identical(other.notes, notes) || other.notes == notes) &&
             (identical(other.placeId, placeId) || other.placeId == placeId) &&
+            (identical(other.parentEntityId, parentEntityId) ||
+                other.parentEntityId == parentEntityId) &&
+            (identical(other.quantity, quantity) ||
+                other.quantity == quantity) &&
+            (identical(other.unit, unit) || other.unit == unit) &&
+            (identical(other.isContainer, isContainer) ||
+                other.isContainer == isContainer) &&
+            (identical(other.isPlace, isPlace) || other.isPlace == isPlace) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
@@ -304,6 +400,11 @@ class _$WorldEntityImpl implements _WorldEntity {
       mainPhotoPath,
       notes,
       placeId,
+      parentEntityId,
+      quantity,
+      unit,
+      isContainer,
+      isPlace,
       const DeepCollectionEquality().hash(_tags),
       createdAt,
       updatedAt);
@@ -333,6 +434,11 @@ abstract class _WorldEntity implements WorldEntity {
       final String? mainPhotoPath,
       final String? notes,
       final String? placeId,
+      final String? parentEntityId,
+      final double? quantity,
+      final String? unit,
+      final bool isContainer,
+      final bool isPlace,
       final List<String> tags,
       required final DateTime createdAt,
       required final DateTime updatedAt}) = _$WorldEntityImpl;
@@ -354,6 +460,17 @@ abstract class _WorldEntity implements WorldEntity {
   String? get notes;
   @override
   String? get placeId;
+  @override
+  String?
+      get parentEntityId; // Containment parent ID (can be place or container entity)
+  @override
+  double? get quantity; // Countable or measurable quantity
+  @override
+  String? get unit; // Unit of measurement (e.g. piezas, kg, litros)
+  @override
+  bool get isContainer;
+  @override
+  bool get isPlace;
   @override
   List<String> get tags;
   @override

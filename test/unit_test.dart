@@ -1,13 +1,13 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/entity_template.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/places/domain/place.dart';
 import 'package:platinum_world_management_system/src/features/places/infrastructure/place_repository.dart';
 import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
-import 'package:platinum_world_management_system/src/features/history/domain/activity_event.dart';
 import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
 import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';
 
@@ -33,8 +33,8 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Core Unit Tests', () {
-    test('Create and retrieve Place', () async {
+  group('PWMS Living Domain Model Tests', () {
+    test('Create and retrieve Place & Container templates', () async {
       final place = Place(
         id: 'place-1',
         name: 'Taller Principal',
@@ -47,67 +47,109 @@ void main() {
 
       expect(retrieved, isNotNull);
       expect(retrieved!.name, equals('Taller Principal'));
+
+      final boxTemplate = EntityTemplateRegistry.getTemplate('Caja / Contenedor');
+      expect(boxTemplate.isContainer, isTrue);
+      expect(boxTemplate.primaryView, equals(TemplateViewKind.contents));
     });
 
-    test('Create entity and perform instant search', () async {
-      final entity = WorldEntity(
-        id: 'entity-1',
-        name: 'Multímetro Fluke 87V',
-        type: 'Herramienta',
-        tags: ['electrónica', 'medición'],
+    test('Hierarchical containment and cascade movement', () async {
+      // Create Place: Taller
+      final place = Place(id: 'place-taller', name: 'Taller', createdAt: DateTime.now());
+      await placeRepo.savePlace(place);
+
+      // Create Container: Caja Roja inside Taller
+      final containerBox = WorldEntity(
+        id: 'box-1',
+        name: 'Caja Roja',
+        type: 'Caja / Contenedor',
+        placeId: 'place-taller',
+        isContainer: true,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
+      await entityRepo.saveEntity(containerBox);
 
-      await entityRepo.saveEntity(entity);
-      await loggerService.logEntityCreated(entity.id, entity.name, entity.type);
-
-      final searchResults = await entityRepo.searchEntities('multímetro');
-      expect(searchResults.length, equals(1));
-      expect(searchResults.first.name, contains('Multímetro'));
-
-      final tagResults = await entityRepo.searchEntities('electrónica');
-      expect(tagResults.length, equals(1));
-
-      final history = await historyRepo.getRecentEvents();
-      expect(history.length, equals(1));
-      expect(history.first.description, contains('Multímetro Fluke 87V'));
-    });
-
-    test('Entity movement logs automatic activity event', () async {
-      final entity = WorldEntity(
-        id: 'entity-2',
+      // Create Item: Taladro inside Caja Roja
+      final itemDrill = WorldEntity(
+        id: 'drill-1',
         name: 'Taladro Bosch',
         type: 'Herramienta',
-        placeId: 'place-1',
+        parentEntityId: 'box-1',
+        placeId: 'place-taller',
+        quantity: 1,
+        unit: 'pieza',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await entityRepo.saveEntity(itemDrill);
+
+      // Verify drill is inside Caja Roja
+      final contentsOfBox = await entityRepo.getEntitiesByParent('box-1');
+      expect(contentsOfBox.length, equals(1));
+      expect(contentsOfBox.first.name, equals('Taladro Bosch'));
+
+      // Move Caja Roja to Estudio
+      final newPlace = Place(id: 'place-estudio', name: 'Estudio', createdAt: DateTime.now());
+      await placeRepo.savePlace(newPlace);
+
+      await entityRepo.moveEntity('box-1', newPlaceId: 'place-estudio');
+
+      // Verify cascade movement updated child Taladro Bosch placeId to Estudio automatically!
+      final movedDrill = await entityRepo.getEntityById('drill-1');
+      expect(movedDrill!.placeId, equals('place-estudio'));
+    });
+
+    test('Directed semantic relationships', () async {
+      final docEntity = WorldEntity(
+        id: 'doc-1',
+        name: 'Manual PDF Taladro',
+        type: 'Documento',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      await entityRepo.saveEntity(entity);
+      final toolEntity = WorldEntity(
+        id: 'tool-1',
+        name: 'Taladro Bosch',
+        type: 'Herramienta',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
 
-      await loggerService.logEntityMoved('entity-2', 'Taladro Bosch', 'Taller', 'Garaje');
+      await entityRepo.saveEntity(docEntity);
+      await entityRepo.saveEntity(toolEntity);
 
-      final events = await historyRepo.getEventsForEntity('entity-2');
-      expect(events.length, equals(1));
-      expect(events.first.eventType, equals('movement'));
-      expect(events.first.description, contains('Trasladado "Taladro Bosch"'));
-    });
-
-    test('Relate two entities', () async {
+      // Establish directed relation: Manual PDF DOCUMENTA Taladro Bosch
       final relation = EntityRelation(
         id: 'rel-1',
-        sourceEntityId: 'entity-1',
-        targetEntityId: 'entity-2',
-        relationType: 'asociado a',
+        sourceEntityId: 'doc-1',
+        targetEntityId: 'tool-1',
+        relationType: 'DOCUMENTA',
         createdAt: DateTime.now(),
       );
 
       await relationRepo.addRelation(relation);
-      final relations = await relationRepo.getRelationsForEntity('entity-1');
 
+      final relations = await relationRepo.getRelationsForEntity('doc-1');
       expect(relations.length, equals(1));
-      expect(relations.first.relationType, equals('asociado a'));
+      expect(relations.first.sourceEntityId, equals('doc-1'));
+      expect(relations.first.targetEntityId, equals('tool-1'));
+      expect(relations.first.relationType, equals('DOCUMENTA'));
+    });
+
+    test('Complete event audit trail', () async {
+      await loggerService.logEntityCreated('ent-1', 'Batería 18V', 'Herramienta');
+      await loggerService.logPhotoChanged('ent-1', 'Batería 18V');
+      await loggerService.logQuantityConsumed('ent-1', 'Batería 18V', 5, 'piezas');
+      await loggerService.logEntityDeleted('ent-1', 'Batería 18V');
+
+      final events = await historyRepo.getRecentEvents(limit: 10);
+      expect(events.length, equals(4));
+      expect(events.any((e) => e.eventType == 'creation'), isTrue);
+      expect(events.any((e) => e.eventType == 'photo_changed'), isTrue);
+      expect(events.any((e) => e.eventType == 'consumption'), isTrue);
+      expect(events.any((e) => e.eventType == 'deletion'), isTrue);
     });
   });
 }

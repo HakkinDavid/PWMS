@@ -13,6 +13,11 @@ class WorldEntity with _$WorldEntity {
     String? mainPhotoPath,
     String? notes,
     String? placeId,
+    String? parentEntityId, // Containment parent ID (can be place or container entity)
+    double? quantity,       // Countable or measurable quantity
+    String? unit,           // Unit of measurement (e.g. piezas, kg, litros)
+    @Default(false) bool isContainer,
+    @Default(false) bool isPlace,
     @Default([]) List<String> tags,
     required DateTime createdAt,
     required DateTime updatedAt,

@@ -24,7 +24,8 @@ class MoveEntitySheet extends ConsumerStatefulWidget {
 }
 
 class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
-  String? _selectedPlaceId;
+  String? _selectedDestinationId;
+  bool _isDestinationContainer = false;
   bool _isMoving = false;
   final _newPlaceController = TextEditingController();
   bool _creatingNewPlace = false;
@@ -32,7 +33,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
   @override
   void initState() {
     super.initState();
-    _selectedPlaceId = widget.entity.placeId;
+    _selectedDestinationId = widget.entity.parentEntityId ?? widget.entity.placeId;
   }
 
   @override
@@ -54,52 +55,67 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
 
     await ref.read(placeListProvider.notifier).savePlace(newPlace);
     setState(() {
-      _selectedPlaceId = placeId;
+      _selectedDestinationId = placeId;
+      _isDestinationContainer = false;
       _creatingNewPlace = false;
       _newPlaceController.clear();
     });
   }
 
   Future<void> _confirmMove() async {
-    if (_selectedPlaceId == widget.entity.placeId) {
-      Navigator.pop(context);
-      return;
-    }
-
     setState(() => _isMoving = true);
 
     try {
+      final repo = ref.read(entityRepositoryProvider);
       final places = await ref.read(placeRepositoryProvider).getAllPlaces();
-      final now = DateTime.now();
-      final oldPlace = places.firstWhere(
-        (p) => p.id == widget.entity.placeId,
-        orElse: () => Place(id: '', name: 'Sin ubicación', createdAt: now),
-      );
-      final newPlace = places.firstWhere(
-        (p) => p.id == _selectedPlaceId,
-        orElse: () => Place(id: '', name: 'Sin ubicación', createdAt: now),
-      );
+      final allEntities = await repo.getAllEntities();
 
-      final updatedEntity = widget.entity.copyWith(
-        placeId: _selectedPlaceId,
-        updatedAt: DateTime.now(),
-      );
+      String oldLocationName = 'Sin ubicación';
+      if (widget.entity.placeId != null) {
+        final p = places.where((x) => x.id == widget.entity.placeId).firstOrNull;
+        if (p != null) oldLocationName = p.name;
+      } else if (widget.entity.parentEntityId != null) {
+        final e = allEntities.where((x) => x.id == widget.entity.parentEntityId).firstOrNull;
+        if (e != null) oldLocationName = e.name;
+      }
 
-      await ref.read(entityListProvider.notifier).saveEntity(updatedEntity);
+      String newLocationName = 'Sin ubicación';
+      String? newPlaceId;
+      String? newParentId;
 
-      // Auto log movement history
+      if (_selectedDestinationId != null) {
+        if (_isDestinationContainer) {
+          newParentId = _selectedDestinationId;
+          final targetEnt = allEntities.where((e) => e.id == _selectedDestinationId).firstOrNull;
+          if (targetEnt != null) {
+            newLocationName = targetEnt.name;
+            newPlaceId = targetEnt.placeId;
+          }
+        } else {
+          newPlaceId = _selectedDestinationId;
+          final p = places.where((x) => x.id == _selectedDestinationId).firstOrNull;
+          if (p != null) newLocationName = p.name;
+        }
+      }
+
+      // Execute cascade move
+      await repo.moveEntity(widget.entity.id, newPlaceId: newPlaceId, newParentId: newParentId);
+
+      // Log movement history
       await ref.read(activityLoggerServiceProvider).logEntityMoved(
             widget.entity.id,
             widget.entity.name,
-            oldPlace.name,
-            newPlace.name,
+            oldLocationName,
+            newLocationName,
           );
+
+      ref.read(entityListProvider.notifier).loadEntities();
 
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Ubicación de "${widget.entity.name}" actualizada a "${newPlace.name}"'),
+            content: Text('Ubicación de "${widget.entity.name}" actualizada a "$newLocationName"'),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
@@ -118,6 +134,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
   @override
   Widget build(BuildContext context) {
     final placesState = ref.watch(placeListProvider);
+    final entitiesState = ref.watch(entityListProvider);
     final theme = Theme.of(context);
 
     return Container(
@@ -152,7 +169,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Selecciona o crea el nuevo lugar donde se encuentra este elemento.',
+            'Selecciona el lugar o contenedor donde estará ubicado este elemento.',
             style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -193,35 +210,84 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
             ),
           ],
 
-          placesState.when(
-            data: (places) {
-              return Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      title: const Text('Sin Ubicación'),
-                      leading: Icon(
-                        _selectedPlaceId == null ? Icons.radio_button_checked : Icons.radio_button_off,
-                        color: _selectedPlaceId == null ? theme.colorScheme.primary : theme.disabledColor,
-                      ),
-                      onTap: () => setState(() => _selectedPlaceId = null),
-                    ),
-                    ...places.map((p) => ListTile(
-                          title: Text(p.name),
-                          subtitle: p.description != null ? Text(p.description!) : null,
-                          leading: Icon(
-                            _selectedPlaceId == p.id ? Icons.radio_button_checked : Icons.radio_button_off,
-                            color: _selectedPlaceId == p.id ? theme.colorScheme.primary : theme.disabledColor,
-                          ),
-                          onTap: () => setState(() => _selectedPlaceId = p.id),
-                        )),
-                  ],
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                ListTile(
+                  title: const Text('Sin Ubicación'),
+                  leading: Icon(
+                    _selectedDestinationId == null ? Icons.radio_button_checked : Icons.radio_button_off,
+                    color: _selectedDestinationId == null ? theme.colorScheme.primary : theme.disabledColor,
+                  ),
+                  onTap: () => setState(() {
+                    _selectedDestinationId = null;
+                    _isDestinationContainer = false;
+                  }),
                 ),
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, _) => Text('Error: $err'),
+
+                // Registered Places Section
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 12, bottom: 4),
+                  child: Text('Lugares', style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
+                ),
+                placesState.when(
+                  data: (places) => Column(
+                    children: places.map((p) {
+                      final isSel = _selectedDestinationId == p.id && !_isDestinationContainer;
+                      return ListTile(
+                        title: Text(p.name),
+                        leading: Icon(
+                          isSel ? Icons.radio_button_checked : Icons.radio_button_off,
+                          color: isSel ? theme.colorScheme.primary : theme.disabledColor,
+                        ),
+                        onTap: () => setState(() {
+                          _selectedDestinationId = p.id;
+                          _isDestinationContainer = false;
+                        }),
+                      );
+                    }).toList(),
+                  ),
+                  loading: () => const CircularProgressIndicator(),
+                  error: (err, _) => Text('Error: $err'),
+                ),
+
+                // Registered Containers Section (Caja, Estante, Maletín)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 12, bottom: 4),
+                  child: Text('Contenedores (Cajas, Estantes, Maletines)', style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.secondary)),
+                ),
+                entitiesState.when(
+                  data: (entities) {
+                    final containers = entities.where((e) => e.id != widget.entity.id && (e.isContainer || e.isPlace)).toList();
+                    if (containers.isEmpty) {
+                      return const Padding(
+                        padding: EdgeInsets.only(left: 16, top: 4, bottom: 8),
+                        child: Text('No hay contenedores registrados aún.', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      );
+                    }
+                    return Column(
+                      children: containers.map((c) {
+                        final isSel = _selectedDestinationId == c.id && _isDestinationContainer;
+                        return ListTile(
+                          title: Text('${c.name} (${c.type})'),
+                          leading: Icon(
+                            isSel ? Icons.radio_button_checked : Icons.radio_button_off,
+                            color: isSel ? theme.colorScheme.secondary : theme.disabledColor,
+                          ),
+                          onTap: () => setState(() {
+                            _selectedDestinationId = c.id;
+                            _isDestinationContainer = true;
+                          }),
+                        );
+                      }).toList(),
+                    );
+                  },
+                  loading: () => const CircularProgressIndicator(),
+                  error: (err, _) => Text('Error: $err'),
+                ),
+              ],
+            ),
           ),
 
           const SizedBox(height: 20),

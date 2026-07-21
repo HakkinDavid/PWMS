@@ -13,6 +13,9 @@ class EntitiesTable extends Table {
   TextColumn get mainPhotoPath => text().nullable()();
   TextColumn get notes => text().nullable()();
   TextColumn get placeId => text().nullable().references(PlacesTable, #id)();
+  TextColumn get parentEntityId => text().nullable().references(EntitiesTable, #id)(); // Hierarchical containment
+  RealColumn get quantity => real().nullable()(); // Countable / Measurable
+  TextColumn get unit => text().nullable()(); // Unit of measurement
   TextColumn get tags => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();

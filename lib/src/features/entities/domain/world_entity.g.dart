@@ -15,6 +15,11 @@ _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
       mainPhotoPath: json['mainPhotoPath'] as String?,
       notes: json['notes'] as String?,
       placeId: json['placeId'] as String?,
+      parentEntityId: json['parentEntityId'] as String?,
+      quantity: (json['quantity'] as num?)?.toDouble(),
+      unit: json['unit'] as String?,
+      isContainer: json['isContainer'] as bool? ?? false,
+      isPlace: json['isPlace'] as bool? ?? false,
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
@@ -31,6 +36,11 @@ Map<String, dynamic> _$$WorldEntityImplToJson(_$WorldEntityImpl instance) =>
       'mainPhotoPath': instance.mainPhotoPath,
       'notes': instance.notes,
       'placeId': instance.placeId,
+      'parentEntityId': instance.parentEntityId,
+      'quantity': instance.quantity,
+      'unit': instance.unit,
+      'isContainer': instance.isContainer,
+      'isPlace': instance.isPlace,
       'tags': instance.tags,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),

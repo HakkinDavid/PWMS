@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
+import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/entity_relation.dart';
 
@@ -25,17 +26,10 @@ class AddRelationSheet extends ConsumerStatefulWidget {
 
 class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
   String? _targetEntityId;
-  String _relationType = 'pertenece a';
+  String _relationType = 'GUARDADO_EN';
   bool _isSaving = false;
 
-  final List<String> _relationTypes = [
-    'pertenece a',
-    'es parte de',
-    'está vinculado con',
-    'guardado en',
-    'relacionado con',
-    'depende de',
-  ];
+  final List<String> _directedRelationTypes = EntityTemplateRegistry.directedRelationTypes;
 
   Future<void> _saveRelation() async {
     if (_targetEntityId == null) {
@@ -59,24 +53,33 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
 
       await ref.read(relationRepositoryProvider).addRelation(relation);
 
+      // Semantic behavior effect: If GUARDADO_EN or PERTENECE_A, update containment hierarchy automatically!
+      if (_relationType == 'GUARDADO_EN' || _relationType == 'PERTENECE_A') {
+        final updatedSource = widget.sourceEntity.copyWith(
+          parentEntityId: _targetEntityId,
+          updatedAt: DateTime.now(),
+        );
+        await ref.read(entityListProvider.notifier).saveEntity(updatedSource);
+      }
+
       final targetEntity = await ref.read(entityRepositoryProvider).getEntityById(_targetEntityId!);
 
-      // Auto log history
+      // Audit log
       await ref.read(activityLoggerServiceProvider).logRelationAdded(
             widget.sourceEntity.name,
             targetEntity?.name ?? 'Elemento',
             _relationType,
           );
 
-      // Force refresh detail providers
       ref.invalidate(entityRelationsProvider(widget.sourceEntity.id));
       ref.invalidate(entityRelationsProvider(_targetEntityId!));
+      ref.read(entityListProvider.notifier).loadEntities();
 
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Relación creada con éxito'),
+            content: const Text('Relación dirigida creada con éxito'),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
@@ -124,7 +127,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Relacionar Elementos',
+            'Relación Dirigida en tu Mundo',
             style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -132,7 +135,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
             text: TextSpan(
               style: theme.textTheme.bodyMedium,
               children: [
-                const TextSpan(text: 'Establecer que '),
+                const TextSpan(text: 'Origen: '),
                 TextSpan(
                   text: '"${widget.sourceEntity.name}"',
                   style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
@@ -143,12 +146,12 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           const SizedBox(height: 16),
 
           // Relation Type Selector
-          Text('Tipo de vínculo', style: theme.textTheme.labelLarge),
+          Text('Tipo de vínculo semántico', style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             initialValue: _relationType,
-            decoration: const InputDecoration(prefixIcon: Icon(Icons.link)),
-            items: _relationTypes
+            decoration: const InputDecoration(prefixIcon: Icon(Icons.compare_arrows)),
+            items: _directedRelationTypes
                 .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                 .toList(),
             onChanged: (val) {
@@ -158,7 +161,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           const SizedBox(height: 16),
 
           // Target Entity Selector
-          Text('Con el elemento:', style: theme.textTheme.labelLarge),
+          Text('Destino del vínculo:', style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
           entitiesState.when(
             data: (entities) {
@@ -202,7 +205,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
               ),
               child: _isSaving
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Crear Relación', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text('Establecer Vínculo Dirigido', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

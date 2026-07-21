@@ -403,6 +403,26 @@ class $EntitiesTableTable extends EntitiesTable
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES places_table (id)'));
+  static const VerificationMeta _parentEntityIdMeta =
+      const VerificationMeta('parentEntityId');
+  @override
+  late final GeneratedColumn<String> parentEntityId = GeneratedColumn<String>(
+      'parent_entity_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES entities_table (id)'));
+  static const VerificationMeta _quantityMeta =
+      const VerificationMeta('quantity');
+  @override
+  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
+      'quantity', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+      'unit', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
   @override
   late final GeneratedColumn<String> tags = GeneratedColumn<String>(
@@ -431,6 +451,9 @@ class $EntitiesTableTable extends EntitiesTable
         mainPhotoPath,
         notes,
         placeId,
+        parentEntityId,
+        quantity,
+        unit,
         tags,
         createdAt,
         updatedAt
@@ -480,6 +503,20 @@ class $EntitiesTableTable extends EntitiesTable
       context.handle(_placeIdMeta,
           placeId.isAcceptableOrUnknown(data['place_id']!, _placeIdMeta));
     }
+    if (data.containsKey('parent_entity_id')) {
+      context.handle(
+          _parentEntityIdMeta,
+          parentEntityId.isAcceptableOrUnknown(
+              data['parent_entity_id']!, _parentEntityIdMeta));
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(_quantityMeta,
+          quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta));
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+          _unitMeta, unit.isAcceptableOrUnknown(data['unit']!, _unitMeta));
+    }
     if (data.containsKey('tags')) {
       context.handle(
           _tagsMeta, tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta));
@@ -519,6 +556,12 @@ class $EntitiesTableTable extends EntitiesTable
           .read(DriftSqlType.string, data['${effectivePrefix}notes']),
       placeId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}place_id']),
+      parentEntityId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}parent_entity_id']),
+      quantity: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}quantity']),
+      unit: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}unit']),
       tags: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}tags'])!,
       createdAt: attachedDatabase.typeMapping
@@ -543,6 +586,9 @@ class EntitiesTableData extends DataClass
   final String? mainPhotoPath;
   final String? notes;
   final String? placeId;
+  final String? parentEntityId;
+  final double? quantity;
+  final String? unit;
   final String tags;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -554,6 +600,9 @@ class EntitiesTableData extends DataClass
       this.mainPhotoPath,
       this.notes,
       this.placeId,
+      this.parentEntityId,
+      this.quantity,
+      this.unit,
       required this.tags,
       required this.createdAt,
       required this.updatedAt});
@@ -574,6 +623,15 @@ class EntitiesTableData extends DataClass
     }
     if (!nullToAbsent || placeId != null) {
       map['place_id'] = Variable<String>(placeId);
+    }
+    if (!nullToAbsent || parentEntityId != null) {
+      map['parent_entity_id'] = Variable<String>(parentEntityId);
+    }
+    if (!nullToAbsent || quantity != null) {
+      map['quantity'] = Variable<double>(quantity);
+    }
+    if (!nullToAbsent || unit != null) {
+      map['unit'] = Variable<String>(unit);
     }
     map['tags'] = Variable<String>(tags);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -596,6 +654,13 @@ class EntitiesTableData extends DataClass
       placeId: placeId == null && nullToAbsent
           ? const Value.absent()
           : Value(placeId),
+      parentEntityId: parentEntityId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentEntityId),
+      quantity: quantity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quantity),
+      unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
       tags: Value(tags),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -613,6 +678,9 @@ class EntitiesTableData extends DataClass
       mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
       notes: serializer.fromJson<String?>(json['notes']),
       placeId: serializer.fromJson<String?>(json['placeId']),
+      parentEntityId: serializer.fromJson<String?>(json['parentEntityId']),
+      quantity: serializer.fromJson<double?>(json['quantity']),
+      unit: serializer.fromJson<String?>(json['unit']),
       tags: serializer.fromJson<String>(json['tags']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -629,6 +697,9 @@ class EntitiesTableData extends DataClass
       'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
       'notes': serializer.toJson<String?>(notes),
       'placeId': serializer.toJson<String?>(placeId),
+      'parentEntityId': serializer.toJson<String?>(parentEntityId),
+      'quantity': serializer.toJson<double?>(quantity),
+      'unit': serializer.toJson<String?>(unit),
       'tags': serializer.toJson<String>(tags),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -643,6 +714,9 @@ class EntitiesTableData extends DataClass
           Value<String?> mainPhotoPath = const Value.absent(),
           Value<String?> notes = const Value.absent(),
           Value<String?> placeId = const Value.absent(),
+          Value<String?> parentEntityId = const Value.absent(),
+          Value<double?> quantity = const Value.absent(),
+          Value<String?> unit = const Value.absent(),
           String? tags,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
@@ -655,6 +729,10 @@ class EntitiesTableData extends DataClass
             mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
         notes: notes.present ? notes.value : this.notes,
         placeId: placeId.present ? placeId.value : this.placeId,
+        parentEntityId:
+            parentEntityId.present ? parentEntityId.value : this.parentEntityId,
+        quantity: quantity.present ? quantity.value : this.quantity,
+        unit: unit.present ? unit.value : this.unit,
         tags: tags ?? this.tags,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -670,6 +748,11 @@ class EntitiesTableData extends DataClass
           : this.mainPhotoPath,
       notes: data.notes.present ? data.notes.value : this.notes,
       placeId: data.placeId.present ? data.placeId.value : this.placeId,
+      parentEntityId: data.parentEntityId.present
+          ? data.parentEntityId.value
+          : this.parentEntityId,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      unit: data.unit.present ? data.unit.value : this.unit,
       tags: data.tags.present ? data.tags.value : this.tags,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -686,6 +769,9 @@ class EntitiesTableData extends DataClass
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('notes: $notes, ')
           ..write('placeId: $placeId, ')
+          ..write('parentEntityId: $parentEntityId, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
           ..write('tags: $tags, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -695,7 +781,7 @@ class EntitiesTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(id, name, alias, type, mainPhotoPath, notes,
-      placeId, tags, createdAt, updatedAt);
+      placeId, parentEntityId, quantity, unit, tags, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -707,6 +793,9 @@ class EntitiesTableData extends DataClass
           other.mainPhotoPath == this.mainPhotoPath &&
           other.notes == this.notes &&
           other.placeId == this.placeId &&
+          other.parentEntityId == this.parentEntityId &&
+          other.quantity == this.quantity &&
+          other.unit == this.unit &&
           other.tags == this.tags &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -720,6 +809,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   final Value<String?> mainPhotoPath;
   final Value<String?> notes;
   final Value<String?> placeId;
+  final Value<String?> parentEntityId;
+  final Value<double?> quantity;
+  final Value<String?> unit;
   final Value<String> tags;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -732,6 +824,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.notes = const Value.absent(),
     this.placeId = const Value.absent(),
+    this.parentEntityId = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.unit = const Value.absent(),
     this.tags = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -745,6 +840,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.notes = const Value.absent(),
     this.placeId = const Value.absent(),
+    this.parentEntityId = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.unit = const Value.absent(),
     this.tags = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -762,6 +860,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     Expression<String>? mainPhotoPath,
     Expression<String>? notes,
     Expression<String>? placeId,
+    Expression<String>? parentEntityId,
+    Expression<double>? quantity,
+    Expression<String>? unit,
     Expression<String>? tags,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -775,6 +876,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
       if (notes != null) 'notes': notes,
       if (placeId != null) 'place_id': placeId,
+      if (parentEntityId != null) 'parent_entity_id': parentEntityId,
+      if (quantity != null) 'quantity': quantity,
+      if (unit != null) 'unit': unit,
       if (tags != null) 'tags': tags,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -790,6 +894,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       Value<String?>? mainPhotoPath,
       Value<String?>? notes,
       Value<String?>? placeId,
+      Value<String?>? parentEntityId,
+      Value<double?>? quantity,
+      Value<String?>? unit,
       Value<String>? tags,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
@@ -802,6 +909,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
       notes: notes ?? this.notes,
       placeId: placeId ?? this.placeId,
+      parentEntityId: parentEntityId ?? this.parentEntityId,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
       tags: tags ?? this.tags,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -833,6 +943,15 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     if (placeId.present) {
       map['place_id'] = Variable<String>(placeId.value);
     }
+    if (parentEntityId.present) {
+      map['parent_entity_id'] = Variable<String>(parentEntityId.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<double>(quantity.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
     if (tags.present) {
       map['tags'] = Variable<String>(tags.value);
     }
@@ -858,6 +977,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('notes: $notes, ')
           ..write('placeId: $placeId, ')
+          ..write('parentEntityId: $parentEntityId, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
           ..write('tags: $tags, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -2208,6 +2330,9 @@ typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
   Value<String?> mainPhotoPath,
   Value<String?> notes,
   Value<String?> placeId,
+  Value<String?> parentEntityId,
+  Value<double?> quantity,
+  Value<String?> unit,
   Value<String> tags,
   required DateTime createdAt,
   required DateTime updatedAt,
@@ -2222,6 +2347,9 @@ typedef $$EntitiesTableTableUpdateCompanionBuilder = EntitiesTableCompanion
   Value<String?> mainPhotoPath,
   Value<String?> notes,
   Value<String?> placeId,
+  Value<String?> parentEntityId,
+  Value<double?> quantity,
+  Value<String?> unit,
   Value<String> tags,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
@@ -2243,6 +2371,21 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
     final manager = $$PlacesTableTableTableManager($_db, $_db.placesTable)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_placeIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $EntitiesTableTable _parentEntityIdTable(_$AppDatabase db) =>
+      db.entitiesTable.createAlias($_aliasNameGenerator(
+          db.entitiesTable.parentEntityId, db.entitiesTable.id));
+
+  $$EntitiesTableTableProcessedTableManager? get parentEntityId {
+    final $_column = $_itemColumn<String>('parent_entity_id');
+    if ($_column == null) return null;
+    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_parentEntityIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -2325,6 +2468,12 @@ class $$EntitiesTableTableFilterComposer
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<double> get quantity => $composableBuilder(
+      column: $table.quantity, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get unit => $composableBuilder(
+      column: $table.unit, builder: (column) => ColumnFilters(column));
+
   ColumnFilters<String> get tags => $composableBuilder(
       column: $table.tags, builder: (column) => ColumnFilters(column));
 
@@ -2346,6 +2495,26 @@ class $$EntitiesTableTableFilterComposer
             $$PlacesTableTableFilterComposer(
               $db: $db,
               $table: $db.placesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$EntitiesTableTableFilterComposer get parentEntityId {
+    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentEntityId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2446,6 +2615,12 @@ class $$EntitiesTableTableOrderingComposer
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<double> get quantity => $composableBuilder(
+      column: $table.quantity, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+      column: $table.unit, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get tags => $composableBuilder(
       column: $table.tags, builder: (column) => ColumnOrderings(column));
 
@@ -2467,6 +2642,26 @@ class $$EntitiesTableTableOrderingComposer
             $$PlacesTableTableOrderingComposer(
               $db: $db,
               $table: $db.placesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$EntitiesTableTableOrderingComposer get parentEntityId {
+    final $$EntitiesTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentEntityId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2503,6 +2698,12 @@ class $$EntitiesTableTableAnnotationComposer
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
+  GeneratedColumn<double> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
   GeneratedColumn<String> get tags =>
       $composableBuilder(column: $table.tags, builder: (column) => column);
 
@@ -2524,6 +2725,26 @@ class $$EntitiesTableTableAnnotationComposer
             $$PlacesTableTableAnnotationComposer(
               $db: $db,
               $table: $db.placesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$EntitiesTableTableAnnotationComposer get parentEntityId {
+    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentEntityId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2609,6 +2830,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
     EntitiesTableData,
     PrefetchHooks Function(
         {bool placeId,
+        bool parentEntityId,
         bool sourceRelations,
         bool targetRelations,
         bool attachmentsTableRefs})> {
@@ -2630,6 +2852,9 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             Value<String?> placeId = const Value.absent(),
+            Value<String?> parentEntityId = const Value.absent(),
+            Value<double?> quantity = const Value.absent(),
+            Value<String?> unit = const Value.absent(),
             Value<String> tags = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
@@ -2643,6 +2868,9 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             notes: notes,
             placeId: placeId,
+            parentEntityId: parentEntityId,
+            quantity: quantity,
+            unit: unit,
             tags: tags,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -2656,6 +2884,9 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             Value<String?> placeId = const Value.absent(),
+            Value<String?> parentEntityId = const Value.absent(),
+            Value<double?> quantity = const Value.absent(),
+            Value<String?> unit = const Value.absent(),
             Value<String> tags = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
@@ -2669,6 +2900,9 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             notes: notes,
             placeId: placeId,
+            parentEntityId: parentEntityId,
+            quantity: quantity,
+            unit: unit,
             tags: tags,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -2682,6 +2916,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {placeId = false,
+              parentEntityId = false,
               sourceRelations = false,
               targetRelations = false,
               attachmentsTableRefs = false}) {
@@ -2713,6 +2948,17 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
                         $$EntitiesTableTableReferences._placeIdTable(db),
                     referencedColumn:
                         $$EntitiesTableTableReferences._placeIdTable(db).id,
+                  ) as T;
+                }
+                if (parentEntityId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.parentEntityId,
+                    referencedTable:
+                        $$EntitiesTableTableReferences._parentEntityIdTable(db),
+                    referencedColumn: $$EntitiesTableTableReferences
+                        ._parentEntityIdTable(db)
+                        .id,
                   ) as T;
                 }
 
@@ -2779,6 +3025,7 @@ typedef $$EntitiesTableTableProcessedTableManager = ProcessedTableManager<
     EntitiesTableData,
     PrefetchHooks Function(
         {bool placeId,
+        bool parentEntityId,
         bool sourceRelations,
         bool targetRelations,
         bool attachmentsTableRefs})>;

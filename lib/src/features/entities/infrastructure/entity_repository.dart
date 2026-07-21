@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/attachment.dart';
+import '../domain/entity_template.dart';
 import '../domain/i_entity_repository.dart';
 import '../domain/world_entity.dart';
 
@@ -20,6 +21,9 @@ class EntityRepository implements IEntityRepository {
       }
     }
 
+    final isContainer = EntityTemplateRegistry.isContainer(row.type);
+    final isPlace = EntityTemplateRegistry.isPlace(row.type);
+
     return WorldEntity(
       id: row.id,
       name: row.name,
@@ -28,6 +32,11 @@ class EntityRepository implements IEntityRepository {
       mainPhotoPath: row.mainPhotoPath,
       notes: row.notes,
       placeId: row.placeId,
+      parentEntityId: row.parentEntityId,
+      quantity: row.quantity,
+      unit: row.unit,
+      isContainer: isContainer,
+      isPlace: isPlace,
       tags: tagsList,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
@@ -71,7 +80,19 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<List<WorldEntity>> getEntitiesByPlace(String placeId) async {
-    final query = _db.select(_db.entitiesTable)..where((t) => t.placeId.equals(placeId));
+    final query = _db.select(_db.entitiesTable)..where((t) => t.placeId.equals(placeId) | t.parentEntityId.equals(placeId));
+    final rows = await query.get();
+    return rows.map(_mapToDomain).toList();
+  }
+
+  @override
+  Future<List<WorldEntity>> getEntitiesByParent(String? parentId) async {
+    final query = _db.select(_db.entitiesTable);
+    if (parentId == null) {
+      query.where((t) => t.parentEntityId.isNull() & t.placeId.isNull());
+    } else {
+      query.where((t) => t.parentEntityId.equals(parentId) | t.placeId.equals(parentId));
+    }
     final rows = await query.get();
     return rows.map(_mapToDomain).toList();
   }
@@ -102,12 +123,39 @@ class EntityRepository implements IEntityRepository {
       mainPhotoPath: Value(entity.mainPhotoPath),
       notes: Value(entity.notes),
       placeId: Value(entity.placeId),
+      parentEntityId: Value(entity.parentEntityId),
+      quantity: Value(entity.quantity),
+      unit: Value(entity.unit),
       tags: Value(jsonEncode(entity.tags)),
       createdAt: Value(entity.createdAt),
       updatedAt: Value(entity.updatedAt),
     );
 
     await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
+  }
+
+  @override
+  Future<void> moveEntity(String entityId, {String? newPlaceId, String? newParentId}) async {
+    final entity = await getEntityById(entityId);
+    if (entity == null) return;
+
+    final updated = entity.copyWith(
+      placeId: newPlaceId,
+      parentEntityId: newParentId,
+      updatedAt: DateTime.now(),
+    );
+    await saveEntity(updated);
+
+    // If entity is a container or place, cascading location context to all contained children
+    if (entity.isContainer || entity.isPlace) {
+      final children = await getEntitiesByParent(entityId);
+      for (final child in children) {
+        // Cascade place update to children if container was assigned to a new place
+        if (newPlaceId != child.placeId) {
+          await moveEntity(child.id, newPlaceId: newPlaceId, newParentId: child.parentEntityId);
+        }
+      }
+    }
   }
 
   @override
