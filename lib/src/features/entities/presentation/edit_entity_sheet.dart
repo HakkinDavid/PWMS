@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/entity_template.dart';
 import '../domain/world_entity.dart';
+import 'custom_attribute_editor_dialog.dart';
 
 class EditEntitySheet extends ConsumerStatefulWidget {
   final WorldEntity entity;
@@ -31,11 +32,14 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
   late TextEditingController _tagsController;
   late TextEditingController _qtyController;
   late TextEditingController _unitController;
+  late TextEditingController _barcodeController;
 
   late String _selectedType;
   String? _selectedPlaceId;
   String? _newPhotoPath;
   bool _removePhoto = false;
+  late Map<String, dynamic> _customAttrs;
+  late bool _isArchived;
   bool _isSaving = false;
 
   final List<String> _entityTypes = [
@@ -60,9 +64,12 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
     _tagsController = TextEditingController(text: widget.entity.tags.join(', '));
     _qtyController = TextEditingController(text: widget.entity.quantity?.toString() ?? '');
     _unitController = TextEditingController(text: widget.entity.unit ?? '');
+    _barcodeController = TextEditingController(text: widget.entity.barcode ?? '');
 
     _selectedType = widget.entity.type;
     _selectedPlaceId = widget.entity.placeId;
+    _customAttrs = Map<String, dynamic>.from(widget.entity.customAttributes);
+    _isArchived = widget.entity.isArchived;
   }
 
   @override
@@ -73,6 +80,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
     _tagsController.dispose();
     _qtyController.dispose();
     _unitController.dispose();
+    _barcodeController.dispose();
     super.dispose();
   }
 
@@ -109,6 +117,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
 
       final double? parsedQty = double.tryParse(_qtyController.text.trim());
       final String? parsedUnit = _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
+      final String? parsedBarcode = _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null;
 
       String? finalPhotoPath = widget.entity.mainPhotoPath;
       if (_removePhoto) {
@@ -129,6 +138,9 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
         placeId: _selectedPlaceId,
         quantity: parsedQty,
         unit: parsedUnit,
+        barcode: parsedBarcode,
+        customAttributes: _customAttrs,
+        isArchived: _isArchived,
         isContainer: isContainer,
         isPlace: isPlace,
         tags: tagsList,
@@ -141,7 +153,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
       await ref.read(activityLoggerServiceProvider).logEntityEdited(
             widget.entity.id,
             name,
-            details: 'Información y metadatos actualizados',
+            details: 'Metadatos, etiquetas y atributos actualizados',
           );
 
       if (mounted) {
@@ -211,7 +223,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Photo update preview
+            // Photo preview
             Row(
               children: [
                 FutureBuilder<String>(
@@ -281,6 +293,14 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
                 prefixIcon: Icon(Icons.label_outlined),
               ),
             ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _barcodeController,
+              decoration: const InputDecoration(
+                labelText: 'Código de barras / Identificador',
+                prefixIcon: Icon(Icons.qr_code_scanner),
+              ),
+            ),
             const SizedBox(height: 16),
 
             // Type Selector
@@ -325,6 +345,25 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             ),
             const SizedBox(height: 16),
 
+            // Custom Attributes trigger button & chip list
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Atributos Personalizados (${_customAttrs.length})', style: theme.textTheme.labelLarge),
+                TextButton.icon(
+                  onPressed: () async {
+                    final res = await CustomAttributeEditorDialog.show(context, initialAttributes: _customAttrs);
+                    if (res != null) {
+                      setState(() => _customAttrs = res);
+                    }
+                  },
+                  icon: const Icon(Icons.tune, size: 16),
+                  label: const Text('Administrar Atributos'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
             // Location
             Text('Ubicación (Lugar)', style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
@@ -342,6 +381,14 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
               },
               loading: () => const CircularProgressIndicator(),
               error: (err, _) => Text('Error: $err'),
+            ),
+            const SizedBox(height: 16),
+
+            // Archive Toggle
+            SwitchListTile(
+              title: const Text('Archivar elemento (Ocultar de la vista principal)'),
+              value: _isArchived,
+              onChanged: (val) => setState(() => _isArchived = val),
             ),
             const SizedBox(height: 16),
 

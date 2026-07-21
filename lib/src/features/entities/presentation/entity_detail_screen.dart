@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
@@ -231,6 +230,19 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 ),
                 actions: [
                   IconButton(
+                    icon: Icon(entity.isArchived ? Icons.unarchive : Icons.archive_outlined),
+                    onPressed: () async {
+                      final updated = entity.copyWith(isArchived: !entity.isArchived, updatedAt: DateTime.now());
+                      await ref.read(entityListProvider.notifier).saveEntity(updated);
+                      await ref.read(activityLoggerServiceProvider).logEntityEdited(
+                            entity.id,
+                            entity.name,
+                            details: entity.isArchived ? 'Desarchivado en tu mundo' : 'Archivado de tu mundo',
+                          );
+                    },
+                    tooltip: entity.isArchived ? 'Desarchivar' : 'Archivar',
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.edit_outlined),
                     onPressed: () => EditEntitySheet.show(context, entity),
                     tooltip: 'Editar elemento',
@@ -277,8 +289,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Concept Badge & Quantity Row
-                      Row(
+                      // Concept Badge, Barcode & Quantity Row with +/- controls
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -288,6 +303,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
                             ),
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(template.icon, size: 16, color: theme.colorScheme.primary),
                                 const SizedBox(width: 6),
@@ -302,18 +318,71 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          if (entity.quantity != null) ...[
-                            ActionChip(
-                              avatar: const Icon(Icons.inventory_sharp, size: 14),
-                              label: Text('${entity.quantity} ${entity.unit ?? "unidades"}'),
-                              onPressed: () => _showConsumeQuantityDialog(entity),
+                          if (entity.barcode != null && entity.barcode!.isNotEmpty)
+                            Chip(
+                              avatar: const Icon(Icons.qr_code_scanner, size: 14),
+                              label: Text(entity.barcode!),
                             ),
-                          ],
-                          const Spacer(),
-                          Text(
-                            'Creado: ${DateFormat('dd/MM/yyyy').format(entity.createdAt)}',
-                            style: theme.textTheme.bodyMedium,
+                          // Quantity +/- controls
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.secondary.withAlpha(30),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: theme.colorScheme.secondary.withAlpha(80)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                                  icon: const Icon(Icons.remove, size: 16),
+                                  onPressed: () async {
+                                    final currentQty = entity.quantity ?? 1.0;
+                                    if (currentQty > 0) {
+                                      final newQty = currentQty - 1.0;
+                                      final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
+                                      await ref.read(entityListProvider.notifier).saveEntity(updated);
+                                      await ref.read(activityLoggerServiceProvider).logQuantityConsumed(
+                                            entity.id,
+                                            entity.name,
+                                            newQty,
+                                            entity.unit ?? 'unidades',
+                                          );
+                                    }
+                                  },
+                                ),
+                                GestureDetector(
+                                  onTap: () => _showConsumeQuantityDialog(entity),
+                                  child: Text(
+                                    '${entity.quantity ?? 1.0} ${entity.unit ?? "unidades"}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.secondary,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                                  icon: const Icon(Icons.add, size: 16),
+                                  onPressed: () async {
+                                    final currentQty = entity.quantity ?? 0.0;
+                                    final newQty = currentQty + 1.0;
+                                    final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
+                                    await ref.read(entityListProvider.notifier).saveEntity(updated);
+                                    await ref.read(activityLoggerServiceProvider).logQuantityConsumed(
+                                          entity.id,
+                                          entity.name,
+                                          newQty,
+                                          entity.unit ?? 'unidades',
+                                        );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -433,6 +502,24 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
+
+                      // Custom Attributes section
+                      if (entity.customAttributes.isNotEmpty) ...[
+                        Text('Atributos Personalizados', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: entity.customAttributes.entries.map((entry) {
+                            return Chip(
+                              avatar: const Icon(Icons.tune, size: 14),
+                              label: Text('${entry.key}: ${entry.value}'),
+                              backgroundColor: theme.colorScheme.surface,
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
 
                       // Notes section
                       if (entity.notes != null && entity.notes!.isNotEmpty) ...[

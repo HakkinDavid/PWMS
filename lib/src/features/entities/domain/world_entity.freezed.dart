@@ -27,12 +27,13 @@ mixin _$WorldEntity {
   String? get mainPhotoPath => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
   String? get placeId => throw _privateConstructorUsedError;
-  String? get parentEntityId =>
-      throw _privateConstructorUsedError; // Containment parent ID (can be place or container entity)
-  double? get quantity =>
-      throw _privateConstructorUsedError; // Countable or measurable quantity
-  String? get unit =>
-      throw _privateConstructorUsedError; // Unit of measurement (e.g. piezas, kg, litros)
+  String? get parentEntityId => throw _privateConstructorUsedError;
+  double? get quantity => throw _privateConstructorUsedError;
+  String? get unit => throw _privateConstructorUsedError;
+  String? get barcode => throw _privateConstructorUsedError;
+  Map<String, dynamic> get customAttributes =>
+      throw _privateConstructorUsedError;
+  bool get isArchived => throw _privateConstructorUsedError;
   bool get isContainer => throw _privateConstructorUsedError;
   bool get isPlace => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
@@ -66,6 +67,9 @@ abstract class $WorldEntityCopyWith<$Res> {
       String? parentEntityId,
       double? quantity,
       String? unit,
+      String? barcode,
+      Map<String, dynamic> customAttributes,
+      bool isArchived,
       bool isContainer,
       bool isPlace,
       List<String> tags,
@@ -98,6 +102,9 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
     Object? parentEntityId = freezed,
     Object? quantity = freezed,
     Object? unit = freezed,
+    Object? barcode = freezed,
+    Object? customAttributes = null,
+    Object? isArchived = null,
     Object? isContainer = null,
     Object? isPlace = null,
     Object? tags = null,
@@ -145,6 +152,18 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String?,
+      barcode: freezed == barcode
+          ? _value.barcode
+          : barcode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customAttributes: null == customAttributes
+          ? _value.customAttributes
+          : customAttributes // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
+      isArchived: null == isArchived
+          ? _value.isArchived
+          : isArchived // ignore: cast_nullable_to_non_nullable
+              as bool,
       isContainer: null == isContainer
           ? _value.isContainer
           : isContainer // ignore: cast_nullable_to_non_nullable
@@ -188,6 +207,9 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
       String? parentEntityId,
       double? quantity,
       String? unit,
+      String? barcode,
+      Map<String, dynamic> customAttributes,
+      bool isArchived,
       bool isContainer,
       bool isPlace,
       List<String> tags,
@@ -218,6 +240,9 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
     Object? parentEntityId = freezed,
     Object? quantity = freezed,
     Object? unit = freezed,
+    Object? barcode = freezed,
+    Object? customAttributes = null,
+    Object? isArchived = null,
     Object? isContainer = null,
     Object? isPlace = null,
     Object? tags = null,
@@ -265,6 +290,18 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String?,
+      barcode: freezed == barcode
+          ? _value.barcode
+          : barcode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customAttributes: null == customAttributes
+          ? _value._customAttributes
+          : customAttributes // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
+      isArchived: null == isArchived
+          ? _value.isArchived
+          : isArchived // ignore: cast_nullable_to_non_nullable
+              as bool,
       isContainer: null == isContainer
           ? _value.isContainer
           : isContainer // ignore: cast_nullable_to_non_nullable
@@ -303,12 +340,16 @@ class _$WorldEntityImpl implements _WorldEntity {
       this.parentEntityId,
       this.quantity,
       this.unit,
+      this.barcode,
+      final Map<String, dynamic> customAttributes = const {},
+      this.isArchived = false,
       this.isContainer = false,
       this.isPlace = false,
       final List<String> tags = const [],
       required this.createdAt,
       required this.updatedAt})
-      : _tags = tags;
+      : _customAttributes = customAttributes,
+        _tags = tags;
 
   factory _$WorldEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$WorldEntityImplFromJson(json);
@@ -329,13 +370,24 @@ class _$WorldEntityImpl implements _WorldEntity {
   final String? placeId;
   @override
   final String? parentEntityId;
-// Containment parent ID (can be place or container entity)
   @override
   final double? quantity;
-// Countable or measurable quantity
   @override
   final String? unit;
-// Unit of measurement (e.g. piezas, kg, litros)
+  @override
+  final String? barcode;
+  final Map<String, dynamic> _customAttributes;
+  @override
+  @JsonKey()
+  Map<String, dynamic> get customAttributes {
+    if (_customAttributes is EqualUnmodifiableMapView) return _customAttributes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_customAttributes);
+  }
+
+  @override
+  @JsonKey()
+  final bool isArchived;
   @override
   @JsonKey()
   final bool isContainer;
@@ -358,7 +410,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, name: $name, alias: $alias, type: $type, mainPhotoPath: $mainPhotoPath, notes: $notes, placeId: $placeId, parentEntityId: $parentEntityId, quantity: $quantity, unit: $unit, isContainer: $isContainer, isPlace: $isPlace, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, name: $name, alias: $alias, type: $type, mainPhotoPath: $mainPhotoPath, notes: $notes, placeId: $placeId, parentEntityId: $parentEntityId, quantity: $quantity, unit: $unit, barcode: $barcode, customAttributes: $customAttributes, isArchived: $isArchived, isContainer: $isContainer, isPlace: $isPlace, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -379,6 +431,11 @@ class _$WorldEntityImpl implements _WorldEntity {
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
+            (identical(other.barcode, barcode) || other.barcode == barcode) &&
+            const DeepCollectionEquality()
+                .equals(other._customAttributes, _customAttributes) &&
+            (identical(other.isArchived, isArchived) ||
+                other.isArchived == isArchived) &&
             (identical(other.isContainer, isContainer) ||
                 other.isContainer == isContainer) &&
             (identical(other.isPlace, isPlace) || other.isPlace == isPlace) &&
@@ -403,6 +460,9 @@ class _$WorldEntityImpl implements _WorldEntity {
       parentEntityId,
       quantity,
       unit,
+      barcode,
+      const DeepCollectionEquality().hash(_customAttributes),
+      isArchived,
       isContainer,
       isPlace,
       const DeepCollectionEquality().hash(_tags),
@@ -437,6 +497,9 @@ abstract class _WorldEntity implements WorldEntity {
       final String? parentEntityId,
       final double? quantity,
       final String? unit,
+      final String? barcode,
+      final Map<String, dynamic> customAttributes,
+      final bool isArchived,
       final bool isContainer,
       final bool isPlace,
       final List<String> tags,
@@ -461,12 +524,17 @@ abstract class _WorldEntity implements WorldEntity {
   @override
   String? get placeId;
   @override
-  String?
-      get parentEntityId; // Containment parent ID (can be place or container entity)
+  String? get parentEntityId;
   @override
-  double? get quantity; // Countable or measurable quantity
+  double? get quantity;
   @override
-  String? get unit; // Unit of measurement (e.g. piezas, kg, litros)
+  String? get unit;
+  @override
+  String? get barcode;
+  @override
+  Map<String, dynamic> get customAttributes;
+  @override
+  bool get isArchived;
   @override
   bool get isContainer;
   @override

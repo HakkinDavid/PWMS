@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
-import '../../entities/domain/world_entity.dart';
+import '../domain/entity_template.dart';
+import '../domain/world_entity.dart';
+import 'custom_template_editor_sheet.dart';
 
 class CreateEntitySheet extends ConsumerStatefulWidget {
   const CreateEntitySheet({super.key});
@@ -26,13 +28,16 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
   final _nameController = TextEditingController();
   final _notesController = TextEditingController();
   final _tagsController = TextEditingController();
+  final _barcodeController = TextEditingController();
+  final _qtyController = TextEditingController();
+  final _unitController = TextEditingController();
 
   String _selectedType = 'Herramienta';
   String? _selectedPlaceId;
   XFile? _selectedImage;
   bool _isSaving = false;
 
-  final List<String> _entityTypes = [
+  final List<String> _defaultTypes = [
     'Herramienta',
     'Caja / Contenedor',
     'Documento',
@@ -55,9 +60,9 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
 
   Future<void> _save() async {
     final name = _nameController.text.trim();
-    if (name.isEmpty && _selectedImage == null) {
+    if (name.isEmpty && _selectedImage == null && _barcodeController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ingresa al menos un nombre o selecciona una fotografía')),
+        const SnackBar(content: Text('Ingresa al menos un nombre, código o fotografía')),
       );
       return;
     }
@@ -72,13 +77,21 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
       }
 
       final entityId = const Uuid().v4();
-      final finalName = name.isNotEmpty ? name : 'Sin Nombre ($_selectedType)';
+      final finalName = name.isNotEmpty
+          ? name
+          : (_barcodeController.text.isNotEmpty ? 'Código ${_barcodeController.text.trim()}' : 'Elemento ($_selectedType)');
 
       final tagsList = _tagsController.text
           .split(',')
           .map((t) => t.trim())
           .where((t) => t.isNotEmpty)
           .toList();
+
+      final double? parsedQty = double.tryParse(_qtyController.text.trim());
+      final String? parsedUnit = _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
+
+      final isContainer = EntityTemplateRegistry.isContainer(_selectedType);
+      final isPlace = EntityTemplateRegistry.isPlace(_selectedType);
 
       final newEntity = WorldEntity(
         id: entityId,
@@ -87,6 +100,11 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
         mainPhotoPath: relativePhotoPath,
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
         placeId: _selectedPlaceId,
+        quantity: parsedQty,
+        unit: parsedUnit,
+        barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
+        isContainer: isContainer,
+        isPlace: isPlace,
         tags: tagsList,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -122,6 +140,9 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
     _nameController.dispose();
     _notesController.dispose();
     _tagsController.dispose();
+    _barcodeController.dispose();
+    _qtyController.dispose();
+    _unitController.dispose();
     super.dispose();
   }
 
@@ -146,7 +167,6 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Handle bar
             Center(
               child: Container(
                 width: 40,
@@ -173,7 +193,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Photo Capture Picker Area
+            // Photo Area
             GestureDetector(
               onTap: () {
                 showModalBottomSheet(
@@ -203,7 +223,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                 );
               },
               child: Container(
-                height: 140,
+                height: 120,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: theme.cardColor,
@@ -231,7 +251,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                     : null,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // Name Field
             TextField(
@@ -243,19 +263,40 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                 prefixIcon: Icon(Icons.edit),
               ),
             ),
+            const SizedBox(height: 12),
+
+            // Barcode Field
+            TextField(
+              controller: _barcodeController,
+              decoration: const InputDecoration(
+                labelText: 'Código de barras / Identificador (Opcional)',
+                hintText: 'Ej. 750123456789',
+                prefixIcon: Icon(Icons.qr_code_scanner),
+              ),
+            ),
             const SizedBox(height: 16),
 
-            // Type Selector Chips
-            Text('Tipo de elemento', style: theme.textTheme.labelLarge),
+            // Type Selector Chips + Add Custom Type button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Tipo de elemento', style: theme.textTheme.labelLarge),
+                TextButton.icon(
+                  onPressed: () => CustomTemplateEditorSheet.show(context),
+                  icon: const Icon(Icons.add, size: 16),
+                  label: const Text('Crear Tipo', style: TextStyle(fontSize: 12)),
+                ),
+              ],
+            ),
             const SizedBox(height: 8),
             SizedBox(
               height: 44,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: _entityTypes.length,
+                itemCount: _defaultTypes.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
-                  final type = _entityTypes[index];
+                  final type = _defaultTypes[index];
                   final isSelected = type == _selectedType;
                   return ChoiceChip(
                     label: Text(type),
@@ -266,6 +307,35 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
                   );
                 },
               ),
+            ),
+            const SizedBox(height: 16),
+
+            // Quantities & Units
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _qtyController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Cantidad',
+                      hintText: 'Ej. 10, 1',
+                      prefixIcon: Icon(Icons.numbers),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: _unitController,
+                    decoration: const InputDecoration(
+                      labelText: 'Unidad',
+                      hintText: 'Ej. piezas, kg, litros',
+                      prefixIcon: Icon(Icons.straighten),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
 
@@ -298,7 +368,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Optional Tags
+            // Tags
             TextField(
               controller: _tagsController,
               decoration: const InputDecoration(

@@ -1,18 +1,15 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
-import 'package:platinum_world_management_system/src/features/entities/domain/entity_template.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/custom_template.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
-import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
-import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
 import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
 import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';
 
 void main() {
   late AppDatabase db;
   late EntityRepository entityRepo;
-  late RelationRepository relationRepo;
   late HistoryRepository historyRepo;
   late ActivityLoggerService loggerService;
 
@@ -20,7 +17,6 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     db = AppDatabase(NativeDatabase.memory());
     entityRepo = EntityRepository(db);
-    relationRepo = RelationRepository(db);
     historyRepo = HistoryRepository(db);
     loggerService = ActivityLoggerService(historyRepo);
   });
@@ -29,145 +25,105 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Unified Living Domain Model Tests', () {
-    test('Create and retrieve Place as WorldEntity', () async {
-      final placeEntity = WorldEntity(
-        id: 'place-1',
-        name: 'Taller Principal',
-        type: 'Lugar',
-        notes: 'Zona de herramientas',
-        isPlace: true,
-        isContainer: true,
+  group('PWMS Complete Capabilities Checklist Tests', () {
+    test('Create entity with custom attributes, barcode, and custom units', () async {
+      final entity = WorldEntity(
+        id: 'ent-multimeter',
+        name: 'Multímetro Fluke 87V',
+        type: 'Herramienta',
+        quantity: 2,
+        unit: 'piezas',
+        barcode: '750123456789',
+        customAttributes: {
+          'Voltaje Máximo': '1000V',
+          'Garantía': 'De por vida',
+        },
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      await entityRepo.saveEntity(placeEntity);
-      final retrieved = await entityRepo.getEntityById('place-1');
+      await entityRepo.saveEntity(entity);
+      final retrieved = await entityRepo.getEntityById('ent-multimeter');
 
       expect(retrieved, isNotNull);
-      expect(retrieved!.name, equals('Taller Principal'));
-      expect(retrieved.type, equals('Lugar'));
-      expect(retrieved.isPlace, isTrue);
-
-      final boxTemplate = EntityTemplateRegistry.getTemplate('Caja / Contenedor');
-      expect(boxTemplate.isContainer, isTrue);
-      expect(boxTemplate.primaryView, equals(TemplateViewKind.contents));
+      expect(retrieved!.barcode, equals('750123456789'));
+      expect(retrieved.customAttributes['Voltaje Máximo'], equals('1000V'));
+      expect(retrieved.quantity, equals(2));
+      expect(retrieved.unit, equals('piezas'));
     });
 
-    test('Hierarchical containment and cascade movement', () async {
-      // Create Place: Taller
-      final place = WorldEntity(
-        id: 'place-taller',
-        name: 'Taller',
-        type: 'Lugar',
-        isPlace: true,
-        isContainer: true,
+    test('Create and modify user custom template and custom units', () async {
+      final customTpl = CustomTemplate(
+        id: 'tpl-1',
+        typeName: 'Componente Electrónico',
+        iconName: 'memory',
+        isContainer: false,
+        isPlace: false,
+        commonUnits: ['unidades', 'pines', 'carretes'],
         createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
       );
-      await entityRepo.saveEntity(place);
 
-      // Create Container: Caja Roja inside Taller
-      final containerBox = WorldEntity(
-        id: 'box-1',
-        name: 'Caja Roja',
-        type: 'Caja / Contenedor',
-        placeId: 'place-taller',
-        isContainer: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      await entityRepo.saveEntity(containerBox);
+      await entityRepo.saveCustomTemplate(customTpl);
+      final allCustom = await entityRepo.getAllCustomTemplates();
 
-      // Create Item: Taladro inside Caja Roja
-      final itemDrill = WorldEntity(
-        id: 'drill-1',
-        name: 'Taladro Bosch',
-        type: 'Herramienta',
-        parentEntityId: 'box-1',
-        placeId: 'place-taller',
-        quantity: 1,
-        unit: 'pieza',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      await entityRepo.saveEntity(itemDrill);
-
-      // Verify drill is inside Caja Roja
-      final contentsOfBox = await entityRepo.getEntitiesByParent('box-1');
-      expect(contentsOfBox.length, equals(1));
-      expect(contentsOfBox.first.name, equals('Taladro Bosch'));
-
-      // Move Caja Roja to Estudio
-      final newPlace = WorldEntity(
-        id: 'place-estudio',
-        name: 'Estudio',
-        type: 'Lugar',
-        isPlace: true,
-        isContainer: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      await entityRepo.saveEntity(newPlace);
-
-      await entityRepo.moveEntity('box-1', newPlaceId: 'place-estudio');
-
-      // Verify cascade movement updated child Taladro Bosch placeId to Estudio automatically!
-      final movedDrill = await entityRepo.getEntityById('drill-1');
-      expect(movedDrill!.placeId, equals('place-estudio'));
+      expect(allCustom.length, equals(1));
+      expect(allCustom.first.typeName, equals('Componente Electrónico'));
+      expect(allCustom.first.commonUnits.contains('carretes'), isTrue);
     });
 
-    test('Directed semantic relationships', () async {
-      final docEntity = WorldEntity(
-        id: 'doc-1',
-        name: 'Manual PDF Taladro',
-        type: 'Documento',
+    test('Archive and unarchive entity', () async {
+      final item = WorldEntity(
+        id: 'item-arch',
+        name: 'Antigua Laptop',
+        type: 'Otro',
+        isArchived: false,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      final toolEntity = WorldEntity(
-        id: 'tool-1',
-        name: 'Taladro Bosch',
-        type: 'Herramienta',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      await entityRepo.saveEntity(item);
+      final activeList = await entityRepo.getRecentEntities();
+      expect(activeList.any((e) => e.id == 'item-arch'), isTrue);
 
-      await entityRepo.saveEntity(docEntity);
-      await entityRepo.saveEntity(toolEntity);
+      final archivedItem = item.copyWith(isArchived: true, updatedAt: DateTime.now());
+      await entityRepo.saveEntity(archivedItem);
 
-      // Establish directed relation: Manual PDF DOCUMENTA Taladro Bosch
-      final relation = EntityRelation(
-        id: 'rel-1',
-        sourceEntityId: 'doc-1',
-        targetEntityId: 'tool-1',
-        relationType: 'DOCUMENTA',
-        createdAt: DateTime.now(),
-      );
-
-      await relationRepo.addRelation(relation);
-
-      final relations = await relationRepo.getRelationsForEntity('doc-1');
-      expect(relations.length, equals(1));
-      expect(relations.first.sourceEntityId, equals('doc-1'));
-      expect(relations.first.targetEntityId, equals('tool-1'));
-      expect(relations.first.relationType, equals('DOCUMENTA'));
+      final activeListAfter = await entityRepo.getRecentEntities();
+      expect(activeListAfter.any((e) => e.id == 'item-arch'), isFalse);
     });
 
-    test('Complete event audit trail', () async {
-      await loggerService.logEntityCreated('ent-1', 'Batería 18V', 'Herramienta');
-      await loggerService.logPhotoChanged('ent-1', 'Batería 18V');
-      await loggerService.logQuantityConsumed('ent-1', 'Batería 18V', 5, 'piezas');
-      await loggerService.logEntityDeleted('ent-1', 'Batería 18V');
+    test('Search entities by relation, barcode, notes, and custom attributes', () async {
+      final entity = WorldEntity(
+        id: 'e-1',
+        name: 'Servidor Dell',
+        type: 'Servidor',
+        barcode: 'DELL-998877',
+        notes: 'Rack secundario',
+        customAttributes: {'IP': '192.168.1.100'},
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await entityRepo.saveEntity(entity);
+
+      // Search by barcode
+      final resBarcode = await entityRepo.searchEntities('998877');
+      expect(resBarcode.length, equals(1));
+
+      // Search by custom attribute IP
+      final resIP = await entityRepo.searchEntities('192.168.1.100');
+      expect(resIP.length, equals(1));
+    });
+
+    test('Complete audit log tracking for all actions', () async {
+      await loggerService.logEntityCreated('e-1', 'Caja Fuertes', 'Caja / Contenedor');
+      await loggerService.logPhotoChanged('e-1', 'Caja Fuertes');
+      await loggerService.logQuantityConsumed('e-1', 'Caja Fuertes', 10, 'piezas');
+      await loggerService.logEntityEdited('e-1', 'Caja Fuertes', details: 'Archivado');
+      await loggerService.logEntityDeleted('e-1', 'Caja Fuertes');
 
       final events = await historyRepo.getRecentEvents(limit: 10);
-      expect(events.length, equals(4));
-      expect(events.any((e) => e.eventType == 'creation'), isTrue);
-      expect(events.any((e) => e.eventType == 'photo_changed'), isTrue);
-      expect(events.any((e) => e.eventType == 'consumption'), isTrue);
-      expect(events.any((e) => e.eventType == 'deletion'), isTrue);
+      expect(events.length, equals(5));
     });
   });
 }

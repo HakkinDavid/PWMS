@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/attachment.dart';
+import '../domain/custom_template.dart';
 import '../domain/entity_template.dart';
 import '../domain/i_entity_repository.dart';
 import '../domain/world_entity.dart';
@@ -21,6 +22,13 @@ class EntityRepository implements IEntityRepository {
       }
     }
 
+    Map<String, dynamic> customAttrs = {};
+    if (row.customAttributes.isNotEmpty) {
+      try {
+        customAttrs = Map<String, dynamic>.from(jsonDecode(row.customAttributes));
+      } catch (_) {}
+    }
+
     final isContainer = EntityTemplateRegistry.isContainer(row.type);
     final isPlace = EntityTemplateRegistry.isPlace(row.type);
 
@@ -35,6 +43,9 @@ class EntityRepository implements IEntityRepository {
       parentEntityId: row.parentEntityId,
       quantity: row.quantity,
       unit: row.unit,
+      barcode: row.barcode,
+      customAttributes: customAttrs,
+      isArchived: row.isArchived,
       isContainer: isContainer,
       isPlace: isPlace,
       tags: tagsList,
@@ -72,6 +83,7 @@ class EntityRepository implements IEntityRepository {
   @override
   Future<List<WorldEntity>> getRecentEntities({int limit = 10}) async {
     final query = _db.select(_db.entitiesTable)
+      ..where((t) => t.isArchived.equals(false))
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
       ..limit(limit);
     final rows = await query.get();
@@ -102,14 +114,34 @@ class EntityRepository implements IEntityRepository {
     final cleanQuery = queryStr.toLowerCase().trim();
     if (cleanQuery.isEmpty) return getAllEntities();
 
-    final all = await getAllEntities();
-    return all.where((e) {
+    // Fetch relations for relation-based search
+    final relationsRows = await _db.select(_db.relationsTable).get();
+    final allEntities = await getAllEntities();
+
+    return allEntities.where((e) {
       final nameMatch = e.name.toLowerCase().contains(cleanQuery);
       final aliasMatch = e.alias?.toLowerCase().contains(cleanQuery) ?? false;
       final typeMatch = e.type.toLowerCase().contains(cleanQuery);
       final notesMatch = e.notes?.toLowerCase().contains(cleanQuery) ?? false;
+      final barcodeMatch = e.barcode?.toLowerCase().contains(cleanQuery) ?? false;
       final tagsMatch = e.tags.any((t) => t.toLowerCase().contains(cleanQuery));
-      return nameMatch || aliasMatch || typeMatch || notesMatch || tagsMatch;
+
+      final attrMatch = e.customAttributes.entries.any(
+        (entry) => entry.key.toLowerCase().contains(cleanQuery) || entry.value.toString().toLowerCase().contains(cleanQuery),
+      );
+
+      // Relation search: check if linked entities match query
+      final relationMatch = relationsRows.any((r) {
+        if (r.sourceEntityId == e.id || r.targetEntityId == e.id) {
+          if (r.relationType.toLowerCase().contains(cleanQuery)) return true;
+          final otherId = r.sourceEntityId == e.id ? r.targetEntityId : r.sourceEntityId;
+          final other = allEntities.where((x) => x.id == otherId).firstOrNull;
+          return other?.name.toLowerCase().contains(cleanQuery) ?? false;
+        }
+        return false;
+      });
+
+      return nameMatch || aliasMatch || typeMatch || notesMatch || barcodeMatch || tagsMatch || attrMatch || relationMatch;
     }).toList();
   }
 
@@ -126,6 +158,9 @@ class EntityRepository implements IEntityRepository {
       parentEntityId: Value(entity.parentEntityId),
       quantity: Value(entity.quantity),
       unit: Value(entity.unit),
+      barcode: Value(entity.barcode),
+      customAttributes: Value(jsonEncode(entity.customAttributes)),
+      isArchived: Value(entity.isArchived),
       tags: Value(jsonEncode(entity.tags)),
       createdAt: Value(entity.createdAt),
       updatedAt: Value(entity.updatedAt),
@@ -146,11 +181,9 @@ class EntityRepository implements IEntityRepository {
     );
     await saveEntity(updated);
 
-    // If entity is a container or place, cascading location context to all contained children
     if (entity.isContainer || entity.isPlace) {
       final children = await getEntitiesByParent(entityId);
       for (final child in children) {
-        // Cascade place update to children if container was assigned to a new place
         if (newPlaceId != child.placeId) {
           await moveEntity(child.id, newPlaceId: newPlaceId, newParentId: child.parentEntityId);
         }
@@ -160,7 +193,6 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> deleteEntity(String id) async {
-    // Delete attachments & relations first
     await (_db.delete(_db.attachmentsTable)..where((t) => t.entityId.equals(id))).go();
     await (_db.delete(_db.relationsTable)..where((t) => t.sourceEntityId.equals(id) | t.targetEntityId.equals(id))).go();
     await (_db.delete(_db.entitiesTable)..where((t) => t.id.equals(id))).go();
@@ -189,5 +221,40 @@ class EntityRepository implements IEntityRepository {
   @override
   Future<void> deleteAttachment(String attachmentId) async {
     await (_db.delete(_db.attachmentsTable)..where((t) => t.id.equals(attachmentId))).go();
+  }
+
+  // Custom Templates DAOs
+  @override
+  Future<List<CustomTemplate>> getAllCustomTemplates() async {
+    final rows = await _db.select(_db.customTemplatesTable).get();
+    return rows.map((r) {
+      List<String> units = [];
+      try {
+        units = List<String>.from(jsonDecode(r.commonUnits));
+      } catch (_) {}
+      return CustomTemplate(
+        id: r.id,
+        typeName: r.typeName,
+        iconName: r.iconName,
+        isContainer: r.isContainer,
+        isPlace: r.isPlace,
+        commonUnits: units,
+        createdAt: r.createdAt,
+      );
+    }).toList();
+  }
+
+  @override
+  Future<void> saveCustomTemplate(CustomTemplate template) async {
+    final companion = CustomTemplatesTableCompanion(
+      id: Value(template.id),
+      typeName: Value(template.typeName),
+      iconName: Value(template.iconName),
+      isContainer: Value(template.isContainer),
+      isPlace: Value(template.isPlace),
+      commonUnits: Value(jsonEncode(template.commonUnits)),
+      createdAt: Value(template.createdAt),
+    );
+    await _db.into(_db.customTemplatesTable).insertOnConflictUpdate(companion);
   }
 }

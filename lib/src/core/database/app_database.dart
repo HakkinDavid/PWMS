@@ -16,6 +16,9 @@ class EntitiesTable extends Table {
   TextColumn get parentEntityId => text().nullable().references(EntitiesTable, #id)(); // Hierarchical containment
   RealColumn get quantity => real().nullable()(); // Countable / Measurable
   TextColumn get unit => text().nullable()(); // Unit of measurement
+  TextColumn get barcode => text().nullable()(); // Barcode / QR Code
+  TextColumn get customAttributes => text().withDefault(const Constant('{}'))(); // JSON key-value map
+  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
   TextColumn get tags => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
@@ -64,10 +67,23 @@ class AttachmentsTable extends Table {
 class HistoryEventsTable extends Table {
   TextColumn get id => text()();
   TextColumn get entityId => text().nullable()();
-  TextColumn get eventType => text()(); // creation, edition, movement, attachment, relation
+  TextColumn get eventType => text()(); // creation, edition, movement, attachment, relation, deletion, photo, consumption
   TextColumn get description => text()();
   TextColumn get metadata => text().nullable()();
   DateTimeColumn get timestamp => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class CustomTemplatesTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get typeName => text()();
+  TextColumn get iconName => text()();
+  BoolColumn get isContainer => boolean().withDefault(const Constant(false))();
+  BoolColumn get isPlace => boolean().withDefault(const Constant(false))();
+  TextColumn get commonUnits => text().withDefault(const Constant('[]'))(); // JSON array
+  DateTimeColumn get createdAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -79,6 +95,7 @@ class HistoryEventsTable extends Table {
   RelationsTable,
   AttachmentsTable,
   HistoryEventsTable,
+  CustomTemplatesTable,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());

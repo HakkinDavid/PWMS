@@ -18,6 +18,10 @@ _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
       parentEntityId: json['parentEntityId'] as String?,
       quantity: (json['quantity'] as num?)?.toDouble(),
       unit: json['unit'] as String?,
+      barcode: json['barcode'] as String?,
+      customAttributes:
+          json['customAttributes'] as Map<String, dynamic>? ?? const {},
+      isArchived: json['isArchived'] as bool? ?? false,
       isContainer: json['isContainer'] as bool? ?? false,
       isPlace: json['isPlace'] as bool? ?? false,
       tags:
@@ -39,6 +43,9 @@ Map<String, dynamic> _$$WorldEntityImplToJson(_$WorldEntityImpl instance) =>
       'parentEntityId': instance.parentEntityId,
       'quantity': instance.quantity,
       'unit': instance.unit,
+      'barcode': instance.barcode,
+      'customAttributes': instance.customAttributes,
+      'isArchived': instance.isArchived,
       'isContainer': instance.isContainer,
       'isPlace': instance.isPlace,
       'tags': instance.tags,

@@ -13,9 +13,12 @@ class WorldEntity with _$WorldEntity {
     String? mainPhotoPath,
     String? notes,
     String? placeId,
-    String? parentEntityId, // Containment parent ID (can be place or container entity)
-    double? quantity,       // Countable or measurable quantity
-    String? unit,           // Unit of measurement (e.g. piezas, kg, litros)
+    String? parentEntityId,
+    double? quantity,
+    String? unit,
+    String? barcode,
+    @Default({}) Map<String, dynamic> customAttributes,
+    @Default(false) bool isArchived,
     @Default(false) bool isContainer,
     @Default(false) bool isPlace,
     @Default([]) List<String> tags,

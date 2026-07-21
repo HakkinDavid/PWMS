@@ -1,4 +1,5 @@
 import 'attachment.dart';
+import 'custom_template.dart';
 import 'world_entity.dart';
 
 abstract class IEntityRepository {
@@ -16,4 +17,8 @@ abstract class IEntityRepository {
   Future<List<Attachment>> getAttachments(String entityId);
   Future<void> addAttachment(Attachment attachment);
   Future<void> deleteAttachment(String attachmentId);
+
+  // Custom Templates
+  Future<List<CustomTemplate>> getAllCustomTemplates();
+  Future<void> saveCustomTemplate(CustomTemplate template);
 }
