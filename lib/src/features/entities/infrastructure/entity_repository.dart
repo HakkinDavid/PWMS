@@ -28,7 +28,7 @@ class EntityRepository implements IEntityRepository {
   Attachment _mapAttachmentToDomain(AttachmentsTableData row) {
     return Attachment(
       id: row.id,
-      entityId: row.entityId,
+      speciesId: row.speciesId,
       filePath: row.filePath,
       fileName: row.fileName,
       fileType: row.fileType,
@@ -126,14 +126,13 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> deleteEntity(String id) async {
-    await (_db.delete(_db.attachmentsTable)..where((t) => t.entityId.equals(id))).go();
     await (_db.delete(_db.relationsTable)..where((t) => t.sourceEntityId.equals(id) | t.targetEntityId.equals(id))).go();
     await (_db.delete(_db.entitiesTable)..where((t) => t.id.equals(id))).go();
   }
 
   @override
-  Future<List<Attachment>> getAttachments(String entityId) async {
-    final query = _db.select(_db.attachmentsTable)..where((t) => t.entityId.equals(entityId));
+  Future<List<Attachment>> getAttachmentsForSpecies(String speciesId) async {
+    final query = _db.select(_db.attachmentsTable)..where((t) => t.speciesId.equals(speciesId));
     final rows = await query.get();
     return rows.map(_mapAttachmentToDomain).toList();
   }
@@ -142,7 +141,7 @@ class EntityRepository implements IEntityRepository {
   Future<void> addAttachment(Attachment attachment) async {
     final companion = AttachmentsTableCompanion(
       id: Value(attachment.id),
-      entityId: Value(attachment.entityId),
+      speciesId: Value(attachment.speciesId),
       filePath: Value(attachment.filePath),
       fileName: Value(attachment.fileName),
       fileType: Value(attachment.fileType),

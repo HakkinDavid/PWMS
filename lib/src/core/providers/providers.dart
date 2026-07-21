@@ -190,10 +190,10 @@ final entityDetailProvider = FutureProvider.family<WorldEntity?, String>((ref, i
   return repo.getEntityById(id);
 });
 
-// Entity Attachments Provider
-final entityAttachmentsProvider = FutureProvider.family<List<Attachment>, String>((ref, entityId) async {
+// Species Attachments Provider (Attachments belong to Catalog species)
+final speciesAttachmentsProvider = FutureProvider.family<List<Attachment>, String>((ref, speciesId) async {
   final repo = ref.watch(entityRepositoryProvider);
-  return repo.getAttachments(entityId);
+  return repo.getAttachmentsForSpecies(speciesId);
 });
 
 // Entity Relations Provider

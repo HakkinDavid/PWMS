@@ -384,7 +384,7 @@ class $CatalogTableTable extends CatalogTable
       'type', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('Objeto / Herramienta'));
+      defaultValue: const Constant('Objeto'));
   static const VerificationMeta _brandMeta = const VerificationMeta('brand');
   @override
   late final GeneratedColumn<String> brand = GeneratedColumn<String>(
@@ -1702,15 +1702,15 @@ class $AttachmentsTableTable extends AttachmentsTable
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _entityIdMeta =
-      const VerificationMeta('entityId');
+  static const VerificationMeta _speciesIdMeta =
+      const VerificationMeta('speciesId');
   @override
-  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
-      'entity_id', aliasedName, false,
+  late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
+      'species_id', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES entities_table (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES catalog_table (id)'));
   static const VerificationMeta _filePathMeta =
       const VerificationMeta('filePath');
   @override
@@ -1737,7 +1737,7 @@ class $AttachmentsTableTable extends AttachmentsTable
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, entityId, filePath, fileName, fileType, createdAt];
+      [id, speciesId, filePath, fileName, fileType, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1754,11 +1754,11 @@ class $AttachmentsTableTable extends AttachmentsTable
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('entity_id')) {
-      context.handle(_entityIdMeta,
-          entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta));
+    if (data.containsKey('species_id')) {
+      context.handle(_speciesIdMeta,
+          speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta));
     } else if (isInserting) {
-      context.missing(_entityIdMeta);
+      context.missing(_speciesIdMeta);
     }
     if (data.containsKey('file_path')) {
       context.handle(_filePathMeta,
@@ -1795,8 +1795,8 @@ class $AttachmentsTableTable extends AttachmentsTable
     return AttachmentsTableData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      entityId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}entity_id'])!,
+      speciesId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
       filePath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}file_path'])!,
       fileName: attachedDatabase.typeMapping
@@ -1817,14 +1817,14 @@ class $AttachmentsTableTable extends AttachmentsTable
 class AttachmentsTableData extends DataClass
     implements Insertable<AttachmentsTableData> {
   final String id;
-  final String entityId;
+  final String speciesId;
   final String filePath;
   final String fileName;
   final String fileType;
   final DateTime createdAt;
   const AttachmentsTableData(
       {required this.id,
-      required this.entityId,
+      required this.speciesId,
       required this.filePath,
       required this.fileName,
       required this.fileType,
@@ -1833,7 +1833,7 @@ class AttachmentsTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['entity_id'] = Variable<String>(entityId);
+    map['species_id'] = Variable<String>(speciesId);
     map['file_path'] = Variable<String>(filePath);
     map['file_name'] = Variable<String>(fileName);
     map['file_type'] = Variable<String>(fileType);
@@ -1844,7 +1844,7 @@ class AttachmentsTableData extends DataClass
   AttachmentsTableCompanion toCompanion(bool nullToAbsent) {
     return AttachmentsTableCompanion(
       id: Value(id),
-      entityId: Value(entityId),
+      speciesId: Value(speciesId),
       filePath: Value(filePath),
       fileName: Value(fileName),
       fileType: Value(fileType),
@@ -1857,7 +1857,7 @@ class AttachmentsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AttachmentsTableData(
       id: serializer.fromJson<String>(json['id']),
-      entityId: serializer.fromJson<String>(json['entityId']),
+      speciesId: serializer.fromJson<String>(json['speciesId']),
       filePath: serializer.fromJson<String>(json['filePath']),
       fileName: serializer.fromJson<String>(json['fileName']),
       fileType: serializer.fromJson<String>(json['fileType']),
@@ -1869,7 +1869,7 @@ class AttachmentsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'entityId': serializer.toJson<String>(entityId),
+      'speciesId': serializer.toJson<String>(speciesId),
       'filePath': serializer.toJson<String>(filePath),
       'fileName': serializer.toJson<String>(fileName),
       'fileType': serializer.toJson<String>(fileType),
@@ -1879,14 +1879,14 @@ class AttachmentsTableData extends DataClass
 
   AttachmentsTableData copyWith(
           {String? id,
-          String? entityId,
+          String? speciesId,
           String? filePath,
           String? fileName,
           String? fileType,
           DateTime? createdAt}) =>
       AttachmentsTableData(
         id: id ?? this.id,
-        entityId: entityId ?? this.entityId,
+        speciesId: speciesId ?? this.speciesId,
         filePath: filePath ?? this.filePath,
         fileName: fileName ?? this.fileName,
         fileType: fileType ?? this.fileType,
@@ -1895,7 +1895,7 @@ class AttachmentsTableData extends DataClass
   AttachmentsTableData copyWithCompanion(AttachmentsTableCompanion data) {
     return AttachmentsTableData(
       id: data.id.present ? data.id.value : this.id,
-      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
       filePath: data.filePath.present ? data.filePath.value : this.filePath,
       fileName: data.fileName.present ? data.fileName.value : this.fileName,
       fileType: data.fileType.present ? data.fileType.value : this.fileType,
@@ -1907,7 +1907,7 @@ class AttachmentsTableData extends DataClass
   String toString() {
     return (StringBuffer('AttachmentsTableData(')
           ..write('id: $id, ')
-          ..write('entityId: $entityId, ')
+          ..write('speciesId: $speciesId, ')
           ..write('filePath: $filePath, ')
           ..write('fileName: $fileName, ')
           ..write('fileType: $fileType, ')
@@ -1918,13 +1918,13 @@ class AttachmentsTableData extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, entityId, filePath, fileName, fileType, createdAt);
+      Object.hash(id, speciesId, filePath, fileName, fileType, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is AttachmentsTableData &&
           other.id == this.id &&
-          other.entityId == this.entityId &&
+          other.speciesId == this.speciesId &&
           other.filePath == this.filePath &&
           other.fileName == this.fileName &&
           other.fileType == this.fileType &&
@@ -1933,7 +1933,7 @@ class AttachmentsTableData extends DataClass
 
 class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
   final Value<String> id;
-  final Value<String> entityId;
+  final Value<String> speciesId;
   final Value<String> filePath;
   final Value<String> fileName;
   final Value<String> fileType;
@@ -1941,7 +1941,7 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
   final Value<int> rowid;
   const AttachmentsTableCompanion({
     this.id = const Value.absent(),
-    this.entityId = const Value.absent(),
+    this.speciesId = const Value.absent(),
     this.filePath = const Value.absent(),
     this.fileName = const Value.absent(),
     this.fileType = const Value.absent(),
@@ -1950,21 +1950,21 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
   });
   AttachmentsTableCompanion.insert({
     required String id,
-    required String entityId,
+    required String speciesId,
     required String filePath,
     required String fileName,
     required String fileType,
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        entityId = Value(entityId),
+        speciesId = Value(speciesId),
         filePath = Value(filePath),
         fileName = Value(fileName),
         fileType = Value(fileType),
         createdAt = Value(createdAt);
   static Insertable<AttachmentsTableData> custom({
     Expression<String>? id,
-    Expression<String>? entityId,
+    Expression<String>? speciesId,
     Expression<String>? filePath,
     Expression<String>? fileName,
     Expression<String>? fileType,
@@ -1973,7 +1973,7 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (entityId != null) 'entity_id': entityId,
+      if (speciesId != null) 'species_id': speciesId,
       if (filePath != null) 'file_path': filePath,
       if (fileName != null) 'file_name': fileName,
       if (fileType != null) 'file_type': fileType,
@@ -1984,7 +1984,7 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
 
   AttachmentsTableCompanion copyWith(
       {Value<String>? id,
-      Value<String>? entityId,
+      Value<String>? speciesId,
       Value<String>? filePath,
       Value<String>? fileName,
       Value<String>? fileType,
@@ -1992,7 +1992,7 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
       Value<int>? rowid}) {
     return AttachmentsTableCompanion(
       id: id ?? this.id,
-      entityId: entityId ?? this.entityId,
+      speciesId: speciesId ?? this.speciesId,
       filePath: filePath ?? this.filePath,
       fileName: fileName ?? this.fileName,
       fileType: fileType ?? this.fileType,
@@ -2007,8 +2007,8 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (entityId.present) {
-      map['entity_id'] = Variable<String>(entityId.value);
+    if (speciesId.present) {
+      map['species_id'] = Variable<String>(speciesId.value);
     }
     if (filePath.present) {
       map['file_path'] = Variable<String>(filePath.value);
@@ -2032,7 +2032,7 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
   String toString() {
     return (StringBuffer('AttachmentsTableCompanion(')
           ..write('id: $id, ')
-          ..write('entityId: $entityId, ')
+          ..write('speciesId: $speciesId, ')
           ..write('filePath: $filePath, ')
           ..write('fileName: $fileName, ')
           ..write('fileType: $fileType, ')
@@ -3157,6 +3157,23 @@ final class $$CatalogTableTableReferences extends BaseReferences<_$AppDatabase,
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$AttachmentsTableTable, List<AttachmentsTableData>>
+      _attachmentsTableRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.attachmentsTable,
+              aliasName: $_aliasNameGenerator(
+                  db.catalogTable.id, db.attachmentsTable.speciesId));
+
+  $$AttachmentsTableTableProcessedTableManager get attachmentsTableRefs {
+    final manager = $$AttachmentsTableTableTableManager(
+            $_db, $_db.attachmentsTable)
+        .filter((f) => f.speciesId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_attachmentsTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$CatalogTableTableFilterComposer
@@ -3212,6 +3229,27 @@ class $$CatalogTableTableFilterComposer
             $$EntitiesTableTableFilterComposer(
               $db: $db,
               $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> attachmentsTableRefs(
+      Expression<bool> Function($$AttachmentsTableTableFilterComposer f) f) {
+    final $$AttachmentsTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachmentsTable,
+        getReferencedColumn: (t) => t.speciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableTableFilterComposer(
+              $db: $db,
+              $table: $db.attachmentsTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -3322,6 +3360,27 @@ class $$CatalogTableTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> attachmentsTableRefs<T extends Object>(
+      Expression<T> Function($$AttachmentsTableTableAnnotationComposer a) f) {
+    final $$AttachmentsTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachmentsTable,
+        getReferencedColumn: (t) => t.speciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.attachmentsTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$CatalogTableTableTableManager extends RootTableManager<
@@ -3335,7 +3394,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
     $$CatalogTableTableUpdateCompanionBuilder,
     (CatalogTableData, $$CatalogTableTableReferences),
     CatalogTableData,
-    PrefetchHooks Function({bool entitiesTableRefs})> {
+    PrefetchHooks Function(
+        {bool entitiesTableRefs, bool attachmentsTableRefs})> {
   $$CatalogTableTableTableManager(_$AppDatabase db, $CatalogTableTable table)
       : super(TableManagerState(
           db: db,
@@ -3404,11 +3464,13 @@ class $$CatalogTableTableTableManager extends RootTableManager<
                     $$CatalogTableTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({entitiesTableRefs = false}) {
+          prefetchHooksCallback: (
+              {entitiesTableRefs = false, attachmentsTableRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (entitiesTableRefs) db.entitiesTable
+                if (entitiesTableRefs) db.entitiesTable,
+                if (attachmentsTableRefs) db.attachmentsTable
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -3422,6 +3484,19 @@ class $$CatalogTableTableTableManager extends RootTableManager<
                         managerFromTypedResult: (p0) =>
                             $$CatalogTableTableReferences(db, table, p0)
                                 .entitiesTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.speciesId == item.id),
+                        typedResults: items),
+                  if (attachmentsTableRefs)
+                    await $_getPrefetchedData<CatalogTableData,
+                            $CatalogTableTable, AttachmentsTableData>(
+                        currentTable: table,
+                        referencedTable: $$CatalogTableTableReferences
+                            ._attachmentsTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CatalogTableTableReferences(db, table, p0)
+                                .attachmentsTableRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.speciesId == item.id),
@@ -3444,7 +3519,8 @@ typedef $$CatalogTableTableProcessedTableManager = ProcessedTableManager<
     $$CatalogTableTableUpdateCompanionBuilder,
     (CatalogTableData, $$CatalogTableTableReferences),
     CatalogTableData,
-    PrefetchHooks Function({bool entitiesTableRefs})>;
+    PrefetchHooks Function(
+        {bool entitiesTableRefs, bool attachmentsTableRefs})>;
 typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
     Function({
   required String id,
@@ -3535,23 +3611,6 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
             (f) => f.targetEntityId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_targetRelationsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$AttachmentsTableTable, List<AttachmentsTableData>>
-      _attachmentsTableRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.attachmentsTable,
-              aliasName: $_aliasNameGenerator(
-                  db.entitiesTable.id, db.attachmentsTable.entityId));
-
-  $$AttachmentsTableTableProcessedTableManager get attachmentsTableRefs {
-    final manager = $$AttachmentsTableTableTableManager(
-            $_db, $_db.attachmentsTable)
-        .filter((f) => f.entityId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache =
-        $_typedResult.readTableOrNull(_attachmentsTableRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -3661,27 +3720,6 @@ class $$EntitiesTableTableFilterComposer
             $$RelationsTableTableFilterComposer(
               $db: $db,
               $table: $db.relationsTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> attachmentsTableRefs(
-      Expression<bool> Function($$AttachmentsTableTableFilterComposer f) f) {
-    final $$AttachmentsTableTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.attachmentsTable,
-        getReferencedColumn: (t) => t.entityId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AttachmentsTableTableFilterComposer(
-              $db: $db,
-              $table: $db.attachmentsTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -3873,27 +3911,6 @@ class $$EntitiesTableTableAnnotationComposer
             ));
     return f(composer);
   }
-
-  Expression<T> attachmentsTableRefs<T extends Object>(
-      Expression<T> Function($$AttachmentsTableTableAnnotationComposer a) f) {
-    final $$AttachmentsTableTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.attachmentsTable,
-        getReferencedColumn: (t) => t.entityId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AttachmentsTableTableAnnotationComposer(
-              $db: $db,
-              $table: $db.attachmentsTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
 }
 
 class $$EntitiesTableTableTableManager extends RootTableManager<
@@ -3911,8 +3928,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
         {bool speciesId,
         bool locationId,
         bool sourceRelations,
-        bool targetRelations,
-        bool attachmentsTableRefs})> {
+        bool targetRelations})> {
   $$EntitiesTableTableTableManager(_$AppDatabase db, $EntitiesTableTable table)
       : super(TableManagerState(
           db: db,
@@ -3981,14 +3997,12 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               {speciesId = false,
               locationId = false,
               sourceRelations = false,
-              targetRelations = false,
-              attachmentsTableRefs = false}) {
+              targetRelations = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (sourceRelations) db.relationsTable,
-                if (targetRelations) db.relationsTable,
-                if (attachmentsTableRefs) db.attachmentsTable
+                if (targetRelations) db.relationsTable
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -4053,19 +4067,6 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.targetEntityId == item.id),
-                        typedResults: items),
-                  if (attachmentsTableRefs)
-                    await $_getPrefetchedData<EntitiesTableData,
-                            $EntitiesTableTable, AttachmentsTableData>(
-                        currentTable: table,
-                        referencedTable: $$EntitiesTableTableReferences
-                            ._attachmentsTableRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$EntitiesTableTableReferences(db, table, p0)
-                                .attachmentsTableRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.entityId == item.id),
                         typedResults: items)
                 ];
               },
@@ -4089,8 +4090,7 @@ typedef $$EntitiesTableTableProcessedTableManager = ProcessedTableManager<
         {bool speciesId,
         bool locationId,
         bool sourceRelations,
-        bool targetRelations,
-        bool attachmentsTableRefs})>;
+        bool targetRelations})>;
 typedef $$RelationsTableTableCreateCompanionBuilder = RelationsTableCompanion
     Function({
   required String id,
@@ -4451,7 +4451,7 @@ typedef $$RelationsTableTableProcessedTableManager = ProcessedTableManager<
 typedef $$AttachmentsTableTableCreateCompanionBuilder
     = AttachmentsTableCompanion Function({
   required String id,
-  required String entityId,
+  required String speciesId,
   required String filePath,
   required String fileName,
   required String fileType,
@@ -4461,7 +4461,7 @@ typedef $$AttachmentsTableTableCreateCompanionBuilder
 typedef $$AttachmentsTableTableUpdateCompanionBuilder
     = AttachmentsTableCompanion Function({
   Value<String> id,
-  Value<String> entityId,
+  Value<String> speciesId,
   Value<String> filePath,
   Value<String> fileName,
   Value<String> fileType,
@@ -4474,16 +4474,16 @@ final class $$AttachmentsTableTableReferences extends BaseReferences<
   $$AttachmentsTableTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $EntitiesTableTable _entityIdTable(_$AppDatabase db) =>
-      db.entitiesTable.createAlias($_aliasNameGenerator(
-          db.attachmentsTable.entityId, db.entitiesTable.id));
+  static $CatalogTableTable _speciesIdTable(_$AppDatabase db) =>
+      db.catalogTable.createAlias($_aliasNameGenerator(
+          db.attachmentsTable.speciesId, db.catalogTable.id));
 
-  $$EntitiesTableTableProcessedTableManager get entityId {
-    final $_column = $_itemColumn<String>('entity_id')!;
+  $$CatalogTableTableProcessedTableManager get speciesId {
+    final $_column = $_itemColumn<String>('species_id')!;
 
-    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
+    final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
         .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_entityIdTable($_db));
+    final item = $_typedResult.readTableOrNull(_speciesIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -4514,18 +4514,18 @@ class $$AttachmentsTableTableFilterComposer
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
 
-  $$EntitiesTableTableFilterComposer get entityId {
-    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
+  $$CatalogTableTableFilterComposer get speciesId {
+    final $$CatalogTableTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.entityId,
-        referencedTable: $db.entitiesTable,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableFilterComposer(
+            $$CatalogTableTableFilterComposer(
               $db: $db,
-              $table: $db.entitiesTable,
+              $table: $db.catalogTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4559,18 +4559,18 @@ class $$AttachmentsTableTableOrderingComposer
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
-  $$EntitiesTableTableOrderingComposer get entityId {
-    final $$EntitiesTableTableOrderingComposer composer = $composerBuilder(
+  $$CatalogTableTableOrderingComposer get speciesId {
+    final $$CatalogTableTableOrderingComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.entityId,
-        referencedTable: $db.entitiesTable,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableOrderingComposer(
+            $$CatalogTableTableOrderingComposer(
               $db: $db,
-              $table: $db.entitiesTable,
+              $table: $db.catalogTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4604,18 +4604,18 @@ class $$AttachmentsTableTableAnnotationComposer
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  $$EntitiesTableTableAnnotationComposer get entityId {
-    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
+  $$CatalogTableTableAnnotationComposer get speciesId {
+    final $$CatalogTableTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.entityId,
-        referencedTable: $db.entitiesTable,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$EntitiesTableTableAnnotationComposer(
+            $$CatalogTableTableAnnotationComposer(
               $db: $db,
-              $table: $db.entitiesTable,
+              $table: $db.catalogTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4636,7 +4636,7 @@ class $$AttachmentsTableTableTableManager extends RootTableManager<
     $$AttachmentsTableTableUpdateCompanionBuilder,
     (AttachmentsTableData, $$AttachmentsTableTableReferences),
     AttachmentsTableData,
-    PrefetchHooks Function({bool entityId})> {
+    PrefetchHooks Function({bool speciesId})> {
   $$AttachmentsTableTableTableManager(
       _$AppDatabase db, $AttachmentsTableTable table)
       : super(TableManagerState(
@@ -4650,7 +4650,7 @@ class $$AttachmentsTableTableTableManager extends RootTableManager<
               $$AttachmentsTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<String> entityId = const Value.absent(),
+            Value<String> speciesId = const Value.absent(),
             Value<String> filePath = const Value.absent(),
             Value<String> fileName = const Value.absent(),
             Value<String> fileType = const Value.absent(),
@@ -4659,7 +4659,7 @@ class $$AttachmentsTableTableTableManager extends RootTableManager<
           }) =>
               AttachmentsTableCompanion(
             id: id,
-            entityId: entityId,
+            speciesId: speciesId,
             filePath: filePath,
             fileName: fileName,
             fileType: fileType,
@@ -4668,7 +4668,7 @@ class $$AttachmentsTableTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required String entityId,
+            required String speciesId,
             required String filePath,
             required String fileName,
             required String fileType,
@@ -4677,7 +4677,7 @@ class $$AttachmentsTableTableTableManager extends RootTableManager<
           }) =>
               AttachmentsTableCompanion.insert(
             id: id,
-            entityId: entityId,
+            speciesId: speciesId,
             filePath: filePath,
             fileName: fileName,
             fileType: fileType,
@@ -4690,7 +4690,7 @@ class $$AttachmentsTableTableTableManager extends RootTableManager<
                     $$AttachmentsTableTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({entityId = false}) {
+          prefetchHooksCallback: ({speciesId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -4707,14 +4707,15 @@ class $$AttachmentsTableTableTableManager extends RootTableManager<
                       dynamic,
                       dynamic,
                       dynamic>>(state) {
-                if (entityId) {
+                if (speciesId) {
                   state = state.withJoin(
                     currentTable: table,
-                    currentColumn: table.entityId,
+                    currentColumn: table.speciesId,
                     referencedTable:
-                        $$AttachmentsTableTableReferences._entityIdTable(db),
-                    referencedColumn:
-                        $$AttachmentsTableTableReferences._entityIdTable(db).id,
+                        $$AttachmentsTableTableReferences._speciesIdTable(db),
+                    referencedColumn: $$AttachmentsTableTableReferences
+                        ._speciesIdTable(db)
+                        .id,
                   ) as T;
                 }
 
@@ -4739,7 +4740,7 @@ typedef $$AttachmentsTableTableProcessedTableManager = ProcessedTableManager<
     $$AttachmentsTableTableUpdateCompanionBuilder,
     (AttachmentsTableData, $$AttachmentsTableTableReferences),
     AttachmentsTableData,
-    PrefetchHooks Function({bool entityId})>;
+    PrefetchHooks Function({bool speciesId})>;
 typedef $$HistoryEventsTableTableCreateCompanionBuilder
     = HistoryEventsTableCompanion Function({
   required String id,

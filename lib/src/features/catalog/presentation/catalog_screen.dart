@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/presentation/create_entity_sheet.dart';
 import '../domain/catalog_item.dart';
@@ -13,7 +14,7 @@ class CatalogScreen extends ConsumerWidget {
     final brandCtrl = TextEditingController();
     final descCtrl = TextEditingController();
     final barcodeCtrl = TextEditingController();
-    String type = 'Objeto / Herramienta';
+    String type = AppStrings.typeObject;
 
     showModalBottomSheet(
       context: context,
@@ -49,21 +50,15 @@ class CatalogScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Crear Especie en el Universo de Objetos',
+                  AppStrings.createSpeciesHeader,
                   style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Define el objeto maestro en el catálogo universal para instanciarlo libremente en tu mundo.',
-                  style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: nameCtrl,
                   autofocus: true,
                   decoration: const InputDecoration(
-                    labelText: 'Nombre maestro del objeto / especie',
-                    hintText: 'Ej. Multímetro Fluke 87V, Batería AA 1.5V...',
+                    labelText: AppStrings.nameLabel,
                     prefixIcon: Icon(Icons.auto_awesome),
                   ),
                 ),
@@ -71,8 +66,7 @@ class CatalogScreen extends ConsumerWidget {
                 TextField(
                   controller: brandCtrl,
                   decoration: const InputDecoration(
-                    labelText: 'Marca / Fabricante (Opcional)',
-                    hintText: 'Ej. Fluke, Sony, Duracell...',
+                    labelText: AppStrings.brandLabel,
                     prefixIcon: Icon(Icons.branding_watermark),
                   ),
                 ),
@@ -80,8 +74,7 @@ class CatalogScreen extends ConsumerWidget {
                 TextField(
                   controller: barcodeCtrl,
                   decoration: const InputDecoration(
-                    labelText: 'Código de barras maestro',
-                    hintText: 'Ej. 750123456789',
+                    labelText: AppStrings.barcodeLabel,
                     prefixIcon: Icon(Icons.qr_code),
                   ),
                 ),
@@ -90,7 +83,7 @@ class CatalogScreen extends ConsumerWidget {
                   controller: descCtrl,
                   maxLines: 2,
                   decoration: const InputDecoration(
-                    labelText: 'Descripción técnica maestro',
+                    labelText: AppStrings.descriptionLabel,
                     prefixIcon: Icon(Icons.notes),
                   ),
                 ),
@@ -121,7 +114,7 @@ class CatalogScreen extends ConsumerWidget {
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
-                    child: const Text('Guardar Especie en Universo', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: const Text(AppStrings.saveSpeciesAction, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -139,12 +132,12 @@ class CatalogScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Universo de Objetos (Catálogo)'),
+        title: const Text(AppStrings.catalogTitle),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showCreateSpeciesModal(context, ref),
         icon: const Icon(Icons.add_circle_outline),
-        label: const Text('Nueva Especie'),
+        label: const Text(AppStrings.newSpeciesTitle),
       ),
       body: catalogState.when(
         data: (items) {
@@ -158,14 +151,8 @@ class CatalogScreen extends ConsumerWidget {
                     Icon(Icons.public, size: 64, color: theme.colorScheme.primary.withAlpha(120)),
                     const SizedBox(height: 16),
                     Text(
-                      'El Universo de Objetos está vacío',
+                      AppStrings.emptyCatalog,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Crea especies o modelos maestros para instanciar fácilmente múltiples ejemplares en tu mundo.',
-                      style: theme.textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -187,13 +174,17 @@ class CatalogScreen extends ConsumerWidget {
                     child: Icon(Icons.auto_awesome, color: theme.colorScheme.primary),
                   ),
                   title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('${item.brand ?? "Sin marca"} • ${item.type}'),
+                  subtitle: Text('${item.brand ?? ""} • ${item.type}'),
                   trailing: ElevatedButton.icon(
                     onPressed: () {
-                      CreateEntitySheet.show(context);
+                      // Pass initialSpecies to pre-populate CreateEntitySheet!
+                      CreateEntitySheet.show(
+                        context,
+                        initialSpecies: item,
+                      );
                     },
                     icon: const Icon(Icons.add, size: 16),
-                    label: const Text('Instanciar'),
+                    label: const Text(AppStrings.instantiateAction),
                   ),
                 ),
               );

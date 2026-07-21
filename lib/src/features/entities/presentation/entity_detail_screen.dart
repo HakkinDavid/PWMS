@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../domain/attachment.dart';
 import '../domain/entity_template.dart';
-import '../domain/world_entity.dart';
 import 'edit_entity_sheet.dart';
 import '../../relations/presentation/add_relation_sheet.dart';
 
@@ -23,7 +23,7 @@ class EntityDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
-  Future<void> _pickAndAddDocument(WorldEntity entity) async {
+  Future<void> _pickAndAddDocument(String speciesId) async {
     final result = await FilePicker.platform.pickFiles();
     if (result != null && result.files.single.path != null) {
       final file = result.files.single;
@@ -32,7 +32,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
       final attachment = Attachment(
         id: const Uuid().v4(),
-        entityId: entity.id,
+        speciesId: speciesId, // Belongs to Catalog Species!
         filePath: savedRelativePath,
         fileName: file.name,
         fileType: file.extension ?? 'doc',
@@ -40,7 +40,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       );
 
       await ref.read(entityRepositoryProvider).addAttachment(attachment);
-      ref.invalidate(entityAttachmentsProvider(entity.id));
+      ref.invalidate(speciesAttachmentsProvider(speciesId));
     }
   }
 
@@ -55,21 +55,21 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       body: entityAsync.when(
         data: (entity) {
           if (entity == null) {
-            return const Center(child: Text('Elemento no encontrado en tu mundo'));
+            return const Center(child: Text(AppStrings.appName));
           }
 
           final catalogItems = catalogState.asData?.value ?? [];
           final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull ??
               CatalogItem(
                 id: entity.speciesId,
-                name: 'Objeto Instanciado',
-                type: 'Objeto / Herramienta',
+                name: AppStrings.typeObject,
+                type: AppStrings.typeObject,
                 createdAt: DateTime.now(),
               );
 
           final template = EntityTemplateRegistry.getTemplate(species.type);
 
-          String locationName = 'Mundo (Raíz)';
+          String locationName = AppStrings.rootLocationName;
           if (entity.locationId != null) {
             locationsState.whenData((nodes) {
               final found = nodes.where((n) => n.id == entity.locationId).firstOrNull;
@@ -77,11 +77,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             });
           }
 
-          final attachmentsAsync = ref.watch(entityAttachmentsProvider(entity.id));
+          // Rule #4: Attachments belong to speciesId (Catalog Species)!
+          final attachmentsAsync = ref.watch(speciesAttachmentsProvider(species.id));
 
           return CustomScrollView(
             slivers: [
-              // Hero Photo / Header
               SliverAppBar(
                 expandedHeight: 260.0,
                 floating: false,
@@ -133,12 +133,12 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       final updated = entity.copyWith(isArchived: !entity.isArchived, updatedAt: DateTime.now());
                       await ref.read(entityListProvider.notifier).saveEntity(updated);
                     },
-                    tooltip: entity.isArchived ? 'Desarchivar' : 'Archivar',
+                    tooltip: entity.isArchived ? AppStrings.unarchive : AppStrings.archive,
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit_outlined),
                     onPressed: () => EditEntitySheet.show(context, entity),
-                    tooltip: 'Editar elemento',
+                    tooltip: AppStrings.edit,
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
@@ -146,13 +146,13 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: const Text('¿Eliminar de tu Mundo?'),
-                          content: Text('¿Seguro que deseas eliminar "${species.name}"?'),
+                          title: const Text(AppStrings.deleteConfirmationTitle),
+                          content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
                           actions: [
-                            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
                             TextButton(
                               onPressed: () => Navigator.pop(ctx, true),
-                              child: const Text('Eliminar', style: TextStyle(color: Colors.redAccent)),
+                              child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
                             ),
                           ],
                         ),
@@ -165,9 +165,6 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
                         if (context.mounted) {
                           context.pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('"${species.name}" eliminado de tu mundo')),
-                          );
                         }
                       }
                     },
@@ -175,14 +172,12 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 ],
               ),
 
-              // Content Body
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Concept Badge, Barcode & Quantity Controls
                       Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
                         spacing: 8,
@@ -238,13 +233,13 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                         final confirm = await showDialog<bool>(
                                           context: context,
                                           builder: (ctx) => AlertDialog(
-                                            title: const Text('¿Eliminar elemento?'),
-                                            content: Text('La cantidad llegó a 0. ¿Deseas eliminar "${species.name}"?'),
+                                            title: const Text(AppStrings.deleteConfirmationTitle),
+                                            content: Text('${AppStrings.zeroQuantityMessage} "${species.name}"?'),
                                             actions: [
-                                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
                                               TextButton(
                                                 onPressed: () => Navigator.pop(ctx, true),
-                                                child: const Text('Eliminar', style: TextStyle(color: Colors.redAccent)),
+                                                child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
                                               ),
                                             ],
                                           ),
@@ -262,7 +257,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                     },
                                   ),
                                   Text(
-                                    '${entity.quantity ?? 1.0} ${entity.unit ?? species.defaultUnit ?? "unidades"}',
+                                    '${entity.quantity ?? 1.0} ${entity.unit ?? species.defaultUnit ?? ""}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: theme.colorScheme.secondary,
@@ -287,7 +282,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Location Node in Location Graph
+                      // Location Card
                       Card(
                         color: theme.cardColor,
                         child: Padding(
@@ -308,7 +303,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Ubicación en el Grafo',
+                                      AppStrings.locationGraphNode,
                                       style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12),
                                     ),
                                     Text(
@@ -324,39 +319,37 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Notes / Custom Serial
                       if (entity.notes != null && entity.notes!.isNotEmpty) ...[
-                        Text('Notas / Número de Serie', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(AppStrings.notesLabel, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8),
                         Text(entity.notes!, style: theme.textTheme.bodyMedium),
                         const SizedBox(height: 24),
                       ],
 
-                      // Description from Catalog
                       if (species.description != null && species.description!.isNotEmpty) ...[
-                        Text('Descripción del Objeto Maestro', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(AppStrings.masterDescription, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8),
                         Text(species.description!, style: theme.textTheme.bodyMedium),
                         const SizedBox(height: 24),
                       ],
 
-                      // Quick Actions
+                      // Quick Action Buttons
                       Row(
                         children: [
                           Expanded(
                             child: OutlinedButton.icon(
                               onPressed: () => AddRelationSheet.show(context, entity),
                               icon: const Icon(Icons.link),
-                              label: const Text('Relacionar'),
+                              label: const Text(AppStrings.link),
                               style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: OutlinedButton.icon(
-                              onPressed: () => _pickAndAddDocument(entity),
+                              onPressed: () => _pickAndAddDocument(species.id),
                               icon: const Icon(Icons.attach_file),
-                              label: const Text('Adjuntar Archivo'),
+                              label: const Text(AppStrings.attachFile),
                               style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
                             ),
                           ),
@@ -364,13 +357,13 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Attachments
-                      Text('Archivos y Fotografías Adjuntas', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      // Species Attachments
+                      Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 12),
                       attachmentsAsync.when(
                         data: (attachments) {
                           if (attachments.isEmpty) {
-                            return const Text('Sin archivos adjuntos.', style: TextStyle(color: Colors.grey));
+                            return const Text(AppStrings.emptyAttachments, style: TextStyle(color: Colors.grey));
                           }
                           return ListView.builder(
                             shrinkWrap: true,

@@ -2,47 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/presentation/create_entity_sheet.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
-
-  IconData _getEventIcon(String type) {
-    switch (type) {
-      case 'creation':
-        return Icons.add_circle_outline;
-      case 'edition':
-        return Icons.edit_note;
-      case 'movement':
-        return Icons.near_me_outlined;
-      case 'attachment':
-        return Icons.attach_file;
-      case 'relation':
-        return Icons.link;
-      default:
-        return Icons.history;
-    }
-  }
-
-  Color _getEventColor(String type, BuildContext context) {
-    final theme = Theme.of(context);
-    switch (type) {
-      case 'creation':
-        return Colors.greenAccent;
-      case 'edition':
-        return theme.colorScheme.primary;
-      case 'movement':
-        return Colors.amberAccent;
-      case 'attachment':
-        return theme.colorScheme.secondary;
-      case 'relation':
-        return Colors.purpleAccent;
-      default:
-        return theme.colorScheme.onSurface;
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,339 +16,334 @@ class HomeScreen extends ConsumerWidget {
     final recentActivityAsync = ref.watch(recentActivityProvider);
 
     final collections = [
-      {'name': 'Herramientas', 'icon': Icons.build, 'query': 'Objeto'},
-      {'name': 'Lugares', 'icon': Icons.place, 'route': '/places'},
-      {'name': 'Universo Objetos', 'icon': Icons.public, 'route': '/catalog'},
+      {'name': 'Objetos', 'icon': Icons.build, 'query': 'Objeto'},
+      {'name': AppStrings.locationsTitle, 'icon': Icons.account_tree_outlined, 'route': '/places'},
+      {'name': AppStrings.universeCatalogTitle, 'icon': Icons.public, 'route': '/catalog'},
       {'name': 'Documentos', 'icon': Icons.description, 'query': 'Documento'},
-      {'name': 'Proyectos/Ideas', 'icon': Icons.lightbulb, 'query': 'Proyecto'},
+      {'name': 'Proyectos', 'icon': Icons.lightbulb, 'query': 'Proyecto'},
       {'name': 'Recuerdos', 'icon': Icons.star, 'query': 'Recuerdo'},
     ];
 
     return Scaffold(
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            ref.read(entityListProvider.notifier).loadEntities();
-            ref.invalidate(recentEntitiesProvider);
-            ref.invalidate(recentActivityProvider);
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // App Brand & Subtitle
-                Row(
+        child: CustomScrollView(
+          slivers: [
+            // Top App Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'PWMS',
+                          AppStrings.appName,
                           style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.2,
-                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: -0.5,
                           ),
-                        ),
-                        Text(
-                          'Tu Mundo Digital',
-                          style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withAlpha(150)),
                         ),
                       ],
                     ),
-                    IconButton.filledTonal(
-                      icon: const Icon(Icons.place_outlined),
-                      onPressed: () => context.push('/places'),
-                      tooltip: 'Ver Lugares',
+                    IconButton(
+                      icon: const Icon(Icons.search, size: 28),
+                      onPressed: () => context.push('/search'),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+              ),
+            ),
 
-                // Real-time Search Bar Widget
-                GestureDetector(
+            // Main Hero Search Card
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: InkWell(
                   onTap: () => context.push('/search'),
+                  borderRadius: BorderRadius.circular(24),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       color: theme.cardColor,
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(24),
                       border: Border.all(color: theme.dividerColor),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(10),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
                         Icon(Icons.search, color: theme.colorScheme.primary),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 14),
                         Text(
-                          'Buscar en tu mundo...',
-                          style: theme.textTheme.bodyMedium?.copyWith(fontSize: 15),
-                        ),
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text('Instantáneo', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                          AppStrings.searchHint,
+                          style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 28),
+              ),
+            ),
 
-                // World Collections Section
-                Text(
-                  'Colecciones de tu Mundo',
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 14),
-                SizedBox(
-                  height: 100,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: collections.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (context, index) {
-                      final item = collections[index];
-                      return InkWell(
-                        onTap: () {
-                          if (item.containsKey('route')) {
-                            context.push(item['route'] as String);
-                          } else {
-                            ref.read(searchQueryProvider.notifier).state = item['query'] as String;
-                            context.push('/search');
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          width: 110,
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: theme.cardColor,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: theme.dividerColor),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+
+            // Recent Items Section
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppStrings.recentEntitiesTitle,
+                          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  recentEntitiesAsync.when(
+                    data: (entities) {
+                      if (entities.isEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Container(
+                            height: 100,
+                            decoration: BoxDecoration(
+                              color: theme.cardColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Center(
+                              child: Text('Sin objetos en tu mundo aún'),
+                            ),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(item['icon'] as IconData, size: 28, color: theme.colorScheme.primary),
-                              const SizedBox(height: 8),
-                              Text(
-                                item['name'] as String,
-                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                        );
+                      }
+
+                      return SizedBox(
+                        height: 170,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          itemCount: entities.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 14),
+                          itemBuilder: (context, index) {
+                            final entity = entities[index];
+                            return InkWell(
+                              onTap: () => context.push('/entity/${entity.id}'),
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                width: 140,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: theme.cardColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: theme.dividerColor),
+                                ),
+                                child: Consumer(
+                                  builder: (context, ref, _) {
+                                    final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
+                                    final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
+                                    final name = species?.name ?? 'Objeto';
+                                    final type = species?.type ?? 'Objeto';
+
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(14),
+                                            child: FutureBuilder<String>(
+                                              future: species?.mainPhotoPath != null
+                                                  ? ref.read(fileStorageServiceProvider).getAbsolutePath(species!.mainPhotoPath!)
+                                                  : Future.value(''),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                                                  return Image.file(
+                                                    File(snapshot.data!),
+                                                    width: double.infinity,
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                }
+                                                return Container(
+                                                  color: theme.colorScheme.primary.withAlpha(30),
+                                                  child: Center(
+                                                    child: Icon(Icons.category, color: theme.colorScheme.primary),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          name,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          type,
+                                          style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
                               ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
                       );
                     },
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Text('Error: $e'),
                   ),
-                ),
-                const SizedBox(height: 28),
+                ],
+              ),
+            ),
 
-                // Recent Entities Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const SliverToBoxAdapter(child: SizedBox(height: 28)),
+
+            // World Collections Section
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Elementos Recientes',
+                      AppStrings.collectionsTitle,
                       style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        ref.read(searchQueryProvider.notifier).state = '';
-                        context.push('/search');
+                    const SizedBox(height: 14),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 2.3,
+                      ),
+                      itemCount: collections.length,
+                      itemBuilder: (context, index) {
+                        final col = collections[index];
+                        return InkWell(
+                          onTap: () {
+                            if (col.containsKey('route')) {
+                              context.push(col['route'] as String);
+                            } else {
+                              ref.read(searchQueryProvider.notifier).state = col['query'] as String;
+                              context.push('/search');
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(18),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: theme.cardColor,
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: theme.dividerColor),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary.withAlpha(25),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    col['icon'] as IconData,
+                                    color: theme.colorScheme.primary,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    col['name'] as String,
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       },
-                      child: const Text('Ver todos'),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                recentEntitiesAsync.when(
-                  data: (entities) {
-                    if (entities.isEmpty) {
-                      return Container(
-                        padding: const EdgeInsets.all(24),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: theme.cardColor,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: theme.dividerColor),
-                        ),
-                        child: Column(
-                          children: [
-                            Icon(Icons.stars_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(120)),
-                            const SizedBox(height: 12),
-                            Text(
-                              'Tu mundo está vacío',
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Presiona el botón "+" para registrar tu primera herramienta, objeto, o lugar.',
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    return SizedBox(
-                      height: 170,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: entities.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 14),
-                        itemBuilder: (context, index) {
-                          final entity = entities[index];
-                          return InkWell(
-                            onTap: () => context.push('/entity/${entity.id}'),
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              width: 140,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: theme.cardColor,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: theme.dividerColor),
-                              ),
-                              child: Consumer(
-                                builder: (context, ref, _) {
-                                  final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
-                                  final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
-                                  final name = species?.name ?? 'Objeto';
-                                  final type = species?.type ?? 'Objeto / Herramienta';
-
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(14),
-                                          child: FutureBuilder<String>(
-                                            future: species?.mainPhotoPath != null
-                                                ? ref.read(fileStorageServiceProvider).getAbsolutePath(species!.mainPhotoPath!)
-                                                : Future.value(''),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                                return Image.file(
-                                                  File(snapshot.data!),
-                                                  width: double.infinity,
-                                                  fit: BoxFit.cover,
-                                                );
-                                              }
-                                              return Container(
-                                                color: theme.colorScheme.primary.withAlpha(30),
-                                                child: Center(
-                                                  child: Icon(Icons.category, color: theme.colorScheme.primary),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        name,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        type,
-                                        style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Text('Error al cargar recientes: $e'),
-                ),
-                const SizedBox(height: 28),
-
-                // Recent Activity Stream Section (Automatic Audit Log)
-                Text(
-                  'Actividad Reciente en tu Mundo',
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                recentActivityAsync.when(
-                  data: (events) {
-                    if (events.isEmpty) {
-                      return Text('Sin eventos registrados aún.', style: theme.textTheme.bodyMedium);
-                    }
-
-                    return Column(
-                      children: events.map((event) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: _getEventColor(event.eventType, context).withAlpha(30),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  _getEventIcon(event.eventType),
-                                  color: _getEventColor(event.eventType, context),
-                                  size: 18,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      event.description,
-                                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      DateFormat('dd/MM HH:mm').format(event.timestamp),
-                                      style: theme.textTheme.bodyMedium?.copyWith(fontSize: 11),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Text('Error al cargar historial: $e'),
-                ),
-                const SizedBox(height: 80),
-              ],
+              ),
             ),
-          ),
+
+            const SliverToBoxAdapter(child: SizedBox(height: 28)),
+
+            // Recent Activity Log
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppStrings.activityTitle,
+                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 14),
+                    recentActivityAsync.when(
+                      data: (events) {
+                        if (events.isEmpty) {
+                          return const Text('Sin actividad reciente.', style: TextStyle(color: Colors.grey));
+                        }
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: events.length > 5 ? 5 : events.length,
+                          separatorBuilder: (_, __) => const Divider(),
+                          itemBuilder: (context, index) {
+                            final evt = events[index];
+                            return ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: const Icon(Icons.history, size: 20),
+                              title: Text(evt.description, style: const TextStyle(fontSize: 13)),
+                              subtitle: Text(
+                                evt.timestamp.toString().substring(0, 16),
+                                style: const TextStyle(fontSize: 11),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      loading: () => const CircularProgressIndicator(),
+                      error: (err, _) => Text('Error: $err'),
+                    ),
+                    const SizedBox(height: 100),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => CreateEntitySheet.show(context),
         icon: const Icon(Icons.add),
-        label: const Text('Registrar en tu Mundo'),
+        label: const Text(AppStrings.registerObjectTitle),
       ),
     );
   }

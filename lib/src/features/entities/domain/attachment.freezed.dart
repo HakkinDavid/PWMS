@@ -21,7 +21,8 @@ Attachment _$AttachmentFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Attachment {
   String get id => throw _privateConstructorUsedError;
-  String get entityId => throw _privateConstructorUsedError;
+  String get speciesId =>
+      throw _privateConstructorUsedError; // Attachments belong to the Catalog Species!
   String get filePath => throw _privateConstructorUsedError;
   String get fileName => throw _privateConstructorUsedError;
   String get fileType => throw _privateConstructorUsedError;
@@ -45,7 +46,7 @@ abstract class $AttachmentCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String entityId,
+      String speciesId,
       String filePath,
       String fileName,
       String fileType,
@@ -68,7 +69,7 @@ class _$AttachmentCopyWithImpl<$Res, $Val extends Attachment>
   @override
   $Res call({
     Object? id = null,
-    Object? entityId = null,
+    Object? speciesId = null,
     Object? filePath = null,
     Object? fileName = null,
     Object? fileType = null,
@@ -79,9 +80,9 @@ class _$AttachmentCopyWithImpl<$Res, $Val extends Attachment>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      entityId: null == entityId
-          ? _value.entityId
-          : entityId // ignore: cast_nullable_to_non_nullable
+      speciesId: null == speciesId
+          ? _value.speciesId
+          : speciesId // ignore: cast_nullable_to_non_nullable
               as String,
       filePath: null == filePath
           ? _value.filePath
@@ -113,7 +114,7 @@ abstract class _$$AttachmentImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String entityId,
+      String speciesId,
       String filePath,
       String fileName,
       String fileType,
@@ -134,7 +135,7 @@ class __$$AttachmentImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? entityId = null,
+    Object? speciesId = null,
     Object? filePath = null,
     Object? fileName = null,
     Object? fileType = null,
@@ -145,9 +146,9 @@ class __$$AttachmentImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      entityId: null == entityId
-          ? _value.entityId
-          : entityId // ignore: cast_nullable_to_non_nullable
+      speciesId: null == speciesId
+          ? _value.speciesId
+          : speciesId // ignore: cast_nullable_to_non_nullable
               as String,
       filePath: null == filePath
           ? _value.filePath
@@ -174,7 +175,7 @@ class __$$AttachmentImplCopyWithImpl<$Res>
 class _$AttachmentImpl implements _Attachment {
   const _$AttachmentImpl(
       {required this.id,
-      required this.entityId,
+      required this.speciesId,
       required this.filePath,
       required this.fileName,
       required this.fileType,
@@ -186,7 +187,8 @@ class _$AttachmentImpl implements _Attachment {
   @override
   final String id;
   @override
-  final String entityId;
+  final String speciesId;
+// Attachments belong to the Catalog Species!
   @override
   final String filePath;
   @override
@@ -198,7 +200,7 @@ class _$AttachmentImpl implements _Attachment {
 
   @override
   String toString() {
-    return 'Attachment(id: $id, entityId: $entityId, filePath: $filePath, fileName: $fileName, fileType: $fileType, createdAt: $createdAt)';
+    return 'Attachment(id: $id, speciesId: $speciesId, filePath: $filePath, fileName: $fileName, fileType: $fileType, createdAt: $createdAt)';
   }
 
   @override
@@ -207,8 +209,8 @@ class _$AttachmentImpl implements _Attachment {
         (other.runtimeType == runtimeType &&
             other is _$AttachmentImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.entityId, entityId) ||
-                other.entityId == entityId) &&
+            (identical(other.speciesId, speciesId) ||
+                other.speciesId == speciesId) &&
             (identical(other.filePath, filePath) ||
                 other.filePath == filePath) &&
             (identical(other.fileName, fileName) ||
@@ -222,7 +224,7 @@ class _$AttachmentImpl implements _Attachment {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, entityId, filePath, fileName, fileType, createdAt);
+      runtimeType, id, speciesId, filePath, fileName, fileType, createdAt);
 
   /// Create a copy of Attachment
   /// with the given fields replaced by the non-null parameter values.
@@ -243,7 +245,7 @@ class _$AttachmentImpl implements _Attachment {
 abstract class _Attachment implements Attachment {
   const factory _Attachment(
       {required final String id,
-      required final String entityId,
+      required final String speciesId,
       required final String filePath,
       required final String fileName,
       required final String fileType,
@@ -255,7 +257,7 @@ abstract class _Attachment implements Attachment {
   @override
   String get id;
   @override
-  String get entityId;
+  String get speciesId; // Attachments belong to the Catalog Species!
   @override
   String get filePath;
   @override

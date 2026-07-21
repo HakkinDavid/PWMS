@@ -8,7 +8,7 @@ part 'app_database.g.dart';
 class LocationsTable extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
-  TextColumn get parentLocationId => text().nullable().references(LocationsTable, #id)(); // Graph containment
+  TextColumn get parentLocationId => text().nullable().references(LocationsTable, #id)();
   TextColumn get description => text().nullable()();
   TextColumn get icon => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
@@ -20,12 +20,12 @@ class LocationsTable extends Table {
 class CatalogTable extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
-  TextColumn get type => text().withDefault(const Constant('Objeto / Herramienta'))();
+  TextColumn get type => text().withDefault(const Constant('Objeto'))();
   TextColumn get brand => text().nullable()();
   TextColumn get description => text().nullable()();
   TextColumn get mainPhotoPath => text().nullable()();
   TextColumn get barcode => text().nullable()();
-  TextColumn get customAttributes => text().withDefault(const Constant('{}'))(); // JSON key-value map
+  TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
   TextColumn get defaultUnit => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
@@ -35,11 +35,11 @@ class CatalogTable extends Table {
 
 class EntitiesTable extends Table {
   TextColumn get id => text()();
-  TextColumn get speciesId => text().references(CatalogTable, #id)(); // Universe Catalog Species link
-  TextColumn get locationId => text().nullable().references(LocationsTable, #id)(); // Location Graph Node
-  RealColumn get quantity => real().nullable()(); // Countable / Measurable
-  TextColumn get unit => text().nullable()(); // Unit of measurement
-  TextColumn get notes => text().nullable()(); // Instance custom note / serial number
+  TextColumn get speciesId => text().references(CatalogTable, #id)();
+  TextColumn get locationId => text().nullable().references(LocationsTable, #id)();
+  RealColumn get quantity => real().nullable()();
+  TextColumn get unit => text().nullable()();
+  TextColumn get notes => text().nullable()();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
@@ -63,7 +63,7 @@ class RelationsTable extends Table {
 
 class AttachmentsTable extends Table {
   TextColumn get id => text()();
-  TextColumn get entityId => text().references(EntitiesTable, #id)();
+  TextColumn get speciesId => text().references(CatalogTable, #id)(); // Belongs to Catalog Species!
   TextColumn get filePath => text()();
   TextColumn get fileName => text()();
   TextColumn get fileType => text()();
@@ -76,7 +76,7 @@ class AttachmentsTable extends Table {
 class HistoryEventsTable extends Table {
   TextColumn get id => text()();
   TextColumn get entityId => text().nullable()();
-  TextColumn get eventType => text()(); // creation, edition, movement, attachment, relation, deletion, photo, consumption
+  TextColumn get eventType => text()();
   TextColumn get description => text()();
   TextColumn get metadata => text().nullable()();
   DateTimeColumn get timestamp => dateTime()();
@@ -89,7 +89,7 @@ class CustomTemplatesTable extends Table {
   TextColumn get id => text()();
   TextColumn get typeName => text()();
   TextColumn get iconName => text()();
-  TextColumn get commonUnits => text().withDefault(const Constant('[]'))(); // JSON array
+  TextColumn get commonUnits => text().withDefault(const Constant('[]'))();
   DateTimeColumn get createdAt => dateTime()();
 
   @override

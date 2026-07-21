@@ -7,7 +7,7 @@ part 'attachment.g.dart';
 class Attachment with _$Attachment {
   const factory Attachment({
     required String id,
-    required String entityId,
+    required String speciesId, // Attachments belong to the Catalog Species!
     required String filePath,
     required String fileName,
     required String fileType,

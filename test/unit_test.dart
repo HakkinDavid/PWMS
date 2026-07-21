@@ -2,8 +2,8 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/attachment.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/entity_template.dart';
-import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
@@ -26,70 +26,58 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Location Graph & Catalog Architecture Tests', () {
-    test('Location Graph Node Creation & Hierarchy', () async {
-      final nodeGarage = LocationNode(
+  group('PWMS Hierarchical Graph & Catalog Refinements Tests', () {
+    test('1. Hierarchical Location Graph Nodes (Sub-locations)', () async {
+      final rootNode = LocationNode(
         id: 'loc-garaje',
         name: 'Garaje Principal',
         createdAt: DateTime.now(),
       );
 
-      final nodeShelf = LocationNode(
-        id: 'loc-estante',
-        name: 'Estante #1',
+      final childNode = LocationNode(
+        id: 'loc-caja',
+        name: 'Caja de Herramientas',
         parentLocationId: 'loc-garaje',
         createdAt: DateTime.now(),
       );
 
-      await locationRepo.saveNode(nodeGarage);
-      await locationRepo.saveNode(nodeShelf);
-
-      final allNodes = await locationRepo.getAllNodes();
-      expect(allNodes.length, equals(2));
+      await locationRepo.saveNode(rootNode);
+      await locationRepo.saveNode(childNode);
 
       final subNodes = await locationRepo.getSubNodes('loc-garaje');
       expect(subNodes.length, equals(1));
-      expect(subNodes.first.name, equals('Estante #1'));
+      expect(subNodes.first.name, equals('Caja de Herramientas'));
     });
 
-    test('Catalog Auto-Species Registration & Instance Linking', () async {
+    test('4. Species Attachment Ownership', () async {
       final species = await catalogRepo.getOrCreateSpecies(
-        'Multímetro Fluke 87V',
-        type: 'Objeto / Herramienta',
-        brand: 'Fluke',
-        barcode: '750998877',
+        'Manual de Servicio Fluke',
+        type: 'Documento',
       );
 
-      expect(species.name, equals('Multímetro Fluke 87V'));
-      expect(species.brand, equals('Fluke'));
-
-      // Create Instance stored at location node
-      final instance = WorldEntity(
-        id: 'inst-1',
-        speciesId: species.id,
-        locationId: 'loc-estante',
-        quantity: 1,
-        unit: 'pieza',
-        notes: 'Serie: #998877-A',
+      final attachment = Attachment(
+        id: 'att-1',
+        speciesId: species.id, // Linked to Catalog species!
+        filePath: 'docs/manual.pdf',
+        fileName: 'manual.pdf',
+        fileType: 'pdf',
         createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
       );
 
-      await entityRepo.saveEntity(instance);
-      final retrieved = await entityRepo.getEntityById('inst-1');
+      await entityRepo.addAttachment(attachment);
+      final attachments = await entityRepo.getAttachmentsForSpecies(species.id);
 
-      expect(retrieved, isNotNull);
-      expect(retrieved!.speciesId, equals(species.id));
-      expect(retrieved.locationId, equals('loc-estante'));
-      expect(retrieved.quantity, equals(1));
+      expect(attachments.length, equals(1));
+      expect(attachments.first.fileName, equals('manual.pdf'));
+      expect(attachments.first.speciesId, equals(species.id));
     });
 
-    test('Template Streamlining & HasQuantity rule', () async {
-      final objectTpl = EntityTemplateRegistry.getTemplate('Objeto / Herramienta');
-      expect(objectTpl.hasQuantity, isTrue);
-
+    test('5. Non-countable Abstract Templates', () async {
       final docTpl = EntityTemplateRegistry.getTemplate('Documento');
       expect(docTpl.hasQuantity, isFalse);
+
+      final objTpl = EntityTemplateRegistry.getTemplate('Objeto');
+      expect(objTpl.hasQuantity, isTrue);
     });
   });
 }

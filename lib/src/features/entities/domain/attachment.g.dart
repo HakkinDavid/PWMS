@@ -9,7 +9,7 @@ part of 'attachment.dart';
 _$AttachmentImpl _$$AttachmentImplFromJson(Map<String, dynamic> json) =>
     _$AttachmentImpl(
       id: json['id'] as String,
-      entityId: json['entityId'] as String,
+      speciesId: json['speciesId'] as String,
       filePath: json['filePath'] as String,
       fileName: json['fileName'] as String,
       fileType: json['fileType'] as String,
@@ -19,7 +19,7 @@ _$AttachmentImpl _$$AttachmentImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$AttachmentImplToJson(_$AttachmentImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'entityId': instance.entityId,
+      'speciesId': instance.speciesId,
       'filePath': instance.filePath,
       'fileName': instance.fileName,
       'fileType': instance.fileType,
