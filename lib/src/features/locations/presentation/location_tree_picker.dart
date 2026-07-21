@@ -19,6 +19,7 @@ class LocationTreePicker extends ConsumerStatefulWidget {
     String? result = initialSelectedId;
     return showModalBottomSheet<String?>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {

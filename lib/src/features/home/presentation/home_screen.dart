@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../catalog/presentation/species_tile.dart';
 import '../../entities/presentation/create_entity_sheet.dart';
+import '../../entities/presentation/instantiate_species_sheet.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -13,39 +15,27 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final recentEntitiesAsync = ref.watch(recentEntitiesProvider);
-    final recentActivityAsync = ref.watch(recentActivityProvider);
-
-    final collections = [
-      {'name': 'Objetos', 'icon': Icons.build, 'query': 'Objeto'},
-      {'name': AppStrings.locationsTitle, 'icon': Icons.account_tree_outlined, 'route': '/places'},
-      {'name': AppStrings.universeCatalogTitle, 'icon': Icons.public, 'route': '/catalog'},
-      {'name': 'Documentos', 'icon': Icons.description, 'query': 'Documento'},
-      {'name': 'Proyectos', 'icon': Icons.lightbulb, 'query': 'Proyecto'},
-      {'name': 'Recuerdos', 'icon': Icons.star, 'query': 'Recuerdo'},
-    ];
+    final locationsAsync = ref.watch(locationNodeListProvider);
+    final catalogAsync = ref.watch(catalogListProvider);
+    final entitiesAsync = ref.watch(entityListProvider);
 
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // Top App Bar
+            // App Bar Header & Search Icon Button
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppStrings.appName,
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      AppStrings.appName,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -0.5,
+                      ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.search, size: 28),
@@ -56,59 +46,16 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
 
-            // Main Hero Search Card
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: InkWell(
-                  onTap: () => context.push('/search'),
-                  borderRadius: BorderRadius.circular(24),
-                  child: Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: theme.dividerColor),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(10),
-                          blurRadius: 16,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search, color: theme.colorScheme.primary),
-                        const SizedBox(width: 14),
-                        Text(
-                          AppStrings.searchHint,
-                          style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
-
-            // Recent Items Section
+            // Section 1: Objetos recientes
             SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppStrings.recentEntitiesTitle,
-                          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    child: Text(
+                      AppStrings.recentEntitiesTitle,
+                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -124,7 +71,7 @@ class HomeScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Center(
-                              child: Text('Sin objetos en tu mundo aún'),
+                              child: Text('Sin objetos recientes'),
                             ),
                           ),
                         );
@@ -152,10 +99,10 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                                 child: Consumer(
                                   builder: (context, ref, _) {
-                                    final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
+                                    final catalogItems = catalogAsync.asData?.value ?? [];
                                     final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
-                                    final name = species?.name ?? 'Objeto';
-                                    final type = species?.type ?? 'Objeto';
+                                    final name = species?.name ?? AppStrings.typeObject;
+                                    final type = species?.type ?? AppStrings.typeObject;
 
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +163,7 @@ class HomeScreen extends ConsumerWidget {
 
             const SliverToBoxAdapter(child: SizedBox(height: 28)),
 
-            // World Collections Section
+            // Section 2: Ubicaciones con más objetos (Most populated location nodes)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -224,67 +171,94 @@ class HomeScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppStrings.collectionsTitle,
+                      'Ubicaciones principales',
                       style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 14),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 2.3,
-                      ),
-                      itemCount: collections.length,
-                      itemBuilder: (context, index) {
-                        final col = collections[index];
-                        return InkWell(
-                          onTap: () {
-                            if (col.containsKey('route')) {
-                              context.push(col['route'] as String);
-                            } else {
-                              ref.read(searchQueryProvider.notifier).state = col['query'] as String;
-                              context.push('/search');
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(18),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                            decoration: BoxDecoration(
-                              color: theme.cardColor,
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: theme.dividerColor),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withAlpha(25),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Icon(
-                                    col['icon'] as IconData,
-                                    color: theme.colorScheme.primary,
-                                    size: 20,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    col['name'] as String,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
+                    locationsAsync.when(
+                      data: (nodes) {
+                        if (nodes.isEmpty) {
+                          return const Text(AppStrings.emptyLocation, style: TextStyle(color: Colors.grey));
+                        }
+
+                        final allEntities = entitiesAsync.asData?.value ?? [];
+
+                        // Sort nodes by item count descending
+                        final sortedNodes = List.of(nodes)
+                          ..sort((a, b) {
+                            final countA = allEntities.where((e) => e.locationId == a.id).length;
+                            final countB = allEntities.where((e) => e.locationId == b.id).length;
+                            return countB.compareTo(countA);
+                          });
+
+                        final topNodes = sortedNodes.take(4).toList();
+
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 2.3,
                           ),
+                          itemCount: topNodes.length,
+                          itemBuilder: (context, index) {
+                            final node = topNodes[index];
+                            final count = allEntities.where((e) => e.locationId == node.id).length;
+
+                            return InkWell(
+                              onTap: () => context.push('/locations'),
+                              borderRadius: BorderRadius.circular(18),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: theme.cardColor,
+                                  borderRadius: BorderRadius.circular(18),
+                                  border: Border.all(color: theme.dividerColor),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.secondary.withAlpha(25),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(
+                                        Icons.location_on,
+                                        color: theme.colorScheme.secondary,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            node.name,
+                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            '$count objetos',
+                                            style: theme.textTheme.bodySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
+                      loading: () => const CircularProgressIndicator(),
+                      error: (err, _) => Text('Error: $err'),
                     ),
                   ],
                 ),
@@ -293,38 +267,47 @@ class HomeScreen extends ConsumerWidget {
 
             const SliverToBoxAdapter(child: SizedBox(height: 28)),
 
-            // Recent Activity Log
+            // Section 3: Últimas especies agregadas al catálogo
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      AppStrings.activityTitle,
-                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Últimas especies en el catálogo',
+                            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => context.push('/catalog'),
+                          child: const Text('Ver catálogo'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 14),
-                    recentActivityAsync.when(
-                      data: (events) {
-                        if (events.isEmpty) {
-                          return const Text('Sin actividad reciente.', style: TextStyle(color: Colors.grey));
+                    const SizedBox(height: 12),
+                    catalogAsync.when(
+                      data: (items) {
+                        if (items.isEmpty) {
+                          return const Text(AppStrings.emptyCatalog, style: TextStyle(color: Colors.grey));
                         }
-                        return ListView.separated(
+
+                        final recentItems = items.take(4).toList();
+                        return ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: events.length > 5 ? 5 : events.length,
-                          separatorBuilder: (_, __) => const Divider(),
-                          itemBuilder: (context, index) {
-                            final evt = events[index];
-                            return ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: const Icon(Icons.history, size: 20),
-                              title: Text(evt.description, style: const TextStyle(fontSize: 13)),
-                              subtitle: Text(
-                                evt.timestamp.toString().substring(0, 16),
-                                style: const TextStyle(fontSize: 11),
-                              ),
+                          itemCount: recentItems.length,
+                          itemBuilder: (context, idx) {
+                            final item = recentItems[idx];
+                            return SpeciesTile(
+                              species: item,
+                              onInstantiate: () {
+                                InstantiateSpeciesSheet.show(context, species: item);
+                              },
                             );
                           },
                         );
@@ -341,6 +324,7 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'fab_home', // Unique hero tag!
         onPressed: () => CreateEntitySheet.show(context),
         icon: const Icon(Icons.add),
         label: const Text(AppStrings.registerObjectTitle),

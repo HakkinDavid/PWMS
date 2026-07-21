@@ -44,9 +44,9 @@ class MainShellScreen extends StatelessWidget {
             label: AppStrings.tabCatalog,
           ),
           NavigationDestination(
-            icon: Icon(Icons.search),
-            selectedIcon: Icon(Icons.search),
-            label: AppStrings.tabSearch,
+            icon: Icon(Icons.history_outlined),
+            selectedIcon: Icon(Icons.history),
+            label: 'Historial',
           ),
         ],
       ),

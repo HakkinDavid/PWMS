@@ -227,6 +227,7 @@ class LocationsGraphScreen extends ConsumerWidget {
         title: const Text(AppStrings.locationsGraphTitle),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'fab_locations',
         onPressed: () => _showCreateNodeModal(context, ref),
         icon: const Icon(Icons.add_location_alt),
         label: const Text(AppStrings.newLocationTitle),

@@ -8,8 +8,23 @@ import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import 'species_tile.dart';
 
-class CatalogScreen extends ConsumerWidget {
+class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key});
+
+  @override
+  ConsumerState<CatalogScreen> createState() => _CatalogScreenState();
+}
+
+class _CatalogScreenState extends ConsumerState<CatalogScreen> {
+  String _selectedTypeFilter = 'Todos';
+
+  final List<String> _filters = [
+    'Todos',
+    AppStrings.typeObject,
+    AppStrings.typeDocument,
+    AppStrings.typeProject,
+    AppStrings.typeMemory,
+  ];
 
   void _showCreateSpeciesModal(BuildContext context, WidgetRef ref) {
     final nameCtrl = TextEditingController();
@@ -21,6 +36,7 @@ class CatalogScreen extends ConsumerWidget {
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true, // Render over BottomNavigationBar
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
@@ -68,7 +84,6 @@ class CatalogScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
 
-                // SI Unit Dropdown Selector
                 DropdownButtonFormField<String>(
                   initialValue: defaultUnit,
                   decoration: const InputDecoration(
@@ -151,7 +166,7 @@ class CatalogScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final catalogState = ref.watch(catalogListProvider);
     final theme = Theme.of(context);
 
@@ -160,51 +175,85 @@ class CatalogScreen extends ConsumerWidget {
         title: const Text(AppStrings.catalogTitle),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'fab_catalog', // Unique hero tag!
         onPressed: () => _showCreateSpeciesModal(context, ref),
         icon: const Icon(Icons.add_circle_outline),
         label: const Text(AppStrings.newSpeciesTitle),
       ),
-      body: catalogState.when(
-        data: (items) {
-          if (items.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.public, size: 64, color: theme.colorScheme.primary.withAlpha(120)),
-                    const SizedBox(height: 16),
-                    Text(
-                      AppStrings.emptyCatalog,
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Filter Chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: _filters.map((filter) {
+                final isSelected = _selectedTypeFilter == filter;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: FilterChip(
+                    label: Text(filter),
+                    selected: isSelected,
+                    onSelected: (val) {
+                      if (val) setState(() => _selectedTypeFilter = filter);
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          const Divider(height: 1),
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return SpeciesTile(
-                species: item,
-                onInstantiate: () {
-                  // Pure instantiation: quantity & location ONLY!
-                  InstantiateSpeciesSheet.show(
-                    context,
-                    species: item,
+          Expanded(
+            child: catalogState.when(
+              data: (items) {
+                var filtered = items;
+                if (_selectedTypeFilter != 'Todos') {
+                  filtered = items.where((i) => i.type == _selectedTypeFilter).toList();
+                }
+
+                if (filtered.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.public, size: 64, color: theme.colorScheme.primary.withAlpha(120)),
+                          const SizedBox(height: 16),
+                          Text(
+                            AppStrings.emptyCatalog,
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
-                },
-              );
-            },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: filtered.length,
+                  itemBuilder: (context, index) {
+                    final item = filtered[index];
+                    return SpeciesTile(
+                      species: item,
+                      onInstantiate: () {
+                        InstantiateSpeciesSheet.show(
+                          context,
+                          species: item,
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, _) => Center(child: Text('Error: $err')),
+            ),
+          ),
+        ],
       ),
     );
   }

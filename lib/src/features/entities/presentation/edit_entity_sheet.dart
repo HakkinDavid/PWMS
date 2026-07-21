@@ -12,6 +12,7 @@ class EditEntitySheet extends ConsumerStatefulWidget {
   static Future<void> show(BuildContext context, WorldEntity entity) {
     return showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => EditEntitySheet(entity: entity),

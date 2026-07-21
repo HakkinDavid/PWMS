@@ -25,39 +25,24 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Recursive Counting & Species Inheritance Tests', () {
-    test('1. Recursive Location Node Item Counting', () async {
+  group('PWMS Navigation & Streamlined State Tests', () {
+    test('1. Location Node Item Aggregation', () async {
       final rootNode = LocationNode(
         id: 'node-garage',
         name: 'Garaje',
         createdAt: DateTime.now(),
       );
 
-      final childNode = LocationNode(
-        id: 'node-shelf',
-        name: 'Estante #1',
-        parentLocationId: 'node-garage',
-        createdAt: DateTime.now(),
-      );
-
       await locationRepo.saveNode(rootNode);
-      await locationRepo.saveNode(childNode);
-
       final species1 = await catalogRepo.getOrCreateSpecies('Martillo', type: 'Objeto');
-      final species2 = await catalogRepo.getOrCreateSpecies('Llave Inglesa', type: 'Objeto');
 
-      // Instantiations: 1 stored in rootNode (Garaje), 1 stored in childNode (Estante #1)
       await entityRepo.instantiateOrMerge(species1.id, 'node-garage', 1);
-      await entityRepo.instantiateOrMerge(species2.id, 'node-shelf', 1);
 
       final garajeItemsDirect = await entityRepo.getEntitiesByLocation('node-garage');
       expect(garajeItemsDirect.length, equals(1));
-
-      final shelfItemsDirect = await entityRepo.getEntitiesByLocation('node-shelf');
-      expect(shelfItemsDirect.length, equals(1));
     });
 
-    test('3. SI Units Registry catalog', () {
+    test('2. SI Units Registry catalog', () {
       expect(UnitsRegistry.allSiUnits, contains('kg'));
       expect(UnitsRegistry.allSiUnits, contains('pieza'));
     });

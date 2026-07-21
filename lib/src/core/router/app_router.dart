@@ -7,6 +7,7 @@ import '../../features/search/presentation/search_screen.dart';
 import '../../features/locations/presentation/locations_graph_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
+import '../../features/history/presentation/history_tab.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -55,12 +56,16 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/search',
-              builder: (context, state) => const SearchScreen(),
+              path: '/history',
+              builder: (context, state) => const HistoryTab(),
             ),
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: '/search',
+      builder: (context, state) => const SearchScreen(),
     ),
     GoRoute(
       path: '/entity/:id',
