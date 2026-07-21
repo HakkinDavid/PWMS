@@ -12,6 +12,86 @@ import '../../locations/infrastructure/location_repository.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  void _showFullHistoryModal(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        final activityAsync = ref.watch(recentActivityProvider);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 16,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: SizedBox(
+            height: MediaQuery.of(ctx).size.height * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withAlpha(100),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  AppStrings.activityTitle,
+                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: activityAsync.when(
+                    data: (events) {
+                      if (events.isEmpty) {
+                        return const Center(child: Text('Sin actividad registrada'));
+                      }
+                      return ListView.separated(
+                        itemCount: events.length,
+                        separatorBuilder: (_, __) => const Divider(),
+                        itemBuilder: (c, idx) {
+                          final evt = events[idx];
+                          return ListTile(
+                            leading: Icon(
+                              evt.eventType == 'creation'
+                                  ? Icons.add_circle_outline
+                                  : evt.eventType == 'deletion'
+                                      ? Icons.delete_outline
+                                      : Icons.history,
+                              color: theme.colorScheme.primary,
+                            ),
+                            title: Text(evt.description, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            subtitle: Text(evt.timestamp.toString().substring(0, 16)),
+                          );
+                        },
+                      );
+                    },
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (err, _) => Text('Error: $err'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -19,6 +99,7 @@ class HomeScreen extends ConsumerWidget {
     final locationsAsync = ref.watch(locationNodeListProvider);
     final catalogAsync = ref.watch(catalogListProvider);
     final entitiesAsync = ref.watch(entityListProvider);
+    final activityAsync = ref.watch(recentActivityProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -184,7 +265,6 @@ class HomeScreen extends ConsumerWidget {
 
                         final allEntities = entitiesAsync.asData?.value ?? [];
 
-                        // Sort nodes by item count descending
                         final sortedNodes = List.of(nodes)
                           ..sort((a, b) {
                             final countA = LocationRepository.getRecursiveItemCount(a.id, nodes, allEntities);
@@ -316,6 +396,66 @@ class HomeScreen extends ConsumerWidget {
                       loading: () => const CircularProgressIndicator(),
                       error: (err, _) => Text('Error: $err'),
                     ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SliverToBoxAdapter(child: SizedBox(height: 28)),
+
+            // Section 4: Historial de Actividad (Latest 3 + "Ver todo")
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppStrings.activityTitle,
+                          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () => _showFullHistoryModal(context, ref),
+                          child: const Text('Ver todo'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    activityAsync.when(
+                      data: (events) {
+                        if (events.isEmpty) {
+                          return const Text('Sin actividad reciente', style: TextStyle(color: Colors.grey));
+                        }
+
+                        final topEvents = events.take(3).toList();
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: topEvents.length,
+                          separatorBuilder: (_, __) => const Divider(),
+                          itemBuilder: (context, index) {
+                            final evt = topEvents[index];
+                            return ListTile(
+                              leading: Icon(
+                                evt.eventType == 'creation'
+                                    ? Icons.add_circle_outline
+                                    : evt.eventType == 'deletion'
+                                        ? Icons.delete_outline
+                                        : Icons.history,
+                                color: theme.colorScheme.primary,
+                              ),
+                              title: Text(evt.description, style: const TextStyle(fontWeight: FontWeight.bold)),
+                              subtitle: Text(evt.timestamp.toString().substring(0, 16)),
+                            );
+                          },
+                        );
+                      },
+                      loading: () => const CircularProgressIndicator(),
+                      error: (err, _) => Text('Error: $err'),
+                    ),
                     const SizedBox(height: 100),
                   ],
                 ),
@@ -324,11 +464,11 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'fab_home', // Unique hero tag!
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'fab_home',
         onPressed: () => CreateEntitySheet.show(context),
-        icon: const Icon(Icons.add),
-        label: const Text(AppStrings.registerObjectTitle),
+        tooltip: AppStrings.registerObjectTitle,
+        child: const Icon(Icons.add),
       ),
     );
   }

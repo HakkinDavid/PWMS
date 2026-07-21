@@ -174,11 +174,11 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
       appBar: AppBar(
         title: const Text(AppStrings.catalogTitle),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'fab_catalog', // Unique hero tag!
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'fab_catalog',
         onPressed: () => _showCreateSpeciesModal(context, ref),
-        icon: const Icon(Icons.add_circle_outline),
-        label: const Text(AppStrings.newSpeciesTitle),
+        tooltip: AppStrings.newSpeciesTitle,
+        child: const Icon(Icons.add),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

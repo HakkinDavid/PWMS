@@ -461,31 +461,15 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Quantities & Units
+            // Quantity input only
             if (template.hasQuantity) ...[
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _qtyController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.quantityLabel,
-                        prefixIcon: Icon(Icons.numbers),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextField(
-                      controller: _unitController,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.unitLabel,
-                        prefixIcon: Icon(Icons.straighten),
-                      ),
-                    ),
-                  ),
-                ],
+              TextField(
+                controller: _qtyController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: AppStrings.quantityLabel,
+                  prefixIcon: Icon(Icons.numbers),
+                ),
               ),
               const SizedBox(height: 16),
             ],

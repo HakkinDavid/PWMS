@@ -33,11 +33,11 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
       appBar: AppBar(
         title: const Text(AppStrings.tabEntities),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'fab_entities', // Unique hero tag!
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'fab_entities',
         onPressed: () => CreateEntitySheet.show(context),
-        icon: const Icon(Icons.add),
-        label: const Text(AppStrings.registerObjectTitle),
+        tooltip: AppStrings.registerObjectTitle,
+        child: const Icon(Icons.add),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

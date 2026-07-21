@@ -5,6 +5,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_detail_view.dart';
+import '../../locations/domain/location_path_helper.dart';
 import '../domain/entity_template.dart';
 import 'edit_entity_sheet.dart';
 
@@ -37,14 +38,8 @@ class EntityDetailScreen extends ConsumerWidget {
               );
 
           final template = EntityTemplateRegistry.getTemplate(species.type);
-
-          String locationName = AppStrings.rootLocationName;
-          if (entity.locationId != null) {
-            locationsState.whenData((nodes) {
-              final found = nodes.where((n) => n.id == entity.locationId).firstOrNull;
-              if (found != null) locationName = found.name;
-            });
-          }
+          final locationNodes = locationsState.asData?.value ?? [];
+          final breadcrumb = LocationPathHelper.buildBreadcrumbPath(entity.locationId, locationNodes);
 
           // Instance-specific Header (Location card & Quantity controls)
           final instanceHeader = Column(
@@ -124,7 +119,7 @@ class EntityDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
               ],
 
-              // Location Node Card
+              // Location Node Card with Full Breadcrumbs Path
               Card(
                 color: theme.cardColor,
                 child: Padding(
@@ -148,9 +143,15 @@ class EntityDetailScreen extends ConsumerWidget {
                               AppStrings.locationGraphNode,
                               style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12),
                             ),
+                            const SizedBox(height: 2),
+                            if (breadcrumb.ancestorPath.isNotEmpty)
+                              Text(
+                                breadcrumb.ancestorPath,
+                                style: TextStyle(color: theme.colorScheme.secondary.withAlpha(180), fontSize: 12),
+                              ),
                             Text(
-                              locationName,
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              breadcrumb.targetName,
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                             ),
                           ],
                         ),

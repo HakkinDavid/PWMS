@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../locations/domain/location_path_helper.dart';
 import '../domain/world_entity.dart';
 
 class EntityTile extends ConsumerWidget {
@@ -27,11 +28,7 @@ class EntityTile extends ConsumerWidget {
     final name = species?.name ?? AppStrings.typeObject;
     final type = species?.type ?? AppStrings.typeObject;
 
-    String locationName = AppStrings.rootLocationName;
-    if (entity.locationId != null) {
-      final found = locationNodes.where((n) => n.id == entity.locationId).firstOrNull;
-      if (found != null) locationName = found.name;
-    }
+    final breadcrumb = LocationPathHelper.buildBreadcrumbPath(entity.locationId, locationNodes);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
@@ -71,7 +68,27 @@ class EntityTile extends ConsumerWidget {
               children: [
                 Icon(Icons.account_tree_outlined, size: 14, color: theme.colorScheme.secondary),
                 const SizedBox(width: 4),
-                Text('$type • $locationName', style: TextStyle(color: theme.colorScheme.secondary, fontSize: 12)),
+                Expanded(
+                  child: RichText(
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      style: theme.textTheme.bodySmall,
+                      children: [
+                        TextSpan(text: '$type • '),
+                        if (breadcrumb.ancestorPath.isNotEmpty)
+                          TextSpan(
+                            text: '${breadcrumb.ancestorPath} ',
+                            style: TextStyle(color: theme.colorScheme.secondary.withAlpha(160), fontSize: 11),
+                          ),
+                        TextSpan(
+                          text: breadcrumb.targetName,
+                          style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
             if (entity.quantity != null) ...[

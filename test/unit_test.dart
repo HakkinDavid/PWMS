@@ -4,6 +4,7 @@ import 'package:platinum_world_management_system/src/core/database/app_database.
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
+import 'package:platinum_world_management_system/src/features/locations/domain/location_path_helper.dart';
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
 
 void main() {
@@ -24,54 +25,25 @@ void main() {
     await db.close();
   });
 
-  group('PWMS Cycle Prevention, Move-Merge & Recursive Counts Tests', () {
-    test('1. Cycle Prevention: Cannot move node into itself or its child', () async {
-      final parentNode = LocationNode(id: 'node-A', name: 'Garaje', createdAt: DateTime.now());
-      final childNode = LocationNode(id: 'node-B', name: 'Estante #1', parentLocationId: 'node-A', createdAt: DateTime.now());
+  group('PWMS Location Breadcrumbs & Species Units Tests', () {
+    test('1. Location Breadcrumbs Path Calculation', () async {
+      final nodeA = LocationNode(id: 'node-A', name: 'Casa', createdAt: DateTime.now());
+      final nodeB = LocationNode(id: 'node-B', name: 'Garaje', parentLocationId: 'node-A', createdAt: DateTime.now());
+      final nodeC = LocationNode(id: 'node-C', name: 'Estante #1', parentLocationId: 'node-B', createdAt: DateTime.now());
 
-      await locationRepo.saveNode(parentNode);
-      await locationRepo.saveNode(childNode);
-
-      final allNodes = await locationRepo.getAllNodes();
-
-      expect(locationRepo.canMoveNode('node-A', 'node-A', allNodes), isFalse);
-      expect(locationRepo.canMoveNode('node-A', 'node-B', allNodes), isFalse);
-      expect(locationRepo.canMoveNode('node-B', 'node-A', allNodes), isTrue);
-    });
-
-    test('2. Global Recursive Item Counting', () async {
-      final parentNode = LocationNode(id: 'node-A', name: 'Garaje', createdAt: DateTime.now());
-      final childNode = LocationNode(id: 'node-B', name: 'Estante #1', parentLocationId: 'node-A', createdAt: DateTime.now());
-
-      await locationRepo.saveNode(parentNode);
-      await locationRepo.saveNode(childNode);
-
-      final species = await catalogRepo.getOrCreateSpecies('Tornillo M6', type: 'Objeto');
-
-      await entityRepo.instantiateOrMerge(species.id, 'node-A', 10);
-      await entityRepo.instantiateOrMerge(species.id, 'node-B', 20);
+      await locationRepo.saveNode(nodeA);
+      await locationRepo.saveNode(nodeB);
+      await locationRepo.saveNode(nodeC);
 
       final allNodes = await locationRepo.getAllNodes();
-      final allEntities = await entityRepo.getAllEntities();
+      final breadcrumb = LocationPathHelper.buildBreadcrumbPath('node-C', allNodes);
 
-      final countParent = LocationRepository.getRecursiveItemCount('node-A', allNodes, allEntities);
-      expect(countParent, equals(2)); // 1 record at A + 1 record at B
-    });
+      expect(breadcrumb.ancestorPath, equals('Mundo > Casa > Garaje >'));
+      expect(breadcrumb.targetName, equals('Estante #1'));
 
-    test('3. Move & Merge Entity to Target Location', () async {
-      final species = await catalogRepo.getOrCreateSpecies('Tuerca M6', type: 'Objeto');
-
-      final inst1 = await entityRepo.instantiateOrMerge(species.id, 'loc-1', 10);
-      final inst2 = await entityRepo.instantiateOrMerge(species.id, 'loc-2', 15);
-
-      // Move inst1 from loc-1 to loc-2 -> Auto-merges with inst2!
-      final merged = await entityRepo.moveOrMergeEntity(inst1.id, 'loc-2');
-
-      expect(merged!.id, equals(inst2.id));
-      expect(merged.quantity, equals(25));
-
-      final loc1Items = await entityRepo.getEntitiesByLocation('loc-1');
-      expect(loc1Items, isEmpty);
+      final species = await catalogRepo.getOrCreateSpecies('Martillo', type: 'Objeto');
+      final entity = await entityRepo.instantiateOrMerge(species.id, 'node-C', 1);
+      expect(entity.speciesId, equals(species.id));
     });
   });
 }

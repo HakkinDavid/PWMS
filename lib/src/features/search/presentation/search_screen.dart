@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_tile.dart';
-import '../../entities/presentation/create_entity_sheet.dart';
+import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/entity_tile.dart';
+import '../../history/domain/activity_event.dart';
+import '../../locations/domain/location_node.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -92,12 +95,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'fab_search',
-        onPressed: () => CreateEntitySheet.show(context),
-        icon: const Icon(Icons.add),
-        label: const Text(AppStrings.registerObjectTitle),
-      ),
     );
   }
 
@@ -105,18 +102,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     BuildContext context,
     WidgetRef ref,
     String query,
-    AsyncValue searchResultsAsync,
-    AsyncValue locationsState,
-    AsyncValue catalogState,
-    AsyncValue activityState,
+    AsyncValue<List<WorldEntity>> searchResultsAsync,
+    AsyncValue<List<LocationNode>> locationsState,
+    AsyncValue<List<CatalogItem>> catalogState,
+    AsyncValue<List<ActivityEvent>> activityState,
   ) {
     final theme = Theme.of(context);
     final cleanQuery = query.toLowerCase().trim();
 
-    // 1. Ubicaciones
+    // 1. Ubicaciones (Strictly typed LocationNode)
     if (_selectedScope == 'Ubicaciones') {
-      final nodes = locationsState.asData?.value ?? [];
-      final filtered = nodes.where((n) => n.name.toLowerCase().contains(cleanQuery)).toList();
+      final nodes = locationsState.asData?.value ?? <LocationNode>[];
+      final filtered = nodes.where((LocationNode n) => n.name.toLowerCase().contains(cleanQuery)).toList();
       if (filtered.isEmpty) return const Center(child: Text(AppStrings.emptyLocation));
 
       return ListView.builder(
@@ -136,10 +133,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
     }
 
-    // 2. Catálogo
+    // 2. Catálogo (Strictly typed CatalogItem)
     if (_selectedScope == 'Catálogo') {
-      final species = catalogState.asData?.value ?? [];
-      final filtered = species.where((s) =>
+      final species = catalogState.asData?.value ?? <CatalogItem>[];
+      final filtered = species.where((CatalogItem s) =>
         s.name.toLowerCase().contains(cleanQuery) ||
         (s.brand?.toLowerCase().contains(cleanQuery) ?? false) ||
         s.type.toLowerCase().contains(cleanQuery)
@@ -156,10 +153,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
     }
 
-    // 3. Historial
+    // 3. Historial (Strictly typed ActivityEvent)
     if (_selectedScope == 'Historial') {
-      final events = activityState.asData?.value ?? [];
-      final filtered = events.where((e) => e.description.toLowerCase().contains(cleanQuery)).toList();
+      final events = activityState.asData?.value ?? <ActivityEvent>[];
+      final filtered = events.where((ActivityEvent e) => e.description.toLowerCase().contains(cleanQuery)).toList();
       if (filtered.isEmpty) return const Center(child: Text('Sin resultados de historial'));
 
       return ListView.builder(

@@ -169,32 +169,14 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             ),
             const SizedBox(height: 16),
 
-            // Quantities & Units
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _qtyController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Cantidad',
-                      hintText: 'Ej. 1, 10',
-                      prefixIcon: Icon(Icons.numbers),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: _unitController,
-                    decoration: const InputDecoration(
-                      labelText: 'Unidad',
-                      hintText: 'Ej. piezas, kg',
-                      prefixIcon: Icon(Icons.straighten),
-                    ),
-                  ),
-                ),
-              ],
+            // Quantity Input
+            TextField(
+              controller: _qtyController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Cantidad',
+                prefixIcon: Icon(Icons.numbers),
+              ),
             ),
             const SizedBox(height: 16),
 
