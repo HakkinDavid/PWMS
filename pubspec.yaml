@@ -35,8 +35,8 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.1.2
   file_picker: ^8.1.7
-  open_file_plus: ^3.4.1+1
   flutter_animate: ^4.5.2
+  open_filex: ^4.7.0
 
 dev_dependencies:
   flutter_test:

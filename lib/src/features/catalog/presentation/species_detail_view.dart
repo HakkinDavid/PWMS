@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
@@ -293,7 +293,7 @@ class SpeciesDetailView extends ConsumerWidget {
                               icon: const Icon(Icons.open_in_new, size: 18),
                               onPressed: () async {
                                 final path = await ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath);
-                                await OpenFile.open(path);
+                                await OpenFilex.open(path);
                               },
                             ),
                           );
