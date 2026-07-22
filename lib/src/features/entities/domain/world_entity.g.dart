@@ -11,8 +11,6 @@ _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       speciesId: json['speciesId'] as String,
       locationId: json['locationId'] as String?,
-      quantity: (json['quantity'] as num?)?.toDouble(),
-      unit: json['unit'] as String?,
       magnitudes: (json['magnitudes'] as List<dynamic>?)
               ?.map(
                   (e) => InstanceMagnitude.fromJson(e as Map<String, dynamic>))
@@ -28,8 +26,6 @@ Map<String, dynamic> _$$WorldEntityImplToJson(_$WorldEntityImpl instance) =>
       'id': instance.id,
       'speciesId': instance.speciesId,
       'locationId': instance.locationId,
-      'quantity': instance.quantity,
-      'unit': instance.unit,
       'magnitudes': instance.magnitudes,
       'notes': instance.notes,
       'createdAt': instance.createdAt.toIso8601String(),

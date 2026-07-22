@@ -25,9 +25,6 @@ mixin _$WorldEntity {
       throw _privateConstructorUsedError; // Link to Catalog species
   String? get locationId =>
       throw _privateConstructorUsedError; // Link to Location Graph node
-  double? get quantity =>
-      throw _privateConstructorUsedError; // Primary Magnitude value
-  String? get unit => throw _privateConstructorUsedError;
   List<InstanceMagnitude> get magnitudes => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -53,8 +50,6 @@ abstract class $WorldEntityCopyWith<$Res> {
       {String id,
       String speciesId,
       String? locationId,
-      double? quantity,
-      String? unit,
       List<InstanceMagnitude> magnitudes,
       String? notes,
       DateTime createdAt,
@@ -79,8 +74,6 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
     Object? id = null,
     Object? speciesId = null,
     Object? locationId = freezed,
-    Object? quantity = freezed,
-    Object? unit = freezed,
     Object? magnitudes = null,
     Object? notes = freezed,
     Object? createdAt = null,
@@ -98,14 +91,6 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
       locationId: freezed == locationId
           ? _value.locationId
           : locationId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      quantity: freezed == quantity
-          ? _value.quantity
-          : quantity // ignore: cast_nullable_to_non_nullable
-              as double?,
-      unit: freezed == unit
-          ? _value.unit
-          : unit // ignore: cast_nullable_to_non_nullable
               as String?,
       magnitudes: null == magnitudes
           ? _value.magnitudes
@@ -139,8 +124,6 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
       {String id,
       String speciesId,
       String? locationId,
-      double? quantity,
-      String? unit,
       List<InstanceMagnitude> magnitudes,
       String? notes,
       DateTime createdAt,
@@ -163,8 +146,6 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
     Object? id = null,
     Object? speciesId = null,
     Object? locationId = freezed,
-    Object? quantity = freezed,
-    Object? unit = freezed,
     Object? magnitudes = null,
     Object? notes = freezed,
     Object? createdAt = null,
@@ -182,14 +163,6 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
       locationId: freezed == locationId
           ? _value.locationId
           : locationId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      quantity: freezed == quantity
-          ? _value.quantity
-          : quantity // ignore: cast_nullable_to_non_nullable
-              as double?,
-      unit: freezed == unit
-          ? _value.unit
-          : unit // ignore: cast_nullable_to_non_nullable
               as String?,
       magnitudes: null == magnitudes
           ? _value._magnitudes
@@ -218,8 +191,6 @@ class _$WorldEntityImpl implements _WorldEntity {
       {required this.id,
       required this.speciesId,
       this.locationId,
-      this.quantity,
-      this.unit,
       final List<InstanceMagnitude> magnitudes = const [],
       this.notes,
       required this.createdAt,
@@ -237,12 +208,8 @@ class _$WorldEntityImpl implements _WorldEntity {
   @override
   final String? locationId;
 // Link to Location Graph node
-  @override
-  final double? quantity;
-// Primary Magnitude value
-  @override
-  final String? unit;
   final List<InstanceMagnitude> _magnitudes;
+// Link to Location Graph node
   @override
   @JsonKey()
   List<InstanceMagnitude> get magnitudes {
@@ -260,7 +227,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, quantity: $quantity, unit: $unit, magnitudes: $magnitudes, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, magnitudes: $magnitudes, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -273,9 +240,6 @@ class _$WorldEntityImpl implements _WorldEntity {
                 other.speciesId == speciesId) &&
             (identical(other.locationId, locationId) ||
                 other.locationId == locationId) &&
-            (identical(other.quantity, quantity) ||
-                other.quantity == quantity) &&
-            (identical(other.unit, unit) || other.unit == unit) &&
             const DeepCollectionEquality()
                 .equals(other._magnitudes, _magnitudes) &&
             (identical(other.notes, notes) || other.notes == notes) &&
@@ -292,8 +256,6 @@ class _$WorldEntityImpl implements _WorldEntity {
       id,
       speciesId,
       locationId,
-      quantity,
-      unit,
       const DeepCollectionEquality().hash(_magnitudes),
       notes,
       createdAt,
@@ -320,8 +282,6 @@ abstract class _WorldEntity implements WorldEntity {
       {required final String id,
       required final String speciesId,
       final String? locationId,
-      final double? quantity,
-      final String? unit,
       final List<InstanceMagnitude> magnitudes,
       final String? notes,
       required final DateTime createdAt,
@@ -336,10 +296,6 @@ abstract class _WorldEntity implements WorldEntity {
   String get speciesId; // Link to Catalog species
   @override
   String? get locationId; // Link to Location Graph node
-  @override
-  double? get quantity; // Primary Magnitude value
-  @override
-  String? get unit;
   @override
   List<InstanceMagnitude> get magnitudes;
   @override

@@ -416,12 +416,6 @@ class $CatalogTableTable extends CatalogTable
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant('{}'));
-  static const VerificationMeta _defaultUnitMeta =
-      const VerificationMeta('defaultUnit');
-  @override
-  late final GeneratedColumn<String> defaultUnit = GeneratedColumn<String>(
-      'default_unit', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _isUniqueMeta =
       const VerificationMeta('isUnique');
   @override
@@ -432,16 +426,26 @@ class $CatalogTableTable extends CatalogTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_unique" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _hasMonetaryValueMeta =
-      const VerificationMeta('hasMonetaryValue');
+  static const VerificationMeta _isSubjectToPurchaseMeta =
+      const VerificationMeta('isSubjectToPurchase');
   @override
-  late final GeneratedColumn<bool> hasMonetaryValue = GeneratedColumn<bool>(
-      'has_monetary_value', aliasedName, false,
+  late final GeneratedColumn<bool> isSubjectToPurchase = GeneratedColumn<bool>(
+      'is_subject_to_purchase', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("has_monetary_value" IN (0, 1))'),
-      defaultValue: const Constant(true));
+          'CHECK ("is_subject_to_purchase" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _isSubjectToSaleMeta =
+      const VerificationMeta('isSubjectToSale');
+  @override
+  late final GeneratedColumn<bool> isSubjectToSale = GeneratedColumn<bool>(
+      'is_subject_to_sale', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_subject_to_sale" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _defaultMonetaryCurrencyMeta =
       const VerificationMeta('defaultMonetaryCurrency');
   @override
@@ -466,9 +470,9 @@ class $CatalogTableTable extends CatalogTable
         mainPhotoPath,
         barcode,
         customAttributes,
-        defaultUnit,
         isUnique,
-        hasMonetaryValue,
+        isSubjectToPurchase,
+        isSubjectToSale,
         defaultMonetaryCurrency,
         createdAt
       ];
@@ -523,21 +527,21 @@ class $CatalogTableTable extends CatalogTable
           customAttributes.isAcceptableOrUnknown(
               data['custom_attributes']!, _customAttributesMeta));
     }
-    if (data.containsKey('default_unit')) {
-      context.handle(
-          _defaultUnitMeta,
-          defaultUnit.isAcceptableOrUnknown(
-              data['default_unit']!, _defaultUnitMeta));
-    }
     if (data.containsKey('is_unique')) {
       context.handle(_isUniqueMeta,
           isUnique.isAcceptableOrUnknown(data['is_unique']!, _isUniqueMeta));
     }
-    if (data.containsKey('has_monetary_value')) {
+    if (data.containsKey('is_subject_to_purchase')) {
       context.handle(
-          _hasMonetaryValueMeta,
-          hasMonetaryValue.isAcceptableOrUnknown(
-              data['has_monetary_value']!, _hasMonetaryValueMeta));
+          _isSubjectToPurchaseMeta,
+          isSubjectToPurchase.isAcceptableOrUnknown(
+              data['is_subject_to_purchase']!, _isSubjectToPurchaseMeta));
+    }
+    if (data.containsKey('is_subject_to_sale')) {
+      context.handle(
+          _isSubjectToSaleMeta,
+          isSubjectToSale.isAcceptableOrUnknown(
+              data['is_subject_to_sale']!, _isSubjectToSaleMeta));
     }
     if (data.containsKey('default_monetary_currency')) {
       context.handle(
@@ -577,12 +581,12 @@ class $CatalogTableTable extends CatalogTable
           .read(DriftSqlType.string, data['${effectivePrefix}barcode']),
       customAttributes: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}custom_attributes'])!,
-      defaultUnit: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}default_unit']),
       isUnique: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_unique'])!,
-      hasMonetaryValue: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}has_monetary_value'])!,
+      isSubjectToPurchase: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}is_subject_to_purchase'])!,
+      isSubjectToSale: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}is_subject_to_sale'])!,
       defaultMonetaryCurrency: attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}default_monetary_currency'])!,
@@ -607,9 +611,9 @@ class CatalogTableData extends DataClass
   final String? mainPhotoPath;
   final String? barcode;
   final String customAttributes;
-  final String? defaultUnit;
   final bool isUnique;
-  final bool hasMonetaryValue;
+  final bool isSubjectToPurchase;
+  final bool isSubjectToSale;
   final String defaultMonetaryCurrency;
   final DateTime createdAt;
   const CatalogTableData(
@@ -621,9 +625,9 @@ class CatalogTableData extends DataClass
       this.mainPhotoPath,
       this.barcode,
       required this.customAttributes,
-      this.defaultUnit,
       required this.isUnique,
-      required this.hasMonetaryValue,
+      required this.isSubjectToPurchase,
+      required this.isSubjectToSale,
       required this.defaultMonetaryCurrency,
       required this.createdAt});
   @override
@@ -645,11 +649,9 @@ class CatalogTableData extends DataClass
       map['barcode'] = Variable<String>(barcode);
     }
     map['custom_attributes'] = Variable<String>(customAttributes);
-    if (!nullToAbsent || defaultUnit != null) {
-      map['default_unit'] = Variable<String>(defaultUnit);
-    }
     map['is_unique'] = Variable<bool>(isUnique);
-    map['has_monetary_value'] = Variable<bool>(hasMonetaryValue);
+    map['is_subject_to_purchase'] = Variable<bool>(isSubjectToPurchase);
+    map['is_subject_to_sale'] = Variable<bool>(isSubjectToSale);
     map['default_monetary_currency'] =
         Variable<String>(defaultMonetaryCurrency);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -673,11 +675,9 @@ class CatalogTableData extends DataClass
           ? const Value.absent()
           : Value(barcode),
       customAttributes: Value(customAttributes),
-      defaultUnit: defaultUnit == null && nullToAbsent
-          ? const Value.absent()
-          : Value(defaultUnit),
       isUnique: Value(isUnique),
-      hasMonetaryValue: Value(hasMonetaryValue),
+      isSubjectToPurchase: Value(isSubjectToPurchase),
+      isSubjectToSale: Value(isSubjectToSale),
       defaultMonetaryCurrency: Value(defaultMonetaryCurrency),
       createdAt: Value(createdAt),
     );
@@ -695,9 +695,10 @@ class CatalogTableData extends DataClass
       mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
       barcode: serializer.fromJson<String?>(json['barcode']),
       customAttributes: serializer.fromJson<String>(json['customAttributes']),
-      defaultUnit: serializer.fromJson<String?>(json['defaultUnit']),
       isUnique: serializer.fromJson<bool>(json['isUnique']),
-      hasMonetaryValue: serializer.fromJson<bool>(json['hasMonetaryValue']),
+      isSubjectToPurchase:
+          serializer.fromJson<bool>(json['isSubjectToPurchase']),
+      isSubjectToSale: serializer.fromJson<bool>(json['isSubjectToSale']),
       defaultMonetaryCurrency:
           serializer.fromJson<String>(json['defaultMonetaryCurrency']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -715,9 +716,9 @@ class CatalogTableData extends DataClass
       'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
       'barcode': serializer.toJson<String?>(barcode),
       'customAttributes': serializer.toJson<String>(customAttributes),
-      'defaultUnit': serializer.toJson<String?>(defaultUnit),
       'isUnique': serializer.toJson<bool>(isUnique),
-      'hasMonetaryValue': serializer.toJson<bool>(hasMonetaryValue),
+      'isSubjectToPurchase': serializer.toJson<bool>(isSubjectToPurchase),
+      'isSubjectToSale': serializer.toJson<bool>(isSubjectToSale),
       'defaultMonetaryCurrency':
           serializer.toJson<String>(defaultMonetaryCurrency),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -733,9 +734,9 @@ class CatalogTableData extends DataClass
           Value<String?> mainPhotoPath = const Value.absent(),
           Value<String?> barcode = const Value.absent(),
           String? customAttributes,
-          Value<String?> defaultUnit = const Value.absent(),
           bool? isUnique,
-          bool? hasMonetaryValue,
+          bool? isSubjectToPurchase,
+          bool? isSubjectToSale,
           String? defaultMonetaryCurrency,
           DateTime? createdAt}) =>
       CatalogTableData(
@@ -748,9 +749,9 @@ class CatalogTableData extends DataClass
             mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
         barcode: barcode.present ? barcode.value : this.barcode,
         customAttributes: customAttributes ?? this.customAttributes,
-        defaultUnit: defaultUnit.present ? defaultUnit.value : this.defaultUnit,
         isUnique: isUnique ?? this.isUnique,
-        hasMonetaryValue: hasMonetaryValue ?? this.hasMonetaryValue,
+        isSubjectToPurchase: isSubjectToPurchase ?? this.isSubjectToPurchase,
+        isSubjectToSale: isSubjectToSale ?? this.isSubjectToSale,
         defaultMonetaryCurrency:
             defaultMonetaryCurrency ?? this.defaultMonetaryCurrency,
         createdAt: createdAt ?? this.createdAt,
@@ -770,12 +771,13 @@ class CatalogTableData extends DataClass
       customAttributes: data.customAttributes.present
           ? data.customAttributes.value
           : this.customAttributes,
-      defaultUnit:
-          data.defaultUnit.present ? data.defaultUnit.value : this.defaultUnit,
       isUnique: data.isUnique.present ? data.isUnique.value : this.isUnique,
-      hasMonetaryValue: data.hasMonetaryValue.present
-          ? data.hasMonetaryValue.value
-          : this.hasMonetaryValue,
+      isSubjectToPurchase: data.isSubjectToPurchase.present
+          ? data.isSubjectToPurchase.value
+          : this.isSubjectToPurchase,
+      isSubjectToSale: data.isSubjectToSale.present
+          ? data.isSubjectToSale.value
+          : this.isSubjectToSale,
       defaultMonetaryCurrency: data.defaultMonetaryCurrency.present
           ? data.defaultMonetaryCurrency.value
           : this.defaultMonetaryCurrency,
@@ -794,9 +796,9 @@ class CatalogTableData extends DataClass
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('barcode: $barcode, ')
           ..write('customAttributes: $customAttributes, ')
-          ..write('defaultUnit: $defaultUnit, ')
           ..write('isUnique: $isUnique, ')
-          ..write('hasMonetaryValue: $hasMonetaryValue, ')
+          ..write('isSubjectToPurchase: $isSubjectToPurchase, ')
+          ..write('isSubjectToSale: $isSubjectToSale, ')
           ..write('defaultMonetaryCurrency: $defaultMonetaryCurrency, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -813,9 +815,9 @@ class CatalogTableData extends DataClass
       mainPhotoPath,
       barcode,
       customAttributes,
-      defaultUnit,
       isUnique,
-      hasMonetaryValue,
+      isSubjectToPurchase,
+      isSubjectToSale,
       defaultMonetaryCurrency,
       createdAt);
   @override
@@ -830,9 +832,9 @@ class CatalogTableData extends DataClass
           other.mainPhotoPath == this.mainPhotoPath &&
           other.barcode == this.barcode &&
           other.customAttributes == this.customAttributes &&
-          other.defaultUnit == this.defaultUnit &&
           other.isUnique == this.isUnique &&
-          other.hasMonetaryValue == this.hasMonetaryValue &&
+          other.isSubjectToPurchase == this.isSubjectToPurchase &&
+          other.isSubjectToSale == this.isSubjectToSale &&
           other.defaultMonetaryCurrency == this.defaultMonetaryCurrency &&
           other.createdAt == this.createdAt);
 }
@@ -846,9 +848,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   final Value<String?> mainPhotoPath;
   final Value<String?> barcode;
   final Value<String> customAttributes;
-  final Value<String?> defaultUnit;
   final Value<bool> isUnique;
-  final Value<bool> hasMonetaryValue;
+  final Value<bool> isSubjectToPurchase;
+  final Value<bool> isSubjectToSale;
   final Value<String> defaultMonetaryCurrency;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
@@ -861,9 +863,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.barcode = const Value.absent(),
     this.customAttributes = const Value.absent(),
-    this.defaultUnit = const Value.absent(),
     this.isUnique = const Value.absent(),
-    this.hasMonetaryValue = const Value.absent(),
+    this.isSubjectToPurchase = const Value.absent(),
+    this.isSubjectToSale = const Value.absent(),
     this.defaultMonetaryCurrency = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -877,9 +879,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.barcode = const Value.absent(),
     this.customAttributes = const Value.absent(),
-    this.defaultUnit = const Value.absent(),
     this.isUnique = const Value.absent(),
-    this.hasMonetaryValue = const Value.absent(),
+    this.isSubjectToPurchase = const Value.absent(),
+    this.isSubjectToSale = const Value.absent(),
     this.defaultMonetaryCurrency = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
@@ -895,9 +897,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     Expression<String>? mainPhotoPath,
     Expression<String>? barcode,
     Expression<String>? customAttributes,
-    Expression<String>? defaultUnit,
     Expression<bool>? isUnique,
-    Expression<bool>? hasMonetaryValue,
+    Expression<bool>? isSubjectToPurchase,
+    Expression<bool>? isSubjectToSale,
     Expression<String>? defaultMonetaryCurrency,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -911,9 +913,10 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
       if (barcode != null) 'barcode': barcode,
       if (customAttributes != null) 'custom_attributes': customAttributes,
-      if (defaultUnit != null) 'default_unit': defaultUnit,
       if (isUnique != null) 'is_unique': isUnique,
-      if (hasMonetaryValue != null) 'has_monetary_value': hasMonetaryValue,
+      if (isSubjectToPurchase != null)
+        'is_subject_to_purchase': isSubjectToPurchase,
+      if (isSubjectToSale != null) 'is_subject_to_sale': isSubjectToSale,
       if (defaultMonetaryCurrency != null)
         'default_monetary_currency': defaultMonetaryCurrency,
       if (createdAt != null) 'created_at': createdAt,
@@ -930,9 +933,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       Value<String?>? mainPhotoPath,
       Value<String?>? barcode,
       Value<String>? customAttributes,
-      Value<String?>? defaultUnit,
       Value<bool>? isUnique,
-      Value<bool>? hasMonetaryValue,
+      Value<bool>? isSubjectToPurchase,
+      Value<bool>? isSubjectToSale,
       Value<String>? defaultMonetaryCurrency,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
@@ -945,9 +948,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
       barcode: barcode ?? this.barcode,
       customAttributes: customAttributes ?? this.customAttributes,
-      defaultUnit: defaultUnit ?? this.defaultUnit,
       isUnique: isUnique ?? this.isUnique,
-      hasMonetaryValue: hasMonetaryValue ?? this.hasMonetaryValue,
+      isSubjectToPurchase: isSubjectToPurchase ?? this.isSubjectToPurchase,
+      isSubjectToSale: isSubjectToSale ?? this.isSubjectToSale,
       defaultMonetaryCurrency:
           defaultMonetaryCurrency ?? this.defaultMonetaryCurrency,
       createdAt: createdAt ?? this.createdAt,
@@ -982,14 +985,14 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     if (customAttributes.present) {
       map['custom_attributes'] = Variable<String>(customAttributes.value);
     }
-    if (defaultUnit.present) {
-      map['default_unit'] = Variable<String>(defaultUnit.value);
-    }
     if (isUnique.present) {
       map['is_unique'] = Variable<bool>(isUnique.value);
     }
-    if (hasMonetaryValue.present) {
-      map['has_monetary_value'] = Variable<bool>(hasMonetaryValue.value);
+    if (isSubjectToPurchase.present) {
+      map['is_subject_to_purchase'] = Variable<bool>(isSubjectToPurchase.value);
+    }
+    if (isSubjectToSale.present) {
+      map['is_subject_to_sale'] = Variable<bool>(isSubjectToSale.value);
     }
     if (defaultMonetaryCurrency.present) {
       map['default_monetary_currency'] =
@@ -1015,9 +1018,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('barcode: $barcode, ')
           ..write('customAttributes: $customAttributes, ')
-          ..write('defaultUnit: $defaultUnit, ')
           ..write('isUnique: $isUnique, ')
-          ..write('hasMonetaryValue: $hasMonetaryValue, ')
+          ..write('isSubjectToPurchase: $isSubjectToPurchase, ')
+          ..write('isSubjectToSale: $isSubjectToSale, ')
           ..write('defaultMonetaryCurrency: $defaultMonetaryCurrency, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -1421,17 +1424,6 @@ class $EntitiesTableTable extends EntitiesTable
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES locations_table (id)'));
-  static const VerificationMeta _quantityMeta =
-      const VerificationMeta('quantity');
-  @override
-  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
-      'quantity', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
-  @override
-  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
-      'unit', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -1451,7 +1443,7 @@ class $EntitiesTableTable extends EntitiesTable
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, speciesId, locationId, quantity, unit, notes, createdAt, updatedAt];
+      [id, speciesId, locationId, notes, createdAt, updatedAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1478,14 +1470,6 @@ class $EntitiesTableTable extends EntitiesTable
           _locationIdMeta,
           locationId.isAcceptableOrUnknown(
               data['location_id']!, _locationIdMeta));
-    }
-    if (data.containsKey('quantity')) {
-      context.handle(_quantityMeta,
-          quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta));
-    }
-    if (data.containsKey('unit')) {
-      context.handle(
-          _unitMeta, unit.isAcceptableOrUnknown(data['unit']!, _unitMeta));
     }
     if (data.containsKey('notes')) {
       context.handle(
@@ -1518,10 +1502,6 @@ class $EntitiesTableTable extends EntitiesTable
           .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
       locationId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}location_id']),
-      quantity: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}quantity']),
-      unit: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}unit']),
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes']),
       createdAt: attachedDatabase.typeMapping
@@ -1542,8 +1522,6 @@ class EntitiesTableData extends DataClass
   final String id;
   final String speciesId;
   final String? locationId;
-  final double? quantity;
-  final String? unit;
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -1551,8 +1529,6 @@ class EntitiesTableData extends DataClass
       {required this.id,
       required this.speciesId,
       this.locationId,
-      this.quantity,
-      this.unit,
       this.notes,
       required this.createdAt,
       required this.updatedAt});
@@ -1563,12 +1539,6 @@ class EntitiesTableData extends DataClass
     map['species_id'] = Variable<String>(speciesId);
     if (!nullToAbsent || locationId != null) {
       map['location_id'] = Variable<String>(locationId);
-    }
-    if (!nullToAbsent || quantity != null) {
-      map['quantity'] = Variable<double>(quantity);
-    }
-    if (!nullToAbsent || unit != null) {
-      map['unit'] = Variable<String>(unit);
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
@@ -1585,10 +1555,6 @@ class EntitiesTableData extends DataClass
       locationId: locationId == null && nullToAbsent
           ? const Value.absent()
           : Value(locationId),
-      quantity: quantity == null && nullToAbsent
-          ? const Value.absent()
-          : Value(quantity),
-      unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
       notes:
           notes == null && nullToAbsent ? const Value.absent() : Value(notes),
       createdAt: Value(createdAt),
@@ -1603,8 +1569,6 @@ class EntitiesTableData extends DataClass
       id: serializer.fromJson<String>(json['id']),
       speciesId: serializer.fromJson<String>(json['speciesId']),
       locationId: serializer.fromJson<String?>(json['locationId']),
-      quantity: serializer.fromJson<double?>(json['quantity']),
-      unit: serializer.fromJson<String?>(json['unit']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1617,8 +1581,6 @@ class EntitiesTableData extends DataClass
       'id': serializer.toJson<String>(id),
       'speciesId': serializer.toJson<String>(speciesId),
       'locationId': serializer.toJson<String?>(locationId),
-      'quantity': serializer.toJson<double?>(quantity),
-      'unit': serializer.toJson<String?>(unit),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1629,8 +1591,6 @@ class EntitiesTableData extends DataClass
           {String? id,
           String? speciesId,
           Value<String?> locationId = const Value.absent(),
-          Value<double?> quantity = const Value.absent(),
-          Value<String?> unit = const Value.absent(),
           Value<String?> notes = const Value.absent(),
           DateTime? createdAt,
           DateTime? updatedAt}) =>
@@ -1638,8 +1598,6 @@ class EntitiesTableData extends DataClass
         id: id ?? this.id,
         speciesId: speciesId ?? this.speciesId,
         locationId: locationId.present ? locationId.value : this.locationId,
-        quantity: quantity.present ? quantity.value : this.quantity,
-        unit: unit.present ? unit.value : this.unit,
         notes: notes.present ? notes.value : this.notes,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -1650,8 +1608,6 @@ class EntitiesTableData extends DataClass
       speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
       locationId:
           data.locationId.present ? data.locationId.value : this.locationId,
-      quantity: data.quantity.present ? data.quantity.value : this.quantity,
-      unit: data.unit.present ? data.unit.value : this.unit,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -1664,8 +1620,6 @@ class EntitiesTableData extends DataClass
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
           ..write('locationId: $locationId, ')
-          ..write('quantity: $quantity, ')
-          ..write('unit: $unit, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1674,8 +1628,8 @@ class EntitiesTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, speciesId, locationId, quantity, unit, notes, createdAt, updatedAt);
+  int get hashCode =>
+      Object.hash(id, speciesId, locationId, notes, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1683,8 +1637,6 @@ class EntitiesTableData extends DataClass
           other.id == this.id &&
           other.speciesId == this.speciesId &&
           other.locationId == this.locationId &&
-          other.quantity == this.quantity &&
-          other.unit == this.unit &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1694,8 +1646,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   final Value<String> id;
   final Value<String> speciesId;
   final Value<String?> locationId;
-  final Value<double?> quantity;
-  final Value<String?> unit;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1704,8 +1654,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     this.id = const Value.absent(),
     this.speciesId = const Value.absent(),
     this.locationId = const Value.absent(),
-    this.quantity = const Value.absent(),
-    this.unit = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1715,8 +1663,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     required String id,
     required String speciesId,
     this.locationId = const Value.absent(),
-    this.quantity = const Value.absent(),
-    this.unit = const Value.absent(),
     this.notes = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -1729,8 +1675,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     Expression<String>? id,
     Expression<String>? speciesId,
     Expression<String>? locationId,
-    Expression<double>? quantity,
-    Expression<String>? unit,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1740,8 +1684,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       if (id != null) 'id': id,
       if (speciesId != null) 'species_id': speciesId,
       if (locationId != null) 'location_id': locationId,
-      if (quantity != null) 'quantity': quantity,
-      if (unit != null) 'unit': unit,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1753,8 +1695,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       {Value<String>? id,
       Value<String>? speciesId,
       Value<String?>? locationId,
-      Value<double?>? quantity,
-      Value<String?>? unit,
       Value<String?>? notes,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
@@ -1763,8 +1703,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       id: id ?? this.id,
       speciesId: speciesId ?? this.speciesId,
       locationId: locationId ?? this.locationId,
-      quantity: quantity ?? this.quantity,
-      unit: unit ?? this.unit,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1783,12 +1721,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     }
     if (locationId.present) {
       map['location_id'] = Variable<String>(locationId.value);
-    }
-    if (quantity.present) {
-      map['quantity'] = Variable<double>(quantity.value);
-    }
-    if (unit.present) {
-      map['unit'] = Variable<String>(unit.value);
     }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
@@ -1811,8 +1743,6 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
           ..write('locationId: $locationId, ')
-          ..write('quantity: $quantity, ')
-          ..write('unit: $unit, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -4500,9 +4430,9 @@ typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
   Value<String?> mainPhotoPath,
   Value<String?> barcode,
   Value<String> customAttributes,
-  Value<String?> defaultUnit,
   Value<bool> isUnique,
-  Value<bool> hasMonetaryValue,
+  Value<bool> isSubjectToPurchase,
+  Value<bool> isSubjectToSale,
   Value<String> defaultMonetaryCurrency,
   required DateTime createdAt,
   Value<int> rowid,
@@ -4517,9 +4447,9 @@ typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
   Value<String?> mainPhotoPath,
   Value<String?> barcode,
   Value<String> customAttributes,
-  Value<String?> defaultUnit,
   Value<bool> isUnique,
-  Value<bool> hasMonetaryValue,
+  Value<bool> isSubjectToPurchase,
+  Value<bool> isSubjectToSale,
   Value<String> defaultMonetaryCurrency,
   Value<DateTime> createdAt,
   Value<int> rowid,
@@ -4634,14 +4564,15 @@ class $$CatalogTableTableFilterComposer
       column: $table.customAttributes,
       builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get defaultUnit => $composableBuilder(
-      column: $table.defaultUnit, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get hasMonetaryValue => $composableBuilder(
-      column: $table.hasMonetaryValue,
+  ColumnFilters<bool> get isSubjectToPurchase => $composableBuilder(
+      column: $table.isSubjectToPurchase,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isSubjectToSale => $composableBuilder(
+      column: $table.isSubjectToSale,
       builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get defaultMonetaryCurrency => $composableBuilder(
@@ -4776,14 +4707,15 @@ class $$CatalogTableTableOrderingComposer
       column: $table.customAttributes,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get defaultUnit => $composableBuilder(
-      column: $table.defaultUnit, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get hasMonetaryValue => $composableBuilder(
-      column: $table.hasMonetaryValue,
+  ColumnOrderings<bool> get isSubjectToPurchase => $composableBuilder(
+      column: $table.isSubjectToPurchase,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isSubjectToSale => $composableBuilder(
+      column: $table.isSubjectToSale,
       builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get defaultMonetaryCurrency => $composableBuilder(
@@ -4827,14 +4759,14 @@ class $$CatalogTableTableAnnotationComposer
   GeneratedColumn<String> get customAttributes => $composableBuilder(
       column: $table.customAttributes, builder: (column) => column);
 
-  GeneratedColumn<String> get defaultUnit => $composableBuilder(
-      column: $table.defaultUnit, builder: (column) => column);
-
   GeneratedColumn<bool> get isUnique =>
       $composableBuilder(column: $table.isUnique, builder: (column) => column);
 
-  GeneratedColumn<bool> get hasMonetaryValue => $composableBuilder(
-      column: $table.hasMonetaryValue, builder: (column) => column);
+  GeneratedColumn<bool> get isSubjectToPurchase => $composableBuilder(
+      column: $table.isSubjectToPurchase, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSubjectToSale => $composableBuilder(
+      column: $table.isSubjectToSale, builder: (column) => column);
 
   GeneratedColumn<String> get defaultMonetaryCurrency => $composableBuilder(
       column: $table.defaultMonetaryCurrency, builder: (column) => column);
@@ -4967,9 +4899,9 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String?> barcode = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
-            Value<String?> defaultUnit = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
-            Value<bool> hasMonetaryValue = const Value.absent(),
+            Value<bool> isSubjectToPurchase = const Value.absent(),
+            Value<bool> isSubjectToSale = const Value.absent(),
             Value<String> defaultMonetaryCurrency = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -4983,9 +4915,9 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             barcode: barcode,
             customAttributes: customAttributes,
-            defaultUnit: defaultUnit,
             isUnique: isUnique,
-            hasMonetaryValue: hasMonetaryValue,
+            isSubjectToPurchase: isSubjectToPurchase,
+            isSubjectToSale: isSubjectToSale,
             defaultMonetaryCurrency: defaultMonetaryCurrency,
             createdAt: createdAt,
             rowid: rowid,
@@ -4999,9 +4931,9 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String?> barcode = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
-            Value<String?> defaultUnit = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
-            Value<bool> hasMonetaryValue = const Value.absent(),
+            Value<bool> isSubjectToPurchase = const Value.absent(),
+            Value<bool> isSubjectToSale = const Value.absent(),
             Value<String> defaultMonetaryCurrency = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
@@ -5015,9 +4947,9 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             barcode: barcode,
             customAttributes: customAttributes,
-            defaultUnit: defaultUnit,
             isUnique: isUnique,
-            hasMonetaryValue: hasMonetaryValue,
+            isSubjectToPurchase: isSubjectToPurchase,
+            isSubjectToSale: isSubjectToSale,
             defaultMonetaryCurrency: defaultMonetaryCurrency,
             createdAt: createdAt,
             rowid: rowid,
@@ -5425,8 +5357,6 @@ typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
   required String id,
   required String speciesId,
   Value<String?> locationId,
-  Value<double?> quantity,
-  Value<String?> unit,
   Value<String?> notes,
   required DateTime createdAt,
   required DateTime updatedAt,
@@ -5437,8 +5367,6 @@ typedef $$EntitiesTableTableUpdateCompanionBuilder = EntitiesTableCompanion
   Value<String> id,
   Value<String> speciesId,
   Value<String?> locationId,
-  Value<double?> quantity,
-  Value<String?> unit,
   Value<String?> notes,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
@@ -5543,12 +5471,6 @@ class $$EntitiesTableTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<double> get quantity => $composableBuilder(
-      column: $table.quantity, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get unit => $composableBuilder(
-      column: $table.unit, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
@@ -5677,12 +5599,6 @@ class $$EntitiesTableTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<double> get quantity => $composableBuilder(
-      column: $table.quantity, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get unit => $composableBuilder(
-      column: $table.unit, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
@@ -5744,12 +5660,6 @@ class $$EntitiesTableTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<double> get quantity =>
-      $composableBuilder(column: $table.quantity, builder: (column) => column);
-
-  GeneratedColumn<String> get unit =>
-      $composableBuilder(column: $table.unit, builder: (column) => column);
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
@@ -5897,8 +5807,6 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> speciesId = const Value.absent(),
             Value<String?> locationId = const Value.absent(),
-            Value<double?> quantity = const Value.absent(),
-            Value<String?> unit = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
@@ -5908,8 +5816,6 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             id: id,
             speciesId: speciesId,
             locationId: locationId,
-            quantity: quantity,
-            unit: unit,
             notes: notes,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -5919,8 +5825,6 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             required String id,
             required String speciesId,
             Value<String?> locationId = const Value.absent(),
-            Value<double?> quantity = const Value.absent(),
-            Value<String?> unit = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
@@ -5930,8 +5834,6 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             id: id,
             speciesId: speciesId,
             locationId: locationId,
-            quantity: quantity,
-            unit: unit,
             notes: notes,
             createdAt: createdAt,
             updatedAt: updatedAt,

@@ -26,9 +26,9 @@ class CatalogTable extends Table {
   TextColumn get mainPhotoPath => text().nullable()();
   TextColumn get barcode => text().nullable()();
   TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
-  TextColumn get defaultUnit => text().nullable()();
   BoolColumn get isUnique => boolean().withDefault(const Constant(false))();
-  BoolColumn get hasMonetaryValue => boolean().withDefault(const Constant(true))();
+  BoolColumn get isSubjectToPurchase => boolean().withDefault(const Constant(false))();
+  BoolColumn get isSubjectToSale => boolean().withDefault(const Constant(false))();
   TextColumn get defaultMonetaryCurrency => text().withDefault(const Constant('MXN'))();
   DateTimeColumn get createdAt => dateTime()();
 
@@ -40,7 +40,7 @@ class CatalogTable extends Table {
 class SpeciesMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
-  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Magnitud Principal"
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Cantidad"
   RealColumn get magnitudeValue => real()();
   TextColumn get unitSymbol => text()();
   DateTimeColumn get createdAt => dateTime()();
@@ -53,8 +53,6 @@ class EntitiesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
   TextColumn get locationId => text().nullable().references(LocationsTable, #id)();
-  RealColumn get quantity => real().nullable()();
-  TextColumn get unit => text().nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
@@ -67,7 +65,7 @@ class EntitiesTable extends Table {
 class InstanceMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get instanceId => text().references(EntitiesTable, #id)();
-  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Magnitud Principal"
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Cantidad"
   RealColumn get magnitudeValue => real()();
   TextColumn get unitSymbol => text()();
 

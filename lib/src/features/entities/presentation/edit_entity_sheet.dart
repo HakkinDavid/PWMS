@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 
 class EditEntitySheet extends ConsumerStatefulWidget {
@@ -26,7 +29,6 @@ class EditEntitySheet extends ConsumerStatefulWidget {
 class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
   late TextEditingController _notesController;
   late TextEditingController _qtyController;
-  late TextEditingController _unitController;
 
   String? _selectedLocationId;
   bool _isSaving = false;
@@ -35,8 +37,10 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
   void initState() {
     super.initState();
     _notesController = TextEditingController(text: widget.entity.notes ?? '');
-    _qtyController = TextEditingController(text: widget.entity.quantity?.toString() ?? '');
-    _unitController = TextEditingController(text: widget.entity.unit ?? '');
+    final firstMag = widget.entity.magnitudes.isNotEmpty ? widget.entity.magnitudes.first : null;
+    _qtyController = TextEditingController(
+      text: firstMag != null ? DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol) : '1',
+    );
     _selectedLocationId = widget.entity.locationId;
   }
 
@@ -44,7 +48,6 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
   void dispose() {
     _notesController.dispose();
     _qtyController.dispose();
-    _unitController.dispose();
     super.dispose();
   }
 
@@ -53,15 +56,18 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
 
     try {
       final double? parsedQty = double.tryParse(_qtyController.text.trim());
-      final String? parsedUnit = _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
 
       final entityRepo = ref.read(entityRepositoryProvider);
       final mergedOrUpdated = await entityRepo.moveOrMergeEntity(widget.entity.id, _selectedLocationId);
 
       if (mergedOrUpdated != null) {
+        final updatedMags = List<InstanceMagnitude>.from(mergedOrUpdated.magnitudes);
+        if (parsedQty != null && updatedMags.isNotEmpty) {
+          updatedMags[0] = updatedMags[0].copyWith(magnitudeValue: parsedQty);
+        }
+
         final finalEntity = mergedOrUpdated.copyWith(
-          quantity: parsedQty ?? mergedOrUpdated.quantity,
-          unit: parsedUnit ?? mergedOrUpdated.unit,
+          magnitudes: updatedMags,
           notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : mergedOrUpdated.notes,
           updatedAt: DateTime.now(),
         );
@@ -151,14 +157,30 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             const SizedBox(height: 8),
             locationsState.when(
               data: (nodes) {
-                return DropdownButtonFormField<String?>(
-                  initialValue: _selectedLocationId,
-                  decoration: const InputDecoration(prefixIcon: Icon(Icons.account_tree_outlined)),
-                  items: [
-                    const DropdownMenuItem<String?>(value: null, child: Text('Mundo (Raíz)')),
-                    ...nodes.map((n) => DropdownMenuItem<String?>(value: n.id, child: Text(n.name))),
-                  ],
-                  onChanged: (val) => setState(() => _selectedLocationId = val),
+                final selectedNode = nodes.where((n) => n.id == _selectedLocationId).firstOrNull;
+                return InkWell(
+                  onTap: () async {
+                    final picked = await AppWheelPicker.show<String?>(
+                      context,
+                      items: [null, ...nodes.map((n) => n.id)],
+                      initialValue: _selectedLocationId,
+                      labelBuilder: (id) => id == null ? 'Mundo (Raíz)' : (nodes.where((n) => n.id == id).firstOrNull?.name ?? id),
+                      title: 'Seleccionar Ubicación',
+                    );
+                    if (picked != _selectedLocationId) {
+                      setState(() => _selectedLocationId = picked);
+                    }
+                  },
+                  child: InputDecorator(
+                    decoration: const InputDecoration(prefixIcon: Icon(Icons.account_tree_outlined)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(selectedNode?.name ?? 'Mundo (Raíz)', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        const Icon(Icons.unfold_more),
+                      ],
+                    ),
+                  ),
                 );
               },
               loading: () => const CircularProgressIndicator(),
@@ -176,8 +198,6 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
               ),
             ),
             const SizedBox(height: 16),
-
-
 
             // Notes / Serial
             TextField(

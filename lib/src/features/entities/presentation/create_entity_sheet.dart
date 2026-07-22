@@ -9,6 +9,7 @@ import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../domain/entity_template.dart';
+import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 import 'instantiate_species_sheet.dart';
 
@@ -232,15 +233,24 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
       }
 
       final entityId = const Uuid().v4();
-      final double? parsedQty = template.hasQuantity ? double.tryParse(_qtyController.text.trim()) : null;
-      final String? parsedUnit = template.hasQuantity && _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : null;
+      final double parsedQty = template.hasQuantity ? (double.tryParse(_qtyController.text.trim()) ?? 1.0) : 1.0;
+      final String parsedUnit = template.hasQuantity && _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : 'unidad';
 
       final newEntity = WorldEntity(
         id: entityId,
         speciesId: species.id,
         locationId: _selectedLocationId,
-        quantity: parsedQty,
-        unit: parsedUnit,
+        magnitudes: template.hasQuantity
+            ? [
+                InstanceMagnitude(
+                  id: const Uuid().v4(),
+                  instanceId: entityId,
+                  propertyName: 'Cantidad',
+                  magnitudeValue: parsedQty,
+                  unitSymbol: parsedUnit,
+                ),
+              ]
+            : [],
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),

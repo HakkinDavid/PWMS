@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_tree_picker.dart';
@@ -90,6 +91,8 @@ class EntityTile extends ConsumerWidget {
 
     final breadcrumb = LocationPathHelper.buildBreadcrumbPath(entity.locationId, locationNodes);
 
+    final firstMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : null;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 6),
       child: InkWell(
@@ -161,10 +164,10 @@ class EntityTile extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    if (entity.quantity != null) ...[
+                    if (firstMag != null) ...[
                       const SizedBox(height: 2),
                       Text(
-                        'Magnitud: ${entity.quantity} ${entity.unit ?? species?.defaultUnit ?? ""}',
+                        'Magnitud: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}',
                         style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                       ),
                     ],

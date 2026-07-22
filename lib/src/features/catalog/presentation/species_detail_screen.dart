@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
@@ -77,6 +78,10 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                 itemBuilder: (ctx, idx) {
                   final inst = instances[idx];
                   final breadcrumb = LocationPathHelper.buildBreadcrumbPath(inst.locationId, locationNodes);
+                  final firstMag = inst.magnitudes.isNotEmpty ? inst.magnitudes.first : null;
+                  final magText = firstMag != null
+                      ? 'Magnitud: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
+                      : 'Instancia registrada';
 
                   return Card(
                     margin: const EdgeInsets.only(bottom: 4),
@@ -91,7 +96,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                       ),
                       subtitle: Text(
-                        'Magnitud: ${inst.quantity ?? 1.0} ${inst.unit ?? species.defaultUnit ?? ""}',
+                        magText,
                         style: const TextStyle(fontSize: 10),
                       ),
                       trailing: const Icon(Icons.chevron_right, size: 16),
@@ -110,7 +115,6 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
             species: species,
             instanceSpecificsHeader: locationsSummaryHeader,
             actions: [
-              // Point 7: In-place editing toggle reusing SpeciesFormModal
               IconButton(
                 icon: const Icon(Icons.edit_outlined),
                 tooltip: AppStrings.edit,

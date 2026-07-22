@@ -31,9 +31,14 @@ void main() {
   });
 
   group('PWMS 4NF Database & Single Source of Truth Rules Tests', () {
-    test('1. DomainRules Single Source of Truth Enforcement', () {
+    test('1. DomainRules Single Source of Truth & Integer Formatting Enforcement', () {
       expect(DomainRules.isIntegerUnit('unidad'), isTrue);
       expect(DomainRules.isIntegerUnit('kg'), isFalse);
+
+      // Integer Formatting without .0
+      expect(DomainRules.formatMagnitude(5.0, 'unidad'), equals('5'));
+      expect(DomainRules.formatMagnitude(0.0, 'unidad'), equals('0'));
+      expect(DomainRules.formatMagnitude(2.5, 'kg'), equals('2.5'));
 
       // Rule #8: Unique species CANNOT be associated with "unidad"
       expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'unidad', isUnique: true), isFalse);
@@ -44,7 +49,7 @@ void main() {
       final node = LocationNode(id: 'node-1', name: 'Almacén', createdAt: DateTime.now());
       await locationRepo.saveNode(node);
 
-      final species = await catalogRepo.getOrCreateSpecies('Cable Eléctrico Cobre', type: 'Objeto', defaultUnit: 'm');
+      final species = await catalogRepo.getOrCreateSpecies('Cable Eléctrico Cobre', type: 'Objeto');
       final updatedSpecies = species.copyWith(
         magnitudes: [
           SpeciesMagnitude(
@@ -93,8 +98,16 @@ void main() {
       expect(fetchedInstance.magnitudes.first.propertyName, equals('Masa Real'));
     });
 
-    test('3. Acquisition & Sale Financial Ledger Recording', () async {
-      final species = await catalogRepo.getOrCreateSpecies('Monitor 4K', type: 'Objeto');
+    test('3. Acquisition & Sale Financial Ledger Recording with Split Finances', () async {
+      final species = await catalogRepo.getOrCreateSpecies(
+        'Monitor 4K',
+        type: 'Objeto',
+        isSubjectToPurchase: true,
+        isSubjectToSale: true,
+      );
+
+      expect(species.isSubjectToPurchase, isTrue);
+      expect(species.isSubjectToSale, isTrue);
 
       // Acquisition transaction
       await financialRepo.recordTransaction(

@@ -17,13 +17,13 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
       barcode: json['barcode'] as String?,
       customAttributes:
           json['customAttributes'] as Map<String, dynamic>? ?? const {},
-      defaultUnit: json['defaultUnit'] as String?,
       magnitudes: (json['magnitudes'] as List<dynamic>?)
               ?.map((e) => SpeciesMagnitude.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
       isUnique: json['isUnique'] as bool? ?? false,
-      hasMonetaryValue: json['hasMonetaryValue'] as bool? ?? true,
+      isSubjectToPurchase: json['isSubjectToPurchase'] as bool? ?? false,
+      isSubjectToSale: json['isSubjectToSale'] as bool? ?? false,
       defaultMonetaryCurrency:
           json['defaultMonetaryCurrency'] as String? ?? 'MXN',
       createdAt: DateTime.parse(json['createdAt'] as String),
@@ -39,10 +39,10 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
       'mainPhotoPath': instance.mainPhotoPath,
       'barcode': instance.barcode,
       'customAttributes': instance.customAttributes,
-      'defaultUnit': instance.defaultUnit,
       'magnitudes': instance.magnitudes,
       'isUnique': instance.isUnique,
-      'hasMonetaryValue': instance.hasMonetaryValue,
+      'isSubjectToPurchase': instance.isSubjectToPurchase,
+      'isSubjectToSale': instance.isSubjectToSale,
       'defaultMonetaryCurrency': instance.defaultMonetaryCurrency,
       'createdAt': instance.createdAt.toIso8601String(),
     };

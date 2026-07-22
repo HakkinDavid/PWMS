@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/database/app_database.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
 
@@ -39,10 +38,10 @@ class CatalogRepository {
       mainPhotoPath: row.mainPhotoPath,
       barcode: row.barcode,
       customAttributes: customAttrs,
-      defaultUnit: row.defaultUnit,
       magnitudes: magnitudes,
       isUnique: row.isUnique,
-      hasMonetaryValue: row.hasMonetaryValue,
+      isSubjectToPurchase: row.isSubjectToPurchase,
+      isSubjectToSale: row.isSubjectToSale,
       defaultMonetaryCurrency: row.defaultMonetaryCurrency,
       createdAt: row.createdAt,
     );
@@ -85,9 +84,9 @@ class CatalogRepository {
     String? description,
     String? mainPhotoPath,
     String? barcode,
-    String? defaultUnit,
     bool isUnique = false,
-    bool hasMonetaryValue = true,
+    bool isSubjectToPurchase = false,
+    bool isSubjectToSale = false,
     String defaultMonetaryCurrency = 'MXN',
   }) async {
     final cleanName = name.trim();
@@ -103,9 +102,9 @@ class CatalogRepository {
       description: description,
       mainPhotoPath: mainPhotoPath,
       barcode: barcode,
-      defaultUnit: defaultUnit,
       isUnique: isUnique,
-      hasMonetaryValue: hasMonetaryValue,
+      isSubjectToPurchase: isSubjectToPurchase,
+      isSubjectToSale: isSubjectToSale,
       defaultMonetaryCurrency: defaultMonetaryCurrency,
       createdAt: DateTime.now(),
     );
@@ -115,11 +114,6 @@ class CatalogRepository {
   }
 
   Future<void> saveCatalogItem(CatalogItem item) async {
-    // Single Source of Truth Rule Check: Unique species cannot have integer counting units ("pieza")
-    if (item.defaultUnit != null && !DomainRules.isUnitAllowedForSpecies(unitSymbol: item.defaultUnit!, isUnique: item.isUnique)) {
-      throw Exception('Una Especie Única no puede asociarse con la unidad "pieza" o unidades de conteo.');
-    }
-
     final all = await getAllCatalogItems();
     final existing = await getCatalogItemById(item.id);
 
@@ -148,9 +142,9 @@ class CatalogRepository {
       mainPhotoPath: Value(item.mainPhotoPath),
       barcode: Value(item.barcode),
       customAttributes: Value(jsonEncode(item.customAttributes)),
-      defaultUnit: Value(item.defaultUnit),
       isUnique: Value(item.isUnique),
-      hasMonetaryValue: Value(item.hasMonetaryValue),
+      isSubjectToPurchase: Value(item.isSubjectToPurchase),
+      isSubjectToSale: Value(item.isSubjectToSale),
       defaultMonetaryCurrency: Value(item.defaultMonetaryCurrency),
       createdAt: Value(item.createdAt),
     );

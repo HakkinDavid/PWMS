@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_node.dart';
-import 'create_entity_sheet.dart';
 
 class ContainerContentsView extends ConsumerWidget {
-  final LocationNode locationNode;
+  final LocationNode location;
 
   const ContainerContentsView({
     super.key,
-    required this.locationNode,
+    required this.location,
   });
 
   @override
@@ -19,81 +19,62 @@ class ContainerContentsView extends ConsumerWidget {
     final catalogState = ref.watch(catalogListProvider);
     final theme = Theme.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Objetos Almacenados Aquí',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                CreateEntitySheet.show(
-                  context,
-                  initialLocationId: locationNode.id,
-                );
-              },
-              icon: const Icon(Icons.add, size: 16),
-              label: const Text('Crear objeto aquí'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    return entitiesState.when(
+      data: (allEntities) {
+        final children = allEntities.where((e) => e.locationId == location.id).toList();
+
+        if (children.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.inbox, size: 48, color: theme.disabledColor),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Esta ubicación no contiene objetos ni sub-ubicaciones.',
+                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.disabledColor),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        entitiesState.when(
-          data: (entities) {
-            final childEntities = entities.where((e) => e.locationId == locationNode.id).toList();
+          );
+        }
 
-            if (childEntities.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                child: Center(
-                  child: Text(
-                    'Ubicación o contenedor actualmente vacío.',
-                    style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                  ),
-                ),
-              );
-            }
+        final catalogItems = catalogState.asData?.value ?? [];
 
-            final catalogItems = catalogState.asData?.value ?? [];
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: children.length,
+          itemBuilder: (context, index) {
+            final child = children[index];
+            final species = catalogItems.where((c) => c.id == child.speciesId).firstOrNull;
+            final name = species?.name ?? 'Objeto';
+            final type = species?.type ?? 'Objeto / Herramienta';
 
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: childEntities.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final child = childEntities[index];
-                final species = catalogItems.where((c) => c.id == child.speciesId).firstOrNull;
-                final name = species?.name ?? 'Objeto';
-                final type = species?.type ?? 'Objeto / Herramienta';
+            final firstMag = child.magnitudes.isNotEmpty ? child.magnitudes.first : null;
+            final subtitleText = firstMag != null
+                ? '$type • Cantidad: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
+                : type;
 
-                return Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.inventory_2),
-                    title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text('$type • Cantidad: ${child.quantity ?? 1} ${child.unit ?? ""}'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      context.push('/entity/${child.id}');
-                    },
-                  ),
-                );
-              },
+            return Card(
+              child: ListTile(
+                leading: const Icon(Icons.inventory_2),
+                title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(subtitleText),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  context.push('/entity/${child.id}');
+                },
+              ),
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => Text('Error al cargar contenido: $err'),
-        ),
-      ],
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text('Error: $err')),
     );
   }
 }

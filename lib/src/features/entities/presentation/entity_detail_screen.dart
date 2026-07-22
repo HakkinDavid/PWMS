@@ -11,6 +11,7 @@ import '../../catalog/presentation/species_detail_view.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../domain/entity_template.dart';
+import '../domain/instance_magnitude.dart';
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
   final String entityId;
@@ -34,7 +35,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     super.dispose();
   }
 
-  // Acquisition Cost Prompt ("Por pieza" vs "Monto total")
+  // Acquisition Cost Prompt ("Por pieza" vs "Monto total") - ONLY IF isSubjectToPurchase == true
   Future<void> _promptAcquisitionCost({
     required String speciesId,
     required String entityId,
@@ -50,7 +51,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateDialog) => AlertDialog(
-          title: const Text('Costo de Adquisición'),
+          title: const Text('Costo de Adquisición (Compra)'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -59,7 +60,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   Expanded(
                     child: ChoiceChip(
                       visualDensity: VisualDensity.compact,
-                      label: const Center(child: Text('Por pieza')),
+                      label: const Center(child: Text('Por unidad')),
                       selected: isPerUnit,
                       onSelected: (val) {
                         if (val) setStateDialog(() => isPerUnit = true);
@@ -141,7 +142,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     }
   }
 
-  // Deletion Sale Prompt (ONLY if isSale == true)
+  // Deletion / Sale Prompt (ONLY IF isSubjectToSale == true)
   Future<void> _promptSaleTransaction({
     required String speciesId,
     required String entityId,
@@ -215,6 +216,57 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     }
   }
 
+  // Confirm Zero-Quantity Deletion Flow
+  Future<void> _handleZeroQuantityDeletion({
+    required CatalogItem species,
+    required String entityId,
+    required double currentQty,
+  }) async {
+    bool isSale = false;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (c, setStateDialog) => AlertDialog(
+          title: const Text(AppStrings.deleteConfirmationTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${AppStrings.zeroQuantityMessage} "${species.name}"?'),
+              if (species.isSubjectToSale)
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text(AppStrings.isSaleLabel),
+                  value: isSale,
+                  onChanged: (v) => setStateDialog(() => isSale = v ?? false),
+                ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirm == true) {
+      if (species.isSubjectToSale && isSale) {
+        await _promptSaleTransaction(
+          speciesId: species.id,
+          entityId: entityId,
+          magnitudeDelta: -currentQty,
+          currency: species.defaultMonetaryCurrency,
+        );
+      }
+      await ref.read(entityRepositoryProvider).deleteEntity(entityId);
+      ref.read(entityListProvider.notifier).loadEntities();
+      if (mounted) context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final entityAsync = ref.watch(entityDetailProvider(widget.entityId));
@@ -229,8 +281,12 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             return const Center(child: Text(AppStrings.appName));
           }
 
+          final primaryMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : const InstanceMagnitude(id: '', instanceId: '', propertyName: 'Cantidad', magnitudeValue: 1.0, unitSymbol: 'unidad');
+          final primaryVal = primaryMag.magnitudeValue;
+          final primaryUnit = primaryMag.unitSymbol;
+
           if (!_isEditingInPlace) {
-            _qtyController.text = (entity.quantity ?? 1.0).toString();
+            _qtyController.text = DomainRules.formatMagnitude(primaryVal, primaryUnit);
             _notesController.text = entity.notes ?? '';
             _selectedLocationId = entity.locationId;
           }
@@ -247,9 +303,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           final template = EntityTemplateRegistry.getTemplate(species.type);
           final locationNodes = locationsState.asData?.value ?? [];
           final breadcrumb = LocationPathHelper.buildBreadcrumbPath(_selectedLocationId, locationNodes);
-
-          final unitSymbol = entity.unit ?? species.defaultUnit;
-          final isIntegerUnit = DomainRules.isIntegerUnit(unitSymbol);
+          final isIntegerUnit = DomainRules.isIntegerUnit(primaryUnit);
 
           // Instance Header Controls
           final instanceHeader = Column(
@@ -346,7 +400,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
-              // Magnitud Control (Points 5 & 6: Decimal vs Integer mode in editing)
+              // Magnitud Control (Points 1 & 2: Decrement to 0 & Wheel Picker 0 selection)
               if (template.hasQuantity) ...[
                 Row(
                   children: [
@@ -362,7 +416,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         border: Border.all(color: theme.dividerColor),
                       ),
                       child: isIntegerUnit
-                          // Integer Magnitudes (Point 6: Integer field + -/+ buttons + Wheel Picker on tap)
+                          // Integer Magnitudes (Formatted without .0)
                           ? Row(
                               children: [
                                 if (_isEditingInPlace)
@@ -371,8 +425,14 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                     onPressed: () async {
                                       final currentQty = double.tryParse(_qtyController.text.trim()) ?? 1.0;
                                       final newQty = currentQty - 1.0;
-                                      if (newQty > 0) {
-                                        setState(() => _qtyController.text = '${newQty.toInt()}');
+                                      if (newQty <= 0) {
+                                        await _handleZeroQuantityDeletion(
+                                          species: species,
+                                          entityId: entity.id,
+                                          currentQty: currentQty,
+                                        );
+                                      } else {
+                                        setState(() => _qtyController.text = DomainRules.formatMagnitude(newQty, primaryUnit));
                                       }
                                     },
                                   ),
@@ -380,9 +440,17 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   onTap: isIntegerUnit && _isEditingInPlace
                                       ? () async {
                                           final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
-                                          final picked = await IntegerWheelPicker.show(context, initialValue: currentVal);
+                                          final picked = await IntegerWheelPicker.show(context, initialValue: currentVal, minValue: 0);
                                           if (picked != null) {
-                                            setState(() => _qtyController.text = '$picked');
+                                            if (picked == 0) {
+                                              await _handleZeroQuantityDeletion(
+                                                species: species,
+                                                entityId: entity.id,
+                                                currentQty: currentVal.toDouble(),
+                                              );
+                                            } else {
+                                              setState(() => _qtyController.text = '$picked');
+                                            }
                                           }
                                         }
                                       : null,
@@ -397,7 +465,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   ),
                                 ),
                                 Text(
-                                  unitSymbol ?? "",
+                                  primaryUnit,
                                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(width: 8),
@@ -407,12 +475,12 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                     onPressed: () {
                                       final currentQty = double.tryParse(_qtyController.text.trim()) ?? 0.0;
                                       final newQty = currentQty + 1.0;
-                                      setState(() => _qtyController.text = '${newQty.toInt()}');
+                                      setState(() => _qtyController.text = DomainRules.formatMagnitude(newQty, primaryUnit));
                                     },
                                   ),
                               ],
                             )
-                          // Decimal Magnitudes (Point 5: Editable ONLY as decimal number textfield)
+                          // Decimal Magnitudes
                           : Container(
                               width: 110,
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -433,7 +501,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                     ),
                                   ),
                                   Text(
-                                    unitSymbol ?? "",
+                                    primaryUnit,
                                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -447,7 +515,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             ],
           );
 
-          // Instance Footer (Point 4: Hide Notes if empty and not in edit mode!)
+          // Instance Footer (Notes)
           final hasNotes = entity.notes != null && entity.notes!.trim().isNotEmpty;
           final Widget? instanceFooter = (_isEditingInPlace || hasNotes)
               ? Column(
@@ -473,25 +541,37 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         height: 48,
                         child: ElevatedButton.icon(
                           onPressed: () async {
-                            final originalQty = entity.quantity ?? 1.0;
+                            final originalQty = primaryVal;
                             final newQty = double.tryParse(_qtyController.text.trim()) ?? originalQty;
                             final hasLocationChanged = _selectedLocationId != entity.locationId;
                             final hasQtyChanged = newQty != originalQty;
                             final hasNotesChanged = _notesController.text.trim() != (entity.notes ?? '');
 
-                            // Point 7: Only save and trigger finance/refresh if actual changes occurred!
                             if (hasLocationChanged || hasQtyChanged || hasNotesChanged) {
+                              final updatedMags = List<InstanceMagnitude>.from(entity.magnitudes);
+                              if (updatedMags.isNotEmpty) {
+                                updatedMags[0] = updatedMags[0].copyWith(magnitudeValue: newQty);
+                              } else {
+                                updatedMags.add(InstanceMagnitude(
+                                  id: '',
+                                  instanceId: entity.id,
+                                  propertyName: 'Cantidad',
+                                  magnitudeValue: newQty,
+                                  unitSymbol: primaryUnit,
+                                ));
+                              }
+
                               final updated = entity.copyWith(
                                 locationId: _selectedLocationId,
-                                quantity: newQty,
+                                magnitudes: updatedMags,
                                 notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
                                 updatedAt: DateTime.now(),
                               );
 
                               await ref.read(entityListProvider.notifier).saveEntity(updated);
 
-                              // Point 7: Financial prompt ONLY if magnitude actually increased!
-                              if (hasQtyChanged && newQty > originalQty && species.hasMonetaryValue) {
+                              // Prompt acquisition cost ONLY IF isSubjectToPurchase == true
+                              if (hasQtyChanged && newQty > originalQty && species.isSubjectToPurchase) {
                                 final delta = newQty - originalQty;
                                 await _promptAcquisitionCost(
                                   speciesId: species.id,
@@ -515,7 +595,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
           return SpeciesDetailView(
             species: species,
-            showAttachmentAction: false, // Point 1: Hide attach file button on Instance screen!
+            showAttachmentAction: false,
             instanceSpecificsHeader: instanceHeader,
             instanceSpecificsFooter: instanceFooter,
             actions: [
@@ -545,7 +625,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
-                            if (species.hasMonetaryValue)
+                            if (species.isSubjectToSale)
                               CheckboxListTile(
                                 contentPadding: EdgeInsets.zero,
                                 title: const Text(AppStrings.isSaleLabel),
@@ -566,12 +646,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   );
 
                   if (confirm == true) {
-                    // Rule: ONLY prompt for financial data if isSale == true!
-                    if (species.hasMonetaryValue && isSale) {
+                    if (species.isSubjectToSale && isSale) {
                       await _promptSaleTransaction(
                         speciesId: species.id,
                         entityId: entity.id,
-                        magnitudeDelta: -(entity.quantity ?? 1.0),
+                        magnitudeDelta: -primaryVal,
                         currency: species.defaultMonetaryCurrency,
                       );
                     }

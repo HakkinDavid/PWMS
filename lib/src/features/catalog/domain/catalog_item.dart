@@ -15,10 +15,10 @@ class CatalogItem with _$CatalogItem {
     String? mainPhotoPath,
     String? barcode,
     @Default({}) Map<String, dynamic> customAttributes,
-    String? defaultUnit,
     @Default([]) List<SpeciesMagnitude> magnitudes,
     @Default(false) bool isUnique,
-    @Default(true) bool hasMonetaryValue,
+    @Default(false) bool isSubjectToPurchase,
+    @Default(false) bool isSubjectToSale,
     @Default('MXN') String defaultMonetaryCurrency,
     required DateTime createdAt,
   }) = _CatalogItem;

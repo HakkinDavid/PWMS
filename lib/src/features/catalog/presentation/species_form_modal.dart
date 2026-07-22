@@ -51,9 +51,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   final _descController = TextEditingController();
 
   String _selectedType = AppStrings.typeObject;
-  String _defaultUnit = 'unidad';
   bool _isUnique = false;
-  bool _hasMonetaryValue = false; // Default false when creating!
+  bool _isSubjectToPurchase = false; // Default false when creating!
+  bool _isSubjectToSale = false; // Default false when creating!
   String _currency = 'MXN';
   XFile? _selectedImage;
   bool _isSaving = false;
@@ -81,13 +81,12 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _barcodeController.text = s.barcode ?? '';
       _descController.text = s.description ?? '';
       _selectedType = s.type;
-      _defaultUnit = s.defaultUnit ?? 'unidad';
       _isUnique = s.isUnique;
-      _hasMonetaryValue = s.hasMonetaryValue;
+      _isSubjectToPurchase = s.isSubjectToPurchase;
+      _isSubjectToSale = s.isSubjectToSale;
       _currency = s.defaultMonetaryCurrency;
       _magnitudes.addAll(s.magnitudes);
     } else {
-      _defaultUnit = 'unidad'; // Non-unique species default unit = "unidad"
       _applySubgroupConstraints(_selectedType);
     }
   }
@@ -109,17 +108,10 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         _isUnique = true;
       }
       if (!template.hasMonetaryValue) {
-        _hasMonetaryValue = false;
+        _isSubjectToPurchase = false;
+        _isSubjectToSale = false;
       }
-      _updateAllowedDefaultUnit();
     });
-  }
-
-  void _updateAllowedDefaultUnit() {
-    final allowed = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
-    if (!allowed.contains(_defaultUnit)) {
-      _defaultUnit = allowed.first;
-    }
   }
 
   void _populateFromBaseTemplate(CatalogItem base) {
@@ -128,12 +120,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _brandController.text = base.brand ?? '';
       _descController.text = base.description ?? '';
       _isUnique = base.isUnique;
-      _hasMonetaryValue = base.hasMonetaryValue;
+      _isSubjectToPurchase = base.isSubjectToPurchase;
+      _isSubjectToSale = base.isSubjectToSale;
       _currency = base.defaultMonetaryCurrency;
-      _updateAllowedDefaultUnit();
-      if (base.defaultUnit != null && DomainRules.isUnitAllowedForSpecies(unitSymbol: base.defaultUnit!, isUnique: _isUnique)) {
-        _defaultUnit = base.defaultUnit!;
-      }
       _magnitudes.clear();
       _magnitudes.addAll(base.magnitudes);
       _applySubgroupConstraints(base.type);
@@ -151,7 +140,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   void _addMagnitudeRow() async {
     final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
     final propCtrl = TextEditingController(text: 'Propiedad ${_magnitudes.length + 1}');
-    final valCtrl = TextEditingController(text: '1.0');
+    final valCtrl = TextEditingController(text: '1');
     String chosenUnit = allowedUnits.first;
 
     final result = await showDialog<SpeciesMagnitude>(
@@ -247,13 +236,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     final template = EntityTemplateRegistry.getTemplate(_selectedType);
     final effectiveUnique = template.isAlwaysUnique || _isUnique;
 
-    if (template.hasQuantity && !DomainRules.isUnitAllowedForSpecies(unitSymbol: _defaultUnit, isUnique: effectiveUnique)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Una Especie Única no puede asociarse con la unidad "unidad".')),
-      );
-      return;
-    }
-
     setState(() => _isSaving = true);
 
     try {
@@ -274,10 +256,10 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         brand: template.hasBarcodeAndBrand && _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
         description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
         barcode: template.hasBarcodeAndBrand && _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
-        defaultUnit: template.hasQuantity ? _defaultUnit : null,
         magnitudes: updatedMagnitudes,
         isUnique: effectiveUnique,
-        hasMonetaryValue: template.hasMonetaryValue && _hasMonetaryValue,
+        isSubjectToPurchase: template.hasMonetaryValue && _isSubjectToPurchase,
+        isSubjectToSale: template.hasMonetaryValue && _isSubjectToSale,
         defaultMonetaryCurrency: _currency,
         mainPhotoPath: photoPath,
         createdAt: widget.initialSpecies?.createdAt ?? DateTime.now(),
@@ -309,7 +291,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     final catalogState = ref.watch(catalogListProvider);
     final existingItems = catalogState.asData?.value ?? [];
     final template = EntityTemplateRegistry.getTemplate(_selectedType);
-    final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: template.isAlwaysUnique || _isUnique);
 
     return Container(
       decoration: BoxDecoration(
@@ -484,21 +465,27 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                           : (val) {
                               setState(() {
                                 _isUnique = val ?? false;
-                                _updateAllowedDefaultUnit();
                               });
                             },
                     ),
 
-                    // "Sujeto a finanzas" Checkbox (Point 6: Renamed & Default False)
+                    // Split Finances Checkboxes: "Sujeto a compra" & "Sujeto a venta"
                     if (template.hasMonetaryValue) ...[
                       CheckboxListTile(
                         contentPadding: EdgeInsets.zero,
                         dense: true,
-                        title: const Text('Sujeto a finanzas', style: TextStyle(fontSize: 13)),
-                        value: _hasMonetaryValue,
-                        onChanged: (val) => setState(() => _hasMonetaryValue = val ?? false),
+                        title: const Text('Sujeto a compra', style: TextStyle(fontSize: 13)),
+                        value: _isSubjectToPurchase,
+                        onChanged: (val) => setState(() => _isSubjectToPurchase = val ?? false),
                       ),
-                      if (_hasMonetaryValue) ...[
+                      CheckboxListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        title: const Text('Sujeto a venta', style: TextStyle(fontSize: 13)),
+                        value: _isSubjectToSale,
+                        onChanged: (val) => setState(() => _isSubjectToSale = val ?? false),
+                      ),
+                      if (_isSubjectToPurchase || _isSubjectToSale) ...[
                         InkWell(
                           onTap: () async {
                             final picked = await AppWheelPicker.show<String>(
@@ -525,37 +512,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       ],
                     ],
 
-                    // Default Unit Wheel Picker (Point 5: AppWheelPicker)
-                    if (template.hasQuantity) ...[
-                      InkWell(
-                        onTap: () async {
-                          final picked = await AppWheelPicker.show<String>(
-                            context,
-                            items: allowedUnits,
-                            initialValue: allowedUnits.contains(_defaultUnit) ? _defaultUnit : allowedUnits.first,
-                            labelBuilder: (u) => u,
-                            title: 'Seleccionar Unidad Principal',
-                          );
-                          if (picked != null) setState(() => _defaultUnit = picked);
-                        },
-                        child: InputDecorator(
-                          decoration: const InputDecoration(
-                            labelText: AppStrings.unitLabel,
-                            prefixIcon: Icon(Icons.straighten),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(_defaultUnit, style: const TextStyle(fontWeight: FontWeight.bold)),
-                              const Icon(Icons.unfold_more),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                    ],
-
-                    // Multiplicidad de Unidades y Magnitudes (Point 1 & 2: + / - Controls)
+                    // Multiplicidad de Unidades y Magnitudes (+ / - Controls)
                     Card(
                       margin: EdgeInsets.zero,
                       child: Padding(
@@ -589,10 +546,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 itemCount: _magnitudes.length,
                                 itemBuilder: (ctx, idx) {
                                   final mag = _magnitudes[idx];
+                                  final formattedVal = DomainRules.formatMagnitude(mag.magnitudeValue, mag.unitSymbol);
                                   return ListTile(
                                     dense: true,
                                     contentPadding: EdgeInsets.zero,
-                                    title: Text('${mag.propertyName}: ${mag.magnitudeValue} ${mag.unitSymbol}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                    title: Text('${mag.propertyName}: $formattedVal ${mag.unitSymbol}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                                     trailing: IconButton(
                                       icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
                                       tooltip: 'Eliminar unidad de medida',

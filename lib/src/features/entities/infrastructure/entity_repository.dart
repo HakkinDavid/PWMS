@@ -27,8 +27,6 @@ class EntityRepository implements IEntityRepository {
       id: row.id,
       speciesId: row.speciesId,
       locationId: row.locationId,
-      quantity: row.quantity,
-      unit: row.unit,
       magnitudes: magnitudes,
       notes: row.notes,
       createdAt: row.createdAt,
@@ -123,8 +121,6 @@ class EntityRepository implements IEntityRepository {
       id: Value(entity.id),
       speciesId: Value(entity.speciesId),
       locationId: Value(entity.locationId),
-      quantity: Value(entity.quantity),
-      unit: Value(entity.unit),
       notes: Value(entity.notes),
       createdAt: Value(entity.createdAt),
       updatedAt: Value(entity.updatedAt),
@@ -157,22 +153,42 @@ class EntityRepository implements IEntityRepository {
     final existing = locationEntities.where((e) => e.speciesId == speciesId).firstOrNull;
 
     if (existing != null) {
-      final currentQty = existing.quantity ?? 1.0;
+      final updatedMags = List<InstanceMagnitude>.from(existing.magnitudes);
+      if (updatedMags.isNotEmpty) {
+        final firstMag = updatedMags.first;
+        updatedMags[0] = firstMag.copyWith(magnitudeValue: firstMag.magnitudeValue + addQuantity);
+      } else {
+        updatedMags.add(InstanceMagnitude(
+          id: const Uuid().v4(),
+          instanceId: existing.id,
+          propertyName: 'Cantidad',
+          magnitudeValue: addQuantity,
+          unitSymbol: unit ?? 'unidad',
+        ));
+      }
+
       final updated = existing.copyWith(
-        quantity: currentQty + addQuantity,
+        magnitudes: updatedMags,
         notes: (notes != null && notes.isNotEmpty) ? notes : existing.notes,
-        unit: (unit != null && unit.isNotEmpty) ? unit : existing.unit,
         updatedAt: DateTime.now(),
       );
       await saveEntity(updated);
       return updated;
     } else {
+      final newId = const Uuid().v4();
       final newEntity = WorldEntity(
-        id: const Uuid().v4(),
+        id: newId,
         speciesId: speciesId,
         locationId: locationId,
-        quantity: addQuantity,
-        unit: unit,
+        magnitudes: [
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: newId,
+            propertyName: 'Cantidad',
+            magnitudeValue: addQuantity,
+            unitSymbol: unit ?? 'unidad',
+          ),
+        ],
         notes: notes,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -197,10 +213,13 @@ class EntityRepository implements IEntityRepository {
     final existingAtTarget = targetLocationEntities.where((e) => e.speciesId == entity.speciesId && e.id != entityId).firstOrNull;
 
     if (existingAtTarget != null) {
-      final targetQty = existingAtTarget.quantity ?? 1.0;
-      final moveQty = entity.quantity ?? 1.0;
+      final mergedMags = List<InstanceMagnitude>.from(existingAtTarget.magnitudes);
+      if (mergedMags.isNotEmpty && entity.magnitudes.isNotEmpty) {
+        mergedMags[0] = mergedMags[0].copyWith(magnitudeValue: mergedMags[0].magnitudeValue + entity.magnitudes[0].magnitudeValue);
+      }
+
       final merged = existingAtTarget.copyWith(
-        quantity: targetQty + moveQty,
+        magnitudes: mergedMags,
         notes: (entity.notes != null && entity.notes!.isNotEmpty)
             ? '${existingAtTarget.notes ?? ""}\n${entity.notes}'
             : existingAtTarget.notes,

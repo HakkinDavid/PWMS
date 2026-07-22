@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_template.dart';
@@ -72,7 +73,7 @@ class SpeciesDetailView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Point 9: Photo Box Preview Card instead of Full Banner
+              // Photo Box Preview Card
               Center(
                 child: Container(
                   width: 140,
@@ -128,7 +129,7 @@ class SpeciesDetailView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Point 8: Show ALL species info & Badges (Brand, Type, Barcode, Uniqueness, Monetary Subject)
+              // Badges (Brand, Type, Barcode, Uniqueness, Split Finances)
               Center(
                 child: Wrap(
                   alignment: WrapAlignment.center,
@@ -165,23 +166,23 @@ class SpeciesDetailView extends ConsumerWidget {
                         avatar: Icon(Icons.star, size: 12, color: Colors.amber),
                         label: Text('Especie Única', style: TextStyle(fontSize: 11)),
                       ),
-                    Chip(
-                      visualDensity: VisualDensity.compact,
-                      avatar: Icon(
-                        species.hasMonetaryValue ? Icons.attach_money : Icons.money_off,
-                        size: 12,
-                        color: species.hasMonetaryValue ? Colors.green : Colors.grey,
-                      ),
-                      label: Text(
-                        species.hasMonetaryValue ? 'Sujeto a finanzas (${species.defaultMonetaryCurrency})' : 'Sin finanzas',
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                    if (species.defaultUnit != null && species.defaultUnit!.isNotEmpty)
+                    if (species.isSubjectToPurchase)
                       Chip(
                         visualDensity: VisualDensity.compact,
-                        avatar: const Icon(Icons.straighten, size: 12),
-                        label: Text('Unidad principal: ${species.defaultUnit}', style: const TextStyle(fontSize: 11)),
+                        avatar: const Icon(Icons.shopping_cart, size: 12, color: Colors.green),
+                        label: Text('Sujeto a compra (${species.defaultMonetaryCurrency})', style: const TextStyle(fontSize: 11)),
+                      ),
+                    if (species.isSubjectToSale)
+                      Chip(
+                        visualDensity: VisualDensity.compact,
+                        avatar: const Icon(Icons.monetization_on, size: 12, color: Colors.blue),
+                        label: Text('Sujeto a venta (${species.defaultMonetaryCurrency})', style: const TextStyle(fontSize: 11)),
+                      ),
+                    if (!species.isSubjectToPurchase && !species.isSubjectToSale)
+                      const Chip(
+                        visualDensity: VisualDensity.compact,
+                        avatar: Icon(Icons.money_off, size: 12, color: Colors.grey),
+                        label: Text('Sin finanzas', style: TextStyle(fontSize: 11)),
                       ),
                     if (species.brand != null && species.brand!.isNotEmpty)
                       Chip(
@@ -200,7 +201,7 @@ class SpeciesDetailView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Point 8: Display ALL Multiple Magnitude Properties
+              // Display ALL 4NF Multiple Magnitude Properties with Integer Display Formatting (Point 4)
               if (species.magnitudes.isNotEmpty) ...[
                 Card(
                   margin: EdgeInsets.zero,
@@ -220,6 +221,7 @@ class SpeciesDetailView extends ConsumerWidget {
                           itemCount: species.magnitudes.length,
                           itemBuilder: (ctx, idx) {
                             final mag = species.magnitudes[idx];
+                            final formattedValue = DomainRules.formatMagnitude(mag.magnitudeValue, mag.unitSymbol);
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
                               child: Row(
@@ -231,7 +233,7 @@ class SpeciesDetailView extends ConsumerWidget {
                                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                   ),
                                   Text(
-                                    '${mag.magnitudeValue} ${mag.unitSymbol}',
+                                    '$formattedValue ${mag.unitSymbol}',
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ],
@@ -252,7 +254,7 @@ class SpeciesDetailView extends ConsumerWidget {
                 const SizedBox(height: 14),
               ],
 
-              // Technical Description (Point 4: Hide if empty!)
+              // Technical Description
               if (species.description != null && species.description!.trim().isNotEmpty) ...[
                 Text(AppStrings.masterDescription, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
@@ -266,7 +268,7 @@ class SpeciesDetailView extends ConsumerWidget {
                 const SizedBox(height: 14),
               ],
 
-              // Attach File Action Button (Point 1: Hide on Instance screen!)
+              // Attach File Action Button
               if (showAttachmentAction) ...[
                 Row(
                   children: [

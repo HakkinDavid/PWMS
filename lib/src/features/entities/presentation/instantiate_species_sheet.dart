@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
@@ -77,7 +76,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateDialog) => AlertDialog(
-          title: const Text('Costo de Adquisición'),
+          title: const Text('Costo de Adquisición (Compra)'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -86,7 +85,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                   Expanded(
                     child: ChoiceChip(
                       visualDensity: VisualDensity.compact,
-                      label: const Center(child: Text('Por pieza')),
+                      label: const Center(child: Text('Por pieza/unidad')),
                       selected: isPerUnit,
                       onSelected: (val) {
                         if (val) setStateDialog(() => isPerUnit = true);
@@ -197,13 +196,14 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         _selectedLocationId,
         addQty,
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-        unit: widget.species.defaultUnit,
+        unit: 'unidad',
       );
 
       ref.read(entityListProvider.notifier).loadEntities();
       await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, widget.species.name, widget.species.type);
 
-      if (widget.species.hasMonetaryValue && mounted) {
+      // Prompt acquisition cost ONLY IF isSubjectToPurchase == true
+      if (widget.species.isSubjectToPurchase && mounted) {
         await _promptAcquisitionCost(result.id, addQty);
       }
 
@@ -232,7 +232,6 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
     final template = EntityTemplateRegistry.getTemplate(widget.species.type);
-    final isIntegerUnit = DomainRules.isIntegerUnit(widget.species.defaultUnit);
 
     String locationDisplayName = AppStrings.rootLocationName;
     if (_selectedLocationId != null) {
@@ -304,27 +303,25 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             ),
             const SizedBox(height: 16),
 
-            // Quantity (Wheel Picker for Integer Units - Rule #3)
+            // Quantity (Wheel Picker for Integer Units)
             if (template.hasQuantity && !widget.species.isUnique) ...[
               GestureDetector(
-                onTap: isIntegerUnit
-                    ? () async {
-                        final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
-                        final picked = await IntegerWheelPicker.show(context, initialValue: currentVal, minValue: 1);
-                        if (picked != null) {
-                          setState(() => _qtyController.text = '$picked');
-                        }
-                      }
-                    : null,
+                onTap: () async {
+                  final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
+                  final picked = await IntegerWheelPicker.show(context, initialValue: currentVal, minValue: 1);
+                  if (picked != null) {
+                    setState(() => _qtyController.text = '$picked');
+                  }
+                },
                 child: AbsorbPointer(
-                  absorbing: isIntegerUnit,
+                  absorbing: true,
                   child: TextField(
                     controller: _qtyController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: AppStrings.quantityLabel,
-                      suffixText: widget.species.defaultUnit ?? "",
-                      prefixIcon: const Icon(Icons.numbers),
+                      suffixText: 'unidad',
+                      prefixIcon: Icon(Icons.numbers),
                     ),
                   ),
                 ),
