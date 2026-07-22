@@ -9,6 +9,8 @@ import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_detail_view.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_tree_picker.dart';
+import '../../relations/presentation/create_relation_modal.dart';
+import '../../relations/presentation/interactive_entity_graph_widget.dart';
 import '../domain/entity_template.dart';
 import '../domain/instance_magnitude.dart';
 
@@ -101,33 +103,44 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           final breadcrumb = LocationPathHelper.buildBreadcrumbPath(_selectedLocationId, locationNodes);
           final isIntegerUnit = DomainRules.isIntegerUnit(primaryUnit);
 
-          // Instance Header Controls
+          // Instance Header Controls & Interactive Directed Graph
           final instanceHeader = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Distinct Instance Header Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withAlpha(30),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.inventory_2, size: 14, color: Colors.amber),
-                    const SizedBox(width: 6),
-                    Text(
-                      'INSTANCIA DEL MUNDO',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.8,
-                        color: theme.colorScheme.primary,
-                      ),
+              // Distinct Instance Header Badge & Relacionar Button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withAlpha(30),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ],
-                ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.inventory_2, size: 14, color: Colors.amber),
+                        const SizedBox(width: 6),
+                        Text(
+                          'INSTANCIA DEL MUNDO',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () => CreateRelationModal.show(context, sourceEntity: entity),
+                    icon: const Icon(Icons.alt_route, size: 14),
+                    label: const Text('Relacionar', style: TextStyle(fontSize: 12)),
+                    style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+                  ),
+                ],
               ),
               const SizedBox(height: 14),
 
@@ -194,6 +207,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 14),
+
+              // Interactive Directed Entity Relations Graph
+              InteractiveEntityGraphWidget(currentEntity: entity),
               const SizedBox(height: 14),
 
               // Magnitud Control (Only if magnitudes exist!)

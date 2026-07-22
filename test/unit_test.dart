@@ -8,12 +8,15 @@ import 'package:platinum_world_management_system/src/features/entities/domain/in
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
+import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
+import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
 
 void main() {
   late AppDatabase db;
   late EntityRepository entityRepo;
   late CatalogRepository catalogRepo;
   late LocationRepository locationRepo;
+  late RelationRepository relationRepo;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +24,7 @@ void main() {
     entityRepo = EntityRepository(db);
     catalogRepo = CatalogRepository(db);
     locationRepo = LocationRepository(db);
+    relationRepo = RelationRepository(db);
   });
 
   tearDown(() async {
@@ -101,6 +105,29 @@ void main() {
       expect(fetchedInstance, isNotNull);
       expect(fetchedInstance!.magnitudes.length, equals(1));
       expect(fetchedInstance.magnitudes.first.propertyName, equals('Masa Real'));
+    });
+
+    test('3. Directed Entity Relations Persistence and Traversal', () async {
+      final docSpecies = await catalogRepo.getOrCreateSpecies('Manual de Usuario', type: 'Documento', isUnique: true);
+      final objSpecies = await catalogRepo.getOrCreateSpecies('Lápiz Óptico', type: 'Objeto');
+
+      final docInstance = await entityRepo.instantiateOrMerge(docSpecies.id, null, 1);
+      final objInstance = await entityRepo.instantiateOrMerge(objSpecies.id, null, 1);
+
+      final relation = EntityRelation(
+        id: 'rel-1',
+        sourceEntityId: docInstance.id,
+        targetEntityId: objInstance.id,
+        relationType: 'DOCUMENTA',
+        createdAt: DateTime.now(),
+      );
+
+      await relationRepo.addRelation(relation);
+
+      final docRelations = await relationRepo.getRelationsForEntity(docInstance.id);
+      expect(docRelations.length, equals(1));
+      expect(docRelations.first.relationType, equals('DOCUMENTA'));
+      expect(docRelations.first.targetEntityId, equals(objInstance.id));
     });
   });
 }

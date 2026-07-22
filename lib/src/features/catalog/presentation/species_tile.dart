@@ -94,10 +94,9 @@ class SpeciesTile extends ConsumerWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Container(
+                child: SizedBox(
                   width: 44,
                   height: 44,
-                  color: theme.colorScheme.primary.withAlpha(20),
                   child: FutureBuilder<String>(
                     future: species.mainPhotoPath != null
                         ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
@@ -106,10 +105,13 @@ class SpeciesTile extends ConsumerWidget {
                       if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                         return Image.file(
                           File(snapshot.data!),
-                          fit: BoxFit.contain, // Point 2: BoxFit.contain
+                          fit: BoxFit.contain, // Transparent PNG support
                         );
                       }
-                      return Icon(Icons.auto_awesome, color: theme.colorScheme.primary, size: 22);
+                      return Container(
+                        color: theme.colorScheme.primary.withAlpha(20),
+                        child: Icon(Icons.auto_awesome, color: theme.colorScheme.primary, size: 22),
+                      );
                     },
                   ),
                 ),
