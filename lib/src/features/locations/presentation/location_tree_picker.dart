@@ -5,10 +5,15 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/location_node.dart';
 
+class LocationPickerResult {
+  final String? locationId;
+  const LocationPickerResult(this.locationId);
+}
+
 class LocationTreePicker extends ConsumerStatefulWidget {
   final String? initialSelectedId;
   final String? movingNodeId; // Node being moved (for cycle prevention)
-  final ValueChanged<String?> onSelected;
+  final ValueChanged<LocationPickerResult> onSelected;
 
   const LocationTreePicker({
     super.key,
@@ -17,13 +22,12 @@ class LocationTreePicker extends ConsumerStatefulWidget {
     required this.onSelected,
   });
 
-  static Future<String?> show(
+  static Future<LocationPickerResult?> show(
     BuildContext context, {
     String? initialSelectedId,
     String? movingNodeId,
   }) {
-    String? result = initialSelectedId;
-    return showModalBottomSheet<String?>(
+    return showModalBottomSheet<LocationPickerResult?>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
@@ -46,8 +50,7 @@ class LocationTreePicker extends ConsumerStatefulWidget {
             child: LocationTreePicker(
               initialSelectedId: initialSelectedId,
               movingNodeId: movingNodeId,
-              onSelected: (selectedId) {
-                result = selectedId;
+              onSelected: (result) {
                 Navigator.pop(ctx, result);
               },
             ),
@@ -119,7 +122,7 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
           onTap: canSelect
               ? () {
                   setState(() => _selectedId = node.id);
-                  widget.onSelected(node.id);
+                  widget.onSelected(LocationPickerResult(node.id));
                 }
               : null,
           borderRadius: BorderRadius.circular(12),
@@ -203,7 +206,7 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
           selected: _selectedId == null,
           onTap: () {
             setState(() => _selectedId = null);
-            widget.onSelected(null);
+            widget.onSelected(const LocationPickerResult(null));
           },
         ),
         const Divider(),

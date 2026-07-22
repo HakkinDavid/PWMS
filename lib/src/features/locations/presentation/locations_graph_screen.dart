@@ -120,12 +120,14 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
   }
 
   void _reparentLocationNode(BuildContext context, LocationNode node) async {
-    final newParentId = await LocationTreePicker.show(
+    final result = await LocationTreePicker.show(
       context,
       initialSelectedId: node.parentLocationId,
       movingNodeId: node.id,
     );
-    if (newParentId == node.id) return;
+    if (result == null) return;
+    final newParentId = result.locationId;
+    if (newParentId == node.id || newParentId == node.parentLocationId) return;
 
     await ref.read(locationRepositoryProvider).moveNode(node.id, newParentId);
     ref.read(locationNodeListProvider.notifier).loadNodes();

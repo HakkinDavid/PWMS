@@ -254,12 +254,12 @@ class SpeciesDetailScreen extends ConsumerWidget {
             const SizedBox(height: 14),
 
             Text(
-              'Instancias en el Mundo (${instances.length})',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              species.isUnique ? 'Ubicación' : 'Instancias en el Mundo (${instances.length})',
+              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             if (instances.isEmpty)
-              const Text('Esta especie aún no ha sido instanciada en tu mundo.', style: TextStyle(color: Colors.grey, fontSize: 13))
+              const Text('Esta especie aún no ha sido instanciada en tu mundo.', style: TextStyle(color: Colors.grey, fontSize: 12))
             else
               ListView.builder(
                 shrinkWrap: true,
@@ -270,13 +270,22 @@ class SpeciesDetailScreen extends ConsumerWidget {
                   final breadcrumb = LocationPathHelper.buildBreadcrumbPath(inst.locationId, locationNodes);
 
                   return Card(
-                    margin: const EdgeInsets.only(bottom: 8),
+                    margin: const EdgeInsets.only(bottom: 4),
+                    elevation: 0.5,
                     child: ListTile(
                       dense: true,
-                      leading: Icon(Icons.location_on, color: theme.colorScheme.primary, size: 20),
-                      title: Text('${breadcrumb.ancestorPath} ${breadcrumb.targetName}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                      subtitle: Text('Magnitud: ${inst.quantity ?? 1.0} ${inst.unit ?? species.defaultUnit ?? ""}'),
-                      trailing: const Icon(Icons.chevron_right, size: 18),
+                      visualDensity: VisualDensity.compact,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                      leading: Icon(Icons.location_on, color: theme.colorScheme.primary, size: 18),
+                      title: Text(
+                        '${breadcrumb.ancestorPath} ${breadcrumb.targetName}',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                      ),
+                      subtitle: Text(
+                        'Magnitud: ${inst.quantity ?? 1.0} ${inst.unit ?? species.defaultUnit ?? ""}',
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                      trailing: const Icon(Icons.chevron_right, size: 16),
                       onTap: () {
                         context.push('/entity/${inst.id}');
                       },

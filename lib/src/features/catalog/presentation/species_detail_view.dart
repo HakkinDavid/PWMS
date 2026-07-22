@@ -15,6 +15,7 @@ class SpeciesDetailView extends ConsumerWidget {
   final Widget? instanceSpecificsHeader;
   final Widget? instanceSpecificsFooter;
   final List<Widget>? actions;
+  final bool showAttachmentAction;
 
   const SpeciesDetailView({
     super.key,
@@ -22,6 +23,7 @@ class SpeciesDetailView extends ConsumerWidget {
     this.instanceSpecificsHeader,
     this.instanceSpecificsFooter,
     this.actions,
+    this.showAttachmentAction = true,
   });
 
   Future<void> _pickAndAddDocument(BuildContext context, WidgetRef ref, String speciesId) async {
@@ -109,7 +111,7 @@ class SpeciesDetailView extends ConsumerWidget {
                   },
                 ),
 
-                // Point 7: Dark contrast gradient overlay over photo
+                // Dark contrast gradient overlay over photo
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -186,68 +188,76 @@ class SpeciesDetailView extends ConsumerWidget {
                 ),
                 const SizedBox(height: 14),
 
-                // Instance Specific Header (Location Node & Quantity controls if embedded in EntityDetailScreen)
+                // Instance Specific Header
                 if (instanceSpecificsHeader != null) ...[
                   instanceSpecificsHeader!,
                   const SizedBox(height: 14),
                 ],
 
-                // Technical Description
-                if (species.description != null && species.description!.isNotEmpty) ...[
+                // Technical Description (Point 4: Hide if empty!)
+                if (species.description != null && species.description!.trim().isNotEmpty) ...[
                   Text(AppStrings.masterDescription, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
                   Text(species.description!, style: theme.textTheme.bodyMedium),
                   const SizedBox(height: 16),
                 ],
 
-                // Instance Specific Footer (Notes / Serial)
+                // Instance Specific Footer
                 if (instanceSpecificsFooter != null) ...[
                   instanceSpecificsFooter!,
                   const SizedBox(height: 14),
                 ],
 
-                // Attach File Action Button
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => _pickAndAddDocument(context, ref, species.id),
-                        icon: const Icon(Icons.attach_file, size: 16),
-                        label: const Text(AppStrings.attachFile),
-                        style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 10)),
+                // Attach File Action Button (Point 1: Hide on Instance screen!)
+                if (showAttachmentAction) ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => _pickAndAddDocument(context, ref, species.id),
+                          icon: const Icon(Icons.attach_file, size: 16),
+                          label: const Text(AppStrings.attachFile),
+                          style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 10)),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                ],
 
                 // Species Attachments List
-                Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
                 attachmentsAsync.when(
                   data: (attachments) {
                     if (attachments.isEmpty) {
+                      if (!showAttachmentAction) return const SizedBox.shrink();
                       return const Text(AppStrings.emptyAttachments, style: TextStyle(color: Colors.grey, fontSize: 12));
                     }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: attachments.length,
-                      itemBuilder: (context, idx) {
-                        final att = attachments[idx];
-                        return ListTile(
-                          dense: true,
-                          leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf, size: 20),
-                          title: Text(att.fileName, style: const TextStyle(fontSize: 13)),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.open_in_new, size: 18),
-                            onPressed: () async {
-                              final path = await ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath);
-                              await OpenFile.open(path);
-                            },
-                          ),
-                        );
-                      },
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: attachments.length,
+                          itemBuilder: (context, idx) {
+                            final att = attachments[idx];
+                            return ListTile(
+                              dense: true,
+                              leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf, size: 20),
+                              title: Text(att.fileName, style: const TextStyle(fontSize: 13)),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.open_in_new, size: 18),
+                                onPressed: () async {
+                                  final path = await ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath);
+                                  await OpenFile.open(path);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     );
                   },
                   loading: () => const CircularProgressIndicator(),

@@ -36,9 +36,11 @@ class EntityTile extends ConsumerWidget {
               title: const Text(AppStrings.move),
               onTap: () async {
                 Navigator.pop(ctx);
-                final newLocationId = await LocationTreePicker.show(context, initialSelectedId: entity.locationId);
-                await ref.read(entityRepositoryProvider).moveOrMergeEntity(entity.id, newLocationId);
-                ref.read(entityListProvider.notifier).loadEntities();
+                final result = await LocationTreePicker.show(context, initialSelectedId: entity.locationId);
+                if (result != null) {
+                  await ref.read(entityRepositoryProvider).moveOrMergeEntity(entity.id, result.locationId);
+                  ref.read(entityListProvider.notifier).loadEntities();
+                }
               },
             ),
             ListTile(

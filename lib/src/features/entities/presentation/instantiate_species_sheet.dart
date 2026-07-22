@@ -59,10 +59,12 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   }
 
   Future<void> _pickLocationFromTree() async {
-    final selectedId = await LocationTreePicker.show(context, initialSelectedId: _selectedLocationId);
-    setState(() {
-      _selectedLocationId = selectedId;
-    });
+    final result = await LocationTreePicker.show(context, initialSelectedId: _selectedLocationId);
+    if (result != null) {
+      setState(() {
+        _selectedLocationId = result.locationId;
+      });
+    }
   }
 
   Future<void> _promptAcquisitionCost(String instanceId, double addQty) async {

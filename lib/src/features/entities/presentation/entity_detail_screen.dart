@@ -258,16 +258,17 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
               // Location Card
               InkWell(
-                onTap: () {
+                onTap: () async {
                   if (!_isEditingInPlace && _selectedLocationId != null) {
                     context.go('/locations?focusNodeId=$_selectedLocationId');
                   } else if (_isEditingInPlace) {
-                    LocationTreePicker.show(
+                    final pickerResult = await LocationTreePicker.show(
                       context,
                       initialSelectedId: _selectedLocationId,
-                    ).then((newLocId) {
-                      if (newLocId != null) setState(() => _selectedLocationId = newLocId);
-                    });
+                    );
+                    if (pickerResult != null) {
+                      setState(() => _selectedLocationId = pickerResult.locationId);
+                    }
                   }
                 },
                 borderRadius: BorderRadius.circular(16),
@@ -320,7 +321,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
-              // Magnitud Control (Wheel Picker for Integers - Rule #3)
+              // Magnitud Control (Points 5 & 6: Decimal vs Integer mode in editing)
               if (template.hasQuantity) ...[
                 Row(
                   children: [
@@ -335,112 +336,84 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: theme.dividerColor),
                       ),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove, size: 16),
-                            onPressed: () async {
-                              final currentQty = double.tryParse(_qtyController.text.trim()) ?? 1.0;
-                              final step = isIntegerUnit ? 1.0 : 0.5;
-                              final newQty = currentQty - step;
-
-                              if (newQty <= 0) {
-                                bool isSale = false;
-                                final confirm = await showDialog<bool>(
-                                  context: context,
-                                  builder: (ctx) => StatefulBuilder(
-                                    builder: (c, setStateDialog) => AlertDialog(
-                                      title: const Text(AppStrings.deleteConfirmationTitle),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text('${AppStrings.zeroQuantityMessage} "${species.name}"?'),
-                                          if (species.hasMonetaryValue)
-                                            CheckboxListTile(
-                                              contentPadding: EdgeInsets.zero,
-                                              title: const Text(AppStrings.isSaleLabel),
-                                              value: isSale,
-                                              onChanged: (v) => setStateDialog(() => isSale = v ?? false),
-                                            ),
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(ctx, true),
-                                          child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-                                        ),
-                                      ],
+                      child: isIntegerUnit
+                          // Integer Magnitudes (Point 6: Integer field + -/+ buttons + Wheel Picker on tap)
+                          ? Row(
+                              children: [
+                                if (_isEditingInPlace)
+                                  IconButton(
+                                    icon: const Icon(Icons.remove, size: 16),
+                                    onPressed: () async {
+                                      final currentQty = double.tryParse(_qtyController.text.trim()) ?? 1.0;
+                                      final newQty = currentQty - 1.0;
+                                      if (newQty > 0) {
+                                        setState(() => _qtyController.text = '${newQty.toInt()}');
+                                      }
+                                    },
+                                  ),
+                                GestureDetector(
+                                  onTap: isIntegerUnit && _isEditingInPlace
+                                      ? () async {
+                                          final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
+                                          final picked = await IntegerWheelPicker.show(context, initialValue: currentVal);
+                                          if (picked != null) {
+                                            setState(() => _qtyController.text = '$picked');
+                                          }
+                                        }
+                                      : null,
+                                  child: Container(
+                                    width: 60,
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text(
+                                      _qtyController.text,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                                     ),
                                   ),
-                                );
-
-                                if (confirm == true) {
-                                  // ONLY prompt for financial data if isSale == true!
-                                  if (species.hasMonetaryValue && isSale) {
-                                    await _promptSaleTransaction(
-                                      speciesId: species.id,
-                                      entityId: entity.id,
-                                      magnitudeDelta: -currentQty,
-                                      currency: species.defaultMonetaryCurrency,
-                                    );
-                                  }
-                                  await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
-                                  ref.read(entityListProvider.notifier).loadEntities();
-                                  if (context.mounted) context.pop();
-                                }
-                              } else {
-                                final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
-                                await ref.read(entityListProvider.notifier).saveEntity(updated);
-                              }
-                            },
-                          ),
-                          GestureDetector(
-                            onTap: isIntegerUnit && _isEditingInPlace
-                                ? () async {
-                                    final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
-                                    final picked = await IntegerWheelPicker.show(context, initialValue: currentVal);
-                                    if (picked != null) {
-                                      setState(() => _qtyController.text = '$picked');
-                                    }
-                                  }
-                                : null,
-                            child: Container(
-                              width: 60,
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Text(
-                                _qtyController.text,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                ),
+                                Text(
+                                  unitSymbol ?? "",
+                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(width: 8),
+                                if (_isEditingInPlace)
+                                  IconButton(
+                                    icon: const Icon(Icons.add, size: 16),
+                                    onPressed: () {
+                                      final currentQty = double.tryParse(_qtyController.text.trim()) ?? 0.0;
+                                      final newQty = currentQty + 1.0;
+                                      setState(() => _qtyController.text = '${newQty.toInt()}');
+                                    },
+                                  ),
+                              ],
+                            )
+                          // Decimal Magnitudes (Point 5: Editable ONLY as decimal number textfield)
+                          : Container(
+                              width: 110,
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _qtyController,
+                                      enabled: _isEditingInPlace,
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.zero,
+                                        isDense: true,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    unitSymbol ?? "",
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          Text(
-                            unitSymbol ?? "",
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            icon: const Icon(Icons.add, size: 16),
-                            onPressed: () async {
-                              final currentQty = double.tryParse(_qtyController.text.trim()) ?? 0.0;
-                              final step = isIntegerUnit ? 1.0 : 0.5;
-                              final newQty = currentQty + step;
-                              final updated = entity.copyWith(quantity: newQty, updatedAt: DateTime.now());
-                              await ref.read(entityListProvider.notifier).saveEntity(updated);
-
-                              if (species.hasMonetaryValue) {
-                                await _promptAcquisitionCost(
-                                  speciesId: species.id,
-                                  entityId: entity.id,
-                                  magnitudeDelta: step,
-                                  currency: species.defaultMonetaryCurrency,
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),
@@ -449,50 +422,75 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             ],
           );
 
-          final instanceFooter = Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(AppStrings.notesLabel, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              TextField(
-                controller: _notesController,
-                enabled: _isEditingInPlace,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  hintText: 'Añadir notas sobre esta instancia...',
-                  filled: !_isEditingInPlace,
-                  fillColor: theme.cardColor,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-              ),
-              if (_isEditingInPlace) ...[
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final newQty = double.tryParse(_qtyController.text.trim()) ?? (entity.quantity ?? 1.0);
-                      final updated = entity.copyWith(
-                        locationId: _selectedLocationId,
-                        quantity: newQty,
-                        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-                        updatedAt: DateTime.now(),
-                      );
+          // Instance Footer (Point 4: Hide Notes if empty and not in edit mode!)
+          final hasNotes = entity.notes != null && entity.notes!.trim().isNotEmpty;
+          final Widget? instanceFooter = (_isEditingInPlace || hasNotes)
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppStrings.notesLabel, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _notesController,
+                      enabled: _isEditingInPlace,
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                        hintText: 'Añadir notas sobre esta instancia...',
+                        filled: !_isEditingInPlace,
+                        fillColor: theme.cardColor,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                    if (_isEditingInPlace) ...[
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            final originalQty = entity.quantity ?? 1.0;
+                            final newQty = double.tryParse(_qtyController.text.trim()) ?? originalQty;
+                            final hasLocationChanged = _selectedLocationId != entity.locationId;
+                            final hasQtyChanged = newQty != originalQty;
+                            final hasNotesChanged = _notesController.text.trim() != (entity.notes ?? '');
 
-                      await ref.read(entityListProvider.notifier).saveEntity(updated);
-                      setState(() => _isEditingInPlace = false);
-                    },
-                    icon: const Icon(Icons.check),
-                    label: const Text(AppStrings.saveChangesAction),
-                  ),
-                ),
-              ],
-            ],
-          );
+                            // Point 7: Only save and trigger finance/refresh if actual changes occurred!
+                            if (hasLocationChanged || hasQtyChanged || hasNotesChanged) {
+                              final updated = entity.copyWith(
+                                locationId: _selectedLocationId,
+                                quantity: newQty,
+                                notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+                                updatedAt: DateTime.now(),
+                              );
+
+                              await ref.read(entityListProvider.notifier).saveEntity(updated);
+
+                              // Point 7: Financial prompt ONLY if magnitude actually increased!
+                              if (hasQtyChanged && newQty > originalQty && species.hasMonetaryValue) {
+                                final delta = newQty - originalQty;
+                                await _promptAcquisitionCost(
+                                  speciesId: species.id,
+                                  entityId: entity.id,
+                                  magnitudeDelta: delta,
+                                  currency: species.defaultMonetaryCurrency,
+                                );
+                              }
+                            }
+
+                            setState(() => _isEditingInPlace = false);
+                          },
+                          icon: const Icon(Icons.check),
+                          label: const Text(AppStrings.saveChangesAction),
+                        ),
+                      ),
+                    ],
+                  ],
+                )
+              : null;
 
           return SpeciesDetailView(
             species: species,
+            showAttachmentAction: false, // Point 1: Hide attach file button on Instance screen!
             instanceSpecificsHeader: instanceHeader,
             instanceSpecificsFooter: instanceFooter,
             actions: [
