@@ -6,10 +6,12 @@ import '../../entities/domain/world_entity.dart';
 
 class InteractiveEntityGraphWidget extends ConsumerWidget {
   final WorldEntity currentEntity;
+  final bool isEditing;
 
   const InteractiveEntityGraphWidget({
     super.key,
     required this.currentEntity,
+    this.isEditing = false,
   });
 
   @override
@@ -74,96 +76,121 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                     ),
                   )
                 else
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Central Entity Node
-                        _buildNodeCard(
-                          context,
-                          theme: theme,
-                          title: currentSpecies?.name ?? 'Instancia Actual',
-                          subtitle: 'Central',
-                          icon: Icons.my_location,
-                          isCentral: true,
-                          onTap: null,
-                        ),
+                  // Vertical Column Layout for Relations
+                  Column(
+                    children: [
+                      // Central Entity Node Header Card
+                      _buildCentralNodeTile(
+                        theme: theme,
+                        title: currentSpecies?.name ?? 'Instancia Actual',
+                      ),
+                      const SizedBox(height: 10),
 
-                        // Render Directed Edges & Target/Source Nodes
-                        ...relations.map((rel) {
+                      // List of Directed Edge Connections in Column Layout
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: relations.length,
+                        separatorBuilder: (ctx, idx) => const SizedBox(height: 8),
+                        itemBuilder: (ctx, idx) {
+                          final rel = relations[idx];
                           final isOutgoing = rel.sourceEntityId == currentEntity.id;
                           final otherEntityId = isOutgoing ? rel.targetEntityId : rel.sourceEntityId;
                           final otherEntity = allEntities.where((e) => e.id == otherEntityId).firstOrNull;
                           final otherSpecies = catalogItems.where((c) => c.id == otherEntity?.speciesId).firstOrNull;
                           final otherName = otherSpecies?.name ?? 'Entidad Externa';
 
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Directed Arrow Connection
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.primary.withAlpha(25),
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: theme.colorScheme.primary.withAlpha(90)),
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: theme.cardColor,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: theme.dividerColor),
+                            ),
+                            child: Row(
+                              children: [
+                                // Directional Relation Badge
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary.withAlpha(25),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: theme.colorScheme.primary.withAlpha(90)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        isOutgoing ? Icons.arrow_forward : Icons.arrow_back,
+                                        size: 14,
+                                        color: theme.colorScheme.primary,
                                       ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            isOutgoing ? Icons.arrow_forward : Icons.arrow_back,
-                                            size: 14,
-                                            color: theme.colorScheme.primary,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            rel.relationType,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                              color: theme.colorScheme.primary,
-                                            ),
-                                          ),
-                                        ],
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        rel.relationType,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.colorScheme.primary,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    IconButton(
-                                      icon: const Icon(Icons.close, size: 14, color: Colors.grey),
-                                      tooltip: 'Eliminar relación',
-                                      onPressed: () async {
-                                        await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
-                                        ref.invalidate(entityRelationsProvider(currentEntity.id));
-                                      },
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(width: 12),
 
-                              // Target / Source Connected Node
-                              _buildNodeCard(
-                                context,
-                                theme: theme,
-                                title: otherName,
-                                subtitle: isOutgoing ? 'Destino' : 'Origen',
-                                icon: Icons.open_in_new,
-                                isCentral: false,
-                                onTap: () {
-                                  context.push('/entity/$otherEntityId');
-                                },
-                              ),
-                            ],
+                                // Connected Entity Node Info & Navigation
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      context.push('/entity/$otherEntityId');
+                                    },
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.open_in_new, size: 16, color: theme.colorScheme.primary),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                otherName,
+                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                isOutgoing ? 'Entidad Destino' : 'Entidad Origen',
+                                                style: const TextStyle(fontSize: 10, color: Colors.grey),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                // Deletion Action ONLY in Edit Mode!
+                                if (isEditing) ...[
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: const Icon(Icons.close, size: 16, color: Colors.redAccent),
+                                    tooltip: 'Eliminar relación',
+                                    onPressed: () async {
+                                      await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
+                                      ref.invalidate(entityRelationsProvider(currentEntity.id));
+                                    },
+                                  ),
+                                ],
+                              ],
+                            ),
                           );
-                        }),
-                      ],
-                    ),
+                        },
+                      ),
+                    ],
                   ),
               ],
             ),
@@ -175,56 +202,30 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildNodeCard(
-    BuildContext context, {
+  Widget _buildCentralNodeTile({
     required ThemeData theme,
     required String title,
-    required String subtitle,
-    required IconData icon,
-    required bool isCentral,
-    required VoidCallback? onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: isCentral ? theme.colorScheme.primary : theme.cardColor,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isCentral ? theme.colorScheme.primary : theme.dividerColor,
-            width: isCentral ? 2 : 1,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.my_location, color: Colors.white, size: 18),
+          const SizedBox(width: 8),
+          Text(
+            'Instancia Central: ',
+            style: TextStyle(color: Colors.white.withAlpha(220), fontSize: 12),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(15),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: isCentral ? Colors.white : theme.colorScheme.primary, size: 20),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: isCentral ? Colors.white : theme.textTheme.bodyMedium?.color,
-              ),
-            ),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 10,
-                color: isCentral ? Colors.white.withAlpha(200) : Colors.grey,
-              ),
-            ),
-          ],
-        ),
+          Text(
+            title,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+          ),
+        ],
       ),
     );
   }

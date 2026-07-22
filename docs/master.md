@@ -1,4 +1,4 @@
-# PWMS — Personal World Management System
+# PWMS — Platinum World Management System
 
 Version: MVP 1.0
 

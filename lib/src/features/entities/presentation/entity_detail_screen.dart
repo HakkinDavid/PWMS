@@ -107,7 +107,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           final instanceHeader = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Distinct Instance Header Badge & Relacionar Button
+              // Distinct Instance Header Badge & Relacionar Button (ONLY in Edit Mode!)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -134,12 +134,13 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       ],
                     ),
                   ),
-                  OutlinedButton.icon(
-                    onPressed: () => CreateRelationModal.show(context, sourceEntity: entity),
-                    icon: const Icon(Icons.alt_route, size: 14),
-                    label: const Text('Relacionar', style: TextStyle(fontSize: 12)),
-                    style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
-                  ),
+                  if (_isEditingInPlace)
+                    OutlinedButton.icon(
+                      onPressed: () => CreateRelationModal.show(context, sourceEntity: entity),
+                      icon: const Icon(Icons.alt_route, size: 14),
+                      label: const Text('Relacionar', style: TextStyle(fontSize: 12)),
+                      style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+                    ),
                 ],
               ),
               const SizedBox(height: 14),
@@ -209,8 +210,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
-              // Interactive Directed Entity Relations Graph
-              InteractiveEntityGraphWidget(currentEntity: entity),
+              // Interactive Directed Entity Relations Graph (Passes isEditing mode!)
+              InteractiveEntityGraphWidget(
+                currentEntity: entity,
+                isEditing: _isEditingInPlace,
+              ),
               const SizedBox(height: 14),
 
               // Magnitud Control (Only if magnitudes exist!)

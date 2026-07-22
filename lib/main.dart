@@ -18,7 +18,7 @@ class PWMSApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'PWMS - Personal World Management System',
+      title: 'PWMS - Platinum World Management System',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       darkTheme: AppTheme.darkTheme,
