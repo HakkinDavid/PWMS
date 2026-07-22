@@ -14,11 +14,11 @@ class UnitsRegistry {
   UnitsRegistry._();
 
   static const Map<String, SIUnitDefinition> definitions = {
-    'pieza': SIUnitDefinition(symbol: 'pieza', allowDecimals: false),
     'unidad': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
-    'paquete': SIUnitDefinition(symbol: 'paquete', allowDecimals: false),
-    'juego': SIUnitDefinition(symbol: 'juego', allowDecimals: false),
-    'caja': SIUnitDefinition(symbol: 'caja', allowDecimals: false),
+    'pieza': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
+    'paquete': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
+    'juego': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
+    'caja': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
     'kg': SIUnitDefinition(symbol: 'kg', allowDecimals: true),
     'g': SIUnitDefinition(symbol: 'g', allowDecimals: true),
     'mg': SIUnitDefinition(symbol: 'mg', allowDecimals: true),
@@ -32,11 +32,7 @@ class UnitsRegistry {
   };
 
   static const List<String> countingUnits = [
-    'pieza',
     'unidad',
-    'paquete',
-    'juego',
-    'caja',
   ];
 
   static const List<String> massUnits = [

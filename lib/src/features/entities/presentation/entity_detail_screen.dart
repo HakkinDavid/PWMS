@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_detail_view.dart';
@@ -88,15 +89,27 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: selectedCurrency,
-                items: const [
-                  DropdownMenuItem(value: 'MXN', child: Text('MXN')),
-                  DropdownMenuItem(value: 'USD', child: Text('USD')),
-                ],
-                onChanged: (v) {
-                  if (v != null) setStateDialog(() => selectedCurrency = v);
+              InkWell(
+                onTap: () async {
+                  final picked = await AppWheelPicker.show<String>(
+                    context,
+                    items: const ['MXN', 'USD'],
+                    initialValue: selectedCurrency,
+                    labelBuilder: (c) => c,
+                    title: 'Seleccionar Moneda',
+                  );
+                  if (picked != null) setStateDialog(() => selectedCurrency = picked);
                 },
+                child: InputDecorator(
+                  decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(selectedCurrency, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Icon(Icons.unfold_more),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -154,15 +167,27 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: selectedCurrency,
-              items: const [
-                DropdownMenuItem(value: 'MXN', child: Text('MXN')),
-                DropdownMenuItem(value: 'USD', child: Text('USD')),
-              ],
-              onChanged: (v) {
-                if (v != null) selectedCurrency = v;
+            InkWell(
+              onTap: () async {
+                final picked = await AppWheelPicker.show<String>(
+                  context,
+                  items: const ['MXN', 'USD'],
+                  initialValue: selectedCurrency,
+                  labelBuilder: (c) => c,
+                  title: 'Seleccionar Moneda',
+                );
+                if (picked != null) selectedCurrency = picked;
               },
+              child: InputDecorator(
+                decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(selectedCurrency, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const Icon(Icons.unfold_more),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

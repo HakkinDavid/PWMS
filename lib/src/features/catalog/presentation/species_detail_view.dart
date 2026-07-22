@@ -61,84 +61,77 @@ class SpeciesDetailView extends ConsumerWidget {
     final template = EntityTemplateRegistry.getTemplate(species.type);
     final attachmentsAsync = ref.watch(speciesAttachmentsProvider(species.id));
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 240.0,
-          floating: false,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              species.name,
-              style: const TextStyle(
-                shadows: [Shadow(color: Colors.black87, blurRadius: 10)],
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            background: Stack(
-              fit: StackFit.expand,
-              children: [
-                FutureBuilder<String>(
-                  future: species.mainPhotoPath != null
-                      ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
-                      : Future.value(''),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                      return Image.file(
-                        File(snapshot.data!),
-                        fit: BoxFit.cover,
-                      );
-                    }
-                    return Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            theme.colorScheme.primary,
-                            theme.colorScheme.secondary,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          template.icon,
-                          size: 70,
-                          color: Colors.white.withAlpha(150),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-
-                // Dark contrast gradient overlay over photo
-                Container(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(species.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        actions: actions,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Point 9: Photo Box Preview Card instead of Full Banner
+              Center(
+                child: Container(
+                  width: 140,
+                  height: 140,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.black.withAlpha(160),
-                        Colors.transparent,
-                        Colors.black.withAlpha(180),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: theme.dividerColor, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(20),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: FutureBuilder<String>(
+                      future: species.mainPhotoPath != null
+                          ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
+                          : Future.value(''),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                          return Image.file(
+                            File(snapshot.data!),
+                            fit: BoxFit.cover,
+                          );
+                        }
+                        return Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                theme.colorScheme.primary.withAlpha(180),
+                                theme.colorScheme.secondary.withAlpha(180),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              template.icon,
+                              size: 54,
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          actions: actions,
-        ),
+              ),
+              const SizedBox(height: 16),
 
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Identity Badges (Brand, Type, Barcode, Uniqueness, Monetary)
-                Wrap(
+              // Point 8: Show ALL species info & Badges (Brand, Type, Barcode, Uniqueness, Monetary Subject)
+              Center(
+                child: Wrap(
+                  alignment: WrapAlignment.center,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 6,
                   runSpacing: 6,
@@ -172,102 +165,166 @@ class SpeciesDetailView extends ConsumerWidget {
                         avatar: Icon(Icons.star, size: 12, color: Colors.amber),
                         label: Text('Especie Única', style: TextStyle(fontSize: 11)),
                       ),
+                    Chip(
+                      visualDensity: VisualDensity.compact,
+                      avatar: Icon(
+                        species.hasMonetaryValue ? Icons.attach_money : Icons.money_off,
+                        size: 12,
+                        color: species.hasMonetaryValue ? Colors.green : Colors.grey,
+                      ),
+                      label: Text(
+                        species.hasMonetaryValue ? 'Sujeto a finanzas (${species.defaultMonetaryCurrency})' : 'Sin finanzas',
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                    ),
+                    if (species.defaultUnit != null && species.defaultUnit!.isNotEmpty)
+                      Chip(
+                        visualDensity: VisualDensity.compact,
+                        avatar: const Icon(Icons.straighten, size: 12),
+                        label: Text('Unidad principal: ${species.defaultUnit}', style: const TextStyle(fontSize: 11)),
+                      ),
                     if (species.brand != null && species.brand!.isNotEmpty)
                       Chip(
                         visualDensity: VisualDensity.compact,
                         avatar: const Icon(Icons.branding_watermark, size: 12),
-                        label: Text(species.brand!, style: const TextStyle(fontSize: 11)),
+                        label: Text('Marca: ${species.brand!}', style: const TextStyle(fontSize: 11)),
                       ),
                     if (species.barcode != null && species.barcode!.isNotEmpty)
                       Chip(
                         visualDensity: VisualDensity.compact,
                         avatar: const Icon(Icons.qr_code_scanner, size: 12),
-                        label: Text(species.barcode!, style: const TextStyle(fontSize: 11)),
+                        label: Text('Código: ${species.barcode!}', style: const TextStyle(fontSize: 11)),
                       ),
                   ],
                 ),
-                const SizedBox(height: 14),
+              ),
+              const SizedBox(height: 16),
 
-                // Instance Specific Header
-                if (instanceSpecificsHeader != null) ...[
-                  instanceSpecificsHeader!,
-                  const SizedBox(height: 14),
-                ],
-
-                // Technical Description (Point 4: Hide if empty!)
-                if (species.description != null && species.description!.trim().isNotEmpty) ...[
-                  Text(AppStrings.masterDescription, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(species.description!, style: theme.textTheme.bodyMedium),
-                  const SizedBox(height: 16),
-                ],
-
-                // Instance Specific Footer
-                if (instanceSpecificsFooter != null) ...[
-                  instanceSpecificsFooter!,
-                  const SizedBox(height: 14),
-                ],
-
-                // Attach File Action Button (Point 1: Hide on Instance screen!)
-                if (showAttachmentAction) ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => _pickAndAddDocument(context, ref, species.id),
-                          icon: const Icon(Icons.attach_file, size: 16),
-                          label: const Text(AppStrings.attachFile),
-                          style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 10)),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
-
-                // Species Attachments List
-                attachmentsAsync.when(
-                  data: (attachments) {
-                    if (attachments.isEmpty) {
-                      if (!showAttachmentAction) return const SizedBox.shrink();
-                      return const Text(AppStrings.emptyAttachments, style: TextStyle(color: Colors.grey, fontSize: 12));
-                    }
-                    return Column(
+              // Point 8: Display ALL Multiple Magnitude Properties
+              if (species.magnitudes.isNotEmpty) ...[
+                Card(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
+                        Text(
+                          'Propiedades y Magnitudes Registradas',
+                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 6),
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: attachments.length,
-                          itemBuilder: (context, idx) {
-                            final att = attachments[idx];
-                            return ListTile(
-                              dense: true,
-                              leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf, size: 20),
-                              title: Text(att.fileName, style: const TextStyle(fontSize: 13)),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.open_in_new, size: 18),
-                                onPressed: () async {
-                                  final path = await ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath);
-                                  await OpenFile.open(path);
-                                },
+                          itemCount: species.magnitudes.length,
+                          itemBuilder: (ctx, idx) {
+                            final mag = species.magnitudes[idx];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.fitness_center, size: 14, color: Colors.grey),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${mag.propertyName}: ',
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                  ),
+                                  Text(
+                                    '${mag.magnitudeValue} ${mag.unitSymbol}',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
                               ),
                             );
                           },
                         ),
                       ],
-                    );
-                  },
-                  loading: () => const CircularProgressIndicator(),
-                  error: (err, _) => Text('Error: $err'),
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 16),
               ],
-            ),
+
+              // Instance Specific Header
+              if (instanceSpecificsHeader != null) ...[
+                instanceSpecificsHeader!,
+                const SizedBox(height: 14),
+              ],
+
+              // Technical Description (Point 4: Hide if empty!)
+              if (species.description != null && species.description!.trim().isNotEmpty) ...[
+                Text(AppStrings.masterDescription, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text(species.description!, style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 16),
+              ],
+
+              // Instance Specific Footer
+              if (instanceSpecificsFooter != null) ...[
+                instanceSpecificsFooter!,
+                const SizedBox(height: 14),
+              ],
+
+              // Attach File Action Button (Point 1: Hide on Instance screen!)
+              if (showAttachmentAction) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _pickAndAddDocument(context, ref, species.id),
+                        icon: const Icon(Icons.attach_file, size: 16),
+                        label: const Text(AppStrings.attachFile),
+                        style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 10)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              // Species Attachments List
+              attachmentsAsync.when(
+                data: (attachments) {
+                  if (attachments.isEmpty) {
+                    if (!showAttachmentAction) return const SizedBox.shrink();
+                    return const Text(AppStrings.emptyAttachments, style: TextStyle(color: Colors.grey, fontSize: 12));
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(AppStrings.attachmentsTitle, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: attachments.length,
+                        itemBuilder: (context, idx) {
+                          final att = attachments[idx];
+                          return ListTile(
+                            dense: true,
+                            leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf, size: 20),
+                            title: Text(att.fileName, style: const TextStyle(fontSize: 13)),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.open_in_new, size: 18),
+                              onPressed: () async {
+                                final path = await ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath);
+                                await OpenFile.open(path);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+                loading: () => const CircularProgressIndicator(),
+                error: (err, _) => Text('Error: $err'),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

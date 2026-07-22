@@ -1,0 +1,664 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/domain/domain_rules.dart';
+import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
+import '../../entities/domain/entity_template.dart';
+import '../domain/catalog_item.dart';
+import '../domain/species_magnitude.dart';
+
+class SpeciesFormModal extends ConsumerStatefulWidget {
+  final CatalogItem? initialSpecies; // Null for Create mode, Non-null for Edit mode
+  final Function(CatalogItem savedSpecies)? onSpeciesSaved;
+
+  const SpeciesFormModal({
+    super.key,
+    this.initialSpecies,
+    this.onSpeciesSaved,
+  });
+
+  static Future<CatalogItem?> show(
+    BuildContext context, {
+    CatalogItem? initialSpecies,
+    Function(CatalogItem savedSpecies)? onSpeciesSaved,
+  }) {
+    return showModalBottomSheet<CatalogItem?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SpeciesFormModal(
+        initialSpecies: initialSpecies,
+        onSpeciesSaved: onSpeciesSaved,
+      ),
+    );
+  }
+
+  @override
+  ConsumerState<SpeciesFormModal> createState() => _SpeciesFormModalState();
+}
+
+class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
+  late bool _isEditMode;
+
+  final _nameController = TextEditingController();
+  final _brandController = TextEditingController();
+  final _barcodeController = TextEditingController();
+  final _descController = TextEditingController();
+
+  String _selectedType = AppStrings.typeObject;
+  String _defaultUnit = 'unidad';
+  bool _isUnique = false;
+  bool _hasMonetaryValue = false; // Default false when creating!
+  String _currency = 'MXN';
+  XFile? _selectedImage;
+  bool _isSaving = false;
+
+  // Multiplicity of Units & Magnitudes
+  final List<SpeciesMagnitude> _magnitudes = [];
+
+  final List<String> _entityTypes = [
+    AppStrings.typeObject,
+    AppStrings.typeLivingBeing,
+    AppStrings.typeDocument,
+    AppStrings.typeProject,
+    AppStrings.typeMemory,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _isEditMode = widget.initialSpecies != null;
+
+    if (_isEditMode) {
+      final s = widget.initialSpecies!;
+      _nameController.text = s.name;
+      _brandController.text = s.brand ?? '';
+      _barcodeController.text = s.barcode ?? '';
+      _descController.text = s.description ?? '';
+      _selectedType = s.type;
+      _defaultUnit = s.defaultUnit ?? 'unidad';
+      _isUnique = s.isUnique;
+      _hasMonetaryValue = s.hasMonetaryValue;
+      _currency = s.defaultMonetaryCurrency;
+      _magnitudes.addAll(s.magnitudes);
+    } else {
+      _defaultUnit = 'unidad'; // Non-unique species default unit = "unidad"
+      _applySubgroupConstraints(_selectedType);
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _brandController.dispose();
+    _barcodeController.dispose();
+    _descController.dispose();
+    super.dispose();
+  }
+
+  void _applySubgroupConstraints(String type) {
+    final template = EntityTemplateRegistry.getTemplate(type);
+    setState(() {
+      _selectedType = type;
+      if (template.isAlwaysUnique) {
+        _isUnique = true;
+      }
+      if (!template.hasMonetaryValue) {
+        _hasMonetaryValue = false;
+      }
+      _updateAllowedDefaultUnit();
+    });
+  }
+
+  void _updateAllowedDefaultUnit() {
+    final allowed = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
+    if (!allowed.contains(_defaultUnit)) {
+      _defaultUnit = allowed.first;
+    }
+  }
+
+  void _populateFromBaseTemplate(CatalogItem base) {
+    setState(() {
+      _selectedType = base.type;
+      _brandController.text = base.brand ?? '';
+      _descController.text = base.description ?? '';
+      _isUnique = base.isUnique;
+      _hasMonetaryValue = base.hasMonetaryValue;
+      _currency = base.defaultMonetaryCurrency;
+      _updateAllowedDefaultUnit();
+      if (base.defaultUnit != null && DomainRules.isUnitAllowedForSpecies(unitSymbol: base.defaultUnit!, isUnique: _isUnique)) {
+        _defaultUnit = base.defaultUnit!;
+      }
+      _magnitudes.clear();
+      _magnitudes.addAll(base.magnitudes);
+      _applySubgroupConstraints(base.type);
+    });
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: source, imageQuality: 85);
+    if (image != null) {
+      setState(() => _selectedImage = image);
+    }
+  }
+
+  void _addMagnitudeRow() async {
+    final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
+    final propCtrl = TextEditingController(text: 'Propiedad ${_magnitudes.length + 1}');
+    final valCtrl = TextEditingController(text: '1.0');
+    String chosenUnit = allowedUnits.first;
+
+    final result = await showDialog<SpeciesMagnitude>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (c, setStateDialog) => AlertDialog(
+          title: const Text('Agregar unidad de medida'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: propCtrl,
+                decoration: const InputDecoration(labelText: 'Nombre de la propiedad (ej. Masa, Volumen)'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: valCtrl,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: 'Valor numérico'),
+              ),
+              const SizedBox(height: 10),
+              InkWell(
+                onTap: () async {
+                  final picked = await AppWheelPicker.show<String>(
+                    context,
+                    items: allowedUnits,
+                    initialValue: chosenUnit,
+                    labelBuilder: (u) => u,
+                    title: 'Seleccionar Unidad de Medida',
+                  );
+                  if (picked != null) {
+                    setStateDialog(() => chosenUnit = picked);
+                  }
+                },
+                child: InputDecorator(
+                  decoration: const InputDecoration(labelText: 'Unidad de medida'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(chosenUnit, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Icon(Icons.swap_vert),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(AppStrings.cancel)),
+            ElevatedButton(
+              onPressed: () {
+                final propName = propCtrl.text.trim();
+                final val = double.tryParse(valCtrl.text.trim()) ?? 1.0;
+                if (propName.isNotEmpty) {
+                  Navigator.pop(
+                    ctx,
+                    SpeciesMagnitude(
+                      id: const Uuid().v4(),
+                      speciesId: widget.initialSpecies?.id ?? '',
+                      propertyName: propName,
+                      magnitudeValue: val,
+                      unitSymbol: chosenUnit,
+                      createdAt: DateTime.now(),
+                    ),
+                  );
+                }
+              },
+              child: const Text(AppStrings.save),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() => _magnitudes.add(result));
+    }
+  }
+
+  void _removeMagnitudeRow(int index) {
+    setState(() => _magnitudes.removeAt(index));
+  }
+
+  Future<void> _saveSpecies() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(AppStrings.nameLabel)),
+      );
+      return;
+    }
+
+    final template = EntityTemplateRegistry.getTemplate(_selectedType);
+    final effectiveUnique = template.isAlwaysUnique || _isUnique;
+
+    if (template.hasQuantity && !DomainRules.isUnitAllowedForSpecies(unitSymbol: _defaultUnit, isUnique: effectiveUnique)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Una Especie Única no puede asociarse con la unidad "unidad".')),
+      );
+      return;
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      final storage = ref.read(fileStorageServiceProvider);
+
+      String? photoPath = widget.initialSpecies?.mainPhotoPath;
+      if (_selectedImage != null) {
+        photoPath = await storage.saveFile(_selectedImage!.path);
+      }
+
+      final speciesId = widget.initialSpecies?.id ?? const Uuid().v4();
+      final updatedMagnitudes = _magnitudes.map((m) => m.copyWith(speciesId: speciesId)).toList();
+
+      final savedItem = CatalogItem(
+        id: speciesId,
+        name: _isEditMode ? widget.initialSpecies!.name : name,
+        type: _isEditMode ? widget.initialSpecies!.type : _selectedType,
+        brand: template.hasBarcodeAndBrand && _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
+        description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
+        barcode: template.hasBarcodeAndBrand && _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
+        defaultUnit: template.hasQuantity ? _defaultUnit : null,
+        magnitudes: updatedMagnitudes,
+        isUnique: effectiveUnique,
+        hasMonetaryValue: template.hasMonetaryValue && _hasMonetaryValue,
+        defaultMonetaryCurrency: _currency,
+        mainPhotoPath: photoPath,
+        createdAt: widget.initialSpecies?.createdAt ?? DateTime.now(),
+      );
+
+      await ref.read(catalogListProvider.notifier).saveCatalogItem(savedItem);
+
+      if (widget.onSpeciesSaved != null) {
+        widget.onSpeciesSaved!(savedItem);
+      }
+
+      if (mounted) {
+        Navigator.pop(context, savedItem);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final catalogState = ref.watch(catalogListProvider);
+    final existingItems = catalogState.asData?.value ?? [];
+    final template = EntityTemplateRegistry.getTemplate(_selectedType);
+    final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: template.isAlwaysUnique || _isUnique);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 14,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.82,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withAlpha(100),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              _isEditMode ? 'Editar Especie' : 'Crear Nueva Especie',
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Pre-populate from base template (Create Mode Only)
+                    if (!_isEditMode && existingItems.isNotEmpty) ...[
+                      InkWell(
+                        onTap: () async {
+                          final picked = await AppWheelPicker.show<CatalogItem?>(
+                            context,
+                            items: [null, ...existingItems],
+                            initialValue: null,
+                            labelBuilder: (item) => item == null ? 'Sin plantilla' : '${item.name} (${item.type})',
+                            title: 'Seleccionar Especie Base',
+                          );
+                          if (picked != null) _populateFromBaseTemplate(picked);
+                        },
+                        child: const InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: 'Usar especie como plantilla base',
+                            prefixIcon: Icon(Icons.copy),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Seleccionar plantilla base...', style: TextStyle(color: Colors.grey)),
+                              Icon(Icons.unfold_more),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+
+                    // Photo Picker
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (_) => SafeArea(
+                            child: Wrap(
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.camera_alt),
+                                  title: const Text(AppStrings.takePhoto),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    _pickImage(ImageSource.camera);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.photo_library),
+                                  title: const Text(AppStrings.chooseGallery),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    _pickImage(ImageSource.gallery);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 75,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: theme.cardColor,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: theme.dividerColor),
+                          image: _selectedImage != null
+                              ? DecorationImage(
+                                  image: FileImage(File(_selectedImage!.path)),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: _selectedImage == null
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_a_photo_outlined, size: 22, color: theme.colorScheme.primary),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    AppStrings.photoLabel,
+                                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
+                                  ),
+                                ],
+                              )
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Name (Read-only in edit mode - Rule #4)
+                    TextField(
+                      controller: _nameController,
+                      enabled: !_isEditMode,
+                      decoration: InputDecoration(
+                        labelText: AppStrings.nameLabel,
+                        prefixIcon: const Icon(Icons.auto_awesome),
+                        helperText: _isEditMode ? 'El nombre es inmutable' : null,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Subgroup Type Chips (Read-only in edit mode - Rule #4)
+                    Text(AppStrings.typeLabel, style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: _entityTypes.map((type) {
+                        final isSelected = type == _selectedType;
+                        return ChoiceChip(
+                          visualDensity: VisualDensity.compact,
+                          label: Text(type, style: const TextStyle(fontSize: 12)),
+                          selected: isSelected,
+                          onSelected: _isEditMode
+                              ? null
+                              : (val) {
+                                  if (val) _applySubgroupConstraints(type);
+                                },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Unique Checkbox
+                    CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      title: const Text(AppStrings.isUniqueLabel, style: TextStyle(fontSize: 13)),
+                      value: template.isAlwaysUnique || _isUnique,
+                      onChanged: template.isAlwaysUnique
+                          ? null
+                          : (val) {
+                              setState(() {
+                                _isUnique = val ?? false;
+                                _updateAllowedDefaultUnit();
+                              });
+                            },
+                    ),
+
+                    // "Sujeto a finanzas" Checkbox (Point 6: Renamed & Default False)
+                    if (template.hasMonetaryValue) ...[
+                      CheckboxListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        title: const Text('Sujeto a finanzas', style: TextStyle(fontSize: 13)),
+                        value: _hasMonetaryValue,
+                        onChanged: (val) => setState(() => _hasMonetaryValue = val ?? false),
+                      ),
+                      if (_hasMonetaryValue) ...[
+                        InkWell(
+                          onTap: () async {
+                            final picked = await AppWheelPicker.show<String>(
+                              context,
+                              items: const ['MXN', 'USD'],
+                              initialValue: _currency,
+                              labelBuilder: (c) => c,
+                              title: 'Seleccionar Moneda',
+                            );
+                            if (picked != null) setState(() => _currency = picked);
+                          },
+                          child: InputDecorator(
+                            decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(_currency, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                const Icon(Icons.unfold_more),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
+
+                    // Default Unit Wheel Picker (Point 5: AppWheelPicker)
+                    if (template.hasQuantity) ...[
+                      InkWell(
+                        onTap: () async {
+                          final picked = await AppWheelPicker.show<String>(
+                            context,
+                            items: allowedUnits,
+                            initialValue: allowedUnits.contains(_defaultUnit) ? _defaultUnit : allowedUnits.first,
+                            labelBuilder: (u) => u,
+                            title: 'Seleccionar Unidad Principal',
+                          );
+                          if (picked != null) setState(() => _defaultUnit = picked);
+                        },
+                        child: InputDecorator(
+                          decoration: const InputDecoration(
+                            labelText: AppStrings.unitLabel,
+                            prefixIcon: Icon(Icons.straighten),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(_defaultUnit, style: const TextStyle(fontWeight: FontWeight.bold)),
+                              const Icon(Icons.unfold_more),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                    ],
+
+                    // Multiplicidad de Unidades y Magnitudes (Point 1 & 2: + / - Controls)
+                    Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Unidades y Magnitudes de Medida',
+                                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                TextButton.icon(
+                                  onPressed: _addMagnitudeRow,
+                                  icon: const Icon(Icons.add, size: 16),
+                                  label: const Text('Agregar unidad de medida', style: TextStyle(fontSize: 12)),
+                                ),
+                              ],
+                            ),
+                            if (_magnitudes.isEmpty)
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 6.0),
+                                child: Text('Sin unidades adicionales agregadas.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                              )
+                            else
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: _magnitudes.length,
+                                itemBuilder: (ctx, idx) {
+                                  final mag = _magnitudes[idx];
+                                  return ListTile(
+                                    dense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    title: Text('${mag.propertyName}: ${mag.magnitudeValue} ${mag.unitSymbol}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
+                                      tooltip: 'Eliminar unidad de medida',
+                                      onPressed: () => _removeMagnitudeRow(idx),
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    if (template.hasBarcodeAndBrand) ...[
+                      TextField(
+                        controller: _brandController,
+                        decoration: const InputDecoration(
+                          labelText: AppStrings.brandLabel,
+                          prefixIcon: Icon(Icons.branding_watermark),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      TextField(
+                        controller: _barcodeController,
+                        decoration: const InputDecoration(
+                          labelText: AppStrings.barcodeLabel,
+                          prefixIcon: Icon(Icons.qr_code),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+
+                    TextField(
+                      controller: _descController,
+                      maxLines: 2,
+                      decoration: const InputDecoration(
+                        labelText: AppStrings.descriptionLabel,
+                        prefixIcon: Icon(Icons.notes),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _saveSpecies,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                        child: _isSaving
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : Text(_isEditMode ? AppStrings.save : 'Guardar especie', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

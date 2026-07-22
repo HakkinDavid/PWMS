@@ -32,11 +32,11 @@ void main() {
 
   group('PWMS 4NF Database & Single Source of Truth Rules Tests', () {
     test('1. DomainRules Single Source of Truth Enforcement', () {
-      expect(DomainRules.isIntegerUnit('pieza'), isTrue);
+      expect(DomainRules.isIntegerUnit('unidad'), isTrue);
       expect(DomainRules.isIntegerUnit('kg'), isFalse);
 
-      // Rule #8: Unique species CANNOT be associated with "pieza"
-      expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'pieza', isUnique: true), isFalse);
+      // Rule #8: Unique species CANNOT be associated with "unidad"
+      expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'unidad', isUnique: true), isFalse);
       expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'kg', isUnique: true), isTrue);
     });
 
