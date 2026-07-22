@@ -90,7 +90,6 @@ class EntityTile extends ConsumerWidget {
     final type = species?.type ?? AppStrings.typeObject;
 
     final breadcrumb = LocationPathHelper.buildBreadcrumbPath(entity.locationId, locationNodes);
-
     final firstMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : null;
 
     return Card(
@@ -117,7 +116,7 @@ class EntityTile extends ConsumerWidget {
                       if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                         return Image.file(
                           File(snapshot.data!),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain, // Point 2: BoxFit.contain
                         );
                       }
                       return Icon(Icons.category, color: theme.colorScheme.primary, size: 22);

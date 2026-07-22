@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +8,9 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
+import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_template.dart';
+import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
 
@@ -55,7 +58,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   XFile? _selectedImage;
   bool _isSaving = false;
 
-  // Multiplicity of Units & Magnitudes (Starts empty!)
+  // Multiplicity of Units & Magnitudes
   final List<SpeciesMagnitude> _magnitudes = [];
 
   final List<String> _entityTypes = [
@@ -121,6 +124,40 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     final image = await picker.pickImage(source: source, imageQuality: 85);
     if (image != null) {
       setState(() => _selectedImage = image);
+    }
+  }
+
+  Future<void> _pickAndAddDocument(String speciesId) async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.single.path != null) {
+      final file = result.files.single;
+      final storage = ref.read(fileStorageServiceProvider);
+      final savedRelativePath = await storage.saveFile(file.path!);
+
+      final attachment = Attachment(
+        id: const Uuid().v4(),
+        speciesId: speciesId,
+        filePath: savedRelativePath,
+        fileName: file.name,
+        fileType: file.extension ?? 'doc',
+        createdAt: DateTime.now(),
+      );
+
+      try {
+        await ref.read(entityRepositoryProvider).addAttachment(attachment);
+        ref.invalidate(speciesAttachmentsProvider(speciesId));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Archivo "${file.name}" adjuntado a la especie')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+          );
+        }
+      }
     }
   }
 
@@ -257,6 +294,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
       if (mounted) {
         Navigator.pop(context, savedItem);
+
+        // Point 1: Automatically show instantiation menu upon creating a new species!
+        if (!_isEditMode) {
+          InstantiateSpeciesSheet.show(context, species: savedItem);
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -344,7 +386,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       const SizedBox(height: 10),
                     ],
 
-                    // Photo Picker
+                    // Photo Picker (Point 2: BoxFit.contain)
                     GestureDetector(
                       onTap: () {
                         showModalBottomSheet(
@@ -383,7 +425,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                           image: _selectedImage != null
                               ? DecorationImage(
                                   image: FileImage(File(_selectedImage!.path)),
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain, // Point 2: BoxFit.contain
                                 )
                               : null,
                         ),
@@ -506,6 +548,19 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       ),
                     ),
                     const SizedBox(height: 14),
+
+                    // Point 3: "Adjuntar archivo" action button ONLY in Edit Mode!
+                    if (_isEditMode && widget.initialSpecies != null) ...[
+                      OutlinedButton.icon(
+                        onPressed: () => _pickAndAddDocument(widget.initialSpecies!.id),
+                        icon: const Icon(Icons.attach_file, size: 16),
+                        label: const Text(AppStrings.attachFile),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 44),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                    ],
 
                     if (template.hasBarcodeAndBrand) ...[
                       TextField(

@@ -106,7 +106,7 @@ class SpeciesTile extends ConsumerWidget {
                       if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                         return Image.file(
                           File(snapshot.data!),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain, // Point 2: BoxFit.contain
                         );
                       }
                       return Icon(Icons.auto_awesome, color: theme.colorScheme.primary, size: 22);
@@ -146,7 +146,6 @@ class SpeciesTile extends ConsumerWidget {
                 ),
               ),
 
-              // Rule #17: Icon-only action button & Rule #18: Hide if unique and instantiated
               if (showInstantiateButton)
                 IconButton(
                   icon: const Icon(Icons.add, size: 20),

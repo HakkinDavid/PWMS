@@ -24,7 +24,7 @@ class SpeciesDetailView extends ConsumerWidget {
     this.instanceSpecificsHeader,
     this.instanceSpecificsFooter,
     this.actions,
-    this.showAttachmentAction = true,
+    this.showAttachmentAction = false, // Point 3: Hide in reading view mode by default!
   });
 
   Future<void> _pickAndAddDocument(BuildContext context, WidgetRef ref, String speciesId) async {
@@ -73,7 +73,7 @@ class SpeciesDetailView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Photo Box Preview Card
+              // Photo Box Preview Card (Point 2: BoxFit.contain)
               Center(
                 child: Container(
                   width: 140,
@@ -100,7 +100,7 @@ class SpeciesDetailView extends ConsumerWidget {
                         if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                           return Image.file(
                             File(snapshot.data!),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain, // Point 2: BoxFit.contain
                           );
                         }
                         return Container(
@@ -250,7 +250,7 @@ class SpeciesDetailView extends ConsumerWidget {
                 const SizedBox(height: 14),
               ],
 
-              // Attach File Action Button
+              // Attach File Action Button (Point 3: Only shown if showAttachmentAction == true, i.e. in Edit mode!)
               if (showAttachmentAction) ...[
                 Row(
                   children: [
