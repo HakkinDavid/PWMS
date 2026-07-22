@@ -31,9 +31,6 @@ mixin _$CatalogItem {
       throw _privateConstructorUsedError;
   List<SpeciesMagnitude> get magnitudes => throw _privateConstructorUsedError;
   bool get isUnique => throw _privateConstructorUsedError;
-  bool get isSubjectToPurchase => throw _privateConstructorUsedError;
-  bool get isSubjectToSale => throw _privateConstructorUsedError;
-  String get defaultMonetaryCurrency => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this CatalogItem to a JSON map.
@@ -63,9 +60,6 @@ abstract class $CatalogItemCopyWith<$Res> {
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
-      bool isSubjectToPurchase,
-      bool isSubjectToSale,
-      String defaultMonetaryCurrency,
       DateTime createdAt});
 }
 
@@ -94,9 +88,6 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
-    Object? isSubjectToPurchase = null,
-    Object? isSubjectToSale = null,
-    Object? defaultMonetaryCurrency = null,
     Object? createdAt = null,
   }) {
     return _then(_value.copyWith(
@@ -140,18 +131,6 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
               as bool,
-      isSubjectToPurchase: null == isSubjectToPurchase
-          ? _value.isSubjectToPurchase
-          : isSubjectToPurchase // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isSubjectToSale: null == isSubjectToSale
-          ? _value.isSubjectToSale
-          : isSubjectToSale // ignore: cast_nullable_to_non_nullable
-              as bool,
-      defaultMonetaryCurrency: null == defaultMonetaryCurrency
-          ? _value.defaultMonetaryCurrency
-          : defaultMonetaryCurrency // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -179,9 +158,6 @@ abstract class _$$CatalogItemImplCopyWith<$Res>
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
-      bool isSubjectToPurchase,
-      bool isSubjectToSale,
-      String defaultMonetaryCurrency,
       DateTime createdAt});
 }
 
@@ -208,9 +184,6 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
-    Object? isSubjectToPurchase = null,
-    Object? isSubjectToSale = null,
-    Object? defaultMonetaryCurrency = null,
     Object? createdAt = null,
   }) {
     return _then(_$CatalogItemImpl(
@@ -254,18 +227,6 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
               as bool,
-      isSubjectToPurchase: null == isSubjectToPurchase
-          ? _value.isSubjectToPurchase
-          : isSubjectToPurchase // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isSubjectToSale: null == isSubjectToSale
-          ? _value.isSubjectToSale
-          : isSubjectToSale // ignore: cast_nullable_to_non_nullable
-              as bool,
-      defaultMonetaryCurrency: null == defaultMonetaryCurrency
-          ? _value.defaultMonetaryCurrency
-          : defaultMonetaryCurrency // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -288,9 +249,6 @@ class _$CatalogItemImpl implements _CatalogItem {
       final Map<String, dynamic> customAttributes = const {},
       final List<SpeciesMagnitude> magnitudes = const [],
       this.isUnique = false,
-      this.isSubjectToPurchase = false,
-      this.isSubjectToSale = false,
-      this.defaultMonetaryCurrency = 'MXN',
       required this.createdAt})
       : _customAttributes = customAttributes,
         _magnitudes = magnitudes;
@@ -335,20 +293,11 @@ class _$CatalogItemImpl implements _CatalogItem {
   @JsonKey()
   final bool isUnique;
   @override
-  @JsonKey()
-  final bool isSubjectToPurchase;
-  @override
-  @JsonKey()
-  final bool isSubjectToSale;
-  @override
-  @JsonKey()
-  final String defaultMonetaryCurrency;
-  @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, isSubjectToPurchase: $isSubjectToPurchase, isSubjectToSale: $isSubjectToSale, defaultMonetaryCurrency: $defaultMonetaryCurrency, createdAt: $createdAt)';
+    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, createdAt: $createdAt)';
   }
 
   @override
@@ -371,13 +320,6 @@ class _$CatalogItemImpl implements _CatalogItem {
                 .equals(other._magnitudes, _magnitudes) &&
             (identical(other.isUnique, isUnique) ||
                 other.isUnique == isUnique) &&
-            (identical(other.isSubjectToPurchase, isSubjectToPurchase) ||
-                other.isSubjectToPurchase == isSubjectToPurchase) &&
-            (identical(other.isSubjectToSale, isSubjectToSale) ||
-                other.isSubjectToSale == isSubjectToSale) &&
-            (identical(
-                    other.defaultMonetaryCurrency, defaultMonetaryCurrency) ||
-                other.defaultMonetaryCurrency == defaultMonetaryCurrency) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
@@ -396,9 +338,6 @@ class _$CatalogItemImpl implements _CatalogItem {
       const DeepCollectionEquality().hash(_customAttributes),
       const DeepCollectionEquality().hash(_magnitudes),
       isUnique,
-      isSubjectToPurchase,
-      isSubjectToSale,
-      defaultMonetaryCurrency,
       createdAt);
 
   /// Create a copy of CatalogItem
@@ -429,9 +368,6 @@ abstract class _CatalogItem implements CatalogItem {
       final Map<String, dynamic> customAttributes,
       final List<SpeciesMagnitude> magnitudes,
       final bool isUnique,
-      final bool isSubjectToPurchase,
-      final bool isSubjectToSale,
-      final String defaultMonetaryCurrency,
       required final DateTime createdAt}) = _$CatalogItemImpl;
 
   factory _CatalogItem.fromJson(Map<String, dynamic> json) =
@@ -457,12 +393,6 @@ abstract class _CatalogItem implements CatalogItem {
   List<SpeciesMagnitude> get magnitudes;
   @override
   bool get isUnique;
-  @override
-  bool get isSubjectToPurchase;
-  @override
-  bool get isSubjectToSale;
-  @override
-  String get defaultMonetaryCurrency;
   @override
   DateTime get createdAt;
 

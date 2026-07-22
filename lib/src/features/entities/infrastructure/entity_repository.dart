@@ -157,14 +157,6 @@ class EntityRepository implements IEntityRepository {
       if (updatedMags.isNotEmpty) {
         final firstMag = updatedMags.first;
         updatedMags[0] = firstMag.copyWith(magnitudeValue: firstMag.magnitudeValue + addQuantity);
-      } else {
-        updatedMags.add(InstanceMagnitude(
-          id: const Uuid().v4(),
-          instanceId: existing.id,
-          propertyName: 'Cantidad',
-          magnitudeValue: addQuantity,
-          unitSymbol: unit ?? 'unidad',
-        ));
       }
 
       final updated = existing.copyWith(
@@ -176,19 +168,22 @@ class EntityRepository implements IEntityRepository {
       return updated;
     } else {
       final newId = const Uuid().v4();
+
+      // Point 1 Directive: Copy species magnitudes if existing, but DO NOT auto-inject "unidad" if empty!
+      final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
+      final initialMags = speciesMagRows.map((sm) => InstanceMagnitude(
+        id: const Uuid().v4(),
+        instanceId: newId,
+        propertyName: sm.propertyName,
+        magnitudeValue: sm.magnitudeValue * addQuantity,
+        unitSymbol: sm.unitSymbol,
+      )).toList();
+
       final newEntity = WorldEntity(
         id: newId,
         speciesId: speciesId,
         locationId: locationId,
-        magnitudes: [
-          InstanceMagnitude(
-            id: const Uuid().v4(),
-            instanceId: newId,
-            propertyName: 'Cantidad',
-            magnitudeValue: addQuantity,
-            unitSymbol: unit ?? 'unidad',
-          ),
-        ],
+        magnitudes: initialMags,
         notes: notes,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
-import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../locations/presentation/location_tree_picker.dart';
@@ -67,105 +66,6 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     }
   }
 
-  Future<void> _promptAcquisitionCost(String instanceId, double addQty) async {
-    final amountCtrl = TextEditingController(text: '0.0');
-    String selectedCurrency = widget.species.defaultMonetaryCurrency;
-    bool isPerUnit = true;
-
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (c, setStateDialog) => AlertDialog(
-          title: const Text('Costo de Adquisición (Compra)'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: ChoiceChip(
-                      visualDensity: VisualDensity.compact,
-                      label: const Center(child: Text('Por pieza/unidad')),
-                      selected: isPerUnit,
-                      onSelected: (val) {
-                        if (val) setStateDialog(() => isPerUnit = true);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ChoiceChip(
-                      visualDensity: VisualDensity.compact,
-                      label: const Center(child: Text('Monto total')),
-                      selected: !isPerUnit,
-                      onSelected: (val) {
-                        if (val) setStateDialog(() => isPerUnit = false);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: amountCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: isPerUnit ? 'Precio por unidad' : 'Costo total registrado',
-                  prefixIcon: const Icon(Icons.attach_money),
-                ),
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: () async {
-                  final picked = await AppWheelPicker.show<String>(
-                    context,
-                    items: const ['MXN', 'USD'],
-                    initialValue: selectedCurrency,
-                    labelBuilder: (c) => c,
-                    title: 'Seleccionar Moneda',
-                  );
-                  if (picked != null) setStateDialog(() => selectedCurrency = picked);
-                },
-                child: InputDecorator(
-                  decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(selectedCurrency, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const Icon(Icons.unfold_more),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Omitir')),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text(AppStrings.save, style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (result == true) {
-      final enteredAmount = double.tryParse(amountCtrl.text.trim()) ?? 0.0;
-      final totalAmount = isPerUnit ? (enteredAmount * addQty.abs()) : enteredAmount;
-
-      await ref.read(financialRepositoryProvider).recordTransaction(
-        speciesId: widget.species.id,
-        entityId: instanceId,
-        transactionType: 'acquisition',
-        magnitudeDelta: addQty,
-        amount: totalAmount,
-        currency: selectedCurrency,
-        isSale: false,
-      );
-    }
-  }
-
   Future<void> _confirmInstantiation() async {
     final template = EntityTemplateRegistry.getTemplate(widget.species.type);
 
@@ -196,16 +96,10 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         _selectedLocationId,
         addQty,
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-        unit: 'unidad',
       );
 
       ref.read(entityListProvider.notifier).loadEntities();
       await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, widget.species.name, widget.species.type);
-
-      // Prompt acquisition cost ONLY IF isSubjectToPurchase == true
-      if (widget.species.isSubjectToPurchase && mounted) {
-        await _promptAcquisitionCost(result.id, addQty);
-      }
 
       if (mounted) {
         Navigator.pop(context);
@@ -232,6 +126,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
     final template = EntityTemplateRegistry.getTemplate(widget.species.type);
+    final hasMagnitudes = widget.species.magnitudes.isNotEmpty;
 
     String locationDisplayName = AppStrings.rootLocationName;
     if (_selectedLocationId != null) {
@@ -303,8 +198,8 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             ),
             const SizedBox(height: 16),
 
-            // Quantity (Wheel Picker for Integer Units)
-            if (template.hasQuantity && !widget.species.isUnique) ...[
+            // Quantity (Only if species has defined magnitude properties!)
+            if (template.hasQuantity && !widget.species.isUnique && hasMagnitudes) ...[
               GestureDetector(
                 onTap: () async {
                   final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
@@ -320,7 +215,6 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: AppStrings.quantityLabel,
-                      suffixText: 'unidad',
                       prefixIcon: Icon(Icons.numbers),
                     ),
                   ),

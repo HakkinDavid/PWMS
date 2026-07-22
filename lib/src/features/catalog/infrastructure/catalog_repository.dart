@@ -40,9 +40,6 @@ class CatalogRepository {
       customAttributes: customAttrs,
       magnitudes: magnitudes,
       isUnique: row.isUnique,
-      isSubjectToPurchase: row.isSubjectToPurchase,
-      isSubjectToSale: row.isSubjectToSale,
-      defaultMonetaryCurrency: row.defaultMonetaryCurrency,
       createdAt: row.createdAt,
     );
   }
@@ -85,9 +82,6 @@ class CatalogRepository {
     String? mainPhotoPath,
     String? barcode,
     bool isUnique = false,
-    bool isSubjectToPurchase = false,
-    bool isSubjectToSale = false,
-    String defaultMonetaryCurrency = 'MXN',
   }) async {
     final cleanName = name.trim();
     final all = await getAllCatalogItems();
@@ -103,9 +97,6 @@ class CatalogRepository {
       mainPhotoPath: mainPhotoPath,
       barcode: barcode,
       isUnique: isUnique,
-      isSubjectToPurchase: isSubjectToPurchase,
-      isSubjectToSale: isSubjectToSale,
-      defaultMonetaryCurrency: defaultMonetaryCurrency,
       createdAt: DateTime.now(),
     );
 
@@ -143,9 +134,6 @@ class CatalogRepository {
       barcode: Value(item.barcode),
       customAttributes: Value(jsonEncode(item.customAttributes)),
       isUnique: Value(item.isUnique),
-      isSubjectToPurchase: Value(item.isSubjectToPurchase),
-      isSubjectToSale: Value(item.isSubjectToSale),
-      defaultMonetaryCurrency: Value(item.defaultMonetaryCurrency),
       createdAt: Value(item.createdAt),
     );
     await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);

@@ -22,10 +22,6 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       isUnique: json['isUnique'] as bool? ?? false,
-      isSubjectToPurchase: json['isSubjectToPurchase'] as bool? ?? false,
-      isSubjectToSale: json['isSubjectToSale'] as bool? ?? false,
-      defaultMonetaryCurrency:
-          json['defaultMonetaryCurrency'] as String? ?? 'MXN',
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
@@ -41,8 +37,5 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
       'customAttributes': instance.customAttributes,
       'magnitudes': instance.magnitudes,
       'isUnique': instance.isUnique,
-      'isSubjectToPurchase': instance.isSubjectToPurchase,
-      'isSubjectToSale': instance.isSubjectToSale,
-      'defaultMonetaryCurrency': instance.defaultMonetaryCurrency,
       'createdAt': instance.createdAt.toIso8601String(),
     };

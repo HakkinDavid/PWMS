@@ -17,9 +17,6 @@ class CatalogItem with _$CatalogItem {
     @Default({}) Map<String, dynamic> customAttributes,
     @Default([]) List<SpeciesMagnitude> magnitudes,
     @Default(false) bool isUnique,
-    @Default(false) bool isSubjectToPurchase,
-    @Default(false) bool isSubjectToSale,
-    @Default('MXN') String defaultMonetaryCurrency,
     required DateTime createdAt,
   }) = _CatalogItem;
 

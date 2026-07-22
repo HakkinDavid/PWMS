@@ -27,9 +27,6 @@ class CatalogTable extends Table {
   TextColumn get barcode => text().nullable()();
   TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
   BoolColumn get isUnique => boolean().withDefault(const Constant(false))();
-  BoolColumn get isSubjectToPurchase => boolean().withDefault(const Constant(false))();
-  BoolColumn get isSubjectToSale => boolean().withDefault(const Constant(false))();
-  TextColumn get defaultMonetaryCurrency => text().withDefault(const Constant('MXN'))();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -40,7 +37,7 @@ class CatalogTable extends Table {
 class SpeciesMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
-  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Cantidad"
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen"
   RealColumn get magnitudeValue => real()();
   TextColumn get unitSymbol => text()();
   DateTimeColumn get createdAt => dateTime()();
@@ -65,7 +62,7 @@ class EntitiesTable extends Table {
 class InstanceMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get instanceId => text().references(EntitiesTable, #id)();
-  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Cantidad"
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen"
   RealColumn get magnitudeValue => real()();
   TextColumn get unitSymbol => text()();
 
@@ -93,23 +90,6 @@ class AttachmentsTable extends Table {
   TextColumn get fileName => text()();
   TextColumn get fileType => text()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
-}
-
-class FinancialTransactionsTable extends Table {
-  TextColumn get id => text()();
-  TextColumn get speciesId => text().references(CatalogTable, #id)();
-  TextColumn get entityId => text().nullable()();
-  TextColumn get transactionType => text()(); // 'acquisition', 'sale', 'adjustment'
-  RealColumn get magnitudeDelta => real()();
-  RealColumn get pricePerUnit => real().nullable()();
-  RealColumn get totalAmount => real()();
-  TextColumn get currency => text().withDefault(const Constant('MXN'))(); // 'MXN' or 'USD'
-  BoolColumn get isSale => boolean().withDefault(const Constant(false))();
-  TextColumn get notes => text().nullable()();
-  DateTimeColumn get timestamp => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -146,7 +126,6 @@ class CustomTemplatesTable extends Table {
   InstanceMagnitudesTable,
   RelationsTable,
   AttachmentsTable,
-  FinancialTransactionsTable,
   HistoryEventsTable,
   CustomTemplatesTable,
 ])

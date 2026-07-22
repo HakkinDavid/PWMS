@@ -20,7 +20,6 @@ class EntityTemplate {
   final String typeName;
   final IconData icon;
   final bool hasQuantity;
-  final bool hasMonetaryValue;
   final bool hasBarcodeAndBrand;
   final bool isAlwaysUnique;
   final TemplateViewKind primaryView;
@@ -31,7 +30,6 @@ class EntityTemplate {
     required this.typeName,
     required this.icon,
     this.hasQuantity = false,
-    this.hasMonetaryValue = true,
     this.hasBarcodeAndBrand = true,
     this.isAlwaysUnique = false,
     required this.primaryView,
@@ -56,7 +54,6 @@ class EntityTemplateRegistry {
       typeName: 'Objeto',
       icon: Icons.category,
       hasQuantity: true,
-      hasMonetaryValue: true,
       hasBarcodeAndBrand: true,
       isAlwaysUnique: false,
       primaryView: TemplateViewKind.details,
@@ -67,7 +64,6 @@ class EntityTemplateRegistry {
       typeName: 'Ser vivo',
       icon: Icons.pets,
       hasQuantity: true,
-      hasMonetaryValue: true,
       hasBarcodeAndBrand: false,
       isAlwaysUnique: false,
       primaryView: TemplateViewKind.details,
@@ -78,7 +74,6 @@ class EntityTemplateRegistry {
       typeName: 'Documento',
       icon: Icons.description,
       hasQuantity: false,
-      hasMonetaryValue: false,
       hasBarcodeAndBrand: false,
       isAlwaysUnique: true,
       primaryView: TemplateViewKind.documents,
@@ -96,7 +91,6 @@ class EntityTemplateRegistry {
       typeName: 'Proyecto',
       icon: Icons.lightbulb,
       hasQuantity: false,
-      hasMonetaryValue: true,
       hasBarcodeAndBrand: false,
       isAlwaysUnique: true,
       primaryView: TemplateViewKind.notesAndMedia,
@@ -113,7 +107,6 @@ class EntityTemplateRegistry {
       typeName: 'Recuerdo',
       icon: Icons.star,
       hasQuantity: false,
-      hasMonetaryValue: false,
       hasBarcodeAndBrand: false,
       isAlwaysUnique: true,
       primaryView: TemplateViewKind.notesAndMedia,

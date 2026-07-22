@@ -17,8 +17,6 @@ import '../../features/history/application/activity_logger_service.dart';
 
 import '../../features/catalog/domain/catalog_item.dart';
 import '../../features/catalog/infrastructure/catalog_repository.dart';
-import '../../features/financial/domain/financial_transaction.dart';
-import '../../features/financial/infrastructure/financial_repository.dart';
 
 // Singletons / Core Services
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -50,10 +48,6 @@ final relationRepositoryProvider = Provider<IRelationRepository>((ref) {
 
 final historyRepositoryProvider = Provider<IHistoryRepository>((ref) {
   return HistoryRepository(ref.watch(databaseProvider));
-});
-
-final financialRepositoryProvider = Provider<FinancialRepository>((ref) {
-  return FinancialRepository(ref.watch(databaseProvider));
 });
 
 final activityLoggerServiceProvider = Provider<ActivityLoggerService>((ref) {
@@ -206,10 +200,4 @@ final speciesAttachmentsProvider = FutureProvider.family<List<Attachment>, Strin
 final entityRelationsProvider = FutureProvider.family<List<EntityRelation>, String>((ref, entityId) async {
   final repo = ref.watch(relationRepositoryProvider);
   return repo.getRelationsForEntity(entityId);
-});
-
-// Financial Transactions Provider
-final speciesFinancialTransactionsProvider = FutureProvider.family<List<FinancialTransaction>, String>((ref, speciesId) async {
-  final repo = ref.watch(financialRepositoryProvider);
-  return repo.getTransactionsForSpecies(speciesId);
 });

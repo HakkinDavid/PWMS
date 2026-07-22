@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
-import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_detail_view.dart';
@@ -35,233 +34,29 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     super.dispose();
   }
 
-  // Acquisition Cost Prompt ("Por pieza" vs "Monto total") - ONLY IF isSubjectToPurchase == true
-  Future<void> _promptAcquisitionCost({
-    required String speciesId,
+  // Confirm Deletion Flow
+  Future<void> _handleDeletion({
+    required CatalogItem species,
     required String entityId,
-    required double magnitudeDelta,
-    required String currency,
   }) async {
-    final amountCtrl = TextEditingController(text: '0.0');
-    final notesCtrl = TextEditingController();
-    String selectedCurrency = currency;
-    bool isPerUnit = true;
-
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (c, setStateDialog) => AlertDialog(
-          title: const Text('Costo de Adquisición (Compra)'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: ChoiceChip(
-                      visualDensity: VisualDensity.compact,
-                      label: const Center(child: Text('Por unidad')),
-                      selected: isPerUnit,
-                      onSelected: (val) {
-                        if (val) setStateDialog(() => isPerUnit = true);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ChoiceChip(
-                      visualDensity: VisualDensity.compact,
-                      label: const Center(child: Text('Monto total')),
-                      selected: !isPerUnit,
-                      onSelected: (val) {
-                        if (val) setStateDialog(() => isPerUnit = false);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: amountCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: isPerUnit ? 'Precio por unidad' : 'Costo total registrado',
-                  prefixIcon: const Icon(Icons.attach_money),
-                ),
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: () async {
-                  final picked = await AppWheelPicker.show<String>(
-                    context,
-                    items: const ['MXN', 'USD'],
-                    initialValue: selectedCurrency,
-                    labelBuilder: (c) => c,
-                    title: 'Seleccionar Moneda',
-                  );
-                  if (picked != null) setStateDialog(() => selectedCurrency = picked);
-                },
-                child: InputDecorator(
-                  decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(selectedCurrency, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const Icon(Icons.unfold_more),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Omitir')),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text(AppStrings.save, style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (result == true) {
-      final enteredAmount = double.tryParse(amountCtrl.text.trim()) ?? 0.0;
-      final totalAmount = isPerUnit ? (enteredAmount * magnitudeDelta.abs()) : enteredAmount;
-
-      await ref.read(financialRepositoryProvider).recordTransaction(
-        speciesId: speciesId,
-        entityId: entityId,
-        transactionType: 'acquisition',
-        magnitudeDelta: magnitudeDelta,
-        amount: totalAmount,
-        currency: selectedCurrency,
-        isSale: false,
-        notes: notesCtrl.text.trim().isNotEmpty ? notesCtrl.text.trim() : null,
-      );
-    }
-  }
-
-  // Deletion / Sale Prompt (ONLY IF isSubjectToSale == true)
-  Future<void> _promptSaleTransaction({
-    required String speciesId,
-    required String entityId,
-    required double magnitudeDelta,
-    required String currency,
-  }) async {
-    final amountCtrl = TextEditingController(text: '0.0');
-    String selectedCurrency = currency;
-
-    final result = await showDialog<bool>(
+    final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Registrar Venta'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: amountCtrl,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
-                labelText: 'Monto Total de Venta',
-                prefixIcon: Icon(Icons.attach_money),
-              ),
-            ),
-            const SizedBox(height: 12),
-            InkWell(
-              onTap: () async {
-                final picked = await AppWheelPicker.show<String>(
-                  context,
-                  items: const ['MXN', 'USD'],
-                  initialValue: selectedCurrency,
-                  labelBuilder: (c) => c,
-                  title: 'Seleccionar Moneda',
-                );
-                if (picked != null) selectedCurrency = picked;
-              },
-              child: InputDecorator(
-                decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(selectedCurrency, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const Icon(Icons.unfold_more),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        title: const Text(AppStrings.deleteConfirmationTitle),
+        content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(AppStrings.save, style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),
     );
 
-    if (result == true) {
-      final amount = double.tryParse(amountCtrl.text.trim()) ?? 0.0;
-      await ref.read(financialRepositoryProvider).recordTransaction(
-        speciesId: speciesId,
-        entityId: entityId,
-        transactionType: 'sale',
-        magnitudeDelta: magnitudeDelta,
-        amount: amount,
-        currency: selectedCurrency,
-        isSale: true,
-      );
-    }
-  }
-
-  // Confirm Zero-Quantity Deletion Flow
-  Future<void> _handleZeroQuantityDeletion({
-    required CatalogItem species,
-    required String entityId,
-    required double currentQty,
-  }) async {
-    bool isSale = false;
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (c, setStateDialog) => AlertDialog(
-          title: const Text(AppStrings.deleteConfirmationTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('${AppStrings.zeroQuantityMessage} "${species.name}"?'),
-              if (species.isSubjectToSale)
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text(AppStrings.isSaleLabel),
-                  value: isSale,
-                  onChanged: (v) => setStateDialog(() => isSale = v ?? false),
-                ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-            ),
-          ],
-        ),
-      ),
-    );
-
     if (confirm == true) {
-      if (species.isSubjectToSale && isSale) {
-        await _promptSaleTransaction(
-          speciesId: species.id,
-          entityId: entityId,
-          magnitudeDelta: -currentQty,
-          currency: species.defaultMonetaryCurrency,
-        );
-      }
       await ref.read(entityRepositoryProvider).deleteEntity(entityId);
+      await ref.read(activityLoggerServiceProvider).logEntityDeleted(entityId, species.name);
       ref.read(entityListProvider.notifier).loadEntities();
       if (mounted) context.pop();
     }
@@ -281,12 +76,13 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             return const Center(child: Text(AppStrings.appName));
           }
 
-          final primaryMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : const InstanceMagnitude(id: '', instanceId: '', propertyName: 'Cantidad', magnitudeValue: 1.0, unitSymbol: 'unidad');
-          final primaryVal = primaryMag.magnitudeValue;
-          final primaryUnit = primaryMag.unitSymbol;
+          final primaryMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : null;
+          final primaryVal = primaryMag?.magnitudeValue ?? 1.0;
+          final primaryUnit = primaryMag?.unitSymbol ?? '';
+          final hasMagnitudes = entity.magnitudes.isNotEmpty;
 
           if (!_isEditingInPlace) {
-            _qtyController.text = DomainRules.formatMagnitude(primaryVal, primaryUnit);
+            _qtyController.text = hasMagnitudes ? DomainRules.formatMagnitude(primaryVal, primaryUnit) : '';
             _notesController.text = entity.notes ?? '';
             _selectedLocationId = entity.locationId;
           }
@@ -400,8 +196,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
-              // Magnitud Control (Points 1 & 2: Decrement to 0 & Wheel Picker 0 selection)
-              if (template.hasQuantity) ...[
+              // Magnitud Control (Only if magnitudes exist!)
+              if (template.hasQuantity && hasMagnitudes) ...[
                 Row(
                   children: [
                     Text(
@@ -416,7 +212,6 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         border: Border.all(color: theme.dividerColor),
                       ),
                       child: isIntegerUnit
-                          // Integer Magnitudes (Formatted without .0)
                           ? Row(
                               children: [
                                 if (_isEditingInPlace)
@@ -426,11 +221,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                       final currentQty = double.tryParse(_qtyController.text.trim()) ?? 1.0;
                                       final newQty = currentQty - 1.0;
                                       if (newQty <= 0) {
-                                        await _handleZeroQuantityDeletion(
-                                          species: species,
-                                          entityId: entity.id,
-                                          currentQty: currentQty,
-                                        );
+                                        await _handleDeletion(species: species, entityId: entity.id);
                                       } else {
                                         setState(() => _qtyController.text = DomainRules.formatMagnitude(newQty, primaryUnit));
                                       }
@@ -443,11 +234,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                           final picked = await IntegerWheelPicker.show(context, initialValue: currentVal, minValue: 0);
                                           if (picked != null) {
                                             if (picked == 0) {
-                                              await _handleZeroQuantityDeletion(
-                                                species: species,
-                                                entityId: entity.id,
-                                                currentQty: currentVal.toDouble(),
-                                              );
+                                              await _handleDeletion(species: species, entityId: entity.id);
                                             } else {
                                               setState(() => _qtyController.text = '$picked');
                                             }
@@ -464,11 +251,14 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  primaryUnit,
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(width: 8),
+                                if (primaryUnit.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Text(
+                                      primaryUnit,
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
                                 if (_isEditingInPlace)
                                   IconButton(
                                     icon: const Icon(Icons.add, size: 16),
@@ -480,7 +270,6 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   ),
                               ],
                             )
-                          // Decimal Magnitudes
                           : Container(
                               width: 110,
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -500,10 +289,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                       ),
                                     ),
                                   ),
-                                  Text(
-                                    primaryUnit,
-                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                  ),
+                                  if (primaryUnit.isNotEmpty)
+                                    Text(
+                                      primaryUnit,
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                    ),
                                 ],
                               ),
                             ),
@@ -541,24 +331,15 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         height: 48,
                         child: ElevatedButton.icon(
                           onPressed: () async {
-                            final originalQty = primaryVal;
-                            final newQty = double.tryParse(_qtyController.text.trim()) ?? originalQty;
+                            final newQty = double.tryParse(_qtyController.text.trim()) ?? primaryVal;
                             final hasLocationChanged = _selectedLocationId != entity.locationId;
-                            final hasQtyChanged = newQty != originalQty;
+                            final hasQtyChanged = newQty != primaryVal;
                             final hasNotesChanged = _notesController.text.trim() != (entity.notes ?? '');
 
                             if (hasLocationChanged || hasQtyChanged || hasNotesChanged) {
                               final updatedMags = List<InstanceMagnitude>.from(entity.magnitudes);
                               if (updatedMags.isNotEmpty) {
                                 updatedMags[0] = updatedMags[0].copyWith(magnitudeValue: newQty);
-                              } else {
-                                updatedMags.add(InstanceMagnitude(
-                                  id: '',
-                                  instanceId: entity.id,
-                                  propertyName: 'Cantidad',
-                                  magnitudeValue: newQty,
-                                  unitSymbol: primaryUnit,
-                                ));
                               }
 
                               final updated = entity.copyWith(
@@ -569,17 +350,6 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               );
 
                               await ref.read(entityListProvider.notifier).saveEntity(updated);
-
-                              // Prompt acquisition cost ONLY IF isSubjectToPurchase == true
-                              if (hasQtyChanged && newQty > originalQty && species.isSubjectToPurchase) {
-                                final delta = newQty - originalQty;
-                                await _promptAcquisitionCost(
-                                  speciesId: species.id,
-                                  entityId: entity.id,
-                                  magnitudeDelta: delta,
-                                  currency: species.defaultMonetaryCurrency,
-                                );
-                              }
                             }
 
                             setState(() => _isEditingInPlace = false);
@@ -614,55 +384,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                 tooltip: AppStrings.delete,
-                onPressed: () async {
-                  bool isSale = false;
-                  final confirm = await showDialog<bool>(
-                    context: context,
-                    builder: (ctx) => StatefulBuilder(
-                      builder: (c, setStateDialog) => AlertDialog(
-                        title: const Text(AppStrings.deleteConfirmationTitle),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
-                            if (species.isSubjectToSale)
-                              CheckboxListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: const Text(AppStrings.isSaleLabel),
-                                value: isSale,
-                                onChanged: (v) => setStateDialog(() => isSale = v ?? false),
-                              ),
-                          ],
-                        ),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx, true),
-                            child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-
-                  if (confirm == true) {
-                    if (species.isSubjectToSale && isSale) {
-                      await _promptSaleTransaction(
-                        speciesId: species.id,
-                        entityId: entity.id,
-                        magnitudeDelta: -primaryVal,
-                        currency: species.defaultMonetaryCurrency,
-                      );
-                    }
-                    await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
-                    await ref.read(activityLoggerServiceProvider).logEntityDeleted(entity.id, species.name);
-                    ref.read(entityListProvider.notifier).loadEntities();
-
-                    if (context.mounted) {
-                      context.pop();
-                    }
-                  }
-                },
+                onPressed: () => _handleDeletion(species: species, entityId: entity.id),
               ),
             ],
           );

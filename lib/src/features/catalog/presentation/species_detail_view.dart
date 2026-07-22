@@ -129,7 +129,7 @@ class SpeciesDetailView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Badges (Brand, Type, Barcode, Uniqueness, Split Finances)
+              // Badges (Brand, Type, Barcode, Uniqueness)
               Center(
                 child: Wrap(
                   alignment: WrapAlignment.center,
@@ -166,24 +166,6 @@ class SpeciesDetailView extends ConsumerWidget {
                         avatar: Icon(Icons.star, size: 12, color: Colors.amber),
                         label: Text('Especie Única', style: TextStyle(fontSize: 11)),
                       ),
-                    if (species.isSubjectToPurchase)
-                      Chip(
-                        visualDensity: VisualDensity.compact,
-                        avatar: const Icon(Icons.shopping_cart, size: 12, color: Colors.green),
-                        label: Text('Sujeto a compra (${species.defaultMonetaryCurrency})', style: const TextStyle(fontSize: 11)),
-                      ),
-                    if (species.isSubjectToSale)
-                      Chip(
-                        visualDensity: VisualDensity.compact,
-                        avatar: const Icon(Icons.monetization_on, size: 12, color: Colors.blue),
-                        label: Text('Sujeto a venta (${species.defaultMonetaryCurrency})', style: const TextStyle(fontSize: 11)),
-                      ),
-                    if (!species.isSubjectToPurchase && !species.isSubjectToSale)
-                      const Chip(
-                        visualDensity: VisualDensity.compact,
-                        avatar: Icon(Icons.money_off, size: 12, color: Colors.grey),
-                        label: Text('Sin finanzas', style: TextStyle(fontSize: 11)),
-                      ),
                     if (species.brand != null && species.brand!.isNotEmpty)
                       Chip(
                         visualDensity: VisualDensity.compact,
@@ -201,7 +183,7 @@ class SpeciesDetailView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Display ALL 4NF Multiple Magnitude Properties with Integer Display Formatting (Point 4)
+              // Display ALL 4NF Multiple Magnitude Properties with Integer Display Formatting
               if (species.magnitudes.isNotEmpty) ...[
                 Card(
                   margin: EdgeInsets.zero,

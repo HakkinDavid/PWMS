@@ -6,7 +6,6 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/spe
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
-import 'package:platinum_world_management_system/src/features/financial/infrastructure/financial_repository.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
 
@@ -15,7 +14,6 @@ void main() {
   late EntityRepository entityRepo;
   late CatalogRepository catalogRepo;
   late LocationRepository locationRepo;
-  late FinancialRepository financialRepo;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +21,6 @@ void main() {
     entityRepo = EntityRepository(db);
     catalogRepo = CatalogRepository(db);
     locationRepo = LocationRepository(db);
-    financialRepo = FinancialRepository(db);
   });
 
   tearDown(() async {
@@ -45,10 +42,18 @@ void main() {
       expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'kg', isUnique: true), isTrue);
     });
 
-    test('2. 4NF Species & Instance Magnitudes Normalization Persistence', () async {
+    test('2. 4NF Species & Instance Magnitudes Normalization & Empty Default Test', () async {
       final node = LocationNode(id: 'node-1', name: 'Almacén', createdAt: DateTime.now());
       await locationRepo.saveNode(node);
 
+      // Species created without explicit magnitudes has empty magnitudes: []
+      final speciesNoMag = await catalogRepo.getOrCreateSpecies('Martillo Simple', type: 'Objeto');
+      expect(speciesNoMag.magnitudes, isEmpty);
+
+      final instanceNoMag = await entityRepo.instantiateOrMerge(speciesNoMag.id, 'node-1', 1);
+      expect(instanceNoMag.magnitudes, isEmpty);
+
+      // Species with explicit magnitudes
       final species = await catalogRepo.getOrCreateSpecies('Cable Eléctrico Cobre', type: 'Objeto');
       final updatedSpecies = species.copyWith(
         magnitudes: [
@@ -96,43 +101,6 @@ void main() {
       expect(fetchedInstance, isNotNull);
       expect(fetchedInstance!.magnitudes.length, equals(1));
       expect(fetchedInstance.magnitudes.first.propertyName, equals('Masa Real'));
-    });
-
-    test('3. Acquisition & Sale Financial Ledger Recording with Split Finances', () async {
-      final species = await catalogRepo.getOrCreateSpecies(
-        'Monitor 4K',
-        type: 'Objeto',
-        isSubjectToPurchase: true,
-        isSubjectToSale: true,
-      );
-
-      expect(species.isSubjectToPurchase, isTrue);
-      expect(species.isSubjectToSale, isTrue);
-
-      // Acquisition transaction
-      await financialRepo.recordTransaction(
-        speciesId: species.id,
-        transactionType: 'acquisition',
-        magnitudeDelta: 2,
-        amount: 14000.0,
-        currency: 'MXN',
-        isSale: false,
-      );
-
-      // Sale transaction
-      await financialRepo.recordTransaction(
-        speciesId: species.id,
-        transactionType: 'sale',
-        magnitudeDelta: -1,
-        amount: 8000.0,
-        currency: 'MXN',
-        isSale: true,
-      );
-
-      final txs = await financialRepo.getTransactionsForSpecies(species.id);
-      expect(txs.length, equals(2));
-      expect(txs.any((t) => t.isSale), isTrue);
-      expect(txs.any((t) => t.amount == 14000.0), isTrue);
     });
   });
 }

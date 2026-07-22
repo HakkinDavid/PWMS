@@ -426,34 +426,6 @@ class $CatalogTableTable extends CatalogTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_unique" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _isSubjectToPurchaseMeta =
-      const VerificationMeta('isSubjectToPurchase');
-  @override
-  late final GeneratedColumn<bool> isSubjectToPurchase = GeneratedColumn<bool>(
-      'is_subject_to_purchase', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_subject_to_purchase" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _isSubjectToSaleMeta =
-      const VerificationMeta('isSubjectToSale');
-  @override
-  late final GeneratedColumn<bool> isSubjectToSale = GeneratedColumn<bool>(
-      'is_subject_to_sale', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_subject_to_sale" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _defaultMonetaryCurrencyMeta =
-      const VerificationMeta('defaultMonetaryCurrency');
-  @override
-  late final GeneratedColumn<String> defaultMonetaryCurrency =
-      GeneratedColumn<String>('default_monetary_currency', aliasedName, false,
-          type: DriftSqlType.string,
-          requiredDuringInsert: false,
-          defaultValue: const Constant('MXN'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -471,9 +443,6 @@ class $CatalogTableTable extends CatalogTable
         barcode,
         customAttributes,
         isUnique,
-        isSubjectToPurchase,
-        isSubjectToSale,
-        defaultMonetaryCurrency,
         createdAt
       ];
   @override
@@ -531,25 +500,6 @@ class $CatalogTableTable extends CatalogTable
       context.handle(_isUniqueMeta,
           isUnique.isAcceptableOrUnknown(data['is_unique']!, _isUniqueMeta));
     }
-    if (data.containsKey('is_subject_to_purchase')) {
-      context.handle(
-          _isSubjectToPurchaseMeta,
-          isSubjectToPurchase.isAcceptableOrUnknown(
-              data['is_subject_to_purchase']!, _isSubjectToPurchaseMeta));
-    }
-    if (data.containsKey('is_subject_to_sale')) {
-      context.handle(
-          _isSubjectToSaleMeta,
-          isSubjectToSale.isAcceptableOrUnknown(
-              data['is_subject_to_sale']!, _isSubjectToSaleMeta));
-    }
-    if (data.containsKey('default_monetary_currency')) {
-      context.handle(
-          _defaultMonetaryCurrencyMeta,
-          defaultMonetaryCurrency.isAcceptableOrUnknown(
-              data['default_monetary_currency']!,
-              _defaultMonetaryCurrencyMeta));
-    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -583,13 +533,6 @@ class $CatalogTableTable extends CatalogTable
           DriftSqlType.string, data['${effectivePrefix}custom_attributes'])!,
       isUnique: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_unique'])!,
-      isSubjectToPurchase: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}is_subject_to_purchase'])!,
-      isSubjectToSale: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}is_subject_to_sale'])!,
-      defaultMonetaryCurrency: attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}default_monetary_currency'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -612,9 +555,6 @@ class CatalogTableData extends DataClass
   final String? barcode;
   final String customAttributes;
   final bool isUnique;
-  final bool isSubjectToPurchase;
-  final bool isSubjectToSale;
-  final String defaultMonetaryCurrency;
   final DateTime createdAt;
   const CatalogTableData(
       {required this.id,
@@ -626,9 +566,6 @@ class CatalogTableData extends DataClass
       this.barcode,
       required this.customAttributes,
       required this.isUnique,
-      required this.isSubjectToPurchase,
-      required this.isSubjectToSale,
-      required this.defaultMonetaryCurrency,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -650,10 +587,6 @@ class CatalogTableData extends DataClass
     }
     map['custom_attributes'] = Variable<String>(customAttributes);
     map['is_unique'] = Variable<bool>(isUnique);
-    map['is_subject_to_purchase'] = Variable<bool>(isSubjectToPurchase);
-    map['is_subject_to_sale'] = Variable<bool>(isSubjectToSale);
-    map['default_monetary_currency'] =
-        Variable<String>(defaultMonetaryCurrency);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -676,9 +609,6 @@ class CatalogTableData extends DataClass
           : Value(barcode),
       customAttributes: Value(customAttributes),
       isUnique: Value(isUnique),
-      isSubjectToPurchase: Value(isSubjectToPurchase),
-      isSubjectToSale: Value(isSubjectToSale),
-      defaultMonetaryCurrency: Value(defaultMonetaryCurrency),
       createdAt: Value(createdAt),
     );
   }
@@ -696,11 +626,6 @@ class CatalogTableData extends DataClass
       barcode: serializer.fromJson<String?>(json['barcode']),
       customAttributes: serializer.fromJson<String>(json['customAttributes']),
       isUnique: serializer.fromJson<bool>(json['isUnique']),
-      isSubjectToPurchase:
-          serializer.fromJson<bool>(json['isSubjectToPurchase']),
-      isSubjectToSale: serializer.fromJson<bool>(json['isSubjectToSale']),
-      defaultMonetaryCurrency:
-          serializer.fromJson<String>(json['defaultMonetaryCurrency']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -717,10 +642,6 @@ class CatalogTableData extends DataClass
       'barcode': serializer.toJson<String?>(barcode),
       'customAttributes': serializer.toJson<String>(customAttributes),
       'isUnique': serializer.toJson<bool>(isUnique),
-      'isSubjectToPurchase': serializer.toJson<bool>(isSubjectToPurchase),
-      'isSubjectToSale': serializer.toJson<bool>(isSubjectToSale),
-      'defaultMonetaryCurrency':
-          serializer.toJson<String>(defaultMonetaryCurrency),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -735,9 +656,6 @@ class CatalogTableData extends DataClass
           Value<String?> barcode = const Value.absent(),
           String? customAttributes,
           bool? isUnique,
-          bool? isSubjectToPurchase,
-          bool? isSubjectToSale,
-          String? defaultMonetaryCurrency,
           DateTime? createdAt}) =>
       CatalogTableData(
         id: id ?? this.id,
@@ -750,10 +668,6 @@ class CatalogTableData extends DataClass
         barcode: barcode.present ? barcode.value : this.barcode,
         customAttributes: customAttributes ?? this.customAttributes,
         isUnique: isUnique ?? this.isUnique,
-        isSubjectToPurchase: isSubjectToPurchase ?? this.isSubjectToPurchase,
-        isSubjectToSale: isSubjectToSale ?? this.isSubjectToSale,
-        defaultMonetaryCurrency:
-            defaultMonetaryCurrency ?? this.defaultMonetaryCurrency,
         createdAt: createdAt ?? this.createdAt,
       );
   CatalogTableData copyWithCompanion(CatalogTableCompanion data) {
@@ -772,15 +686,6 @@ class CatalogTableData extends DataClass
           ? data.customAttributes.value
           : this.customAttributes,
       isUnique: data.isUnique.present ? data.isUnique.value : this.isUnique,
-      isSubjectToPurchase: data.isSubjectToPurchase.present
-          ? data.isSubjectToPurchase.value
-          : this.isSubjectToPurchase,
-      isSubjectToSale: data.isSubjectToSale.present
-          ? data.isSubjectToSale.value
-          : this.isSubjectToSale,
-      defaultMonetaryCurrency: data.defaultMonetaryCurrency.present
-          ? data.defaultMonetaryCurrency.value
-          : this.defaultMonetaryCurrency,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -797,29 +702,14 @@ class CatalogTableData extends DataClass
           ..write('barcode: $barcode, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
-          ..write('isSubjectToPurchase: $isSubjectToPurchase, ')
-          ..write('isSubjectToSale: $isSubjectToSale, ')
-          ..write('defaultMonetaryCurrency: $defaultMonetaryCurrency, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      name,
-      type,
-      brand,
-      description,
-      mainPhotoPath,
-      barcode,
-      customAttributes,
-      isUnique,
-      isSubjectToPurchase,
-      isSubjectToSale,
-      defaultMonetaryCurrency,
-      createdAt);
+  int get hashCode => Object.hash(id, name, type, brand, description,
+      mainPhotoPath, barcode, customAttributes, isUnique, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -833,9 +723,6 @@ class CatalogTableData extends DataClass
           other.barcode == this.barcode &&
           other.customAttributes == this.customAttributes &&
           other.isUnique == this.isUnique &&
-          other.isSubjectToPurchase == this.isSubjectToPurchase &&
-          other.isSubjectToSale == this.isSubjectToSale &&
-          other.defaultMonetaryCurrency == this.defaultMonetaryCurrency &&
           other.createdAt == this.createdAt);
 }
 
@@ -849,9 +736,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   final Value<String?> barcode;
   final Value<String> customAttributes;
   final Value<bool> isUnique;
-  final Value<bool> isSubjectToPurchase;
-  final Value<bool> isSubjectToSale;
-  final Value<String> defaultMonetaryCurrency;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const CatalogTableCompanion({
@@ -864,9 +748,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.barcode = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
-    this.isSubjectToPurchase = const Value.absent(),
-    this.isSubjectToSale = const Value.absent(),
-    this.defaultMonetaryCurrency = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -880,9 +761,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.barcode = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
-    this.isSubjectToPurchase = const Value.absent(),
-    this.isSubjectToSale = const Value.absent(),
-    this.defaultMonetaryCurrency = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -898,9 +776,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     Expression<String>? barcode,
     Expression<String>? customAttributes,
     Expression<bool>? isUnique,
-    Expression<bool>? isSubjectToPurchase,
-    Expression<bool>? isSubjectToSale,
-    Expression<String>? defaultMonetaryCurrency,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -914,11 +789,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       if (barcode != null) 'barcode': barcode,
       if (customAttributes != null) 'custom_attributes': customAttributes,
       if (isUnique != null) 'is_unique': isUnique,
-      if (isSubjectToPurchase != null)
-        'is_subject_to_purchase': isSubjectToPurchase,
-      if (isSubjectToSale != null) 'is_subject_to_sale': isSubjectToSale,
-      if (defaultMonetaryCurrency != null)
-        'default_monetary_currency': defaultMonetaryCurrency,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -934,9 +804,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       Value<String?>? barcode,
       Value<String>? customAttributes,
       Value<bool>? isUnique,
-      Value<bool>? isSubjectToPurchase,
-      Value<bool>? isSubjectToSale,
-      Value<String>? defaultMonetaryCurrency,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
     return CatalogTableCompanion(
@@ -949,10 +816,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       barcode: barcode ?? this.barcode,
       customAttributes: customAttributes ?? this.customAttributes,
       isUnique: isUnique ?? this.isUnique,
-      isSubjectToPurchase: isSubjectToPurchase ?? this.isSubjectToPurchase,
-      isSubjectToSale: isSubjectToSale ?? this.isSubjectToSale,
-      defaultMonetaryCurrency:
-          defaultMonetaryCurrency ?? this.defaultMonetaryCurrency,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -988,16 +851,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     if (isUnique.present) {
       map['is_unique'] = Variable<bool>(isUnique.value);
     }
-    if (isSubjectToPurchase.present) {
-      map['is_subject_to_purchase'] = Variable<bool>(isSubjectToPurchase.value);
-    }
-    if (isSubjectToSale.present) {
-      map['is_subject_to_sale'] = Variable<bool>(isSubjectToSale.value);
-    }
-    if (defaultMonetaryCurrency.present) {
-      map['default_monetary_currency'] =
-          Variable<String>(defaultMonetaryCurrency.value);
-    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1019,9 +872,6 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
           ..write('barcode: $barcode, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
-          ..write('isSubjectToPurchase: $isSubjectToPurchase, ')
-          ..write('isSubjectToSale: $isSubjectToSale, ')
-          ..write('defaultMonetaryCurrency: $defaultMonetaryCurrency, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2765,585 +2615,6 @@ class AttachmentsTableCompanion extends UpdateCompanion<AttachmentsTableData> {
   }
 }
 
-class $FinancialTransactionsTableTable extends FinancialTransactionsTable
-    with
-        TableInfo<$FinancialTransactionsTableTable,
-            FinancialTransactionsTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $FinancialTransactionsTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _speciesIdMeta =
-      const VerificationMeta('speciesId');
-  @override
-  late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
-      'species_id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES catalog_table (id)'));
-  static const VerificationMeta _entityIdMeta =
-      const VerificationMeta('entityId');
-  @override
-  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
-      'entity_id', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _transactionTypeMeta =
-      const VerificationMeta('transactionType');
-  @override
-  late final GeneratedColumn<String> transactionType = GeneratedColumn<String>(
-      'transaction_type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _magnitudeDeltaMeta =
-      const VerificationMeta('magnitudeDelta');
-  @override
-  late final GeneratedColumn<double> magnitudeDelta = GeneratedColumn<double>(
-      'magnitude_delta', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _pricePerUnitMeta =
-      const VerificationMeta('pricePerUnit');
-  @override
-  late final GeneratedColumn<double> pricePerUnit = GeneratedColumn<double>(
-      'price_per_unit', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _totalAmountMeta =
-      const VerificationMeta('totalAmount');
-  @override
-  late final GeneratedColumn<double> totalAmount = GeneratedColumn<double>(
-      'total_amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _currencyMeta =
-      const VerificationMeta('currency');
-  @override
-  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
-      'currency', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('MXN'));
-  static const VerificationMeta _isSaleMeta = const VerificationMeta('isSale');
-  @override
-  late final GeneratedColumn<bool> isSale = GeneratedColumn<bool>(
-      'is_sale', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_sale" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-      'notes', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _timestampMeta =
-      const VerificationMeta('timestamp');
-  @override
-  late final GeneratedColumn<DateTime> timestamp = GeneratedColumn<DateTime>(
-      'timestamp', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        speciesId,
-        entityId,
-        transactionType,
-        magnitudeDelta,
-        pricePerUnit,
-        totalAmount,
-        currency,
-        isSale,
-        notes,
-        timestamp
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'financial_transactions_table';
-  @override
-  VerificationContext validateIntegrity(
-      Insertable<FinancialTransactionsTableData> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('species_id')) {
-      context.handle(_speciesIdMeta,
-          speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta));
-    } else if (isInserting) {
-      context.missing(_speciesIdMeta);
-    }
-    if (data.containsKey('entity_id')) {
-      context.handle(_entityIdMeta,
-          entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta));
-    }
-    if (data.containsKey('transaction_type')) {
-      context.handle(
-          _transactionTypeMeta,
-          transactionType.isAcceptableOrUnknown(
-              data['transaction_type']!, _transactionTypeMeta));
-    } else if (isInserting) {
-      context.missing(_transactionTypeMeta);
-    }
-    if (data.containsKey('magnitude_delta')) {
-      context.handle(
-          _magnitudeDeltaMeta,
-          magnitudeDelta.isAcceptableOrUnknown(
-              data['magnitude_delta']!, _magnitudeDeltaMeta));
-    } else if (isInserting) {
-      context.missing(_magnitudeDeltaMeta);
-    }
-    if (data.containsKey('price_per_unit')) {
-      context.handle(
-          _pricePerUnitMeta,
-          pricePerUnit.isAcceptableOrUnknown(
-              data['price_per_unit']!, _pricePerUnitMeta));
-    }
-    if (data.containsKey('total_amount')) {
-      context.handle(
-          _totalAmountMeta,
-          totalAmount.isAcceptableOrUnknown(
-              data['total_amount']!, _totalAmountMeta));
-    } else if (isInserting) {
-      context.missing(_totalAmountMeta);
-    }
-    if (data.containsKey('currency')) {
-      context.handle(_currencyMeta,
-          currency.isAcceptableOrUnknown(data['currency']!, _currencyMeta));
-    }
-    if (data.containsKey('is_sale')) {
-      context.handle(_isSaleMeta,
-          isSale.isAcceptableOrUnknown(data['is_sale']!, _isSaleMeta));
-    }
-    if (data.containsKey('notes')) {
-      context.handle(
-          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
-    }
-    if (data.containsKey('timestamp')) {
-      context.handle(_timestampMeta,
-          timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta));
-    } else if (isInserting) {
-      context.missing(_timestampMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  FinancialTransactionsTableData map(Map<String, dynamic> data,
-      {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return FinancialTransactionsTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      speciesId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
-      entityId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}entity_id']),
-      transactionType: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}transaction_type'])!,
-      magnitudeDelta: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}magnitude_delta'])!,
-      pricePerUnit: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}price_per_unit']),
-      totalAmount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}total_amount'])!,
-      currency: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}currency'])!,
-      isSale: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_sale'])!,
-      notes: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
-      timestamp: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}timestamp'])!,
-    );
-  }
-
-  @override
-  $FinancialTransactionsTableTable createAlias(String alias) {
-    return $FinancialTransactionsTableTable(attachedDatabase, alias);
-  }
-}
-
-class FinancialTransactionsTableData extends DataClass
-    implements Insertable<FinancialTransactionsTableData> {
-  final String id;
-  final String speciesId;
-  final String? entityId;
-  final String transactionType;
-  final double magnitudeDelta;
-  final double? pricePerUnit;
-  final double totalAmount;
-  final String currency;
-  final bool isSale;
-  final String? notes;
-  final DateTime timestamp;
-  const FinancialTransactionsTableData(
-      {required this.id,
-      required this.speciesId,
-      this.entityId,
-      required this.transactionType,
-      required this.magnitudeDelta,
-      this.pricePerUnit,
-      required this.totalAmount,
-      required this.currency,
-      required this.isSale,
-      this.notes,
-      required this.timestamp});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['species_id'] = Variable<String>(speciesId);
-    if (!nullToAbsent || entityId != null) {
-      map['entity_id'] = Variable<String>(entityId);
-    }
-    map['transaction_type'] = Variable<String>(transactionType);
-    map['magnitude_delta'] = Variable<double>(magnitudeDelta);
-    if (!nullToAbsent || pricePerUnit != null) {
-      map['price_per_unit'] = Variable<double>(pricePerUnit);
-    }
-    map['total_amount'] = Variable<double>(totalAmount);
-    map['currency'] = Variable<String>(currency);
-    map['is_sale'] = Variable<bool>(isSale);
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
-    }
-    map['timestamp'] = Variable<DateTime>(timestamp);
-    return map;
-  }
-
-  FinancialTransactionsTableCompanion toCompanion(bool nullToAbsent) {
-    return FinancialTransactionsTableCompanion(
-      id: Value(id),
-      speciesId: Value(speciesId),
-      entityId: entityId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(entityId),
-      transactionType: Value(transactionType),
-      magnitudeDelta: Value(magnitudeDelta),
-      pricePerUnit: pricePerUnit == null && nullToAbsent
-          ? const Value.absent()
-          : Value(pricePerUnit),
-      totalAmount: Value(totalAmount),
-      currency: Value(currency),
-      isSale: Value(isSale),
-      notes:
-          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
-      timestamp: Value(timestamp),
-    );
-  }
-
-  factory FinancialTransactionsTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return FinancialTransactionsTableData(
-      id: serializer.fromJson<String>(json['id']),
-      speciesId: serializer.fromJson<String>(json['speciesId']),
-      entityId: serializer.fromJson<String?>(json['entityId']),
-      transactionType: serializer.fromJson<String>(json['transactionType']),
-      magnitudeDelta: serializer.fromJson<double>(json['magnitudeDelta']),
-      pricePerUnit: serializer.fromJson<double?>(json['pricePerUnit']),
-      totalAmount: serializer.fromJson<double>(json['totalAmount']),
-      currency: serializer.fromJson<String>(json['currency']),
-      isSale: serializer.fromJson<bool>(json['isSale']),
-      notes: serializer.fromJson<String?>(json['notes']),
-      timestamp: serializer.fromJson<DateTime>(json['timestamp']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'speciesId': serializer.toJson<String>(speciesId),
-      'entityId': serializer.toJson<String?>(entityId),
-      'transactionType': serializer.toJson<String>(transactionType),
-      'magnitudeDelta': serializer.toJson<double>(magnitudeDelta),
-      'pricePerUnit': serializer.toJson<double?>(pricePerUnit),
-      'totalAmount': serializer.toJson<double>(totalAmount),
-      'currency': serializer.toJson<String>(currency),
-      'isSale': serializer.toJson<bool>(isSale),
-      'notes': serializer.toJson<String?>(notes),
-      'timestamp': serializer.toJson<DateTime>(timestamp),
-    };
-  }
-
-  FinancialTransactionsTableData copyWith(
-          {String? id,
-          String? speciesId,
-          Value<String?> entityId = const Value.absent(),
-          String? transactionType,
-          double? magnitudeDelta,
-          Value<double?> pricePerUnit = const Value.absent(),
-          double? totalAmount,
-          String? currency,
-          bool? isSale,
-          Value<String?> notes = const Value.absent(),
-          DateTime? timestamp}) =>
-      FinancialTransactionsTableData(
-        id: id ?? this.id,
-        speciesId: speciesId ?? this.speciesId,
-        entityId: entityId.present ? entityId.value : this.entityId,
-        transactionType: transactionType ?? this.transactionType,
-        magnitudeDelta: magnitudeDelta ?? this.magnitudeDelta,
-        pricePerUnit:
-            pricePerUnit.present ? pricePerUnit.value : this.pricePerUnit,
-        totalAmount: totalAmount ?? this.totalAmount,
-        currency: currency ?? this.currency,
-        isSale: isSale ?? this.isSale,
-        notes: notes.present ? notes.value : this.notes,
-        timestamp: timestamp ?? this.timestamp,
-      );
-  FinancialTransactionsTableData copyWithCompanion(
-      FinancialTransactionsTableCompanion data) {
-    return FinancialTransactionsTableData(
-      id: data.id.present ? data.id.value : this.id,
-      speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
-      entityId: data.entityId.present ? data.entityId.value : this.entityId,
-      transactionType: data.transactionType.present
-          ? data.transactionType.value
-          : this.transactionType,
-      magnitudeDelta: data.magnitudeDelta.present
-          ? data.magnitudeDelta.value
-          : this.magnitudeDelta,
-      pricePerUnit: data.pricePerUnit.present
-          ? data.pricePerUnit.value
-          : this.pricePerUnit,
-      totalAmount:
-          data.totalAmount.present ? data.totalAmount.value : this.totalAmount,
-      currency: data.currency.present ? data.currency.value : this.currency,
-      isSale: data.isSale.present ? data.isSale.value : this.isSale,
-      notes: data.notes.present ? data.notes.value : this.notes,
-      timestamp: data.timestamp.present ? data.timestamp.value : this.timestamp,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FinancialTransactionsTableData(')
-          ..write('id: $id, ')
-          ..write('speciesId: $speciesId, ')
-          ..write('entityId: $entityId, ')
-          ..write('transactionType: $transactionType, ')
-          ..write('magnitudeDelta: $magnitudeDelta, ')
-          ..write('pricePerUnit: $pricePerUnit, ')
-          ..write('totalAmount: $totalAmount, ')
-          ..write('currency: $currency, ')
-          ..write('isSale: $isSale, ')
-          ..write('notes: $notes, ')
-          ..write('timestamp: $timestamp')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      id,
-      speciesId,
-      entityId,
-      transactionType,
-      magnitudeDelta,
-      pricePerUnit,
-      totalAmount,
-      currency,
-      isSale,
-      notes,
-      timestamp);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is FinancialTransactionsTableData &&
-          other.id == this.id &&
-          other.speciesId == this.speciesId &&
-          other.entityId == this.entityId &&
-          other.transactionType == this.transactionType &&
-          other.magnitudeDelta == this.magnitudeDelta &&
-          other.pricePerUnit == this.pricePerUnit &&
-          other.totalAmount == this.totalAmount &&
-          other.currency == this.currency &&
-          other.isSale == this.isSale &&
-          other.notes == this.notes &&
-          other.timestamp == this.timestamp);
-}
-
-class FinancialTransactionsTableCompanion
-    extends UpdateCompanion<FinancialTransactionsTableData> {
-  final Value<String> id;
-  final Value<String> speciesId;
-  final Value<String?> entityId;
-  final Value<String> transactionType;
-  final Value<double> magnitudeDelta;
-  final Value<double?> pricePerUnit;
-  final Value<double> totalAmount;
-  final Value<String> currency;
-  final Value<bool> isSale;
-  final Value<String?> notes;
-  final Value<DateTime> timestamp;
-  final Value<int> rowid;
-  const FinancialTransactionsTableCompanion({
-    this.id = const Value.absent(),
-    this.speciesId = const Value.absent(),
-    this.entityId = const Value.absent(),
-    this.transactionType = const Value.absent(),
-    this.magnitudeDelta = const Value.absent(),
-    this.pricePerUnit = const Value.absent(),
-    this.totalAmount = const Value.absent(),
-    this.currency = const Value.absent(),
-    this.isSale = const Value.absent(),
-    this.notes = const Value.absent(),
-    this.timestamp = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  FinancialTransactionsTableCompanion.insert({
-    required String id,
-    required String speciesId,
-    this.entityId = const Value.absent(),
-    required String transactionType,
-    required double magnitudeDelta,
-    this.pricePerUnit = const Value.absent(),
-    required double totalAmount,
-    this.currency = const Value.absent(),
-    this.isSale = const Value.absent(),
-    this.notes = const Value.absent(),
-    required DateTime timestamp,
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        speciesId = Value(speciesId),
-        transactionType = Value(transactionType),
-        magnitudeDelta = Value(magnitudeDelta),
-        totalAmount = Value(totalAmount),
-        timestamp = Value(timestamp);
-  static Insertable<FinancialTransactionsTableData> custom({
-    Expression<String>? id,
-    Expression<String>? speciesId,
-    Expression<String>? entityId,
-    Expression<String>? transactionType,
-    Expression<double>? magnitudeDelta,
-    Expression<double>? pricePerUnit,
-    Expression<double>? totalAmount,
-    Expression<String>? currency,
-    Expression<bool>? isSale,
-    Expression<String>? notes,
-    Expression<DateTime>? timestamp,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (speciesId != null) 'species_id': speciesId,
-      if (entityId != null) 'entity_id': entityId,
-      if (transactionType != null) 'transaction_type': transactionType,
-      if (magnitudeDelta != null) 'magnitude_delta': magnitudeDelta,
-      if (pricePerUnit != null) 'price_per_unit': pricePerUnit,
-      if (totalAmount != null) 'total_amount': totalAmount,
-      if (currency != null) 'currency': currency,
-      if (isSale != null) 'is_sale': isSale,
-      if (notes != null) 'notes': notes,
-      if (timestamp != null) 'timestamp': timestamp,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  FinancialTransactionsTableCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? speciesId,
-      Value<String?>? entityId,
-      Value<String>? transactionType,
-      Value<double>? magnitudeDelta,
-      Value<double?>? pricePerUnit,
-      Value<double>? totalAmount,
-      Value<String>? currency,
-      Value<bool>? isSale,
-      Value<String?>? notes,
-      Value<DateTime>? timestamp,
-      Value<int>? rowid}) {
-    return FinancialTransactionsTableCompanion(
-      id: id ?? this.id,
-      speciesId: speciesId ?? this.speciesId,
-      entityId: entityId ?? this.entityId,
-      transactionType: transactionType ?? this.transactionType,
-      magnitudeDelta: magnitudeDelta ?? this.magnitudeDelta,
-      pricePerUnit: pricePerUnit ?? this.pricePerUnit,
-      totalAmount: totalAmount ?? this.totalAmount,
-      currency: currency ?? this.currency,
-      isSale: isSale ?? this.isSale,
-      notes: notes ?? this.notes,
-      timestamp: timestamp ?? this.timestamp,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (speciesId.present) {
-      map['species_id'] = Variable<String>(speciesId.value);
-    }
-    if (entityId.present) {
-      map['entity_id'] = Variable<String>(entityId.value);
-    }
-    if (transactionType.present) {
-      map['transaction_type'] = Variable<String>(transactionType.value);
-    }
-    if (magnitudeDelta.present) {
-      map['magnitude_delta'] = Variable<double>(magnitudeDelta.value);
-    }
-    if (pricePerUnit.present) {
-      map['price_per_unit'] = Variable<double>(pricePerUnit.value);
-    }
-    if (totalAmount.present) {
-      map['total_amount'] = Variable<double>(totalAmount.value);
-    }
-    if (currency.present) {
-      map['currency'] = Variable<String>(currency.value);
-    }
-    if (isSale.present) {
-      map['is_sale'] = Variable<bool>(isSale.value);
-    }
-    if (notes.present) {
-      map['notes'] = Variable<String>(notes.value);
-    }
-    if (timestamp.present) {
-      map['timestamp'] = Variable<DateTime>(timestamp.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FinancialTransactionsTableCompanion(')
-          ..write('id: $id, ')
-          ..write('speciesId: $speciesId, ')
-          ..write('entityId: $entityId, ')
-          ..write('transactionType: $transactionType, ')
-          ..write('magnitudeDelta: $magnitudeDelta, ')
-          ..write('pricePerUnit: $pricePerUnit, ')
-          ..write('totalAmount: $totalAmount, ')
-          ..write('currency: $currency, ')
-          ..write('isSale: $isSale, ')
-          ..write('notes: $notes, ')
-          ..write('timestamp: $timestamp, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $HistoryEventsTableTable extends HistoryEventsTable
     with TableInfo<$HistoryEventsTableTable, HistoryEventsTableData> {
   @override
@@ -4029,8 +3300,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RelationsTableTable relationsTable = $RelationsTableTable(this);
   late final $AttachmentsTableTable attachmentsTable =
       $AttachmentsTableTable(this);
-  late final $FinancialTransactionsTableTable financialTransactionsTable =
-      $FinancialTransactionsTableTable(this);
   late final $HistoryEventsTableTable historyEventsTable =
       $HistoryEventsTableTable(this);
   late final $CustomTemplatesTableTable customTemplatesTable =
@@ -4047,7 +3316,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         instanceMagnitudesTable,
         relationsTable,
         attachmentsTable,
-        financialTransactionsTable,
         historyEventsTable,
         customTemplatesTable
       ];
@@ -4431,9 +3699,6 @@ typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
   Value<String?> barcode,
   Value<String> customAttributes,
   Value<bool> isUnique,
-  Value<bool> isSubjectToPurchase,
-  Value<bool> isSubjectToSale,
-  Value<String> defaultMonetaryCurrency,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -4448,9 +3713,6 @@ typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
   Value<String?> barcode,
   Value<String> customAttributes,
   Value<bool> isUnique,
-  Value<bool> isSubjectToPurchase,
-  Value<bool> isSubjectToSale,
-  Value<String> defaultMonetaryCurrency,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -4509,25 +3771,6 @@ final class $$CatalogTableTableReferences extends BaseReferences<_$AppDatabase,
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
-
-  static MultiTypedResultKey<$FinancialTransactionsTableTable,
-          List<FinancialTransactionsTableData>>
-      _financialTransactionsTableRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.financialTransactionsTable,
-              aliasName: $_aliasNameGenerator(
-                  db.catalogTable.id, db.financialTransactionsTable.speciesId));
-
-  $$FinancialTransactionsTableTableProcessedTableManager
-      get financialTransactionsTableRefs {
-    final manager = $$FinancialTransactionsTableTableTableManager(
-            $_db, $_db.financialTransactionsTable)
-        .filter((f) => f.speciesId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult
-        .readTableOrNull(_financialTransactionsTableRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
 }
 
 class $$CatalogTableTableFilterComposer
@@ -4566,18 +3809,6 @@ class $$CatalogTableTableFilterComposer
 
   ColumnFilters<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isSubjectToPurchase => $composableBuilder(
-      column: $table.isSubjectToPurchase,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isSubjectToSale => $composableBuilder(
-      column: $table.isSubjectToSale,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get defaultMonetaryCurrency => $composableBuilder(
-      column: $table.defaultMonetaryCurrency,
-      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -4646,30 +3877,6 @@ class $$CatalogTableTableFilterComposer
             ));
     return f(composer);
   }
-
-  Expression<bool> financialTransactionsTableRefs(
-      Expression<bool> Function(
-              $$FinancialTransactionsTableTableFilterComposer f)
-          f) {
-    final $$FinancialTransactionsTableTableFilterComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.financialTransactionsTable,
-            getReferencedColumn: (t) => t.speciesId,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$FinancialTransactionsTableTableFilterComposer(
-                  $db: $db,
-                  $table: $db.financialTransactionsTable,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
-    return f(composer);
-  }
 }
 
 class $$CatalogTableTableOrderingComposer
@@ -4710,18 +3917,6 @@ class $$CatalogTableTableOrderingComposer
   ColumnOrderings<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get isSubjectToPurchase => $composableBuilder(
-      column: $table.isSubjectToPurchase,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get isSubjectToSale => $composableBuilder(
-      column: $table.isSubjectToSale,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get defaultMonetaryCurrency => $composableBuilder(
-      column: $table.defaultMonetaryCurrency,
-      builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 }
@@ -4761,15 +3956,6 @@ class $$CatalogTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isUnique =>
       $composableBuilder(column: $table.isUnique, builder: (column) => column);
-
-  GeneratedColumn<bool> get isSubjectToPurchase => $composableBuilder(
-      column: $table.isSubjectToPurchase, builder: (column) => column);
-
-  GeneratedColumn<bool> get isSubjectToSale => $composableBuilder(
-      column: $table.isSubjectToSale, builder: (column) => column);
-
-  GeneratedColumn<String> get defaultMonetaryCurrency => $composableBuilder(
-      column: $table.defaultMonetaryCurrency, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -4838,30 +4024,6 @@ class $$CatalogTableTableAnnotationComposer
             ));
     return f(composer);
   }
-
-  Expression<T> financialTransactionsTableRefs<T extends Object>(
-      Expression<T> Function(
-              $$FinancialTransactionsTableTableAnnotationComposer a)
-          f) {
-    final $$FinancialTransactionsTableTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.financialTransactionsTable,
-            getReferencedColumn: (t) => t.speciesId,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$FinancialTransactionsTableTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.financialTransactionsTable,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
-    return f(composer);
-  }
 }
 
 class $$CatalogTableTableTableManager extends RootTableManager<
@@ -4878,8 +4040,7 @@ class $$CatalogTableTableTableManager extends RootTableManager<
     PrefetchHooks Function(
         {bool speciesMagnitudesTableRefs,
         bool entitiesTableRefs,
-        bool attachmentsTableRefs,
-        bool financialTransactionsTableRefs})> {
+        bool attachmentsTableRefs})> {
   $$CatalogTableTableTableManager(_$AppDatabase db, $CatalogTableTable table)
       : super(TableManagerState(
           db: db,
@@ -4900,9 +4061,6 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> barcode = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
-            Value<bool> isSubjectToPurchase = const Value.absent(),
-            Value<bool> isSubjectToSale = const Value.absent(),
-            Value<String> defaultMonetaryCurrency = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -4916,9 +4074,6 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             barcode: barcode,
             customAttributes: customAttributes,
             isUnique: isUnique,
-            isSubjectToPurchase: isSubjectToPurchase,
-            isSubjectToSale: isSubjectToSale,
-            defaultMonetaryCurrency: defaultMonetaryCurrency,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -4932,9 +4087,6 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> barcode = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
-            Value<bool> isSubjectToPurchase = const Value.absent(),
-            Value<bool> isSubjectToSale = const Value.absent(),
-            Value<String> defaultMonetaryCurrency = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -4948,9 +4100,6 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             barcode: barcode,
             customAttributes: customAttributes,
             isUnique: isUnique,
-            isSubjectToPurchase: isSubjectToPurchase,
-            isSubjectToSale: isSubjectToSale,
-            defaultMonetaryCurrency: defaultMonetaryCurrency,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -4963,16 +4112,13 @@ class $$CatalogTableTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {speciesMagnitudesTableRefs = false,
               entitiesTableRefs = false,
-              attachmentsTableRefs = false,
-              financialTransactionsTableRefs = false}) {
+              attachmentsTableRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (speciesMagnitudesTableRefs) db.speciesMagnitudesTable,
                 if (entitiesTableRefs) db.entitiesTable,
-                if (attachmentsTableRefs) db.attachmentsTable,
-                if (financialTransactionsTableRefs)
-                  db.financialTransactionsTable
+                if (attachmentsTableRefs) db.attachmentsTable
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -5015,19 +4161,6 @@ class $$CatalogTableTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.speciesId == item.id),
-                        typedResults: items),
-                  if (financialTransactionsTableRefs)
-                    await $_getPrefetchedData<CatalogTableData,
-                            $CatalogTableTable, FinancialTransactionsTableData>(
-                        currentTable: table,
-                        referencedTable: $$CatalogTableTableReferences
-                            ._financialTransactionsTableRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$CatalogTableTableReferences(db, table, p0)
-                                .financialTransactionsTableRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.speciesId == item.id),
                         typedResults: items)
                 ];
               },
@@ -5050,8 +4183,7 @@ typedef $$CatalogTableTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function(
         {bool speciesMagnitudesTableRefs,
         bool entitiesTableRefs,
-        bool attachmentsTableRefs,
-        bool financialTransactionsTableRefs})>;
+        bool attachmentsTableRefs})>;
 typedef $$SpeciesMagnitudesTableTableCreateCompanionBuilder
     = SpeciesMagnitudesTableCompanion Function({
   required String id,
@@ -6894,392 +6026,6 @@ typedef $$AttachmentsTableTableProcessedTableManager = ProcessedTableManager<
     (AttachmentsTableData, $$AttachmentsTableTableReferences),
     AttachmentsTableData,
     PrefetchHooks Function({bool speciesId})>;
-typedef $$FinancialTransactionsTableTableCreateCompanionBuilder
-    = FinancialTransactionsTableCompanion Function({
-  required String id,
-  required String speciesId,
-  Value<String?> entityId,
-  required String transactionType,
-  required double magnitudeDelta,
-  Value<double?> pricePerUnit,
-  required double totalAmount,
-  Value<String> currency,
-  Value<bool> isSale,
-  Value<String?> notes,
-  required DateTime timestamp,
-  Value<int> rowid,
-});
-typedef $$FinancialTransactionsTableTableUpdateCompanionBuilder
-    = FinancialTransactionsTableCompanion Function({
-  Value<String> id,
-  Value<String> speciesId,
-  Value<String?> entityId,
-  Value<String> transactionType,
-  Value<double> magnitudeDelta,
-  Value<double?> pricePerUnit,
-  Value<double> totalAmount,
-  Value<String> currency,
-  Value<bool> isSale,
-  Value<String?> notes,
-  Value<DateTime> timestamp,
-  Value<int> rowid,
-});
-
-final class $$FinancialTransactionsTableTableReferences extends BaseReferences<
-    _$AppDatabase,
-    $FinancialTransactionsTableTable,
-    FinancialTransactionsTableData> {
-  $$FinancialTransactionsTableTableReferences(
-      super.$_db, super.$_table, super.$_typedResult);
-
-  static $CatalogTableTable _speciesIdTable(_$AppDatabase db) =>
-      db.catalogTable.createAlias($_aliasNameGenerator(
-          db.financialTransactionsTable.speciesId, db.catalogTable.id));
-
-  $$CatalogTableTableProcessedTableManager get speciesId {
-    final $_column = $_itemColumn<String>('species_id')!;
-
-    final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_speciesIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-}
-
-class $$FinancialTransactionsTableTableFilterComposer
-    extends Composer<_$AppDatabase, $FinancialTransactionsTableTable> {
-  $$FinancialTransactionsTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get entityId => $composableBuilder(
-      column: $table.entityId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get transactionType => $composableBuilder(
-      column: $table.transactionType,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<double> get magnitudeDelta => $composableBuilder(
-      column: $table.magnitudeDelta,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<double> get pricePerUnit => $composableBuilder(
-      column: $table.pricePerUnit, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<double> get totalAmount => $composableBuilder(
-      column: $table.totalAmount, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get currency => $composableBuilder(
-      column: $table.currency, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isSale => $composableBuilder(
-      column: $table.isSale, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get notes => $composableBuilder(
-      column: $table.notes, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get timestamp => $composableBuilder(
-      column: $table.timestamp, builder: (column) => ColumnFilters(column));
-
-  $$CatalogTableTableFilterComposer get speciesId {
-    final $$CatalogTableTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.speciesId,
-        referencedTable: $db.catalogTable,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CatalogTableTableFilterComposer(
-              $db: $db,
-              $table: $db.catalogTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$FinancialTransactionsTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $FinancialTransactionsTableTable> {
-  $$FinancialTransactionsTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get entityId => $composableBuilder(
-      column: $table.entityId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get transactionType => $composableBuilder(
-      column: $table.transactionType,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<double> get magnitudeDelta => $composableBuilder(
-      column: $table.magnitudeDelta,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<double> get pricePerUnit => $composableBuilder(
-      column: $table.pricePerUnit,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<double> get totalAmount => $composableBuilder(
-      column: $table.totalAmount, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get currency => $composableBuilder(
-      column: $table.currency, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get isSale => $composableBuilder(
-      column: $table.isSale, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get notes => $composableBuilder(
-      column: $table.notes, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get timestamp => $composableBuilder(
-      column: $table.timestamp, builder: (column) => ColumnOrderings(column));
-
-  $$CatalogTableTableOrderingComposer get speciesId {
-    final $$CatalogTableTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.speciesId,
-        referencedTable: $db.catalogTable,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CatalogTableTableOrderingComposer(
-              $db: $db,
-              $table: $db.catalogTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$FinancialTransactionsTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $FinancialTransactionsTableTable> {
-  $$FinancialTransactionsTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get entityId =>
-      $composableBuilder(column: $table.entityId, builder: (column) => column);
-
-  GeneratedColumn<String> get transactionType => $composableBuilder(
-      column: $table.transactionType, builder: (column) => column);
-
-  GeneratedColumn<double> get magnitudeDelta => $composableBuilder(
-      column: $table.magnitudeDelta, builder: (column) => column);
-
-  GeneratedColumn<double> get pricePerUnit => $composableBuilder(
-      column: $table.pricePerUnit, builder: (column) => column);
-
-  GeneratedColumn<double> get totalAmount => $composableBuilder(
-      column: $table.totalAmount, builder: (column) => column);
-
-  GeneratedColumn<String> get currency =>
-      $composableBuilder(column: $table.currency, builder: (column) => column);
-
-  GeneratedColumn<bool> get isSale =>
-      $composableBuilder(column: $table.isSale, builder: (column) => column);
-
-  GeneratedColumn<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get timestamp =>
-      $composableBuilder(column: $table.timestamp, builder: (column) => column);
-
-  $$CatalogTableTableAnnotationComposer get speciesId {
-    final $$CatalogTableTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.speciesId,
-        referencedTable: $db.catalogTable,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CatalogTableTableAnnotationComposer(
-              $db: $db,
-              $table: $db.catalogTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$FinancialTransactionsTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $FinancialTransactionsTableTable,
-    FinancialTransactionsTableData,
-    $$FinancialTransactionsTableTableFilterComposer,
-    $$FinancialTransactionsTableTableOrderingComposer,
-    $$FinancialTransactionsTableTableAnnotationComposer,
-    $$FinancialTransactionsTableTableCreateCompanionBuilder,
-    $$FinancialTransactionsTableTableUpdateCompanionBuilder,
-    (
-      FinancialTransactionsTableData,
-      $$FinancialTransactionsTableTableReferences
-    ),
-    FinancialTransactionsTableData,
-    PrefetchHooks Function({bool speciesId})> {
-  $$FinancialTransactionsTableTableTableManager(
-      _$AppDatabase db, $FinancialTransactionsTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$FinancialTransactionsTableTableFilterComposer(
-                  $db: db, $table: table),
-          createOrderingComposer: () =>
-              $$FinancialTransactionsTableTableOrderingComposer(
-                  $db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$FinancialTransactionsTableTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> speciesId = const Value.absent(),
-            Value<String?> entityId = const Value.absent(),
-            Value<String> transactionType = const Value.absent(),
-            Value<double> magnitudeDelta = const Value.absent(),
-            Value<double?> pricePerUnit = const Value.absent(),
-            Value<double> totalAmount = const Value.absent(),
-            Value<String> currency = const Value.absent(),
-            Value<bool> isSale = const Value.absent(),
-            Value<String?> notes = const Value.absent(),
-            Value<DateTime> timestamp = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              FinancialTransactionsTableCompanion(
-            id: id,
-            speciesId: speciesId,
-            entityId: entityId,
-            transactionType: transactionType,
-            magnitudeDelta: magnitudeDelta,
-            pricePerUnit: pricePerUnit,
-            totalAmount: totalAmount,
-            currency: currency,
-            isSale: isSale,
-            notes: notes,
-            timestamp: timestamp,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String speciesId,
-            Value<String?> entityId = const Value.absent(),
-            required String transactionType,
-            required double magnitudeDelta,
-            Value<double?> pricePerUnit = const Value.absent(),
-            required double totalAmount,
-            Value<String> currency = const Value.absent(),
-            Value<bool> isSale = const Value.absent(),
-            Value<String?> notes = const Value.absent(),
-            required DateTime timestamp,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              FinancialTransactionsTableCompanion.insert(
-            id: id,
-            speciesId: speciesId,
-            entityId: entityId,
-            transactionType: transactionType,
-            magnitudeDelta: magnitudeDelta,
-            pricePerUnit: pricePerUnit,
-            totalAmount: totalAmount,
-            currency: currency,
-            isSale: isSale,
-            notes: notes,
-            timestamp: timestamp,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$FinancialTransactionsTableTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: ({speciesId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (speciesId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.speciesId,
-                    referencedTable: $$FinancialTransactionsTableTableReferences
-                        ._speciesIdTable(db),
-                    referencedColumn:
-                        $$FinancialTransactionsTableTableReferences
-                            ._speciesIdTable(db)
-                            .id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$FinancialTransactionsTableTableProcessedTableManager
-    = ProcessedTableManager<
-        _$AppDatabase,
-        $FinancialTransactionsTableTable,
-        FinancialTransactionsTableData,
-        $$FinancialTransactionsTableTableFilterComposer,
-        $$FinancialTransactionsTableTableOrderingComposer,
-        $$FinancialTransactionsTableTableAnnotationComposer,
-        $$FinancialTransactionsTableTableCreateCompanionBuilder,
-        $$FinancialTransactionsTableTableUpdateCompanionBuilder,
-        (
-          FinancialTransactionsTableData,
-          $$FinancialTransactionsTableTableReferences
-        ),
-        FinancialTransactionsTableData,
-        PrefetchHooks Function({bool speciesId})>;
 typedef $$HistoryEventsTableTableCreateCompanionBuilder
     = HistoryEventsTableCompanion Function({
   required String id,
@@ -7671,10 +6417,6 @@ class $AppDatabaseManager {
       $$RelationsTableTableTableManager(_db, _db.relationsTable);
   $$AttachmentsTableTableTableManager get attachmentsTable =>
       $$AttachmentsTableTableTableManager(_db, _db.attachmentsTable);
-  $$FinancialTransactionsTableTableTableManager
-      get financialTransactionsTable =>
-          $$FinancialTransactionsTableTableTableManager(
-              _db, _db.financialTransactionsTable);
   $$HistoryEventsTableTableTableManager get historyEventsTable =>
       $$HistoryEventsTableTableTableManager(_db, _db.historyEventsTable);
   $$CustomTemplatesTableTableTableManager get customTemplatesTable =>

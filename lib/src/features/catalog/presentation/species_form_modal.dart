@@ -52,13 +52,10 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
   String _selectedType = AppStrings.typeObject;
   bool _isUnique = false;
-  bool _isSubjectToPurchase = false; // Default false when creating!
-  bool _isSubjectToSale = false; // Default false when creating!
-  String _currency = 'MXN';
   XFile? _selectedImage;
   bool _isSaving = false;
 
-  // Multiplicity of Units & Magnitudes
+  // Multiplicity of Units & Magnitudes (Starts empty!)
   final List<SpeciesMagnitude> _magnitudes = [];
 
   final List<String> _entityTypes = [
@@ -82,9 +79,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _descController.text = s.description ?? '';
       _selectedType = s.type;
       _isUnique = s.isUnique;
-      _isSubjectToPurchase = s.isSubjectToPurchase;
-      _isSubjectToSale = s.isSubjectToSale;
-      _currency = s.defaultMonetaryCurrency;
       _magnitudes.addAll(s.magnitudes);
     } else {
       _applySubgroupConstraints(_selectedType);
@@ -107,10 +101,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       if (template.isAlwaysUnique) {
         _isUnique = true;
       }
-      if (!template.hasMonetaryValue) {
-        _isSubjectToPurchase = false;
-        _isSubjectToSale = false;
-      }
     });
   }
 
@@ -120,9 +110,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _brandController.text = base.brand ?? '';
       _descController.text = base.description ?? '';
       _isUnique = base.isUnique;
-      _isSubjectToPurchase = base.isSubjectToPurchase;
-      _isSubjectToSale = base.isSubjectToSale;
-      _currency = base.defaultMonetaryCurrency;
       _magnitudes.clear();
       _magnitudes.addAll(base.magnitudes);
       _applySubgroupConstraints(base.type);
@@ -258,9 +245,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         barcode: template.hasBarcodeAndBrand && _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
         magnitudes: updatedMagnitudes,
         isUnique: effectiveUnique,
-        isSubjectToPurchase: template.hasMonetaryValue && _isSubjectToPurchase,
-        isSubjectToSale: template.hasMonetaryValue && _isSubjectToSale,
-        defaultMonetaryCurrency: _currency,
         mainPhotoPath: photoPath,
         createdAt: widget.initialSpecies?.createdAt ?? DateTime.now(),
       );
@@ -468,49 +452,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                               });
                             },
                     ),
-
-                    // Split Finances Checkboxes: "Sujeto a compra" & "Sujeto a venta"
-                    if (template.hasMonetaryValue) ...[
-                      CheckboxListTile(
-                        contentPadding: EdgeInsets.zero,
-                        dense: true,
-                        title: const Text('Sujeto a compra', style: TextStyle(fontSize: 13)),
-                        value: _isSubjectToPurchase,
-                        onChanged: (val) => setState(() => _isSubjectToPurchase = val ?? false),
-                      ),
-                      CheckboxListTile(
-                        contentPadding: EdgeInsets.zero,
-                        dense: true,
-                        title: const Text('Sujeto a venta', style: TextStyle(fontSize: 13)),
-                        value: _isSubjectToSale,
-                        onChanged: (val) => setState(() => _isSubjectToSale = val ?? false),
-                      ),
-                      if (_isSubjectToPurchase || _isSubjectToSale) ...[
-                        InkWell(
-                          onTap: () async {
-                            final picked = await AppWheelPicker.show<String>(
-                              context,
-                              items: const ['MXN', 'USD'],
-                              initialValue: _currency,
-                              labelBuilder: (c) => c,
-                              title: 'Seleccionar Moneda',
-                            );
-                            if (picked != null) setState(() => _currency = picked);
-                          },
-                          child: InputDecorator(
-                            decoration: const InputDecoration(labelText: AppStrings.currencyLabel),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(_currency, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                const Icon(Icons.unfold_more),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
-                    ],
+                    const SizedBox(height: 10),
 
                     // Multiplicidad de Unidades y Magnitudes (+ / - Controls)
                     Card(
