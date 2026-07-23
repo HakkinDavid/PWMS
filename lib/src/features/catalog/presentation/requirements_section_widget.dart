@@ -14,7 +14,7 @@ class RequirementsSectionWidget extends ConsumerStatefulWidget {
     super.key,
     required this.sourceId,
     this.sourceType = 'species',
-    this.title = 'Insumos / Requisitos (NECESITA)',
+    this.title = 'Relaciones de necesidad',
   });
 
   @override
@@ -154,7 +154,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
               children: [
                 Icon(Icons.info_outline, size: 18, color: Colors.grey),
                 SizedBox(width: 8),
-                Text('No hay insumos o requisitos definidos.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text('No hay necesidades definidas.', style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
           )

@@ -162,7 +162,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Subespecies / Marcas Registradas (${_subspeciesList.length})',
+              'Subespecies (${_subspeciesList.length})',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton.icon(
@@ -187,7 +187,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
               children: [
                 Icon(Icons.style_outlined, size: 18, color: Colors.grey),
                 SizedBox(width: 8),
-                Text('No hay subespecies o marcas registradas.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text('No hay subespecies.', style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
           )
