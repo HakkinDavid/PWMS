@@ -9,6 +9,7 @@ import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/domain/entity_relation.dart';
+import '../domain/entity_display_helper.dart';
 import '../domain/entity_template.dart';
 import '../domain/instance_magnitude.dart';
 
@@ -366,7 +367,9 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               Consumer(
                 builder: (context, ref, _) {
                   final entitiesState = ref.watch(entityListProvider);
+                  final subspeciesState = ref.watch(subspeciesListProvider);
                   final entities = entitiesState.asData?.value ?? [];
+                  final subspeciesList = subspeciesState.asData?.value ?? [];
 
                   if (entities.isEmpty) {
                     return const Text(AppStrings.noContainerObjectsAvailable);
@@ -378,8 +381,11 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                       hintText: AppStrings.selectContainerObject,
                     ),
                     items: entities.map((e) {
-                      final sp = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
-                      final name = sp?.name ?? AppStrings.containerObjectLabel;
+                      final name = EntityDisplayHelper.getDisplayName(
+                        entity: e,
+                        catalogItems: catalogItems,
+                        subspeciesList: subspeciesList,
+                      );
                       return DropdownMenuItem(value: e.id, child: Text(name));
                     }).toList(),
                     onChanged: (val) => setState(() => _selectedContainerEntityId = val),

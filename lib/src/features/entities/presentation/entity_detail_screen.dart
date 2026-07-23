@@ -104,6 +104,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           final locationNodes = locationsState.asData?.value ?? [];
           final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
           final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
+          final subspeciesList = ref.watch(subspeciesListProvider).asData?.value ?? [];
 
           final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
             entityId: entity.id,
@@ -112,6 +113,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             allRelations: allRelations,
             allNodes: locationNodes,
             catalogItems: catalogItems,
+            subspeciesList: subspeciesList,
           );
           final isIntegerUnit = DomainRules.isIntegerUnit(primaryUnit);
 

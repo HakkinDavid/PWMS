@@ -29,6 +29,7 @@ class InstancePreviewCard extends ConsumerWidget {
     final locationsState = ref.watch(locationNodeListProvider);
     final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
     final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
+    final subspeciesList = ref.watch(subspeciesListProvider).asData?.value ?? [];
     final theme = Theme.of(context);
 
     final catalogItems = catalogState.asData?.value ?? [];
@@ -50,6 +51,7 @@ class InstancePreviewCard extends ConsumerWidget {
       allRelations: allRelations,
       allNodes: locationNodes,
       catalogItems: catalogItems,
+      subspeciesList: subspeciesList,
     );
 
     return FutureBuilder<Subspecies?>(

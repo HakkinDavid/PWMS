@@ -5,6 +5,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
+import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/entity_relation.dart';
@@ -84,17 +85,27 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
     final theme = Theme.of(context);
     final entitiesState = ref.watch(entityListProvider);
     final catalogState = ref.watch(catalogListProvider);
+    final subspeciesState = ref.watch(subspeciesListProvider);
 
     final allEntities = entitiesState.asData?.value ?? [];
     final catalogItems = catalogState.asData?.value ?? [];
+    final subspeciesList = subspeciesState.asData?.value ?? [];
 
-    final sourceSpecies = catalogItems.where((c) => c.id == widget.sourceEntity.speciesId).firstOrNull;
+    final sourceName = EntityDisplayHelper.getDisplayName(
+      entity: widget.sourceEntity,
+      catalogItems: catalogItems,
+      subspeciesList: subspeciesList,
+    );
+
     final availableTargets = allEntities.where((e) {
       if (e.id == widget.sourceEntity.id) return false;
+      final targetDisplayName = EntityDisplayHelper.getDisplayName(
+        entity: e,
+        catalogItems: catalogItems,
+        subspeciesList: subspeciesList,
+      );
       if (_searchQuery.isEmpty) return true;
-      final targetSpecies = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
-      final name = targetSpecies?.name.toLowerCase() ?? '';
-      return name.contains(_searchQuery.toLowerCase());
+      return targetDisplayName.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
 
     return Container(
@@ -125,7 +136,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
             ),
             const SizedBox(height: 12),
             Text(
-              '${AppStrings.link} "${sourceSpecies?.name ?? AppStrings.instantiatedObject}"',
+              '${AppStrings.link} "$sourceName"',
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
@@ -179,6 +190,11 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                       itemCount: availableTargets.length,
                       itemBuilder: (ctx, idx) {
                         final target = availableTargets[idx];
+                        final targetDisplayName = EntityDisplayHelper.getDisplayName(
+                          entity: target,
+                          catalogItems: catalogItems,
+                          subspeciesList: subspeciesList,
+                        );
                         final targetSpecies = catalogItems.where((c) => c.id == target.speciesId).firstOrNull;
                         final isSelected = _selectedTargetEntity?.id == target.id;
 
@@ -190,7 +206,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
                               color: isSelected ? theme.colorScheme.primary : Colors.grey,
                             ),
-                            title: Text(targetSpecies?.name ?? AppStrings.instantiatedObject, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            title: Text(targetDisplayName, style: const TextStyle(fontWeight: FontWeight.bold)),
                             subtitle: Text(targetSpecies?.type ?? AppStrings.typeObject),
                             onTap: () {
                               setState(() => _selectedTargetEntity = target);

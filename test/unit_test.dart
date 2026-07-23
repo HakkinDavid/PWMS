@@ -15,6 +15,7 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/cat
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/species_requirement.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/effective_entity_group.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/entity_display_helper.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/quantity_operation_helper.dart';
 
 void main() {
@@ -435,6 +436,52 @@ void main() {
       expect(DomainRules.suggestPropertyNameForUnit('A'), equals('Corriente eléctrica'));
       expect(DomainRules.suggestPropertyNameForUnit('V'), equals('Voltaje'));
       expect(DomainRules.suggestPropertyNameForUnit('\$'), equals('Precio'));
+    });
+
+    test('11. EntityDisplayHelper Specific Subspecies Resolution Test', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Caja', type: 'Objeto');
+      final subSpecific = Subspecies(
+        id: 'sub-caja-metal',
+        speciesId: species.id,
+        subspeciesName: 'Caja Metálica',
+        brand: 'Stanley',
+        createdAt: DateTime.now(),
+      );
+      final subGeneric = Subspecies(
+        id: 'sub-caja-gen',
+        speciesId: species.id,
+        subspeciesName: 'Genérica',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(subSpecific);
+      await catalogRepo.saveSubspecies(subGeneric);
+
+      final specificEntity = await entityRepo.instantiateOrMerge(species.id, null, 1, subspeciesId: subSpecific.id);
+      final genericEntity = await entityRepo.instantiateOrMerge(species.id, null, 1, subspeciesId: subGeneric.id);
+      final noSubEntity = await entityRepo.instantiateOrMerge(species.id, null, 1);
+
+      final allSubspecies = await catalogRepo.getAllSubspecies();
+      final allCatalog = await catalogRepo.getAllCatalogItems();
+
+      final specificName = EntityDisplayHelper.getDisplayName(
+        entity: specificEntity,
+        catalogItems: allCatalog,
+        subspeciesList: allSubspecies,
+      );
+      final genericName = EntityDisplayHelper.getDisplayName(
+        entity: genericEntity,
+        catalogItems: allCatalog,
+        subspeciesList: allSubspecies,
+      );
+      final noSubName = EntityDisplayHelper.getDisplayName(
+        entity: noSubEntity,
+        catalogItems: allCatalog,
+        subspeciesList: allSubspecies,
+      );
+
+      expect(specificName, equals('Caja Metálica (Stanley)'));
+      expect(genericName, equals('Caja'));
+      expect(noSubName, equals('Caja'));
     });
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/entity_relation.dart';
@@ -73,11 +74,17 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
   Widget build(BuildContext context) {
     final entitiesState = ref.watch(entityListProvider);
     final catalogState = ref.watch(catalogListProvider);
+    final subspeciesState = ref.watch(subspeciesListProvider);
     final theme = Theme.of(context);
 
     final catalogItems = catalogState.asData?.value ?? [];
-    final sourceSpecies = catalogItems.where((c) => c.id == widget.sourceEntity.speciesId).firstOrNull;
-    final sourceName = sourceSpecies?.name ?? 'Objeto Origen';
+    final subspeciesList = subspeciesState.asData?.value ?? [];
+
+    final sourceName = EntityDisplayHelper.getDisplayName(
+      entity: widget.sourceEntity,
+      catalogItems: catalogItems,
+      subspeciesList: subspeciesList,
+    );
 
     return Container(
       decoration: BoxDecoration(
@@ -159,8 +166,11 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
                   hintText: 'Selecciona elemento destino',
                 ),
                 items: candidates.map((e) {
-                  final sp = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
-                  final name = sp?.name ?? 'Objeto Destino';
+                  final name = EntityDisplayHelper.getDisplayName(
+                    entity: e,
+                    catalogItems: catalogItems,
+                    subspeciesList: subspeciesList,
+                  );
                   return DropdownMenuItem(
                     value: e.id,
                     child: Text(name),

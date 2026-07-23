@@ -16,6 +16,7 @@ import '../../features/history/domain/activity_event.dart';
 import '../../features/history/application/activity_logger_service.dart';
 
 import '../../features/catalog/domain/catalog_item.dart';
+import '../../features/catalog/domain/subspecies.dart';
 import '../../features/catalog/infrastructure/catalog_repository.dart';
 
 // Singletons / Core Services
@@ -156,6 +157,13 @@ class CatalogListNotifier extends StateNotifier<AsyncValue<List<CatalogItem>>> {
 
 final catalogListProvider = StateNotifierProvider<CatalogListNotifier, AsyncValue<List<CatalogItem>>>((ref) {
   return CatalogListNotifier(ref.watch(catalogRepositoryProvider));
+});
+
+// All Subspecies Provider
+final subspeciesListProvider = FutureProvider<List<Subspecies>>((ref) async {
+  ref.watch(catalogListProvider);
+  final repo = ref.watch(catalogRepositoryProvider);
+  return repo.getAllSubspecies();
 });
 
 // Recent Entities Provider

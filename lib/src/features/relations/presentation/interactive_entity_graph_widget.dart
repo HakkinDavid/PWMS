@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
 
 class InteractiveEntityGraphWidget extends ConsumerWidget {
@@ -21,10 +22,17 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
     final relationsAsync = ref.watch(entityRelationsProvider(currentEntity.id));
     final catalogState = ref.watch(catalogListProvider);
     final entitiesState = ref.watch(entityListProvider);
+    final subspeciesState = ref.watch(subspeciesListProvider);
 
     final catalogItems = catalogState.asData?.value ?? [];
     final allEntities = entitiesState.asData?.value ?? [];
-    final currentSpecies = catalogItems.where((c) => c.id == currentEntity.speciesId).firstOrNull;
+    final subspeciesList = subspeciesState.asData?.value ?? [];
+
+    final centralTitle = EntityDisplayHelper.getDisplayName(
+      entity: currentEntity,
+      catalogItems: catalogItems,
+      subspeciesList: subspeciesList,
+    );
 
     return relationsAsync.when(
       data: (relations) {
@@ -83,7 +91,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                       // Central Entity Node Header Card
                       _buildCentralNodeTile(
                         theme: theme,
-                        title: currentSpecies?.name ?? AppStrings.currentInstanceLabel,
+                        title: centralTitle,
                       ),
                       const SizedBox(height: 10),
 
@@ -98,8 +106,13 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                           final isOutgoing = rel.sourceEntityId == currentEntity.id;
                           final otherEntityId = isOutgoing ? rel.targetEntityId : rel.sourceEntityId;
                           final otherEntity = allEntities.where((e) => e.id == otherEntityId).firstOrNull;
-                          final otherSpecies = catalogItems.where((c) => c.id == otherEntity?.speciesId).firstOrNull;
-                          final otherName = otherSpecies?.name ?? AppStrings.instantiatedObject;
+                          final otherName = otherEntity != null
+                              ? EntityDisplayHelper.getDisplayName(
+                                  entity: otherEntity,
+                                  catalogItems: catalogItems,
+                                  subspeciesList: subspeciesList,
+                                )
+                              : AppStrings.instantiatedObject;
 
                           return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),

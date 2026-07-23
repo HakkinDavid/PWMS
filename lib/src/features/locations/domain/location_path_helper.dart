@@ -1,5 +1,7 @@
 import '../../../core/constants/app_strings.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/subspecies.dart';
+import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../relations/domain/entity_relation.dart';
 import 'location_node.dart';
@@ -63,6 +65,7 @@ class LocationPathHelper {
     required List<EntityRelation> allRelations,
     required List<LocationNode> allNodes,
     required List<CatalogItem> catalogItems,
+    List<Subspecies>? subspeciesList,
   }) {
     if (entityId == null) {
       return buildBreadcrumbPath(effectiveLocationId, allNodes);
@@ -87,10 +90,14 @@ class LocationPathHelper {
 
       final targetEntity = allEntities.where((e) => e.id == targetId).firstOrNull;
       if (targetEntity != null) {
-        final species = catalogItems.where((c) => c.id == targetEntity.speciesId).firstOrNull;
+        final baseName = EntityDisplayHelper.getDisplayName(
+          entity: targetEntity,
+          catalogItems: catalogItems,
+          subspeciesList: subspeciesList,
+        );
         final name = targetEntity.notes != null && targetEntity.notes!.isNotEmpty
-            ? '${species?.name ?? "Objeto"} (${targetEntity.notes})'
-            : (species?.name ?? 'Contenedor');
+            ? '$baseName (${targetEntity.notes})'
+            : baseName;
         containerNames.insert(0, name);
       }
 

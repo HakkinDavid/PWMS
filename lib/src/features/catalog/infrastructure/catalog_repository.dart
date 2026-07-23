@@ -177,6 +177,21 @@ class CatalogRepository {
 
   // --- SUBSPECIES CRUD ---
 
+  Future<List<Subspecies>> getAllSubspecies() async {
+    final query = _db.select(_db.subspeciesTable);
+    final rows = await query.get();
+    return rows.map((r) => Subspecies(
+      id: r.id,
+      speciesId: r.speciesId,
+      subspeciesName: r.subspeciesName,
+      brand: r.brand,
+      barcode: r.barcode,
+      photoPath: r.photoPath,
+      notes: r.notes,
+      createdAt: r.createdAt,
+    )).toList();
+  }
+
   Future<List<Subspecies>> getSubspeciesForSpecies(String speciesId) async {
     final query = _db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId));
     final rows = await query.get();
