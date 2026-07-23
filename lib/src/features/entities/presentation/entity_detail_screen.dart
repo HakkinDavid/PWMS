@@ -267,7 +267,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               const SizedBox(height: 14),
 
               // Entity Requirements Section (NECESITA)
-              RequirementsSectionWidget(sourceId: entity.id, sourceType: 'entity'),
+              RequirementsSectionWidget(
+                sourceId: entity.id,
+                sourceType: 'entity',
+                isEditing: _isEditingInPlace,
+              ),
               const SizedBox(height: 14),
 
               // Magnitud Control (Only if magnitudes exist!)

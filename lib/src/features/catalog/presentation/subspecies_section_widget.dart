@@ -41,6 +41,10 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
   }
 
   Future<void> _addOrEditSubspeciesModal({Subspecies? initial}) async {
+    final species = await ref.read(catalogRepositoryProvider).getCatalogItemById(widget.speciesId);
+    if (!mounted) return;
+    final isObject = species == null || species.type == AppStrings.typeObject;
+
     final nameController = TextEditingController(text: initial?.subspeciesName ?? '');
     final brandController = TextEditingController(text: initial?.brand ?? '');
     final barcodeController = TextEditingController(text: initial?.barcode ?? '');
@@ -100,16 +104,18 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                   controller: nameController,
                   decoration: const InputDecoration(labelText: AppStrings.nameOrVariantLabel, hintText: AppStrings.nameOrVariantHint),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: brandController,
-                  decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: barcodeController,
-                  decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
-                ),
+                if (isObject) ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: brandController,
+                    decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: barcodeController,
+                    decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 TextField(
                   controller: notesController,
@@ -139,8 +145,8 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
         id: initial?.id ?? const Uuid().v4(),
         speciesId: widget.speciesId,
         subspeciesName: nameController.text.trim(),
-        brand: brandController.text.trim().isNotEmpty ? brandController.text.trim() : null,
-        barcode: barcodeController.text.trim().isNotEmpty ? barcodeController.text.trim() : null,
+        brand: isObject && brandController.text.trim().isNotEmpty ? brandController.text.trim() : null,
+        barcode: isObject && barcodeController.text.trim().isNotEmpty ? barcodeController.text.trim() : null,
         photoPath: photoPath,
         notes: notesController.text.trim().isNotEmpty ? notesController.text.trim() : null,
         createdAt: initial?.createdAt ?? DateTime.now(),
@@ -154,6 +160,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final canDelete = _subspeciesList.length > 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +230,9 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                   subtitle: Text(
-                    sub.barcode != null ? '${AppStrings.barcodeLabel}: ${sub.barcode}' : AppStrings.noBarcode,
+                    sub.barcode != null
+                        ? '${AppStrings.barcodeLabel}: ${sub.barcode}'
+                        : (sub.notes != null ? sub.notes! : AppStrings.noBarcode),
                     style: const TextStyle(fontSize: 11),
                   ),
                   trailing: Row(
@@ -234,11 +243,26 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                         onPressed: () => _addOrEditSubspeciesModal(initial: sub),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
-                        onPressed: () async {
-                          await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
-                          _loadSubspecies();
-                        },
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: canDelete ? Colors.redAccent : Colors.grey.shade400,
+                          size: 18,
+                        ),
+                        tooltip: canDelete ? AppStrings.delete : 'No se puede borrar la única subespecie',
+                        onPressed: canDelete
+                            ? () async {
+                                try {
+                                  await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
+                                  _loadSubspecies();
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+                                    );
+                                  }
+                                }
+                              }
+                            : null,
                       ),
                     ],
                   ),

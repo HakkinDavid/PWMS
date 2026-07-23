@@ -142,12 +142,17 @@ class CatalogRepository {
       ));
     }
 
-    // Rule #3: Guarantee at least one subspecies exists per species
-    final existingSubspecies = await getSubspeciesForSpecies(item.id);
-    if (existingSubspecies.isEmpty) {
+    // Rule #1: Ensure default generic subspecies exists ONLY if no subspecies exist
+    await ensureDefaultSubspecies(item.id);
+  }
+
+  Future<void> ensureDefaultSubspecies(String speciesId) async {
+    final query = _db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId));
+    final rows = await query.get();
+    if (rows.isEmpty) {
       await saveSubspecies(Subspecies(
         id: const Uuid().v4(),
-        speciesId: item.id,
+        speciesId: speciesId,
         subspeciesName: 'Genérica',
         brand: null,
         barcode: null,
@@ -170,20 +175,6 @@ class CatalogRepository {
   Future<List<Subspecies>> getSubspeciesForSpecies(String speciesId) async {
     final query = _db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId));
     final rows = await query.get();
-    if (rows.isEmpty) {
-      final defaultSub = Subspecies(
-        id: const Uuid().v4(),
-        speciesId: speciesId,
-        subspeciesName: 'Genérica',
-        brand: null,
-        barcode: null,
-        photoPath: null,
-        notes: null,
-        createdAt: DateTime.now(),
-      );
-      await saveSubspecies(defaultSub);
-      return [defaultSub];
-    }
     return rows.map((r) => Subspecies(
       id: r.id,
       speciesId: r.speciesId,
@@ -213,12 +204,24 @@ class CatalogRepository {
   }
 
   Future<void> saveSubspecies(Subspecies subspecies) async {
+    // Structural constraint: Brand & Barcode ONLY exist for "Objeto"
+    String? finalBrand = subspecies.brand?.trim();
+    String? finalBarcode = subspecies.barcode?.trim();
+
+    if (subspecies.speciesId.isNotEmpty) {
+      final species = await getCatalogItemById(subspecies.speciesId);
+      if (species != null && species.type != AppStrings.typeObject) {
+        finalBrand = null;
+        finalBarcode = null;
+      }
+    }
+
     final companion = SubspeciesTableCompanion(
       id: Value(subspecies.id),
       speciesId: Value(subspecies.speciesId),
       subspeciesName: Value(subspecies.subspeciesName.trim()),
-      brand: Value(subspecies.brand?.trim()),
-      barcode: Value(subspecies.barcode?.trim()),
+      brand: Value(finalBrand),
+      barcode: Value(finalBarcode),
       photoPath: Value(subspecies.photoPath),
       notes: Value(subspecies.notes?.trim()),
       createdAt: Value(subspecies.createdAt),
@@ -227,6 +230,13 @@ class CatalogRepository {
   }
 
   Future<void> deleteSubspecies(String id) async {
+    final sub = await getSubspeciesById(id);
+    if (sub != null) {
+      final existingForSpecies = await getSubspeciesForSpecies(sub.speciesId);
+      if (existingForSpecies.length <= 1) {
+        throw Exception('No se puede eliminar la única subespecie de una especie.');
+      }
+    }
     await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();
   }
 

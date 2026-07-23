@@ -86,38 +86,36 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             ),
             const SizedBox(height: 12),
 
-            // Mode Switcher Choice Chips (3 Modes)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  ChoiceChip(
-                    visualDensity: VisualDensity.compact,
-                    label: const Text(AppStrings.selectFromCatalogChoice),
-                    selected: _currentMode == RegisterModalMode.selectFromCatalog,
-                    onSelected: (val) {
-                      if (val) setState(() => _currentMode = RegisterModalMode.selectFromCatalog);
-                    },
+            // Fixed 3-way Segmented Control (No horizontal scrolling!)
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<RegisterModalMode>(
+                showSelectedIcon: false,
+                style: SegmentedButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                segments: const [
+                  ButtonSegment(
+                    value: RegisterModalMode.selectFromCatalog,
+                    label: Text('Instanciar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.public, size: 16),
                   ),
-                  const SizedBox(width: 6),
-                  ChoiceChip(
-                    visualDensity: VisualDensity.compact,
-                    label: const Text(AppStrings.createNewSpeciesChoice),
-                    selected: _currentMode == RegisterModalMode.createNewSpecies,
-                    onSelected: (val) {
-                      if (val) setState(() => _currentMode = RegisterModalMode.createNewSpecies);
-                    },
+                  ButtonSegment(
+                    value: RegisterModalMode.createNewSpecies,
+                    label: Text('Crear Especie', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.add, size: 16),
                   ),
-                  const SizedBox(width: 6),
-                  ChoiceChip(
-                    visualDensity: VisualDensity.compact,
-                    label: const Text('Agregar Subespecie'),
-                    selected: _currentMode == RegisterModalMode.addSubspeciesToExisting,
-                    onSelected: (val) {
-                      if (val) setState(() => _currentMode = RegisterModalMode.addSubspeciesToExisting);
-                    },
+                  ButtonSegment(
+                    value: RegisterModalMode.addSubspeciesToExisting,
+                    label: Text('Crear subespecie', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.branding_watermark, size: 16),
                   ),
                 ],
+                selected: {_currentMode},
+                onSelectionChanged: (set) {
+                  setState(() => _currentMode = set.first);
+                },
               ),
             ),
             const SizedBox(height: 12),

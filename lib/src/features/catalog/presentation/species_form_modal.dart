@@ -294,16 +294,18 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                   controller: nameCtrl,
                   decoration: const InputDecoration(labelText: AppStrings.nameOrVariantLabel, hintText: AppStrings.nameOrVariantHint),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: brandCtrl,
-                  decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: barcodeCtrl,
-                  decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
-                ),
+                if (_selectedType == AppStrings.typeObject) ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: brandCtrl,
+                    decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: barcodeCtrl,
+                    decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 TextField(
                   controller: notesCtrl,
@@ -605,55 +607,58 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     const SizedBox(height: 10),
 
                     // Multiplicidad de Unidades y Magnitudes (+ / - Controls)
-                    Card(
-                      margin: EdgeInsets.zero,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppStrings.unitsAndMagnitudesTitle,
-                                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                TextButton.icon(
-                                  onPressed: _addMagnitudeRow,
-                                  icon: const Icon(Icons.add, size: 16),
-                                  label: const Text(AppStrings.addUnitAction, style: TextStyle(fontSize: 12)),
-                                ),
-                              ],
-                            ),
-                            if (_magnitudes.isEmpty)
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 6.0),
-                                child: Text(AppStrings.noAdditionalUnitsAdded, style: TextStyle(color: Colors.grey, fontSize: 12)),
-                              )
-                            else
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _magnitudes.length,
-                                itemBuilder: (ctx, idx) {
-                                  final mag = _magnitudes[idx];
-                                  return ListTile(
-                                    dense: true,
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Text('${mag.propertyName} (${mag.unitSymbol})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
-                                      tooltip: AppStrings.removeUnitAction,
-                                      onPressed: () => _removeMagnitudeRow(idx),
-                                    ),
-                                  );
-                                },
+                    if (template.hasQuantity && !template.isAlwaysUnique) ...[
+                      Card(
+                        margin: EdgeInsets.zero,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppStrings.unitsAndMagnitudesTitle,
+                                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: _addMagnitudeRow,
+                                    icon: const Icon(Icons.add, size: 16),
+                                    label: const Text(AppStrings.addUnitAction, style: TextStyle(fontSize: 12)),
+                                  ),
+                                ],
                               ),
-                          ],
+                              if (_magnitudes.isEmpty)
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 6.0),
+                                  child: Text(AppStrings.noAdditionalUnitsAdded, style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                )
+                              else
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: _magnitudes.length,
+                                  itemBuilder: (ctx, idx) {
+                                    final mag = _magnitudes[idx];
+                                    return ListTile(
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Text('${mag.propertyName} (${mag.unitSymbol})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                      trailing: IconButton(
+                                        icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
+                                        tooltip: AppStrings.removeUnitAction,
+                                        onPressed: () => _removeMagnitudeRow(idx),
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 10),
+                    ],
                     // Draft Subspecies / Brand Variants (Create Mode)
                     if (!_isEditMode) ...[
                       Card(

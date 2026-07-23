@@ -366,5 +366,38 @@ void main() {
       final allGatos = (await entityRepo.getAllEntities()).where((e) => e.speciesId == species.id).toList();
       expect(allGatos.length, equals(2));
     });
+
+    test('9. Single Subspecies Deletion Protection and Non-Object Brand/Barcode Stripping', () async {
+      final plantSpecies = await catalogRepo.getOrCreateSpecies('Planta Rosada', type: 'Ser Vivo', isUnique: false);
+      final sub1 = Subspecies(
+        id: 'sub-plant-1',
+        speciesId: plantSpecies.id,
+        subspeciesName: 'Orquídea',
+        brand: 'IllegalBrand',
+        barcode: '123456',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub1);
+
+      // Verify Brand and Barcode were stripped for Ser Vivo
+      final savedSub1 = await catalogRepo.getSubspeciesById(sub1.id);
+      expect(savedSub1?.brand, isNull);
+      expect(savedSub1?.barcode, isNull);
+
+      // Verify deletion protection for single subspecies
+      final plantSubspecies = await catalogRepo.getSubspeciesForSpecies(plantSpecies.id);
+      expect(plantSubspecies.length, equals(2)); // "Genérica" + sub1
+
+      // Delete sub1 (allowed because length > 1)
+      await catalogRepo.deleteSubspecies(sub1.id);
+      expect((await catalogRepo.getSubspeciesForSpecies(plantSpecies.id)).length, equals(1));
+
+      // Attempt deleting the last remaining subspecies (should throw)
+      final lastSub = (await catalogRepo.getSubspeciesForSpecies(plantSpecies.id)).first;
+      expect(
+        () async => await catalogRepo.deleteSubspecies(lastSub.id),
+        throwsA(isA<Exception>()),
+      );
+    });
   });
 }

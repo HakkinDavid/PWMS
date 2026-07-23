@@ -59,10 +59,15 @@ class InstancePreviewCard extends ConsumerWidget {
       builder: (context, subSnapshot) {
         final subspecies = subSnapshot.data;
         final effectivePhotoPath = subspecies?.resolvePhotoPath(species?.mainPhotoPath);
+        final isCustomSubspecies = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
 
-        final titleText = subspecies != null
-            ? '$speciesName — ${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}'
+        final primaryTitle = isCustomSubspecies
+            ? '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}'
             : speciesName;
+
+        final typeAndSpeciesText = isCustomSubspecies
+            ? '$speciesType • $speciesName • '
+            : '$speciesType • ';
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
 
@@ -100,13 +105,13 @@ class InstancePreviewCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
 
-                  // Info Column (Species, Subspecies, Barcode, Location Breadcrumb with @)
+                  // Info Column (Subspecies as main title, Species as secondary context)
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          titleText,
+                          primaryTitle,
                           style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -123,7 +128,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                 text: TextSpan(
                                   style: theme.textTheme.bodySmall?.copyWith(fontSize: 11),
                                   children: [
-                                    TextSpan(text: '$speciesType • '),
+                                    TextSpan(text: typeAndSpeciesText),
                                     if (breadcrumb.ancestorPath.isNotEmpty)
                                       TextSpan(
                                         text: '${breadcrumb.ancestorPath} ',

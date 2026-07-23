@@ -9,12 +9,14 @@ class RequirementsSectionWidget extends ConsumerStatefulWidget {
   final String sourceId;
   final String sourceType; // 'species' or 'entity'
   final String title;
+  final bool isEditing;
 
   const RequirementsSectionWidget({
     super.key,
     required this.sourceId,
     this.sourceType = 'species',
     this.title = AppStrings.requirementsTitle,
+    this.isEditing = true,
   });
 
   @override
@@ -132,11 +134,12 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
               widget.title,
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            TextButton.icon(
-              onPressed: _addRequirementDialog,
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text(AppStrings.add),
-            ),
+            if (widget.isEditing)
+              TextButton.icon(
+                onPressed: _addRequirementDialog,
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text(AppStrings.add),
+              ),
           ],
         ),
         const SizedBox(height: 4),
@@ -184,13 +187,15 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                   subtitle: req.notes != null ? Text(req.notes!, style: const TextStyle(fontSize: 11)) : null,
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
-                    onPressed: () async {
-                      await ref.read(catalogRepositoryProvider).deleteRequirement(req.id);
-                      _loadRequirements();
-                    },
-                  ),
+                  trailing: widget.isEditing
+                      ? IconButton(
+                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
+                          onPressed: () async {
+                            await ref.read(catalogRepositoryProvider).deleteRequirement(req.id);
+                            _loadRequirements();
+                          },
+                        )
+                      : null,
                 ),
               );
             },
