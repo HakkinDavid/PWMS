@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/presentation/location_tree_picker.dart';
@@ -76,9 +75,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       _magnitudeControllers.clear();
 
       for (final mag in species.magnitudes) {
-        _magnitudeControllers[mag.propertyName] = TextEditingController(
-          text: DomainRules.formatMagnitude(mag.magnitudeValue, mag.unitSymbol),
-        );
+        _magnitudeControllers[mag.propertyName] = TextEditingController(text: '1');
       }
     });
 
@@ -129,15 +126,17 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     final species = _selectedSpecies!;
     final template = EntityTemplateRegistry.getTemplate(species.type);
 
-    // Single instance check for non-countable abstract templates or unique species
+    // Single instance check for non-countable abstract templates or unique species (evaluated PER SUBSPECIES!)
     if (!template.hasQuantity || species.isUnique) {
       final existingEntities = ref.read(entityListProvider).asData?.value ?? [];
-      final alreadyExists = existingEntities.any((e) => e.speciesId == species.id);
+      final targetSubId = _selectedSubspecies?.id;
+      final alreadyExists = existingEntities.any((e) => e.speciesId == species.id && e.subspeciesId == targetSubId);
       if (alreadyExists) {
         if (mounted) {
+          final subName = _selectedSubspecies?.subspeciesName ?? 'Genérica';
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(AppStrings.singleInstanceError),
+            SnackBar(
+              content: Text('La subespecie "$subName" de esta especie única ya está instanciada en el mundo.'),
               backgroundColor: Colors.orange,
             ),
           );
@@ -168,7 +167,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         final List<InstanceMagnitude> customInstanceMags = [];
         for (final sm in species.magnitudes) {
           final ctrl = _magnitudeControllers[sm.propertyName];
-          final customVal = ctrl != null ? (double.tryParse(ctrl.text.trim()) ?? sm.magnitudeValue) : sm.magnitudeValue;
+          final customVal = ctrl != null ? (double.tryParse(ctrl.text.trim()) ?? 1.0) : 1.0;
 
           customInstanceMags.add(InstanceMagnitude(
             id: const Uuid().v4(),
@@ -420,7 +419,6 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                           decoration: InputDecoration(
                             labelText: '${sm.propertyName} (${sm.unitSymbol})',
                             prefixIcon: const Icon(Icons.straighten),
-                            helperText: 'Valor de especie: ${DomainRules.formatMagnitude(sm.magnitudeValue, sm.unitSymbol)} ${sm.unitSymbol}',
                           ),
                         ),
                       );

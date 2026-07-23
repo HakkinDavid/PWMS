@@ -51,7 +51,6 @@ class SpeciesMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
   TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen"
-  RealColumn get magnitudeValue => real()();
   TextColumn get unitSymbol => text()();
   DateTimeColumn get createdAt => dateTime()();
 

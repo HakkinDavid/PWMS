@@ -66,7 +66,6 @@ void main() {
             id: 'mag-1',
             speciesId: species.id,
             propertyName: 'Longitud Carrete',
-            magnitudeValue: 100.0,
             unitSymbol: 'm',
             createdAt: DateTime.now(),
           ),
@@ -74,7 +73,6 @@ void main() {
             id: 'mag-2',
             speciesId: species.id,
             propertyName: 'Masa Total',
-            magnitudeValue: 12.5,
             unitSymbol: 'kg',
             createdAt: DateTime.now(),
           ),
@@ -255,8 +253,8 @@ void main() {
       await catalogRepo.saveSubspecies(duracellSub);
 
       final fetchedSubs = await catalogRepo.getSubspeciesForSpecies(fridgeSpecies.id);
-      expect(fetchedSubs.length, equals(1));
-      expect(fetchedSubs.first.brand, equals('LG'));
+      expect(fetchedSubs.length, equals(2)); // Default "Genérica" + "Inverter Dual Door"
+      expect(fetchedSubs.any((s) => s.brand == 'LG'), isTrue);
 
       // 2. NECESITA Requirement: Refrigerador NECESITA 6 Huevo (even with 0 egg instances!)
       final req = SpeciesRequirement(
@@ -337,6 +335,36 @@ void main() {
 
       expect(subWithoutPhoto.resolvePhotoPath(species.mainPhotoPath), equals('species/default.jpg'));
       expect(subWithPhoto.resolvePhotoPath(species.mainPhotoPath), equals('subspecies/powera.jpg'));
+    });
+
+    test('8. Unique Species evaluated per Subspecies', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Gato', type: 'Mascota', isUnique: true);
+
+      final subPancho = Subspecies(
+        id: 'sub-pancho',
+        speciesId: species.id,
+        subspeciesName: 'Pancho',
+        createdAt: DateTime.now(),
+      );
+      final subMino = Subspecies(
+        id: 'sub-mino',
+        speciesId: species.id,
+        subspeciesName: 'Mino',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(subPancho);
+      await catalogRepo.saveSubspecies(subMino);
+
+      // Instantiate Pancho (1st time -> allowed)
+      final pancho = await entityRepo.instantiateOrMerge(species.id, null, 1, subspeciesId: subPancho.id);
+      expect(pancho, isNotNull);
+
+      // Instantiate Mino (1st time for Mino -> allowed even though Gato is unique species)
+      final mino = await entityRepo.instantiateOrMerge(species.id, null, 1, subspeciesId: subMino.id);
+      expect(mino, isNotNull);
+
+      final allGatos = (await entityRepo.getAllEntities()).where((e) => e.speciesId == species.id).toList();
+      expect(allGatos.length, equals(2));
     });
   });
 }

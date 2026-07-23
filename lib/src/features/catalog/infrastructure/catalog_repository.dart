@@ -27,7 +27,6 @@ class CatalogRepository {
       id: m.id,
       speciesId: m.speciesId,
       propertyName: m.propertyName,
-      magnitudeValue: m.magnitudeValue,
       unitSymbol: m.unitSymbol,
       createdAt: m.createdAt,
     )).toList();
@@ -138,9 +137,23 @@ class CatalogRepository {
         id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
         speciesId: Value(item.id),
         propertyName: Value(mag.propertyName),
-        magnitudeValue: Value(mag.magnitudeValue),
         unitSymbol: Value(mag.unitSymbol),
         createdAt: Value(mag.createdAt),
+      ));
+    }
+
+    // Rule #3: Guarantee at least one subspecies exists per species
+    final existingSubspecies = await getSubspeciesForSpecies(item.id);
+    if (existingSubspecies.isEmpty) {
+      await saveSubspecies(Subspecies(
+        id: const Uuid().v4(),
+        speciesId: item.id,
+        subspeciesName: 'Genérica',
+        brand: null,
+        barcode: null,
+        photoPath: null,
+        notes: null,
+        createdAt: DateTime.now(),
       ));
     }
   }
@@ -157,6 +170,20 @@ class CatalogRepository {
   Future<List<Subspecies>> getSubspeciesForSpecies(String speciesId) async {
     final query = _db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId));
     final rows = await query.get();
+    if (rows.isEmpty) {
+      final defaultSub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: speciesId,
+        subspeciesName: 'Genérica',
+        brand: null,
+        barcode: null,
+        photoPath: null,
+        notes: null,
+        createdAt: DateTime.now(),
+      );
+      await saveSubspecies(defaultSub);
+      return [defaultSub];
+    }
     return rows.map((r) => Subspecies(
       id: r.id,
       speciesId: r.speciesId,

@@ -9,7 +9,6 @@ class SpeciesMagnitude with _$SpeciesMagnitude {
     required String id,
     required String speciesId,
     required String propertyName, // e.g. "Masa", "Volumen", "Magnitud Principal"
-    required double magnitudeValue,
     required String unitSymbol,
     required DateTime createdAt,
   }) = _SpeciesMagnitude;

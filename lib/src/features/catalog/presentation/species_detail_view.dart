@@ -5,14 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_template.dart';
 import '../domain/catalog_item.dart';
 
+import '../domain/subspecies.dart';
+
 class SpeciesDetailView extends ConsumerWidget {
   final CatalogItem species;
+  final Subspecies? subspecies;
   final Widget? instanceSpecificsHeader;
   final Widget? instanceSpecificsFooter;
   final List<Widget>? actions;
@@ -21,10 +23,11 @@ class SpeciesDetailView extends ConsumerWidget {
   const SpeciesDetailView({
     super.key,
     required this.species,
+    this.subspecies,
     this.instanceSpecificsHeader,
     this.instanceSpecificsFooter,
     this.actions,
-    this.showAttachmentAction = false, // Point 3: Hide in reading view mode by default!
+    this.showAttachmentAction = false,
   });
 
   Future<void> _pickAndAddDocument(BuildContext context, WidgetRef ref, String speciesId) async {
@@ -61,10 +64,14 @@ class SpeciesDetailView extends ConsumerWidget {
     final theme = Theme.of(context);
     final template = EntityTemplateRegistry.getTemplate(species.type);
     final attachmentsAsync = ref.watch(speciesAttachmentsProvider(species.id));
+    final effectivePhotoPath = subspecies?.resolvePhotoPath(species.mainPhotoPath) ?? species.mainPhotoPath;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(species.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          subspecies != null ? '${species.name} (${subspecies!.subspeciesName})' : species.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: actions,
       ),
       body: SingleChildScrollView(
@@ -73,7 +80,7 @@ class SpeciesDetailView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Photo Box Preview Card (Point 2: BoxFit.contain)
+              // Photo Box Preview Card with Subspecies Fallback to Species Photo
               Center(
                 child: Container(
                   width: 140,
@@ -93,14 +100,14 @@ class SpeciesDetailView extends ConsumerWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(18),
                     child: FutureBuilder<String>(
-                      future: species.mainPhotoPath != null
-                          ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
+                      future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
+                          ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
                           : Future.value(''),
                       builder: (context, snapshot) {
                         if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                           return Image.file(
                             File(snapshot.data!),
-                            fit: BoxFit.contain, // Point 2: BoxFit.contain
+                            fit: BoxFit.contain,
                           );
                         }
                         return Container(
@@ -160,6 +167,22 @@ class SpeciesDetailView extends ConsumerWidget {
                         ],
                       ),
                     ),
+                    if (subspecies != null) ...[
+                      Chip(
+                        visualDensity: VisualDensity.compact,
+                        avatar: const Icon(Icons.branding_watermark, size: 12),
+                        label: Text(
+                          'Subespecie: ${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}',
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      if (subspecies!.barcode != null)
+                        Chip(
+                          visualDensity: VisualDensity.compact,
+                          avatar: const Icon(Icons.qr_code, size: 12),
+                          label: Text('Barcode: ${subspecies!.barcode}', style: const TextStyle(fontSize: 11)),
+                        ),
+                    ],
                     if (species.isUnique)
                       const Chip(
                         visualDensity: VisualDensity.compact,
@@ -171,7 +194,7 @@ class SpeciesDetailView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Display ALL 4NF Multiple Magnitude Properties with Integer Display Formatting
+              // Display ALL 4NF Multiple Magnitude Property Schemas
               if (species.magnitudes.isNotEmpty) ...[
                 Card(
                   margin: EdgeInsets.zero,
@@ -191,20 +214,15 @@ class SpeciesDetailView extends ConsumerWidget {
                           itemCount: species.magnitudes.length,
                           itemBuilder: (ctx, idx) {
                             final mag = species.magnitudes[idx];
-                            final formattedValue = DomainRules.formatMagnitude(mag.magnitudeValue, mag.unitSymbol);
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.fitness_center, size: 14, color: Colors.grey),
+                                  const Icon(Icons.straighten, size: 14, color: Colors.grey),
                                   const SizedBox(width: 8),
                                   Text(
-                                    '${mag.propertyName}: ',
+                                    '${mag.propertyName} (${mag.unitSymbol})',
                                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                                  ),
-                                  Text(
-                                    '$formattedValue ${mag.unitSymbol}',
-                                    style: const TextStyle(fontSize: 12),
                                   ),
                                 ],
                               ),

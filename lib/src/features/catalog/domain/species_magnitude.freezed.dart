@@ -24,7 +24,6 @@ mixin _$SpeciesMagnitude {
   String get speciesId => throw _privateConstructorUsedError;
   String get propertyName =>
       throw _privateConstructorUsedError; // e.g. "Masa", "Volumen", "Magnitud Principal"
-  double get magnitudeValue => throw _privateConstructorUsedError;
   String get unitSymbol => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
@@ -48,7 +47,6 @@ abstract class $SpeciesMagnitudeCopyWith<$Res> {
       {String id,
       String speciesId,
       String propertyName,
-      double magnitudeValue,
       String unitSymbol,
       DateTime createdAt});
 }
@@ -71,7 +69,6 @@ class _$SpeciesMagnitudeCopyWithImpl<$Res, $Val extends SpeciesMagnitude>
     Object? id = null,
     Object? speciesId = null,
     Object? propertyName = null,
-    Object? magnitudeValue = null,
     Object? unitSymbol = null,
     Object? createdAt = null,
   }) {
@@ -88,10 +85,6 @@ class _$SpeciesMagnitudeCopyWithImpl<$Res, $Val extends SpeciesMagnitude>
           ? _value.propertyName
           : propertyName // ignore: cast_nullable_to_non_nullable
               as String,
-      magnitudeValue: null == magnitudeValue
-          ? _value.magnitudeValue
-          : magnitudeValue // ignore: cast_nullable_to_non_nullable
-              as double,
       unitSymbol: null == unitSymbol
           ? _value.unitSymbol
           : unitSymbol // ignore: cast_nullable_to_non_nullable
@@ -116,7 +109,6 @@ abstract class _$$SpeciesMagnitudeImplCopyWith<$Res>
       {String id,
       String speciesId,
       String propertyName,
-      double magnitudeValue,
       String unitSymbol,
       DateTime createdAt});
 }
@@ -137,7 +129,6 @@ class __$$SpeciesMagnitudeImplCopyWithImpl<$Res>
     Object? id = null,
     Object? speciesId = null,
     Object? propertyName = null,
-    Object? magnitudeValue = null,
     Object? unitSymbol = null,
     Object? createdAt = null,
   }) {
@@ -154,10 +145,6 @@ class __$$SpeciesMagnitudeImplCopyWithImpl<$Res>
           ? _value.propertyName
           : propertyName // ignore: cast_nullable_to_non_nullable
               as String,
-      magnitudeValue: null == magnitudeValue
-          ? _value.magnitudeValue
-          : magnitudeValue // ignore: cast_nullable_to_non_nullable
-              as double,
       unitSymbol: null == unitSymbol
           ? _value.unitSymbol
           : unitSymbol // ignore: cast_nullable_to_non_nullable
@@ -177,7 +164,6 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
       {required this.id,
       required this.speciesId,
       required this.propertyName,
-      required this.magnitudeValue,
       required this.unitSymbol,
       required this.createdAt});
 
@@ -192,15 +178,13 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
   final String propertyName;
 // e.g. "Masa", "Volumen", "Magnitud Principal"
   @override
-  final double magnitudeValue;
-  @override
   final String unitSymbol;
   @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'SpeciesMagnitude(id: $id, speciesId: $speciesId, propertyName: $propertyName, magnitudeValue: $magnitudeValue, unitSymbol: $unitSymbol, createdAt: $createdAt)';
+    return 'SpeciesMagnitude(id: $id, speciesId: $speciesId, propertyName: $propertyName, unitSymbol: $unitSymbol, createdAt: $createdAt)';
   }
 
   @override
@@ -213,8 +197,6 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
                 other.speciesId == speciesId) &&
             (identical(other.propertyName, propertyName) ||
                 other.propertyName == propertyName) &&
-            (identical(other.magnitudeValue, magnitudeValue) ||
-                other.magnitudeValue == magnitudeValue) &&
             (identical(other.unitSymbol, unitSymbol) ||
                 other.unitSymbol == unitSymbol) &&
             (identical(other.createdAt, createdAt) ||
@@ -223,8 +205,8 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, speciesId, propertyName,
-      magnitudeValue, unitSymbol, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType, id, speciesId, propertyName, unitSymbol, createdAt);
 
   /// Create a copy of SpeciesMagnitude
   /// with the given fields replaced by the non-null parameter values.
@@ -248,7 +230,6 @@ abstract class _SpeciesMagnitude implements SpeciesMagnitude {
       {required final String id,
       required final String speciesId,
       required final String propertyName,
-      required final double magnitudeValue,
       required final String unitSymbol,
       required final DateTime createdAt}) = _$SpeciesMagnitudeImpl;
 
@@ -261,8 +242,6 @@ abstract class _SpeciesMagnitude implements SpeciesMagnitude {
   String get speciesId;
   @override
   String get propertyName; // e.g. "Masa", "Volumen", "Magnitud Principal"
-  @override
-  double get magnitudeValue;
   @override
   String get unitSymbol;
   @override

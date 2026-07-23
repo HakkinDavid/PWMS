@@ -218,7 +218,7 @@ class EntityRepository implements IEntityRepository {
       id: const Uuid().v4(),
       instanceId: newId,
       propertyName: sm.propertyName,
-      magnitudeValue: sm.magnitudeValue * addQuantity,
+      magnitudeValue: addQuantity,
       unitSymbol: sm.unitSymbol,
     )).toList();
 

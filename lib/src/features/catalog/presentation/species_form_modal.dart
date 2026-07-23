@@ -214,7 +214,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       id: const Uuid().v4(),
                       speciesId: widget.initialSpecies?.id ?? '',
                       propertyName: propName,
-                      magnitudeValue: 1.0,
                       unitSymbol: chosenUnit,
                       createdAt: DateTime.now(),
                     ),
@@ -639,11 +638,10 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 itemCount: _magnitudes.length,
                                 itemBuilder: (ctx, idx) {
                                   final mag = _magnitudes[idx];
-                                  final formattedVal = DomainRules.formatMagnitude(mag.magnitudeValue, mag.unitSymbol);
                                   return ListTile(
                                     dense: true,
                                     contentPadding: EdgeInsets.zero,
-                                    title: Text('${mag.propertyName}: $formattedVal ${mag.unitSymbol}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                    title: Text('${mag.propertyName} (${mag.unitSymbol})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                                     trailing: IconButton(
                                       icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
                                       tooltip: AppStrings.removeUnitAction,

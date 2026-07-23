@@ -7,6 +7,10 @@ import '../../catalog/presentation/species_form_modal.dart';
 import '../../catalog/presentation/species_tile.dart';
 import 'instantiate_species_sheet.dart';
 
+import '../../catalog/presentation/subspecies_section_widget.dart';
+
+enum RegisterModalMode { selectFromCatalog, createNewSpecies, addSubspeciesToExisting }
+
 class RegisterObjectModal extends ConsumerStatefulWidget {
   final String? initialLocationId;
   final bool startInCreateSpecies;
@@ -39,18 +43,20 @@ class RegisterObjectModal extends ConsumerStatefulWidget {
 }
 
 class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
-  bool _isCreatingNewSpecies = false;
+  late RegisterModalMode _currentMode;
+  String? _selectedSpeciesIdForSubspecies;
 
   @override
   void initState() {
     super.initState();
-    _isCreatingNewSpecies = widget.startInCreateSpecies;
+    _currentMode = widget.startInCreateSpecies ? RegisterModalMode.createNewSpecies : RegisterModalMode.selectFromCatalog;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final catalogState = ref.watch(catalogListProvider);
+    final catalogItems = catalogState.asData?.value ?? [];
 
     return Container(
       decoration: BoxDecoration(
@@ -64,7 +70,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.82,
+        height: MediaQuery.of(context).size.height * 0.84,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,40 +86,48 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             ),
             const SizedBox(height: 12),
 
-            // Mode Switcher Chips
-            Row(
-              children: [
-                Expanded(
-                  child: ChoiceChip(
+            // Mode Switcher Choice Chips (3 Modes)
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  ChoiceChip(
                     visualDensity: VisualDensity.compact,
-                    label: const Center(child: Text(AppStrings.selectFromCatalogChoice)),
-                    selected: !_isCreatingNewSpecies,
+                    label: const Text(AppStrings.selectFromCatalogChoice),
+                    selected: _currentMode == RegisterModalMode.selectFromCatalog,
                     onSelected: (val) {
-                      if (val) setState(() => _isCreatingNewSpecies = false);
+                      if (val) setState(() => _currentMode = RegisterModalMode.selectFromCatalog);
                     },
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ChoiceChip(
+                  const SizedBox(width: 6),
+                  ChoiceChip(
                     visualDensity: VisualDensity.compact,
-                    label: const Center(child: Text(AppStrings.createNewSpeciesChoice)),
-                    selected: _isCreatingNewSpecies,
+                    label: const Text(AppStrings.createNewSpeciesChoice),
+                    selected: _currentMode == RegisterModalMode.createNewSpecies,
                     onSelected: (val) {
-                      if (val) setState(() => _isCreatingNewSpecies = true);
+                      if (val) setState(() => _currentMode = RegisterModalMode.createNewSpecies);
                     },
                   ),
-                ),
-              ],
+                  const SizedBox(width: 6),
+                  ChoiceChip(
+                    visualDensity: VisualDensity.compact,
+                    label: const Text('Agregar Subespecie'),
+                    selected: _currentMode == RegisterModalMode.addSubspeciesToExisting,
+                    onSelected: (val) {
+                      if (val) setState(() => _currentMode = RegisterModalMode.addSubspeciesToExisting);
+                    },
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
 
-            // Body: Catalog Browser vs Shared SpeciesFormModal
+            // Body: Select from Catalog vs Create Species vs Add Subspecies to Existing
             Expanded(
-              child: _isCreatingNewSpecies
+              child: _currentMode == RegisterModalMode.createNewSpecies
                   ? SpeciesFormModal(
                       onSpeciesSaved: (createdSpecies) {
-                        Navigator.pop(context); // Close RegisterObjectModal
+                        Navigator.pop(context);
                         InstantiateSpeciesSheet.show(
                           context,
                           species: createdSpecies,
@@ -121,10 +135,49 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                         );
                       },
                     )
-                  : _buildBrowseCatalogView(context, catalogState),
+                  : _currentMode == RegisterModalMode.addSubspeciesToExisting
+                      ? _buildAddSubspeciesToExistingView(context, catalogItems)
+                      : _buildBrowseCatalogView(context, catalogState),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildAddSubspeciesToExistingView(BuildContext context, List<CatalogItem> catalogItems) {
+    if (catalogItems.isEmpty) {
+      return const Center(child: Text(AppStrings.emptyCatalog));
+    }
+
+    _selectedSpeciesIdForSubspecies ??= catalogItems.first.id;
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(AppStrings.catalogSpeciesLabel, style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 6),
+          DropdownButtonFormField<String>(
+            initialValue: _selectedSpeciesIdForSubspecies,
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.public),
+              hintText: AppStrings.selectSpeciesPrompt,
+            ),
+            items: catalogItems.map((c) {
+              return DropdownMenuItem(
+                value: c.id,
+                child: Text('${c.name} (${c.type})'),
+              );
+            }).toList(),
+            onChanged: (val) {
+              if (val != null) setState(() => _selectedSpeciesIdForSubspecies = val);
+            },
+          ),
+          const SizedBox(height: 16),
+          if (_selectedSpeciesIdForSubspecies != null)
+            SubspeciesSectionWidget(speciesId: _selectedSpeciesIdForSubspecies!),
+        ],
       ),
     );
   }
@@ -144,7 +197,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   const Text(AppStrings.emptyCatalog),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
-                    onPressed: () => setState(() => _isCreatingNewSpecies = true),
+                    onPressed: () => setState(() => _currentMode = RegisterModalMode.createNewSpecies),
                     icon: const Icon(Icons.add),
                     label: const Text(AppStrings.createFirstSpeciesAction),
                   ),

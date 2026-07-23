@@ -437,6 +437,40 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 )
               : null;
 
+          if (entity.subspeciesId != null && entity.subspeciesId!.isNotEmpty) {
+            return FutureBuilder<Subspecies?>(
+              future: ref.read(catalogRepositoryProvider).getSubspeciesById(entity.subspeciesId!),
+              builder: (context, subSnapshot) {
+                return SpeciesDetailView(
+                  species: species,
+                  subspecies: subSnapshot.data,
+                  showAttachmentAction: false,
+                  instanceSpecificsHeader: instanceHeader,
+                  instanceSpecificsFooter: instanceFooter,
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.public),
+                      tooltip: AppStrings.viewCatalogSpecies,
+                      onPressed: () => context.push('/catalog/${species.id}'),
+                    ),
+                    IconButton(
+                      icon: Icon(_isEditingInPlace ? Icons.close : Icons.edit_outlined),
+                      tooltip: _isEditingInPlace ? AppStrings.cancel : AppStrings.edit,
+                      onPressed: () {
+                        setState(() => _isEditingInPlace = !_isEditingInPlace);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                      tooltip: AppStrings.delete,
+                      onPressed: () => _handleDeletion(species: species, entityId: entity.id),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+
           return SpeciesDetailView(
             species: species,
             showAttachmentAction: false,

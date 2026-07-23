@@ -32,19 +32,38 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
   Widget build(BuildContext context) {
     final catalogState = ref.watch(catalogListProvider);
     final locationsState = ref.watch(locationNodeListProvider);
+    final entitiesState = ref.watch(entityListProvider);
     final theme = Theme.of(context);
 
     final catalogItems = catalogState.asData?.value ?? [];
     final locationNodes = locationsState.asData?.value ?? [];
+    final allEntities = entitiesState.asData?.value ?? [];
 
-    final species = catalogItems.where((c) => c.id == widget.group.speciesId).firstOrNull;
+    // Recompute current active group dynamically from updated entity list
+    final updatedGroups = EffectiveEntityGroup.groupEntities(
+      entities: allEntities,
+      effectiveLocationMap: {for (var e in allEntities) e.id: e.locationId},
+    );
+    final currentGroup = updatedGroups.where((g) =>
+      g.speciesId == widget.group.speciesId &&
+      g.effectiveLocationId == widget.group.effectiveLocationId
+    ).firstOrNull;
+
+    if (currentGroup == null || currentGroup.population == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) Navigator.of(context).pop();
+      });
+      return const SizedBox.shrink();
+    }
+
+    final species = catalogItems.where((c) => c.id == currentGroup.speciesId).firstOrNull;
     final name = species?.name ?? AppStrings.typeObject;
     final type = species?.type ?? AppStrings.typeObject;
 
-    final breadcrumb = LocationPathHelper.buildBreadcrumbPath(widget.group.effectiveLocationId, locationNodes);
+    final breadcrumb = LocationPathHelper.buildBreadcrumbPath(currentGroup.effectiveLocationId, locationNodes);
 
-    final majorityArchetype = widget.group.majorityEntity;
-    final majorityCount = widget.group.majorityInstances.length;
+    final majorityArchetype = currentGroup.majorityEntity;
+    final majorityCount = currentGroup.majorityInstances.length;
 
     return Container(
       constraints: BoxConstraints(
@@ -144,7 +163,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${AppStrings.majorityDemographics} ($majorityCount de ${widget.group.population})',
+                        '${AppStrings.majorityDemographics} ($majorityCount de ${currentGroup.population})',
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                       ),
                       Text(
@@ -190,8 +209,8 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                   children: [
                     // Button [-]
                     GestureDetector(
-                      onTap: () => QuantityOperationHelper.removeOne(ref, widget.group),
-                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: widget.group, isAdd: false),
+                      onTap: () => QuantityOperationHelper.removeOne(ref, currentGroup),
+                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: currentGroup, isAdd: false),
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -206,7 +225,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
 
                     // Broad Quantity Display (Broad touch target for direct numeric input)
                     InkWell(
-                      onTap: () => QuantityOperationHelper.showDirectNumericInputDialog(context, ref, group: widget.group),
+                      onTap: () => QuantityOperationHelper.showDirectNumericInputDialog(context, ref, group: currentGroup),
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
@@ -220,7 +239,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                             Row(
                               children: [
                                 Text(
-                                  '${widget.group.population}',
+                                  '${currentGroup.population}',
                                   style: theme.textTheme.headlineMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: theme.colorScheme.onPrimaryContainer,
@@ -242,8 +261,8 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
 
                     // Button [+]
                     GestureDetector(
-                      onTap: () => QuantityOperationHelper.addOne(ref, widget.group),
-                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: widget.group, isAdd: true),
+                      onTap: () => QuantityOperationHelper.addOne(ref, currentGroup),
+                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: currentGroup, isAdd: true),
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -262,7 +281,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           const SizedBox(height: 16),
 
           Text(
-            '${AppStrings.groupInstanceDetail} (${widget.group.population})',
+            '${AppStrings.groupInstanceDetail} (${currentGroup.population})',
             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -270,9 +289,9 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           // Individual Instance Cards List
           Expanded(
             child: ListView.builder(
-              itemCount: widget.group.entities.length,
+              itemCount: currentGroup.entities.length,
               itemBuilder: (context, index) {
-                final entity = widget.group.entities[index];
+                final entity = currentGroup.entities[index];
                 return InstancePreviewCard(
                   entity: entity,
                   onTap: () {
@@ -282,12 +301,8 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                   trailing: IconButton(
                     icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
                     onPressed: () async {
-                      final nav = Navigator.of(context);
                       await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
                       ref.read(entityListProvider.notifier).loadEntities();
-                      if (mounted && widget.group.entities.length <= 1) {
-                        nav.pop();
-                      }
                     },
                   ),
                 );
