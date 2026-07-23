@@ -158,8 +158,8 @@ class AppStrings {
   static const quantityToInstantiateLabel = 'Cantidad';
   static const subspeciesTitle = 'Subespecies';
   static const subspeciesCountTitle = 'Subespecies';
-  static const addSubspecies = 'Añadir Subespecie';
-  static const addBrand = 'Agregar Marca';
+  static const addSubspecies = 'Añadir subespecie';
+  static const addBrand = 'Agregar subespecie';
   static const noSubspecies = 'Sin subespecies registradas';
   static const noSubspeciesDefined = 'No hay subespecies.';
   static const subspeciesNameLabel = 'Nombre de Subespecie';
@@ -209,8 +209,8 @@ class AppStrings {
   static const noAdditionalUnitsAdded = 'Sin unidades adicionales agregadas.';
   static const removeUnitAction = 'Eliminar unidad de medida';
   static const subspeciesOrBrands = 'Subespecies';
-  static const addBrandAction = 'Agregar marca';
-  static const noSubspeciesOrBrandsAdded = 'Sin subespecies o marcas agregadas.';
+  static const addBrandAction = 'Agregar subespecie';
+  static const noSubspeciesOrBrandsAdded = 'Sin subespecies agregadas.';
   static const noBarcode = 'Sin barcode';
 
   static const chooseFromCatalogAction = 'Elegir del catálogo';

@@ -297,7 +297,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             ),
             const SizedBox(height: 16),
 
-            // 2. Selector de Subespecie / Marca (si existen variante)
+            // 2. Selector de Subespecie
             if (_availableSubspecies.isNotEmpty) ...[
               Text(AppStrings.subspeciesOrBrandCommercialLabel, style: theme.textTheme.labelLarge),
               const SizedBox(height: 6),
