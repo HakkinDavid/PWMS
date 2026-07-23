@@ -10,6 +10,8 @@ import 'package:platinum_world_management_system/src/features/locations/domain/l
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
 import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/effective_entity_group.dart';
+import 'package:platinum_world_management_system/src/features/entities/presentation/quantity_operation_helper.dart';
 
 void main() {
   late AppDatabase db;
@@ -194,6 +196,43 @@ void main() {
       // Tool should now retain Box 2's current location ('loc-workshop') in instance_locations
       final toolUnlinked = await entityRepo.getEntityById(tool.id);
       expect(toolUnlinked!.locationId, equals('loc-workshop'));
+    });
+
+    test('5. Cascading Demographic Removal & Batch Operations', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Pila AA', type: 'Objeto');
+
+      // Create 3 instances with note "Batería Marca A"
+      final e1 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca A');
+      final e2 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca A');
+      final e3 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca A');
+
+      // Create 2 instances with note "Batería Marca B"
+      final e4 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
+      final e5 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
+
+      final allEntities = await entityRepo.getAllEntities();
+      final group = EffectiveEntityGroup.groupEntities(
+        entities: allEntities,
+        effectiveLocationMap: {for (var e in allEntities) e.id: e.locationId},
+      ).firstWhere((g) => g.speciesId == species.id);
+
+      expect(group.population, equals(5));
+      expect(group.majorityInstances.length, equals(3));
+      expect(group.majorityEntity.notes, equals('Batería Marca A'));
+
+      // Test cascading removal of 4 instances (should exhaust all 3 Marca A + 1 Marca B)
+      final idsToRemove = QuantityOperationHelper.getCascadingRemovalIds(group, 4);
+      expect(idsToRemove.length, equals(4));
+      expect(idsToRemove.contains(e1.id), isTrue);
+      expect(idsToRemove.contains(e2.id), isTrue);
+      expect(idsToRemove.contains(e3.id), isTrue);
+
+      await entityRepo.deleteEntitiesBatch(idsToRemove);
+
+      final remaining = await entityRepo.getAllEntities();
+      final remainingSpecies = remaining.where((e) => e.speciesId == species.id).toList();
+      expect(remainingSpecies.length, equals(1));
+      expect(remainingSpecies.first.notes, equals('Batería Marca B'));
     });
   });
 }

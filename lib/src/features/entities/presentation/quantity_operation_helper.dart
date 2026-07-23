@@ -4,9 +4,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/effective_entity_group.dart';
+import '../domain/world_entity.dart';
 
 class QuantityOperationHelper {
   QuantityOperationHelper._();
+
+  /// Collects instance IDs to remove, starting with the majority demographic
+  /// and cascading through subsequent demographic groups in descending order of size.
+  static List<String> getCascadingRemovalIds(EffectiveEntityGroup group, int requestedCount) {
+    if (group.entities.isEmpty || requestedCount <= 0) return [];
+
+    final Map<String, List<WorldEntity>> demographicMap = {};
+    for (final e in group.entities) {
+      final magSig = e.magnitudes.map((m) => '${m.propertyName}:${m.magnitudeValue}${m.unitSymbol}').join('|');
+      final signature = '${e.notes ?? ""}_$magSig';
+      demographicMap.putIfAbsent(signature, () => []).add(e);
+    }
+
+    // Sort demographic groups by population size descending (majority demographics first)
+    final sortedGroups = demographicMap.values.toList()
+      ..sort((a, b) => b.length.compareTo(a.length));
+
+    final List<String> idsToRemove = [];
+    int remaining = requestedCount.clamp(1, group.population);
+
+    for (final groupList in sortedGroups) {
+      if (remaining <= 0) break;
+      final takeCount = remaining.clamp(0, groupList.length);
+      idsToRemove.addAll(groupList.take(takeCount).map((e) => e.id));
+      remaining -= takeCount;
+    }
+
+    return idsToRemove;
+  }
 
   /// Short tap: Add 1 instance using majority demographic
   static Future<void> addOne(WidgetRef ref, EffectiveEntityGroup group) async {
@@ -22,10 +52,9 @@ class QuantityOperationHelper {
 
   /// Short tap: Remove 1 instance from majority demographic
   static Future<void> removeOne(WidgetRef ref, EffectiveEntityGroup group) async {
-    final majorityList = group.majorityInstances;
-    final targets = majorityList.isNotEmpty ? majorityList : group.entities;
-    if (targets.isNotEmpty) {
-      await ref.read(entityRepositoryProvider).deleteEntity(targets.last.id);
+    final idsToRemove = getCascadingRemovalIds(group, 1);
+    if (idsToRemove.isNotEmpty) {
+      await ref.read(entityRepositoryProvider).deleteEntitiesBatch(idsToRemove);
       ref.read(entityListProvider.notifier).loadEntities();
     }
   }
@@ -37,6 +66,15 @@ class QuantityOperationHelper {
     required EffectiveEntityGroup group,
     required bool isAdd,
   }) async {
+    if (!isAdd && group.population <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No hay instancias disponibles para eliminar.')),
+      );
+      return;
+    }
+
+    // Rule 2: In deletion mode, max wheel picker count is group.population
+    final int maxWheelCount = isAdd ? 100 : group.population;
     int selectedQty = 1;
 
     final confirm = await showModalBottomSheet<bool>(
@@ -65,15 +103,18 @@ class QuantityOperationHelper {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    isAdd ? 'Añadir por Selección de Rueda (WheelPicker)' : 'Eliminar por Selección de Rueda (WheelPicker)',
+                    isAdd ? 'Añadir por Rueda (WheelPicker)' : 'Eliminar por Rueda (WheelPicker)',
                     style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Text(
-                    'Operación sobre demografía mayoritaria',
+                    isAdd
+                        ? 'Clonará la demografía mayoritaria ($selectedQty de $maxWheelCount)'
+                        : 'Eliminará demografías mayoritarias en cascada ($selectedQty de máximo $maxWheelCount)',
                     style: TextStyle(fontSize: 12, color: theme.colorScheme.secondary),
                   ),
                   const SizedBox(height: 12),
+
                   SizedBox(
                     height: 120,
                     child: CupertinoPicker(
@@ -82,7 +123,7 @@ class QuantityOperationHelper {
                       onSelectedItemChanged: (index) {
                         setState(() => selectedQty = index + 1);
                       },
-                      children: List.generate(100, (idx) {
+                      children: List.generate(maxWheelCount, (idx) {
                         final val = idx + 1;
                         return Center(
                           child: Text(
@@ -98,6 +139,7 @@ class QuantityOperationHelper {
                     ),
                   ),
                   const SizedBox(height: 16),
+
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -134,12 +176,9 @@ class QuantityOperationHelper {
           );
         }
       } else {
-        final majorityList = group.majorityInstances;
-        final targets = majorityList.isNotEmpty ? majorityList : group.entities;
-        final toRemoveCount = selectedQty.clamp(1, targets.length);
-        for (int i = 0; i < toRemoveCount; i++) {
-          await ref.read(entityRepositoryProvider).deleteEntity(targets[i].id);
-        }
+        // Rule 1: Cascading deletion through majority demographic groups in order
+        final idsToRemove = getCascadingRemovalIds(group, selectedQty);
+        await ref.read(entityRepositoryProvider).deleteEntitiesBatch(idsToRemove);
       }
       ref.read(entityListProvider.notifier).loadEntities();
     }
@@ -167,7 +206,8 @@ class QuantityOperationHelper {
               deltaText = 'Se añadirán $delta instancias';
               deltaColor = Colors.green;
             } else if (delta < 0) {
-              deltaText = 'Se eliminarán ${delta.abs()} instancias';
+              final actualRemove = delta.abs().clamp(1, group.population);
+              deltaText = 'Se eliminarán $actualRemove instancias en cascada';
               deltaColor = Colors.redAccent;
             }
 
@@ -227,14 +267,8 @@ class QuantityOperationHelper {
           );
         }
       } else if (delta < 0) {
-        final removeCount = delta.abs();
-        final majorityList = group.majorityInstances;
-        final targets = majorityList.isNotEmpty ? majorityList : group.entities;
-        final actualRemoveCount = removeCount.clamp(1, targets.length);
-
-        for (int i = 0; i < actualRemoveCount; i++) {
-          await ref.read(entityRepositoryProvider).deleteEntity(targets[i].id);
-        }
+        final idsToRemove = getCascadingRemovalIds(group, delta.abs());
+        await ref.read(entityRepositoryProvider).deleteEntitiesBatch(idsToRemove);
       }
 
       ref.read(entityListProvider.notifier).loadEntities();

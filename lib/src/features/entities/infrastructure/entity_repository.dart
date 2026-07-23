@@ -261,6 +261,17 @@ class EntityRepository implements IEntityRepository {
   }
 
   @override
+  Future<void> deleteEntitiesBatch(List<String> ids) async {
+    if (ids.isEmpty) return;
+    await _db.batch((batch) {
+      batch.deleteWhere(_db.instanceLocationsTable, (t) => t.instanceId.isIn(ids));
+      batch.deleteWhere(_db.relationsTable, (t) => t.sourceEntityId.isIn(ids) | t.targetEntityId.isIn(ids));
+      batch.deleteWhere(_db.instanceMagnitudesTable, (t) => t.instanceId.isIn(ids));
+      batch.deleteWhere(_db.entitiesTable, (t) => t.id.isIn(ids));
+    });
+  }
+
+  @override
   Future<List<Attachment>> getAttachmentsForSpecies(String speciesId) async {
     final query = _db.select(_db.attachmentsTable)..where((t) => t.speciesId.equals(speciesId));
     final rows = await query.get();

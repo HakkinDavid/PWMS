@@ -19,6 +19,7 @@ abstract class IEntityRepository {
   Future<void> moveEntity(String entityId, String? newLocationId);
   Future<WorldEntity?> moveOrMergeEntity(String entityId, String? newLocationId);
   Future<void> deleteEntity(String id);
+  Future<void> deleteEntitiesBatch(List<String> ids);
 
   // Attachments belong to Species
   Future<List<Attachment>> getAttachmentsForSpecies(String speciesId);
