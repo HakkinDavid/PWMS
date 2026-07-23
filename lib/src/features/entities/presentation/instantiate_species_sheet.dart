@@ -123,6 +123,11 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       return;
     }
 
+    if (_selectedSubspecies == null) {
+      AppToast.showRestriction(context, AppStrings.selectSubspeciesOrBrandPrompt);
+      return;
+    }
+
     final species = _selectedSpecies!;
     final template = EntityTemplateRegistry.getTemplate(species.type);
 

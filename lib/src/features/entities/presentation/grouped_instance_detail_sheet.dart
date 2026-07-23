@@ -182,103 +182,105 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           ),
           const SizedBox(height: 16),
 
-          // Interactive Control Panel implementing Rules a), b), and c)
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: theme.dividerColor),
-            ),
-            child: Column(
-              children: [
-                const Text(
-                  AppStrings.dynamicPopulationManagement,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  AppStrings.populationManagementInstruction,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 10, color: theme.colorScheme.secondary),
-                ),
-                const SizedBox(height: 14),
+          // Interactive Control Panel (Hidden if species is unique)
+          if (species?.isUnique != true) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: theme.dividerColor),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    AppStrings.dynamicPopulationManagement,
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    AppStrings.populationManagementInstruction,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 10, color: theme.colorScheme.secondary),
+                  ),
+                  const SizedBox(height: 14),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Button [-]
-                    GestureDetector(
-                      onTap: () => QuantityOperationHelper.removeOne(ref, currentGroup),
-                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: currentGroup, isAdd: false),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withAlpha(25),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.redAccent.withAlpha(100)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Button [-]
+                      GestureDetector(
+                        onTap: () => QuantityOperationHelper.removeOne(ref, currentGroup),
+                        onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: currentGroup, isAdd: false),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withAlpha(25),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.redAccent.withAlpha(100)),
+                          ),
+                          child: const Icon(Icons.remove, size: 24, color: Colors.redAccent),
                         ),
-                        child: const Icon(Icons.remove, size: 24, color: Colors.redAccent),
                       ),
-                    ),
-                    const SizedBox(width: 16),
+                      const SizedBox(width: 16),
 
-                    // Broad Quantity Display (Broad touch target for direct numeric input)
-                    InkWell(
-                      onTap: () => QuantityOperationHelper.showDirectNumericInputDialog(context, ref, group: currentGroup),
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: theme.colorScheme.primary.withAlpha(100), width: 1.5),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  '${currentGroup.population}',
-                                  style: theme.textTheme.headlineMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: theme.colorScheme.onPrimaryContainer,
+                      // Broad Quantity Display (Broad touch target for direct numeric input)
+                      InkWell(
+                        onTap: () => QuantityOperationHelper.showDirectNumericInputDialog(context, ref, group: currentGroup),
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: theme.colorScheme.primary.withAlpha(100), width: 1.5),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    '${currentGroup.population}',
+                                    style: theme.textTheme.headlineMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.onPrimaryContainer,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 6),
-                                Icon(Icons.edit_note, size: 18, color: theme.colorScheme.primary),
-                              ],
-                            ),
-                            Text(
-                              AppStrings.populationLabel,
-                              style: TextStyle(fontSize: 10, color: theme.colorScheme.onPrimaryContainer.withAlpha(180)),
-                            ),
-                          ],
+                                  const SizedBox(width: 6),
+                                  Icon(Icons.edit_note, size: 18, color: theme.colorScheme.primary),
+                                ],
+                              ),
+                              Text(
+                                AppStrings.populationLabel,
+                                style: TextStyle(fontSize: 10, color: theme.colorScheme.onPrimaryContainer.withAlpha(180)),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
+                      const SizedBox(width: 16),
 
-                    // Button [+]
-                    GestureDetector(
-                      onTap: () => QuantityOperationHelper.addOne(ref, currentGroup),
-                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: currentGroup, isAdd: true),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withAlpha(25),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.green.withAlpha(100)),
+                      // Button [+]
+                      GestureDetector(
+                        onTap: () => QuantityOperationHelper.addOne(ref, currentGroup),
+                        onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: currentGroup, isAdd: true),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withAlpha(25),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.green.withAlpha(100)),
+                          ),
+                          child: const Icon(Icons.add, size: 24, color: Colors.green),
                         ),
-                        child: const Icon(Icons.add, size: 24, color: Colors.green),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
+          ],
 
           Text(
             '${AppStrings.groupInstanceDetail} (${currentGroup.population})',

@@ -483,5 +483,22 @@ void main() {
       expect(genericName, equals('Caja'));
       expect(noSubName, equals('Caja'));
     });
+
+    test('12. Automatic Subspecies Resolution on Instantiation Test', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Mesa', type: 'Objeto');
+      final sub = Subspecies(
+        id: 'sub-mesa-madera',
+        speciesId: species.id,
+        subspeciesName: 'Mesa de Madera',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      // Instantiate without explicitly supplying subspeciesId -> resolves automatically to an existing subspecies of the species
+      final inst = await entityRepo.instantiateOrMerge(species.id, null, 1.0);
+      expect(inst.subspeciesId, isNotNull);
+      final speciesSubspecies = await catalogRepo.getSubspeciesForSpecies(species.id);
+      expect(speciesSubspecies.any((s) => s.id == inst.subspeciesId), isTrue);
+    });
   });
 }

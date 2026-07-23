@@ -49,6 +49,7 @@ class QuantityOperationHelper {
       archetype.speciesId,
       group.effectiveLocationId,
       1.0,
+      subspeciesId: archetype.subspeciesId,
       notes: archetype.notes,
     );
     ref.read(entityListProvider.notifier).loadEntities();
@@ -177,6 +178,7 @@ class QuantityOperationHelper {
             archetype.speciesId,
             group.effectiveLocationId,
             1.0,
+            subspeciesId: archetype.subspeciesId,
             notes: archetype.notes,
           );
         }
@@ -268,6 +270,7 @@ class QuantityOperationHelper {
             archetype.speciesId,
             group.effectiveLocationId,
             1.0,
+            subspeciesId: archetype.subspeciesId,
             notes: archetype.notes,
           );
         }

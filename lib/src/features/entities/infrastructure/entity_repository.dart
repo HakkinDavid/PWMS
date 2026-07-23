@@ -213,6 +213,14 @@ class EntityRepository implements IEntityRepository {
     // Decision (b, e): No DB scalar merging! Always instantiate individual WorldEntity
     final newId = const Uuid().v4();
 
+    String? resolvedSubspeciesId = subspeciesId;
+    if (resolvedSubspeciesId == null || resolvedSubspeciesId.trim().isEmpty) {
+      final subRows = await (_db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId))).get();
+      if (subRows.isNotEmpty) {
+        resolvedSubspeciesId = subRows.first.id;
+      }
+    }
+
     final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
     final initialMags = speciesMagRows.map((sm) => InstanceMagnitude(
       id: const Uuid().v4(),
@@ -225,7 +233,7 @@ class EntityRepository implements IEntityRepository {
     final newEntity = WorldEntity(
       id: newId,
       speciesId: speciesId,
-      subspeciesId: subspeciesId,
+      subspeciesId: resolvedSubspeciesId,
       locationId: locationId,
       magnitudes: initialMags,
       notes: notes,
