@@ -40,6 +40,9 @@ class QuantityOperationHelper {
 
   /// Short tap: Add 1 instance using majority demographic
   static Future<void> addOne(WidgetRef ref, EffectiveEntityGroup group) async {
+    final species = await ref.read(catalogRepositoryProvider).getCatalogItemById(group.speciesId);
+    if (species?.isUnique == true) return;
+
     final archetype = group.majorityEntity;
     await ref.read(entityRepositoryProvider).instantiateOrMerge(
       archetype.speciesId,
@@ -52,6 +55,9 @@ class QuantityOperationHelper {
 
   /// Short tap: Remove 1 instance from majority demographic
   static Future<void> removeOne(WidgetRef ref, EffectiveEntityGroup group) async {
+    final species = await ref.read(catalogRepositoryProvider).getCatalogItemById(group.speciesId);
+    if (species?.isUnique == true) return;
+
     final idsToRemove = getCascadingRemovalIds(group, 1);
     if (idsToRemove.isNotEmpty) {
       await ref.read(entityRepositoryProvider).deleteEntitiesBatch(idsToRemove);

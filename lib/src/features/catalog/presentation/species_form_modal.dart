@@ -388,16 +388,17 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         createdAt: widget.initialSpecies?.createdAt ?? DateTime.now(),
       );
 
-      await ref.read(catalogListProvider.notifier).saveCatalogItem(savedItem);
+      final catalogRepo = ref.read(catalogRepositoryProvider);
 
-      // Save all draft subspecies if any were created during new species creation!
+      // Save all draft subspecies BEFORE saving catalog item so default generic subspecies is omitted!
       if (_draftSubspecies.isNotEmpty) {
-        final catalogRepo = ref.read(catalogRepositoryProvider);
         for (final draft in _draftSubspecies) {
           final sub = draft.copyWith(speciesId: speciesId);
           await catalogRepo.saveSubspecies(sub);
         }
       }
+
+      await ref.read(catalogListProvider.notifier).saveCatalogItem(savedItem);
 
       if (widget.onSpeciesSaved != null) {
         widget.onSpeciesSaved!(savedItem);
@@ -703,7 +704,12 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                         child: Icon(Icons.branding_watermark, size: 14, color: theme.colorScheme.secondary),
                                       ),
                                       title: Text('${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                                      subtitle: Text(sub.barcode != null ? '${AppStrings.barcodeLabel}: ${sub.barcode}' : AppStrings.noBarcode, style: const TextStyle(fontSize: 11)),
+                                       subtitle: (sub.barcode != null || sub.notes != null)
+                                           ? Text(
+                                               sub.barcode != null ? '${AppStrings.barcodeLabel}: ${sub.barcode}' : sub.notes!,
+                                               style: const TextStyle(fontSize: 11),
+                                             )
+                                           : null,
                                       trailing: IconButton(
                                         icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
                                         onPressed: () => setState(() => _draftSubspecies.removeAt(idx)),

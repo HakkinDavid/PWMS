@@ -35,6 +35,8 @@ class Subspecies {
       subspeciesName: subspeciesName ?? this.subspeciesName,
       brand: brand ?? this.brand,
       barcode: barcode ?? this.barcode,
+      photoPath: photoPath ?? this.photoPath,
+      notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
     );
   }

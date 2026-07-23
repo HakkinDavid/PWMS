@@ -229,12 +229,14 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                     '${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
-                  subtitle: Text(
-                    sub.barcode != null
-                        ? '${AppStrings.barcodeLabel}: ${sub.barcode}'
-                        : (sub.notes != null ? sub.notes! : AppStrings.noBarcode),
-                    style: const TextStyle(fontSize: 11),
-                  ),
+                  subtitle: (sub.barcode != null || sub.notes != null)
+                      ? Text(
+                          sub.barcode != null
+                              ? '${AppStrings.barcodeLabel}: ${sub.barcode}'
+                              : sub.notes!,
+                          style: const TextStyle(fontSize: 11),
+                        )
+                      : null,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

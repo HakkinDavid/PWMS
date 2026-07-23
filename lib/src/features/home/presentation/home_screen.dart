@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
@@ -183,50 +184,65 @@ class HomeScreen extends ConsumerWidget {
                                   builder: (context, ref, _) {
                                     final catalogItems = catalogAsync.asData?.value ?? [];
                                     final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
-                                    final name = species?.name ?? AppStrings.typeObject;
-                                    final type = species?.type ?? AppStrings.typeObject;
+                                    final speciesType = species?.type ?? AppStrings.typeObject;
 
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(14),
-                                            child: FutureBuilder<String>(
-                                              future: species?.mainPhotoPath != null
-                                                  ? ref.read(fileStorageServiceProvider).getAbsolutePath(species!.mainPhotoPath!)
-                                                  : Future.value(''),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                                  return Image.file(
-                                                    File(snapshot.data!),
-                                                    width: double.infinity,
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                }
-                                                return Container(
-                                                  color: theme.colorScheme.primary.withAlpha(30),
-                                                  child: Center(
-                                                    child: Icon(Icons.category, color: theme.colorScheme.primary),
-                                                  ),
-                                                );
-                                              },
+                                    return FutureBuilder<Subspecies?>(
+                                      future: entity.subspeciesId != null
+                                          ? ref.read(catalogRepositoryProvider).getSubspeciesById(entity.subspeciesId!)
+                                          : Future.value(null),
+                                      builder: (context, subSnapshot) {
+                                        final subspecies = subSnapshot.data;
+                                        final isCustomSubspecies = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
+                                        final primaryTitle = isCustomSubspecies
+                                            ? '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}'
+                                            : (species?.name ?? AppStrings.typeObject);
+                                        final effectivePhotoPath = subspecies?.resolvePhotoPath(species?.mainPhotoPath);
+
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(14),
+                                                child: FutureBuilder<String>(
+                                                  future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
+                                                      ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
+                                                      : Future.value(''),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                                                      return Image.file(
+                                                        File(snapshot.data!),
+                                                        width: double.infinity,
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                    }
+                                                    return Container(
+                                                      color: theme.colorScheme.primary.withAlpha(30),
+                                                      child: Center(
+                                                        child: Icon(Icons.category, color: theme.colorScheme.primary),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          name,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          type,
-                                          style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
-                                        ),
-                                      ],
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              primaryTitle,
+                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              isCustomSubspecies ? '$speciesType • ${species?.name}' : speciesType,
+                                              style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
                                   },
                                 ),
