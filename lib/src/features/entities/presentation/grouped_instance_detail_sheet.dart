@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
+import 'instance_preview_card.dart';
 import 'quantity_operation_helper.dart';
 
 class GroupedInstanceDetailSheet extends ConsumerStatefulWidget {
@@ -273,76 +273,22 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
               itemCount: widget.group.entities.length,
               itemBuilder: (context, index) {
                 final entity = widget.group.entities[index];
-                final firstMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : null;
-                final shortId = entity.id.length > 8 ? entity.id.substring(0, 8) : entity.id;
-
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 6),
-                  child: ExpansionTile(
-                    leading: CircleAvatar(
-                      radius: 14,
-                      backgroundColor: theme.colorScheme.primary.withAlpha(20),
-                      child: Text(
-                        '#${index + 1}',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                      ),
-                    ),
-                    title: Text(
-                      'Instancia ID: $shortId',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                    ),
-                    subtitle: Text(
-                      entity.notes != null && entity.notes!.isNotEmpty
-                          ? entity.notes!
-                          : (firstMag != null ? 'Magnitud: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}' : 'Sin notas'),
-                      style: TextStyle(fontSize: 11, color: theme.colorScheme.secondary),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (entity.notes != null) Text('Notas: ${entity.notes}', style: const TextStyle(fontSize: 12)),
-                            if (entity.magnitudes.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4.0),
-                                child: Text(
-                                  'Magnitudes: ${entity.magnitudes.map((m) => '${m.propertyName}: ${DomainRules.formatMagnitude(m.magnitudeValue, m.unitSymbol)} ${m.unitSymbol}').join(', ')}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton.icon(
-                                  icon: const Icon(Icons.open_in_new, size: 16),
-                                  label: const Text('Ver Ficha Completa', style: TextStyle(fontSize: 12)),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    context.push('/entity/${entity.id}');
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
-                                  onPressed: () async {
-                                    final nav = Navigator.of(context);
-                                    await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
-                                    ref.read(entityListProvider.notifier).loadEntities();
-                                    if (mounted && widget.group.entities.length <= 1) {
-                                      nav.pop();
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                return InstancePreviewCard(
+                  entity: entity,
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push('/entity/${entity.id}');
+                  },
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                    onPressed: () async {
+                      final nav = Navigator.of(context);
+                      await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
+                      ref.read(entityListProvider.notifier).loadEntities();
+                      if (mounted && widget.group.entities.length <= 1) {
+                        nav.pop();
+                      }
+                    },
                   ),
                 );
               },

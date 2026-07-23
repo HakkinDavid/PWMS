@@ -13,6 +13,7 @@ import '../../entities/domain/entity_template.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
+import '../domain/subspecies.dart';
 import 'subspecies_section_widget.dart';
 
 class SpeciesFormModal extends ConsumerStatefulWidget {
@@ -155,31 +156,26 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     }
   }
 
+  final List<Subspecies> _draftSubspecies = [];
+
   void _addMagnitudeRow() async {
     final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
     final propCtrl = TextEditingController(text: 'Propiedad ${_magnitudes.length + 1}');
-    final valCtrl = TextEditingController(text: '1');
     String chosenUnit = allowedUnits.first;
 
     final result = await showDialog<SpeciesMagnitude>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateDialog) => AlertDialog(
-          title: const Text('Agregar unidad de medida'),
+          title: const Text('Agregar propiedad / unidad de medida'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: propCtrl,
-                decoration: const InputDecoration(labelText: 'Nombre de la propiedad (ej. Masa, Volumen)'),
+                decoration: const InputDecoration(labelText: 'Nombre de la propiedad (ej. Masa, Volumen, Longitud)'),
               ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: valCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Valor numérico'),
-              ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               InkWell(
                 onTap: () async {
                   final picked = await AppWheelPicker.show<String>(
@@ -211,7 +207,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
             ElevatedButton(
               onPressed: () {
                 final propName = propCtrl.text.trim();
-                final val = double.tryParse(valCtrl.text.trim()) ?? 1.0;
                 if (propName.isNotEmpty) {
                   Navigator.pop(
                     ctx,
@@ -219,7 +214,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       id: const Uuid().v4(),
                       speciesId: widget.initialSpecies?.id ?? '',
                       propertyName: propName,
-                      magnitudeValue: val,
+                      magnitudeValue: 1.0,
                       unitSymbol: chosenUnit,
                       createdAt: DateTime.now(),
                     ),
@@ -240,6 +235,120 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
   void _removeMagnitudeRow(int index) {
     setState(() => _magnitudes.removeAt(index));
+  }
+
+  Future<void> _addOrEditDraftSubspeciesModal({Subspecies? initial, int? editIndex}) async {
+    final nameCtrl = TextEditingController(text: initial?.subspeciesName ?? '');
+    final brandCtrl = TextEditingController(text: initial?.brand ?? '');
+    final barcodeCtrl = TextEditingController(text: initial?.barcode ?? '');
+    final notesCtrl = TextEditingController(text: initial?.notes ?? '');
+    String? photoPath = initial?.photoPath;
+    XFile? newPickedImage;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (c, setStateModal) => AlertDialog(
+          title: Text(initial != null ? 'Editar Subespecie (Borrador)' : 'Nueva Subespecie (Variante)'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    final picker = ImagePicker();
+                    final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+                    if (img != null) {
+                      setStateModal(() => newPickedImage = img);
+                    }
+                  },
+                  child: Container(
+                    height: 70,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Theme.of(context).dividerColor),
+                    ),
+                    child: newPickedImage != null
+                        ? Image.file(File(newPickedImage!.path), fit: BoxFit.cover)
+                        : (photoPath != null && photoPath.isNotEmpty)
+                            ? FutureBuilder<String>(
+                                future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) return Image.file(File(snapshot.data!), fit: BoxFit.cover);
+                                  return const Icon(Icons.add_a_photo, size: 24);
+                                },
+                              )
+                            : const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_a_photo_outlined, size: 20),
+                                  SizedBox(height: 2),
+                                  Text('Foto de la Subespecie', style: TextStyle(fontSize: 11)),
+                                ],
+                              ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: nameCtrl,
+                  decoration: const InputDecoration(labelText: 'Nombre / Variante', hintText: 'Ej. Alkaline Heavy Duty'),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: brandCtrl,
+                  decoration: const InputDecoration(labelText: 'Marca', hintText: 'Ej. Duracell'),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: barcodeCtrl,
+                  decoration: const InputDecoration(labelText: 'Código de Barras', hintText: 'Ej. 750123456789'),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: notesCtrl,
+                  decoration: const InputDecoration(labelText: 'Notas', hintText: 'Ej. Edición especial'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Guardar'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirm == true && nameCtrl.text.trim().isNotEmpty) {
+      if (newPickedImage != null) {
+        final storage = ref.read(fileStorageServiceProvider);
+        photoPath = await storage.saveFile(newPickedImage!.path);
+      }
+
+      final sub = Subspecies(
+        id: initial?.id ?? const Uuid().v4(),
+        speciesId: '',
+        subspeciesName: nameCtrl.text.trim(),
+        brand: brandCtrl.text.trim().isNotEmpty ? brandCtrl.text.trim() : null,
+        barcode: barcodeCtrl.text.trim().isNotEmpty ? barcodeCtrl.text.trim() : null,
+        photoPath: photoPath,
+        notes: notesCtrl.text.trim().isNotEmpty ? notesCtrl.text.trim() : null,
+        createdAt: initial?.createdAt ?? DateTime.now(),
+      );
+
+      setState(() {
+        if (editIndex != null) {
+          _draftSubspecies[editIndex] = sub;
+        } else {
+          _draftSubspecies.add(sub);
+        }
+      });
+    }
   }
 
   Future<void> _saveSpecies() async {
@@ -280,6 +389,15 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
       await ref.read(catalogListProvider.notifier).saveCatalogItem(savedItem);
 
+      // Save all draft subspecies if any were created during new species creation!
+      if (_draftSubspecies.isNotEmpty) {
+        final catalogRepo = ref.read(catalogRepositoryProvider);
+        for (final draft in _draftSubspecies) {
+          final sub = draft.copyWith(speciesId: speciesId);
+          await catalogRepo.saveSubspecies(sub);
+        }
+      }
+
       if (widget.onSpeciesSaved != null) {
         widget.onSpeciesSaved!(savedItem);
       }
@@ -287,7 +405,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       if (mounted) {
         Navigator.pop(context, savedItem);
 
-        // Point 1: Automatically show instantiation menu upon creating a new species!
         if (!_isEditMode) {
           InstantiateSpeciesSheet.show(context, species: savedItem);
         }
@@ -539,7 +656,64 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    // Draft Subspecies / Brand Variants (Create Mode)
+                    if (!_isEditMode) ...[
+                      Card(
+                        margin: EdgeInsets.zero,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Subespecies / Marcas (${_draftSubspecies.length})',
+                                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () => _addOrEditDraftSubspeciesModal(),
+                                    icon: const Icon(Icons.add, size: 16),
+                                    label: const Text('Agregar marca', style: TextStyle(fontSize: 12)),
+                                  ),
+                                ],
+                              ),
+                              if (_draftSubspecies.isEmpty)
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 6.0),
+                                  child: Text('Sin subespecies o marcas agregadas.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                )
+                              else
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: _draftSubspecies.length,
+                                  itemBuilder: (ctx, idx) {
+                                    final sub = _draftSubspecies[idx];
+                                    return ListTile(
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      leading: CircleAvatar(
+                                        radius: 14,
+                                        backgroundColor: theme.colorScheme.secondary.withAlpha(30),
+                                        child: Icon(Icons.branding_watermark, size: 14, color: theme.colorScheme.secondary),
+                                      ),
+                                      title: Text('${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                      subtitle: Text(sub.barcode != null ? 'Barcode: ${sub.barcode}' : 'Sin barcode', style: const TextStyle(fontSize: 11)),
+                                      trailing: IconButton(
+                                        icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
+                                        onPressed: () => setState(() => _draftSubspecies.removeAt(idx)),
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                    ],
 
                     // Point 3: "Adjuntar archivo" action button ONLY in Edit Mode!
                     if (_isEditMode && widget.initialSpecies != null) ...[

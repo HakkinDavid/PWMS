@@ -6,6 +6,7 @@ import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_detail_view.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_tree_picker.dart';
@@ -154,6 +155,43 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                     ),
                 ],
               ),
+              if (entity.subspeciesId != null) ...[
+                const SizedBox(height: 10),
+                FutureBuilder<Subspecies?>(
+                  future: ref.read(catalogRepositoryProvider).getSubspeciesById(entity.subspeciesId!),
+                  builder: (context, snapshot) {
+                    final sub = snapshot.data;
+                    if (sub == null) return const SizedBox.shrink();
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.secondaryContainer.withAlpha(80),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: theme.colorScheme.secondary.withAlpha(60)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.branding_watermark, size: 16, color: theme.colorScheme.secondary),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Subespecie: ${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}',
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                ),
+                                if (sub.barcode != null)
+                                  Text('Barcode: ${sub.barcode}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
               const SizedBox(height: 14),
 
               // Location Card
