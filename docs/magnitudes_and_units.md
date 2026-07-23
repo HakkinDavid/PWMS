@@ -1,64 +1,72 @@
-# PWMS Physical Magnitudes, Multi-Unit System & Wheel Pickers
+# PWMS Physical Magnitudes, Multi-Unit System & SI Catalog
 
-This document details the multi-unit magnitude system, dynamic `+` / `-` property controls, wheel pickers, integer formatting, and the complete elimination of default magnitudes in **Platinum World Management System (PWMS)**.
+This document details the multi-unit magnitude system, dynamic `+` / `-` property controls, wheel pickers, integer formatting, complete SI unit catalog, and prepopulated property name suggestions in **Platinum World Management System (PWMS)**.
 
 ---
 
 ## 1. Physical Magnitudes Architecture
 
-Physical properties of items in PWMS (such as mass, volume, length, counts, dimensions) are modeled in 4NF relational tables (`SpeciesMagnitudesTable` and `InstanceMagnitudesTable`).
+Physical properties of items in PWMS (such as mass, volume, length, counts, dimensions, prices, digital storage) are modeled in 4NF relational tables (`SpeciesMagnitudesTable` and `InstanceMagnitudesTable`).
 
 ### Key Properties:
-- `propertyName`: String identifier (e.g. `"Masa"`, `"Longitud"`, `"Volumen"`, `"Masa Total"`).
+- `propertyName`: String identifier (e.g. `"Masa"`, `"Longitud"`, `"Volumen"`, `"Precio"`).
 - `magnitudeValue`: Numeric double value (e.g. `10.5`, `100.0`).
-- `unitSymbol`: Standardized unit string (e.g. `"kg"`, `"m"`, `"L"`, `"unidad"`).
+- `unitSymbol`: Standardized unit string (e.g. `"kg"`, `"m"`, `"L"`, `"unidad"`, `"$"`).
 
 ---
 
-## 2. Dynamic `+` / `-` Multi-Unit Controls in `SpeciesFormModal`
+## 2. Complete SI & Metric Unit Catalog (`UnitsRegistry`)
 
-When creating or editing a species in [SpeciesFormModal](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/catalog/presentation/species_form_modal.dart), users can dynamically manage multiple unit properties:
+The application supports a complete SI unit catalog categorized into 13 domain areas:
 
-- **`+ Agregar unidad de medida`**: Opens a dialog to define property name, initial value, and unit symbol from allowed unit choices.
-- **`- Eliminar unidad de medida`**: Instantly removes a magnitude property row.
+1. **Conteo Discreto (`allowDecimals: false`)**: `unidades`, `piezas`, `unidad`.
+2. **Masa**: `t`, `kg`, `g`, `mg`.
+3. **Longitud**: `km`, `m`, `cm`, `mm`.
+4. **Volumen**: `m³`, `cm³`, `L`, `mL`.
+5. **Superficie**: `km²`, `m²`, `cm²`.
+6. **Tiempo**: `s`, `min`, `h`.
+7. **Electricidad & Magnetismo**: `A`, `mA`, `V`, `mV`, `kV`, `Ω`.
+8. **Temperatura**: `K`, `°C`, `°F`.
+9. **Sustancia & Luz**: `mol`, `cd`.
+10. **Fuerza & Presión**: `N`, `kN`, `Pa`, `kPa`, `bar`.
+11. **Energía & Potencia**: `J`, `kJ`, `cal`, `W`, `kW`, `MW`, `Hz`, `kHz`, `MHz`, `GHz`.
+12. **Almacenamiento Digital**: `B`, `KB`, `MB`, `GB`, `TB`.
+13. **Financiero**: `$`, `USD`, `MXN`, `EUR`.
 
-```mermaid
-graph TD
-    Modal["SpeciesFormModal"] --> Add["+ Agregar unidad de medida"]
-    Add --> Dialog["Property Name, Value & Unit Selector (AppWheelPicker)"]
-    Dialog --> List["Updated Multi-Unit List"]
-    Modal --> Remove["- Remove Row"]
-    Remove --> List
+---
+
+## 3. SI Unit Property Name Auto-Suggestions
+
+When adding a property magnitude row in `SpeciesFormModal`, `DomainRules.suggestPropertyNameForUnit` prepopulates the property name based on the selected unit:
+
+```dart
+expect(DomainRules.suggestPropertyNameForUnit('kg'), equals('Masa'));
+expect(DomainRules.suggestPropertyNameForUnit('L'), equals('Volumen'));
+expect(DomainRules.suggestPropertyNameForUnit('m'), equals('Longitud'));
+expect(DomainRules.suggestPropertyNameForUnit('$'), equals('Precio'));
 ```
 
 ---
 
-## 3. Universal Cupertino Wheel Pickers
+## 4. Dynamic `+` / `-` Multi-Unit Controls in `SpeciesFormModal`
+
+When creating or editing a species in [SpeciesFormModal](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/catalog/presentation/species_form_modal.dart), users can dynamically manage multiple unit properties:
+
+- **`+ Agregar unidad de medida`**: Opens a dialog to define property name (prepopulated automatically), initial value, and unit symbol from allowed unit choices.
+- **`- Eliminar unidad de medida`**: Instantly removes a magnitude property row.
+
+---
+
+## 5. Universal Cupertino Wheel Pickers
 
 All dropdown pickers across PWMS have been replaced with smooth, touch-friendly **Cupertino Wheel Pickers**:
 
-### 3.1 `AppWheelPicker`
-Located in [app_wheel_picker.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/core/widgets/app_wheel_picker.dart):
-- Generic Cupertino picker sheet used for choosing units, template species, relationship types, and domain categories.
-
-### 3.2 `IntegerWheelPicker`
-Located in [integer_wheel_picker.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/core/widgets/integer_wheel_picker.dart):
-- Wheel picker tailored for integer magnitude adjustments (e.g., changing quantity counts from `0` to `100`).
+- **`AppWheelPicker`**: Generic Cupertino picker sheet used for choosing units, template species, relationship types, and domain categories.
+- **`IntegerWheelPicker`**: Wheel picker tailored for integer magnitude adjustments (e.g., changing quantity counts from `0` to `100`).
 
 ---
 
-## 4. Total Elimination of Default Magnitudes
-
-In accordance with strict user directives:
+## 6. Total Elimination of Hardcoded Default Magnitudes
 
 - **Zero Auto-Injection**: When creating a species or instantiating an entity without explicitly adding magnitude properties, `magnitudes` remains an **empty list** (`[]`).
 - **No Hardcoded Defaults**: The system never auto-injects default `"unidad"` or `"Cantidad"` rows.
-
----
-
-## 5. Total Financial Infrastructure Purge
-
-PWMS contains **ZERO** financial code, monetary fields, or transaction tracking:
-
-- **Database Purge**: `FinancialTransactionsTable` and monetary columns (`isSubjectToPurchase`, `isSubjectToSale`, `defaultMonetaryCurrency`) are completely purged from database schemas.
-- **Repository & UI Purge**: All acquisition cost prompts, sale prompts, currency selectors (`MXN`/`USD`), and financial badges are completely removed.

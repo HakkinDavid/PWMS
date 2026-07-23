@@ -1,6 +1,6 @@
-# PWMS Directed Entity Relations & Interactive Graph Specification
+# PWMS Directed Entity Relations, Requirements & Interactive Graph Specification
 
-This document details the directed relationships system, interactive vertical graph widget, and edit-scoped relation modal in **Platinum World Management System (PWMS)**.
+This document details the directed relationships system, catalog requirement dependencies (`NECESITA`), interactive vertical graph widget, and edit-scoped relation modal in **Platinum World Management System (PWMS)**.
 
 ---
 
@@ -21,7 +21,22 @@ Unlike symmetric links, relationships between world entities in PWMS are **Direc
 
 ---
 
-## 2. Interactive Directed Graph Widget (`InteractiveEntityGraphWidget`)
+## 2. Catalog Species Requirements (`SpeciesRequirementsTable` / `NECESITA`)
+
+In addition to instance-level relations, species can define master dependencies (`NECESITA`) stored in `SpeciesRequirementsTable`:
+
+- **Definition**: A species (e.g. `"Refrigerador"`) requires a specific quantity of another species (e.g. 6 `"Huevos"`).
+- **Relational 4NF Table**:
+  - `id`: Primary key.
+  - `sourceId`: Species ID requiring the dependency.
+  - `requiredSpeciesId`: FK referencing required `CatalogTable` item.
+  - `requiredQuantity`: Double quantity value (e.g. `6.0`).
+  - `notes`: Optional requirement notes.
+- **Form Component**: Defined via [RequirementsSectionWidget](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/catalog/presentation/requirements_section_widget.dart).
+
+---
+
+## 3. Interactive Directed Graph Widget (`InteractiveEntityGraphWidget`)
 
 Rendered on `EntityDetailScreen`, [InteractiveEntityGraphWidget](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/relations/presentation/interactive_entity_graph_widget.dart) provides a visual representation of directed edges in a **Vertical Column Layout**.
 
@@ -43,7 +58,7 @@ graph TD
 
 ---
 
-## 3. Strict Edit-Mode Scoping Rule
+## 4. Strict Edit-Mode Scoping Rule
 
 To prevent accidental modifications while inspecting entities, **creating, editing, or deleting directed entity relations is strictly scoped to Edit Mode (`_isEditingInPlace == true`)**:
 
@@ -57,7 +72,7 @@ To prevent accidental modifications while inspecting entities, **creating, editi
 
 ---
 
-## 4. Modal "Relacionar Entidad" (`CreateRelationModal`)
+## 5. Modal "Relacionar Entidad" (`CreateRelationModal`)
 
 Located in [create_relation_modal.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/relations/presentation/create_relation_modal.dart):
 

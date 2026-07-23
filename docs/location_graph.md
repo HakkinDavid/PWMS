@@ -1,6 +1,6 @@
 # PWMS Spatial Location Graph & Hierarchy Specification
 
-This document details the spatial location graph, recursive item counter algorithm, anti-cycling reparenting rules, and path navigation helpers in **Platinum World Management System (PWMS)**.
+This document details the spatial location graph, recursive item counter algorithm, anti-cycling reparenting rules, container `@` indicator, and path navigation helpers in **Platinum World Management System (PWMS)**.
 
 ---
 
@@ -38,7 +38,32 @@ static int getRecursiveItemCount(
 
 ---
 
-## 3. Anti-Cycling & Reparenting Protection
+## 3. Container Relational Indicator (`@`) in Breadcrumbs
+
+When an entity is stored inside another entity container via `GUARDADO_EN` (e.g. eggs inside a refrigerator, batteries inside a flashlight), the location path helper resolves the container's physical location and appends the container symbol `@`:
+
+```
+Casa > Cocina @ Refrigerador
+```
+
+Implemented in `LocationPathHelper.buildEffectiveBreadcrumb`:
+
+```dart
+final effectiveBreadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+  entityId: eggInstance.id,
+  effectiveLocationId: fridgeInstance.locationId,
+  allEntities: allEntities,
+  allRelations: [guardadoRel],
+  allNodes: allNodes,
+  catalogItems: [fridgeSpecies, eggSpecies],
+);
+// effectiveBreadcrumb.ancestorPath -> "Casa > Cocina @"
+// effectiveBreadcrumb.targetName   -> "Refrigerador"
+```
+
+---
+
+## 4. Anti-Cycling & Reparenting Protection
 
 Locations **CANNOT** be moved inside themselves or inside any of their child/descendant nodes, as this would create cyclic graph loops and infinite recursion.
 
@@ -56,7 +81,7 @@ graph TD
     Shelf -.-|FORBIDDEN REPARENTING| House
 ```
 
-### 3.1 Descendant Traversal Algorithm
+### 4.1 Descendant Traversal Algorithm
 
 ```dart
 Set<String> getDescendantIds(String nodeId, List<LocationNode> allNodes) {
@@ -82,7 +107,7 @@ bool canMoveNode(String nodeId, String? targetParentId, List<LocationNode> allNo
 
 ---
 
-## 4. Location Breadcrumbs Trajectory Helper
+## 5. Location Breadcrumbs Trajectory Helper
 
 When viewing an entity tile or entity detail screen, the location path describes the complete trajectory, rendering ancestor nodes in smaller text before the target node.
 
@@ -90,10 +115,4 @@ When viewing an entity tile or entity detail screen, the location path describes
 Mundo > Casa > Garaje > Estante 1 > [Caja 3]
 ```
 
-Implemented in [LocationPathHelper](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/locations/domain/location_path_helper.dart):
-
-```dart
-final breadcrumb = LocationPathHelper.buildBreadcrumbPath(locationId, allNodes);
-// breadcrumb.ancestorPath -> "Mundo > Casa > Garaje >"
-// breadcrumb.targetName   -> "Estante 1"
-```
+Implemented in [LocationPathHelper](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/locations/domain/location_path_helper.dart).

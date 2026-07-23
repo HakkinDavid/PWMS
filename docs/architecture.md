@@ -1,6 +1,6 @@
 # PWMS Technical Architecture & Infrastructure Guide
 
-This document outlines the software architecture, design patterns, state management, and persistence layer of the **Platinum World Management System (PWMS)**.
+This document outlines the software architecture, design patterns, state management, notification layer, and persistence layer of the **Platinum World Management System (PWMS)**.
 
 ---
 
@@ -13,23 +13,23 @@ lib/
  ├── main.dart
  └── src/
       ├── core/                     # Shared cross-cutting concerns
-      │    ├── constants/            # Global UI strings and constants
-      │    ├── database/             # Drift SQLite database schema and ORM
+      │    ├── constants/            # Global UI strings (AppStrings) and registries
+      │    ├── database/             # Drift SQLite database schema (AppDatabase)
       │    ├── domain/               # DomainRules single source of truth
       │    ├── providers/            # Riverpod global dependency injection
       │    ├── router/               # GoRouter configuration & routes
       │    ├── storage/              # FileStorageService for local disk assets
       │    ├── theme/                # Material 3 dark/light themes
-      │    └── widgets/              # Reusable UI widgets (AppWheelPicker, etc.)
+      │    └── widgets/              # Reusable UI widgets (AppToast, AppWheelPicker, etc.)
       │
       └── features/                 # Modular feature domains
-           ├── catalog/              # Species & Master Catalog management
+           ├── catalog/              # Species, Subspecies & Master Catalog management
            ├── entities/             # World Instances & Physical Entities
            ├── history/              # Recent Activity & Audit Logs
            ├── home/                 # Home Screen & MainShellScreen
            ├── locations/            # Spatial Location Graph & Node Tree
            ├── places/               # Alias mapping for locations
-           ├── relations/            # Directed Entity Relations Graph
+           ├── relations/            # Directed Entity Relations Graph & Requirements
            └── search/               # Real-time search engine with domain filters
 ```
 
@@ -42,6 +42,7 @@ graph LR
     subgraph Presentation Layer
         UI[Flutter Widgets / Screens]
         Notifiers[Riverpod StateNotifiers / Providers]
+        Toasts[AppToast Feedback Overlay]
     end
 
     subgraph Domain Layer
@@ -61,11 +62,13 @@ graph LR
     Repos --> FS
     Notifiers --> Rules
     Repos --> Entities
+    UI --> Toasts
 ```
 
 ### 2.1 Presentation Layer (`presentation/`)
 - Contains Flutter `ConsumerWidget` and `ConsumerStatefulWidget` elements.
 - Uses **Material 3 Design System** with dark mode styling.
+- Displays feedback via `AppToast.showSuccess`, `AppToast.showError`, and `AppToast.showRestriction`.
 - Listens to Riverpod state streams and dispatches user actions without embedding raw SQL or business logic.
 
 ### 2.2 Domain Layer (`domain/`)
@@ -75,7 +78,7 @@ graph LR
 
 ### 2.3 Infrastructure Layer (`infrastructure/`)
 - Concrete implementation of data repositories (`CatalogRepository`, `EntityRepository`, `LocationRepository`, `RelationRepository`).
-- Interacts directly with `AppDatabase` (Drift ORM) and device storage (`FileStorageService`).
+- Interacts directly with `AppDatabase` (Drift ORM with 12 normalized tables) and device storage (`FileStorageService`).
 
 ---
 
@@ -101,7 +104,7 @@ final relationRepositoryProvider = Provider<RelationRepository>((ref) => Relatio
 ```
 
 ### 3.2 Reactive State Providers
-- `catalogListProvider`: Manages the global list of species catalog items (`AsyncNotifierProvider`).
+- `catalogListProvider`: Manages global list of species catalog items (`AsyncNotifierProvider`).
 - `entityListProvider`: Manages all instantiated world entities (`AsyncNotifierProvider`).
 - `locationNodeListProvider`: Manages spatial location nodes in the graph tree.
 - `entityRelationsProvider(entityId)`: `FutureProvider.family` yielding all incoming and outgoing directed relations for a specific entity.
@@ -115,18 +118,28 @@ Routing is powered by `GoRouter` using a persistent bottom shell:
 
 - **Shell Route**: `StatefulShellRoute.indexedStack` maintains tab state in memory across navigation transitions.
 - **Tabs**:
-  1. `/` -> `HomeScreen` (Home tab)
-  2. `/entities` -> `EntitiesTab` (Instancias tab)
-  3. `/locations` -> `LocationsGraphScreen` (Ubicaciones tab)
-  4. `/catalog` -> `CatalogScreen` (Catálogo tab)
+  1. `/` $\rightarrow$ `HomeScreen` (Home tab)
+  2. `/entities` $\rightarrow$ `EntitiesTab` (Instancias tab)
+  3. `/locations` $\rightarrow$ `LocationsGraphScreen` (Ubicaciones tab)
+  4. `/catalog` $\rightarrow$ `CatalogScreen` (Catálogo tab)
 - **Modal & Parameterized Routes**:
-  - `/search` -> `SearchScreen` (Floating search overlay)
-  - `/entity/:id` -> `EntityDetailScreen` (Instance detail & directed graph)
-  - `/catalog/:id` -> `SpeciesDetailScreen` (Species detail view)
+  - `/search` $\rightarrow$ `SearchScreen` (Floating search overlay)
+  - `/entity/:id` $\rightarrow$ `EntityDetailScreen` (Instance detail & directed graph)
+  - `/catalog/:id` $\rightarrow$ `SpeciesDetailScreen` (Species detail view)
 
 ---
 
-## 5. Local File Storage (`FileStorageService`)
+## 5. Toast Notification System (`AppToast`)
+
+To provide non-intrusive, high-priority feedback above bottom sheets and dialogs, feedback is centralized in [AppToast](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/core/widgets/app_toast.dart):
+
+- `AppToast.showSuccess(context, message)`: Renders green success notification.
+- `AppToast.showError(context, message)`: Renders red error notification.
+- `AppToast.showRestriction(context, message)`: Renders amber restriction/warning notification.
+
+---
+
+## 6. Local File Storage (`FileStorageService`)
 
 Media assets (photos, images, documents) are stored on disk in the application directory rather than inside SQLite BLOBs to maximize database performance.
 
