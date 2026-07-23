@@ -34,7 +34,6 @@ class EffectiveGroupTile extends ConsumerWidget {
     final firstEntity = group.primaryEntity;
     final firstMag = firstEntity.magnitudes.isNotEmpty ? firstEntity.magnitudes.first : null;
 
-    // Single instance shortcut tap
     final isSingle = group.population == 1;
 
     return Card(
@@ -50,7 +49,7 @@ class EffectiveGroupTile extends ConsumerWidget {
         },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
             children: [
               // Species Photo / Icon
@@ -92,24 +91,6 @@ class EffectiveGroupTile extends ConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        if (!isSingle) ...[
-                          const SizedBox(width: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              'x${group.population}',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.onPrimaryContainer,
-                              ),
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                     const SizedBox(height: 2),
@@ -151,38 +132,34 @@ class EffectiveGroupTile extends ConsumerWidget {
                 ),
               ),
 
-              // Quick Action Buttons (+ / -) for Rapid Population Management (Huevos & Pilas)
+              // Elegant Population Chip with WheelPicker icon trigger
               const SizedBox(width: 8),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: const Icon(Icons.remove_circle_outline, size: 20, color: Colors.redAccent),
-                    tooltip: 'Eliminar 1 rápida',
-                    onPressed: () async {
-                      if (group.entities.isNotEmpty) {
-                        final last = group.entities.last;
-                        await ref.read(entityRepositoryProvider).deleteEntity(last.id);
-                        ref.read(entityListProvider.notifier).loadEntities();
-                      }
-                    },
+              InkWell(
+                onTap: () => GroupedInstanceDetailSheet.show(context, group),
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: theme.colorScheme.primary.withAlpha(60)),
                   ),
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: const Icon(Icons.add_circle_outline, size: 20, color: Colors.green),
-                    tooltip: 'Instanciar 1 rápida',
-                    onPressed: () async {
-                      await ref.read(entityRepositoryProvider).instantiateOrMerge(
-                        firstEntity.speciesId,
-                        group.effectiveLocationId,
-                        1.0,
-                        notes: firstEntity.notes,
-                      );
-                      ref.read(entityListProvider.notifier).loadEntities();
-                    },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.unfold_more, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${group.population}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ],
           ),

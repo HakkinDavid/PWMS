@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +8,6 @@ import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
-import '../domain/world_entity.dart';
 
 class GroupedInstanceDetailSheet extends ConsumerStatefulWidget {
   final EffectiveEntityGroup group;
@@ -28,23 +28,27 @@ class GroupedInstanceDetailSheet extends ConsumerStatefulWidget {
 }
 
 class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDetailSheet> {
+  int _selectedQuantity = 1;
   bool _isBusy = false;
 
-  Future<void> _addOneInstance() async {
+  Future<void> _addSelectedQuantity() async {
+    if (_selectedQuantity <= 0) return;
     setState(() => _isBusy = true);
     try {
-      final first = widget.group.primaryEntity;
-      await ref.read(entityRepositoryProvider).instantiateOrMerge(
-        first.speciesId,
-        widget.group.effectiveLocationId,
-        1.0,
-        notes: first.notes,
-      );
+      final archetype = widget.group.majorityEntity;
+      for (int i = 0; i < _selectedQuantity; i++) {
+        await ref.read(entityRepositoryProvider).instantiateOrMerge(
+          archetype.speciesId,
+          widget.group.effectiveLocationId,
+          1.0,
+          notes: archetype.notes,
+        );
+      }
       ref.read(entityListProvider.notifier).loadEntities();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al añadir instancia: $e')),
+          SnackBar(content: Text('Error al instanciar: $e')),
         );
       }
     } finally {
@@ -52,75 +56,29 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
     }
   }
 
-  Future<void> _removeOneInstance() async {
-    if (widget.group.entities.isEmpty) return;
+  Future<void> _removeSelectedQuantity() async {
+    if (_selectedQuantity <= 0 || widget.group.entities.isEmpty) return;
     setState(() => _isBusy = true);
     try {
-      final last = widget.group.entities.last;
-      await ref.read(entityRepositoryProvider).deleteEntity(last.id);
+      final targets = widget.group.majorityInstances;
+      final toRemoveCount = _selectedQuantity.clamp(1, targets.length);
+
+      for (int i = 0; i < toRemoveCount; i++) {
+        await ref.read(entityRepositoryProvider).deleteEntity(targets[i].id);
+      }
+
       ref.read(entityListProvider.notifier).loadEntities();
-      if (widget.group.entities.length <= 1 && mounted) {
+      if (widget.group.entities.length <= toRemoveCount && mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al eliminar instancia: $e')),
+          SnackBar(content: Text('Error al eliminar: $e')),
         );
       }
     } finally {
       if (mounted) setState(() => _isBusy = false);
-    }
-  }
-
-  Future<void> _addBatchInstances() async {
-    final qtyController = TextEditingController(text: '5');
-    final count = await showDialog<int>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Adición Masiva (Conteo Rápido)'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Ingresa la cantidad de instancias a instanciar en este grupo:'),
-            const SizedBox(height: 12),
-            TextField(
-              controller: qtyController,
-              keyboardType: TextInputType.number,
-              autofocus: true,
-              decoration: const InputDecoration(labelText: 'Cantidad'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, null), child: const Text(AppStrings.cancel)),
-          ElevatedButton(
-            onPressed: () {
-              final val = int.tryParse(qtyController.text.trim());
-              Navigator.pop(ctx, val);
-            },
-            child: const Text('Agregar'),
-          ),
-        ],
-      ),
-    );
-
-    if (count != null && count > 0) {
-      setState(() => _isBusy = true);
-      try {
-        final first = widget.group.primaryEntity;
-        for (int i = 0; i < count; i++) {
-          await ref.read(entityRepositoryProvider).instantiateOrMerge(
-            first.speciesId,
-            widget.group.effectiveLocationId,
-            1.0,
-            notes: first.notes,
-          );
-        }
-        ref.read(entityListProvider.notifier).loadEntities();
-      } finally {
-        if (mounted) setState(() => _isBusy = false);
-      }
     }
   }
 
@@ -139,9 +97,12 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
 
     final breadcrumb = LocationPathHelper.buildBreadcrumbPath(widget.group.effectiveLocationId, locationNodes);
 
+    final majorityArchetype = widget.group.majorityEntity;
+    final majorityCount = widget.group.majorityInstances.length;
+
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
+        maxHeight: MediaQuery.of(context).size.height * 0.88,
       ),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -157,7 +118,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drag handle
+          // Drag Handle
           Center(
             child: Container(
               width: 40,
@@ -170,15 +131,15 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           ),
           const SizedBox(height: 16),
 
-          // Header: Group Identity & Total Count
+          // Header Info
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 child: SizedBox(
-                  width: 54,
-                  height: 54,
+                  width: 56,
+                  height: 56,
                   child: FutureBuilder<String>(
                     future: species?.mainPhotoPath != null
                         ? ref.read(fileStorageServiceProvider).getAbsolutePath(species!.mainPhotoPath!)
@@ -216,7 +177,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                   ],
                 ),
               ),
-              // Population Badge
+              // Total Population Badge
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
@@ -243,41 +204,35 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           ),
           const SizedBox(height: 16),
 
-          // Quick Action Bar for Instant Add / Delete (Huevos & Pilas)
+          // Demografía Mayoritaria Banner
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
-              borderRadius: BorderRadius.circular(16),
+              color: theme.colorScheme.secondaryContainer.withAlpha(80),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: theme.colorScheme.secondary.withAlpha(60)),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Quick Decrement (-)
-                ElevatedButton.icon(
-                  onPressed: (_isBusy || widget.group.population == 0) ? null : _removeOneInstance,
-                  icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
-                  label: const Text('-1', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent)),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  ),
-                ),
-                // Quick Increment (+)
-                ElevatedButton.icon(
-                  onPressed: _isBusy ? null : _addOneInstance,
-                  icon: const Icon(Icons.add_circle_outline, color: Colors.green, size: 18),
-                  label: const Text('+1 Rápido', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  ),
-                ),
-                // Batch Add (+N)
-                OutlinedButton.icon(
-                  onPressed: _isBusy ? null : _addBatchInstances,
-                  icon: const Icon(Icons.post_add, size: 18),
-                  label: const Text('+N Masivo', style: TextStyle(fontSize: 12)),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                Icon(Icons.groups, size: 20, color: theme.colorScheme.secondary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Demografía Mayoritaria ($majorityCount de ${widget.group.population})',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                      ),
+                      Text(
+                        majorityArchetype.notes != null && majorityArchetype.notes!.isNotEmpty
+                            ? 'Perfil: "${majorityArchetype.notes}"'
+                            : 'Perfil estándar de la especie (sin notas diferenciales)',
+                        style: TextStyle(fontSize: 10, color: theme.colorScheme.secondary),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -285,13 +240,94 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           ),
           const SizedBox(height: 16),
 
+          // WheelPicker Container for Elegant Quantity Operations
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: theme.dividerColor),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'Selección Masiva con Selector de Rueda (WheelPicker)',
+                  style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+
+                // Cupertino WheelPicker
+                SizedBox(
+                  height: 110,
+                  child: CupertinoPicker(
+                    itemExtent: 36,
+                    scrollController: FixedExtentScrollController(initialItem: 0),
+                    onSelectedItemChanged: (index) {
+                      setState(() => _selectedQuantity = index + 1);
+                    },
+                    children: List.generate(100, (idx) {
+                      final val = idx + 1;
+                      return Center(
+                        child: Text(
+                          '$val ${val == 1 ? "unidad" : "unidades"}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: _selectedQuantity == val ? FontWeight.bold : FontWeight.normal,
+                            color: _selectedQuantity == val ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Action Buttons for WheelPicker
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _isBusy || widget.group.population == 0 ? null : _removeSelectedQuantity,
+                        icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
+                        label: Text(
+                          'Eliminar $_selectedQuantity',
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.withAlpha(20),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _isBusy ? null : _addSelectedQuantity,
+                        icon: const Icon(Icons.add_circle_outline, color: Colors.green, size: 18),
+                        label: Text(
+                          'Añadir $_selectedQuantity',
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.withAlpha(20),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
           Text(
-            'Detalle de Instancias Individuales (${widget.group.population})',
+            'Detalle de Instancias en el Grupo (${widget.group.population})',
             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
 
-          // Expandable list of individual entities in the group
+          // Individual Instance Cards List
           Expanded(
             child: ListView.builder(
               itemCount: widget.group.entities.length,
