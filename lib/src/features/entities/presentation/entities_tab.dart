@@ -4,6 +4,8 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import 'register_object_modal.dart';
 import 'entity_tile.dart';
+import '../domain/effective_entity_group.dart';
+import 'effective_group_tile.dart';
 
 class EntitiesTab extends ConsumerStatefulWidget {
   const EntitiesTab({super.key});
@@ -96,11 +98,16 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
                   );
                 }
 
+                final groups = EffectiveEntityGroup.groupEntities(
+                  entities: activeEntities,
+                  effectiveLocationMap: {for (var e in activeEntities) e.id: e.locationId},
+                );
+
                 return ListView.builder(
                   padding: const EdgeInsets.all(16),
-                  itemCount: activeEntities.length,
+                  itemCount: groups.length,
                   itemBuilder: (context, index) {
-                    return EntityTile(entity: activeEntities[index]);
+                    return EffectiveGroupTile(group: groups[index]);
                   },
                 );
               },
