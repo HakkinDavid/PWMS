@@ -174,7 +174,10 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
           ),
           const SizedBox(height: 16),
           if (_selectedSpeciesIdForSubspecies != null)
-            SubspeciesSectionWidget(speciesId: _selectedSpeciesIdForSubspecies!),
+            SubspeciesSectionWidget(
+              speciesId: _selectedSpeciesIdForSubspecies!,
+              isEditing: true,
+            ),
         ],
       ),
     );

@@ -732,7 +732,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       ),
                       const SizedBox(height: 14),
                       // Subspecies & Brand Variants section
-                      SubspeciesSectionWidget(speciesId: widget.initialSpecies!.id),
+                      SubspeciesSectionWidget(speciesId: widget.initialSpecies!.id, isEditing: true),
                       const SizedBox(height: 14),
                     ],
 
