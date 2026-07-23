@@ -171,14 +171,14 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.branding_watermark, size: 16, color: theme.colorScheme.secondary),
+                          Icon(Icons.public, size: 16, color: theme.colorScheme.secondary),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${AppStrings.subspeciesCountTitle}: ${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}',
+                                  'Especie general: ${species.name} (${species.type})',
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                 ),
                                 if (sub.barcode != null)

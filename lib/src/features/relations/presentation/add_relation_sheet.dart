@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/entity_relation.dart';
@@ -33,9 +34,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
 
   Future<void> _saveRelation() async {
     if (_targetEntityId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona el elemento a relacionar')),
-      );
+      AppToast.showRestriction(context, 'Selecciona el elemento a relacionar');
       return;
     }
 
@@ -59,18 +58,11 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Relación dirigida creada con éxito'),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-        );
+        AppToast.showSuccess(context, 'Relación dirigida creada con éxito');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al guardar relación: $e')),
-        );
+        AppToast.showError(context, 'Error al guardar relación: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

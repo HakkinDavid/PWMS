@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../domain/species_requirement.dart';
 
 class RequirementsSectionWidget extends ConsumerStatefulWidget {
@@ -49,9 +50,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
     final catalogItems = catalogState.asData?.value ?? [];
 
     if (catalogItems.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.noCatalogSpeciesForRequirement)),
-      );
+      AppToast.showRestriction(context, AppStrings.noCatalogSpeciesForRequirement);
       return;
     }
 

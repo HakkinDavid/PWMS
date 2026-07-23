@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../domain/custom_template.dart';
 
 class CustomTemplateEditorSheet extends ConsumerStatefulWidget {
@@ -58,15 +59,11 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(AppStrings.templateSavedSuccess)),
-        );
+        AppToast.showSuccess(context, AppStrings.templateSavedSuccess);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppStrings.errorPrefix}$e')),
-        );
+        AppToast.showError(context, '${AppStrings.errorPrefix}$e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

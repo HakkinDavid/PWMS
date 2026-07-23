@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../domain/effective_entity_group.dart';
 import '../domain/world_entity.dart';
 
@@ -73,9 +74,7 @@ class QuantityOperationHelper {
     required bool isAdd,
   }) async {
     if (!isAdd && group.population <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.noInstancesAvailableToDelete)),
-      );
+      AppToast.showRestriction(context, AppStrings.noInstancesAvailableToDelete);
       return;
     }
 

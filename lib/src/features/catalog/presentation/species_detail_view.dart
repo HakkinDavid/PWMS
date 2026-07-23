@@ -6,6 +6,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_template.dart';
 import '../domain/catalog_item.dart';
@@ -51,8 +52,9 @@ class SpeciesDetailView extends ConsumerWidget {
         ref.invalidate(speciesAttachmentsProvider(speciesId));
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+          AppToast.showError(
+            context,
+            e.toString().replaceAll('Exception: ', ''),
           );
         }
       }
@@ -66,10 +68,16 @@ class SpeciesDetailView extends ConsumerWidget {
     final attachmentsAsync = ref.watch(speciesAttachmentsProvider(species.id));
     final effectivePhotoPath = subspecies?.resolvePhotoPath(species.mainPhotoPath) ?? species.mainPhotoPath;
 
+    final isCustomSubspecies = subspecies != null && subspecies!.subspeciesName.toLowerCase() != 'genérica';
+
+    final headerTitle = isCustomSubspecies
+        ? '${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}'
+        : species.name;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          subspecies != null ? '${species.name} (${subspecies!.subspeciesName})' : species.name,
+          headerTitle,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: actions,
@@ -136,7 +144,7 @@ class SpeciesDetailView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Badges (Brand, Type, Barcode, Uniqueness)
+              // Badges (Type, Species Context, Barcode, Uniqueness)
               Center(
                 child: Wrap(
                   alignment: WrapAlignment.center,
@@ -167,12 +175,12 @@ class SpeciesDetailView extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    if (subspecies != null) ...[
+                    if (isCustomSubspecies) ...[
                       Chip(
                         visualDensity: VisualDensity.compact,
-                        avatar: const Icon(Icons.branding_watermark, size: 12),
+                        avatar: const Icon(Icons.public, size: 12),
                         label: Text(
-                          '${AppStrings.subspeciesLabel} ${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}',
+                          'Especie: ${species.name}',
                           style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -182,6 +190,12 @@ class SpeciesDetailView extends ConsumerWidget {
                           avatar: const Icon(Icons.qr_code, size: 12),
                           label: Text('${AppStrings.barcodeLabel}: ${subspecies!.barcode}', style: const TextStyle(fontSize: 11)),
                         ),
+                    ] else if (subspecies?.barcode != null) ...[
+                      Chip(
+                        visualDensity: VisualDensity.compact,
+                        avatar: const Icon(Icons.qr_code, size: 12),
+                        label: Text('${AppStrings.barcodeLabel}: ${subspecies!.barcode}', style: const TextStyle(fontSize: 11)),
+                      ),
                     ],
                     if (species.isUnique)
                       const Chip(

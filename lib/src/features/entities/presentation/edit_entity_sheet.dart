@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../domain/instance_magnitude.dart';
@@ -78,18 +79,11 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(AppStrings.instanceUpdatedSuccess),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-        );
+        AppToast.showSuccess(context, AppStrings.instanceUpdatedSuccess);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppStrings.updateErrorPrefix}$e')),
-        );
+        AppToast.showError(context, '${AppStrings.updateErrorPrefix}$e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

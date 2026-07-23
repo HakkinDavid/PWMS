@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../domain/subspecies.dart';
 
 class SubspeciesSectionWidget extends ConsumerStatefulWidget {
@@ -258,8 +259,9 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                                   _loadSubspecies();
                                 } catch (e) {
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+                                    AppToast.showError(
+                                      context,
+                                      e.toString().replaceAll('Exception: ', ''),
                                     );
                                   }
                                 }

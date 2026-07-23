@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../locations/domain/location_node.dart';
 
@@ -81,18 +82,11 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('"$name" trasladado exitosamente en el Grafo'),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-        );
+        AppToast.showSuccess(context, '"$name" trasladado exitosamente en el Grafo');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al mover: $e')),
-        );
+        AppToast.showError(context, 'Error al mover: $e');
       }
     } finally {
       if (mounted) setState(() => _isMoving = false);

@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_template.dart';
@@ -142,15 +143,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         await ref.read(entityRepositoryProvider).addAttachment(attachment);
         ref.invalidate(speciesAttachmentsProvider(speciesId));
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Archivo "${file.name}" adjuntado a la especie')),
-          );
+          AppToast.showSuccess(context, 'Archivo "${file.name}" adjuntado a la especie');
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
-          );
+          AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
         }
       }
     }
@@ -355,9 +352,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   Future<void> _saveSpecies() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.nameLabel)),
-      );
+      AppToast.showRestriction(context, AppStrings.nameLabel);
       return;
     }
 
@@ -413,9 +408,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
-        );
+        AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

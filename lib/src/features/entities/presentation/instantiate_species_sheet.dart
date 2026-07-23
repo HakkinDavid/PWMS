@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
@@ -117,9 +118,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
   Future<void> _confirmInstantiation() async {
     if (_selectedSpecies == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.selectSpeciesToInstantiate)),
-      );
+      AppToast.showRestriction(context, AppStrings.selectSpeciesToInstantiate);
       return;
     }
 
@@ -133,12 +132,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       final alreadyExists = existingEntities.any((e) => e.speciesId == species.id && e.subspeciesId == targetSubId);
       if (alreadyExists) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(AppStrings.singleInstanceSubspeciesError),
-              backgroundColor: Colors.orange,
-            ),
-          );
+          AppToast.showRestriction(context, AppStrings.singleInstanceSubspeciesError);
         }
         return;
       }
@@ -198,18 +192,14 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${AppStrings.speciesInstantiatedSuccess}: "${species.name}"'),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
+        AppToast.showSuccess(
+          context,
+          '${AppStrings.speciesInstantiatedSuccess}: "${species.name}"',
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppStrings.errorPrefix}$e')),
-        );
+        AppToast.showError(context, '${AppStrings.errorPrefix}$e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
@@ -45,9 +46,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
 
   Future<void> _saveRelation() async {
     if (_selectedTargetEntity == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.selectTargetEntityError)),
-      );
+      AppToast.showRestriction(context, AppStrings.selectTargetEntityError);
       return;
     }
 
@@ -69,18 +68,11 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Relación "$_selectedRelationType" creada con éxito'),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-        );
+        AppToast.showSuccess(context, 'Relación "$_selectedRelationType" creada con éxito');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppStrings.errorPrefix}$e')),
-        );
+        AppToast.showError(context, '${AppStrings.errorPrefix}$e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
