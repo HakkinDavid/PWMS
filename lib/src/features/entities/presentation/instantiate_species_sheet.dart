@@ -4,24 +4,27 @@ import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
+import '../../../core/domain/domain_rules.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/subspecies.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/domain/entity_relation.dart';
 import '../domain/entity_template.dart';
+import '../domain/instance_magnitude.dart';
 
 class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
-  final CatalogItem species;
+  final CatalogItem? species;
   final String? initialLocationId;
 
   const InstantiateSpeciesSheet({
     super.key,
-    required this.species,
+    this.species,
     this.initialLocationId,
   });
 
   static Future<void> show(
     BuildContext context, {
-    required CatalogItem species,
+    CatalogItem? species,
     String? initialLocationId,
   }) {
     return showModalBottomSheet(
@@ -45,6 +48,12 @@ enum InstantiationLocationMode { physicalNode, containerEntity }
 class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesSheet> {
   final _qtyController = TextEditingController(text: '1');
   final _notesController = TextEditingController();
+  final Map<String, TextEditingController> _magnitudeControllers = {};
+
+  CatalogItem? _selectedSpecies;
+  Subspecies? _selectedSubspecies;
+  List<Subspecies> _availableSubspecies = [];
+
   InstantiationLocationMode _locationMode = InstantiationLocationMode.physicalNode;
   String? _selectedLocationId;
   String? _selectedContainerEntityId;
@@ -54,12 +63,49 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   void initState() {
     super.initState();
     _selectedLocationId = widget.initialLocationId;
+    if (widget.species != null) {
+      _onSpeciesSelected(widget.species!);
+    }
+  }
+
+  void _onSpeciesSelected(CatalogItem species) {
+    setState(() {
+      _selectedSpecies = species;
+      _selectedSubspecies = null;
+      _availableSubspecies = [];
+      _magnitudeControllers.clear();
+
+      for (final mag in species.magnitudes) {
+        _magnitudeControllers[mag.propertyName] = TextEditingController(
+          text: DomainRules.formatMagnitude(mag.magnitudeValue, mag.unitSymbol),
+        );
+      }
+    });
+
+    _loadSubspeciesForSpecies(species.id);
+  }
+
+  Future<void> _loadSubspeciesForSpecies(String speciesId) async {
+    try {
+      final list = await ref.read(catalogRepositoryProvider).getSubspeciesForSpecies(speciesId);
+      if (mounted) {
+        setState(() {
+          _availableSubspecies = list;
+          if (list.isNotEmpty) {
+            _selectedSubspecies = list.first;
+          }
+        });
+      }
+    } catch (_) {}
   }
 
   @override
   void dispose() {
     _qtyController.dispose();
     _notesController.dispose();
+    for (final controller in _magnitudeControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -73,12 +119,20 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   }
 
   Future<void> _confirmInstantiation() async {
-    final template = EntityTemplateRegistry.getTemplate(widget.species.type);
+    if (_selectedSpecies == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona una especie para instanciar.')),
+      );
+      return;
+    }
+
+    final species = _selectedSpecies!;
+    final template = EntityTemplateRegistry.getTemplate(species.type);
 
     // Single instance check for non-countable abstract templates or unique species
-    if (!template.hasQuantity || widget.species.isUnique) {
+    if (!template.hasQuantity || species.isUnique) {
       final existingEntities = ref.read(entityListProvider).asData?.value ?? [];
-      final alreadyExists = existingEntities.any((e) => e.speciesId == widget.species.id);
+      final alreadyExists = existingEntities.any((e) => e.speciesId == species.id);
       if (alreadyExists) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -102,11 +156,32 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       final targetPhysicalLoc = _locationMode == InstantiationLocationMode.physicalNode ? _selectedLocationId : null;
 
       final result = await entityRepo.instantiateOrMerge(
-        widget.species.id,
+        species.id,
         targetPhysicalLoc,
         addQty,
+        subspeciesId: _selectedSubspecies?.id,
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
       );
+
+      // Build specific instance magnitudes with explicit property names
+      if (species.magnitudes.isNotEmpty) {
+        final List<InstanceMagnitude> customInstanceMags = [];
+        for (final sm in species.magnitudes) {
+          final ctrl = _magnitudeControllers[sm.propertyName];
+          final customVal = ctrl != null ? (double.tryParse(ctrl.text.trim()) ?? sm.magnitudeValue) : sm.magnitudeValue;
+
+          customInstanceMags.add(InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: result.id,
+            propertyName: sm.propertyName,
+            magnitudeValue: customVal * addQty,
+            unitSymbol: sm.unitSymbol,
+          ));
+        }
+
+        final updatedWithMags = result.copyWith(magnitudes: customInstanceMags);
+        await entityRepo.saveEntity(updatedWithMags);
+      }
 
       // If container mode is selected, create GUARDADO_EN relation
       if (_locationMode == InstantiationLocationMode.containerEntity && _selectedContainerEntityId != null) {
@@ -121,13 +196,13 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       }
 
       ref.read(entityListProvider.notifier).loadEntities();
-      await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, widget.species.name, widget.species.type);
+      await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, species.name, species.type);
 
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('"${widget.species.name}" instanciado'),
+            content: Text('"${species.name}" instanciado'),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
@@ -146,9 +221,13 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   @override
   Widget build(BuildContext context) {
     final locationsState = ref.watch(locationNodeListProvider);
+    final catalogState = ref.watch(catalogListProvider);
+    final catalogItems = catalogState.asData?.value ?? [];
     final theme = Theme.of(context);
-    final template = EntityTemplateRegistry.getTemplate(widget.species.type);
-    final hasMagnitudes = widget.species.magnitudes.isNotEmpty;
+
+    final template = _selectedSpecies != null
+        ? EntityTemplateRegistry.getTemplate(_selectedSpecies!.type)
+        : EntityTemplateRegistry.getTemplate('Objeto');
 
     String locationDisplayName = AppStrings.rootLocationName;
     if (_selectedLocationId != null) {
@@ -186,12 +265,66 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             ),
             const SizedBox(height: 16),
             Text(
-              'Instanciar "${widget.species.name}"',
+              _selectedSpecies != null
+                  ? 'Instanciar "${_selectedSpecies!.name}"'
+                  : 'Instanciar Especie de Catálogo',
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
-            // Segmented Choice: Physical Node vs Container Entity
+            // 1. Selector de Especie del Catálogo Maestro
+            Text('Especie de Catálogo:', style: theme.textTheme.labelLarge),
+            const SizedBox(height: 6),
+            DropdownButtonFormField<String>(
+              initialValue: _selectedSpecies?.id,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.public),
+                hintText: 'Selecciona una especie...',
+              ),
+              items: catalogItems.map((c) {
+                return DropdownMenuItem(
+                  value: c.id,
+                  child: Text('${c.name} (${c.type})'),
+                );
+              }).toList(),
+              onChanged: (val) {
+                if (val != null) {
+                  final found = catalogItems.where((c) => c.id == val).firstOrNull;
+                  if (found != null) {
+                    _onSpeciesSelected(found);
+                  }
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // 2. Selector de Subespecie / Marca (si existen variante)
+            if (_availableSubspecies.isNotEmpty) ...[
+              Text('Subespecie / Marca Comerciales:', style: theme.textTheme.labelLarge),
+              const SizedBox(height: 6),
+              DropdownButtonFormField<String>(
+                initialValue: _selectedSubspecies?.id,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.branding_watermark),
+                  hintText: 'Selecciona subespecie / marca',
+                ),
+                items: _availableSubspecies.map((sub) {
+                  final brandText = sub.brand != null ? ' (${sub.brand})' : '';
+                  return DropdownMenuItem(
+                    value: sub.id,
+                    child: Text('${sub.subspeciesName}$brandText'),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    _selectedSubspecies = _availableSubspecies.where((s) => s.id == val).firstOrNull;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // 3. Segmented Choice: Physical Node vs Container Entity
             SegmentedButton<InstantiationLocationMode>(
               segments: const [
                 ButtonSegment(
@@ -245,38 +378,61 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               Consumer(
                 builder: (context, ref, _) {
                   final entitiesState = ref.watch(entityListProvider);
-                  final catalogState = ref.watch(catalogListProvider);
-                  final catalogItems = catalogState.asData?.value ?? [];
+                  final entities = entitiesState.asData?.value ?? [];
 
-                  return entitiesState.when(
-                    data: (entities) {
-                      if (entities.isEmpty) {
-                        return const Text('No hay objetos contenedores disponibles.');
-                      }
-                      return DropdownButtonFormField<String>(
-                        initialValue: _selectedContainerEntityId,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.inventory_2_outlined),
-                          hintText: 'Selecciona objeto contenedor',
-                        ),
-                        items: entities.map((e) {
-                          final sp = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
-                          final name = sp?.name ?? 'Objeto Contenedor';
-                          return DropdownMenuItem(value: e.id, child: Text(name));
-                        }).toList(),
-                        onChanged: (val) => setState(() => _selectedContainerEntityId = val),
-                      );
-                    },
-                    loading: () => const CircularProgressIndicator(),
-                    error: (err, _) => Text('Error: $err'),
+                  if (entities.isEmpty) {
+                    return const Text('No hay objetos contenedores disponibles.');
+                  }
+                  return DropdownButtonFormField<String>(
+                    initialValue: _selectedContainerEntityId,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.inventory_2_outlined),
+                      hintText: 'Selecciona objeto contenedor',
+                    ),
+                    items: entities.map((e) {
+                      final sp = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
+                      final name = sp?.name ?? 'Objeto Contenedor';
+                      return DropdownMenuItem(value: e.id, child: Text(name));
+                    }).toList(),
+                    onChanged: (val) => setState(() => _selectedContainerEntityId = val),
                   );
                 },
               ),
             ],
             const SizedBox(height: 16),
 
-            // Quantity (Only if species has defined magnitude properties!)
-            if (template.hasQuantity && !widget.species.isUnique && hasMagnitudes) ...[
+            // 4. Especificar el Nombre de Cada Magnitud Registrada
+            if (_selectedSpecies != null && _selectedSpecies!.magnitudes.isNotEmpty) ...[
+              Text('Magnitudes y Propiedades Específicas:', style: theme.textTheme.labelLarge),
+              const SizedBox(height: 8),
+              Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: _selectedSpecies!.magnitudes.map((sm) {
+                      final ctrl = _magnitudeControllers[sm.propertyName];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: TextField(
+                          controller: ctrl,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: InputDecoration(
+                            labelText: '${sm.propertyName} (${sm.unitSymbol})',
+                            prefixIcon: const Icon(Icons.straighten),
+                            helperText: 'Valor de especie: ${DomainRules.formatMagnitude(sm.magnitudeValue, sm.unitSymbol)} ${sm.unitSymbol}',
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // 5. Instanciación por población (si aplica)
+            if (template.hasQuantity && (_selectedSpecies == null || !_selectedSpecies!.isUnique)) ...[
               GestureDetector(
                 onTap: () async {
                   final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
@@ -291,7 +447,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                     controller: _qtyController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: AppStrings.quantityLabel,
+                      labelText: 'Cantidad / Población a Instanciar',
                       prefixIcon: Icon(Icons.numbers),
                     ),
                   ),

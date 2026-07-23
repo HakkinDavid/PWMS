@@ -11,6 +11,7 @@ import 'package:platinum_world_management_system/src/features/locations/infrastr
 import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_path_helper.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/species_requirement.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/effective_entity_group.dart';
@@ -307,6 +308,35 @@ void main() {
 
       expect(effectiveBreadcrumb.ancestorPath, contains('Casa > Cocina @'));
       expect(effectiveBreadcrumb.targetName, contains('Refrigerador'));
+    });
+
+    test('7. Subspecies Photo Fallback to Species Photo', () {
+      final species = CatalogItem(
+        id: 'sp-1',
+        name: 'Pila AA',
+        type: 'Objeto',
+        mainPhotoPath: 'species/default.jpg',
+        createdAt: DateTime.now(),
+      );
+
+      final subWithoutPhoto = Subspecies(
+        id: 'sub-1',
+        speciesId: 'sp-1',
+        subspeciesName: 'Duracell Ultra',
+        photoPath: null,
+        createdAt: DateTime.now(),
+      );
+
+      final subWithPhoto = Subspecies(
+        id: 'sub-2',
+        speciesId: 'sp-1',
+        subspeciesName: 'PowerA Rechargeable',
+        photoPath: 'subspecies/powera.jpg',
+        createdAt: DateTime.now(),
+      );
+
+      expect(subWithoutPhoto.resolvePhotoPath(species.mainPhotoPath), equals('species/default.jpg'));
+      expect(subWithPhoto.resolvePhotoPath(species.mainPhotoPath), equals('subspecies/powera.jpg'));
     });
   });
 }

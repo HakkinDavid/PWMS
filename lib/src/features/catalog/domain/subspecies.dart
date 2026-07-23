@@ -35,9 +35,14 @@ class Subspecies {
       subspeciesName: subspeciesName ?? this.subspeciesName,
       brand: brand ?? this.brand,
       barcode: barcode ?? this.barcode,
-      photoPath: photoPath ?? this.photoPath,
-      notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
     );
+  }
+
+  String? resolvePhotoPath(String? fallbackSpeciesPhoto) {
+    if (photoPath != null && photoPath!.trim().isNotEmpty) {
+      return photoPath;
+    }
+    return fallbackSpeciesPhoto;
   }
 }

@@ -13,6 +13,7 @@ import '../../entities/domain/entity_template.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
+import 'subspecies_section_widget.dart';
 
 class SpeciesFormModal extends ConsumerStatefulWidget {
   final CatalogItem? initialSpecies; // Null for Create mode, Non-null for Edit mode
@@ -550,6 +551,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                           minimumSize: const Size(double.infinity, 44),
                         ),
                       ),
+                      const SizedBox(height: 14),
+                      // Subspecies & Brand Variants section
+                      SubspeciesSectionWidget(speciesId: widget.initialSpecies!.id),
                       const SizedBox(height: 14),
                     ],
 

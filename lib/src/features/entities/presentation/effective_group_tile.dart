@@ -70,9 +70,17 @@ class EffectiveGroupTile extends ConsumerWidget {
                   width: 48,
                   height: 48,
                   child: FutureBuilder<String>(
-                    future: species?.mainPhotoPath != null
-                        ? ref.read(fileStorageServiceProvider).getAbsolutePath(species!.mainPhotoPath!)
-                        : Future.value(''),
+                    future: () async {
+                      String? photoPath = species?.mainPhotoPath;
+                      if (firstEntity.subspeciesId != null) {
+                        final sub = await ref.read(catalogRepositoryProvider).getSubspeciesById(firstEntity.subspeciesId!);
+                        if (sub?.photoPath != null && sub!.photoPath!.trim().isNotEmpty) {
+                          photoPath = sub.photoPath;
+                        }
+                      }
+                      if (photoPath == null || photoPath.isEmpty) return '';
+                      return ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath);
+                    }(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                         return Image.file(File(snapshot.data!), fit: BoxFit.cover);
