@@ -113,10 +113,6 @@ class DomainRules {
       case 'MXN':
       case 'EUR':
         return 'Precio';
-      case 'unidades':
-      case 'piezas':
-      case 'unidad':
-        return 'Cantidad';
       default:
         return 'Propiedad';
     }

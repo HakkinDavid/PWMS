@@ -92,7 +92,6 @@ class UnitsRegistry {
     'EUR': SIUnitDefinition(symbol: 'EUR', allowDecimals: true),
   };
 
-  static const List<String> countingUnits = ['unidades', 'piezas', 'unidad'];
   static const List<String> massUnits = ['t', 'kg', 'g', 'mg'];
   static const List<String> lengthUnits = ['km', 'm', 'cm', 'mm'];
   static const List<String> volumeUnits = ['m³', 'cm³', 'L', 'mL'];
@@ -107,7 +106,6 @@ class UnitsRegistry {
   static const List<String> financialUnits = ['\$', 'USD', 'MXN', 'EUR'];
 
   static List<String> get allSiUnits => [
-        ...countingUnits,
         ...massUnits,
         ...lengthUnits,
         ...volumeUnits,

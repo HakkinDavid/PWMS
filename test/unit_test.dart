@@ -435,7 +435,6 @@ void main() {
       expect(DomainRules.suggestPropertyNameForUnit('A'), equals('Corriente eléctrica'));
       expect(DomainRules.suggestPropertyNameForUnit('V'), equals('Voltaje'));
       expect(DomainRules.suggestPropertyNameForUnit('\$'), equals('Precio'));
-      expect(DomainRules.suggestPropertyNameForUnit('unidades'), equals('Cantidad'));
     });
   });
 }
