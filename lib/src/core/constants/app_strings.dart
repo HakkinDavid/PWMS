@@ -153,8 +153,8 @@ class AppStrings {
   static const useSpeciesAsBaseTemplate = 'Usar especie como plantilla base';
   static const selectBaseTemplateHint = 'Seleccionar plantilla base...';
   static const nameIsImmutable = 'El nombre es inmutable.';
-  static const unitsAndMagnitudesTitle = 'Unidades y magnitudes de medida';
-  static const addUnitAction = 'Agregar unidad de medida';
+  static const unitsAndMagnitudesTitle = 'Unidades de medida';
+  static const addUnitAction = 'Agregar medida';
   static const noAdditionalUnitsAdded = 'Sin unidades adicionales agregadas.';
   static const removeUnitAction = 'Eliminar unidad de medida';
   static const subspeciesOrBrands = 'Subespecies';
