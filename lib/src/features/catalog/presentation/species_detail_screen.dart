@@ -9,7 +9,6 @@ import '../../locations/domain/location_path_helper.dart';
 import 'species_detail_view.dart';
 import 'species_form_modal.dart';
 import 'subspecies_section_widget.dart';
-import 'requirements_section_widget.dart';
 
 class SpeciesDetailScreen extends ConsumerStatefulWidget {
   final String speciesId;
@@ -21,6 +20,8 @@ class SpeciesDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
+  bool _isEditing = false;
+
   @override
   Widget build(BuildContext context) {
     final catalogState = ref.watch(catalogListProvider);
@@ -110,9 +111,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                 },
               ),
             const SizedBox(height: 16),
-            SubspeciesSectionWidget(speciesId: species.id),
-            const SizedBox(height: 16),
-            RequirementsSectionWidget(sourceId: species.id, sourceType: 'species'),
+            SubspeciesSectionWidget(speciesId: species.id, isEditing: _isEditing),
             const SizedBox(height: 16),
           ],
         );
@@ -123,12 +122,20 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
             instanceSpecificsHeader: locationsSummaryHeader,
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                tooltip: AppStrings.edit,
+                icon: Icon(_isEditing ? Icons.check : Icons.edit_outlined),
+                tooltip: _isEditing ? AppStrings.saveChangesAction : AppStrings.edit,
                 onPressed: () {
-                  SpeciesFormModal.show(context, initialSpecies: species);
+                  setState(() => _isEditing = !_isEditing);
                 },
               ),
+              if (_isEditing)
+                IconButton(
+                  icon: const Icon(Icons.settings_outlined),
+                  tooltip: AppStrings.editSpeciesTitle,
+                  onPressed: () {
+                    SpeciesFormModal.show(context, initialSpecies: species);
+                  },
+                ),
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                 tooltip: AppStrings.delete,

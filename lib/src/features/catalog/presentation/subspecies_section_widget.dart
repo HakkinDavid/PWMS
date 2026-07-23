@@ -10,10 +10,12 @@ import '../domain/subspecies.dart';
 
 class SubspeciesSectionWidget extends ConsumerStatefulWidget {
   final String speciesId;
+  final bool isEditing;
 
   const SubspeciesSectionWidget({
     super.key,
     required this.speciesId,
+    this.isEditing = false,
   });
 
   @override
@@ -173,11 +175,12 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
               '${AppStrings.subspeciesCountTitle} (${_subspeciesList.length})',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            TextButton.icon(
-              onPressed: () => _addOrEditSubspeciesModal(),
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text(AppStrings.addBrand),
-            ),
+            if (widget.isEditing)
+              TextButton.icon(
+                onPressed: () => _addOrEditSubspeciesModal(),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text(AppStrings.addBrand),
+              ),
           ],
         ),
         const SizedBox(height: 4),
@@ -238,38 +241,40 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                           style: const TextStyle(fontSize: 11),
                         )
                       : null,
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit_outlined, size: 18),
-                        onPressed: () => _addOrEditSubspeciesModal(initial: sub),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_outline,
-                          color: canDelete ? Colors.redAccent : Colors.grey.shade400,
-                          size: 18,
-                        ),
-                        tooltip: canDelete ? AppStrings.delete : AppStrings.cannotDeleteOnlySubspeciesTooltip,
-                        onPressed: canDelete
-                            ? () async {
-                                try {
-                                  await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
-                                  _loadSubspecies();
-                                } catch (e) {
-                                  if (context.mounted) {
-                                    AppToast.showError(
-                                      context,
-                                      e.toString().replaceAll('Exception: ', ''),
-                                    );
-                                  }
-                                }
-                              }
-                            : null,
-                      ),
-                    ],
-                  ),
+                  trailing: widget.isEditing
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit_outlined, size: 18),
+                              onPressed: () => _addOrEditSubspeciesModal(initial: sub),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete_outline,
+                                color: canDelete ? Colors.redAccent : Colors.grey.shade400,
+                                size: 18,
+                              ),
+                              tooltip: canDelete ? AppStrings.delete : AppStrings.cannotDeleteOnlySubspeciesTooltip,
+                              onPressed: canDelete
+                                  ? () async {
+                                      try {
+                                        await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
+                                        _loadSubspecies();
+                                      } catch (e) {
+                                        if (context.mounted) {
+                                          AppToast.showError(
+                                            context,
+                                            e.toString().replaceAll('Exception: ', ''),
+                                          );
+                                        }
+                                      }
+                                    }
+                                  : null,
+                            ),
+                          ],
+                        )
+                      : null,
                 ),
               );
             },
