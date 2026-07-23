@@ -305,7 +305,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: 'fab_locations',
+        heroTag: null,
         onPressed: () => _showCreateNodeModal(context),
         tooltip: AppStrings.newLocationTitle,
         child: const Icon(Icons.add_location_alt),

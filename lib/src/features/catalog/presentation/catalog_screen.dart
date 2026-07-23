@@ -34,7 +34,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
         title: const Text(AppStrings.catalogTitle),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: 'fab_catalog',
+        heroTag: null,
         onPressed: () => RegisterObjectModal.show(context, startInCreateSpecies: true),
         tooltip: AppStrings.newSpeciesTitle,
         child: const Icon(Icons.add),

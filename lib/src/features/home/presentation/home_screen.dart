@@ -481,7 +481,7 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: 'fab_home',
+        heroTag: null,
         onPressed: () => RegisterObjectModal.show(context),
         tooltip: AppStrings.registerObjectTitle,
         child: const Icon(Icons.add),

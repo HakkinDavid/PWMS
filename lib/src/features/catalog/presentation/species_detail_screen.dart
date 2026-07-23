@@ -184,7 +184,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
           floatingActionButton: (species.isUnique && hasExistingInstance)
               ? null
               : FloatingActionButton(
-                  heroTag: 'fab_species_instantiate',
+                  heroTag: null,
                   onPressed: () {
                     InstantiateSpeciesSheet.show(context, species: species);
                   },

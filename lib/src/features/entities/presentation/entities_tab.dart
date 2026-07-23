@@ -35,7 +35,7 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
         title: const Text(AppStrings.tabEntities),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: 'fab_entities',
+        heroTag: null,
         onPressed: () => RegisterObjectModal.show(context),
         tooltip: AppStrings.registerObjectTitle,
         child: const Icon(Icons.add),
