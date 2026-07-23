@@ -98,7 +98,6 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
       _speciesId = item.id;
       _nameController.text = item.name;
       _selectedType = item.type;
-      if (item.barcode != null) _barcodeController.text = item.barcode!;
       if (item.description != null) _notesController.text = item.description!;
     });
   }
@@ -203,7 +202,6 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
               name,
               type: _selectedType,
               mainPhotoPath: relativePhotoPath,
-              barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
             );
       } else {
         species = await catalogRepo.getOrCreateSpecies(
@@ -211,7 +209,6 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
           type: _selectedType,
           description: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
           mainPhotoPath: relativePhotoPath,
-          barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
         );
       }
 

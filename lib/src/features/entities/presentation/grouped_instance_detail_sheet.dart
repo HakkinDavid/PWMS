@@ -329,10 +329,11 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                                 IconButton(
                                   icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
                                   onPressed: () async {
+                                    final nav = Navigator.of(context);
                                     await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
                                     ref.read(entityListProvider.notifier).loadEntities();
                                     if (mounted && widget.group.entities.length <= 1) {
-                                      Navigator.pop(context);
+                                      nav.pop();
                                     }
                                   },
                                 ),

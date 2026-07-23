@@ -20,6 +20,13 @@ class RelationRepository implements IRelationRepository {
   }
 
   @override
+  Future<List<EntityRelation>> getAllRelations() async {
+    final query = _db.select(_db.relationsTable);
+    final rows = await query.get();
+    return rows.map(_mapToDomain).toList();
+  }
+
+  @override
   Future<List<EntityRelation>> getRelationsForEntity(String entityId) async {
     final query = _db.select(_db.relationsTable)
       ..where((t) => t.sourceEntityId.equals(entityId) | t.targetEntityId.equals(entityId));

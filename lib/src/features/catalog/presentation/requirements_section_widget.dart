@@ -69,7 +69,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                 const Text('Selecciona la especie requerida e indica la cantidad necesaria:'),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: selectedSpeciesId,
+                  initialValue: selectedSpeciesId,
                   decoration: const InputDecoration(labelText: 'Especie Requerida'),
                   items: catalogItems.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name))).toList(),
                   onChanged: (val) => setState(() => selectedSpeciesId = val),

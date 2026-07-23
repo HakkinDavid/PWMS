@@ -49,8 +49,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   late bool _isEditMode;
 
   final _nameController = TextEditingController();
-  final _brandController = TextEditingController();
-  final _barcodeController = TextEditingController();
   final _descController = TextEditingController();
 
   String _selectedType = AppStrings.typeObject;
@@ -77,8 +75,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     if (_isEditMode) {
       final s = widget.initialSpecies!;
       _nameController.text = s.name;
-      _brandController.text = s.brand ?? '';
-      _barcodeController.text = s.barcode ?? '';
       _descController.text = s.description ?? '';
       _selectedType = s.type;
       _isUnique = s.isUnique;
@@ -91,8 +87,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   @override
   void dispose() {
     _nameController.dispose();
-    _brandController.dispose();
-    _barcodeController.dispose();
     _descController.dispose();
     super.dispose();
   }
@@ -110,7 +104,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   void _populateFromBaseTemplate(CatalogItem base) {
     setState(() {
       _selectedType = base.type;
-      _brandController.text = base.brand ?? '';
       _descController.text = base.description ?? '';
       _isUnique = base.isUnique;
       _magnitudes.clear();

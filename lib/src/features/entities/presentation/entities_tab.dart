@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import 'register_object_modal.dart';
-import 'entity_tile.dart';
 import '../domain/effective_entity_group.dart';
 import 'effective_group_tile.dart';
 

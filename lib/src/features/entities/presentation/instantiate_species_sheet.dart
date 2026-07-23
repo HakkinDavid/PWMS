@@ -6,6 +6,7 @@ import '../../../core/providers/providers.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../locations/presentation/location_tree_picker.dart';
+import '../../relations/domain/entity_relation.dart';
 import '../domain/entity_template.dart';
 
 class InstantiateSpeciesSheet extends ConsumerStatefulWidget {

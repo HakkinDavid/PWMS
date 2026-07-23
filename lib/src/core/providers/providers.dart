@@ -201,3 +201,36 @@ final entityRelationsProvider = FutureProvider.family<List<EntityRelation>, Stri
   final repo = ref.watch(relationRepositoryProvider);
   return repo.getRelationsForEntity(entityId);
 });
+
+// All Relations State Provider
+class RelationListNotifier extends StateNotifier<AsyncValue<List<EntityRelation>>> {
+  final IRelationRepository _repository;
+
+  RelationListNotifier(this._repository) : super(const AsyncValue.loading()) {
+    loadRelations();
+  }
+
+  Future<void> loadRelations() async {
+    state = const AsyncValue.loading();
+    try {
+      final list = await _repository.getAllRelations();
+      state = AsyncValue.data(list);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> addRelation(EntityRelation relation) async {
+    await _repository.addRelation(relation);
+    await loadRelations();
+  }
+
+  Future<void> deleteRelation(String relationId) async {
+    await _repository.deleteRelation(relationId);
+    await loadRelations();
+  }
+}
+
+final relationListProvider = StateNotifierProvider<RelationListNotifier, AsyncValue<List<EntityRelation>>>((ref) {
+  return RelationListNotifier(ref.watch(relationRepositoryProvider));
+});

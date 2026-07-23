@@ -210,8 +210,8 @@ void main() {
       final e3 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca A');
 
       // Create 2 instances with note "Batería Marca B"
-      final e4 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
-      final e5 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
+      await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
+      await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
 
       final allEntities = await entityRepo.getAllEntities();
       final group = EffectiveEntityGroup.groupEntities(
@@ -274,12 +274,11 @@ void main() {
       expect(fetchedReqs.first.requiredQuantity, equals(6));
 
       // 3. Effective Location Breadcrumb with "@"
-      final kitchenNode = LocationNode(id: 'loc-kitchen', name: 'Cocina', createdAt: DateTime.now());
       final houseNode = LocationNode(id: 'loc-house', name: 'Casa', createdAt: DateTime.now());
-      kitchenNode.copyWith(parentLocationId: 'loc-house');
+      final kitchenNode = LocationNode(id: 'loc-kitchen', name: 'Cocina', parentLocationId: 'loc-house', createdAt: DateTime.now());
 
       await locationRepo.saveNode(houseNode);
-      await locationRepo.saveNode(LocationNode(id: 'loc-kitchen', name: 'Cocina', parentLocationId: 'loc-house', createdAt: DateTime.now()));
+      await locationRepo.saveNode(kitchenNode);
 
       final fridgeInstance = await entityRepo.instantiateOrMerge(fridgeSpecies.id, 'loc-kitchen', 1, subspeciesId: duracellSub.id);
       expect(fridgeInstance.subspeciesId, equals('sub-duracell'));
@@ -295,7 +294,6 @@ void main() {
       await relationRepo.addRelation(guardadoRel);
 
       final allEntities = await entityRepo.getAllEntities();
-      final allRelations = await relationRepo.getRelationsForEntity(eggInstance.id);
       final allNodes = await locationRepo.getAllNodes();
 
       final effectiveBreadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
