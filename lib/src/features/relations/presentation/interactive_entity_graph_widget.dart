@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/world_entity.dart';
 
@@ -42,7 +43,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                         Icon(Icons.hub_outlined, color: theme.colorScheme.primary, size: 20),
                         const SizedBox(width: 8),
                         Text(
-                          'Grafo Interactivo de Relaciones',
+                          AppStrings.interactiveRelationsGraphTitle,
                           style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -69,7 +70,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                         const Icon(Icons.alt_route, color: Colors.grey, size: 28),
                         const SizedBox(height: 6),
                         Text(
-                          'Sin relaciones dirigidas registradas',
+                          AppStrings.noDirectedRelationsRegistered,
                           style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
                         ),
                       ],
@@ -82,7 +83,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                       // Central Entity Node Header Card
                       _buildCentralNodeTile(
                         theme: theme,
-                        title: currentSpecies?.name ?? 'Instancia Actual',
+                        title: currentSpecies?.name ?? AppStrings.currentInstanceLabel,
                       ),
                       const SizedBox(height: 10),
 
@@ -98,7 +99,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                           final otherEntityId = isOutgoing ? rel.targetEntityId : rel.sourceEntityId;
                           final otherEntity = allEntities.where((e) => e.id == otherEntityId).firstOrNull;
                           final otherSpecies = catalogItems.where((c) => c.id == otherEntity?.speciesId).firstOrNull;
-                          final otherName = otherSpecies?.name ?? 'Entidad Externa';
+                          final otherName = otherSpecies?.name ?? AppStrings.instantiatedObject;
 
                           return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -161,7 +162,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                               Text(
-                                                isOutgoing ? 'Entidad Destino' : 'Entidad Origen',
+                                                isOutgoing ? AppStrings.targetEntityLabel : AppStrings.sourceEntityLabel,
                                                 style: const TextStyle(fontSize: 10, color: Colors.grey),
                                               ),
                                             ],
@@ -178,7 +179,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                                   IconButton(
                                     visualDensity: VisualDensity.compact,
                                     icon: const Icon(Icons.close, size: 16, color: Colors.redAccent),
-                                    tooltip: 'Eliminar relación',
+                                    tooltip: AppStrings.deleteRelationTooltip,
                                     onPressed: () async {
                                       await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
                                       ref.invalidate(entityRelationsProvider(currentEntity.id));
@@ -198,7 +199,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Text('Error al cargar relaciones: $err'),
+      error: (err, _) => Text('${AppStrings.relationsLoadErrorPrefix}$err'),
     );
   }
 
@@ -218,7 +219,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
           const Icon(Icons.my_location, color: Colors.white, size: 18),
           const SizedBox(width: 8),
           Text(
-            'Instancia Central: ',
+            '${AppStrings.centralInstanceLabel}: ',
             style: TextStyle(color: Colors.white.withAlpha(220), fontSize: 12),
           ),
           Text(

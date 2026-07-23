@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
 
 enum TemplateViewKind {
   details,
@@ -49,9 +50,9 @@ class EntityTemplateRegistry {
     'USA',
   ];
 
-  static const Map<String, EntityTemplate> _templates = {
-    'Objeto': EntityTemplate(
-      typeName: 'Objeto',
+  static Map<String, EntityTemplate> get _templates => {
+    AppStrings.typeObject: const EntityTemplate(
+      typeName: AppStrings.typeObject,
       icon: Icons.category,
       hasQuantity: true,
       hasBarcodeAndBrand: true,
@@ -60,8 +61,8 @@ class EntityTemplateRegistry {
       allowedActions: EntityActionType.values,
       validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
     ),
-    'Ser vivo': EntityTemplate(
-      typeName: 'Ser vivo',
+    AppStrings.typeLivingBeing: const EntityTemplate(
+      typeName: AppStrings.typeLivingBeing,
       icon: Icons.pets,
       hasQuantity: true,
       hasBarcodeAndBrand: false,
@@ -70,8 +71,8 @@ class EntityTemplateRegistry {
       allowedActions: EntityActionType.values,
       validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
     ),
-    'Documento': EntityTemplate(
-      typeName: 'Documento',
+    AppStrings.typeDocument: const EntityTemplate(
+      typeName: AppStrings.typeDocument,
       icon: Icons.description,
       hasQuantity: false,
       hasBarcodeAndBrand: false,
@@ -87,8 +88,8 @@ class EntityTemplateRegistry {
       ],
       validRelationTypes: ['DOCUMENTA', 'GUARDADO_EN', 'PERTENECE_A'],
     ),
-    'Proyecto': EntityTemplate(
-      typeName: 'Proyecto',
+    AppStrings.typeProject: const EntityTemplate(
+      typeName: AppStrings.typeProject,
       icon: Icons.lightbulb,
       hasQuantity: false,
       hasBarcodeAndBrand: false,
@@ -103,8 +104,8 @@ class EntityTemplateRegistry {
       ],
       validRelationTypes: ['PARTE_DE', 'DOCUMENTA', 'USA'],
     ),
-    'Recuerdo': EntityTemplate(
-      typeName: 'Recuerdo',
+    AppStrings.typeMemory: const EntityTemplate(
+      typeName: AppStrings.typeMemory,
       icon: Icons.star,
       hasQuantity: false,
       hasBarcodeAndBrand: false,
@@ -123,16 +124,17 @@ class EntityTemplateRegistry {
   };
 
   static EntityTemplate getTemplate(String typeName) {
-    if (_templates.containsKey(typeName)) {
-      return _templates[typeName]!;
+    final map = _templates;
+    if (map.containsKey(typeName)) {
+      return map[typeName]!;
     }
     final clean = typeName.toLowerCase();
-    if (clean.contains('ser vivo') || clean.contains('mascota') || clean.contains('planta')) return _templates['Ser vivo']!;
-    if (clean.contains('doc')) return _templates['Documento']!;
-    if (clean.contains('proyect') || clean.contains('idea')) return _templates['Proyecto']!;
-    if (clean.contains('recuerdo')) return _templates['Recuerdo']!;
+    if (clean.contains('ser vivo') || clean.contains('mascota') || clean.contains('planta')) return map[AppStrings.typeLivingBeing]!;
+    if (clean.contains('doc')) return map[AppStrings.typeDocument]!;
+    if (clean.contains('proyect') || clean.contains('idea')) return map[AppStrings.typeProject]!;
+    if (clean.contains('recuerdo')) return map[AppStrings.typeMemory]!;
 
-    return _templates['Objeto']!;
+    return map[AppStrings.typeObject]!;
   }
 
   static bool hasQuantity(String typeName) {

@@ -86,7 +86,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 Expanded(
                   child: ChoiceChip(
                     visualDensity: VisualDensity.compact,
-                    label: const Center(child: Text('Elegir del catálogo')),
+                    label: const Center(child: Text(AppStrings.selectFromCatalogChoice)),
                     selected: !_isCreatingNewSpecies,
                     onSelected: (val) {
                       if (val) setState(() => _isCreatingNewSpecies = false);
@@ -97,7 +97,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 Expanded(
                   child: ChoiceChip(
                     visualDensity: VisualDensity.compact,
-                    label: const Center(child: Text('Crear nueva especie')),
+                    label: const Center(child: Text(AppStrings.createNewSpeciesChoice)),
                     selected: _isCreatingNewSpecies,
                     onSelected: (val) {
                       if (val) setState(() => _isCreatingNewSpecies = true);
@@ -146,7 +146,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   ElevatedButton.icon(
                     onPressed: () => setState(() => _isCreatingNewSpecies = true),
                     icon: const Icon(Icons.add),
-                    label: const Text('Crear primera especie'),
+                    label: const Text(AppStrings.createFirstSpeciesAction),
                   ),
                 ],
               ),
@@ -181,7 +181,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text('Error: $err')),
+      error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
     );
   }
 }

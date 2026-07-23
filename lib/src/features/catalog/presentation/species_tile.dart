@@ -28,7 +28,7 @@ class SpeciesTile extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.visibility),
-              title: const Text('Ver detalle de especie'),
+              title: const Text(AppStrings.viewSpeciesDetail),
               onTap: () {
                 Navigator.pop(ctx);
                 context.push('/catalog/${species.id}');
@@ -133,7 +133,7 @@ class SpeciesTile extends ConsumerWidget {
                         Text(species.type, style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11)),
                         if (species.isUnique) ...[
                           const Text(' • ', style: TextStyle(fontSize: 11)),
-                          const Text('Única', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),
+                          const Text(AppStrings.isUniqueLabel, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),
                         ],
                       ],
                     ),

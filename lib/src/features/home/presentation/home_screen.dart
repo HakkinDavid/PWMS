@@ -58,7 +58,7 @@ class HomeScreen extends ConsumerWidget {
                   child: activityAsync.when(
                     data: (events) {
                       if (events.isEmpty) {
-                        return const Center(child: Text('Sin actividad registrada'));
+                        return const Center(child: Text(AppStrings.noActivityRegistered));
                       }
                       return ListView.separated(
                         itemCount: events.length,
@@ -81,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
                       );
                     },
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (err, _) => Text('Error: $err'),
+                    error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
                   ),
                 ),
               ],
@@ -153,7 +153,7 @@ class HomeScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Center(
-                              child: Text('Sin objetos recientes'),
+                              child: Text(AppStrings.noRecentObjects),
                             ),
                           ),
                         );
@@ -237,7 +237,7 @@ class HomeScreen extends ConsumerWidget {
                       );
                     },
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Text('Error: $e'),
+                    error: (e, _) => Text('${AppStrings.errorPrefix}$e'),
                   ),
                 ],
               ),
@@ -253,7 +253,7 @@ class HomeScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Ubicaciones principales',
+                      AppStrings.topLocationsTitle,
                       style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 14),
@@ -325,7 +325,7 @@ class HomeScreen extends ConsumerWidget {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            '$count objetos',
+                                            '$count ${AppStrings.objectsLabel}',
                                             style: theme.textTheme.bodySmall,
                                           ),
                                         ],
@@ -339,7 +339,7 @@ class HomeScreen extends ConsumerWidget {
                         );
                       },
                       loading: () => const CircularProgressIndicator(),
-                      error: (err, _) => Text('Error: $err'),
+                      error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
                     ),
                   ],
                 ),
@@ -360,13 +360,13 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'Últimas especies en el catálogo',
+                            AppStrings.latestCatalogSpeciesTitle,
                             style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
                         TextButton(
                           onPressed: () => context.push('/catalog'),
-                          child: const Text('Ver catálogo'),
+                          child: const Text(AppStrings.viewCatalogAction),
                         ),
                       ],
                     ),
@@ -394,7 +394,7 @@ class HomeScreen extends ConsumerWidget {
                         );
                       },
                       loading: () => const CircularProgressIndicator(),
-                      error: (err, _) => Text('Error: $err'),
+                      error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
                     ),
                   ],
                 ),
@@ -419,7 +419,7 @@ class HomeScreen extends ConsumerWidget {
                         ),
                         TextButton(
                           onPressed: () => _showFullHistoryModal(context, ref),
-                          child: const Text('Ver todo'),
+                          child: const Text(AppStrings.viewAllAction),
                         ),
                       ],
                     ),
@@ -427,7 +427,7 @@ class HomeScreen extends ConsumerWidget {
                     activityAsync.when(
                       data: (events) {
                         if (events.isEmpty) {
-                          return const Text('Sin actividad reciente', style: TextStyle(color: Colors.grey));
+                          return const Text(AppStrings.noRecentActivity, style: TextStyle(color: Colors.grey));
                         }
 
                         final topEvents = events.take(3).toList();
@@ -454,7 +454,7 @@ class HomeScreen extends ConsumerWidget {
                         );
                       },
                       loading: () => const CircularProgressIndicator(),
-                      error: (err, _) => Text('Error: $err'),
+                      error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
                     ),
                     const SizedBox(height: 100),
                   ],

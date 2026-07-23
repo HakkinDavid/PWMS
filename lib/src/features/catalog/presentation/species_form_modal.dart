@@ -167,13 +167,13 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateDialog) => AlertDialog(
-          title: const Text('Agregar propiedad / unidad de medida'),
+          title: const Text(AppStrings.addPropertyOrUnitTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: propCtrl,
-                decoration: const InputDecoration(labelText: 'Nombre de la propiedad (ej. Masa, Volumen, Longitud)'),
+                decoration: const InputDecoration(labelText: AppStrings.propertyNameHint),
               ),
               const SizedBox(height: 12),
               InkWell(
@@ -183,14 +183,14 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     items: allowedUnits,
                     initialValue: chosenUnit,
                     labelBuilder: (u) => u,
-                    title: 'Seleccionar Unidad de Medida',
+                    title: AppStrings.selectUnitPrompt,
                   );
                   if (picked != null) {
                     setStateDialog(() => chosenUnit = picked);
                   }
                 },
                 child: InputDecorator(
-                  decoration: const InputDecoration(labelText: 'Unidad de medida'),
+                  decoration: const InputDecoration(labelText: AppStrings.unitLabel),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -249,7 +249,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateModal) => AlertDialog(
-          title: Text(initial != null ? 'Editar Subespecie (Borrador)' : 'Nueva Subespecie (Variante)'),
+          title: Text(initial != null ? AppStrings.editSubspeciesDraftTitle : AppStrings.newSubspeciesVariantTitle),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -285,7 +285,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 children: [
                                   Icon(Icons.add_a_photo_outlined, size: 20),
                                   SizedBox(height: 2),
-                                  Text('Foto de la Subespecie', style: TextStyle(fontSize: 11)),
+                                  Text(AppStrings.subspeciesPhotoLabel, style: TextStyle(fontSize: 11)),
                                 ],
                               ),
                   ),
@@ -293,22 +293,22 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                 const SizedBox(height: 12),
                 TextField(
                   controller: nameCtrl,
-                  decoration: const InputDecoration(labelText: 'Nombre / Variante', hintText: 'Ej. Alkaline Heavy Duty'),
+                  decoration: const InputDecoration(labelText: AppStrings.nameOrVariantLabel, hintText: AppStrings.nameOrVariantHint),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: brandCtrl,
-                  decoration: const InputDecoration(labelText: 'Marca', hintText: 'Ej. Duracell'),
+                  decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: barcodeCtrl,
-                  decoration: const InputDecoration(labelText: 'Código de Barras', hintText: 'Ej. 750123456789'),
+                  decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: notesCtrl,
-                  decoration: const InputDecoration(labelText: 'Notas', hintText: 'Ej. Edición especial'),
+                  decoration: const InputDecoration(labelText: AppStrings.notesLabel, hintText: AppStrings.notesSpecialEditionHint),
                 ),
               ],
             ),
@@ -317,7 +317,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
             TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Guardar'),
+              child: const Text(AppStrings.save),
             ),
           ],
         ),
@@ -455,7 +455,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
             ),
             const SizedBox(height: 12),
             Text(
-              _isEditMode ? 'Editar Especie' : 'Crear Nueva Especie',
+              _isEditMode ? AppStrings.editSpeciesTitle : AppStrings.createSpeciesTitle,
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
@@ -473,20 +473,20 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                             context,
                             items: [null, ...existingItems],
                             initialValue: null,
-                            labelBuilder: (item) => item == null ? 'Sin plantilla' : '${item.name} (${item.type})',
-                            title: 'Seleccionar Especie Base',
+                            labelBuilder: (item) => item == null ? AppStrings.noTemplate : '${item.name} (${item.type})',
+                            title: AppStrings.selectBaseSpeciesPrompt,
                           );
                           if (picked != null) _populateFromBaseTemplate(picked);
                         },
                         child: const InputDecorator(
                           decoration: InputDecoration(
-                            labelText: 'Usar especie como plantilla base',
+                            labelText: AppStrings.useSpeciesAsBaseTemplate,
                             prefixIcon: Icon(Icons.copy),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Seleccionar plantilla base...', style: TextStyle(color: Colors.grey)),
+                              Text(AppStrings.selectBaseTemplateHint, style: TextStyle(color: Colors.grey)),
                               Icon(Icons.unfold_more),
                             ],
                           ),
@@ -562,7 +562,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       decoration: InputDecoration(
                         labelText: AppStrings.nameLabel,
                         prefixIcon: const Icon(Icons.auto_awesome),
-                        helperText: _isEditMode ? 'El nombre es inmutable' : null,
+                        helperText: _isEditMode ? AppStrings.nameIsImmutable : null,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -617,20 +617,20 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Unidades y Magnitudes de Medida',
+                                  AppStrings.unitsAndMagnitudesTitle,
                                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 TextButton.icon(
                                   onPressed: _addMagnitudeRow,
                                   icon: const Icon(Icons.add, size: 16),
-                                  label: const Text('Agregar unidad de medida', style: TextStyle(fontSize: 12)),
+                                  label: const Text(AppStrings.addUnitAction, style: TextStyle(fontSize: 12)),
                                 ),
                               ],
                             ),
                             if (_magnitudes.isEmpty)
                               const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 6.0),
-                                child: Text('Sin unidades adicionales agregadas.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                child: Text(AppStrings.noAdditionalUnitsAdded, style: TextStyle(color: Colors.grey, fontSize: 12)),
                               )
                             else
                               ListView.builder(
@@ -646,7 +646,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                     title: Text('${mag.propertyName}: $formattedVal ${mag.unitSymbol}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                                     trailing: IconButton(
                                       icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
-                                      tooltip: 'Eliminar unidad de medida',
+                                      tooltip: AppStrings.removeUnitAction,
                                       onPressed: () => _removeMagnitudeRow(idx),
                                     ),
                                   );
@@ -669,20 +669,20 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Subespecies / Marcas (${_draftSubspecies.length})',
+                                    '${AppStrings.subspeciesOrBrands} (${_draftSubspecies.length})',
                                     style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   TextButton.icon(
                                     onPressed: () => _addOrEditDraftSubspeciesModal(),
                                     icon: const Icon(Icons.add, size: 16),
-                                    label: const Text('Agregar marca', style: TextStyle(fontSize: 12)),
+                                    label: const Text(AppStrings.addBrandAction, style: TextStyle(fontSize: 12)),
                                   ),
                                 ],
                               ),
                               if (_draftSubspecies.isEmpty)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 6.0),
-                                  child: Text('Sin subespecies o marcas agregadas.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                  child: Text(AppStrings.noSubspeciesOrBrandsAdded, style: TextStyle(color: Colors.grey, fontSize: 12)),
                                 )
                               else
                                 ListView.builder(
@@ -700,7 +700,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                         child: Icon(Icons.branding_watermark, size: 14, color: theme.colorScheme.secondary),
                                       ),
                                       title: Text('${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                                      subtitle: Text(sub.barcode != null ? 'Barcode: ${sub.barcode}' : 'Sin barcode', style: const TextStyle(fontSize: 11)),
+                                      subtitle: Text(sub.barcode != null ? '${AppStrings.barcodeLabel}: ${sub.barcode}' : AppStrings.noBarcode, style: const TextStyle(fontSize: 11)),
                                       trailing: IconButton(
                                         icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
                                         onPressed: () => setState(() => _draftSubspecies.removeAt(idx)),
@@ -731,8 +731,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       const SizedBox(height: 14),
                     ],
 
-
-
                     TextField(
                       controller: _descController,
                       maxLines: 2,
@@ -755,7 +753,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                         ),
                         child: _isSaving
                             ? const CircularProgressIndicator(color: Colors.white)
-                            : Text(_isEditMode ? AppStrings.save : 'Guardar especie', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                            : Text(_isEditMode ? AppStrings.save : AppStrings.saveSpeciesAction, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],

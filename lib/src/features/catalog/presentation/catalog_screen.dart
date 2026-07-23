@@ -14,17 +14,15 @@ class CatalogScreen extends ConsumerStatefulWidget {
 }
 
 class _CatalogScreenState extends ConsumerState<CatalogScreen> {
-  String _selectedTypeFilter = 'Todos';
+  String _selectedTypeFilter = AppStrings.all;
 
   final List<String> _filters = [
-    'Todos',
+    AppStrings.all,
     AppStrings.typeObject,
     AppStrings.typeDocument,
     AppStrings.typeProject,
     AppStrings.typeMemory,
   ];
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +68,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
             child: catalogState.when(
               data: (items) {
                 var filtered = items;
-                if (_selectedTypeFilter != 'Todos') {
+                if (_selectedTypeFilter != AppStrings.all) {
                   filtered = items.where((i) => i.type == _selectedTypeFilter).toList();
                 }
 
@@ -111,7 +109,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('Error: $err')),
+              error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
             ),
           ),
         ],

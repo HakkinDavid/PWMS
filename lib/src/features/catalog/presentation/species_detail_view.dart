@@ -164,7 +164,7 @@ class SpeciesDetailView extends ConsumerWidget {
                       const Chip(
                         visualDensity: VisualDensity.compact,
                         avatar: Icon(Icons.star, size: 12, color: Colors.amber),
-                        label: Text('Especie Única', style: TextStyle(fontSize: 11)),
+                        label: Text(AppStrings.isUniqueLabel, style: TextStyle(fontSize: 11)),
                       ),
                   ],
                 ),
@@ -181,7 +181,7 @@ class SpeciesDetailView extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Propiedades y Magnitudes Registradas',
+                          AppStrings.registeredPropertiesAndMagnitudes,
                           style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 6),
@@ -291,7 +291,7 @@ class SpeciesDetailView extends ConsumerWidget {
                   );
                 },
                 loading: () => const CircularProgressIndicator(),
-                error: (err, _) => Text('Error: $err'),
+                error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
               ),
             ],
           ),

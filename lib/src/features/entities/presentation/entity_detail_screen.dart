@@ -135,7 +135,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         const Icon(Icons.inventory_2, size: 14, color: Colors.amber),
                         const SizedBox(width: 6),
                         Text(
-                          'INSTANCIA DEL MUNDO',
+                          AppStrings.instanceWorldHeader,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
@@ -150,7 +150,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                     OutlinedButton.icon(
                       onPressed: () => CreateRelationModal.show(context, sourceEntity: entity),
                       icon: const Icon(Icons.alt_route, size: 14),
-                      label: const Text('Relacionar', style: TextStyle(fontSize: 12)),
+                      label: const Text(AppStrings.link, style: TextStyle(fontSize: 12)),
                       style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
                     ),
                 ],
@@ -178,11 +178,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Subespecie: ${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}',
+                                  '${AppStrings.subspeciesCountTitle}: ${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}',
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                 ),
                                 if (sub.barcode != null)
-                                  Text('Barcode: ${sub.barcode}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                                  Text('${AppStrings.barcodeLabel}: ${sub.barcode}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
                               ],
                             ),
                           ),
@@ -392,7 +392,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       enabled: _isEditingInPlace,
                       maxLines: 2,
                       decoration: InputDecoration(
-                        hintText: 'Añadir notas sobre esta instancia...',
+                        hintText: AppStrings.addInstanceNotesHint,
                         filled: !_isEditingInPlace,
                         fillColor: theme.cardColor,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -445,7 +445,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.public),
-                tooltip: 'Ver Especie en Catálogo',
+                tooltip: AppStrings.viewCatalogSpecies,
                 onPressed: () => context.push('/catalog/${species.id}'),
               ),
               IconButton(
@@ -464,7 +464,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           );
         },
         loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-        error: (err, _) => Scaffold(body: Center(child: Text('Error: $err'))),
+        error: (err, _) => Scaffold(body: Center(child: Text('${AppStrings.errorPrefix}$err'))),
       ),
     );
   }

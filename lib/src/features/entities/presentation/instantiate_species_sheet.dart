@@ -121,7 +121,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   Future<void> _confirmInstantiation() async {
     if (_selectedSpecies == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona una especie para instanciar.')),
+        const SnackBar(content: Text(AppStrings.selectSpeciesToInstantiate)),
       );
       return;
     }
@@ -202,7 +202,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('"${species.name}" instanciado'),
+            content: Text('${AppStrings.speciesInstantiatedSuccess}: "${species.name}"'),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
@@ -210,7 +210,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('${AppStrings.errorPrefix}$e')),
         );
       }
     } finally {
@@ -227,7 +227,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
     final template = _selectedSpecies != null
         ? EntityTemplateRegistry.getTemplate(_selectedSpecies!.type)
-        : EntityTemplateRegistry.getTemplate('Objeto');
+        : EntityTemplateRegistry.getTemplate(AppStrings.typeObject);
 
     String locationDisplayName = AppStrings.rootLocationName;
     if (_selectedLocationId != null) {
@@ -266,20 +266,20 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             const SizedBox(height: 16),
             Text(
               _selectedSpecies != null
-                  ? 'Instanciar "${_selectedSpecies!.name}"'
-                  : 'Instanciar Especie de Catálogo',
+                  ? '${AppStrings.instantiateAction} "${_selectedSpecies!.name}"'
+                  : AppStrings.instantiateCatalogSpeciesHeader,
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
             // 1. Selector de Especie del Catálogo Maestro
-            Text('Especie de Catálogo:', style: theme.textTheme.labelLarge),
+            Text(AppStrings.catalogSpeciesLabel, style: theme.textTheme.labelLarge),
             const SizedBox(height: 6),
             DropdownButtonFormField<String>(
               initialValue: _selectedSpecies?.id,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.public),
-                hintText: 'Selecciona una especie...',
+                hintText: AppStrings.selectSpeciesPrompt,
               ),
               items: catalogItems.map((c) {
                 return DropdownMenuItem(
@@ -300,13 +300,13 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
             // 2. Selector de Subespecie / Marca (si existen variante)
             if (_availableSubspecies.isNotEmpty) ...[
-              Text('Subespecie / Marca Comerciales:', style: theme.textTheme.labelLarge),
+              Text(AppStrings.subspeciesOrBrandCommercialLabel, style: theme.textTheme.labelLarge),
               const SizedBox(height: 6),
               DropdownButtonFormField<String>(
                 initialValue: _selectedSubspecies?.id,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.branding_watermark),
-                  hintText: 'Selecciona subespecie / marca',
+                  hintText: AppStrings.selectSubspeciesOrBrandPrompt,
                 ),
                 items: _availableSubspecies.map((sub) {
                   final brandText = sub.brand != null ? ' (${sub.brand})' : '';
@@ -329,12 +329,12 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               segments: const [
                 ButtonSegment(
                   value: InstantiationLocationMode.physicalNode,
-                  label: Text('Ubicación Física'),
+                  label: Text(AppStrings.physicalLocation),
                   icon: Icon(Icons.account_tree_outlined),
                 ),
                 ButtonSegment(
                   value: InstantiationLocationMode.containerEntity,
-                  label: Text('Guardado en Contenedor'),
+                  label: Text(AppStrings.savedInContainer),
                   icon: Icon(Icons.inventory_2_outlined),
                 ),
               ],
@@ -373,7 +373,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                 ),
               ),
             ] else ...[
-              Text('Selecciona Contenedor (Relación GUARDADO_EN):', style: theme.textTheme.labelLarge),
+              Text(AppStrings.selectContainerPrompt, style: theme.textTheme.labelLarge),
               const SizedBox(height: 8),
               Consumer(
                 builder: (context, ref, _) {
@@ -381,17 +381,17 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                   final entities = entitiesState.asData?.value ?? [];
 
                   if (entities.isEmpty) {
-                    return const Text('No hay objetos contenedores disponibles.');
+                    return const Text(AppStrings.noContainerObjectsAvailable);
                   }
                   return DropdownButtonFormField<String>(
                     initialValue: _selectedContainerEntityId,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.inventory_2_outlined),
-                      hintText: 'Selecciona objeto contenedor',
+                      hintText: AppStrings.selectContainerObject,
                     ),
                     items: entities.map((e) {
                       final sp = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
-                      final name = sp?.name ?? 'Objeto Contenedor';
+                      final name = sp?.name ?? AppStrings.containerObjectLabel;
                       return DropdownMenuItem(value: e.id, child: Text(name));
                     }).toList(),
                     onChanged: (val) => setState(() => _selectedContainerEntityId = val),
@@ -403,7 +403,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
             // 4. Especificar el Nombre de Cada Magnitud Registrada
             if (_selectedSpecies != null && _selectedSpecies!.magnitudes.isNotEmpty) ...[
-              Text('Magnitudes y Propiedades Específicas:', style: theme.textTheme.labelLarge),
+              Text(AppStrings.magnitudesAndSpecificProps, style: theme.textTheme.labelLarge),
               const SizedBox(height: 8),
               Card(
                 margin: EdgeInsets.zero,
@@ -447,7 +447,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                     controller: _qtyController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: 'Cantidad / Población a Instanciar',
+                      labelText: AppStrings.quantityToInstantiateLabel,
                       prefixIcon: Icon(Icons.numbers),
                     ),
                   ),

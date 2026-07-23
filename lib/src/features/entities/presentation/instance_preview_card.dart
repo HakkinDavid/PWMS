@@ -21,7 +21,7 @@ class InstancePreviewCard extends ConsumerWidget {
     this.group,
     this.onTap,
     this.trailing,
-  }) : assert(entity != null || group != null, 'Debe proporcionarse entity o group');
+  }) : assert(entity != null || group != null, AppStrings.mustProvideEntityOrGroup);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -146,7 +146,7 @@ class InstancePreviewCard extends ConsumerWidget {
                               const Icon(Icons.qr_code, size: 12, color: Colors.grey),
                               const SizedBox(width: 4),
                               Text(
-                                'Barcode: ${subspecies!.barcode}',
+                                '${AppStrings.barcodeLabel}: ${subspecies!.barcode}',
                                 style: const TextStyle(fontSize: 10, color: Colors.grey),
                               ),
                             ],

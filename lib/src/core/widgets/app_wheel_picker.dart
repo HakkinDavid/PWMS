@@ -13,7 +13,7 @@ class AppWheelPicker<T> extends StatefulWidget {
     required this.items,
     this.initialValue,
     required this.labelBuilder,
-    this.title = 'Seleccionar opción',
+    this.title = AppStrings.selectOptionPrompt,
   });
 
   static Future<T?> show<T>(
@@ -21,7 +21,7 @@ class AppWheelPicker<T> extends StatefulWidget {
     required List<T> items,
     T? initialValue,
     required String Function(T item) labelBuilder,
-    String title = 'Seleccionar opción',
+    String title = AppStrings.selectOptionPrompt,
   }) {
     if (items.isEmpty) return Future.value(null);
     return showModalBottomSheet<T>(

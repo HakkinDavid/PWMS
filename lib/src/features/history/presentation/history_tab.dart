@@ -27,7 +27,7 @@ class HistoryTab extends ConsumerWidget {
                     Icon(Icons.history, size: 64, color: theme.colorScheme.primary.withAlpha(120)),
                     const SizedBox(height: 16),
                     Text(
-                      'Sin actividad registrada',
+                      AppStrings.noActivityRegistered,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -64,7 +64,7 @@ class HistoryTab extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
       ),
     );
   }

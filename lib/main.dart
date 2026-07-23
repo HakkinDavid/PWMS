@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'src/core/constants/app_strings.dart';
 import 'src/core/router/app_router.dart';
 import 'src/core/theme/app_theme.dart';
 
@@ -18,7 +19,7 @@ class PWMSApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'PWMS - Platinum World Management System',
+      title: AppStrings.appTitle,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       darkTheme: AppTheme.darkTheme,

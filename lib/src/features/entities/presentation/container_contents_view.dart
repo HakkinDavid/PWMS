@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_node.dart';
@@ -33,7 +34,7 @@ class ContainerContentsView extends ConsumerWidget {
                   Icon(Icons.inbox, size: 48, color: theme.disabledColor),
                   const SizedBox(height: 12),
                   Text(
-                    'Esta ubicación no contiene objetos ni sub-ubicaciones.',
+                    AppStrings.locationHasNoObjectsOrSublocations,
                     style: theme.textTheme.bodyMedium?.copyWith(color: theme.disabledColor),
                     textAlign: TextAlign.center,
                   ),
@@ -51,12 +52,12 @@ class ContainerContentsView extends ConsumerWidget {
           itemBuilder: (context, index) {
             final child = children[index];
             final species = catalogItems.where((c) => c.id == child.speciesId).firstOrNull;
-            final name = species?.name ?? 'Objeto';
-            final type = species?.type ?? 'Objeto / Herramienta';
+            final name = species?.name ?? AppStrings.typeObject;
+            final type = species?.type ?? AppStrings.typeObject;
 
             final firstMag = child.magnitudes.isNotEmpty ? child.magnitudes.first : null;
             final subtitleText = firstMag != null
-                ? '$type • Cantidad: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
+                ? '$type • ${AppStrings.quantityLabel}: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
                 : type;
 
             return Card(
@@ -74,7 +75,7 @@ class ContainerContentsView extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text('Error: $err')),
+      error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
     );
   }
 }

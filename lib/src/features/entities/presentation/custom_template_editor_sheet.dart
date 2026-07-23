@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/custom_template.dart';
 
@@ -64,7 +65,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('${AppStrings.errorPrefix}$e')),
         );
       }
     } finally {
@@ -102,15 +103,15 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
             ),
           ),
           const SizedBox(height: 16),
-          Text('Crear Plantilla Personalizada', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+          Text(AppStrings.templateCustomCreate, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
 
           TextField(
             controller: _nameController,
             autofocus: true,
             decoration: const InputDecoration(
-              labelText: 'Nombre de la plantilla / tipo',
-              hintText: 'Ej. Herramienta Eléctrica, Dispositivo...',
+              labelText: AppStrings.templateNameLabel,
+              hintText: AppStrings.templateExamplesHint,
             ),
           ),
           const SizedBox(height: 12),
@@ -118,8 +119,8 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
           TextField(
             controller: _unitsController,
             decoration: const InputDecoration(
-              labelText: 'Unidades de medida habituales (separadas por coma)',
-              hintText: 'Ej. piezas, kg, metros',
+              labelText: AppStrings.templateUnitsHintLabel,
+              hintText: AppStrings.templateUnitsExamples,
             ),
           ),
           const SizedBox(height: 24),
@@ -136,7 +137,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
               ),
               child: _isSaving
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Guardar Plantilla', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text(AppStrings.saveTemplateAction, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

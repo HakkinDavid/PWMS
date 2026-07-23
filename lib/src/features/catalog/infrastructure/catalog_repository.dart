@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
@@ -74,7 +75,7 @@ class CatalogRepository {
 
   Future<CatalogItem> getOrCreateSpecies(
     String name, {
-    String type = 'Objeto',
+    String type = AppStrings.typeObject,
     String? description,
     String? mainPhotoPath,
     bool isUnique = false,
@@ -105,13 +106,13 @@ class CatalogRepository {
     // Rule: No duplicate name or main photo
     final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
     if (nameDup != null) {
-      throw Exception('Ya existe una especie con el nombre "${item.name}"');
+      throw Exception(AppStrings.duplicateSpeciesNameError);
     }
 
     if (item.mainPhotoPath != null && item.mainPhotoPath!.isNotEmpty) {
       final photoDup = all.where((c) => c.id != item.id && c.mainPhotoPath == item.mainPhotoPath).firstOrNull;
       if (photoDup != null) {
-        throw Exception('Ya existe una especie con esta misma imagen principal');
+        throw Exception(AppStrings.duplicatePhotoError);
       }
     }
 

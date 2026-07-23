@@ -225,7 +225,7 @@ class _LocationTreePickerState extends ConsumerState<LocationTreePicker> {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, _) => Center(child: Text('Error: $err')),
+            error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
           ),
         ),
       ],

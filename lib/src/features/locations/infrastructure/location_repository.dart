@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/location_node.dart';
@@ -78,7 +79,7 @@ class LocationRepository {
   Future<void> moveNode(String nodeId, String? newParentLocationId) async {
     final allNodes = await getAllNodes();
     if (!canMoveNode(nodeId, newParentLocationId, allNodes)) {
-      throw Exception('No se puede mover una ubicación dentro de sí misma ni de sus ubicaciones hijas');
+      throw Exception(AppStrings.circularLocationError);
     }
 
     final node = await getNodeById(nodeId);

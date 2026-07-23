@@ -68,7 +68,7 @@ class QuantityOperationHelper {
   }) async {
     if (!isAdd && group.population <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No hay instancias disponibles para eliminar.')),
+        const SnackBar(content: Text(AppStrings.noInstancesAvailableToDelete)),
       );
       return;
     }
@@ -103,7 +103,7 @@ class QuantityOperationHelper {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    isAdd ? 'Añadir por Rueda (WheelPicker)' : 'Eliminar por Rueda (WheelPicker)',
+                    isAdd ? AppStrings.addByWheelTitle : AppStrings.removeByWheelTitle,
                     style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
@@ -127,7 +127,7 @@ class QuantityOperationHelper {
                         final val = idx + 1;
                         return Center(
                           child: Text(
-                            '$val ${val == 1 ? "unidad" : "unidades"}',
+                            '$val ${val == 1 ? AppStrings.unitLabel : AppStrings.unitsLabel}',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: selectedQty == val ? FontWeight.bold : FontWeight.normal,
@@ -200,7 +200,7 @@ class QuantityOperationHelper {
             final currentInput = int.tryParse(controller.text.trim()) ?? group.population;
             final delta = currentInput - group.population;
 
-            String deltaText = 'Sin cambios';
+            String deltaText = AppStrings.noChangesLabel;
             Color deltaColor = Colors.grey;
             if (delta > 0) {
               deltaText = 'Se añadirán $delta instancias';
@@ -212,19 +212,19 @@ class QuantityOperationHelper {
             }
 
             return AlertDialog(
-              title: const Text('Ajuste Directo de Población'),
+              title: const Text(AppStrings.directPopulationAdjustmentTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Población actual: ${group.population}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text('${AppStrings.currentPopulationLabel}: ${group.population}', style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
                   TextField(
                     controller: controller,
                     keyboardType: TextInputType.number,
                     autofocus: true,
                     decoration: const InputDecoration(
-                      labelText: 'Nueva Población Objetivo',
+                      labelText: AppStrings.newTargetPopulationLabel,
                       hintText: 'Ej. 15',
                       prefixIcon: Icon(Icons.pin),
                     ),
@@ -244,7 +244,7 @@ class QuantityOperationHelper {
                     final parsed = int.tryParse(controller.text.trim());
                     Navigator.pop(ctx, parsed);
                   },
-                  child: const Text('Aplicar Cálculo'),
+                  child: const Text(AppStrings.applyCalculationAction),
                 ),
               ],
             );

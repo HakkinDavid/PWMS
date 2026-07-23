@@ -13,7 +13,7 @@ class IntegerWheelPicker extends StatefulWidget {
     required this.initialValue,
     this.minValue = 0,
     this.maxValue = 1000,
-    this.title = 'Seleccionar Magnitud',
+    this.title = AppStrings.selectMagnitudePrompt,
   });
 
   static Future<int?> show(
@@ -21,7 +21,7 @@ class IntegerWheelPicker extends StatefulWidget {
     required int initialValue,
     int minValue = 0,
     int maxValue = 1000,
-    String title = 'Seleccionar Magnitud',
+    String title = AppStrings.selectMagnitudePrompt,
   }) {
     return showModalBottomSheet<int>(
       context: context,

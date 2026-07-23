@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../locations/domain/location_resolver.dart';
 import '../../relations/domain/entity_relation.dart';
@@ -285,7 +286,7 @@ class EntityRepository implements IEntityRepository {
     final existing = await getAttachmentsForSpecies(attachment.speciesId);
     final isDuplicate = existing.any((a) => a.filePath == attachment.filePath || a.fileName.toLowerCase() == attachment.fileName.toLowerCase());
     if (isDuplicate) {
-      throw Exception('Este archivo adjunto ya existe en la especie');
+      throw Exception(AppStrings.duplicateAttachmentError);
     }
 
     final companion = AttachmentsTableCompanion(

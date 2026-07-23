@@ -142,7 +142,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.add),
-              title: const Text('Instanciar objeto aquí'),
+              title: const Text(AppStrings.createObjectHere),
               onTap: () {
                 Navigator.pop(ctx);
                 RegisterObjectModal.show(context, initialLocationId: node.id);
@@ -277,7 +277,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
                 );
               },
               loading: () => const CircularProgressIndicator(),
-              error: (err, _) => Text('Error: $err'),
+              error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
             ),
             const SizedBox(height: 8),
           ],
@@ -297,7 +297,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
         actions: [
           IconButton(
             icon: Icon(_isVisualGraphView ? Icons.account_tree_outlined : Icons.bubble_chart_outlined),
-            tooltip: _isVisualGraphView ? 'Vista de Árbol' : 'Vista de Grafo',
+            tooltip: _isVisualGraphView ? AppStrings.treeView : AppStrings.graphView,
             onPressed: () {
               setState(() => _isVisualGraphView = !_isVisualGraphView);
             },
@@ -338,7 +338,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
       ),
     );
   }

@@ -54,7 +54,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                'ESPECIE DE CATÁLOGO MAESTRO',
+                AppStrings.masterCatalogSpeciesBadge,
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
@@ -66,12 +66,12 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
             const SizedBox(height: 14),
 
             Text(
-              species.isUnique ? 'Ubicación' : 'Instancias en el Mundo (${instances.length})',
+              species.isUnique ? AppStrings.locationLabel : '${AppStrings.tabEntities} (${instances.length})',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             if (instances.isEmpty)
-              const Text('Esta especie aún no ha sido instanciada en tu mundo.', style: TextStyle(color: Colors.grey, fontSize: 12))
+              const Text(AppStrings.notInstantiatedYet, style: TextStyle(color: Colors.grey, fontSize: 12))
             else
               ListView.builder(
                 shrinkWrap: true,
@@ -82,8 +82,8 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                   final breadcrumb = LocationPathHelper.buildBreadcrumbPath(inst.locationId, locationNodes);
                   final firstMag = inst.magnitudes.isNotEmpty ? inst.magnitudes.first : null;
                   final magText = firstMag != null
-                      ? 'Magnitud: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
-                      : 'Instancia registrada';
+                      ? '${AppStrings.quantityLabel}: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
+                      : AppStrings.registeredInstance;
 
                   return Card(
                     margin: const EdgeInsets.only(bottom: 4),
@@ -171,7 +171,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
         );
       },
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (err, _) => Scaffold(body: Center(child: Text('Error: $err'))),
+      error: (err, _) => Scaffold(body: Center(child: Text('${AppStrings.errorPrefix}$err'))),
     );
   }
 }

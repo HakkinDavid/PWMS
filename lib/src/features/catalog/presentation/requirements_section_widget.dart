@@ -14,7 +14,7 @@ class RequirementsSectionWidget extends ConsumerStatefulWidget {
     super.key,
     required this.sourceId,
     this.sourceType = 'species',
-    this.title = 'Relaciones de necesidad',
+    this.title = AppStrings.requirementsTitle,
   });
 
   @override
@@ -48,7 +48,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
 
     if (catalogItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No hay especies en el catálogo para requerir.')),
+        const SnackBar(content: Text(AppStrings.noCatalogSpeciesForRequirement)),
       );
       return;
     }
@@ -62,15 +62,15 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
       builder: (ctx) => StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: const Text('Agregar Requisito NECESITA'),
+            title: const Text(AppStrings.addRequirementTitle),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Selecciona la especie requerida e indica la cantidad necesaria:'),
+                const Text(AppStrings.selectRequiredSpeciesPrompt),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: selectedSpeciesId,
-                  decoration: const InputDecoration(labelText: 'Especie Requerida'),
+                  decoration: const InputDecoration(labelText: AppStrings.requiredSpeciesLabel),
                   items: catalogItems.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name))).toList(),
                   onChanged: (val) => setState(() => selectedSpeciesId = val),
                 ),
@@ -78,12 +78,12 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                 TextField(
                   controller: qtyController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Cantidad Requerida', hintText: 'Ej. 6'),
+                  decoration: const InputDecoration(labelText: AppStrings.quantityRequiredLabel, hintText: AppStrings.quantityRequiredHint),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: notesController,
-                  decoration: const InputDecoration(labelText: 'Notas (Opcional)', hintText: 'Ej. Baterías para encendido'),
+                  decoration: const InputDecoration(labelText: AppStrings.notesOptionalLabel, hintText: AppStrings.notesRequirementHint),
                 ),
               ],
             ),
@@ -91,7 +91,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
               TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
               ElevatedButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Guardar'),
+                child: const Text(AppStrings.save),
               ),
             ],
           );
@@ -135,7 +135,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
             TextButton.icon(
               onPressed: _addRequirementDialog,
               icon: const Icon(Icons.add, size: 18),
-              label: const Text('Agregar'),
+              label: const Text(AppStrings.add),
             ),
           ],
         ),
@@ -154,7 +154,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
               children: [
                 Icon(Icons.info_outline, size: 18, color: Colors.grey),
                 SizedBox(width: 8),
-                Text('No hay necesidades definidas.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(AppStrings.noRequirementsDefined, style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
           )
@@ -166,7 +166,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
             itemBuilder: (context, index) {
               final req = _requirements[index];
               final reqSpecies = catalogItems.where((c) => c.id == req.requiredSpeciesId).firstOrNull;
-              final speciesName = reqSpecies?.name ?? 'Especie';
+              final speciesName = reqSpecies?.name ?? AppStrings.typeObject;
               final formattedQty = req.requiredQuantity % 1 == 0 ? '${req.requiredQuantity.toInt()}' : '${req.requiredQuantity}';
 
               return Card(
@@ -180,7 +180,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                     child: Icon(Icons.shopping_bag_outlined, color: theme.colorScheme.primary, size: 16),
                   ),
                   title: Text(
-                    'NECESITA $formattedQty x $speciesName',
+                    '${AppStrings.needsPrefix} $formattedQty x $speciesName',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                   subtitle: req.notes != null ? Text(req.notes!, style: const TextStyle(fontSize: 11)) : null,

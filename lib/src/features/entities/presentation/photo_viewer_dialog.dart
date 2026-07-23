@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
 import '../domain/world_entity.dart';
 
 class PhotoViewerDialog extends StatelessWidget {
@@ -50,7 +51,7 @@ class PhotoViewerDialog extends StatelessWidget {
                     File(imagePath),
                     fit: BoxFit.contain,
                   )
-                : const Center(child: Text('Fotografía no disponible', style: TextStyle(color: Colors.white))),
+                : const Center(child: Text(AppStrings.photoNotAvailable, style: TextStyle(color: Colors.white))),
           ),
           Positioned(
             top: 40,
@@ -73,7 +74,7 @@ class PhotoViewerDialog extends StatelessWidget {
                     onChangePhoto();
                   },
                   icon: const Icon(Icons.photo_camera),
-                  label: const Text('Cambiar'),
+                  label: const Text(AppStrings.changePhotoAction),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.colorScheme.primary,
                     foregroundColor: Colors.white,
@@ -85,7 +86,7 @@ class PhotoViewerDialog extends StatelessWidget {
                     onDeletePhoto();
                   },
                   icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                  label: const Text('Eliminar', style: TextStyle(color: Colors.redAccent)),
+                  label: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.redAccent),
                   ),

@@ -18,14 +18,14 @@ class SearchScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
-  String _selectedScope = 'Todos';
+  String _selectedScope = AppStrings.all;
 
   final List<String> _scopes = [
-    'Todos',
-    'Objetos',
-    'Ubicaciones',
-    'Catálogo',
-    'Historial',
+    AppStrings.all,
+    AppStrings.objectsLabel,
+    AppStrings.tabLocations,
+    AppStrings.tabCatalog,
+    AppStrings.tabHistory,
   ];
 
   @override
@@ -111,7 +111,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final cleanQuery = query.toLowerCase().trim();
 
     // 1. Ubicaciones (Strictly typed LocationNode)
-    if (_selectedScope == 'Ubicaciones') {
+    if (_selectedScope == AppStrings.tabLocations) {
       final nodes = locationsState.asData?.value ?? <LocationNode>[];
       final filtered = nodes.where((LocationNode n) => n.name.toLowerCase().contains(cleanQuery)).toList();
       if (filtered.isEmpty) return const Center(child: Text(AppStrings.emptyLocation));
@@ -125,7 +125,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: ListTile(
               leading: const Icon(Icons.location_on, color: Colors.amber),
               title: Text(n.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(n.description ?? 'Ubicación en el grafo'),
+              subtitle: Text(n.description ?? AppStrings.locationGraphNode),
               onTap: () => context.go('/locations'),
             ),
           );
@@ -134,7 +134,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     // 2. Catálogo (Strictly typed CatalogItem)
-    if (_selectedScope == 'Catálogo') {
+    if (_selectedScope == AppStrings.tabCatalog) {
       final species = catalogState.asData?.value ?? <CatalogItem>[];
       final filtered = species.where((CatalogItem s) =>
         s.name.toLowerCase().contains(cleanQuery) ||
@@ -153,10 +153,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     // 3. Historial (Strictly typed ActivityEvent)
-    if (_selectedScope == 'Historial') {
+    if (_selectedScope == AppStrings.tabHistory) {
       final events = activityState.asData?.value ?? <ActivityEvent>[];
       final filtered = events.where((ActivityEvent e) => e.description.toLowerCase().contains(cleanQuery)).toList();
-      if (filtered.isEmpty) return const Center(child: Text('Sin resultados de historial'));
+      if (filtered.isEmpty) return const Center(child: Text(AppStrings.noHistoryResults));
 
       return ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -200,7 +200,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text('Error: $err')),
+      error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
     );
   }
 }

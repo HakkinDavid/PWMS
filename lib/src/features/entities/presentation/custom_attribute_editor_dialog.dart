@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
 
 class CustomAttributeEditorDialog extends StatefulWidget {
   final Map<String, dynamic> initialAttributes;
@@ -60,14 +61,14 @@ class _CustomAttributeEditorDialogState extends State<CustomAttributeEditorDialo
     final theme = Theme.of(context);
 
     return AlertDialog(
-      title: const Text('Atributos Personalizados'),
+      title: const Text(AppStrings.customAttributesTitle),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_attributes.isEmpty)
-              const Text('Sin atributos personalizados definidos.', style: TextStyle(fontSize: 13, color: Colors.grey))
+              const Text(AppStrings.noCustomAttributesDefined, style: TextStyle(fontSize: 13, color: Colors.grey))
             else
               Column(
                 children: _attributes.entries.map((entry) {
@@ -83,21 +84,21 @@ class _CustomAttributeEditorDialogState extends State<CustomAttributeEditorDialo
                 }).toList(),
               ),
             const Divider(height: 24),
-            Text('Agregar Atributo', style: theme.textTheme.labelLarge),
+            Text(AppStrings.addAttributeTitle, style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             TextField(
               controller: _keyController,
               decoration: const InputDecoration(
-                labelText: 'Nombre del atributo',
-                hintText: 'Ej. Voltaje, Garantía, Color...',
+                labelText: AppStrings.attributeNameLabel,
+                hintText: AppStrings.attributeNameHint,
               ),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _valController,
               decoration: const InputDecoration(
-                labelText: 'Valor del atributo',
-                hintText: 'Ej. 220V, 2 años, Rojo...',
+                labelText: AppStrings.attributeValueLabel,
+                hintText: AppStrings.attributeValueHint,
               ),
             ),
             const SizedBox(height: 12),
@@ -106,17 +107,17 @@ class _CustomAttributeEditorDialogState extends State<CustomAttributeEditorDialo
               child: ElevatedButton.icon(
                 onPressed: _addAttribute,
                 icon: const Icon(Icons.add, size: 16),
-                label: const Text('Añadir'),
+                label: const Text(AppStrings.addShort),
               ),
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text(AppStrings.cancel)),
         ElevatedButton(
           onPressed: () => Navigator.pop(context, _attributes),
-          child: const Text('Guardar'),
+          child: const Text(AppStrings.save),
         ),
       ],
     );

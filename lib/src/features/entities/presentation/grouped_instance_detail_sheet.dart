@@ -144,13 +144,13 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Demografía Mayoritaria ($majorityCount de ${widget.group.population})',
+                        '${AppStrings.majorityDemographics} ($majorityCount de ${widget.group.population})',
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                       ),
                       Text(
                         majorityArchetype.notes != null && majorityArchetype.notes!.isNotEmpty
                             ? 'Perfil: "${majorityArchetype.notes}"'
-                            : 'Perfil estándar de la especie (sin notas diferenciales)',
+                            : AppStrings.standardSpeciesProfile,
                         style: TextStyle(fontSize: 10, color: theme.colorScheme.secondary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -174,12 +174,12 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
             child: Column(
               children: [
                 const Text(
-                  'Gestión Dinámica de Población',
+                  AppStrings.dynamicPopulationManagement,
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '• Toque corto en -/+: Resta o suma 1 unidad\n• Toque largo en -/+: Activa el WheelPicker\n• Toque en la cifra: Escribe la población objetivo',
+                  AppStrings.populationManagementInstruction,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 10, color: theme.colorScheme.secondary),
                 ),
@@ -231,7 +231,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                               ],
                             ),
                             Text(
-                              'Población',
+                              AppStrings.populationLabel,
                               style: TextStyle(fontSize: 10, color: theme.colorScheme.onPrimaryContainer.withAlpha(180)),
                             ),
                           ],
@@ -262,7 +262,7 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           const SizedBox(height: 16),
 
           Text(
-            'Detalle de Instancias en el Grupo (${widget.group.population})',
+            '${AppStrings.groupInstanceDetail} (${widget.group.population})',
             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_template.dart';
@@ -45,7 +46,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
   Future<void> _saveRelation() async {
     if (_selectedTargetEntity == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona una entidad objetivo')),
+        const SnackBar(content: Text(AppStrings.selectTargetEntityError)),
       );
       return;
     }
@@ -78,7 +79,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('${AppStrings.errorPrefix}$e')),
         );
       }
     } finally {
@@ -132,7 +133,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Relacionar "${sourceSpecies?.name ?? "Instancia"}"',
+              '${AppStrings.link} "${sourceSpecies?.name ?? AppStrings.instantiatedObject}"',
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
@@ -145,7 +146,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                   items: EntityTemplateRegistry.directedRelationTypes,
                   initialValue: _selectedRelationType,
                   labelBuilder: (type) => type,
-                  title: 'Seleccionar Tipo de Relación Dirigida',
+                  title: AppStrings.selectDirectedRelationTypePrompt,
                 );
                 if (picked != null) {
                   setState(() => _selectedRelationType = picked);
@@ -153,7 +154,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
               },
               child: InputDecorator(
                 decoration: const InputDecoration(
-                  labelText: 'Tipo de Relación Dirigida (Origen ➔ Destino)',
+                  labelText: AppStrings.directedRelationTypeLabel,
                   prefixIcon: Icon(Icons.alt_route),
                 ),
                 child: Row(
@@ -171,7 +172,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
             TextField(
               controller: _searchController,
               decoration: const InputDecoration(
-                labelText: 'Buscar Entidad Destino',
+                labelText: AppStrings.searchTargetEntityLabel,
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (val) => setState(() => _searchQuery = val),
@@ -181,7 +182,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
             // List of Target Candidates
             Expanded(
               child: availableTargets.isEmpty
-                  ? const Center(child: Text('No hay entidades disponibles para relacionar.'))
+                  ? const Center(child: Text(AppStrings.noEntitiesAvailableToRelate))
                   : ListView.builder(
                       itemCount: availableTargets.length,
                       itemBuilder: (ctx, idx) {
@@ -197,8 +198,8 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
                               color: isSelected ? theme.colorScheme.primary : Colors.grey,
                             ),
-                            title: Text(targetSpecies?.name ?? 'Instancia Destino', style: const TextStyle(fontWeight: FontWeight.bold)),
-                            subtitle: Text(targetSpecies?.type ?? 'Objeto'),
+                            title: Text(targetSpecies?.name ?? AppStrings.instantiatedObject, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            subtitle: Text(targetSpecies?.type ?? AppStrings.typeObject),
                             onTap: () {
                               setState(() => _selectedTargetEntity = target);
                             },
@@ -221,7 +222,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                 ),
                 child: _isSaving
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Crear Relación Dirigida', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                    : const Text(AppStrings.createDirectedRelationAction, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

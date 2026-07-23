@@ -14,10 +14,10 @@ class EntitiesTab extends ConsumerStatefulWidget {
 }
 
 class _EntitiesTabState extends ConsumerState<EntitiesTab> {
-  String _selectedTypeFilter = 'Todos';
+  String _selectedTypeFilter = AppStrings.all;
 
   final List<String> _filters = [
-    'Todos',
+    AppStrings.all,
     AppStrings.typeObject,
     AppStrings.typeDocument,
     AppStrings.typeProject,
@@ -70,7 +70,7 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
               data: (entities) {
                 var activeEntities = entities.toList();
 
-                if (_selectedTypeFilter != 'Todos') {
+                if (_selectedTypeFilter != AppStrings.all) {
                   final catalogItems = catalogState.asData?.value ?? [];
                   activeEntities = activeEntities.where((e) {
                     final species = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
@@ -88,7 +88,7 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
                           Icon(Icons.inventory_2_outlined, size: 64, color: theme.colorScheme.primary.withAlpha(120)),
                           const SizedBox(height: 16),
                           Text(
-                            'No hay objetos registrados',
+                            AppStrings.noEntitiesRegistered,
                             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -111,7 +111,7 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('Error: $err')),
+              error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
             ),
           ),
         ],

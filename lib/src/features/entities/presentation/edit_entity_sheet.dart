@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
@@ -79,7 +80,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Instancia actualizada con éxito'),
+            content: const Text(AppStrings.instanceUpdatedSuccess),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
@@ -87,7 +88,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al actualizar: $e')),
+          SnackBar(content: Text('${AppStrings.updateErrorPrefix}$e')),
         );
       }
     } finally {
@@ -105,8 +106,8 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
     final species = catalogItems.where((c) => c.id == widget.entity.speciesId).firstOrNull ??
         CatalogItem(
           id: widget.entity.speciesId,
-          name: 'Objeto Instanciado',
-          type: 'Objeto / Herramienta',
+          name: AppStrings.instantiatedObject,
+          type: AppStrings.typeObject,
           createdAt: DateTime.now(),
         );
 
@@ -141,7 +142,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Editar Instancia "${species.name}"',
+                  '${AppStrings.editInstanceTitle} "${species.name}"',
                   style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -153,7 +154,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             const SizedBox(height: 16),
 
             // Location Selector Node in Location Graph
-            Text('Ubicación en el Grafo (Lugar o Contenedor)', style: theme.textTheme.labelLarge),
+            Text(AppStrings.graphLocationOrContainer, style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             locationsState.when(
               data: (nodes) {
@@ -164,8 +165,8 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
                       context,
                       items: [null, ...nodes.map((n) => n.id)],
                       initialValue: _selectedLocationId,
-                      labelBuilder: (id) => id == null ? 'Mundo (Raíz)' : (nodes.where((n) => n.id == id).firstOrNull?.name ?? id),
-                      title: 'Seleccionar Ubicación',
+                      labelBuilder: (id) => id == null ? AppStrings.rootLocationName : (nodes.where((n) => n.id == id).firstOrNull?.name ?? id),
+                      title: AppStrings.selectLocationPrompt,
                     );
                     if (picked != _selectedLocationId) {
                       setState(() => _selectedLocationId = picked);
@@ -176,7 +177,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(selectedNode?.name ?? 'Mundo (Raíz)', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(selectedNode?.name ?? AppStrings.rootLocationName, style: const TextStyle(fontWeight: FontWeight.bold)),
                         const Icon(Icons.unfold_more),
                       ],
                     ),
@@ -184,7 +185,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
                 );
               },
               loading: () => const CircularProgressIndicator(),
-              error: (err, _) => Text('Error: $err'),
+              error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
             ),
             const SizedBox(height: 16),
 
@@ -193,7 +194,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
               controller: _qtyController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: 'Cantidad',
+                labelText: AppStrings.quantityLabel,
                 prefixIcon: Icon(Icons.numbers),
               ),
             ),
@@ -204,8 +205,8 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
               controller: _notesController,
               maxLines: 3,
               decoration: const InputDecoration(
-                labelText: 'Notas / Número de Serie de esta Instancia',
-                hintText: 'Detalles específicos...',
+                labelText: AppStrings.instanceNotesLabel,
+                hintText: AppStrings.specificDetailsHint,
                 prefixIcon: Icon(Icons.notes),
               ),
             ),
@@ -224,7 +225,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
                 ),
                 child: _isSaving
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Guardar Cambios', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    : const Text(AppStrings.saveChangesAction, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

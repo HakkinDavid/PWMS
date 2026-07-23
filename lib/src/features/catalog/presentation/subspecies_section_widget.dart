@@ -52,7 +52,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateModal) => AlertDialog(
-          title: Text(initial != null ? 'Editar Subespecie' : 'Nueva Subespecie (Variante)'),
+          title: Text(initial != null ? AppStrings.editSubspecies : AppStrings.newSubspeciesVariantTitle),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -90,7 +90,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                                 children: [
                                   Icon(Icons.add_a_photo_outlined, size: 20),
                                   SizedBox(height: 2),
-                                  Text('Foto de la Subespecie', style: TextStyle(fontSize: 11)),
+                                  Text(AppStrings.subspeciesPhotoLabel, style: TextStyle(fontSize: 11)),
                                 ],
                               ),
                   ),
@@ -98,22 +98,22 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                 const SizedBox(height: 12),
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Nombre / Variante', hintText: 'Ej. Alkaline Heavy Duty'),
+                  decoration: const InputDecoration(labelText: AppStrings.nameOrVariantLabel, hintText: AppStrings.nameOrVariantHint),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: brandController,
-                  decoration: const InputDecoration(labelText: 'Marca', hintText: 'Ej. Duracell'),
+                  decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: barcodeController,
-                  decoration: const InputDecoration(labelText: 'Código de Barras', hintText: 'Ej. 750123456789'),
+                  decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: notesController,
-                  decoration: const InputDecoration(labelText: 'Notas', hintText: 'Ej. Edición especial'),
+                  decoration: const InputDecoration(labelText: AppStrings.notesLabel, hintText: AppStrings.notesSpecialEditionHint),
                 ),
               ],
             ),
@@ -122,7 +122,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
             TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Guardar'),
+              child: const Text(AppStrings.save),
             ),
           ],
         ),
@@ -162,13 +162,13 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Subespecies (${_subspeciesList.length})',
+              '${AppStrings.subspeciesCountTitle} (${_subspeciesList.length})',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton.icon(
               onPressed: () => _addOrEditSubspeciesModal(),
               icon: const Icon(Icons.add, size: 18),
-              label: const Text('Agregar Marca'),
+              label: const Text(AppStrings.addBrand),
             ),
           ],
         ),
@@ -187,7 +187,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
               children: [
                 Icon(Icons.style_outlined, size: 18, color: Colors.grey),
                 SizedBox(width: 8),
-                Text('No hay subespecies.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(AppStrings.noSubspeciesDefined, style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
           )
@@ -223,7 +223,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                   subtitle: Text(
-                    sub.barcode != null ? 'Barcode: ${sub.barcode}' : 'Sin código de barras',
+                    sub.barcode != null ? '${AppStrings.barcodeLabel}: ${sub.barcode}' : AppStrings.noBarcode,
                     style: const TextStyle(fontSize: 11),
                   ),
                   trailing: Row(
