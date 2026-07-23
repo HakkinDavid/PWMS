@@ -37,4 +37,88 @@ class DomainRules {
     }
     return UnitsRegistry.allSiUnits;
   }
+
+  /// Suggest a default prepopulated property name for SI units
+  static String suggestPropertyNameForUnit(String unitSymbol) {
+    final clean = unitSymbol.trim();
+    switch (clean) {
+      case 'kg':
+      case 'g':
+      case 'mg':
+      case 't':
+        return 'Masa';
+      case 'L':
+      case 'mL':
+      case 'm³':
+      case 'cm³':
+        return 'Volumen';
+      case 'm':
+      case 'cm':
+      case 'mm':
+      case 'km':
+        return 'Longitud';
+      case 'm²':
+      case 'cm²':
+      case 'km²':
+        return 'Superficie';
+      case 's':
+      case 'min':
+      case 'h':
+        return 'Tiempo';
+      case 'A':
+      case 'mA':
+        return 'Corriente eléctrica';
+      case 'K':
+      case '°C':
+      case '°F':
+        return 'Temperatura';
+      case 'mol':
+        return 'Cantidad de sustancia';
+      case 'cd':
+        return 'Intensidad luminosa';
+      case 'N':
+      case 'kN':
+        return 'Fuerza';
+      case 'Pa':
+      case 'kPa':
+      case 'bar':
+        return 'Presión';
+      case 'J':
+      case 'kJ':
+      case 'cal':
+        return 'Energía';
+      case 'W':
+      case 'kW':
+      case 'MW':
+        return 'Potencia';
+      case 'Hz':
+      case 'kHz':
+      case 'MHz':
+      case 'GHz':
+        return 'Frecuencia';
+      case 'V':
+      case 'mV':
+      case 'kV':
+        return 'Voltaje';
+      case 'Ω':
+        return 'Resistencia';
+      case 'B':
+      case 'KB':
+      case 'MB':
+      case 'GB':
+      case 'TB':
+        return 'Almacenamiento';
+      case '\$':
+      case 'USD':
+      case 'MXN':
+      case 'EUR':
+        return 'Precio';
+      case 'unidades':
+      case 'piezas':
+      case 'unidad':
+        return 'Cantidad';
+      default:
+        return 'Propiedad';
+    }
+  }
 }

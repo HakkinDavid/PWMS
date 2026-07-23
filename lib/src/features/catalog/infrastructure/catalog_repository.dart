@@ -164,6 +164,11 @@ class CatalogRepository {
   }
 
   Future<void> deleteCatalogItem(String id) async {
+    final entityRows = await (_db.select(_db.entitiesTable)..where((t) => t.speciesId.equals(id))).get();
+    if (entityRows.isNotEmpty) {
+      throw Exception('No se puede eliminar una especie que tiene instancias registradas en tu mundo.');
+    }
+
     await (_db.delete(_db.subspeciesTable)..where((t) => t.speciesId.equals(id))).go();
     await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(id) | t.requiredSpeciesId.equals(id))).go();
     await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(id))).go();
@@ -237,6 +242,12 @@ class CatalogRepository {
         throw Exception(AppStrings.cannotDeleteOnlySubspecies);
       }
     }
+
+    final entityRows = await (_db.select(_db.entitiesTable)..where((t) => t.subspeciesId.equals(id))).get();
+    if (entityRows.isNotEmpty) {
+      throw Exception('No se puede eliminar una subespecie que tiene instancias registradas en tu mundo.');
+    }
+
     await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();
   }
 

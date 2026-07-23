@@ -157,8 +157,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
   void _addMagnitudeRow() async {
     final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
-    final propCtrl = TextEditingController(text: 'Propiedad ${_magnitudes.length + 1}');
     String chosenUnit = allowedUnits.first;
+    final propCtrl = TextEditingController(text: DomainRules.suggestPropertyNameForUnit(chosenUnit));
 
     final result = await showDialog<SpeciesMagnitude>(
       context: context,
@@ -183,7 +183,10 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     title: AppStrings.selectUnitPrompt,
                   );
                   if (picked != null) {
-                    setStateDialog(() => chosenUnit = picked);
+                    setStateDialog(() {
+                      chosenUnit = picked;
+                      propCtrl.text = DomainRules.suggestPropertyNameForUnit(picked);
+                    });
                   }
                 },
                 child: InputDecorator(

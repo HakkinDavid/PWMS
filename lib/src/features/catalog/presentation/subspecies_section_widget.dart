@@ -163,7 +163,8 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final canDelete = _subspeciesList.length > 1;
+    final entitiesState = ref.watch(entityListProvider);
+    final allEntities = entitiesState.asData?.value ?? [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,6 +210,14 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
             itemCount: _subspeciesList.length,
             itemBuilder: (context, index) {
               final sub = _subspeciesList[index];
+              final hasInstances = allEntities.any((e) => e.subspeciesId == sub.id);
+              final canDelete = _subspeciesList.length > 1 && !hasInstances;
+              final deleteTooltip = _subspeciesList.length <= 1
+                  ? AppStrings.cannotDeleteOnlySubspeciesTooltip
+                  : (hasInstances
+                      ? 'No se puede eliminar una subespecie con instancias registradas.'
+                      : AppStrings.delete);
+
               return Card(
                 margin: const EdgeInsets.only(bottom: 6),
                 elevation: 0.5,
@@ -255,7 +264,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                                 color: canDelete ? Colors.redAccent : Colors.grey.shade400,
                                 size: 18,
                               ),
-                              tooltip: canDelete ? AppStrings.delete : AppStrings.cannotDeleteOnlySubspeciesTooltip,
+                              tooltip: deleteTooltip,
                               onPressed: canDelete
                                   ? () async {
                                       try {
@@ -270,7 +279,9 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                                         }
                                       }
                                     }
-                                  : null,
+                                  : () {
+                                      AppToast.showRestriction(context, deleteTooltip);
+                                    },
                             ),
                           ],
                         )

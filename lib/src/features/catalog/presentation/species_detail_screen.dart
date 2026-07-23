@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
 import 'species_detail_view.dart';
@@ -137,29 +138,44 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                   },
                 ),
               IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                tooltip: AppStrings.delete,
-                onPressed: () async {
-                  final confirm = await showDialog<bool>(
-                    context: context,
-                    builder: (c) => AlertDialog(
-                      title: const Text(AppStrings.deleteConfirmationTitle),
-                      content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
-                        TextButton(
-                          onPressed: () => Navigator.pop(c, true),
-                          child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-                        ),
-                      ],
-                    ),
-                  );
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: hasExistingInstance ? Colors.grey.shade400 : Colors.redAccent,
+                ),
+                tooltip: hasExistingInstance
+                    ? 'No se puede eliminar una especie con instancias registradas.'
+                    : AppStrings.delete,
+                onPressed: hasExistingInstance
+                    ? () {
+                        AppToast.showRestriction(context, 'No se puede eliminar una especie con instancias registradas.');
+                      }
+                    : () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (c) => AlertDialog(
+                            title: const Text(AppStrings.deleteConfirmationTitle),
+                            content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
+                              TextButton(
+                                onPressed: () => Navigator.pop(c, true),
+                                child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                              ),
+                            ],
+                          ),
+                        );
 
-                  if (confirm == true) {
-                    await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
-                    if (context.mounted) context.pop();
-                  }
-                },
+                        if (confirm == true) {
+                          try {
+                            await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
+                            if (context.mounted) context.pop();
+                          } catch (e) {
+                            if (context.mounted) {
+                              AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                            }
+                          }
+                        }
+                      },
               ),
             ],
           ),

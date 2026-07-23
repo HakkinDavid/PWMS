@@ -399,5 +399,43 @@ void main() {
         throwsA(isA<Exception>()),
       );
     });
+
+    test('10. Deletion Protection for Species/Subspecies with Active Instances & SI Unit Property Name Prepopulation', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Televisor', type: 'Objeto');
+      final sub = Subspecies(
+        id: 'sub-tv-sony',
+        speciesId: species.id,
+        subspeciesName: 'Bravia 4K',
+        brand: 'Sony',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      // Instantiate Televisor with sub
+      final inst = await entityRepo.instantiateOrMerge(species.id, null, 1, subspeciesId: sub.id);
+      expect(inst, isNotNull);
+
+      // Deleting Subspecies with active instances should throw exception
+      expect(
+        () async => await catalogRepo.deleteSubspecies(sub.id),
+        throwsA(isA<Exception>()),
+      );
+
+      // Deleting Species with active instances should throw exception
+      expect(
+        () async => await catalogRepo.deleteCatalogItem(species.id),
+        throwsA(isA<Exception>()),
+      );
+
+      // SI Unit property name prepopulation suggestions
+      expect(DomainRules.suggestPropertyNameForUnit('kg'), equals('Masa'));
+      expect(DomainRules.suggestPropertyNameForUnit('L'), equals('Volumen'));
+      expect(DomainRules.suggestPropertyNameForUnit('m'), equals('Longitud'));
+      expect(DomainRules.suggestPropertyNameForUnit('s'), equals('Tiempo'));
+      expect(DomainRules.suggestPropertyNameForUnit('A'), equals('Corriente eléctrica'));
+      expect(DomainRules.suggestPropertyNameForUnit('V'), equals('Voltaje'));
+      expect(DomainRules.suggestPropertyNameForUnit('\$'), equals('Precio'));
+      expect(DomainRules.suggestPropertyNameForUnit('unidades'), equals('Cantidad'));
+    });
   });
 }
