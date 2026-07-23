@@ -6,7 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class ProductLookupResult {
-  final String productName;
+  final String generalSpeciesName; // ej. "Monitor", "Bebida", "Teclado"
+  final String subspeciesName;     // ej. "Dell Pro 24''", "Coca Cola 600ml"
   final String? brand;
   final String? barcode;
   final String? description;
@@ -16,7 +17,8 @@ class ProductLookupResult {
   final Map<String, dynamic> extraAttributes;
 
   const ProductLookupResult({
-    required this.productName,
+    required this.generalSpeciesName,
+    required this.subspeciesName,
     this.brand,
     this.barcode,
     this.description,
@@ -26,8 +28,11 @@ class ProductLookupResult {
     this.extraAttributes = const {},
   });
 
+  String get productName => subspeciesName;
+
   ProductLookupResult copyWith({
-    String? productName,
+    String? generalSpeciesName,
+    String? subspeciesName,
     String? brand,
     String? barcode,
     String? description,
@@ -37,7 +42,8 @@ class ProductLookupResult {
     Map<String, dynamic>? extraAttributes,
   }) {
     return ProductLookupResult(
-      productName: productName ?? this.productName,
+      generalSpeciesName: generalSpeciesName ?? this.generalSpeciesName,
+      subspeciesName: subspeciesName ?? this.subspeciesName,
       brand: brand ?? this.brand,
       barcode: barcode ?? this.barcode,
       description: description ?? this.description,
@@ -92,12 +98,18 @@ class ProductLookupService {
           if (name.isNotEmpty) {
             final brand = (prod['brands'] ?? '').toString().trim();
             final code = (prod['code'] ?? '').toString().trim();
-            final imgUrl = prod['image_front_url'] ?? prod['image_url'];
+            final categories = (prod['categories'] ?? '').toString().trim();
+            final genericName = (prod['generic_name'] ?? '').toString().trim();
+            final imgUrl = _extractFrontPhotoUrl(prod);
+
+            final speciesName = _extractGeneralSpeciesName(name, categories, genericName);
+
             final result = ProductLookupResult(
-              productName: name,
+              generalSpeciesName: speciesName,
+              subspeciesName: name,
               brand: brand.isNotEmpty ? brand : null,
               barcode: code.isNotEmpty ? code : null,
-              photoUrl: imgUrl?.toString(),
+              photoUrl: imgUrl,
             );
             return await _savePhotoIfPresent(result);
           }
@@ -120,15 +132,19 @@ class ProductLookupService {
           final name = (prod['product_name'] ?? prod['product_name_es'] ?? prod['abbreviated_product_name'] ?? '').toString().trim();
           final brand = (prod['brands'] ?? '').toString().trim();
           final categories = (prod['categories'] ?? '').toString().trim();
-          final imgUrl = prod['image_front_url'] ?? prod['image_url'] ?? prod['image_small_url'];
+          final genericName = (prod['generic_name'] ?? '').toString().trim();
+          final imgUrl = _extractFrontPhotoUrl(prod);
 
           if (name.isNotEmpty) {
+            final speciesName = _extractGeneralSpeciesName(name, categories, genericName);
+
             return ProductLookupResult(
-              productName: name,
+              generalSpeciesName: speciesName,
+              subspeciesName: name,
               brand: brand.isNotEmpty ? brand : null,
               barcode: barcode,
               description: categories.isNotEmpty ? categories : null,
-              photoUrl: imgUrl?.toString(),
+              photoUrl: imgUrl,
             );
           }
         }
@@ -149,13 +165,17 @@ class ProductLookupService {
           final item = items.first as Map<String, dynamic>;
           final title = (item['title'] ?? '').toString().trim();
           final brand = (item['brand'] ?? '').toString().trim();
+          final category = (item['category'] ?? '').toString().trim();
           final description = (item['description'] ?? '').toString().trim();
           final images = item['images'] as List?;
           final imgUrl = (images != null && images.isNotEmpty) ? images.first.toString() : null;
 
           if (title.isNotEmpty) {
+            final speciesName = _extractGeneralSpeciesName(title, category, null);
+
             return ProductLookupResult(
-              productName: title,
+              generalSpeciesName: speciesName,
+              subspeciesName: title,
               brand: brand.isNotEmpty ? brand : null,
               barcode: barcode,
               description: description.isNotEmpty ? description : null,
@@ -166,6 +186,47 @@ class ProductLookupService {
       }
     } catch (_) {}
     return null;
+  }
+
+  /// Priorizar estrictamente las fotos frontales principales del producto descartando tablas/traseras
+  String? _extractFrontPhotoUrl(Map<String, dynamic> prod) {
+    if (prod['image_front_url'] != null && prod['image_front_url'].toString().isNotEmpty) {
+      return prod['image_front_url'].toString();
+    }
+    if (prod['image_front_large_url'] != null && prod['image_front_large_url'].toString().isNotEmpty) {
+      return prod['image_front_large_url'].toString();
+    }
+    if (prod['image_url'] != null && prod['image_url'].toString().isNotEmpty) {
+      final url = prod['image_url'].toString();
+      if (!url.contains('nutrition') && !url.contains('ingredients')) {
+        return url;
+      }
+    }
+    return null;
+  }
+
+  /// Abstraer la Especie General (ej. "Monitor", "Televisor", "Smartphone", "Bebida")
+  String _extractGeneralSpeciesName(String title, String? categories, String? genericName) {
+    final combined = '${genericName ?? ""} ${categories ?? ""} $title'.toLowerCase();
+
+    if (combined.contains('monitor') || combined.contains('pantalla') || combined.contains('display')) return 'Monitor';
+    if (combined.contains('tv') || combined.contains('televisor') || combined.contains('television')) return 'Televisor';
+    if (combined.contains('laptop') || combined.contains('notebook') || combined.contains('macbook') || combined.contains('portatil') || combined.contains('portátil')) return 'Laptop';
+    if (combined.contains('phone') || combined.contains('celular') || combined.contains('smartphone') || combined.contains('iphone')) return 'Smartphone';
+    if (combined.contains('headphone') || combined.contains('headset') || combined.contains('audifono') || combined.contains('audífono')) return 'Audífonos';
+    if (combined.contains('keyboard') || combined.contains('teclado')) return 'Teclado';
+    if (combined.contains('mouse') || combined.contains('raton') || combined.contains('ratón')) return 'Mouse';
+    if (combined.contains('camera') || combined.contains('camara') || combined.contains('cámara')) return 'Cámara';
+    if (combined.contains('printer') || combined.contains('impresora')) return 'Impresora';
+    if (combined.contains('console') || combined.contains('playstation') || combined.contains('xbox') || combined.contains('nintendo')) return 'Consola de Videojuegos';
+    if (combined.contains('drink') || combined.contains('refresco') || combined.contains('bebida') || combined.contains('soda') || combined.contains('water') || combined.contains('agua')) return 'Bebida';
+
+    if (genericName != null && genericName.trim().isNotEmpty && genericName.trim().length <= 25) {
+      final cleanG = genericName.trim();
+      return cleanG[0].toUpperCase() + cleanG.substring(1);
+    }
+
+    return 'Objeto';
   }
 
   /// Descarga la imagen remota y la guarda localmente en el almacenamiento del dispositivo

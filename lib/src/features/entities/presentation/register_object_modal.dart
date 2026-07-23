@@ -9,7 +9,7 @@ import '../../catalog/presentation/species_tile.dart';
 import '../../catalog/presentation/subspecies_section_widget.dart';
 import 'instantiate_species_sheet.dart';
 
-enum RegisterModalMode { autoFillScanner, selectFromCatalog, createNewSpecies, addSubspeciesToExisting }
+enum RegisterModalMode { selectFromCatalog, createNewSpecies, addSubspeciesToExisting, autoFillScanner }
 
 class RegisterObjectModal extends ConsumerStatefulWidget {
   final String? initialLocationId;
@@ -49,7 +49,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
   @override
   void initState() {
     super.initState();
-    _currentMode = widget.startInCreateSpecies ? RegisterModalMode.createNewSpecies : RegisterModalMode.autoFillScanner;
+    _currentMode = widget.startInCreateSpecies ? RegisterModalMode.createNewSpecies : RegisterModalMode.selectFromCatalog;
   }
 
   @override
@@ -70,7 +70,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.86,
+        height: MediaQuery.of(context).size.height * 0.94, // Punto 2: Modal más grande (94% screen height)
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -86,7 +86,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             ),
             const SizedBox(height: 12),
 
-            // 4-way Segmented Control
+            // Punto 4: Reordenar segmentos colocando Autollenado/Escaneo al final
             SizedBox(
               width: double.infinity,
               child: SegmentedButton<RegisterModalMode>(
@@ -94,14 +94,9 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 style: SegmentedButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
                 ),
                 segments: const [
-                  ButtonSegment(
-                    value: RegisterModalMode.autoFillScanner,
-                    label: Text(AppStrings.autoFillTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.qr_code_scanner, size: 14),
-                  ),
                   ButtonSegment(
                     value: RegisterModalMode.selectFromCatalog,
                     label: Text(AppStrings.instantiateTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
@@ -116,6 +111,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                     value: RegisterModalMode.addSubspeciesToExisting,
                     label: Text(AppStrings.addSubspeciesTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                     icon: Icon(Icons.branding_watermark, size: 14),
+                  ),
+                  ButtonSegment(
+                    value: RegisterModalMode.autoFillScanner,
+                    label: Text(AppStrings.autoFillTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.qr_code_scanner, size: 14),
                   ),
                 ],
                 selected: {_currentMode},
@@ -142,10 +142,8 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     List<CatalogItem> catalogItems,
   ) {
     switch (_currentMode) {
-      case RegisterModalMode.autoFillScanner:
-        return AutoFillScannerWidget(
-          initialLocationId: widget.initialLocationId,
-        );
+      case RegisterModalMode.selectFromCatalog:
+        return _buildBrowseCatalogView(context, catalogState);
       case RegisterModalMode.createNewSpecies:
         return SpeciesFormModal(
           onSpeciesSaved: (createdSpecies) {
@@ -159,8 +157,10 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         );
       case RegisterModalMode.addSubspeciesToExisting:
         return _buildAddSubspeciesToExistingView(context, catalogItems);
-      case RegisterModalMode.selectFromCatalog:
-        return _buildBrowseCatalogView(context, catalogState);
+      case RegisterModalMode.autoFillScanner:
+        return AutoFillScannerWidget(
+          initialLocationId: widget.initialLocationId,
+        );
     }
   }
 

@@ -6,17 +6,18 @@ import 'package:platinum_world_management_system/src/features/catalog/infrastruc
 
 void main() {
   group('ProductLookupService Unit Tests', () {
-    test('lookupByBarcode returns product data from Open Food Facts JSON response', () async {
+    test('lookupByBarcode extracts General Species (e.g. Monitor) and Subspecies (e.g. Dell Pro 24)', () async {
       final mockClient = MockClient((request) async {
         if (request.url.toString().contains('openfoodfacts')) {
           return http.Response(
             jsonEncode({
               'status': 1,
               'product': {
-                'product_name': 'Coca Cola 600ml',
-                'brands': 'Coca-Cola',
-                'categories': 'Bebidas, Refrescos',
-                'image_front_url': 'https://example.com/coca.jpg',
+                'product_name': 'Dell Pro 24 Monitor Full HD',
+                'brands': 'Dell',
+                'categories': 'Electrónica, Monitores',
+                'generic_name': 'Monitor',
+                'image_front_url': 'https://example.com/dell.jpg',
               }
             }),
             200,
@@ -29,20 +30,22 @@ void main() {
       final result = await service.lookupByBarcode('7501055300075');
 
       expect(result, isNotNull);
-      expect(result!.productName, 'Coca Cola 600ml');
-      expect(result.brand, 'Coca-Cola');
+      expect(result!.generalSpeciesName, 'Monitor');
+      expect(result.subspeciesName, 'Dell Pro 24 Monitor Full HD');
+      expect(result.brand, 'Dell');
       expect(result.barcode, '7501055300075');
     });
 
-    test('lookupByNameOrBrand returns product search results', () async {
+    test('lookupByNameOrBrand returns product search results with species abstraction', () async {
       final mockClient = MockClient((request) async {
         return http.Response(
           jsonEncode({
             'products': [
               {
-                'product_name': 'Chocolate Nestle',
-                'brands': 'Nestle',
-                'code': '7501000111223',
+                'product_name': 'Samsung G65B 27 Gaming Monitor',
+                'brands': 'Samsung',
+                'code': '8806090123456',
+                'categories': 'Monitores Gaming',
               }
             ]
           }),
@@ -51,12 +54,13 @@ void main() {
       });
 
       final service = ProductLookupService(client: mockClient);
-      final result = await service.lookupByNameOrBrand('Nestle');
+      final result = await service.lookupByNameOrBrand('Samsung');
 
       expect(result, isNotNull);
-      expect(result!.productName, 'Chocolate Nestle');
-      expect(result.brand, 'Nestle');
-      expect(result.barcode, '7501000111223');
+      expect(result!.generalSpeciesName, 'Monitor');
+      expect(result.subspeciesName, 'Samsung G65B 27 Gaming Monitor');
+      expect(result.brand, 'Samsung');
+      expect(result.barcode, '8806090123456');
     });
   });
 }
