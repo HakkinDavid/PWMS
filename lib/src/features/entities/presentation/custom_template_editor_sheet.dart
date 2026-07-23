@@ -59,7 +59,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Plantilla "$name" guardada')),
+          const SnackBar(content: Text(AppStrings.templateSavedSuccess)),
         );
       }
     } catch (e) {

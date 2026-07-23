@@ -234,7 +234,7 @@ class CatalogRepository {
     if (sub != null) {
       final existingForSpecies = await getSubspeciesForSpecies(sub.speciesId);
       if (existingForSpecies.length <= 1) {
-        throw Exception('No se puede eliminar la única subespecie de una especie.');
+        throw Exception(AppStrings.cannotDeleteOnlySubspecies);
       }
     }
     await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();

@@ -248,7 +248,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                           color: canDelete ? Colors.redAccent : Colors.grey.shade400,
                           size: 18,
                         ),
-                        tooltip: canDelete ? AppStrings.delete : 'No se puede borrar la única subespecie',
+                        tooltip: canDelete ? AppStrings.delete : AppStrings.cannotDeleteOnlySubspeciesTooltip,
                         onPressed: canDelete
                             ? () async {
                                 try {

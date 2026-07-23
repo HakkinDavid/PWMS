@@ -98,17 +98,17 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 segments: const [
                   ButtonSegment(
                     value: RegisterModalMode.selectFromCatalog,
-                    label: Text('Instanciar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                    label: Text(AppStrings.instantiateTab, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                     icon: Icon(Icons.public, size: 16),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.createNewSpecies,
-                    label: Text('Crear Especie', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                    label: Text(AppStrings.createSpeciesTab, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                     icon: Icon(Icons.add, size: 16),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.addSubspeciesToExisting,
-                    label: Text('Crear subespecie', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                    label: Text(AppStrings.addSubspeciesTab, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                     icon: Icon(Icons.branding_watermark, size: 16),
                   ),
                 ],

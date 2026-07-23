@@ -225,7 +225,7 @@ class QuantityOperationHelper {
                     autofocus: true,
                     decoration: const InputDecoration(
                       labelText: AppStrings.newTargetPopulationLabel,
-                      hintText: 'Ej. 15',
+                      hintText: AppStrings.targetPopulationHint,
                       prefixIcon: Icon(Icons.pin),
                     ),
                     onChanged: (_) => setState(() {}),

@@ -133,10 +133,9 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       final alreadyExists = existingEntities.any((e) => e.speciesId == species.id && e.subspeciesId == targetSubId);
       if (alreadyExists) {
         if (mounted) {
-          final subName = _selectedSubspecies?.subspeciesName ?? 'Genérica';
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('La subespecie "$subName" de esta especie única ya está instanciada en el mundo.'),
+            const SnackBar(
+              content: Text(AppStrings.singleInstanceSubspeciesError),
               backgroundColor: Colors.orange,
             ),
           );

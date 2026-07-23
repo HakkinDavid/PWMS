@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../locations/domain/location_node.dart';
@@ -171,8 +172,8 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
                     controller: _newLocationController,
                     autofocus: true,
                     decoration: const InputDecoration(
-                      labelText: 'Nombre de la ubicación',
-                      hintText: 'Ej. Estantería #3, Garaje...',
+                      labelText: AppStrings.locationNameLabel,
+                      hintText: AppStrings.locationNameHint,
                     ),
                   ),
                 ),

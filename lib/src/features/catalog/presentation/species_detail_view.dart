@@ -172,7 +172,7 @@ class SpeciesDetailView extends ConsumerWidget {
                         visualDensity: VisualDensity.compact,
                         avatar: const Icon(Icons.branding_watermark, size: 12),
                         label: Text(
-                          'Subespecie: ${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}',
+                          '${AppStrings.subspeciesLabel} ${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}',
                           style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -180,7 +180,7 @@ class SpeciesDetailView extends ConsumerWidget {
                         Chip(
                           visualDensity: VisualDensity.compact,
                           avatar: const Icon(Icons.qr_code, size: 12),
-                          label: Text('Barcode: ${subspecies!.barcode}', style: const TextStyle(fontSize: 11)),
+                          label: Text('${AppStrings.barcodeLabel}: ${subspecies!.barcode}', style: const TextStyle(fontSize: 11)),
                         ),
                     ],
                     if (species.isUnique)
