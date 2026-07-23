@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +7,7 @@ import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
+import 'quantity_operation_helper.dart';
 
 class GroupedInstanceDetailSheet extends ConsumerStatefulWidget {
   final EffectiveEntityGroup group;
@@ -28,60 +28,6 @@ class GroupedInstanceDetailSheet extends ConsumerStatefulWidget {
 }
 
 class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDetailSheet> {
-  int _selectedQuantity = 1;
-  bool _isBusy = false;
-
-  Future<void> _addSelectedQuantity() async {
-    if (_selectedQuantity <= 0) return;
-    setState(() => _isBusy = true);
-    try {
-      final archetype = widget.group.majorityEntity;
-      for (int i = 0; i < _selectedQuantity; i++) {
-        await ref.read(entityRepositoryProvider).instantiateOrMerge(
-          archetype.speciesId,
-          widget.group.effectiveLocationId,
-          1.0,
-          notes: archetype.notes,
-        );
-      }
-      ref.read(entityListProvider.notifier).loadEntities();
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al instanciar: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isBusy = false);
-    }
-  }
-
-  Future<void> _removeSelectedQuantity() async {
-    if (_selectedQuantity <= 0 || widget.group.entities.isEmpty) return;
-    setState(() => _isBusy = true);
-    try {
-      final targets = widget.group.majorityInstances;
-      final toRemoveCount = _selectedQuantity.clamp(1, targets.length);
-
-      for (int i = 0; i < toRemoveCount; i++) {
-        await ref.read(entityRepositoryProvider).deleteEntity(targets[i].id);
-      }
-
-      ref.read(entityListProvider.notifier).loadEntities();
-      if (widget.group.entities.length <= toRemoveCount && mounted) {
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al eliminar: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isBusy = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final catalogState = ref.watch(catalogListProvider);
@@ -177,29 +123,6 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
                   ],
                 ),
               ),
-              // Total Population Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      '${widget.group.population}',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                    ),
-                    Text(
-                      'Población',
-                      style: TextStyle(fontSize: 10, color: theme.colorScheme.onPrimaryContainer.withAlpha(180)),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -240,9 +163,9 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
           ),
           const SizedBox(height: 16),
 
-          // WheelPicker Container for Elegant Quantity Operations
+          // Interactive Control Panel implementing Rules a), b), and c)
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
               borderRadius: BorderRadius.circular(20),
@@ -250,68 +173,85 @@ class _GroupedInstanceDetailSheetState extends ConsumerState<GroupedInstanceDeta
             ),
             child: Column(
               children: [
+                const Text(
+                  'Gestión Dinámica de Población',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
                 Text(
-                  'Selección Masiva con Selector de Rueda (WheelPicker)',
-                  style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
+                  '• Toque corto en -/+: Resta o suma 1 unidad\n• Toque largo en -/+: Activa el WheelPicker\n• Toque en la cifra: Escribe la población objetivo',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 10, color: theme.colorScheme.secondary),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 14),
 
-                // Cupertino WheelPicker
-                SizedBox(
-                  height: 110,
-                  child: CupertinoPicker(
-                    itemExtent: 36,
-                    scrollController: FixedExtentScrollController(initialItem: 0),
-                    onSelectedItemChanged: (index) {
-                      setState(() => _selectedQuantity = index + 1);
-                    },
-                    children: List.generate(100, (idx) {
-                      final val = idx + 1;
-                      return Center(
-                        child: Text(
-                          '$val ${val == 1 ? "unidad" : "unidades"}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: _selectedQuantity == val ? FontWeight.bold : FontWeight.normal,
-                            color: _selectedQuantity == val ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Action Buttons for WheelPicker
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _isBusy || widget.group.population == 0 ? null : _removeSelectedQuantity,
-                        icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
-                        label: Text(
-                          'Eliminar $_selectedQuantity',
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
+                    // Button [-]
+                    GestureDetector(
+                      onTap: () => QuantityOperationHelper.removeOne(ref, widget.group),
+                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: widget.group, isAdd: false),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withAlpha(25),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.redAccent.withAlpha(100)),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.withAlpha(20),
-                          elevation: 0,
+                        child: const Icon(Icons.remove, size: 24, color: Colors.redAccent),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+
+                    // Broad Quantity Display (Broad touch target for direct numeric input)
+                    InkWell(
+                      onTap: () => QuantityOperationHelper.showDirectNumericInputDialog(context, ref, group: widget.group),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: theme.colorScheme.primary.withAlpha(100), width: 1.5),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  '${widget.group.population}',
+                                  style: theme.textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.onPrimaryContainer,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Icon(Icons.edit_note, size: 18, color: theme.colorScheme.primary),
+                              ],
+                            ),
+                            Text(
+                              'Población',
+                              style: TextStyle(fontSize: 10, color: theme.colorScheme.onPrimaryContainer.withAlpha(180)),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _isBusy ? null : _addSelectedQuantity,
-                        icon: const Icon(Icons.add_circle_outline, color: Colors.green, size: 18),
-                        label: Text(
-                          'Añadir $_selectedQuantity',
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                    const SizedBox(width: 16),
+
+                    // Button [+]
+                    GestureDetector(
+                      onTap: () => QuantityOperationHelper.addOne(ref, widget.group),
+                      onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: widget.group, isAdd: true),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withAlpha(25),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.green.withAlpha(100)),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.withAlpha(20),
-                          elevation: 0,
-                        ),
+                        child: const Icon(Icons.add, size: 24, color: Colors.green),
                       ),
                     ),
                   ],

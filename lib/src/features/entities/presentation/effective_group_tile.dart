@@ -8,6 +8,7 @@ import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
 import 'grouped_instance_detail_sheet.dart';
+import 'quantity_operation_helper.dart';
 
 class EffectiveGroupTile extends ConsumerWidget {
   final EffectiveEntityGroup group;
@@ -49,7 +50,7 @@ class EffectiveGroupTile extends ConsumerWidget {
         },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
               // Species Photo / Icon
@@ -81,17 +82,11 @@ class EffectiveGroupTile extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            name,
-                            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      name,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Row(
@@ -132,34 +127,69 @@ class EffectiveGroupTile extends ConsumerWidget {
                 ),
               ),
 
-              // Elegant Population Chip with WheelPicker icon trigger
-              const SizedBox(width: 8),
-              InkWell(
-                onTap: () => GroupedInstanceDetailSheet.show(context, group),
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: theme.colorScheme.primary.withAlpha(60)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.unfold_more, size: 14),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${group.population}',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onPrimaryContainer,
-                        ),
+              // Ergonomic Control Bar with -, Broad Quantity Container, and +
+              const SizedBox(width: 6),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Button [-]: Short tap (-1), Long press (WheelPicker)
+                  GestureDetector(
+                    onTap: () => QuantityOperationHelper.removeOne(ref, group),
+                    onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: group, isAdd: false),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withAlpha(20),
+                        shape: BoxShape.circle,
                       ),
-                    ],
+                      child: const Icon(Icons.remove, size: 18, color: Colors.redAccent),
+                    ),
                   ),
-                ),
+
+                  // Broad Quantity Container (Broad touch target, prevents mis-taps, opens direct numeric input)
+                  InkWell(
+                    onTap: () => QuantityOperationHelper.showDirectNumericInputDialog(context, ref, group: group),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.colorScheme.primary.withAlpha(80)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${group.population}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          Icon(Icons.edit_note, size: 14, color: theme.colorScheme.primary),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Button [+]: Short tap (+1), Long press (WheelPicker)
+                  GestureDetector(
+                    onTap: () => QuantityOperationHelper.addOne(ref, group),
+                    onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: group, isAdd: true),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(20),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.add, size: 18, color: Colors.green),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
