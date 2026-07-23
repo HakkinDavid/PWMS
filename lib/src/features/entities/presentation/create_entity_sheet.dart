@@ -234,7 +234,7 @@ class _CreateEntitySheetState extends ConsumerState<CreateEntitySheet> {
 
       final entityId = const Uuid().v4();
       final double parsedQty = template.hasQuantity ? (double.tryParse(_qtyController.text.trim()) ?? 1.0) : 1.0;
-      final String parsedUnit = template.hasQuantity && _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : 'unidad';
+      final String parsedUnit = template.hasQuantity && _unitController.text.trim().isNotEmpty ? _unitController.text.trim() : '';
 
       final newEntity = WorldEntity(
         id: entityId,

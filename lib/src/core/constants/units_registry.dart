@@ -14,11 +14,6 @@ class UnitsRegistry {
   UnitsRegistry._();
 
   static const Map<String, SIUnitDefinition> definitions = {
-    'unidad': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
-    'pieza': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
-    'paquete': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
-    'juego': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
-    'caja': SIUnitDefinition(symbol: 'unidad', allowDecimals: false),
     'kg': SIUnitDefinition(symbol: 'kg', allowDecimals: true),
     'g': SIUnitDefinition(symbol: 'g', allowDecimals: true),
     'mg': SIUnitDefinition(symbol: 'mg', allowDecimals: true),
@@ -31,9 +26,7 @@ class UnitsRegistry {
     'm²': SIUnitDefinition(symbol: 'm²', allowDecimals: true),
   };
 
-  static const List<String> countingUnits = [
-    'unidad',
-  ];
+  static const List<String> countingUnits = [];
 
   static const List<String> massUnits = [
     'kg',

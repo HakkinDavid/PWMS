@@ -33,17 +33,12 @@ void main() {
 
   group('PWMS 4NF Database & Single Source of Truth Rules Tests', () {
     test('1. DomainRules Single Source of Truth & Integer Formatting Enforcement', () {
-      expect(DomainRules.isIntegerUnit('unidad'), isTrue);
       expect(DomainRules.isIntegerUnit('kg'), isFalse);
 
-      // Integer Formatting without .0
-      expect(DomainRules.formatMagnitude(5.0, 'unidad'), equals('5'));
-      expect(DomainRules.formatMagnitude(0.0, 'unidad'), equals('0'));
+      // Integer Formatting without .0 for whole numbers
+      expect(DomainRules.formatMagnitude(5.0, 'kg'), equals('5'));
+      expect(DomainRules.formatMagnitude(0.0, 'kg'), equals('0'));
       expect(DomainRules.formatMagnitude(2.5, 'kg'), equals('2.5'));
-
-      // Rule #8: Unique species CANNOT be associated with "unidad"
-      expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'unidad', isUnique: true), isFalse);
-      expect(DomainRules.isUnitAllowedForSpecies(unitSymbol: 'kg', isUnique: true), isTrue);
     });
 
     test('2. 4NF Species & Instance Magnitudes Normalization & Empty Default Test', () async {
