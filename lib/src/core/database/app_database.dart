@@ -118,12 +118,23 @@ class CustomTemplatesTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+// 4NF Table: Instance Direct Physical Locations (1:0..1)
+class InstanceLocationsTable extends Table {
+  TextColumn get instanceId => text().references(EntitiesTable, #id)();
+  TextColumn get locationId => text().references(LocationsTable, #id)();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {instanceId};
+}
+
 @DriftDatabase(tables: [
   LocationsTable,
   CatalogTable,
   SpeciesMagnitudesTable,
   EntitiesTable,
   InstanceMagnitudesTable,
+  InstanceLocationsTable,
   RelationsTable,
   AttachmentsTable,
   HistoryEventsTable,

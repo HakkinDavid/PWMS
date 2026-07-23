@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/database/app_database.dart';
+import '../../locations/domain/location_resolver.dart';
+import '../../relations/domain/entity_relation.dart';
 import '../domain/attachment.dart';
 import '../domain/custom_template.dart';
 import '../domain/i_entity_repository.dart';
@@ -13,7 +15,10 @@ class EntityRepository implements IEntityRepository {
 
   EntityRepository(this._db);
 
-  Future<WorldEntity> _mapToDomain(EntitiesTableData row) async {
+  Future<WorldEntity> _mapToDomain(
+    EntitiesTableData row, {
+    Map<String, String?>? resolvedLocations,
+  }) async {
     final magRows = await (_db.select(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(row.id))).get();
     final magnitudes = magRows.map((m) => InstanceMagnitude(
       id: m.id,
@@ -23,10 +28,14 @@ class EntityRepository implements IEntityRepository {
       unitSymbol: m.unitSymbol,
     )).toList();
 
+    final effectiveLocation = resolvedLocations != null && resolvedLocations.containsKey(row.id)
+        ? resolvedLocations[row.id]
+        : row.locationId;
+
     return WorldEntity(
       id: row.id,
       speciesId: row.speciesId,
-      locationId: row.locationId,
+      locationId: effectiveLocation,
       magnitudes: magnitudes,
       notes: row.notes,
       createdAt: row.createdAt,
@@ -45,14 +54,51 @@ class EntityRepository implements IEntityRepository {
     );
   }
 
+  Future<Map<String, String?>> _getEffectiveLocationMap(List<EntitiesTableData> entityRows) async {
+    final locRows = await _db.select(_db.instanceLocationsTable).get();
+    final Map<String, String?> directLocs = {
+      for (var r in locRows) r.instanceId: r.locationId
+    };
+
+    // Fallback to EntitiesTable.locationId if instanceLocationsTable doesn't have it yet
+    for (final e in entityRows) {
+      final loc = e.locationId;
+      if (!directLocs.containsKey(e.id) && loc != null) {
+        directLocs[e.id] = loc;
+      }
+    }
+
+    final relRows = await _db.select(_db.relationsTable).get();
+    final allRels = relRows.map((r) => EntityRelation(
+      id: r.id,
+      sourceEntityId: r.sourceEntityId,
+      targetEntityId: r.targetEntityId,
+      relationType: r.relationType,
+      createdAt: r.createdAt,
+    )).toList();
+
+    final Map<String, String?> effectiveLocs = {};
+    for (final e in entityRows) {
+      effectiveLocs[e.id] = LocationResolver.getEffectiveLocationId(
+        entityId: e.id,
+        directLocations: directLocs,
+        relations: allRels,
+      );
+    }
+
+    return effectiveLocs;
+  }
+
   @override
   Future<List<WorldEntity>> getAllEntities() async {
     final query = _db.select(_db.entitiesTable)
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
     final rows = await query.get();
+    final effectiveLocs = await _getEffectiveLocationMap(rows);
+
     final List<WorldEntity> results = [];
     for (final row in rows) {
-      results.add(await _mapToDomain(row));
+      results.add(await _mapToDomain(row, resolvedLocations: effectiveLocs));
     }
     return results;
   }
@@ -61,7 +107,11 @@ class EntityRepository implements IEntityRepository {
   Future<WorldEntity?> getEntityById(String id) async {
     final query = _db.select(_db.entitiesTable)..where((t) => t.id.equals(id));
     final row = await query.getSingleOrNull();
-    return row != null ? await _mapToDomain(row) : null;
+    if (row == null) return null;
+
+    final allRows = await _db.select(_db.entitiesTable).get();
+    final effectiveLocs = await _getEffectiveLocationMap(allRows);
+    return await _mapToDomain(row, resolvedLocations: effectiveLocs);
   }
 
   @override
@@ -70,27 +120,23 @@ class EntityRepository implements IEntityRepository {
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
       ..limit(limit);
     final rows = await query.get();
+    final effectiveLocs = await _getEffectiveLocationMap(rows);
+
     final List<WorldEntity> results = [];
     for (final row in rows) {
-      results.add(await _mapToDomain(row));
+      results.add(await _mapToDomain(row, resolvedLocations: effectiveLocs));
     }
     return results;
   }
 
   @override
   Future<List<WorldEntity>> getEntitiesByLocation(String? locationId) async {
-    final query = _db.select(_db.entitiesTable);
+    final allEntities = await getAllEntities();
     if (locationId == null) {
-      query.where((t) => t.locationId.isNull());
+      return allEntities.where((e) => e.locationId == null).toList();
     } else {
-      query.where((t) => t.locationId.equals(locationId));
+      return allEntities.where((e) => e.locationId == locationId).toList();
     }
-    final rows = await query.get();
-    final List<WorldEntity> results = [];
-    for (final row in rows) {
-      results.add(await _mapToDomain(row));
-    }
-    return results;
   }
 
   @override
@@ -128,6 +174,19 @@ class EntityRepository implements IEntityRepository {
 
     await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
 
+    // Manage 4NF InstanceLocationsTable (Direct Physical Location)
+    if (entity.locationId != null) {
+      await _db.into(_db.instanceLocationsTable).insertOnConflictUpdate(
+        InstanceLocationsTableCompanion(
+          instanceId: Value(entity.id),
+          locationId: Value(entity.locationId!),
+          createdAt: Value(DateTime.now()),
+        ),
+      );
+    } else {
+      await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.equals(entity.id))).go();
+    }
+
     // Persist 4NF Instance Magnitudes (1:N)
     await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(entity.id))).go();
     for (final mag in entity.magnitudes) {
@@ -149,48 +208,29 @@ class EntityRepository implements IEntityRepository {
     String? notes,
     String? unit,
   }) async {
-    final locationEntities = await getEntitiesByLocation(locationId);
-    final existing = locationEntities.where((e) => e.speciesId == speciesId).firstOrNull;
+    // Decision (b, e): No DB scalar merging! Always instantiate individual WorldEntity
+    final newId = const Uuid().v4();
 
-    if (existing != null) {
-      final updatedMags = List<InstanceMagnitude>.from(existing.magnitudes);
-      if (updatedMags.isNotEmpty) {
-        final firstMag = updatedMags.first;
-        updatedMags[0] = firstMag.copyWith(magnitudeValue: firstMag.magnitudeValue + addQuantity);
-      }
+    final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
+    final initialMags = speciesMagRows.map((sm) => InstanceMagnitude(
+      id: const Uuid().v4(),
+      instanceId: newId,
+      propertyName: sm.propertyName,
+      magnitudeValue: sm.magnitudeValue * addQuantity,
+      unitSymbol: sm.unitSymbol,
+    )).toList();
 
-      final updated = existing.copyWith(
-        magnitudes: updatedMags,
-        notes: (notes != null && notes.isNotEmpty) ? notes : existing.notes,
-        updatedAt: DateTime.now(),
-      );
-      await saveEntity(updated);
-      return updated;
-    } else {
-      final newId = const Uuid().v4();
-
-      // Point 1 Directive: Copy species magnitudes if existing, but DO NOT auto-inject "unidad" if empty!
-      final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
-      final initialMags = speciesMagRows.map((sm) => InstanceMagnitude(
-        id: const Uuid().v4(),
-        instanceId: newId,
-        propertyName: sm.propertyName,
-        magnitudeValue: sm.magnitudeValue * addQuantity,
-        unitSymbol: sm.unitSymbol,
-      )).toList();
-
-      final newEntity = WorldEntity(
-        id: newId,
-        speciesId: speciesId,
-        locationId: locationId,
-        magnitudes: initialMags,
-        notes: notes,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      await saveEntity(newEntity);
-      return newEntity;
-    }
+    final newEntity = WorldEntity(
+      id: newId,
+      speciesId: speciesId,
+      locationId: locationId,
+      magnitudes: initialMags,
+      notes: notes,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    await saveEntity(newEntity);
+    return newEntity;
   }
 
   @override
@@ -202,39 +242,19 @@ class EntityRepository implements IEntityRepository {
   Future<WorldEntity?> moveOrMergeEntity(String entityId, String? newLocationId) async {
     final entity = await getEntityById(entityId);
     if (entity == null) return null;
-    if (entity.locationId == newLocationId) return entity;
 
-    final targetLocationEntities = await getEntitiesByLocation(newLocationId);
-    final existingAtTarget = targetLocationEntities.where((e) => e.speciesId == entity.speciesId && e.id != entityId).firstOrNull;
-
-    if (existingAtTarget != null) {
-      final mergedMags = List<InstanceMagnitude>.from(existingAtTarget.magnitudes);
-      if (mergedMags.isNotEmpty && entity.magnitudes.isNotEmpty) {
-        mergedMags[0] = mergedMags[0].copyWith(magnitudeValue: mergedMags[0].magnitudeValue + entity.magnitudes[0].magnitudeValue);
-      }
-
-      final merged = existingAtTarget.copyWith(
-        magnitudes: mergedMags,
-        notes: (entity.notes != null && entity.notes!.isNotEmpty)
-            ? '${existingAtTarget.notes ?? ""}\n${entity.notes}'
-            : existingAtTarget.notes,
-        updatedAt: DateTime.now(),
-      );
-      await saveEntity(merged);
-      await deleteEntity(entityId);
-      return merged;
-    } else {
-      final updated = entity.copyWith(
-        locationId: newLocationId,
-        updatedAt: DateTime.now(),
-      );
-      await saveEntity(updated);
-      return updated;
-    }
+    // Decision (b, e): Update location without merging/deleting rows
+    final updated = entity.copyWith(
+      locationId: newLocationId,
+      updatedAt: DateTime.now(),
+    );
+    await saveEntity(updated);
+    return updated;
   }
 
   @override
   Future<void> deleteEntity(String id) async {
+    await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.equals(id))).go();
     await (_db.delete(_db.relationsTable)..where((t) => t.sourceEntityId.equals(id) | t.targetEntityId.equals(id))).go();
     await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(id))).go();
     await (_db.delete(_db.entitiesTable)..where((t) => t.id.equals(id))).go();

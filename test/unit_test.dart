@@ -129,5 +129,76 @@ void main() {
       expect(docRelations.first.relationType, equals('DOCUMENTA'));
       expect(docRelations.first.targetEntityId, equals(objInstance.id));
     });
+
+    test('4. Effective Location Inheritance, Single Container Rule & Unlink Stamping', () async {
+      final locNode = LocationNode(id: 'loc-workshop', name: 'Taller', createdAt: DateTime.now());
+      await locationRepo.saveNode(locNode);
+
+      final boxSpecies = await catalogRepo.getOrCreateSpecies('Caja Grande', type: 'Objeto');
+      final toolSpecies = await catalogRepo.getOrCreateSpecies('Martillo', type: 'Objeto');
+
+      final box = await entityRepo.instantiateOrMerge(boxSpecies.id, 'loc-workshop', 1);
+      final tool = await entityRepo.instantiateOrMerge(toolSpecies.id, null, 1);
+
+      // Tool initially has no direct location
+      expect(tool.locationId, isNull);
+
+      // Save relation: Tool GUARDADO_EN Box
+      final rel1 = EntityRelation(
+        id: 'rel-guardado-1',
+        sourceEntityId: tool.id,
+        targetEntityId: box.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: DateTime.now(),
+      );
+      await relationRepo.addRelation(rel1);
+
+      // Tool effective location should now inherit Box's location ('loc-workshop')
+      final toolFetched = await entityRepo.getEntityById(tool.id);
+      expect(toolFetched!.locationId, equals('loc-workshop'));
+
+      // Move Box to new location 'loc-garage'
+      final locGarage = LocationNode(id: 'loc-garage', name: 'Garaje', createdAt: DateTime.now());
+      await locationRepo.saveNode(locGarage);
+      await entityRepo.moveEntity(box.id, 'loc-garage');
+
+      // Tool should automatically follow Box to 'loc-garage' without explicit DB update
+      final toolAfterBoxMove = await entityRepo.getEntityById(tool.id);
+      expect(toolAfterBoxMove!.locationId, equals('loc-garage'));
+
+      // Test Single Active Container Rule: Put tool into another container Box 2
+      final box2 = await entityRepo.instantiateOrMerge(boxSpecies.id, 'loc-workshop', 1);
+      final rel2 = EntityRelation(
+        id: 'rel-guardado-2',
+        sourceEntityId: tool.id,
+        targetEntityId: box2.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: DateTime.now(),
+      );
+      await relationRepo.addRelation(rel2);
+
+      // Previous relation rel1 should be automatically replaced
+      final toolRels = await relationRepo.getRelationsForEntity(tool.id);
+      final activeInheriting = toolRels.where((r) => r.sourceEntityId == tool.id && r.relationType == 'GUARDADO_EN');
+      expect(activeInheriting.length, equals(1));
+      expect(activeInheriting.first.targetEntityId, equals(box2.id));
+
+      // Test Cycle Prevention: Try to put Box 2 inside Tool (Tool is in Box 2)
+      final cycleRel = EntityRelation(
+        id: 'rel-cycle',
+        sourceEntityId: box2.id,
+        targetEntityId: tool.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: DateTime.now(),
+      );
+      expect(() async => await relationRepo.addRelation(cycleRel), throwsA(isA<Exception>()));
+
+      // Test Unlink Stamping: Delete relation rel2
+      await relationRepo.deleteRelation(rel2.id);
+
+      // Tool should now retain Box 2's current location ('loc-workshop') in instance_locations
+      final toolUnlinked = await entityRepo.getEntityById(tool.id);
+      expect(toolUnlinked!.locationId, equals('loc-workshop'));
+    });
   });
 }

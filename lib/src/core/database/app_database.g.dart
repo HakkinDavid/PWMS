@@ -1934,6 +1934,257 @@ class InstanceMagnitudesTableCompanion
   }
 }
 
+class $InstanceLocationsTableTable extends InstanceLocationsTable
+    with TableInfo<$InstanceLocationsTableTable, InstanceLocationsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InstanceLocationsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _instanceIdMeta =
+      const VerificationMeta('instanceId');
+  @override
+  late final GeneratedColumn<String> instanceId = GeneratedColumn<String>(
+      'instance_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES entities_table (id)'));
+  static const VerificationMeta _locationIdMeta =
+      const VerificationMeta('locationId');
+  @override
+  late final GeneratedColumn<String> locationId = GeneratedColumn<String>(
+      'location_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES locations_table (id)'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [instanceId, locationId, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'instance_locations_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<InstanceLocationsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('instance_id')) {
+      context.handle(
+          _instanceIdMeta,
+          instanceId.isAcceptableOrUnknown(
+              data['instance_id']!, _instanceIdMeta));
+    } else if (isInserting) {
+      context.missing(_instanceIdMeta);
+    }
+    if (data.containsKey('location_id')) {
+      context.handle(
+          _locationIdMeta,
+          locationId.isAcceptableOrUnknown(
+              data['location_id']!, _locationIdMeta));
+    } else if (isInserting) {
+      context.missing(_locationIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {instanceId};
+  @override
+  InstanceLocationsTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InstanceLocationsTableData(
+      instanceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}instance_id'])!,
+      locationId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}location_id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $InstanceLocationsTableTable createAlias(String alias) {
+    return $InstanceLocationsTableTable(attachedDatabase, alias);
+  }
+}
+
+class InstanceLocationsTableData extends DataClass
+    implements Insertable<InstanceLocationsTableData> {
+  final String instanceId;
+  final String locationId;
+  final DateTime createdAt;
+  const InstanceLocationsTableData(
+      {required this.instanceId,
+      required this.locationId,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['instance_id'] = Variable<String>(instanceId);
+    map['location_id'] = Variable<String>(locationId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  InstanceLocationsTableCompanion toCompanion(bool nullToAbsent) {
+    return InstanceLocationsTableCompanion(
+      instanceId: Value(instanceId),
+      locationId: Value(locationId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory InstanceLocationsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InstanceLocationsTableData(
+      instanceId: serializer.fromJson<String>(json['instanceId']),
+      locationId: serializer.fromJson<String>(json['locationId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'instanceId': serializer.toJson<String>(instanceId),
+      'locationId': serializer.toJson<String>(locationId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  InstanceLocationsTableData copyWith(
+          {String? instanceId, String? locationId, DateTime? createdAt}) =>
+      InstanceLocationsTableData(
+        instanceId: instanceId ?? this.instanceId,
+        locationId: locationId ?? this.locationId,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  InstanceLocationsTableData copyWithCompanion(
+      InstanceLocationsTableCompanion data) {
+    return InstanceLocationsTableData(
+      instanceId:
+          data.instanceId.present ? data.instanceId.value : this.instanceId,
+      locationId:
+          data.locationId.present ? data.locationId.value : this.locationId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InstanceLocationsTableData(')
+          ..write('instanceId: $instanceId, ')
+          ..write('locationId: $locationId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(instanceId, locationId, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InstanceLocationsTableData &&
+          other.instanceId == this.instanceId &&
+          other.locationId == this.locationId &&
+          other.createdAt == this.createdAt);
+}
+
+class InstanceLocationsTableCompanion
+    extends UpdateCompanion<InstanceLocationsTableData> {
+  final Value<String> instanceId;
+  final Value<String> locationId;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const InstanceLocationsTableCompanion({
+    this.instanceId = const Value.absent(),
+    this.locationId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InstanceLocationsTableCompanion.insert({
+    required String instanceId,
+    required String locationId,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : instanceId = Value(instanceId),
+        locationId = Value(locationId),
+        createdAt = Value(createdAt);
+  static Insertable<InstanceLocationsTableData> custom({
+    Expression<String>? instanceId,
+    Expression<String>? locationId,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (instanceId != null) 'instance_id': instanceId,
+      if (locationId != null) 'location_id': locationId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InstanceLocationsTableCompanion copyWith(
+      {Value<String>? instanceId,
+      Value<String>? locationId,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return InstanceLocationsTableCompanion(
+      instanceId: instanceId ?? this.instanceId,
+      locationId: locationId ?? this.locationId,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (instanceId.present) {
+      map['instance_id'] = Variable<String>(instanceId.value);
+    }
+    if (locationId.present) {
+      map['location_id'] = Variable<String>(locationId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InstanceLocationsTableCompanion(')
+          ..write('instanceId: $instanceId, ')
+          ..write('locationId: $locationId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $RelationsTableTable extends RelationsTable
     with TableInfo<$RelationsTableTable, RelationsTableData> {
   @override
@@ -3297,6 +3548,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $EntitiesTableTable entitiesTable = $EntitiesTableTable(this);
   late final $InstanceMagnitudesTableTable instanceMagnitudesTable =
       $InstanceMagnitudesTableTable(this);
+  late final $InstanceLocationsTableTable instanceLocationsTable =
+      $InstanceLocationsTableTable(this);
   late final $RelationsTableTable relationsTable = $RelationsTableTable(this);
   late final $AttachmentsTableTable attachmentsTable =
       $AttachmentsTableTable(this);
@@ -3314,6 +3567,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         speciesMagnitudesTable,
         entitiesTable,
         instanceMagnitudesTable,
+        instanceLocationsTable,
         relationsTable,
         attachmentsTable,
         historyEventsTable,
@@ -3373,6 +3627,25 @@ final class $$LocationsTableTableReferences extends BaseReferences<
         .filter((f) => f.locationId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_entitiesTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$InstanceLocationsTableTable,
+      List<InstanceLocationsTableData>> _instanceLocationsTableRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.instanceLocationsTable,
+          aliasName: $_aliasNameGenerator(
+              db.locationsTable.id, db.instanceLocationsTable.locationId));
+
+  $$InstanceLocationsTableTableProcessedTableManager
+      get instanceLocationsTableRefs {
+    final manager = $$InstanceLocationsTableTableTableManager(
+            $_db, $_db.instanceLocationsTable)
+        .filter((f) => f.locationId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_instanceLocationsTableRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -3440,6 +3713,29 @@ class $$LocationsTableTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> instanceLocationsTableRefs(
+      Expression<bool> Function($$InstanceLocationsTableTableFilterComposer f)
+          f) {
+    final $$InstanceLocationsTableTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.instanceLocationsTable,
+            getReferencedColumn: (t) => t.locationId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$InstanceLocationsTableTableFilterComposer(
+                  $db: $db,
+                  $table: $db.instanceLocationsTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -3553,6 +3849,29 @@ class $$LocationsTableTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> instanceLocationsTableRefs<T extends Object>(
+      Expression<T> Function($$InstanceLocationsTableTableAnnotationComposer a)
+          f) {
+    final $$InstanceLocationsTableTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.instanceLocationsTable,
+            getReferencedColumn: (t) => t.locationId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$InstanceLocationsTableTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.instanceLocationsTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$LocationsTableTableTableManager extends RootTableManager<
@@ -3566,7 +3885,10 @@ class $$LocationsTableTableTableManager extends RootTableManager<
     $$LocationsTableTableUpdateCompanionBuilder,
     (LocationsTableData, $$LocationsTableTableReferences),
     LocationsTableData,
-    PrefetchHooks Function({bool parentLocationId, bool entitiesTableRefs})> {
+    PrefetchHooks Function(
+        {bool parentLocationId,
+        bool entitiesTableRefs,
+        bool instanceLocationsTableRefs})> {
   $$LocationsTableTableTableManager(
       _$AppDatabase db, $LocationsTableTable table)
       : super(TableManagerState(
@@ -3621,11 +3943,14 @@ class $$LocationsTableTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {parentLocationId = false, entitiesTableRefs = false}) {
+              {parentLocationId = false,
+              entitiesTableRefs = false,
+              instanceLocationsTableRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (entitiesTableRefs) db.entitiesTable
+                if (entitiesTableRefs) db.entitiesTable,
+                if (instanceLocationsTableRefs) db.instanceLocationsTable
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -3668,6 +3993,19 @@ class $$LocationsTableTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.locationId == item.id),
+                        typedResults: items),
+                  if (instanceLocationsTableRefs)
+                    await $_getPrefetchedData<LocationsTableData,
+                            $LocationsTableTable, InstanceLocationsTableData>(
+                        currentTable: table,
+                        referencedTable: $$LocationsTableTableReferences
+                            ._instanceLocationsTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$LocationsTableTableReferences(db, table, p0)
+                                .instanceLocationsTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.locationId == item.id),
                         typedResults: items)
                 ];
               },
@@ -3687,7 +4025,10 @@ typedef $$LocationsTableTableProcessedTableManager = ProcessedTableManager<
     $$LocationsTableTableUpdateCompanionBuilder,
     (LocationsTableData, $$LocationsTableTableReferences),
     LocationsTableData,
-    PrefetchHooks Function({bool parentLocationId, bool entitiesTableRefs})>;
+    PrefetchHooks Function(
+        {bool parentLocationId,
+        bool entitiesTableRefs,
+        bool instanceLocationsTableRefs})>;
 typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
     Function({
   required String id,
@@ -4559,6 +4900,25 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
         manager.$state.copyWith(prefetchedData: cache));
   }
 
+  static MultiTypedResultKey<$InstanceLocationsTableTable,
+      List<InstanceLocationsTableData>> _instanceLocationsTableRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.instanceLocationsTable,
+          aliasName: $_aliasNameGenerator(
+              db.entitiesTable.id, db.instanceLocationsTable.instanceId));
+
+  $$InstanceLocationsTableTableProcessedTableManager
+      get instanceLocationsTableRefs {
+    final manager = $$InstanceLocationsTableTableTableManager(
+            $_db, $_db.instanceLocationsTable)
+        .filter((f) => f.instanceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_instanceLocationsTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
   static MultiTypedResultKey<$RelationsTableTable, List<RelationsTableData>>
       _sourceRelationsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.relationsTable,
@@ -4668,6 +5028,29 @@ class $$EntitiesTableTableFilterComposer
                 $$InstanceMagnitudesTableTableFilterComposer(
                   $db: $db,
                   $table: $db.instanceMagnitudesTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<bool> instanceLocationsTableRefs(
+      Expression<bool> Function($$InstanceLocationsTableTableFilterComposer f)
+          f) {
+    final $$InstanceLocationsTableTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.instanceLocationsTable,
+            getReferencedColumn: (t) => t.instanceId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$InstanceLocationsTableTableFilterComposer(
+                  $db: $db,
+                  $table: $db.instanceLocationsTable,
                   $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                   joinBuilder: joinBuilder,
                   $removeJoinBuilderFromRootComposer:
@@ -4865,6 +5248,29 @@ class $$EntitiesTableTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> instanceLocationsTableRefs<T extends Object>(
+      Expression<T> Function($$InstanceLocationsTableTableAnnotationComposer a)
+          f) {
+    final $$InstanceLocationsTableTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.instanceLocationsTable,
+            getReferencedColumn: (t) => t.instanceId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$InstanceLocationsTableTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.instanceLocationsTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
   Expression<T> sourceRelations<T extends Object>(
       Expression<T> Function($$RelationsTableTableAnnotationComposer a) f) {
     final $$RelationsTableTableAnnotationComposer composer = $composerBuilder(
@@ -4923,6 +5329,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
         {bool speciesId,
         bool locationId,
         bool instanceMagnitudesTableRefs,
+        bool instanceLocationsTableRefs,
         bool sourceRelations,
         bool targetRelations})> {
   $$EntitiesTableTableTableManager(_$AppDatabase db, $EntitiesTableTable table)
@@ -4981,12 +5388,14 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               {speciesId = false,
               locationId = false,
               instanceMagnitudesTableRefs = false,
+              instanceLocationsTableRefs = false,
               sourceRelations = false,
               targetRelations = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (instanceMagnitudesTableRefs) db.instanceMagnitudesTable,
+                if (instanceLocationsTableRefs) db.instanceLocationsTable,
                 if (sourceRelations) db.relationsTable,
                 if (targetRelations) db.relationsTable
               ],
@@ -5041,6 +5450,19 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.instanceId == item.id),
                         typedResults: items),
+                  if (instanceLocationsTableRefs)
+                    await $_getPrefetchedData<EntitiesTableData,
+                            $EntitiesTableTable, InstanceLocationsTableData>(
+                        currentTable: table,
+                        referencedTable: $$EntitiesTableTableReferences
+                            ._instanceLocationsTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$EntitiesTableTableReferences(db, table, p0)
+                                .instanceLocationsTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.instanceId == item.id),
+                        typedResults: items),
                   if (sourceRelations)
                     await $_getPrefetchedData<EntitiesTableData,
                             $EntitiesTableTable, RelationsTableData>(
@@ -5089,6 +5511,7 @@ typedef $$EntitiesTableTableProcessedTableManager = ProcessedTableManager<
         {bool speciesId,
         bool locationId,
         bool instanceMagnitudesTableRefs,
+        bool instanceLocationsTableRefs,
         bool sourceRelations,
         bool targetRelations})>;
 typedef $$InstanceMagnitudesTableTableCreateCompanionBuilder
@@ -5376,6 +5799,335 @@ typedef $$InstanceMagnitudesTableTableProcessedTableManager
         (InstanceMagnitudesTableData, $$InstanceMagnitudesTableTableReferences),
         InstanceMagnitudesTableData,
         PrefetchHooks Function({bool instanceId})>;
+typedef $$InstanceLocationsTableTableCreateCompanionBuilder
+    = InstanceLocationsTableCompanion Function({
+  required String instanceId,
+  required String locationId,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$InstanceLocationsTableTableUpdateCompanionBuilder
+    = InstanceLocationsTableCompanion Function({
+  Value<String> instanceId,
+  Value<String> locationId,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+final class $$InstanceLocationsTableTableReferences extends BaseReferences<
+    _$AppDatabase, $InstanceLocationsTableTable, InstanceLocationsTableData> {
+  $$InstanceLocationsTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $EntitiesTableTable _instanceIdTable(_$AppDatabase db) =>
+      db.entitiesTable.createAlias($_aliasNameGenerator(
+          db.instanceLocationsTable.instanceId, db.entitiesTable.id));
+
+  $$EntitiesTableTableProcessedTableManager get instanceId {
+    final $_column = $_itemColumn<String>('instance_id')!;
+
+    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_instanceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $LocationsTableTable _locationIdTable(_$AppDatabase db) =>
+      db.locationsTable.createAlias($_aliasNameGenerator(
+          db.instanceLocationsTable.locationId, db.locationsTable.id));
+
+  $$LocationsTableTableProcessedTableManager get locationId {
+    final $_column = $_itemColumn<String>('location_id')!;
+
+    final manager = $$LocationsTableTableTableManager($_db, $_db.locationsTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_locationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$InstanceLocationsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $InstanceLocationsTableTable> {
+  $$InstanceLocationsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  $$EntitiesTableTableFilterComposer get instanceId {
+    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.instanceId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$LocationsTableTableFilterComposer get locationId {
+    final $$LocationsTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.locationId,
+        referencedTable: $db.locationsTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$LocationsTableTableFilterComposer(
+              $db: $db,
+              $table: $db.locationsTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$InstanceLocationsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $InstanceLocationsTableTable> {
+  $$InstanceLocationsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  $$EntitiesTableTableOrderingComposer get instanceId {
+    final $$EntitiesTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.instanceId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$LocationsTableTableOrderingComposer get locationId {
+    final $$LocationsTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.locationId,
+        referencedTable: $db.locationsTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$LocationsTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.locationsTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$InstanceLocationsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $InstanceLocationsTableTable> {
+  $$InstanceLocationsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$EntitiesTableTableAnnotationComposer get instanceId {
+    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.instanceId,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$LocationsTableTableAnnotationComposer get locationId {
+    final $$LocationsTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.locationId,
+        referencedTable: $db.locationsTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$LocationsTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.locationsTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$InstanceLocationsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $InstanceLocationsTableTable,
+    InstanceLocationsTableData,
+    $$InstanceLocationsTableTableFilterComposer,
+    $$InstanceLocationsTableTableOrderingComposer,
+    $$InstanceLocationsTableTableAnnotationComposer,
+    $$InstanceLocationsTableTableCreateCompanionBuilder,
+    $$InstanceLocationsTableTableUpdateCompanionBuilder,
+    (InstanceLocationsTableData, $$InstanceLocationsTableTableReferences),
+    InstanceLocationsTableData,
+    PrefetchHooks Function({bool instanceId, bool locationId})> {
+  $$InstanceLocationsTableTableTableManager(
+      _$AppDatabase db, $InstanceLocationsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InstanceLocationsTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$InstanceLocationsTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$InstanceLocationsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> instanceId = const Value.absent(),
+            Value<String> locationId = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              InstanceLocationsTableCompanion(
+            instanceId: instanceId,
+            locationId: locationId,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String instanceId,
+            required String locationId,
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              InstanceLocationsTableCompanion.insert(
+            instanceId: instanceId,
+            locationId: locationId,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$InstanceLocationsTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({instanceId = false, locationId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (instanceId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.instanceId,
+                    referencedTable: $$InstanceLocationsTableTableReferences
+                        ._instanceIdTable(db),
+                    referencedColumn: $$InstanceLocationsTableTableReferences
+                        ._instanceIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (locationId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.locationId,
+                    referencedTable: $$InstanceLocationsTableTableReferences
+                        ._locationIdTable(db),
+                    referencedColumn: $$InstanceLocationsTableTableReferences
+                        ._locationIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$InstanceLocationsTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $InstanceLocationsTableTable,
+        InstanceLocationsTableData,
+        $$InstanceLocationsTableTableFilterComposer,
+        $$InstanceLocationsTableTableOrderingComposer,
+        $$InstanceLocationsTableTableAnnotationComposer,
+        $$InstanceLocationsTableTableCreateCompanionBuilder,
+        $$InstanceLocationsTableTableUpdateCompanionBuilder,
+        (InstanceLocationsTableData, $$InstanceLocationsTableTableReferences),
+        InstanceLocationsTableData,
+        PrefetchHooks Function({bool instanceId, bool locationId})>;
 typedef $$RelationsTableTableCreateCompanionBuilder = RelationsTableCompanion
     Function({
   required String id,
@@ -6413,6 +7165,9 @@ class $AppDatabaseManager {
   $$InstanceMagnitudesTableTableTableManager get instanceMagnitudesTable =>
       $$InstanceMagnitudesTableTableTableManager(
           _db, _db.instanceMagnitudesTable);
+  $$InstanceLocationsTableTableTableManager get instanceLocationsTable =>
+      $$InstanceLocationsTableTableTableManager(
+          _db, _db.instanceLocationsTable);
   $$RelationsTableTableTableManager get relationsTable =>
       $$RelationsTableTableTableManager(_db, _db.relationsTable);
   $$AttachmentsTableTableTableManager get attachmentsTable =>
