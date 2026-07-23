@@ -13,6 +13,7 @@ abstract class IEntityRepository {
     String speciesId,
     String? locationId,
     double addQuantity, {
+    String? subspeciesId,
     String? notes,
     String? unit,
   });

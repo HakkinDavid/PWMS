@@ -10,6 +10,9 @@ import 'package:platinum_world_management_system/src/features/locations/domain/l
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
 import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
+import 'package:platinum_world_management_system/src/features/locations/domain/location_path_helper.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/species_requirement.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/effective_entity_group.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/quantity_operation_helper.dart';
 
@@ -233,6 +236,79 @@ void main() {
       final remainingSpecies = remaining.where((e) => e.speciesId == species.id).toList();
       expect(remainingSpecies.length, equals(1));
       expect(remainingSpecies.first.notes, equals('Batería Marca B'));
+    });
+
+    test('6. 4NF Subspecies, NECESITA Requirements & Effective Breadcrumbs with "@"', () async {
+      // 1. Create Species & Subspecies
+      final fridgeSpecies = await catalogRepo.getOrCreateSpecies('Refrigerador', type: 'Objeto');
+      final eggSpecies = await catalogRepo.getOrCreateSpecies('Huevo', type: 'Objeto');
+
+      final duracellSub = Subspecies(
+        id: 'sub-duracell',
+        speciesId: fridgeSpecies.id,
+        subspeciesName: 'Inverter Dual Door',
+        brand: 'LG',
+        barcode: '750987654321',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(duracellSub);
+
+      final fetchedSubs = await catalogRepo.getSubspeciesForSpecies(fridgeSpecies.id);
+      expect(fetchedSubs.length, equals(1));
+      expect(fetchedSubs.first.brand, equals('LG'));
+
+      // 2. NECESITA Requirement: Refrigerador NECESITA 6 Huevo (even with 0 egg instances!)
+      final req = SpeciesRequirement(
+        id: 'req-fridge-egg',
+        sourceId: fridgeSpecies.id,
+        sourceType: 'species',
+        requiredSpeciesId: eggSpecies.id,
+        requiredQuantity: 6,
+        notes: 'Insumo alimenticio básico',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveRequirement(req);
+
+      final fetchedReqs = await catalogRepo.getRequirementsForSource(fridgeSpecies.id);
+      expect(fetchedReqs.length, equals(1));
+      expect(fetchedReqs.first.requiredQuantity, equals(6));
+
+      // 3. Effective Location Breadcrumb with "@"
+      final kitchenNode = LocationNode(id: 'loc-kitchen', name: 'Cocina', createdAt: DateTime.now());
+      final houseNode = LocationNode(id: 'loc-house', name: 'Casa', createdAt: DateTime.now());
+      kitchenNode.copyWith(parentLocationId: 'loc-house');
+
+      await locationRepo.saveNode(houseNode);
+      await locationRepo.saveNode(LocationNode(id: 'loc-kitchen', name: 'Cocina', parentLocationId: 'loc-house', createdAt: DateTime.now()));
+
+      final fridgeInstance = await entityRepo.instantiateOrMerge(fridgeSpecies.id, 'loc-kitchen', 1, subspeciesId: duracellSub.id);
+      expect(fridgeInstance.subspeciesId, equals('sub-duracell'));
+
+      final eggInstance = await entityRepo.instantiateOrMerge(eggSpecies.id, null, 1);
+      final guardadoRel = EntityRelation(
+        id: 'rel-egg-fridge',
+        sourceEntityId: eggInstance.id,
+        targetEntityId: fridgeInstance.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: DateTime.now(),
+      );
+      await relationRepo.addRelation(guardadoRel);
+
+      final allEntities = await entityRepo.getAllEntities();
+      final allRelations = await relationRepo.getRelationsForEntity(eggInstance.id);
+      final allNodes = await locationRepo.getAllNodes();
+
+      final effectiveBreadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+        entityId: eggInstance.id,
+        effectiveLocationId: fridgeInstance.locationId,
+        allEntities: allEntities,
+        allRelations: [guardadoRel],
+        allNodes: allNodes,
+        catalogItems: [fridgeSpecies, eggSpecies],
+      );
+
+      expect(effectiveBreadcrumb.ancestorPath, contains('Casa > Cocina @'));
+      expect(effectiveBreadcrumb.targetName, contains('Refrigerador'));
     });
   });
 }

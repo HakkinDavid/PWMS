@@ -11,10 +11,8 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       name: json['name'] as String,
       type: json['type'] as String? ?? 'Objeto',
-      brand: json['brand'] as String?,
       description: json['description'] as String?,
       mainPhotoPath: json['mainPhotoPath'] as String?,
-      barcode: json['barcode'] as String?,
       customAttributes:
           json['customAttributes'] as Map<String, dynamic>? ?? const {},
       magnitudes: (json['magnitudes'] as List<dynamic>?)
@@ -30,10 +28,8 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
       'id': instance.id,
       'name': instance.name,
       'type': instance.type,
-      'brand': instance.brand,
       'description': instance.description,
       'mainPhotoPath': instance.mainPhotoPath,
-      'barcode': instance.barcode,
       'customAttributes': instance.customAttributes,
       'magnitudes': instance.magnitudes,
       'isUnique': instance.isUnique,

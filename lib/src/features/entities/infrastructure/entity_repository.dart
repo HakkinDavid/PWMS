@@ -35,6 +35,7 @@ class EntityRepository implements IEntityRepository {
     return WorldEntity(
       id: row.id,
       speciesId: row.speciesId,
+      subspeciesId: row.subspeciesId,
       locationId: effectiveLocation,
       magnitudes: magnitudes,
       notes: row.notes,
@@ -152,12 +153,10 @@ class EntityRepository implements IEntityRepository {
       if (species == null) return false;
 
       final nameMatch = species.name.toLowerCase().contains(cleanQuery);
-      final brandMatch = species.brand?.toLowerCase().contains(cleanQuery) ?? false;
       final typeMatch = species.type.toLowerCase().contains(cleanQuery);
-      final barcodeMatch = species.barcode?.toLowerCase().contains(cleanQuery) ?? false;
       final notesMatch = e.notes?.toLowerCase().contains(cleanQuery) ?? false;
 
-      return nameMatch || brandMatch || typeMatch || barcodeMatch || notesMatch;
+      return nameMatch || typeMatch || notesMatch;
     }).toList();
   }
 
@@ -166,6 +165,7 @@ class EntityRepository implements IEntityRepository {
     final companion = EntitiesTableCompanion(
       id: Value(entity.id),
       speciesId: Value(entity.speciesId),
+      subspeciesId: Value(entity.subspeciesId),
       locationId: Value(entity.locationId),
       notes: Value(entity.notes),
       createdAt: Value(entity.createdAt),
@@ -205,6 +205,7 @@ class EntityRepository implements IEntityRepository {
     String speciesId,
     String? locationId,
     double addQuantity, {
+    String? subspeciesId,
     String? notes,
     String? unit,
   }) async {
@@ -223,6 +224,7 @@ class EntityRepository implements IEntityRepository {
     final newEntity = WorldEntity(
       id: newId,
       speciesId: speciesId,
+      subspeciesId: subspeciesId,
       locationId: locationId,
       magnitudes: initialMags,
       notes: notes,

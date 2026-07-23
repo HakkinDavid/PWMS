@@ -138,7 +138,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       final species = catalogState.asData?.value ?? <CatalogItem>[];
       final filtered = species.where((CatalogItem s) =>
         s.name.toLowerCase().contains(cleanQuery) ||
-        (s.brand?.toLowerCase().contains(cleanQuery) ?? false) ||
         s.type.toLowerCase().contains(cleanQuery)
       ).toList();
 

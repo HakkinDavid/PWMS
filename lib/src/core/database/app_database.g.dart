@@ -385,11 +385,6 @@ class $CatalogTableTable extends CatalogTable
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant('Objeto'));
-  static const VerificationMeta _brandMeta = const VerificationMeta('brand');
-  @override
-  late final GeneratedColumn<String> brand = GeneratedColumn<String>(
-      'brand', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -401,12 +396,6 @@ class $CatalogTableTable extends CatalogTable
   @override
   late final GeneratedColumn<String> mainPhotoPath = GeneratedColumn<String>(
       'main_photo_path', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _barcodeMeta =
-      const VerificationMeta('barcode');
-  @override
-  late final GeneratedColumn<String> barcode = GeneratedColumn<String>(
-      'barcode', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _customAttributesMeta =
       const VerificationMeta('customAttributes');
@@ -437,10 +426,8 @@ class $CatalogTableTable extends CatalogTable
         id,
         name,
         type,
-        brand,
         description,
         mainPhotoPath,
-        barcode,
         customAttributes,
         isUnique,
         createdAt
@@ -470,10 +457,6 @@ class $CatalogTableTable extends CatalogTable
       context.handle(
           _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
     }
-    if (data.containsKey('brand')) {
-      context.handle(
-          _brandMeta, brand.isAcceptableOrUnknown(data['brand']!, _brandMeta));
-    }
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
@@ -485,10 +468,6 @@ class $CatalogTableTable extends CatalogTable
           _mainPhotoPathMeta,
           mainPhotoPath.isAcceptableOrUnknown(
               data['main_photo_path']!, _mainPhotoPathMeta));
-    }
-    if (data.containsKey('barcode')) {
-      context.handle(_barcodeMeta,
-          barcode.isAcceptableOrUnknown(data['barcode']!, _barcodeMeta));
     }
     if (data.containsKey('custom_attributes')) {
       context.handle(
@@ -521,14 +500,10 @@ class $CatalogTableTable extends CatalogTable
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       type: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      brand: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}brand']),
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
       mainPhotoPath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}main_photo_path']),
-      barcode: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}barcode']),
       customAttributes: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}custom_attributes'])!,
       isUnique: attachedDatabase.typeMapping
@@ -549,10 +524,8 @@ class CatalogTableData extends DataClass
   final String id;
   final String name;
   final String type;
-  final String? brand;
   final String? description;
   final String? mainPhotoPath;
-  final String? barcode;
   final String customAttributes;
   final bool isUnique;
   final DateTime createdAt;
@@ -560,10 +533,8 @@ class CatalogTableData extends DataClass
       {required this.id,
       required this.name,
       required this.type,
-      this.brand,
       this.description,
       this.mainPhotoPath,
-      this.barcode,
       required this.customAttributes,
       required this.isUnique,
       required this.createdAt});
@@ -573,17 +544,11 @@ class CatalogTableData extends DataClass
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['type'] = Variable<String>(type);
-    if (!nullToAbsent || brand != null) {
-      map['brand'] = Variable<String>(brand);
-    }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
     if (!nullToAbsent || mainPhotoPath != null) {
       map['main_photo_path'] = Variable<String>(mainPhotoPath);
-    }
-    if (!nullToAbsent || barcode != null) {
-      map['barcode'] = Variable<String>(barcode);
     }
     map['custom_attributes'] = Variable<String>(customAttributes);
     map['is_unique'] = Variable<bool>(isUnique);
@@ -596,17 +561,12 @@ class CatalogTableData extends DataClass
       id: Value(id),
       name: Value(name),
       type: Value(type),
-      brand:
-          brand == null && nullToAbsent ? const Value.absent() : Value(brand),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
       mainPhotoPath: mainPhotoPath == null && nullToAbsent
           ? const Value.absent()
           : Value(mainPhotoPath),
-      barcode: barcode == null && nullToAbsent
-          ? const Value.absent()
-          : Value(barcode),
       customAttributes: Value(customAttributes),
       isUnique: Value(isUnique),
       createdAt: Value(createdAt),
@@ -620,10 +580,8 @@ class CatalogTableData extends DataClass
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       type: serializer.fromJson<String>(json['type']),
-      brand: serializer.fromJson<String?>(json['brand']),
       description: serializer.fromJson<String?>(json['description']),
       mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
-      barcode: serializer.fromJson<String?>(json['barcode']),
       customAttributes: serializer.fromJson<String>(json['customAttributes']),
       isUnique: serializer.fromJson<bool>(json['isUnique']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -636,10 +594,8 @@ class CatalogTableData extends DataClass
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'type': serializer.toJson<String>(type),
-      'brand': serializer.toJson<String?>(brand),
       'description': serializer.toJson<String?>(description),
       'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
-      'barcode': serializer.toJson<String?>(barcode),
       'customAttributes': serializer.toJson<String>(customAttributes),
       'isUnique': serializer.toJson<bool>(isUnique),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -650,10 +606,8 @@ class CatalogTableData extends DataClass
           {String? id,
           String? name,
           String? type,
-          Value<String?> brand = const Value.absent(),
           Value<String?> description = const Value.absent(),
           Value<String?> mainPhotoPath = const Value.absent(),
-          Value<String?> barcode = const Value.absent(),
           String? customAttributes,
           bool? isUnique,
           DateTime? createdAt}) =>
@@ -661,11 +615,9 @@ class CatalogTableData extends DataClass
         id: id ?? this.id,
         name: name ?? this.name,
         type: type ?? this.type,
-        brand: brand.present ? brand.value : this.brand,
         description: description.present ? description.value : this.description,
         mainPhotoPath:
             mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
-        barcode: barcode.present ? barcode.value : this.barcode,
         customAttributes: customAttributes ?? this.customAttributes,
         isUnique: isUnique ?? this.isUnique,
         createdAt: createdAt ?? this.createdAt,
@@ -675,13 +627,11 @@ class CatalogTableData extends DataClass
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       type: data.type.present ? data.type.value : this.type,
-      brand: data.brand.present ? data.brand.value : this.brand,
       description:
           data.description.present ? data.description.value : this.description,
       mainPhotoPath: data.mainPhotoPath.present
           ? data.mainPhotoPath.value
           : this.mainPhotoPath,
-      barcode: data.barcode.present ? data.barcode.value : this.barcode,
       customAttributes: data.customAttributes.present
           ? data.customAttributes.value
           : this.customAttributes,
@@ -696,10 +646,8 @@ class CatalogTableData extends DataClass
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('type: $type, ')
-          ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('mainPhotoPath: $mainPhotoPath, ')
-          ..write('barcode: $barcode, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
           ..write('createdAt: $createdAt')
@@ -708,8 +656,8 @@ class CatalogTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, name, type, brand, description,
-      mainPhotoPath, barcode, customAttributes, isUnique, createdAt);
+  int get hashCode => Object.hash(id, name, type, description, mainPhotoPath,
+      customAttributes, isUnique, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -717,10 +665,8 @@ class CatalogTableData extends DataClass
           other.id == this.id &&
           other.name == this.name &&
           other.type == this.type &&
-          other.brand == this.brand &&
           other.description == this.description &&
           other.mainPhotoPath == this.mainPhotoPath &&
-          other.barcode == this.barcode &&
           other.customAttributes == this.customAttributes &&
           other.isUnique == this.isUnique &&
           other.createdAt == this.createdAt);
@@ -730,10 +676,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> type;
-  final Value<String?> brand;
   final Value<String?> description;
   final Value<String?> mainPhotoPath;
-  final Value<String?> barcode;
   final Value<String> customAttributes;
   final Value<bool> isUnique;
   final Value<DateTime> createdAt;
@@ -742,10 +686,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.type = const Value.absent(),
-    this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.mainPhotoPath = const Value.absent(),
-    this.barcode = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -755,10 +697,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     required String id,
     required String name,
     this.type = const Value.absent(),
-    this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.mainPhotoPath = const Value.absent(),
-    this.barcode = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
     required DateTime createdAt,
@@ -770,10 +710,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     Expression<String>? id,
     Expression<String>? name,
     Expression<String>? type,
-    Expression<String>? brand,
     Expression<String>? description,
     Expression<String>? mainPhotoPath,
-    Expression<String>? barcode,
     Expression<String>? customAttributes,
     Expression<bool>? isUnique,
     Expression<DateTime>? createdAt,
@@ -783,10 +721,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (type != null) 'type': type,
-      if (brand != null) 'brand': brand,
       if (description != null) 'description': description,
       if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
-      if (barcode != null) 'barcode': barcode,
       if (customAttributes != null) 'custom_attributes': customAttributes,
       if (isUnique != null) 'is_unique': isUnique,
       if (createdAt != null) 'created_at': createdAt,
@@ -798,10 +734,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       {Value<String>? id,
       Value<String>? name,
       Value<String>? type,
-      Value<String?>? brand,
       Value<String?>? description,
       Value<String?>? mainPhotoPath,
-      Value<String?>? barcode,
       Value<String>? customAttributes,
       Value<bool>? isUnique,
       Value<DateTime>? createdAt,
@@ -810,10 +744,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,
-      brand: brand ?? this.brand,
       description: description ?? this.description,
       mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
-      barcode: barcode ?? this.barcode,
       customAttributes: customAttributes ?? this.customAttributes,
       isUnique: isUnique ?? this.isUnique,
       createdAt: createdAt ?? this.createdAt,
@@ -833,17 +765,11 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
-    if (brand.present) {
-      map['brand'] = Variable<String>(brand.value);
-    }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
     if (mainPhotoPath.present) {
       map['main_photo_path'] = Variable<String>(mainPhotoPath.value);
-    }
-    if (barcode.present) {
-      map['barcode'] = Variable<String>(barcode.value);
     }
     if (customAttributes.present) {
       map['custom_attributes'] = Variable<String>(customAttributes.value);
@@ -866,12 +792,448 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('type: $type, ')
-          ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('mainPhotoPath: $mainPhotoPath, ')
-          ..write('barcode: $barcode, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SubspeciesTableTable extends SubspeciesTable
+    with TableInfo<$SubspeciesTableTable, SubspeciesTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubspeciesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _speciesIdMeta =
+      const VerificationMeta('speciesId');
+  @override
+  late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
+      'species_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES catalog_table (id)'));
+  static const VerificationMeta _subspeciesNameMeta =
+      const VerificationMeta('subspeciesName');
+  @override
+  late final GeneratedColumn<String> subspeciesName = GeneratedColumn<String>(
+      'subspecies_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _brandMeta = const VerificationMeta('brand');
+  @override
+  late final GeneratedColumn<String> brand = GeneratedColumn<String>(
+      'brand', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _barcodeMeta =
+      const VerificationMeta('barcode');
+  @override
+  late final GeneratedColumn<String> barcode = GeneratedColumn<String>(
+      'barcode', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _photoPathMeta =
+      const VerificationMeta('photoPath');
+  @override
+  late final GeneratedColumn<String> photoPath = GeneratedColumn<String>(
+      'photo_path', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        speciesId,
+        subspeciesName,
+        brand,
+        barcode,
+        photoPath,
+        notes,
+        createdAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'subspecies_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<SubspeciesTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('species_id')) {
+      context.handle(_speciesIdMeta,
+          speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta));
+    } else if (isInserting) {
+      context.missing(_speciesIdMeta);
+    }
+    if (data.containsKey('subspecies_name')) {
+      context.handle(
+          _subspeciesNameMeta,
+          subspeciesName.isAcceptableOrUnknown(
+              data['subspecies_name']!, _subspeciesNameMeta));
+    } else if (isInserting) {
+      context.missing(_subspeciesNameMeta);
+    }
+    if (data.containsKey('brand')) {
+      context.handle(
+          _brandMeta, brand.isAcceptableOrUnknown(data['brand']!, _brandMeta));
+    }
+    if (data.containsKey('barcode')) {
+      context.handle(_barcodeMeta,
+          barcode.isAcceptableOrUnknown(data['barcode']!, _barcodeMeta));
+    }
+    if (data.containsKey('photo_path')) {
+      context.handle(_photoPathMeta,
+          photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta));
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SubspeciesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SubspeciesTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      speciesId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
+      subspeciesName: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}subspecies_name'])!,
+      brand: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}brand']),
+      barcode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}barcode']),
+      photoPath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_path']),
+      notes: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $SubspeciesTableTable createAlias(String alias) {
+    return $SubspeciesTableTable(attachedDatabase, alias);
+  }
+}
+
+class SubspeciesTableData extends DataClass
+    implements Insertable<SubspeciesTableData> {
+  final String id;
+  final String speciesId;
+  final String subspeciesName;
+  final String? brand;
+  final String? barcode;
+  final String? photoPath;
+  final String? notes;
+  final DateTime createdAt;
+  const SubspeciesTableData(
+      {required this.id,
+      required this.speciesId,
+      required this.subspeciesName,
+      this.brand,
+      this.barcode,
+      this.photoPath,
+      this.notes,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['species_id'] = Variable<String>(speciesId);
+    map['subspecies_name'] = Variable<String>(subspeciesName);
+    if (!nullToAbsent || brand != null) {
+      map['brand'] = Variable<String>(brand);
+    }
+    if (!nullToAbsent || barcode != null) {
+      map['barcode'] = Variable<String>(barcode);
+    }
+    if (!nullToAbsent || photoPath != null) {
+      map['photo_path'] = Variable<String>(photoPath);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SubspeciesTableCompanion toCompanion(bool nullToAbsent) {
+    return SubspeciesTableCompanion(
+      id: Value(id),
+      speciesId: Value(speciesId),
+      subspeciesName: Value(subspeciesName),
+      brand:
+          brand == null && nullToAbsent ? const Value.absent() : Value(brand),
+      barcode: barcode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(barcode),
+      photoPath: photoPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoPath),
+      notes:
+          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SubspeciesTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SubspeciesTableData(
+      id: serializer.fromJson<String>(json['id']),
+      speciesId: serializer.fromJson<String>(json['speciesId']),
+      subspeciesName: serializer.fromJson<String>(json['subspeciesName']),
+      brand: serializer.fromJson<String?>(json['brand']),
+      barcode: serializer.fromJson<String?>(json['barcode']),
+      photoPath: serializer.fromJson<String?>(json['photoPath']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'speciesId': serializer.toJson<String>(speciesId),
+      'subspeciesName': serializer.toJson<String>(subspeciesName),
+      'brand': serializer.toJson<String?>(brand),
+      'barcode': serializer.toJson<String?>(barcode),
+      'photoPath': serializer.toJson<String?>(photoPath),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SubspeciesTableData copyWith(
+          {String? id,
+          String? speciesId,
+          String? subspeciesName,
+          Value<String?> brand = const Value.absent(),
+          Value<String?> barcode = const Value.absent(),
+          Value<String?> photoPath = const Value.absent(),
+          Value<String?> notes = const Value.absent(),
+          DateTime? createdAt}) =>
+      SubspeciesTableData(
+        id: id ?? this.id,
+        speciesId: speciesId ?? this.speciesId,
+        subspeciesName: subspeciesName ?? this.subspeciesName,
+        brand: brand.present ? brand.value : this.brand,
+        barcode: barcode.present ? barcode.value : this.barcode,
+        photoPath: photoPath.present ? photoPath.value : this.photoPath,
+        notes: notes.present ? notes.value : this.notes,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  SubspeciesTableData copyWithCompanion(SubspeciesTableCompanion data) {
+    return SubspeciesTableData(
+      id: data.id.present ? data.id.value : this.id,
+      speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
+      subspeciesName: data.subspeciesName.present
+          ? data.subspeciesName.value
+          : this.subspeciesName,
+      brand: data.brand.present ? data.brand.value : this.brand,
+      barcode: data.barcode.present ? data.barcode.value : this.barcode,
+      photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubspeciesTableData(')
+          ..write('id: $id, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('subspeciesName: $subspeciesName, ')
+          ..write('brand: $brand, ')
+          ..write('barcode: $barcode, ')
+          ..write('photoPath: $photoPath, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, speciesId, subspeciesName, brand, barcode,
+      photoPath, notes, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SubspeciesTableData &&
+          other.id == this.id &&
+          other.speciesId == this.speciesId &&
+          other.subspeciesName == this.subspeciesName &&
+          other.brand == this.brand &&
+          other.barcode == this.barcode &&
+          other.photoPath == this.photoPath &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt);
+}
+
+class SubspeciesTableCompanion extends UpdateCompanion<SubspeciesTableData> {
+  final Value<String> id;
+  final Value<String> speciesId;
+  final Value<String> subspeciesName;
+  final Value<String?> brand;
+  final Value<String?> barcode;
+  final Value<String?> photoPath;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SubspeciesTableCompanion({
+    this.id = const Value.absent(),
+    this.speciesId = const Value.absent(),
+    this.subspeciesName = const Value.absent(),
+    this.brand = const Value.absent(),
+    this.barcode = const Value.absent(),
+    this.photoPath = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SubspeciesTableCompanion.insert({
+    required String id,
+    required String speciesId,
+    required String subspeciesName,
+    this.brand = const Value.absent(),
+    this.barcode = const Value.absent(),
+    this.photoPath = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        speciesId = Value(speciesId),
+        subspeciesName = Value(subspeciesName),
+        createdAt = Value(createdAt);
+  static Insertable<SubspeciesTableData> custom({
+    Expression<String>? id,
+    Expression<String>? speciesId,
+    Expression<String>? subspeciesName,
+    Expression<String>? brand,
+    Expression<String>? barcode,
+    Expression<String>? photoPath,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (speciesId != null) 'species_id': speciesId,
+      if (subspeciesName != null) 'subspecies_name': subspeciesName,
+      if (brand != null) 'brand': brand,
+      if (barcode != null) 'barcode': barcode,
+      if (photoPath != null) 'photo_path': photoPath,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SubspeciesTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? speciesId,
+      Value<String>? subspeciesName,
+      Value<String?>? brand,
+      Value<String?>? barcode,
+      Value<String?>? photoPath,
+      Value<String?>? notes,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return SubspeciesTableCompanion(
+      id: id ?? this.id,
+      speciesId: speciesId ?? this.speciesId,
+      subspeciesName: subspeciesName ?? this.subspeciesName,
+      brand: brand ?? this.brand,
+      barcode: barcode ?? this.barcode,
+      photoPath: photoPath ?? this.photoPath,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (speciesId.present) {
+      map['species_id'] = Variable<String>(speciesId.value);
+    }
+    if (subspeciesName.present) {
+      map['subspecies_name'] = Variable<String>(subspeciesName.value);
+    }
+    if (brand.present) {
+      map['brand'] = Variable<String>(brand.value);
+    }
+    if (barcode.present) {
+      map['barcode'] = Variable<String>(barcode.value);
+    }
+    if (photoPath.present) {
+      map['photo_path'] = Variable<String>(photoPath.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubspeciesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('subspeciesName: $subspeciesName, ')
+          ..write('brand: $brand, ')
+          ..write('barcode: $barcode, ')
+          ..write('photoPath: $photoPath, ')
+          ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1265,6 +1627,15 @@ class $EntitiesTableTable extends EntitiesTable
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES catalog_table (id)'));
+  static const VerificationMeta _subspeciesIdMeta =
+      const VerificationMeta('subspeciesId');
+  @override
+  late final GeneratedColumn<String> subspeciesId = GeneratedColumn<String>(
+      'subspecies_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES subspecies_table (id)'));
   static const VerificationMeta _locationIdMeta =
       const VerificationMeta('locationId');
   @override
@@ -1293,7 +1664,7 @@ class $EntitiesTableTable extends EntitiesTable
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, speciesId, locationId, notes, createdAt, updatedAt];
+      [id, speciesId, subspeciesId, locationId, notes, createdAt, updatedAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1314,6 +1685,12 @@ class $EntitiesTableTable extends EntitiesTable
           speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta));
     } else if (isInserting) {
       context.missing(_speciesIdMeta);
+    }
+    if (data.containsKey('subspecies_id')) {
+      context.handle(
+          _subspeciesIdMeta,
+          subspeciesId.isAcceptableOrUnknown(
+              data['subspecies_id']!, _subspeciesIdMeta));
     }
     if (data.containsKey('location_id')) {
       context.handle(
@@ -1350,6 +1727,8 @@ class $EntitiesTableTable extends EntitiesTable
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       speciesId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
+      subspeciesId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}subspecies_id']),
       locationId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}location_id']),
       notes: attachedDatabase.typeMapping
@@ -1371,6 +1750,7 @@ class EntitiesTableData extends DataClass
     implements Insertable<EntitiesTableData> {
   final String id;
   final String speciesId;
+  final String? subspeciesId;
   final String? locationId;
   final String? notes;
   final DateTime createdAt;
@@ -1378,6 +1758,7 @@ class EntitiesTableData extends DataClass
   const EntitiesTableData(
       {required this.id,
       required this.speciesId,
+      this.subspeciesId,
       this.locationId,
       this.notes,
       required this.createdAt,
@@ -1387,6 +1768,9 @@ class EntitiesTableData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['species_id'] = Variable<String>(speciesId);
+    if (!nullToAbsent || subspeciesId != null) {
+      map['subspecies_id'] = Variable<String>(subspeciesId);
+    }
     if (!nullToAbsent || locationId != null) {
       map['location_id'] = Variable<String>(locationId);
     }
@@ -1402,6 +1786,9 @@ class EntitiesTableData extends DataClass
     return EntitiesTableCompanion(
       id: Value(id),
       speciesId: Value(speciesId),
+      subspeciesId: subspeciesId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subspeciesId),
       locationId: locationId == null && nullToAbsent
           ? const Value.absent()
           : Value(locationId),
@@ -1418,6 +1805,7 @@ class EntitiesTableData extends DataClass
     return EntitiesTableData(
       id: serializer.fromJson<String>(json['id']),
       speciesId: serializer.fromJson<String>(json['speciesId']),
+      subspeciesId: serializer.fromJson<String?>(json['subspeciesId']),
       locationId: serializer.fromJson<String?>(json['locationId']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -1430,6 +1818,7 @@ class EntitiesTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'speciesId': serializer.toJson<String>(speciesId),
+      'subspeciesId': serializer.toJson<String?>(subspeciesId),
       'locationId': serializer.toJson<String?>(locationId),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -1440,6 +1829,7 @@ class EntitiesTableData extends DataClass
   EntitiesTableData copyWith(
           {String? id,
           String? speciesId,
+          Value<String?> subspeciesId = const Value.absent(),
           Value<String?> locationId = const Value.absent(),
           Value<String?> notes = const Value.absent(),
           DateTime? createdAt,
@@ -1447,6 +1837,8 @@ class EntitiesTableData extends DataClass
       EntitiesTableData(
         id: id ?? this.id,
         speciesId: speciesId ?? this.speciesId,
+        subspeciesId:
+            subspeciesId.present ? subspeciesId.value : this.subspeciesId,
         locationId: locationId.present ? locationId.value : this.locationId,
         notes: notes.present ? notes.value : this.notes,
         createdAt: createdAt ?? this.createdAt,
@@ -1456,6 +1848,9 @@ class EntitiesTableData extends DataClass
     return EntitiesTableData(
       id: data.id.present ? data.id.value : this.id,
       speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
+      subspeciesId: data.subspeciesId.present
+          ? data.subspeciesId.value
+          : this.subspeciesId,
       locationId:
           data.locationId.present ? data.locationId.value : this.locationId,
       notes: data.notes.present ? data.notes.value : this.notes,
@@ -1469,6 +1864,7 @@ class EntitiesTableData extends DataClass
     return (StringBuffer('EntitiesTableData(')
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
+          ..write('subspeciesId: $subspeciesId, ')
           ..write('locationId: $locationId, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
@@ -1478,14 +1874,15 @@ class EntitiesTableData extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, speciesId, locationId, notes, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      id, speciesId, subspeciesId, locationId, notes, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is EntitiesTableData &&
           other.id == this.id &&
           other.speciesId == this.speciesId &&
+          other.subspeciesId == this.subspeciesId &&
           other.locationId == this.locationId &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
@@ -1495,6 +1892,7 @@ class EntitiesTableData extends DataClass
 class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   final Value<String> id;
   final Value<String> speciesId;
+  final Value<String?> subspeciesId;
   final Value<String?> locationId;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
@@ -1503,6 +1901,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   const EntitiesTableCompanion({
     this.id = const Value.absent(),
     this.speciesId = const Value.absent(),
+    this.subspeciesId = const Value.absent(),
     this.locationId = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -1512,6 +1911,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   EntitiesTableCompanion.insert({
     required String id,
     required String speciesId,
+    this.subspeciesId = const Value.absent(),
     this.locationId = const Value.absent(),
     this.notes = const Value.absent(),
     required DateTime createdAt,
@@ -1524,6 +1924,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   static Insertable<EntitiesTableData> custom({
     Expression<String>? id,
     Expression<String>? speciesId,
+    Expression<String>? subspeciesId,
     Expression<String>? locationId,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
@@ -1533,6 +1934,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (speciesId != null) 'species_id': speciesId,
+      if (subspeciesId != null) 'subspecies_id': subspeciesId,
       if (locationId != null) 'location_id': locationId,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
@@ -1544,6 +1946,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   EntitiesTableCompanion copyWith(
       {Value<String>? id,
       Value<String>? speciesId,
+      Value<String?>? subspeciesId,
       Value<String?>? locationId,
       Value<String?>? notes,
       Value<DateTime>? createdAt,
@@ -1552,6 +1955,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     return EntitiesTableCompanion(
       id: id ?? this.id,
       speciesId: speciesId ?? this.speciesId,
+      subspeciesId: subspeciesId ?? this.subspeciesId,
       locationId: locationId ?? this.locationId,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
@@ -1568,6 +1972,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     }
     if (speciesId.present) {
       map['species_id'] = Variable<String>(speciesId.value);
+    }
+    if (subspeciesId.present) {
+      map['subspecies_id'] = Variable<String>(subspeciesId.value);
     }
     if (locationId.present) {
       map['location_id'] = Variable<String>(locationId.value);
@@ -1592,6 +1999,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     return (StringBuffer('EntitiesTableCompanion(')
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
+          ..write('subspeciesId: $subspeciesId, ')
           ..write('locationId: $locationId, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
@@ -3538,11 +3946,422 @@ class CustomTemplatesTableCompanion
   }
 }
 
+class $SpeciesRequirementsTableTable extends SpeciesRequirementsTable
+    with
+        TableInfo<$SpeciesRequirementsTableTable,
+            SpeciesRequirementsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SpeciesRequirementsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sourceIdMeta =
+      const VerificationMeta('sourceId');
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+      'source_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sourceTypeMeta =
+      const VerificationMeta('sourceType');
+  @override
+  late final GeneratedColumn<String> sourceType = GeneratedColumn<String>(
+      'source_type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('species'));
+  static const VerificationMeta _requiredSpeciesIdMeta =
+      const VerificationMeta('requiredSpeciesId');
+  @override
+  late final GeneratedColumn<String> requiredSpeciesId =
+      GeneratedColumn<String>('required_species_id', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'REFERENCES catalog_table (id)'));
+  static const VerificationMeta _requiredQuantityMeta =
+      const VerificationMeta('requiredQuantity');
+  @override
+  late final GeneratedColumn<double> requiredQuantity = GeneratedColumn<double>(
+      'required_quantity', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1.0));
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        sourceId,
+        sourceType,
+        requiredSpeciesId,
+        requiredQuantity,
+        notes,
+        createdAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'species_requirements_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<SpeciesRequirementsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(_sourceIdMeta,
+          sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta));
+    } else if (isInserting) {
+      context.missing(_sourceIdMeta);
+    }
+    if (data.containsKey('source_type')) {
+      context.handle(
+          _sourceTypeMeta,
+          sourceType.isAcceptableOrUnknown(
+              data['source_type']!, _sourceTypeMeta));
+    }
+    if (data.containsKey('required_species_id')) {
+      context.handle(
+          _requiredSpeciesIdMeta,
+          requiredSpeciesId.isAcceptableOrUnknown(
+              data['required_species_id']!, _requiredSpeciesIdMeta));
+    } else if (isInserting) {
+      context.missing(_requiredSpeciesIdMeta);
+    }
+    if (data.containsKey('required_quantity')) {
+      context.handle(
+          _requiredQuantityMeta,
+          requiredQuantity.isAcceptableOrUnknown(
+              data['required_quantity']!, _requiredQuantityMeta));
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SpeciesRequirementsTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SpeciesRequirementsTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      sourceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}source_id'])!,
+      sourceType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}source_type'])!,
+      requiredSpeciesId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}required_species_id'])!,
+      requiredQuantity: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}required_quantity'])!,
+      notes: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $SpeciesRequirementsTableTable createAlias(String alias) {
+    return $SpeciesRequirementsTableTable(attachedDatabase, alias);
+  }
+}
+
+class SpeciesRequirementsTableData extends DataClass
+    implements Insertable<SpeciesRequirementsTableData> {
+  final String id;
+  final String sourceId;
+  final String sourceType;
+  final String requiredSpeciesId;
+  final double requiredQuantity;
+  final String? notes;
+  final DateTime createdAt;
+  const SpeciesRequirementsTableData(
+      {required this.id,
+      required this.sourceId,
+      required this.sourceType,
+      required this.requiredSpeciesId,
+      required this.requiredQuantity,
+      this.notes,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['source_id'] = Variable<String>(sourceId);
+    map['source_type'] = Variable<String>(sourceType);
+    map['required_species_id'] = Variable<String>(requiredSpeciesId);
+    map['required_quantity'] = Variable<double>(requiredQuantity);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SpeciesRequirementsTableCompanion toCompanion(bool nullToAbsent) {
+    return SpeciesRequirementsTableCompanion(
+      id: Value(id),
+      sourceId: Value(sourceId),
+      sourceType: Value(sourceType),
+      requiredSpeciesId: Value(requiredSpeciesId),
+      requiredQuantity: Value(requiredQuantity),
+      notes:
+          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SpeciesRequirementsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SpeciesRequirementsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      sourceId: serializer.fromJson<String>(json['sourceId']),
+      sourceType: serializer.fromJson<String>(json['sourceType']),
+      requiredSpeciesId: serializer.fromJson<String>(json['requiredSpeciesId']),
+      requiredQuantity: serializer.fromJson<double>(json['requiredQuantity']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sourceId': serializer.toJson<String>(sourceId),
+      'sourceType': serializer.toJson<String>(sourceType),
+      'requiredSpeciesId': serializer.toJson<String>(requiredSpeciesId),
+      'requiredQuantity': serializer.toJson<double>(requiredQuantity),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SpeciesRequirementsTableData copyWith(
+          {String? id,
+          String? sourceId,
+          String? sourceType,
+          String? requiredSpeciesId,
+          double? requiredQuantity,
+          Value<String?> notes = const Value.absent(),
+          DateTime? createdAt}) =>
+      SpeciesRequirementsTableData(
+        id: id ?? this.id,
+        sourceId: sourceId ?? this.sourceId,
+        sourceType: sourceType ?? this.sourceType,
+        requiredSpeciesId: requiredSpeciesId ?? this.requiredSpeciesId,
+        requiredQuantity: requiredQuantity ?? this.requiredQuantity,
+        notes: notes.present ? notes.value : this.notes,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  SpeciesRequirementsTableData copyWithCompanion(
+      SpeciesRequirementsTableCompanion data) {
+    return SpeciesRequirementsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
+      sourceType:
+          data.sourceType.present ? data.sourceType.value : this.sourceType,
+      requiredSpeciesId: data.requiredSpeciesId.present
+          ? data.requiredSpeciesId.value
+          : this.requiredSpeciesId,
+      requiredQuantity: data.requiredQuantity.present
+          ? data.requiredQuantity.value
+          : this.requiredQuantity,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SpeciesRequirementsTableData(')
+          ..write('id: $id, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('sourceType: $sourceType, ')
+          ..write('requiredSpeciesId: $requiredSpeciesId, ')
+          ..write('requiredQuantity: $requiredQuantity, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sourceId, sourceType, requiredSpeciesId,
+      requiredQuantity, notes, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SpeciesRequirementsTableData &&
+          other.id == this.id &&
+          other.sourceId == this.sourceId &&
+          other.sourceType == this.sourceType &&
+          other.requiredSpeciesId == this.requiredSpeciesId &&
+          other.requiredQuantity == this.requiredQuantity &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt);
+}
+
+class SpeciesRequirementsTableCompanion
+    extends UpdateCompanion<SpeciesRequirementsTableData> {
+  final Value<String> id;
+  final Value<String> sourceId;
+  final Value<String> sourceType;
+  final Value<String> requiredSpeciesId;
+  final Value<double> requiredQuantity;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SpeciesRequirementsTableCompanion({
+    this.id = const Value.absent(),
+    this.sourceId = const Value.absent(),
+    this.sourceType = const Value.absent(),
+    this.requiredSpeciesId = const Value.absent(),
+    this.requiredQuantity = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SpeciesRequirementsTableCompanion.insert({
+    required String id,
+    required String sourceId,
+    this.sourceType = const Value.absent(),
+    required String requiredSpeciesId,
+    this.requiredQuantity = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        sourceId = Value(sourceId),
+        requiredSpeciesId = Value(requiredSpeciesId),
+        createdAt = Value(createdAt);
+  static Insertable<SpeciesRequirementsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? sourceId,
+    Expression<String>? sourceType,
+    Expression<String>? requiredSpeciesId,
+    Expression<double>? requiredQuantity,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sourceId != null) 'source_id': sourceId,
+      if (sourceType != null) 'source_type': sourceType,
+      if (requiredSpeciesId != null) 'required_species_id': requiredSpeciesId,
+      if (requiredQuantity != null) 'required_quantity': requiredQuantity,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SpeciesRequirementsTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? sourceId,
+      Value<String>? sourceType,
+      Value<String>? requiredSpeciesId,
+      Value<double>? requiredQuantity,
+      Value<String?>? notes,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return SpeciesRequirementsTableCompanion(
+      id: id ?? this.id,
+      sourceId: sourceId ?? this.sourceId,
+      sourceType: sourceType ?? this.sourceType,
+      requiredSpeciesId: requiredSpeciesId ?? this.requiredSpeciesId,
+      requiredQuantity: requiredQuantity ?? this.requiredQuantity,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
+    if (sourceType.present) {
+      map['source_type'] = Variable<String>(sourceType.value);
+    }
+    if (requiredSpeciesId.present) {
+      map['required_species_id'] = Variable<String>(requiredSpeciesId.value);
+    }
+    if (requiredQuantity.present) {
+      map['required_quantity'] = Variable<double>(requiredQuantity.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SpeciesRequirementsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('sourceType: $sourceType, ')
+          ..write('requiredSpeciesId: $requiredSpeciesId, ')
+          ..write('requiredQuantity: $requiredQuantity, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $LocationsTableTable locationsTable = $LocationsTableTable(this);
   late final $CatalogTableTable catalogTable = $CatalogTableTable(this);
+  late final $SubspeciesTableTable subspeciesTable =
+      $SubspeciesTableTable(this);
   late final $SpeciesMagnitudesTableTable speciesMagnitudesTable =
       $SpeciesMagnitudesTableTable(this);
   late final $EntitiesTableTable entitiesTable = $EntitiesTableTable(this);
@@ -3557,6 +4376,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $HistoryEventsTableTable(this);
   late final $CustomTemplatesTableTable customTemplatesTable =
       $CustomTemplatesTableTable(this);
+  late final $SpeciesRequirementsTableTable speciesRequirementsTable =
+      $SpeciesRequirementsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3564,6 +4385,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         locationsTable,
         catalogTable,
+        subspeciesTable,
         speciesMagnitudesTable,
         entitiesTable,
         instanceMagnitudesTable,
@@ -3571,7 +4393,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         relationsTable,
         attachmentsTable,
         historyEventsTable,
-        customTemplatesTable
+        customTemplatesTable,
+        speciesRequirementsTable
       ];
 }
 
@@ -4034,10 +4857,8 @@ typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
   required String id,
   required String name,
   Value<String> type,
-  Value<String?> brand,
   Value<String?> description,
   Value<String?> mainPhotoPath,
-  Value<String?> barcode,
   Value<String> customAttributes,
   Value<bool> isUnique,
   required DateTime createdAt,
@@ -4048,10 +4869,8 @@ typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
   Value<String> id,
   Value<String> name,
   Value<String> type,
-  Value<String?> brand,
   Value<String?> description,
   Value<String?> mainPhotoPath,
-  Value<String?> barcode,
   Value<String> customAttributes,
   Value<bool> isUnique,
   Value<DateTime> createdAt,
@@ -4061,6 +4880,23 @@ typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
 final class $$CatalogTableTableReferences extends BaseReferences<_$AppDatabase,
     $CatalogTableTable, CatalogTableData> {
   $$CatalogTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SubspeciesTableTable, List<SubspeciesTableData>>
+      _subspeciesTableRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.subspeciesTable,
+              aliasName: $_aliasNameGenerator(
+                  db.catalogTable.id, db.subspeciesTable.speciesId));
+
+  $$SubspeciesTableTableProcessedTableManager get subspeciesTableRefs {
+    final manager = $$SubspeciesTableTableTableManager(
+            $_db, $_db.subspeciesTable)
+        .filter((f) => f.speciesId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_subspeciesTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 
   static MultiTypedResultKey<$SpeciesMagnitudesTableTable,
       List<SpeciesMagnitudesTableData>> _speciesMagnitudesTableRefsTable(
@@ -4112,6 +4948,26 @@ final class $$CatalogTableTableReferences extends BaseReferences<_$AppDatabase,
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$SpeciesRequirementsTableTable,
+      List<SpeciesRequirementsTableData>> _speciesRequirementsTableRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.speciesRequirementsTable,
+          aliasName: $_aliasNameGenerator(db.catalogTable.id,
+              db.speciesRequirementsTable.requiredSpeciesId));
+
+  $$SpeciesRequirementsTableTableProcessedTableManager
+      get speciesRequirementsTableRefs {
+    final manager = $$SpeciesRequirementsTableTableTableManager(
+            $_db, $_db.speciesRequirementsTable)
+        .filter((f) =>
+            f.requiredSpeciesId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_speciesRequirementsTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$CatalogTableTableFilterComposer
@@ -4132,17 +4988,11 @@ class $$CatalogTableTableFilterComposer
   ColumnFilters<String> get type => $composableBuilder(
       column: $table.type, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get brand => $composableBuilder(
-      column: $table.brand, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get mainPhotoPath => $composableBuilder(
       column: $table.mainPhotoPath, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get barcode => $composableBuilder(
-      column: $table.barcode, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get customAttributes => $composableBuilder(
       column: $table.customAttributes,
@@ -4153,6 +5003,27 @@ class $$CatalogTableTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> subspeciesTableRefs(
+      Expression<bool> Function($$SubspeciesTableTableFilterComposer f) f) {
+    final $$SubspeciesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.subspeciesTable,
+        getReferencedColumn: (t) => t.speciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SubspeciesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.subspeciesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 
   Expression<bool> speciesMagnitudesTableRefs(
       Expression<bool> Function($$SpeciesMagnitudesTableTableFilterComposer f)
@@ -4218,6 +5089,29 @@ class $$CatalogTableTableFilterComposer
             ));
     return f(composer);
   }
+
+  Expression<bool> speciesRequirementsTableRefs(
+      Expression<bool> Function($$SpeciesRequirementsTableTableFilterComposer f)
+          f) {
+    final $$SpeciesRequirementsTableTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.speciesRequirementsTable,
+            getReferencedColumn: (t) => t.requiredSpeciesId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$SpeciesRequirementsTableTableFilterComposer(
+                  $db: $db,
+                  $table: $db.speciesRequirementsTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$CatalogTableTableOrderingComposer
@@ -4238,18 +5132,12 @@ class $$CatalogTableTableOrderingComposer
   ColumnOrderings<String> get type => $composableBuilder(
       column: $table.type, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get brand => $composableBuilder(
-      column: $table.brand, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get mainPhotoPath => $composableBuilder(
       column: $table.mainPhotoPath,
       builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get barcode => $composableBuilder(
-      column: $table.barcode, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get customAttributes => $composableBuilder(
       column: $table.customAttributes,
@@ -4280,17 +5168,11 @@ class $$CatalogTableTableAnnotationComposer
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
-  GeneratedColumn<String> get brand =>
-      $composableBuilder(column: $table.brand, builder: (column) => column);
-
   GeneratedColumn<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => column);
 
   GeneratedColumn<String> get mainPhotoPath => $composableBuilder(
       column: $table.mainPhotoPath, builder: (column) => column);
-
-  GeneratedColumn<String> get barcode =>
-      $composableBuilder(column: $table.barcode, builder: (column) => column);
 
   GeneratedColumn<String> get customAttributes => $composableBuilder(
       column: $table.customAttributes, builder: (column) => column);
@@ -4300,6 +5182,27 @@ class $$CatalogTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> subspeciesTableRefs<T extends Object>(
+      Expression<T> Function($$SubspeciesTableTableAnnotationComposer a) f) {
+    final $$SubspeciesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.subspeciesTable,
+        getReferencedColumn: (t) => t.speciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SubspeciesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.subspeciesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 
   Expression<T> speciesMagnitudesTableRefs<T extends Object>(
       Expression<T> Function($$SpeciesMagnitudesTableTableAnnotationComposer a)
@@ -4365,6 +5268,30 @@ class $$CatalogTableTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> speciesRequirementsTableRefs<T extends Object>(
+      Expression<T> Function(
+              $$SpeciesRequirementsTableTableAnnotationComposer a)
+          f) {
+    final $$SpeciesRequirementsTableTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.speciesRequirementsTable,
+            getReferencedColumn: (t) => t.requiredSpeciesId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$SpeciesRequirementsTableTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.speciesRequirementsTable,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$CatalogTableTableTableManager extends RootTableManager<
@@ -4379,9 +5306,11 @@ class $$CatalogTableTableTableManager extends RootTableManager<
     (CatalogTableData, $$CatalogTableTableReferences),
     CatalogTableData,
     PrefetchHooks Function(
-        {bool speciesMagnitudesTableRefs,
+        {bool subspeciesTableRefs,
+        bool speciesMagnitudesTableRefs,
         bool entitiesTableRefs,
-        bool attachmentsTableRefs})> {
+        bool attachmentsTableRefs,
+        bool speciesRequirementsTableRefs})> {
   $$CatalogTableTableTableManager(_$AppDatabase db, $CatalogTableTable table)
       : super(TableManagerState(
           db: db,
@@ -4396,10 +5325,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> type = const Value.absent(),
-            Value<String?> brand = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<String?> mainPhotoPath = const Value.absent(),
-            Value<String?> barcode = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -4409,10 +5336,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             id: id,
             name: name,
             type: type,
-            brand: brand,
             description: description,
             mainPhotoPath: mainPhotoPath,
-            barcode: barcode,
             customAttributes: customAttributes,
             isUnique: isUnique,
             createdAt: createdAt,
@@ -4422,10 +5347,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             required String id,
             required String name,
             Value<String> type = const Value.absent(),
-            Value<String?> brand = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<String?> mainPhotoPath = const Value.absent(),
-            Value<String?> barcode = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
             required DateTime createdAt,
@@ -4435,10 +5358,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             id: id,
             name: name,
             type: type,
-            brand: brand,
             description: description,
             mainPhotoPath: mainPhotoPath,
-            barcode: barcode,
             customAttributes: customAttributes,
             isUnique: isUnique,
             createdAt: createdAt,
@@ -4451,19 +5372,36 @@ class $$CatalogTableTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {speciesMagnitudesTableRefs = false,
+              {subspeciesTableRefs = false,
+              speciesMagnitudesTableRefs = false,
               entitiesTableRefs = false,
-              attachmentsTableRefs = false}) {
+              attachmentsTableRefs = false,
+              speciesRequirementsTableRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
+                if (subspeciesTableRefs) db.subspeciesTable,
                 if (speciesMagnitudesTableRefs) db.speciesMagnitudesTable,
                 if (entitiesTableRefs) db.entitiesTable,
-                if (attachmentsTableRefs) db.attachmentsTable
+                if (attachmentsTableRefs) db.attachmentsTable,
+                if (speciesRequirementsTableRefs) db.speciesRequirementsTable
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
+                  if (subspeciesTableRefs)
+                    await $_getPrefetchedData<CatalogTableData,
+                            $CatalogTableTable, SubspeciesTableData>(
+                        currentTable: table,
+                        referencedTable: $$CatalogTableTableReferences
+                            ._subspeciesTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CatalogTableTableReferences(db, table, p0)
+                                .subspeciesTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.speciesId == item.id),
+                        typedResults: items),
                   if (speciesMagnitudesTableRefs)
                     await $_getPrefetchedData<CatalogTableData,
                             $CatalogTableTable, SpeciesMagnitudesTableData>(
@@ -4502,6 +5440,19 @@ class $$CatalogTableTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.speciesId == item.id),
+                        typedResults: items),
+                  if (speciesRequirementsTableRefs)
+                    await $_getPrefetchedData<CatalogTableData,
+                            $CatalogTableTable, SpeciesRequirementsTableData>(
+                        currentTable: table,
+                        referencedTable: $$CatalogTableTableReferences
+                            ._speciesRequirementsTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CatalogTableTableReferences(db, table, p0)
+                                .speciesRequirementsTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.requiredSpeciesId == item.id),
                         typedResults: items)
                 ];
               },
@@ -4522,9 +5473,410 @@ typedef $$CatalogTableTableProcessedTableManager = ProcessedTableManager<
     (CatalogTableData, $$CatalogTableTableReferences),
     CatalogTableData,
     PrefetchHooks Function(
-        {bool speciesMagnitudesTableRefs,
+        {bool subspeciesTableRefs,
+        bool speciesMagnitudesTableRefs,
         bool entitiesTableRefs,
-        bool attachmentsTableRefs})>;
+        bool attachmentsTableRefs,
+        bool speciesRequirementsTableRefs})>;
+typedef $$SubspeciesTableTableCreateCompanionBuilder = SubspeciesTableCompanion
+    Function({
+  required String id,
+  required String speciesId,
+  required String subspeciesName,
+  Value<String?> brand,
+  Value<String?> barcode,
+  Value<String?> photoPath,
+  Value<String?> notes,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$SubspeciesTableTableUpdateCompanionBuilder = SubspeciesTableCompanion
+    Function({
+  Value<String> id,
+  Value<String> speciesId,
+  Value<String> subspeciesName,
+  Value<String?> brand,
+  Value<String?> barcode,
+  Value<String?> photoPath,
+  Value<String?> notes,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+final class $$SubspeciesTableTableReferences extends BaseReferences<
+    _$AppDatabase, $SubspeciesTableTable, SubspeciesTableData> {
+  $$SubspeciesTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $CatalogTableTable _speciesIdTable(_$AppDatabase db) =>
+      db.catalogTable.createAlias($_aliasNameGenerator(
+          db.subspeciesTable.speciesId, db.catalogTable.id));
+
+  $$CatalogTableTableProcessedTableManager get speciesId {
+    final $_column = $_itemColumn<String>('species_id')!;
+
+    final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_speciesIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$EntitiesTableTable, List<EntitiesTableData>>
+      _entitiesTableRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.entitiesTable,
+              aliasName: $_aliasNameGenerator(
+                  db.subspeciesTable.id, db.entitiesTable.subspeciesId));
+
+  $$EntitiesTableTableProcessedTableManager get entitiesTableRefs {
+    final manager = $$EntitiesTableTableTableManager($_db, $_db.entitiesTable)
+        .filter(
+            (f) => f.subspeciesId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_entitiesTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$SubspeciesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SubspeciesTableTable> {
+  $$SubspeciesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get subspeciesName => $composableBuilder(
+      column: $table.subspeciesName,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get brand => $composableBuilder(
+      column: $table.brand, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get barcode => $composableBuilder(
+      column: $table.barcode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoPath => $composableBuilder(
+      column: $table.photoPath, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  $$CatalogTableTableFilterComposer get speciesId {
+    final $$CatalogTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableFilterComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> entitiesTableRefs(
+      Expression<bool> Function($$EntitiesTableTableFilterComposer f) f) {
+    final $$EntitiesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.subspeciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$SubspeciesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SubspeciesTableTable> {
+  $$SubspeciesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get subspeciesName => $composableBuilder(
+      column: $table.subspeciesName,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get brand => $composableBuilder(
+      column: $table.brand, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get barcode => $composableBuilder(
+      column: $table.barcode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get photoPath => $composableBuilder(
+      column: $table.photoPath, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  $$CatalogTableTableOrderingComposer get speciesId {
+    final $$CatalogTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SubspeciesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SubspeciesTableTable> {
+  $$SubspeciesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get subspeciesName => $composableBuilder(
+      column: $table.subspeciesName, builder: (column) => column);
+
+  GeneratedColumn<String> get brand =>
+      $composableBuilder(column: $table.brand, builder: (column) => column);
+
+  GeneratedColumn<String> get barcode =>
+      $composableBuilder(column: $table.barcode, builder: (column) => column);
+
+  GeneratedColumn<String> get photoPath =>
+      $composableBuilder(column: $table.photoPath, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$CatalogTableTableAnnotationComposer get speciesId {
+    final $$CatalogTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.speciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> entitiesTableRefs<T extends Object>(
+      Expression<T> Function($$EntitiesTableTableAnnotationComposer a) f) {
+    final $$EntitiesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.entitiesTable,
+        getReferencedColumn: (t) => t.subspeciesId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$EntitiesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.entitiesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$SubspeciesTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SubspeciesTableTable,
+    SubspeciesTableData,
+    $$SubspeciesTableTableFilterComposer,
+    $$SubspeciesTableTableOrderingComposer,
+    $$SubspeciesTableTableAnnotationComposer,
+    $$SubspeciesTableTableCreateCompanionBuilder,
+    $$SubspeciesTableTableUpdateCompanionBuilder,
+    (SubspeciesTableData, $$SubspeciesTableTableReferences),
+    SubspeciesTableData,
+    PrefetchHooks Function({bool speciesId, bool entitiesTableRefs})> {
+  $$SubspeciesTableTableTableManager(
+      _$AppDatabase db, $SubspeciesTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SubspeciesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SubspeciesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SubspeciesTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> speciesId = const Value.absent(),
+            Value<String> subspeciesName = const Value.absent(),
+            Value<String?> brand = const Value.absent(),
+            Value<String?> barcode = const Value.absent(),
+            Value<String?> photoPath = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SubspeciesTableCompanion(
+            id: id,
+            speciesId: speciesId,
+            subspeciesName: subspeciesName,
+            brand: brand,
+            barcode: barcode,
+            photoPath: photoPath,
+            notes: notes,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String speciesId,
+            required String subspeciesName,
+            Value<String?> brand = const Value.absent(),
+            Value<String?> barcode = const Value.absent(),
+            Value<String?> photoPath = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SubspeciesTableCompanion.insert(
+            id: id,
+            speciesId: speciesId,
+            subspeciesName: subspeciesName,
+            brand: brand,
+            barcode: barcode,
+            photoPath: photoPath,
+            notes: notes,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$SubspeciesTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {speciesId = false, entitiesTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (entitiesTableRefs) db.entitiesTable
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (speciesId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.speciesId,
+                    referencedTable:
+                        $$SubspeciesTableTableReferences._speciesIdTable(db),
+                    referencedColumn:
+                        $$SubspeciesTableTableReferences._speciesIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (entitiesTableRefs)
+                    await $_getPrefetchedData<SubspeciesTableData,
+                            $SubspeciesTableTable, EntitiesTableData>(
+                        currentTable: table,
+                        referencedTable: $$SubspeciesTableTableReferences
+                            ._entitiesTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SubspeciesTableTableReferences(db, table, p0)
+                                .entitiesTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.subspeciesId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$SubspeciesTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SubspeciesTableTable,
+    SubspeciesTableData,
+    $$SubspeciesTableTableFilterComposer,
+    $$SubspeciesTableTableOrderingComposer,
+    $$SubspeciesTableTableAnnotationComposer,
+    $$SubspeciesTableTableCreateCompanionBuilder,
+    $$SubspeciesTableTableUpdateCompanionBuilder,
+    (SubspeciesTableData, $$SubspeciesTableTableReferences),
+    SubspeciesTableData,
+    PrefetchHooks Function({bool speciesId, bool entitiesTableRefs})>;
 typedef $$SpeciesMagnitudesTableTableCreateCompanionBuilder
     = SpeciesMagnitudesTableCompanion Function({
   required String id,
@@ -4829,6 +6181,7 @@ typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
     Function({
   required String id,
   required String speciesId,
+  Value<String?> subspeciesId,
   Value<String?> locationId,
   Value<String?> notes,
   required DateTime createdAt,
@@ -4839,6 +6192,7 @@ typedef $$EntitiesTableTableUpdateCompanionBuilder = EntitiesTableCompanion
     Function({
   Value<String> id,
   Value<String> speciesId,
+  Value<String?> subspeciesId,
   Value<String?> locationId,
   Value<String?> notes,
   Value<DateTime> createdAt,
@@ -4861,6 +6215,22 @@ final class $$EntitiesTableTableReferences extends BaseReferences<_$AppDatabase,
     final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_speciesIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SubspeciesTableTable _subspeciesIdTable(_$AppDatabase db) =>
+      db.subspeciesTable.createAlias($_aliasNameGenerator(
+          db.entitiesTable.subspeciesId, db.subspeciesTable.id));
+
+  $$SubspeciesTableTableProcessedTableManager? get subspeciesId {
+    final $_column = $_itemColumn<String>('subspecies_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SubspeciesTableTableTableManager($_db, $_db.subspeciesTable)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_subspeciesIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -4985,6 +6355,26 @@ class $$EntitiesTableTableFilterComposer
             $$CatalogTableTableFilterComposer(
               $db: $db,
               $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SubspeciesTableTableFilterComposer get subspeciesId {
+    final $$SubspeciesTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.subspeciesId,
+        referencedTable: $db.subspeciesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SubspeciesTableTableFilterComposer(
+              $db: $db,
+              $table: $db.subspeciesTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -5143,6 +6533,26 @@ class $$EntitiesTableTableOrderingComposer
     return composer;
   }
 
+  $$SubspeciesTableTableOrderingComposer get subspeciesId {
+    final $$SubspeciesTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.subspeciesId,
+        referencedTable: $db.subspeciesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SubspeciesTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.subspeciesTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   $$LocationsTableTableOrderingComposer get locationId {
     final $$LocationsTableTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -5197,6 +6607,26 @@ class $$EntitiesTableTableAnnotationComposer
             $$CatalogTableTableAnnotationComposer(
               $db: $db,
               $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SubspeciesTableTableAnnotationComposer get subspeciesId {
+    final $$SubspeciesTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.subspeciesId,
+        referencedTable: $db.subspeciesTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SubspeciesTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.subspeciesTable,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -5327,6 +6757,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
     EntitiesTableData,
     PrefetchHooks Function(
         {bool speciesId,
+        bool subspeciesId,
         bool locationId,
         bool instanceMagnitudesTableRefs,
         bool instanceLocationsTableRefs,
@@ -5345,6 +6776,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
             Value<String> speciesId = const Value.absent(),
+            Value<String?> subspeciesId = const Value.absent(),
             Value<String?> locationId = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -5354,6 +6786,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               EntitiesTableCompanion(
             id: id,
             speciesId: speciesId,
+            subspeciesId: subspeciesId,
             locationId: locationId,
             notes: notes,
             createdAt: createdAt,
@@ -5363,6 +6796,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             required String id,
             required String speciesId,
+            Value<String?> subspeciesId = const Value.absent(),
             Value<String?> locationId = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             required DateTime createdAt,
@@ -5372,6 +6806,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               EntitiesTableCompanion.insert(
             id: id,
             speciesId: speciesId,
+            subspeciesId: subspeciesId,
             locationId: locationId,
             notes: notes,
             createdAt: createdAt,
@@ -5386,6 +6821,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {speciesId = false,
+              subspeciesId = false,
               locationId = false,
               instanceMagnitudesTableRefs = false,
               instanceLocationsTableRefs = false,
@@ -5420,6 +6856,17 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
                         $$EntitiesTableTableReferences._speciesIdTable(db),
                     referencedColumn:
                         $$EntitiesTableTableReferences._speciesIdTable(db).id,
+                  ) as T;
+                }
+                if (subspeciesId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.subspeciesId,
+                    referencedTable:
+                        $$EntitiesTableTableReferences._subspeciesIdTable(db),
+                    referencedColumn: $$EntitiesTableTableReferences
+                        ._subspeciesIdTable(db)
+                        .id,
                   ) as T;
                 }
                 if (locationId) {
@@ -5509,6 +6956,7 @@ typedef $$EntitiesTableTableProcessedTableManager = ProcessedTableManager<
     EntitiesTableData,
     PrefetchHooks Function(
         {bool speciesId,
+        bool subspeciesId,
         bool locationId,
         bool instanceMagnitudesTableRefs,
         bool instanceLocationsTableRefs,
@@ -7149,6 +8597,325 @@ typedef $$CustomTemplatesTableTableProcessedTableManager
         ),
         CustomTemplatesTableData,
         PrefetchHooks Function()>;
+typedef $$SpeciesRequirementsTableTableCreateCompanionBuilder
+    = SpeciesRequirementsTableCompanion Function({
+  required String id,
+  required String sourceId,
+  Value<String> sourceType,
+  required String requiredSpeciesId,
+  Value<double> requiredQuantity,
+  Value<String?> notes,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$SpeciesRequirementsTableTableUpdateCompanionBuilder
+    = SpeciesRequirementsTableCompanion Function({
+  Value<String> id,
+  Value<String> sourceId,
+  Value<String> sourceType,
+  Value<String> requiredSpeciesId,
+  Value<double> requiredQuantity,
+  Value<String?> notes,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+final class $$SpeciesRequirementsTableTableReferences extends BaseReferences<
+    _$AppDatabase,
+    $SpeciesRequirementsTableTable,
+    SpeciesRequirementsTableData> {
+  $$SpeciesRequirementsTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $CatalogTableTable _requiredSpeciesIdTable(_$AppDatabase db) =>
+      db.catalogTable.createAlias($_aliasNameGenerator(
+          db.speciesRequirementsTable.requiredSpeciesId, db.catalogTable.id));
+
+  $$CatalogTableTableProcessedTableManager get requiredSpeciesId {
+    final $_column = $_itemColumn<String>('required_species_id')!;
+
+    final manager = $$CatalogTableTableTableManager($_db, $_db.catalogTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_requiredSpeciesIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$SpeciesRequirementsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SpeciesRequirementsTableTable> {
+  $$SpeciesRequirementsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get sourceId => $composableBuilder(
+      column: $table.sourceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get sourceType => $composableBuilder(
+      column: $table.sourceType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get requiredQuantity => $composableBuilder(
+      column: $table.requiredQuantity,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  $$CatalogTableTableFilterComposer get requiredSpeciesId {
+    final $$CatalogTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.requiredSpeciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableFilterComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SpeciesRequirementsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SpeciesRequirementsTableTable> {
+  $$SpeciesRequirementsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get sourceId => $composableBuilder(
+      column: $table.sourceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get sourceType => $composableBuilder(
+      column: $table.sourceType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get requiredQuantity => $composableBuilder(
+      column: $table.requiredQuantity,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  $$CatalogTableTableOrderingComposer get requiredSpeciesId {
+    final $$CatalogTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.requiredSpeciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SpeciesRequirementsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SpeciesRequirementsTableTable> {
+  $$SpeciesRequirementsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceId =>
+      $composableBuilder(column: $table.sourceId, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceType => $composableBuilder(
+      column: $table.sourceType, builder: (column) => column);
+
+  GeneratedColumn<double> get requiredQuantity => $composableBuilder(
+      column: $table.requiredQuantity, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$CatalogTableTableAnnotationComposer get requiredSpeciesId {
+    final $$CatalogTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.requiredSpeciesId,
+        referencedTable: $db.catalogTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CatalogTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.catalogTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SpeciesRequirementsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SpeciesRequirementsTableTable,
+    SpeciesRequirementsTableData,
+    $$SpeciesRequirementsTableTableFilterComposer,
+    $$SpeciesRequirementsTableTableOrderingComposer,
+    $$SpeciesRequirementsTableTableAnnotationComposer,
+    $$SpeciesRequirementsTableTableCreateCompanionBuilder,
+    $$SpeciesRequirementsTableTableUpdateCompanionBuilder,
+    (SpeciesRequirementsTableData, $$SpeciesRequirementsTableTableReferences),
+    SpeciesRequirementsTableData,
+    PrefetchHooks Function({bool requiredSpeciesId})> {
+  $$SpeciesRequirementsTableTableTableManager(
+      _$AppDatabase db, $SpeciesRequirementsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SpeciesRequirementsTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SpeciesRequirementsTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SpeciesRequirementsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> sourceId = const Value.absent(),
+            Value<String> sourceType = const Value.absent(),
+            Value<String> requiredSpeciesId = const Value.absent(),
+            Value<double> requiredQuantity = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SpeciesRequirementsTableCompanion(
+            id: id,
+            sourceId: sourceId,
+            sourceType: sourceType,
+            requiredSpeciesId: requiredSpeciesId,
+            requiredQuantity: requiredQuantity,
+            notes: notes,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String sourceId,
+            Value<String> sourceType = const Value.absent(),
+            required String requiredSpeciesId,
+            Value<double> requiredQuantity = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SpeciesRequirementsTableCompanion.insert(
+            id: id,
+            sourceId: sourceId,
+            sourceType: sourceType,
+            requiredSpeciesId: requiredSpeciesId,
+            requiredQuantity: requiredQuantity,
+            notes: notes,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$SpeciesRequirementsTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({requiredSpeciesId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (requiredSpeciesId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.requiredSpeciesId,
+                    referencedTable: $$SpeciesRequirementsTableTableReferences
+                        ._requiredSpeciesIdTable(db),
+                    referencedColumn: $$SpeciesRequirementsTableTableReferences
+                        ._requiredSpeciesIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$SpeciesRequirementsTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $SpeciesRequirementsTableTable,
+        SpeciesRequirementsTableData,
+        $$SpeciesRequirementsTableTableFilterComposer,
+        $$SpeciesRequirementsTableTableOrderingComposer,
+        $$SpeciesRequirementsTableTableAnnotationComposer,
+        $$SpeciesRequirementsTableTableCreateCompanionBuilder,
+        $$SpeciesRequirementsTableTableUpdateCompanionBuilder,
+        (
+          SpeciesRequirementsTableData,
+          $$SpeciesRequirementsTableTableReferences
+        ),
+        SpeciesRequirementsTableData,
+        PrefetchHooks Function({bool requiredSpeciesId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7157,6 +8924,8 @@ class $AppDatabaseManager {
       $$LocationsTableTableTableManager(_db, _db.locationsTable);
   $$CatalogTableTableTableManager get catalogTable =>
       $$CatalogTableTableTableManager(_db, _db.catalogTable);
+  $$SubspeciesTableTableTableManager get subspeciesTable =>
+      $$SubspeciesTableTableTableManager(_db, _db.subspeciesTable);
   $$SpeciesMagnitudesTableTableTableManager get speciesMagnitudesTable =>
       $$SpeciesMagnitudesTableTableTableManager(
           _db, _db.speciesMagnitudesTable);
@@ -7176,4 +8945,7 @@ class $AppDatabaseManager {
       $$HistoryEventsTableTableTableManager(_db, _db.historyEventsTable);
   $$CustomTemplatesTableTableTableManager get customTemplatesTable =>
       $$CustomTemplatesTableTableTableManager(_db, _db.customTemplatesTable);
+  $$SpeciesRequirementsTableTableTableManager get speciesRequirementsTable =>
+      $$SpeciesRequirementsTableTableTableManager(
+          _db, _db.speciesRequirementsTable);
 }

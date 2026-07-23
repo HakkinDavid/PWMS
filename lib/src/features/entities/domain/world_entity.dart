@@ -9,6 +9,7 @@ class WorldEntity with _$WorldEntity {
   const factory WorldEntity({
     required String id,
     required String speciesId, // Link to Catalog species
+    String? subspeciesId, // Optional link to Subspecies variant
     String? locationId, // Link to Location Graph node
     @Default([]) List<InstanceMagnitude> magnitudes,
     String? notes,

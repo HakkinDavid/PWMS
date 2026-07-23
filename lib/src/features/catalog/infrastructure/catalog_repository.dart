@@ -4,6 +4,8 @@ import 'package:uuid/uuid.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
+import '../domain/species_requirement.dart';
+import '../domain/subspecies.dart';
 
 class CatalogRepository {
   final AppDatabase _db;
@@ -33,10 +35,8 @@ class CatalogRepository {
       id: row.id,
       name: row.name,
       type: row.type,
-      brand: row.brand,
       description: row.description,
       mainPhotoPath: row.mainPhotoPath,
-      barcode: row.barcode,
       customAttributes: customAttrs,
       magnitudes: magnitudes,
       isUnique: row.isUnique,
@@ -67,20 +67,16 @@ class CatalogRepository {
     final all = await getAllCatalogItems();
     return all.where((item) {
       final nameMatch = item.name.toLowerCase().contains(clean);
-      final brandMatch = item.brand?.toLowerCase().contains(clean) ?? false;
       final typeMatch = item.type.toLowerCase().contains(clean);
-      final barcodeMatch = item.barcode?.toLowerCase().contains(clean) ?? false;
-      return nameMatch || brandMatch || typeMatch || barcodeMatch;
+      return nameMatch || typeMatch;
     }).toList();
   }
 
   Future<CatalogItem> getOrCreateSpecies(
     String name, {
     String type = 'Objeto',
-    String? brand,
     String? description,
     String? mainPhotoPath,
-    String? barcode,
     bool isUnique = false,
   }) async {
     final cleanName = name.trim();
@@ -92,10 +88,8 @@ class CatalogRepository {
       id: const Uuid().v4(),
       name: cleanName,
       type: type,
-      brand: brand,
       description: description,
       mainPhotoPath: mainPhotoPath,
-      barcode: barcode,
       isUnique: isUnique,
       createdAt: DateTime.now(),
     );
@@ -128,10 +122,8 @@ class CatalogRepository {
       id: Value(item.id),
       name: Value(finalName),
       type: Value(finalType),
-      brand: Value(item.brand),
       description: Value(item.description),
       mainPhotoPath: Value(item.mainPhotoPath),
-      barcode: Value(item.barcode),
       customAttributes: Value(jsonEncode(item.customAttributes)),
       isUnique: Value(item.isUnique),
       createdAt: Value(item.createdAt),
@@ -153,7 +145,93 @@ class CatalogRepository {
   }
 
   Future<void> deleteCatalogItem(String id) async {
+    await (_db.delete(_db.subspeciesTable)..where((t) => t.speciesId.equals(id))).go();
+    await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(id) | t.requiredSpeciesId.equals(id))).go();
     await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(id))).go();
     await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(id))).go();
+  }
+
+  // --- SUBSPECIES CRUD ---
+
+  Future<List<Subspecies>> getSubspeciesForSpecies(String speciesId) async {
+    final query = _db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId));
+    final rows = await query.get();
+    return rows.map((r) => Subspecies(
+      id: r.id,
+      speciesId: r.speciesId,
+      subspeciesName: r.subspeciesName,
+      brand: r.brand,
+      barcode: r.barcode,
+      photoPath: r.photoPath,
+      notes: r.notes,
+      createdAt: r.createdAt,
+    )).toList();
+  }
+
+  Future<Subspecies?> getSubspeciesById(String id) async {
+    final query = _db.select(_db.subspeciesTable)..where((t) => t.id.equals(id));
+    final r = await query.getSingleOrNull();
+    if (r == null) return null;
+    return Subspecies(
+      id: r.id,
+      speciesId: r.speciesId,
+      subspeciesName: r.subspeciesName,
+      brand: r.brand,
+      barcode: r.barcode,
+      photoPath: r.photoPath,
+      notes: r.notes,
+      createdAt: r.createdAt,
+    );
+  }
+
+  Future<void> saveSubspecies(Subspecies subspecies) async {
+    final companion = SubspeciesTableCompanion(
+      id: Value(subspecies.id),
+      speciesId: Value(subspecies.speciesId),
+      subspeciesName: Value(subspecies.subspeciesName.trim()),
+      brand: Value(subspecies.brand?.trim()),
+      barcode: Value(subspecies.barcode?.trim()),
+      photoPath: Value(subspecies.photoPath),
+      notes: Value(subspecies.notes?.trim()),
+      createdAt: Value(subspecies.createdAt),
+    );
+    await _db.into(_db.subspeciesTable).insertOnConflictUpdate(companion);
+  }
+
+  Future<void> deleteSubspecies(String id) async {
+    await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();
+  }
+
+  // --- SPECIES & ENTITY REQUIREMENTS CRUD (NECESITA) ---
+
+  Future<List<SpeciesRequirement>> getRequirementsForSource(String sourceId) async {
+    final query = _db.select(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(sourceId));
+    final rows = await query.get();
+    return rows.map((r) => SpeciesRequirement(
+      id: r.id,
+      sourceId: r.sourceId,
+      sourceType: r.sourceType,
+      requiredSpeciesId: r.requiredSpeciesId,
+      requiredQuantity: r.requiredQuantity,
+      notes: r.notes,
+      createdAt: r.createdAt,
+    )).toList();
+  }
+
+  Future<void> saveRequirement(SpeciesRequirement req) async {
+    final companion = SpeciesRequirementsTableCompanion(
+      id: Value(req.id.isEmpty ? const Uuid().v4() : req.id),
+      sourceId: Value(req.sourceId),
+      sourceType: Value(req.sourceType),
+      requiredSpeciesId: Value(req.requiredSpeciesId),
+      requiredQuantity: Value(req.requiredQuantity),
+      notes: Value(req.notes),
+      createdAt: Value(req.createdAt),
+    );
+    await _db.into(_db.speciesRequirementsTable).insertOnConflictUpdate(companion);
+  }
+
+  Future<void> deleteRequirement(String requirementId) async {
+    await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.id.equals(requirementId))).go();
   }
 }

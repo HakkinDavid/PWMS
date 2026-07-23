@@ -11,6 +11,7 @@ import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
+import '../../catalog/presentation/requirements_section_widget.dart';
 import '../domain/entity_template.dart';
 import '../domain/instance_magnitude.dart';
 
@@ -100,7 +101,17 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
           final template = EntityTemplateRegistry.getTemplate(species.type);
           final locationNodes = locationsState.asData?.value ?? [];
-          final breadcrumb = LocationPathHelper.buildBreadcrumbPath(_selectedLocationId, locationNodes);
+          final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
+          final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
+
+          final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+            entityId: entity.id,
+            effectiveLocationId: _selectedLocationId,
+            allEntities: allEntities,
+            allRelations: allRelations,
+            allNodes: locationNodes,
+            catalogItems: catalogItems,
+          );
           final isIntegerUnit = DomainRules.isIntegerUnit(primaryUnit);
 
           // Instance Header Controls & Interactive Directed Graph
@@ -215,6 +226,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 currentEntity: entity,
                 isEditing: _isEditingInPlace,
               ),
+              const SizedBox(height: 14),
+
+              // Entity Requirements Section (NECESITA)
+              RequirementsSectionWidget(sourceId: entity.id, sourceType: 'entity'),
               const SizedBox(height: 14),
 
               // Magnitud Control (Only if magnitudes exist!)

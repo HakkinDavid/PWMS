@@ -8,6 +8,8 @@ import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
 import 'species_detail_view.dart';
 import 'species_form_modal.dart';
+import 'subspecies_section_widget.dart';
+import 'requirements_section_widget.dart';
 
 class SpeciesDetailScreen extends ConsumerStatefulWidget {
   final String speciesId;
@@ -107,6 +109,11 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                   );
                 },
               ),
+            const SizedBox(height: 16),
+            SubspeciesSectionWidget(speciesId: species.id),
+            const SizedBox(height: 16),
+            RequirementsSectionWidget(sourceId: species.id, sourceType: 'species'),
+            const SizedBox(height: 16),
           ],
         );
 

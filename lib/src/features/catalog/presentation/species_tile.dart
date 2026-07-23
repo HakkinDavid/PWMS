@@ -130,13 +130,6 @@ class SpeciesTile extends ConsumerWidget {
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        if (species.brand != null && species.brand!.isNotEmpty) ...[
-                          Text(
-                            species.brand!,
-                            style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary, fontSize: 11),
-                          ),
-                          const Text(' • ', style: TextStyle(fontSize: 11)),
-                        ],
                         Text(species.type, style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11)),
                         if (species.isUnique) ...[
                           const Text(' • ', style: TextStyle(fontSize: 11)),

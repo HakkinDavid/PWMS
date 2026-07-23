@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
@@ -38,10 +39,14 @@ class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
   ConsumerState<InstantiateSpeciesSheet> createState() => _InstantiateSpeciesSheetState();
 }
 
+enum InstantiationLocationMode { physicalNode, containerEntity }
+
 class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesSheet> {
   final _qtyController = TextEditingController(text: '1');
   final _notesController = TextEditingController();
+  InstantiationLocationMode _locationMode = InstantiationLocationMode.physicalNode;
   String? _selectedLocationId;
+  String? _selectedContainerEntityId;
   bool _isSaving = false;
 
   @override
@@ -91,12 +96,28 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
     try {
       final entityRepo = ref.read(entityRepositoryProvider);
+      final relationRepo = ref.read(relationRepositoryProvider);
+
+      final targetPhysicalLoc = _locationMode == InstantiationLocationMode.physicalNode ? _selectedLocationId : null;
+
       final result = await entityRepo.instantiateOrMerge(
         widget.species.id,
-        _selectedLocationId,
+        targetPhysicalLoc,
         addQty,
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
       );
+
+      // If container mode is selected, create GUARDADO_EN relation
+      if (_locationMode == InstantiationLocationMode.containerEntity && _selectedContainerEntityId != null) {
+        final rel = EntityRelation(
+          id: const Uuid().v4(),
+          sourceEntityId: result.id,
+          targetEntityId: _selectedContainerEntityId!,
+          relationType: 'GUARDADO_EN',
+          createdAt: DateTime.now(),
+        );
+        await relationRepo.addRelation(rel);
+      }
 
       ref.read(entityListProvider.notifier).loadEntities();
       await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, widget.species.name, widget.species.type);
@@ -169,33 +190,88 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             ),
             const SizedBox(height: 16),
 
-            // Location Picker
-            Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
-            const SizedBox(height: 8),
-            InkWell(
-              onTap: _pickLocationFromTree,
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.dividerColor),
-                  borderRadius: BorderRadius.circular(16),
+            // Segmented Choice: Physical Node vs Container Entity
+            SegmentedButton<InstantiationLocationMode>(
+              segments: const [
+                ButtonSegment(
+                  value: InstantiationLocationMode.physicalNode,
+                  label: Text('Ubicación Física'),
+                  icon: Icon(Icons.account_tree_outlined),
                 ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.account_tree_outlined),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        locationDisplayName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                ButtonSegment(
+                  value: InstantiationLocationMode.containerEntity,
+                  label: Text('Guardado en Contenedor'),
+                  icon: Icon(Icons.inventory_2_outlined),
+                ),
+              ],
+              selected: {_locationMode},
+              onSelectionChanged: (set) {
+                setState(() => _locationMode = set.first);
+              },
+            ),
+            const SizedBox(height: 16),
+
+            if (_locationMode == InstantiationLocationMode.physicalNode) ...[
+              Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
+              const SizedBox(height: 8),
+              InkWell(
+                onTap: _pickLocationFromTree,
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: theme.dividerColor),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.account_tree_outlined),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          locationDisplayName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    const Icon(Icons.chevron_right),
-                  ],
+                      const Icon(Icons.chevron_right),
+                    ],
+                  ),
                 ),
               ),
-            ),
+            ] else ...[
+              Text('Selecciona Contenedor (Relación GUARDADO_EN):', style: theme.textTheme.labelLarge),
+              const SizedBox(height: 8),
+              Consumer(
+                builder: (context, ref, _) {
+                  final entitiesState = ref.watch(entityListProvider);
+                  final catalogState = ref.watch(catalogListProvider);
+                  final catalogItems = catalogState.asData?.value ?? [];
+
+                  return entitiesState.when(
+                    data: (entities) {
+                      if (entities.isEmpty) {
+                        return const Text('No hay objetos contenedores disponibles.');
+                      }
+                      return DropdownButtonFormField<String>(
+                        initialValue: _selectedContainerEntityId,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.inventory_2_outlined),
+                          hintText: 'Selecciona objeto contenedor',
+                        ),
+                        items: entities.map((e) {
+                          final sp = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
+                          final name = sp?.name ?? 'Objeto Contenedor';
+                          return DropdownMenuItem(value: e.id, child: Text(name));
+                        }).toList(),
+                        onChanged: (val) => setState(() => _selectedContainerEntityId = val),
+                      );
+                    },
+                    loading: () => const CircularProgressIndicator(),
+                    error: (err, _) => Text('Error: $err'),
+                  );
+                },
+              ),
+            ],
             const SizedBox(height: 16),
 
             // Quantity (Only if species has defined magnitude properties!)

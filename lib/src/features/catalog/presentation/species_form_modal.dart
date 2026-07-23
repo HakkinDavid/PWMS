@@ -277,9 +277,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         id: speciesId,
         name: _isEditMode ? widget.initialSpecies!.name : name,
         type: _isEditMode ? widget.initialSpecies!.type : _selectedType,
-        brand: template.hasBarcodeAndBrand && _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
         description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
-        barcode: template.hasBarcodeAndBrand && _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
         magnitudes: updatedMagnitudes,
         isUnique: effectiveUnique,
         mainPhotoPath: photoPath,
@@ -562,25 +560,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       const SizedBox(height: 14),
                     ],
 
-                    if (template.hasBarcodeAndBrand) ...[
-                      TextField(
-                        controller: _brandController,
-                        decoration: const InputDecoration(
-                          labelText: AppStrings.brandLabel,
-                          prefixIcon: Icon(Icons.branding_watermark),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
 
-                      TextField(
-                        controller: _barcodeController,
-                        decoration: const InputDecoration(
-                          labelText: AppStrings.barcodeLabel,
-                          prefixIcon: Icon(Icons.qr_code),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                    ],
 
                     TextField(
                       controller: _descController,

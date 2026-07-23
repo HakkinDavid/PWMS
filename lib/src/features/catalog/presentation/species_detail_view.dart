@@ -166,18 +166,6 @@ class SpeciesDetailView extends ConsumerWidget {
                         avatar: Icon(Icons.star, size: 12, color: Colors.amber),
                         label: Text('Especie Única', style: TextStyle(fontSize: 11)),
                       ),
-                    if (species.brand != null && species.brand!.isNotEmpty)
-                      Chip(
-                        visualDensity: VisualDensity.compact,
-                        avatar: const Icon(Icons.branding_watermark, size: 12),
-                        label: Text('Marca: ${species.brand!}', style: const TextStyle(fontSize: 11)),
-                      ),
-                    if (species.barcode != null && species.barcode!.isNotEmpty)
-                      Chip(
-                        visualDensity: VisualDensity.compact,
-                        avatar: const Icon(Icons.qr_code_scanner, size: 12),
-                        label: Text('Código: ${species.barcode!}', style: const TextStyle(fontSize: 11)),
-                      ),
                   ],
                 ),
               ),

@@ -21,12 +21,25 @@ class CatalogTable extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
   TextColumn get type => text().withDefault(const Constant('Objeto'))();
-  TextColumn get brand => text().nullable()();
   TextColumn get description => text().nullable()();
   TextColumn get mainPhotoPath => text().nullable()();
-  TextColumn get barcode => text().nullable()();
   TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
   BoolColumn get isUnique => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// 4NF Table: Subspecies & Product Variants (1:N under Species)
+class SubspeciesTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get speciesId => text().references(CatalogTable, #id)();
+  TextColumn get subspeciesName => text()();
+  TextColumn get brand => text().nullable()();
+  TextColumn get barcode => text().nullable()();
+  TextColumn get photoPath => text().nullable()();
+  TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -49,6 +62,7 @@ class SpeciesMagnitudesTable extends Table {
 class EntitiesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
+  TextColumn get subspeciesId => text().nullable().references(SubspeciesTable, #id)();
   TextColumn get locationId => text().nullable().references(LocationsTable, #id)();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
@@ -128,9 +142,24 @@ class InstanceLocationsTable extends Table {
   Set<Column> get primaryKey => {instanceId};
 }
 
+// 4NF Table: Species & Entity Requirements (NECESITA)
+class SpeciesRequirementsTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get sourceId => text()(); // speciesId or entityId
+  TextColumn get sourceType => text().withDefault(const Constant('species'))(); // 'species' or 'entity'
+  TextColumn get requiredSpeciesId => text().references(CatalogTable, #id)();
+  RealColumn get requiredQuantity => real().withDefault(const Constant(1.0))();
+  TextColumn get notes => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   LocationsTable,
   CatalogTable,
+  SubspeciesTable,
   SpeciesMagnitudesTable,
   EntitiesTable,
   InstanceMagnitudesTable,
@@ -139,6 +168,7 @@ class InstanceLocationsTable extends Table {
   AttachmentsTable,
   HistoryEventsTable,
   CustomTemplatesTable,
+  SpeciesRequirementsTable,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());

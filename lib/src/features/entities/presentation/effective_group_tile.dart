@@ -31,8 +31,18 @@ class EffectiveGroupTile extends ConsumerWidget {
     final name = species?.name ?? AppStrings.typeObject;
     final type = species?.type ?? AppStrings.typeObject;
 
-    final breadcrumb = LocationPathHelper.buildBreadcrumbPath(group.effectiveLocationId, locationNodes);
+    final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
+    final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
+
     final firstEntity = group.primaryEntity;
+    final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+      entityId: firstEntity.id,
+      effectiveLocationId: group.effectiveLocationId,
+      allEntities: allEntities,
+      allRelations: allRelations,
+      allNodes: locationNodes,
+      catalogItems: catalogItems,
+    );
     final firstMag = firstEntity.magnitudes.isNotEmpty ? firstEntity.magnitudes.first : null;
 
     final isSingle = group.population == 1;

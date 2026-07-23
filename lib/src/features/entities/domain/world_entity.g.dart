@@ -10,6 +10,7 @@ _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
     _$WorldEntityImpl(
       id: json['id'] as String,
       speciesId: json['speciesId'] as String,
+      subspeciesId: json['subspeciesId'] as String?,
       locationId: json['locationId'] as String?,
       magnitudes: (json['magnitudes'] as List<dynamic>?)
               ?.map(
@@ -25,6 +26,7 @@ Map<String, dynamic> _$$WorldEntityImplToJson(_$WorldEntityImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'speciesId': instance.speciesId,
+      'subspeciesId': instance.subspeciesId,
       'locationId': instance.locationId,
       'magnitudes': instance.magnitudes,
       'notes': instance.notes,

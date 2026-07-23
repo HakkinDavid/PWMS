@@ -23,10 +23,8 @@ mixin _$CatalogItem {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
-  String? get brand => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   String? get mainPhotoPath => throw _privateConstructorUsedError;
-  String? get barcode => throw _privateConstructorUsedError;
   Map<String, dynamic> get customAttributes =>
       throw _privateConstructorUsedError;
   List<SpeciesMagnitude> get magnitudes => throw _privateConstructorUsedError;
@@ -53,10 +51,8 @@ abstract class $CatalogItemCopyWith<$Res> {
       {String id,
       String name,
       String type,
-      String? brand,
       String? description,
       String? mainPhotoPath,
-      String? barcode,
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
@@ -81,10 +77,8 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
     Object? id = null,
     Object? name = null,
     Object? type = null,
-    Object? brand = freezed,
     Object? description = freezed,
     Object? mainPhotoPath = freezed,
-    Object? barcode = freezed,
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
@@ -103,10 +97,6 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
-      brand: freezed == brand
-          ? _value.brand
-          : brand // ignore: cast_nullable_to_non_nullable
-              as String?,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -114,10 +104,6 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
       mainPhotoPath: freezed == mainPhotoPath
           ? _value.mainPhotoPath
           : mainPhotoPath // ignore: cast_nullable_to_non_nullable
-              as String?,
-      barcode: freezed == barcode
-          ? _value.barcode
-          : barcode // ignore: cast_nullable_to_non_nullable
               as String?,
       customAttributes: null == customAttributes
           ? _value.customAttributes
@@ -151,10 +137,8 @@ abstract class _$$CatalogItemImplCopyWith<$Res>
       {String id,
       String name,
       String type,
-      String? brand,
       String? description,
       String? mainPhotoPath,
-      String? barcode,
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
@@ -177,10 +161,8 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? type = null,
-    Object? brand = freezed,
     Object? description = freezed,
     Object? mainPhotoPath = freezed,
-    Object? barcode = freezed,
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
@@ -199,10 +181,6 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
-      brand: freezed == brand
-          ? _value.brand
-          : brand // ignore: cast_nullable_to_non_nullable
-              as String?,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -210,10 +188,6 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
       mainPhotoPath: freezed == mainPhotoPath
           ? _value.mainPhotoPath
           : mainPhotoPath // ignore: cast_nullable_to_non_nullable
-              as String?,
-      barcode: freezed == barcode
-          ? _value.barcode
-          : barcode // ignore: cast_nullable_to_non_nullable
               as String?,
       customAttributes: null == customAttributes
           ? _value._customAttributes
@@ -242,10 +216,8 @@ class _$CatalogItemImpl implements _CatalogItem {
       {required this.id,
       required this.name,
       this.type = 'Objeto',
-      this.brand,
       this.description,
       this.mainPhotoPath,
-      this.barcode,
       final Map<String, dynamic> customAttributes = const {},
       final List<SpeciesMagnitude> magnitudes = const [],
       this.isUnique = false,
@@ -264,13 +236,9 @@ class _$CatalogItemImpl implements _CatalogItem {
   @JsonKey()
   final String type;
   @override
-  final String? brand;
-  @override
   final String? description;
   @override
   final String? mainPhotoPath;
-  @override
-  final String? barcode;
   final Map<String, dynamic> _customAttributes;
   @override
   @JsonKey()
@@ -297,7 +265,7 @@ class _$CatalogItemImpl implements _CatalogItem {
 
   @override
   String toString() {
-    return 'CatalogItem(id: $id, name: $name, type: $type, brand: $brand, description: $description, mainPhotoPath: $mainPhotoPath, barcode: $barcode, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, createdAt: $createdAt)';
+    return 'CatalogItem(id: $id, name: $name, type: $type, description: $description, mainPhotoPath: $mainPhotoPath, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, createdAt: $createdAt)';
   }
 
   @override
@@ -308,12 +276,10 @@ class _$CatalogItemImpl implements _CatalogItem {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.type, type) || other.type == type) &&
-            (identical(other.brand, brand) || other.brand == brand) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.mainPhotoPath, mainPhotoPath) ||
                 other.mainPhotoPath == mainPhotoPath) &&
-            (identical(other.barcode, barcode) || other.barcode == barcode) &&
             const DeepCollectionEquality()
                 .equals(other._customAttributes, _customAttributes) &&
             const DeepCollectionEquality()
@@ -331,10 +297,8 @@ class _$CatalogItemImpl implements _CatalogItem {
       id,
       name,
       type,
-      brand,
       description,
       mainPhotoPath,
-      barcode,
       const DeepCollectionEquality().hash(_customAttributes),
       const DeepCollectionEquality().hash(_magnitudes),
       isUnique,
@@ -361,10 +325,8 @@ abstract class _CatalogItem implements CatalogItem {
       {required final String id,
       required final String name,
       final String type,
-      final String? brand,
       final String? description,
       final String? mainPhotoPath,
-      final String? barcode,
       final Map<String, dynamic> customAttributes,
       final List<SpeciesMagnitude> magnitudes,
       final bool isUnique,
@@ -380,13 +342,9 @@ abstract class _CatalogItem implements CatalogItem {
   @override
   String get type;
   @override
-  String? get brand;
-  @override
   String? get description;
   @override
   String? get mainPhotoPath;
-  @override
-  String? get barcode;
   @override
   Map<String, dynamic> get customAttributes;
   @override

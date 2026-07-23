@@ -23,6 +23,8 @@ mixin _$WorldEntity {
   String get id => throw _privateConstructorUsedError;
   String get speciesId =>
       throw _privateConstructorUsedError; // Link to Catalog species
+  String? get subspeciesId =>
+      throw _privateConstructorUsedError; // Optional link to Subspecies variant
   String? get locationId =>
       throw _privateConstructorUsedError; // Link to Location Graph node
   List<InstanceMagnitude> get magnitudes => throw _privateConstructorUsedError;
@@ -49,6 +51,7 @@ abstract class $WorldEntityCopyWith<$Res> {
   $Res call(
       {String id,
       String speciesId,
+      String? subspeciesId,
       String? locationId,
       List<InstanceMagnitude> magnitudes,
       String? notes,
@@ -73,6 +76,7 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
   $Res call({
     Object? id = null,
     Object? speciesId = null,
+    Object? subspeciesId = freezed,
     Object? locationId = freezed,
     Object? magnitudes = null,
     Object? notes = freezed,
@@ -88,6 +92,10 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.speciesId
           : speciesId // ignore: cast_nullable_to_non_nullable
               as String,
+      subspeciesId: freezed == subspeciesId
+          ? _value.subspeciesId
+          : subspeciesId // ignore: cast_nullable_to_non_nullable
+              as String?,
       locationId: freezed == locationId
           ? _value.locationId
           : locationId // ignore: cast_nullable_to_non_nullable
@@ -123,6 +131,7 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
   $Res call(
       {String id,
       String speciesId,
+      String? subspeciesId,
       String? locationId,
       List<InstanceMagnitude> magnitudes,
       String? notes,
@@ -145,6 +154,7 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? speciesId = null,
+    Object? subspeciesId = freezed,
     Object? locationId = freezed,
     Object? magnitudes = null,
     Object? notes = freezed,
@@ -160,6 +170,10 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value.speciesId
           : speciesId // ignore: cast_nullable_to_non_nullable
               as String,
+      subspeciesId: freezed == subspeciesId
+          ? _value.subspeciesId
+          : subspeciesId // ignore: cast_nullable_to_non_nullable
+              as String?,
       locationId: freezed == locationId
           ? _value.locationId
           : locationId // ignore: cast_nullable_to_non_nullable
@@ -190,6 +204,7 @@ class _$WorldEntityImpl implements _WorldEntity {
   const _$WorldEntityImpl(
       {required this.id,
       required this.speciesId,
+      this.subspeciesId,
       this.locationId,
       final List<InstanceMagnitude> magnitudes = const [],
       this.notes,
@@ -205,6 +220,9 @@ class _$WorldEntityImpl implements _WorldEntity {
   @override
   final String speciesId;
 // Link to Catalog species
+  @override
+  final String? subspeciesId;
+// Optional link to Subspecies variant
   @override
   final String? locationId;
 // Link to Location Graph node
@@ -227,7 +245,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, speciesId: $speciesId, locationId: $locationId, magnitudes: $magnitudes, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, speciesId: $speciesId, subspeciesId: $subspeciesId, locationId: $locationId, magnitudes: $magnitudes, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -238,6 +256,8 @@ class _$WorldEntityImpl implements _WorldEntity {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.speciesId, speciesId) ||
                 other.speciesId == speciesId) &&
+            (identical(other.subspeciesId, subspeciesId) ||
+                other.subspeciesId == subspeciesId) &&
             (identical(other.locationId, locationId) ||
                 other.locationId == locationId) &&
             const DeepCollectionEquality()
@@ -255,6 +275,7 @@ class _$WorldEntityImpl implements _WorldEntity {
       runtimeType,
       id,
       speciesId,
+      subspeciesId,
       locationId,
       const DeepCollectionEquality().hash(_magnitudes),
       notes,
@@ -281,6 +302,7 @@ abstract class _WorldEntity implements WorldEntity {
   const factory _WorldEntity(
       {required final String id,
       required final String speciesId,
+      final String? subspeciesId,
       final String? locationId,
       final List<InstanceMagnitude> magnitudes,
       final String? notes,
@@ -294,6 +316,8 @@ abstract class _WorldEntity implements WorldEntity {
   String get id;
   @override
   String get speciesId; // Link to Catalog species
+  @override
+  String? get subspeciesId; // Optional link to Subspecies variant
   @override
   String? get locationId; // Link to Location Graph node
   @override
