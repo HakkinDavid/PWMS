@@ -87,6 +87,7 @@ class AppStrings {
   static const instantiateTab = 'Instanciar';
   static const createSpeciesTab = 'Crear especie';
   static const addSubspeciesTab = 'Crear subespecie';
+  static const autoFillTab = 'Autollenado';
   static const addSubspeciesChoice = 'Agregar subespecie';
 
   // Catálogo de Especies

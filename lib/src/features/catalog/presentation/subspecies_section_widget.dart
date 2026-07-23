@@ -105,7 +105,44 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                 const SizedBox(height: 12),
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(labelText: AppStrings.nameOrVariantLabel, hintText: AppStrings.nameOrVariantHint),
+                  decoration: InputDecoration(
+                    labelText: AppStrings.nameOrVariantLabel,
+                    hintText: AppStrings.nameOrVariantHint,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.auto_fix_high, color: Colors.amber),
+                      tooltip: 'Autollenar desde Internet',
+                      onPressed: () async {
+                        final term = barcodeController.text.trim().isNotEmpty ? barcodeController.text.trim() : nameController.text.trim();
+                        if (term.isEmpty) {
+                          AppToast.showRestriction(context, 'Ingresa un nombre o código de barras');
+                          return;
+                        }
+                        AppToast.showSuccess(context, 'Buscando datos en Internet...');
+                        final lookupService = ref.read(productLookupServiceProvider);
+                        final result = barcodeController.text.trim().isNotEmpty
+                            ? await lookupService.lookupByBarcode(barcodeController.text.trim())
+                            : await lookupService.lookupByNameOrBrand(nameController.text.trim());
+                        if (result != null) {
+                          setStateModal(() {
+                            nameController.text = result.productName;
+                            if (result.brand != null) brandController.text = result.brand!;
+                            if (result.barcode != null) barcodeController.text = result.barcode!;
+                            if (result.description != null) notesController.text = result.description!;
+                            if (result.localPhotoPath != null) {
+                              newPickedImage = XFile(result.localPhotoPath!);
+                            }
+                          });
+                          if (context.mounted) {
+                            AppToast.showSuccess(context, 'Datos de subespecie poblados.');
+                          }
+                        } else {
+                          if (context.mounted) {
+                            AppToast.showError(context, 'No se hallaron datos en Internet.');
+                          }
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 if (isObject) ...[
                   const SizedBox(height: 12),

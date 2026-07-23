@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/presentation/auto_fill_scanner_widget.dart';
 import '../../catalog/presentation/species_form_modal.dart';
 import '../../catalog/presentation/species_tile.dart';
+import '../../catalog/presentation/subspecies_section_widget.dart';
 import 'instantiate_species_sheet.dart';
 
-import '../../catalog/presentation/subspecies_section_widget.dart';
-
-enum RegisterModalMode { selectFromCatalog, createNewSpecies, addSubspeciesToExisting }
+enum RegisterModalMode { autoFillScanner, selectFromCatalog, createNewSpecies, addSubspeciesToExisting }
 
 class RegisterObjectModal extends ConsumerStatefulWidget {
   final String? initialLocationId;
@@ -49,7 +49,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
   @override
   void initState() {
     super.initState();
-    _currentMode = widget.startInCreateSpecies ? RegisterModalMode.createNewSpecies : RegisterModalMode.selectFromCatalog;
+    _currentMode = widget.startInCreateSpecies ? RegisterModalMode.createNewSpecies : RegisterModalMode.autoFillScanner;
   }
 
   @override
@@ -64,13 +64,13 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
+        left: 16,
+        right: 16,
         top: 14,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.84,
+        height: MediaQuery.of(context).size.height * 0.86,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -86,7 +86,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             ),
             const SizedBox(height: 12),
 
-            // Fixed 3-way Segmented Control (No horizontal scrolling!)
+            // 4-way Segmented Control
             SizedBox(
               width: double.infinity,
               child: SegmentedButton<RegisterModalMode>(
@@ -94,22 +94,28 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 style: SegmentedButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
                 segments: const [
                   ButtonSegment(
+                    value: RegisterModalMode.autoFillScanner,
+                    label: Text(AppStrings.autoFillTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.qr_code_scanner, size: 14),
+                  ),
+                  ButtonSegment(
                     value: RegisterModalMode.selectFromCatalog,
-                    label: Text(AppStrings.instantiateTab, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.public, size: 16),
+                    label: Text(AppStrings.instantiateTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.public, size: 14),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.createNewSpecies,
-                    label: Text(AppStrings.createSpeciesTab, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.add, size: 16),
+                    label: Text(AppStrings.createSpeciesTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.add, size: 14),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.addSubspeciesToExisting,
-                    label: Text(AppStrings.addSubspeciesTab, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.branding_watermark, size: 16),
+                    label: Text(AppStrings.addSubspeciesTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.branding_watermark, size: 14),
                   ),
                 ],
                 selected: {_currentMode},
@@ -120,27 +126,42 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             ),
             const SizedBox(height: 12),
 
-            // Body: Select from Catalog vs Create Species vs Add Subspecies to Existing
+            // Body
             Expanded(
-              child: _currentMode == RegisterModalMode.createNewSpecies
-                  ? SpeciesFormModal(
-                      onSpeciesSaved: (createdSpecies) {
-                        Navigator.pop(context);
-                        InstantiateSpeciesSheet.show(
-                          context,
-                          species: createdSpecies,
-                          initialLocationId: widget.initialLocationId,
-                        );
-                      },
-                    )
-                  : _currentMode == RegisterModalMode.addSubspeciesToExisting
-                      ? _buildAddSubspeciesToExistingView(context, catalogItems)
-                      : _buildBrowseCatalogView(context, catalogState),
+              child: _buildBodyView(context, catalogState, catalogItems),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildBodyView(
+    BuildContext context,
+    AsyncValue<List<CatalogItem>> catalogState,
+    List<CatalogItem> catalogItems,
+  ) {
+    switch (_currentMode) {
+      case RegisterModalMode.autoFillScanner:
+        return AutoFillScannerWidget(
+          initialLocationId: widget.initialLocationId,
+        );
+      case RegisterModalMode.createNewSpecies:
+        return SpeciesFormModal(
+          onSpeciesSaved: (createdSpecies) {
+            Navigator.pop(context);
+            InstantiateSpeciesSheet.show(
+              context,
+              species: createdSpecies,
+              initialLocationId: widget.initialLocationId,
+            );
+          },
+        );
+      case RegisterModalMode.addSubspeciesToExisting:
+        return _buildAddSubspeciesToExistingView(context, catalogItems);
+      case RegisterModalMode.selectFromCatalog:
+        return _buildBrowseCatalogView(context, catalogState);
+    }
   }
 
   Widget _buildAddSubspeciesToExistingView(BuildContext context, List<CatalogItem> catalogItems) {

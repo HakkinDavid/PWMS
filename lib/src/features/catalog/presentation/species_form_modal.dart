@@ -560,6 +560,51 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       decoration: InputDecoration(
                         labelText: AppStrings.nameLabel,
                         prefixIcon: const Icon(Icons.auto_awesome),
+                        suffixIcon: !_isEditMode
+                            ? IconButton(
+                                icon: const Icon(Icons.auto_fix_high, color: Colors.amber),
+                                tooltip: 'Autollenar datos e imagen desde Internet',
+                                onPressed: () async {
+                                  final query = _nameController.text.trim();
+                                  if (query.isEmpty) {
+                                    AppToast.showRestriction(context, 'Ingresa un nombre o marca para buscar');
+                                    return;
+                                  }
+                                  AppToast.showSuccess(context, 'Buscando datos en Internet...');
+                                  final lookupService = ref.read(productLookupServiceProvider);
+                                  final result = await lookupService.lookupByNameOrBrand(query);
+                                  if (result != null) {
+                                    setState(() {
+                                      _nameController.text = result.productName;
+                                      if (result.description != null && result.description!.isNotEmpty) {
+                                        _descController.text = result.description!;
+                                      }
+                                      if (result.localPhotoPath != null) {
+                                        _selectedImage = XFile(result.localPhotoPath!);
+                                      }
+                                      if (result.brand != null || result.barcode != null) {
+                                        _draftSubspecies.add(Subspecies(
+                                          id: const Uuid().v4(),
+                                          speciesId: '',
+                                          subspeciesName: result.productName,
+                                          brand: result.brand,
+                                          barcode: result.barcode,
+                                          photoPath: result.localPhotoPath,
+                                          createdAt: DateTime.now(),
+                                        ));
+                                      }
+                                    });
+                                    if (context.mounted) {
+                                      AppToast.showSuccess(context, 'Datos e imagen poblados. Revisa y guarda.');
+                                    }
+                                  } else {
+                                    if (context.mounted) {
+                                      AppToast.showError(context, 'No se encontraron resultados en Internet');
+                                    }
+                                  }
+                                },
+                              )
+                            : null,
                         helperText: _isEditMode ? AppStrings.nameIsImmutable : null,
                       ),
                     ),

@@ -18,6 +18,8 @@ import '../../features/history/application/activity_logger_service.dart';
 import '../../features/catalog/domain/catalog_item.dart';
 import '../../features/catalog/domain/subspecies.dart';
 import '../../features/catalog/infrastructure/catalog_repository.dart';
+import '../../features/catalog/infrastructure/product_lookup_service.dart';
+import '../../features/catalog/infrastructure/visual_matching_service.dart';
 
 // Singletons / Core Services
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -242,3 +244,16 @@ class RelationListNotifier extends StateNotifier<AsyncValue<List<EntityRelation>
 final relationListProvider = StateNotifierProvider<RelationListNotifier, AsyncValue<List<EntityRelation>>>((ref) {
   return RelationListNotifier(ref.watch(relationRepositoryProvider));
 });
+
+// Auto-fill & Visual Match Providers
+final productLookupServiceProvider = Provider<ProductLookupService>((ref) {
+  return ProductLookupService();
+});
+
+final visualMatchingServiceProvider = Provider<VisualMatchingService>((ref) {
+  return VisualMatchingService(
+    catalogRepository: ref.watch(catalogRepositoryProvider),
+    productLookupService: ref.watch(productLookupServiceProvider),
+  );
+});
+
