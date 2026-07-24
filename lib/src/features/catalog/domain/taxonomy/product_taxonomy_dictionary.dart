@@ -1,5 +1,5 @@
 class CategoryDefinition {
-  final String generalSpeciesName;
+  final String generalSpeciesName; // Debe ser SIEMPRE en SINGULAR y ATÓMICA
   final String department;
   final List<String> keywords;
   final List<String>? regexPatterns;
@@ -17,7 +17,7 @@ class ProductTaxonomyDictionary {
 
   static const List<CategoryDefinition> definitions = [
     // -------------------------------------------------------------------------
-    // 1. ELECTRÓNICA, CÓMPUTO Y COMPONENTES
+    // 1. ELECTRÓNICA, CÓMPUTO Y COMPONENTES (Especies Atómicas en Singular)
     // -------------------------------------------------------------------------
     CategoryDefinition(
       generalSpeciesName: 'Tarjeta de Video',
@@ -42,9 +42,14 @@ class ProductTaxonomyDictionary {
       keywords: ['ddr4', 'ddr5', 'memoria ram', 'ram kit', 'sodimm', 'dimm'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Almacenamiento',
+      generalSpeciesName: 'Disco Sólido',
       department: 'Electrónica y Cómputo',
-      keywords: ['ssd', 'nvme', 'disco duro', 'hard drive', 'm.2', 'disco solido', 'disco sólido', 'memoria sd', 'micro sd', 'usb drive', 'pendrive'],
+      keywords: ['ssd', 'nvme', 'm.2', 'disco solido', 'disco sólido', 'solid state drive'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Disco Duro',
+      department: 'Electrónica y Cómputo',
+      keywords: ['disco duro', 'hard drive', 'hdd', 'disco externo'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Fuente de Poder',
@@ -93,9 +98,9 @@ class ProductTaxonomyDictionary {
       keywords: ['smart tv', 'televisor', 'television', 'televisión', 'oled tv', 'qled tv', '4k tv', 'roku tv'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Audífonos',
+      generalSpeciesName: 'Audífono',
       department: 'Electrónica y Cómputo',
-      keywords: ['headphone', 'headset', 'audifono', 'audífono', 'earbuds', 'airpods', 'auriculares', 'in-ear', 'over-ear'],
+      keywords: ['headphone', 'headset', 'audifono', 'audífono', 'audifonos', 'audífonos', 'earbuds', 'airpods', 'auriculares', 'in-ear', 'over-ear'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Bocina',
@@ -118,24 +123,24 @@ class ProductTaxonomyDictionary {
       keywords: ['cámara', 'camara', 'camera', 'dslr', 'mirrorless', 'webcam', 'camara web', 'gopro', 'action cam'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Dron',
-      department: 'Electrónica y Cómputo',
-      keywords: ['dron', 'drone', 'quadcopter', 'dji mavic', 'dji mini'],
-    ),
-    CategoryDefinition(
       generalSpeciesName: 'Impresora',
       department: 'Electrónica y Cómputo',
       keywords: ['impresora', 'printer', 'laserjet', 'ecotank', 'multifuncional', 'impresora 3d', '3d printer'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Redes y Conectividad',
+      generalSpeciesName: 'Router',
       department: 'Electrónica y Cómputo',
       keywords: ['router', 'switch red', 'modem', 'módem', 'repetidor wifi', 'mesh wifi', 'access point'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Cables y Adaptadores',
+      generalSpeciesName: 'Cable',
       department: 'Electrónica y Cómputo',
-      keywords: ['cable hdmi', 'cable usb', 'adaptador usb-c', 'hub usb', 'cargador', 'power bank', 'bateria portable'],
+      keywords: ['cable hdmi', 'cable usb', 'cable ethernet', 'cable lightning'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Cargador',
+      department: 'Electrónica y Cómputo',
+      keywords: ['cargador', 'power bank', 'bateria portable', 'adaptador de corriente'],
     ),
 
     // -------------------------------------------------------------------------
@@ -158,12 +163,17 @@ class ProductTaxonomyDictionary {
     ),
 
     // -------------------------------------------------------------------------
-    // 3. CUIDADO PERSONAL, SALUD Y BELLEZA
+    // 3. CUIDADO PERSONAL, SALUD Y BELLEZA (Atómicas Singular)
     // -------------------------------------------------------------------------
     CategoryDefinition(
-      generalSpeciesName: 'Cuidado Personal / Salud',
+      generalSpeciesName: 'Lavado Nasal',
       department: 'Salud y Cuidado Personal',
-      keywords: ['sinusrinse', 'neilmed', 'saline', 'nasal', 'rinse', 'farmacia', 'salud', 'medicina', 'antihistaminico', 'solucion salina'],
+      keywords: ['sinusrinse', 'neilmed', 'saline', 'nasal', 'rinse', 'solucion salina nasal', 'lavado nasal'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Medicina',
+      department: 'Salud y Cuidado Personal',
+      keywords: ['farmacia', 'salud', 'medicina', 'antihistaminico', 'analgesico', 'jarabe', 'pastilla', 'vitamina'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Jabón',
@@ -176,14 +186,24 @@ class ProductTaxonomyDictionary {
       keywords: ['shampoo', 'champu', 'champú', 'acondicionador', 'tratamiento capilar'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Cuidado Oral',
+      generalSpeciesName: 'Pasta Dental',
       department: 'Salud y Cuidado Personal',
-      keywords: ['pasta dental', 'crema dental', 'cepillo de dientes', 'cepillo dental', 'hilo dental', 'enjuague bucal'],
+      keywords: ['pasta dental', 'crema dental', 'dentrifico'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Crema Corporal y Facial',
+      generalSpeciesName: 'Cepillo Dental',
       department: 'Salud y Cuidado Personal',
-      keywords: ['crema corporal', 'crema facial', 'humectante', 'hidratante', 'bloqueador solar', 'protector solar', 'suero facial'],
+      keywords: ['cepillo de dientes', 'cepillo dental', 'hilo dental', 'enjuague bucal'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Crema Corporal',
+      department: 'Salud y Cuidado Personal',
+      keywords: ['crema corporal', 'crema humectante', 'locion corporal'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Crema Facial',
+      department: 'Salud y Cuidado Personal',
+      keywords: ['crema facial', 'suero facial', 'bloqueador solar', 'protector solar'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Desodorante',
@@ -191,169 +211,191 @@ class ProductTaxonomyDictionary {
       keywords: ['desodorante', 'antitraspirante', 'antiperspirant', 'roll-on', 'desodorante aerosol'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Afeitado y Depilación',
-      department: 'Salud y Cuidado Personal',
-      keywords: ['rastrillo', 'rasuradora', 'crema de afeitar', 'espuma de afeitar', 'cera depilatoria', 'aftershave'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Perfume y Fragancia',
+      generalSpeciesName: 'Perfume',
       department: 'Salud y Cuidado Personal',
       keywords: ['perfume', 'locion', 'loción', 'fragancia', 'eau de parfum', 'eau de toilette', 'body spray'],
     ),
-    CategoryDefinition(
-      generalSpeciesName: 'Maquillaje',
-      department: 'Salud y Cuidado Personal',
-      keywords: ['maquillaje', 'labial', 'rimel', 'rímel', 'base de maquillaje', 'corrector', 'sombra de ojos', 'esmalte de uñas'],
-    ),
 
     // -------------------------------------------------------------------------
-    // 4. ALIMENTOS Y ABARROTES
+    // 4. ALIMENTOS Y ABARROTES (Explosión de Especies Atómicas en Singular)
     // -------------------------------------------------------------------------
     CategoryDefinition(
-      generalSpeciesName: 'Bebida',
+      generalSpeciesName: 'Refresco',
       department: 'Alimentos y Abarrotes',
-      keywords: ['coca cola', 'refresco', 'bebida', 'soda', 'agua de sabor', 'juice', 'jugo', 'te helado', 'té helado'],
+      keywords: ['coca cola', 'refresco', 'soda', 'pepsi', 'sprite', 'fanta', 'sidral', 'jarrito'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Leche',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['leche', 'lala', 'alpura', 'nutrileche', 'leche entera', 'leche descremada', 'leche deslactosada'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Huevo',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['huevo', 'huevos', 'huevo blanco', 'huevo rojo', 'cartera de huevo'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Queso',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['queso', 'queso panela', 'queso oaxaca', 'queso manchego', 'queso amarillo'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Yogurt',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['yogurt', 'yogur', 'yoplait', 'activia', 'danone'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Mantequilla',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['mantequilla', 'margarina'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Puré de Tomate',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['pure de tomate', 'puré de tomate', 'tomate molido', 'del fuerte puré', 'del fuerte tomate'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Tomate',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['tomate', 'jitomate', 'tomate saladette'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Azúcar',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['azucar', 'azúcar', 'azucar estandar', 'azucar refinada'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Harina',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['harina', 'harina de trigo', 'harina de maiz', 'maseca', 'massa'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Arroz',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['arroz', 'arroz blanco', 'arroz grano largo'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Frijol',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['frijol', 'frijoles', 'frijol negro', 'frijol pinto', 'frijol peruano'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Aceite Comestible',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['aceite comestible', 'aceite vegetal', 'aceite 123', 'aceite capullo', 'aceite de oliva'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Salsa',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['salsa', 'salsa botanera', 'salsa valentina', 'salsa huichol', 'salsa de chile'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Dulce de Chile',
+      department: 'Alimentos y Abarrotes',
+      keywords: ['miguelito', 'chile en polvo', 'dulce de chile', 'tajin', 'tajín'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Agua Embotellada',
       department: 'Alimentos y Abarrotes',
-      keywords: ['agua purificada', 'agua mineral', 'agua natural', 'garrafon de agua', 'agua embotellada'],
+      keywords: ['agua purificada', 'agua mineral', 'agua natural', 'garrafon de agua', 'bonafont', 'ciel', 'epura'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Bebida Energética / Deportiva',
+      generalSpeciesName: 'Jugo',
       department: 'Alimentos y Abarrotes',
-      keywords: ['red bull', 'monster energy', 'gatorade', 'electrolit', 'powerade', 'suero oral'],
+      keywords: ['jugo', 'n nectar', 'néctar', 'jugo de naranja', 'jugo jumex', 'del valle'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Bebida Alcohólica',
+      generalSpeciesName: 'Cerveza',
       department: 'Alimentos y Abarrotes',
-      keywords: ['cerveza', 'vino', 'tequila', 'whisky', 'ron', 'vodka', 'ginebra', 'licor', 'mezcal'],
+      keywords: ['cerveza', 'corona', 'modelos', 'victoria', 'heineken', 'tecate'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Café y Té',
+      generalSpeciesName: 'Café',
       department: 'Alimentos y Abarrotes',
-      keywords: ['nescafe', 'nescafé', 'cafe', 'café', 'cafe molido', 'cafe soluble', 'capsulas de cafe', 'té verde', 'té negro'],
+      keywords: ['nescafe', 'nescafé', 'cafe', 'café', 'cafe molido', 'cafe soluble'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Despensa y Granos',
+      generalSpeciesName: 'Té',
       department: 'Alimentos y Abarrotes',
-      keywords: ['aceite comestible', 'aceite vegetal', 'arroz', 'frijol', 'pasta para sopa', 'harina', 'azucar', 'azúcar', 'sal de mesa'],
+      keywords: ['té', 'te verde', 'te negro', 'te helado', 'lipton'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Enlatados y Conservas',
+      generalSpeciesName: 'Papa Frita',
       department: 'Alimentos y Abarrotes',
-      keywords: ['atun', 'atún', 'sardinas', 'chiles en lata', 'elote en lata', 'verduras en lata', 'sopa en lata', 'pure de tomate'],
+      keywords: ['papas fritas', 'sabritas', 'barcel', 'chips', 'ruffles', 'doritos'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Botanas y Galletas',
+      generalSpeciesName: 'Galleta',
       department: 'Alimentos y Abarrotes',
-      keywords: ['papas fritas', 'botana', 'chips', 'galletas', 'chocolates', 'dulces', 'cacahuates', 'palomitas'],
+      keywords: ['galleta', 'galletas', 'gamesa', 'marias', 'oreo', 'chokis'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Lácteos y Huevos',
+      generalSpeciesName: 'Chocolate',
       department: 'Alimentos y Abarrotes',
-      keywords: ['leche', 'queso', 'yogurt', 'mantequilla', 'margarina', 'crema de leche', 'huevo', 'huevos'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Panadería y Cereales',
-      department: 'Alimentos y Abarrotes',
-      keywords: ['pan blanco', 'pan dulce', 'pan de caja', 'cereal', 'hojuelas de maiz', 'avena'],
+      keywords: ['chocolate', 'chocolates', 'carlos v', 'hershey', 'm&m', 'snickers'],
     ),
 
     // -------------------------------------------------------------------------
-    // 5. HOGAR, LIMPIEZA Y ELECTRODOMÉSTICOS
+    // 5. HOGAR Y LIMPIEZA (Especies Atómicas Singular)
     // -------------------------------------------------------------------------
     CategoryDefinition(
-      generalSpeciesName: 'Refrigerador',
-      department: 'Hogar y Electrodomésticos',
-      keywords: ['refrigerador', 'nevera', 'frigorifico', 'congelador', 'minibar'],
+      generalSpeciesName: 'Cloro',
+      department: 'Hogar y Limpieza',
+      keywords: ['cloro', 'clorox', 'blanqueador', 'cloralex'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Lavadora y Secadora',
-      department: 'Hogar y Electrodomésticos',
-      keywords: ['lavadora', 'secadora', 'centro de lavado', 'lavasecadora'],
+      generalSpeciesName: 'Detergente',
+      department: 'Hogar y Limpieza',
+      keywords: ['detergente', 'ariel', 'ace', 'fabuloso', 'detergente liquido', 'detergente polvo'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Estufa y Horno',
-      department: 'Hogar y Electrodomésticos',
-      keywords: ['estufa', 'horno', 'parrilla de gas', 'parrilla de induccion', 'horno de microondas', 'microondas'],
+      generalSpeciesName: 'Suavizante',
+      department: 'Hogar y Limpieza',
+      keywords: ['suavizante', 'downy', 'suavitel', 'ensueño'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Electrodoméstico de Cocina',
-      department: 'Hogar y Electrodomésticos',
-      keywords: ['licuadora', 'freidora de aire', 'air fryer', 'cafetera', 'batidora', 'tostadora', 'procesador de alimentos', 'exprimidor'],
+      generalSpeciesName: 'Lavavajillas',
+      department: 'Hogar y Limpieza',
+      keywords: ['salvo', 'dawn', 'lavatrastes', 'jabon liquido loza', 'lavavajillas'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Aspiradora y Limpieza Eléctrica',
-      department: 'Hogar y Electrodomésticos',
-      keywords: ['aspiradora', 'aspiradora robot', 'robot vacuum', 'mopa electrica'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Producto de Limpieza Hogar',
-      department: 'Hogar y Electrodomésticos',
-      keywords: ['detergente', 'suavizante', 'cloro', 'desinfectante', 'limpiador multiusos', 'lavatrastes', 'jabon liquido loza', 'limpiacristales'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Menaje de Cocina',
-      department: 'Hogar y Electrodomésticos',
-      keywords: ['sarten', 'sartén', 'olla', 'cacerola', 'vajilla', 'cubiertos', 'vasos', 'tazas'],
+      generalSpeciesName: 'Desinfectante',
+      department: 'Hogar y Limpieza',
+      keywords: ['lysol', 'pinol', 'desinfectante', 'limpiador multiusos'],
     ),
 
     // -------------------------------------------------------------------------
-    // 6. FERRETERÍA, HERRAMIENTAS Y AUTOMOTRIZ
+    // 6. FERRETERÍA Y HERRAMIENTAS (Especies Atómicas Singular)
     // -------------------------------------------------------------------------
     CategoryDefinition(
-      generalSpeciesName: 'Herramienta Eléctrica',
-      department: 'Ferretería y Herramientas',
-      keywords: ['taladro', 'rotomartillo', 'esmeriladora', 'sierra circular', 'sierra caladora', 'lijadora', 'atornillador electrico'],
+      generalSpeciesName: 'Taladro',
+      department: 'Herramientas',
+      keywords: ['taladro', 'rotomartillo', 'atornillador electrico'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Herramienta Manual',
-      department: 'Ferretería y Herramientas',
-      keywords: ['martillo', 'destornillador', 'desarmador', 'pinzas', 'llave perica', 'llave espanola', 'flexometro', 'cinta metrica', 'juego de llaves'],
+      generalSpeciesName: 'Esmeriladora',
+      department: 'Herramientas',
+      keywords: ['esmeriladora', 'pulidora', 'esmeril'],
     ),
     CategoryDefinition(
-      generalSpeciesName: 'Aceite y Fluido Automotriz',
+      generalSpeciesName: 'Sierra',
+      department: 'Herramientas',
+      keywords: ['sierra circular', 'sierra caladora', 'sierra de banco'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Martillo',
+      department: 'Herramientas',
+      keywords: ['martillo', 'marro'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Destornillador',
+      department: 'Herramientas',
+      keywords: ['destornillador', 'desarmador'],
+    ),
+    CategoryDefinition(
+      generalSpeciesName: 'Aceite de Motor',
       department: 'Automotriz',
-      keywords: ['aceite de motor', 'aceite sintético', 'anticongelante', 'liquido de frenos', 'aditivo motor'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Accesorio Automotriz',
-      department: 'Automotriz',
-      keywords: ['llanta', 'neumatico', 'bateria de auto', 'cargador de bateria auto', 'funda para auto', 'tapetes para auto'],
-    ),
-
-    // -------------------------------------------------------------------------
-    // 7. ROPA, CALZADO Y ACCESORIOS
-    // -------------------------------------------------------------------------
-    CategoryDefinition(
-      generalSpeciesName: 'Calzado / Tenis',
-      department: 'Ropa y Calzado',
-      keywords: ['tenis', 'zapatillas', 'zapatos', 'botas', 'sandalias', 'sneakers'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Ropa',
-      department: 'Ropa y Calzado',
-      keywords: ['playera', 'camisa', 'pantalon', 'pantalón', 'jeans', 'chamarra', 'sudadera', 'vestido', 'short'],
-    ),
-
-    // -------------------------------------------------------------------------
-    // 8. JUGUETES, BEBÉS Y MASCOTAS
-    // -------------------------------------------------------------------------
-    CategoryDefinition(
-      generalSpeciesName: 'Alimento para Mascota',
-      department: 'Mascotas',
-      keywords: ['croquetas', 'alimento para perro', 'alimento para gato', 'comida perro', 'comida gato', 'premios mascota', 'arena para gato'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Cuidado del Bebé',
-      department: 'Bebés',
-      keywords: ['pañales', 'panales', 'toallitas humedas', 'formula infantil', 'biberon', 'biberón', 'carriola'],
-    ),
-    CategoryDefinition(
-      generalSpeciesName: 'Juguete',
-      department: 'Juguetes',
-      keywords: ['juguete', 'lego', 'figura de accion', 'muñeca', 'juego de mesa', 'pista de carreras', 'peluche'],
+      keywords: ['aceite de motor', 'aceite sintético', 'castrol', 'mobil 1', 'valvoline'],
     ),
   ];
 }

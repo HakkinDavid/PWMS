@@ -1,5 +1,6 @@
 import 'brand_dictionary.dart';
 import 'product_taxonomy_dictionary.dart';
+import 'spanish_singularizer.dart';
 
 class TaxonomyResolution {
   final String generalSpeciesName;
@@ -18,7 +19,7 @@ class TaxonomyResolution {
 class ProductTaxonomyService {
   const ProductTaxonomyService();
 
-  /// Resolver la especie general, departamento y marca inferida con precisión Nivel Walmart
+  /// Resolver la especie general atómica en SINGULAR, departamento y marca inferida
   TaxonomyResolution resolve({
     required String title,
     String? categoryHint,
@@ -44,11 +45,10 @@ class ProductTaxonomyService {
     CategoryDefinition? bestMatch;
     int highestScore = 0;
 
-    // 2. Evaluar reglas y palabras clave de ProductTaxonomyDictionary
+    // 2. Evaluar reglas de ProductTaxonomyDictionary (Especies Atómicas Singular)
     for (final def in ProductTaxonomyDictionary.definitions) {
       int score = 0;
 
-      // Evaluación por patrones Regex prioritarios
       if (def.regexPatterns != null) {
         for (final pattern in def.regexPatterns!) {
           if (RegExp(pattern, caseSensitive: false).hasMatch(combinedText)) {
@@ -58,7 +58,6 @@ class ProductTaxonomyService {
         }
       }
 
-      // Evaluación por palabras clave
       for (final kw in def.keywords) {
         if (combinedText.contains(kw.toLowerCase())) {
           score += (kw.length >= 5) ? 15 : 10;
@@ -72,19 +71,22 @@ class ProductTaxonomyService {
     }
 
     if (bestMatch != null && highestScore >= 10) {
+      // Garantizar que el nombre de la especie esté siempre en SINGULAR ESTRICTO
+      final singularSpeciesName = SpanishSingularizer.toSingular(bestMatch.generalSpeciesName);
+
       return TaxonomyResolution(
-        generalSpeciesName: bestMatch.generalSpeciesName,
+        generalSpeciesName: singularSpeciesName,
         department: bestMatch.department,
         inferredBrand: finalBrand,
         confidence: (highestScore / 50.0).clamp(0.5, 1.0),
       );
     }
 
-    // 3. Fallback NLP: Extraer sustantivo principal si no coincide con el diccionario estático
+    // 3. Fallback NLP + Singularizer: Extraer sustantivo principal en SINGULAR si no coincide con el diccionario estático
     final nlpSpeciesName = _extractNounFromTitle(cleanTitle, finalBrand);
 
     return TaxonomyResolution(
-      generalSpeciesName: nlpSpeciesName,
+      generalSpeciesName: SpanishSingularizer.toSingular(nlpSpeciesName),
       department: 'General',
       inferredBrand: finalBrand,
       confidence: 0.4,
@@ -98,7 +100,7 @@ class ProductTaxonomyService {
       cleaned = cleaned.replaceAll(RegExp(brand, caseSensitive: false), '');
     }
 
-    // Eliminar especificaciones técnicas y unidades (ej. 600ml, 128GB, 4K, 8GB, 12V, 24")
+    // Eliminar especificaciones técnicas y unidades (ej. 600ml, 128GB, 4K, 8GB, 12V, 24", 930ml, 210g)
     cleaned = cleaned.replaceAll(RegExp(r'\b\d+(\.\d+)?\s*(ml|l|g|kg|gb|tb|mb|hz|v|w|in|mm|cm|m|k|p|fps)\b', caseSensitive: false), '');
     cleaned = cleaned.replaceAll(RegExp(r'\b\d{2,4}[a-z]*\b', caseSensitive: false), '');
     cleaned = cleaned.replaceAll(RegExp(r'[^\w\s\u00C0-\u017F]', unicode: true), ' ');
@@ -107,7 +109,6 @@ class ProductTaxonomyService {
 
     if (words.isNotEmpty) {
       final firstWord = words.first;
-      // Capitalizar primera palabra
       return firstWord[0].toUpperCase() + firstWord.substring(1).toLowerCase();
     }
 

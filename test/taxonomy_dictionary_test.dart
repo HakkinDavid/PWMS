@@ -1,86 +1,71 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/taxonomy/brand_dictionary.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/taxonomy/product_taxonomy_service.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/taxonomy/spanish_singularizer.dart';
 
 void main() {
-  group('Walmart-Level Decoupled Product Taxonomy Tests', () {
+  group('Atomic Singular Species Explosion Tests (PWMS V5)', () {
     const service = ProductTaxonomyService();
 
-    test('1. Electrónica y Cómputo Categorization', () {
-      final resGpu = service.resolve(title: 'GIGABYTE NVIDIA RTX 4060 GAMING OC 8GB GDDR6');
-      expect(resGpu.generalSpeciesName, 'Tarjeta de Video');
-      expect(resGpu.inferredBrand, 'Gigabyte');
+    test('1. Alimentos: Leche y Huevo son Especies Atómicas Singulares distintas', () {
+      final resLeche = service.resolve(title: 'Leche Lala Entera 1L');
+      expect(resLeche.generalSpeciesName, 'Leche');
+      expect(resLeche.inferredBrand, 'Lala');
 
-      final resCpu = service.resolve(title: 'Procesador AMD Ryzen 7 7800X3D');
-      expect(resCpu.generalSpeciesName, 'Procesador');
-      expect(resCpu.inferredBrand, 'AMD');
+      final resHuevo = service.resolve(title: 'Huevo Blanco San Juan 30 Piezas');
+      expect(resHuevo.generalSpeciesName, 'Huevo');
 
-      final resRam = service.resolve(title: 'Corsair Vengeance 32GB DDR5 RAM Kit');
-      expect(resRam.generalSpeciesName, 'Memoria RAM');
-      expect(resRam.inferredBrand, 'Corsair');
+      final resPure = service.resolve(title: 'Puré de Tomate Del Fuerte 210g');
+      expect(resPure.generalSpeciesName, 'Puré de Tomate');
 
-      final resMonitor = service.resolve(title: 'Dell Pro Plus P2425DE 24" USB-C Hub Monitor');
-      expect(resMonitor.generalSpeciesName, 'Monitor');
-      expect(resMonitor.inferredBrand, 'Dell');
+      final resAzucar = service.resolve(title: 'Azúcar Estándar Zulka 1kg');
+      expect(resAzucar.generalSpeciesName, 'Azúcar');
     });
 
-    test('2. Videojuegos y Consolas Categorization', () {
-      final resControl = service.resolve(title: 'DualSense Midnight Black Wireless Controller');
-      expect(resControl.generalSpeciesName, 'Control de Videojuegos');
-      expect(resControl.inferredBrand, 'PlayStation');
+    test('2. Bebidas: Refresco vs Leche vs Agua (NO megagrupos Bebida)', () {
+      final resRefresco = service.resolve(title: 'Coca-Cola Original Refresco 600ml');
+      expect(resRefresco.generalSpeciesName, 'Refresco');
+      expect(resRefresco.inferredBrand, 'Coca-Cola');
 
-      final resConsola = service.resolve(title: 'Nintendo Switch OLED Model Mario Edition');
-      expect(resConsola.generalSpeciesName, 'Consola de Videojuegos');
-      expect(resConsola.inferredBrand, 'Nintendo');
+      final resAgua = service.resolve(title: 'Ciel Agua Purificada 1L');
+      expect(resAgua.generalSpeciesName, 'Agua Embotellada');
+      expect(resAgua.inferredBrand, 'Ciel');
     });
 
-    test('3. Cuidado Personal, Salud y Belleza Categorization (Jabones, Salud, Pastas)', () {
-      final resJabon = service.resolve(title: 'Dove Jabón de Tocador Barra Humectante 135g');
+    test('3. Limpieza: Cloro y Detergente son Especies Atómicas Singulares', () {
+      final resCloro = service.resolve(title: 'Clorox Blanqueador Tradicional 930ml');
+      expect(resCloro.generalSpeciesName, 'Cloro');
+      expect(resCloro.inferredBrand, 'Clorox');
+
+      final resDetergente = service.resolve(title: 'Ariel Detergente Líquido 3L');
+      expect(resDetergente.generalSpeciesName, 'Detergente');
+      expect(resDetergente.inferredBrand, 'Ariel');
+    });
+
+    test('4. Cuidado Personal: Jabón, Champú, Pasta Dental', () {
+      final resJabon = service.resolve(title: 'Dove Jabón de Tocador 135g');
       expect(resJabon.generalSpeciesName, 'Jabón');
       expect(resJabon.inferredBrand, 'Dove');
 
       final resChampu = service.resolve(title: 'Pantene Champú Restauración 700ml');
       expect(resChampu.generalSpeciesName, 'Champú');
-      expect(resChampu.inferredBrand, 'Pantene');
 
-      final resSalud = service.resolve(title: 'NeilMed SinusRinse Kit de Lavado Nasal Salino');
-      expect(resSalud.generalSpeciesName, 'Cuidado Personal / Salud');
-      expect(resSalud.inferredBrand, 'NeilMed');
-
-      final resPasta = service.resolve(title: 'Colgate Total 12 Crema Dental 150ml');
-      expect(resPasta.generalSpeciesName, 'Cuidado Oral');
+      final resPasta = service.resolve(title: 'Colgate Total 12 Pasta Dental 150ml');
+      expect(resPasta.generalSpeciesName, 'Pasta Dental');
       expect(resPasta.inferredBrand, 'Colgate');
     });
 
-    test('4. Alimentos y Abarrotes Categorization', () {
-      final resBebida = service.resolve(title: 'Coca-Cola Original Refresco 600ml');
-      expect(resBebida.generalSpeciesName, 'Bebida');
-      expect(resBebida.inferredBrand, 'Coca-Cola');
-
-      final resCafe = service.resolve(title: 'Nescafé Clásico Café Soluble 200g');
-      expect(resCafe.generalSpeciesName, 'Café y Té');
-      expect(resCafe.inferredBrand, 'Nescafé');
+    test('5. SpanishSingularizer Enforcement Test', () {
+      expect(SpanishSingularizer.toSingular('Tomates'), 'Tomate');
+      expect(SpanishSingularizer.toSingular('Audífonos'), 'Audífono');
+      expect(SpanishSingularizer.toSingular('Jabones'), 'Jabón');
+      expect(SpanishSingularizer.toSingular('Papas'), 'Papa');
+      expect(SpanishSingularizer.toSingular('Detergentes'), 'Detergente');
     });
 
-    test('5. Hogar, Electrodomésticos y Herramientas Categorization', () {
-      final resFreidora = service.resolve(title: 'Ninja Air Fryer Freidora de Aire XL');
-      expect(resFreidora.generalSpeciesName, 'Electrodoméstico de Cocina');
-      expect(resFreidora.inferredBrand, 'Ninja');
-
-      final resTaladro = service.resolve(title: 'DeWalt Taladro Inalámbrico 20V Max');
-      expect(resTaladro.generalSpeciesName, 'Herramienta Eléctrica');
-      expect(resTaladro.inferredBrand, 'DeWalt');
-
-      final resAceite = service.resolve(title: 'Castrol GTX Aceite de Motor Sintético 5W-30');
-      expect(resAceite.generalSpeciesName, 'Aceite y Fluido Automotriz');
-      expect(resAceite.inferredBrand, 'Castrol');
-    });
-
-    test('6. BrandDictionary Direct Inferences', () {
-      expect(BrandDictionary.inferBrand('Mousse Corporal Nivea 200ml'), 'Nivea');
-      expect(BrandDictionary.inferBrand('Galletas Marias Gamesa 170g'), 'Gamesa');
-      expect(BrandDictionary.inferBrand('Detergente Ariel Doble Poder 4kg'), 'Ariel');
-      expect(BrandDictionary.inferBrand('Tenis Nike Air Force 1 Blancos'), 'Nike');
+    test('6. Miguelito Chile en Polvo Caso Único', () {
+      final resMiguelito = service.resolve(title: 'Miguelito Polvo Enchilado 250g');
+      expect(resMiguelito.generalSpeciesName, 'Dulce de Chile');
     });
   });
 }

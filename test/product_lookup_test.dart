@@ -5,7 +5,7 @@ import 'package:http/testing.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/product_lookup_service.dart';
 
 void main() {
-  group('ProductLookupService V3 Real-World Tests', () {
+  group('ProductLookupService V5 Atomic Singular Species Tests', () {
     test('lookupByBarcode handles barcode 8806094942965 via web search fallback', () async {
       final mockClient = MockClient((request) async {
         if (request.url.toString().contains('html.duckduckgo.com')) {
@@ -32,7 +32,7 @@ void main() {
       expect(result.brand, 'Samsung');
     });
 
-    test('Taxonomy mapping correctly classifies RTX 4060, DualSense, Logitech G203, NeilMed SinusRinse', () async {
+    test('Taxonomy mapping correctly classifies RTX 4060, DualSense, Logitech G203, NeilMed SinusRinse with Atomic Singular Species', () async {
       final mockClient = MockClient((request) async {
         final url = request.url.toString();
         if (url.contains('html.duckduckgo.com')) {
@@ -68,10 +68,10 @@ void main() {
       expect(mouseResult, isNotNull);
       expect(mouseResult!.generalSpeciesName, 'Mouse');
 
-      // NeilMed SinusRinse -> Cuidado Personal / Salud
+      // NeilMed SinusRinse -> Lavado Nasal (Especie atómica singular)
       final sinusResult = await service.lookupByNameOrBrand('NeilMed SinusRinse Kit');
       expect(sinusResult, isNotNull);
-      expect(sinusResult!.generalSpeciesName, 'Cuidado Personal / Salud');
+      expect(sinusResult!.generalSpeciesName, 'Lavado Nasal');
 
       // Dell P2425DE -> Monitor
       final dellResult = await service.lookupByNameOrBrand('Dell Pro Plus P2425DE');
