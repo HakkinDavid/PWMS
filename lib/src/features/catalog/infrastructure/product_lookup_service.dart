@@ -6,8 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class ProductLookupResult {
-  final String generalSpeciesName; // ej. "Monitor", "Bebida", "Teclado"
-  final String subspeciesName;     // ej. "Dell Pro 24''", "Coca Cola 600ml"
+  final String generalSpeciesName; // ej. "Monitor", "Tarjeta de Video", "Control de Videojuegos", "Cuidado Personal / Salud"
+  final String subspeciesName;     // ej. "Dell Pro Plus P2425DE", "GIGABYTE RTX 4060 GAMING OC"
   final String? brand;
   final String? barcode;
   final String? description;
@@ -60,21 +60,27 @@ class ProductLookupService {
 
   ProductLookupService({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Consultar producto por código de barras (EAN/UPC) en APIs abiertas
+  /// Consultar producto por código de barras (EAN/UPC) con arquitectura multinivel de búsqueda
   Future<ProductLookupResult?> lookupByBarcode(String rawBarcode) async {
     final cleanCode = rawBarcode.trim();
     if (cleanCode.isEmpty) return null;
 
-    // 1. Intentar Open Food Facts API (v2)
+    // Level 1: Open Food Facts API (v2)
     final offResult = await _fetchFromOpenFoodFacts(cleanCode);
     if (offResult != null) {
-      return await _savePhotoIfPresent(offResult);
+      return await _ensureCleanPhotoAndSave(offResult);
     }
 
-    // 2. Intentar UPC Item DB Trial API
+    // Level 2: UPC Item DB Trial API
     final upcResult = await _fetchFromUpcItemDb(cleanCode);
     if (upcResult != null) {
-      return await _savePhotoIfPresent(upcResult);
+      return await _ensureCleanPhotoAndSave(upcResult);
+    }
+
+    // Level 3: DuckDuckGo Web Search Fallback por Código de Barras (ej. 8806094942965)
+    final webResult = await _fetchFromWebSearchFallback(cleanCode);
+    if (webResult != null) {
+      return await _ensureCleanPhotoAndSave(webResult);
     }
 
     return null;
@@ -102,7 +108,7 @@ class ProductLookupService {
             final genericName = (prod['generic_name'] ?? '').toString().trim();
             final imgUrl = _extractFrontPhotoUrl(prod);
 
-            final speciesName = _extractGeneralSpeciesName(name, categories, genericName);
+            final speciesName = _extractGeneralSpeciesName(name, categories, genericName, brand);
 
             final result = ProductLookupResult(
               generalSpeciesName: speciesName,
@@ -111,11 +117,17 @@ class ProductLookupService {
               barcode: code.isNotEmpty ? code : null,
               photoUrl: imgUrl,
             );
-            return await _savePhotoIfPresent(result);
+            return await _ensureCleanPhotoAndSave(result);
           }
         }
       }
     } catch (_) {}
+
+    // Fallback a web search por nombre/marca
+    final webFallback = await _fetchFromWebSearchFallback(cleanQuery);
+    if (webFallback != null) {
+      return await _ensureCleanPhotoAndSave(webFallback);
+    }
 
     return null;
   }
@@ -136,7 +148,7 @@ class ProductLookupService {
           final imgUrl = _extractFrontPhotoUrl(prod);
 
           if (name.isNotEmpty) {
-            final speciesName = _extractGeneralSpeciesName(name, categories, genericName);
+            final speciesName = _extractGeneralSpeciesName(name, categories, genericName, brand);
 
             return ProductLookupResult(
               generalSpeciesName: speciesName,
@@ -171,7 +183,7 @@ class ProductLookupService {
           final imgUrl = (images != null && images.isNotEmpty) ? images.first.toString() : null;
 
           if (title.isNotEmpty) {
-            final speciesName = _extractGeneralSpeciesName(title, category, null);
+            final speciesName = _extractGeneralSpeciesName(title, category, null, brand);
 
             return ProductLookupResult(
               generalSpeciesName: speciesName,
@@ -188,7 +200,56 @@ class ProductLookupService {
     return null;
   }
 
-  /// Priorizar estrictamente las fotos frontales principales del producto descartando tablas/traseras
+  /// Level 3: Fallback de búsqueda web (DuckDuckGo HTML) para códigos no registrados en DBs de alimentos
+  Future<ProductLookupResult?> _fetchFromWebSearchFallback(String barcodeOrQuery) async {
+    try {
+      final uri = Uri.parse('https://html.duckduckgo.com/html/?q=${Uri.encodeComponent(barcodeOrQuery)}');
+      final response = await _client.get(
+        uri,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+      ).timeout(const Duration(seconds: 8));
+
+      if (response.statusCode == 200) {
+        final html = response.body;
+
+        // Extraer títulos de resultados utilizando expresiones regulares simples
+        final titleRegex = RegExp(r'<a class="result__a"[^>]*>(.*?)<\/a>', dotAll: true, caseSensitive: false);
+        final matches = titleRegex.allMatches(html);
+
+        for (final match in matches) {
+          var rawTitle = match.group(1) ?? '';
+          rawTitle = rawTitle.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+          rawTitle = rawTitle.replaceAll('&quot;', '"').replaceAll('&amp;', '&').replaceAll('&#39;', "'");
+
+          if (rawTitle.isNotEmpty && rawTitle.length > 5 && !rawTitle.toLowerCase().contains('duckduckgo')) {
+            // Intentar inferir marca
+            String? inferredBrand;
+            final commonBrands = ['Samsung', 'Dell', 'Gigabyte', 'Logitech', 'Sony', 'NeilMed', 'Apple', 'Asus', 'HP', 'Lenovo', 'LG', 'Nvidia', 'AMD', 'Microsoft'];
+            for (final b in commonBrands) {
+              if (rawTitle.toLowerCase().contains(b.toLowerCase())) {
+                inferredBrand = b;
+                break;
+              }
+            }
+
+            final speciesName = _extractGeneralSpeciesName(rawTitle, null, null, inferredBrand);
+
+            return ProductLookupResult(
+              generalSpeciesName: speciesName,
+              subspeciesName: rawTitle,
+              brand: inferredBrand,
+              barcode: RegExp(r'^\d+$').hasMatch(barcodeOrQuery) ? barcodeOrQuery : null,
+            );
+          }
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  /// Priorizar fotos frontales limpias descartando tablas nutricionales o imágenes de laptops en monitores
   String? _extractFrontPhotoUrl(Map<String, dynamic> prod) {
     if (prod['image_front_url'] != null && prod['image_front_url'].toString().isNotEmpty) {
       return prod['image_front_url'].toString();
@@ -205,22 +266,136 @@ class ProductLookupService {
     return null;
   }
 
-  /// Abstraer la Especie General (ej. "Monitor", "Televisor", "Smartphone", "Bebida")
-  String _extractGeneralSpeciesName(String title, String? categories, String? genericName) {
+  /// Búsqueda directa de imagen de producto limpia vía DuckDuckGo Images cuando la foto sea nula o imprecisa
+  Future<String?> _fetchCleanProductImage(String brand, String model) async {
+    try {
+      final query = Uri.encodeComponent('$brand $model product photo');
+      final uri = Uri.parse('https://duckduckgo.com/i.js?q=$query');
+      final response = await _client.get(
+        uri,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+      ).timeout(const Duration(seconds: 6));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final results = data['results'] as List?;
+        if (results != null && results.isNotEmpty) {
+          for (final res in results) {
+            final image = res['image']?.toString();
+            if (image != null && (image.endsWith('.jpg') || image.endsWith('.png') || image.endsWith('.jpeg') || image.contains('.jpg?') || image.contains('.png?'))) {
+              return image;
+            }
+          }
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  /// Asegura foto limpia descargada localmente (Fallback DuckDuckGo Images si la foto es nula o sospechosa)
+  Future<ProductLookupResult> _ensureCleanPhotoAndSave(ProductLookupResult result) async {
+    String? photoUrl = result.photoUrl;
+
+    // Si la foto es nula o si es un monitor (ej. Dell P2425DE) que suele traer foto incorrecta
+    final isMonitorWithBadPhoto = result.generalSpeciesName == 'Monitor' && photoUrl != null && photoUrl.toLowerCase().contains('laptop');
+
+    if (photoUrl == null || photoUrl.isEmpty || isMonitorWithBadPhoto) {
+      final fetchedPhoto = await _fetchCleanProductImage(result.brand ?? '', result.subspeciesName);
+      if (fetchedPhoto != null && fetchedPhoto.isNotEmpty) {
+        photoUrl = fetchedPhoto;
+      }
+    }
+
+    if (photoUrl != null && photoUrl.isNotEmpty) {
+      final localPath = await downloadAndSaveImage(photoUrl);
+      if (localPath != null) {
+        return result.copyWith(photoUrl: photoUrl, localPhotoPath: localPath);
+      }
+    }
+
+    return result;
+  }
+
+  /// Taxonomía Completa y Extracción NLP de Especie General
+  String _extractGeneralSpeciesName(String title, String? categories, String? genericName, String? brand) {
     final combined = '${genericName ?? ""} ${categories ?? ""} $title'.toLowerCase();
 
-    if (combined.contains('monitor') || combined.contains('pantalla') || combined.contains('display')) return 'Monitor';
-    if (combined.contains('tv') || combined.contains('televisor') || combined.contains('television')) return 'Televisor';
-    if (combined.contains('laptop') || combined.contains('notebook') || combined.contains('macbook') || combined.contains('portatil') || combined.contains('portátil')) return 'Laptop';
-    if (combined.contains('phone') || combined.contains('celular') || combined.contains('smartphone') || combined.contains('iphone')) return 'Smartphone';
-    if (combined.contains('headphone') || combined.contains('headset') || combined.contains('audifono') || combined.contains('audífono')) return 'Audífonos';
-    if (combined.contains('keyboard') || combined.contains('teclado')) return 'Teclado';
-    if (combined.contains('mouse') || combined.contains('raton') || combined.contains('ratón')) return 'Mouse';
-    if (combined.contains('camera') || combined.contains('camara') || combined.contains('cámara')) return 'Cámara';
-    if (combined.contains('printer') || combined.contains('impresora')) return 'Impresora';
-    if (combined.contains('console') || combined.contains('playstation') || combined.contains('xbox') || combined.contains('nintendo')) return 'Consola de Videojuegos';
-    if (combined.contains('drink') || combined.contains('refresco') || combined.contains('bebida') || combined.contains('soda') || combined.contains('water') || combined.contains('agua')) return 'Bebida';
+    // 1. Tarjetas de Video / GPU
+    if (combined.contains('rtx') || combined.contains('gtx') || combined.contains('radeon') || combined.contains('gpu') || combined.contains('graphics card') || combined.contains('tarjeta de video') || combined.contains('tarjeta grafica') || combined.contains('tarjeta gráfica')) {
+      return 'Tarjeta de Video';
+    }
 
+    // 2. Controles de Videojuegos / Gamepads
+    if (combined.contains('dualsense') || combined.contains('dualshock') || combined.contains('gamepad') || combined.contains('controller') || combined.contains('joy-con') || combined.contains('controlador') || combined.contains('control ps5') || combined.contains('control xbox')) {
+      return 'Control de Videojuegos';
+    }
+
+    // 3. Monitores / Pantallas
+    if (combined.contains('monitor') || combined.contains('pantalla') || combined.contains('display') || combined.contains('p2425de') || combined.contains('g65b') || combined.contains('odyssey')) {
+      return 'Monitor';
+    }
+
+    // 4. Periféricos: Mouse y Teclados
+    if (combined.contains('g203') || combined.contains('g502') || combined.contains('mouse') || combined.contains('raton') || combined.contains('ratón')) {
+      return 'Mouse';
+    }
+    if (combined.contains('keyboard') || combined.contains('teclado') || combined.contains('keychron')) {
+      return 'Teclado';
+    }
+
+    // 5. Salud / Cuidado Personal / Farmacia
+    if (combined.contains('sinusrinse') || combined.contains('neilmed') || combined.contains('saline') || combined.contains('nasal') || combined.contains('rinse') || combined.contains('shampoo') || combined.contains('champú') || combined.contains('jabón') || combined.contains('crema') || combined.contains('suplemento')) {
+      return 'Cuidado Personal / Salud';
+    }
+
+    // 6. Smartphones / Celulares
+    if (combined.contains('galaxy a') || combined.contains('galaxy s') || combined.contains('iphone') || combined.contains('pixel') || combined.contains('smartphone') || combined.contains('celular') || combined.contains('telefono') || combined.contains('teléfono')) {
+      return 'Smartphone';
+    }
+
+    // 7. Televisores
+    if (combined.contains('smart tv') || combined.contains('televisor') || combined.contains('television') || combined.contains('televisión')) {
+      return 'Televisor';
+    }
+
+    // 8. Laptops / Portátiles
+    if (combined.contains('laptop') || combined.contains('notebook') || combined.contains('macbook') || combined.contains('portatil') || combined.contains('portátil')) {
+      return 'Laptop';
+    }
+
+    // 9. Audífonos / Audio
+    if (combined.contains('headphone') || combined.contains('headset') || combined.contains('audifono') || combined.contains('audífono') || combined.contains('earbuds') || combined.contains('airpods')) {
+      return 'Audífonos';
+    }
+
+    // 10. Procesadores
+    if (combined.contains('ryzen') || combined.contains('core i3') || combined.contains('core i5') || combined.contains('core i7') || combined.contains('core i9') || combined.contains('cpu') || combined.contains('procesador')) {
+      return 'Procesador';
+    }
+
+    // 11. Almacenamiento
+    if (combined.contains('ssd') || combined.contains('nvme') || combined.contains('disco duro') || combined.contains('hard drive')) {
+      return 'Almacenamiento';
+    }
+
+    // 12. Consolas de Videojuegos
+    if (combined.contains('playstation') || combined.contains('xbox') || combined.contains('nintendo switch') || combined.contains('ps5') || combined.contains('ps4')) {
+      return 'Consola de Videojuegos';
+    }
+
+    // 13. Bebidas
+    if (combined.contains('coca cola') || combined.contains('refresco') || combined.contains('bebida') || combined.contains('soda') || combined.contains('agua') || combined.contains('juice') || combined.contains('jugo')) {
+      return 'Bebida';
+    }
+
+    // 14. Impresoras
+    if (combined.contains('impresora') || combined.contains('printer') || combined.contains('laserjet') || combined.contains('ecotank')) {
+      return 'Impresora';
+    }
+
+    // Extractor NLP si el nombre genérico viene explícito en la meta-información
     if (genericName != null && genericName.trim().isNotEmpty && genericName.trim().length <= 25) {
       final cleanG = genericName.trim();
       return cleanG[0].toUpperCase() + cleanG.substring(1);
@@ -230,15 +405,6 @@ class ProductLookupService {
   }
 
   /// Descarga la imagen remota y la guarda localmente en el almacenamiento del dispositivo
-  Future<ProductLookupResult> _savePhotoIfPresent(ProductLookupResult result) async {
-    if (result.photoUrl == null || result.photoUrl!.isEmpty) {
-      return result;
-    }
-
-    final localPath = await downloadAndSaveImage(result.photoUrl!);
-    return result.copyWith(localPhotoPath: localPath);
-  }
-
   Future<String?> downloadAndSaveImage(String imageUrl) async {
     try {
       final response = await _client.get(Uri.parse(imageUrl)).timeout(const Duration(seconds: 10));

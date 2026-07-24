@@ -5,21 +5,18 @@ import 'package:http/testing.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/product_lookup_service.dart';
 
 void main() {
-  group('ProductLookupService Unit Tests', () {
-    test('lookupByBarcode extracts General Species (e.g. Monitor) and Subspecies (e.g. Dell Pro 24)', () async {
+  group('ProductLookupService V3 Real-World Tests', () {
+    test('lookupByBarcode handles barcode 8806094942965 via web search fallback', () async {
       final mockClient = MockClient((request) async {
-        if (request.url.toString().contains('openfoodfacts')) {
+        if (request.url.toString().contains('html.duckduckgo.com')) {
           return http.Response(
-            jsonEncode({
-              'status': 1,
-              'product': {
-                'product_name': 'Dell Pro 24 Monitor Full HD',
-                'brands': 'Dell',
-                'categories': 'Electrónica, Monitores',
-                'generic_name': 'Monitor',
-                'image_front_url': 'https://example.com/dell.jpg',
-              }
-            }),
+            '''
+            <html>
+              <body>
+                <a class="result__a" href="https://example.com">Samsung Odyssey G6 G65B 27 Gaming Monitor</a>
+              </body>
+            </html>
+            ''',
             200,
           );
         }
@@ -27,40 +24,59 @@ void main() {
       });
 
       final service = ProductLookupService(client: mockClient);
-      final result = await service.lookupByBarcode('7501055300075');
+      final result = await service.lookupByBarcode('8806094942965');
 
       expect(result, isNotNull);
       expect(result!.generalSpeciesName, 'Monitor');
-      expect(result.subspeciesName, 'Dell Pro 24 Monitor Full HD');
-      expect(result.brand, 'Dell');
-      expect(result.barcode, '7501055300075');
+      expect(result.subspeciesName, 'Samsung Odyssey G6 G65B 27 Gaming Monitor');
+      expect(result.brand, 'Samsung');
     });
 
-    test('lookupByNameOrBrand returns product search results with species abstraction', () async {
+    test('Taxonomy mapping correctly classifies RTX 4060, DualSense, Logitech G203, NeilMed SinusRinse', () async {
       final mockClient = MockClient((request) async {
-        return http.Response(
-          jsonEncode({
-            'products': [
-              {
-                'product_name': 'Samsung G65B 27 Gaming Monitor',
-                'brands': 'Samsung',
-                'code': '8806090123456',
-                'categories': 'Monitores Gaming',
-              }
-            ]
-          }),
-          200,
-        );
+        final url = request.url.toString();
+        if (url.contains('html.duckduckgo.com')) {
+          final query = request.url.queryParameters['q'] ?? '';
+          return http.Response(
+            '''
+            <html>
+              <body>
+                <a class="result__a" href="https://example.com">$query</a>
+              </body>
+            </html>
+            ''',
+            200,
+          );
+        }
+        return http.Response(jsonEncode({'products': []}), 200);
       });
 
       final service = ProductLookupService(client: mockClient);
-      final result = await service.lookupByNameOrBrand('Samsung');
 
-      expect(result, isNotNull);
-      expect(result!.generalSpeciesName, 'Monitor');
-      expect(result.subspeciesName, 'Samsung G65B 27 Gaming Monitor');
-      expect(result.brand, 'Samsung');
-      expect(result.barcode, '8806090123456');
+      // RTX 4060 -> Tarjeta de Video
+      final rtxResult = await service.lookupByNameOrBrand('GIGABYTE NVIDIA RTX 4060 GAMING OC 8GB GDDR6');
+      expect(rtxResult, isNotNull);
+      expect(rtxResult!.generalSpeciesName, 'Tarjeta de Video');
+
+      // DualSense -> Control de Videojuegos
+      final dualSenseResult = await service.lookupByNameOrBrand('Dualsense Midnight Black');
+      expect(dualSenseResult, isNotNull);
+      expect(dualSenseResult!.generalSpeciesName, 'Control de Videojuegos');
+
+      // Logitech G203 -> Mouse
+      final mouseResult = await service.lookupByNameOrBrand('Logitech G203');
+      expect(mouseResult, isNotNull);
+      expect(mouseResult!.generalSpeciesName, 'Mouse');
+
+      // NeilMed SinusRinse -> Cuidado Personal / Salud
+      final sinusResult = await service.lookupByNameOrBrand('NeilMed SinusRinse Kit');
+      expect(sinusResult, isNotNull);
+      expect(sinusResult!.generalSpeciesName, 'Cuidado Personal / Salud');
+
+      // Dell P2425DE -> Monitor
+      final dellResult = await service.lookupByNameOrBrand('Dell Pro Plus P2425DE');
+      expect(dellResult, isNotNull);
+      expect(dellResult!.generalSpeciesName, 'Monitor');
     });
   });
 }
