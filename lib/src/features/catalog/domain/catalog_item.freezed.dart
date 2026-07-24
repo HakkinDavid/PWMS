@@ -29,6 +29,7 @@ mixin _$CatalogItem {
       throw _privateConstructorUsedError;
   List<SpeciesMagnitude> get magnitudes => throw _privateConstructorUsedError;
   bool get isUnique => throw _privateConstructorUsedError;
+  bool get isNonPerishable => throw _privateConstructorUsedError;
   int? get defaultShelfLifeDays => throw _privateConstructorUsedError;
   int? get warningDaysBeforeExpiration => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -58,6 +59,7 @@ abstract class $CatalogItemCopyWith<$Res> {
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
+      bool isNonPerishable,
       int? defaultShelfLifeDays,
       int? warningDaysBeforeExpiration,
       DateTime createdAt});
@@ -86,6 +88,7 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
+    Object? isNonPerishable = null,
     Object? defaultShelfLifeDays = freezed,
     Object? warningDaysBeforeExpiration = freezed,
     Object? createdAt = null,
@@ -123,6 +126,10 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
               as bool,
+      isNonPerishable: null == isNonPerishable
+          ? _value.isNonPerishable
+          : isNonPerishable // ignore: cast_nullable_to_non_nullable
+              as bool,
       defaultShelfLifeDays: freezed == defaultShelfLifeDays
           ? _value.defaultShelfLifeDays
           : defaultShelfLifeDays // ignore: cast_nullable_to_non_nullable
@@ -156,6 +163,7 @@ abstract class _$$CatalogItemImplCopyWith<$Res>
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
+      bool isNonPerishable,
       int? defaultShelfLifeDays,
       int? warningDaysBeforeExpiration,
       DateTime createdAt});
@@ -182,6 +190,7 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
+    Object? isNonPerishable = null,
     Object? defaultShelfLifeDays = freezed,
     Object? warningDaysBeforeExpiration = freezed,
     Object? createdAt = null,
@@ -219,6 +228,10 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
               as bool,
+      isNonPerishable: null == isNonPerishable
+          ? _value.isNonPerishable
+          : isNonPerishable // ignore: cast_nullable_to_non_nullable
+              as bool,
       defaultShelfLifeDays: freezed == defaultShelfLifeDays
           ? _value.defaultShelfLifeDays
           : defaultShelfLifeDays // ignore: cast_nullable_to_non_nullable
@@ -237,7 +250,7 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$CatalogItemImpl implements _CatalogItem {
+class _$CatalogItemImpl extends _CatalogItem {
   const _$CatalogItemImpl(
       {required this.id,
       required this.name,
@@ -247,11 +260,13 @@ class _$CatalogItemImpl implements _CatalogItem {
       final Map<String, dynamic> customAttributes = const {},
       final List<SpeciesMagnitude> magnitudes = const [],
       this.isUnique = false,
+      this.isNonPerishable = true,
       this.defaultShelfLifeDays,
       this.warningDaysBeforeExpiration,
       required this.createdAt})
       : _customAttributes = customAttributes,
-        _magnitudes = magnitudes;
+        _magnitudes = magnitudes,
+        super._();
 
   factory _$CatalogItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$CatalogItemImplFromJson(json);
@@ -289,6 +304,9 @@ class _$CatalogItemImpl implements _CatalogItem {
   @JsonKey()
   final bool isUnique;
   @override
+  @JsonKey()
+  final bool isNonPerishable;
+  @override
   final int? defaultShelfLifeDays;
   @override
   final int? warningDaysBeforeExpiration;
@@ -297,7 +315,7 @@ class _$CatalogItemImpl implements _CatalogItem {
 
   @override
   String toString() {
-    return 'CatalogItem(id: $id, name: $name, type: $type, description: $description, mainPhotoPath: $mainPhotoPath, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, defaultShelfLifeDays: $defaultShelfLifeDays, warningDaysBeforeExpiration: $warningDaysBeforeExpiration, createdAt: $createdAt)';
+    return 'CatalogItem(id: $id, name: $name, type: $type, description: $description, mainPhotoPath: $mainPhotoPath, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, isNonPerishable: $isNonPerishable, defaultShelfLifeDays: $defaultShelfLifeDays, warningDaysBeforeExpiration: $warningDaysBeforeExpiration, createdAt: $createdAt)';
   }
 
   @override
@@ -318,6 +336,8 @@ class _$CatalogItemImpl implements _CatalogItem {
                 .equals(other._magnitudes, _magnitudes) &&
             (identical(other.isUnique, isUnique) ||
                 other.isUnique == isUnique) &&
+            (identical(other.isNonPerishable, isNonPerishable) ||
+                other.isNonPerishable == isNonPerishable) &&
             (identical(other.defaultShelfLifeDays, defaultShelfLifeDays) ||
                 other.defaultShelfLifeDays == defaultShelfLifeDays) &&
             (identical(other.warningDaysBeforeExpiration,
@@ -340,6 +360,7 @@ class _$CatalogItemImpl implements _CatalogItem {
       const DeepCollectionEquality().hash(_customAttributes),
       const DeepCollectionEquality().hash(_magnitudes),
       isUnique,
+      isNonPerishable,
       defaultShelfLifeDays,
       warningDaysBeforeExpiration,
       createdAt);
@@ -360,7 +381,7 @@ class _$CatalogItemImpl implements _CatalogItem {
   }
 }
 
-abstract class _CatalogItem implements CatalogItem {
+abstract class _CatalogItem extends CatalogItem {
   const factory _CatalogItem(
       {required final String id,
       required final String name,
@@ -370,9 +391,11 @@ abstract class _CatalogItem implements CatalogItem {
       final Map<String, dynamic> customAttributes,
       final List<SpeciesMagnitude> magnitudes,
       final bool isUnique,
+      final bool isNonPerishable,
       final int? defaultShelfLifeDays,
       final int? warningDaysBeforeExpiration,
       required final DateTime createdAt}) = _$CatalogItemImpl;
+  const _CatalogItem._() : super._();
 
   factory _CatalogItem.fromJson(Map<String, dynamic> json) =
       _$CatalogItemImpl.fromJson;
@@ -393,6 +416,8 @@ abstract class _CatalogItem implements CatalogItem {
   List<SpeciesMagnitude> get magnitudes;
   @override
   bool get isUnique;
+  @override
+  bool get isNonPerishable;
   @override
   int? get defaultShelfLifeDays;
   @override

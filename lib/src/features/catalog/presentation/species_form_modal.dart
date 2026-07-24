@@ -15,6 +15,7 @@ import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
 import '../domain/subspecies.dart';
+import '../domain/taxonomy/perishability_inference_engine.dart';
 import 'subspecies_section_widget.dart';
 
 class SpeciesFormModal extends ConsumerStatefulWidget {
@@ -58,6 +59,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
   String _selectedType = AppStrings.typeObject;
   bool _isUnique = false;
+  bool _isNonPerishable = true;
   XFile? _selectedImage;
   bool _isSaving = false;
 
@@ -85,6 +87,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _warningDaysController.text = s.warningDaysBeforeExpiration?.toString() ?? '';
       _selectedType = s.type;
       _isUnique = s.isUnique;
+      _isNonPerishable = s.isNonPerishable;
       _magnitudes.addAll(s.magnitudes);
     } else {
       _applySubgroupConstraints(_selectedType);
@@ -106,6 +109,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _selectedType = type;
       if (template.isAlwaysUnique) {
         _isUnique = true;
+      }
+      if (type != AppStrings.typeObject) {
+        _isNonPerishable = true;
       }
     });
   }
@@ -384,16 +390,20 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       final defaultShelfLife = int.tryParse(_defaultShelfLifeController.text.trim());
       final warningDays = int.tryParse(_warningDaysController.text.trim());
 
+      final effectiveType = _isEditMode ? widget.initialSpecies!.type : _selectedType;
+      final effectiveNonPerishable = effectiveType == AppStrings.typeObject ? _isNonPerishable : true;
+
       final savedItem = CatalogItem(
         id: speciesId,
         name: _isEditMode ? widget.initialSpecies!.name : name,
-        type: _isEditMode ? widget.initialSpecies!.type : _selectedType,
+        type: effectiveType,
         description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
         magnitudes: updatedMagnitudes,
         isUnique: effectiveUnique,
+        isNonPerishable: effectiveNonPerishable,
         mainPhotoPath: photoPath,
-        defaultShelfLifeDays: defaultShelfLife,
-        warningDaysBeforeExpiration: warningDays,
+        defaultShelfLifeDays: !effectiveNonPerishable ? defaultShelfLife : null,
+        warningDaysBeforeExpiration: !effectiveNonPerishable ? warningDays : null,
         createdAt: widget.initialSpecies?.createdAt ?? DateTime.now(),
       );
 
@@ -593,6 +603,17 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                       if (result.localPhotoPath != null) {
                                         _selectedImage = XFile(result.localPhotoPath!);
                                       }
+                                      final inference = PerishabilityInferenceEngine.inferPerishability(
+                                        type: _selectedType,
+                                        title: result.productName,
+                                        category: result.description,
+                                        barcode: result.barcode,
+                                      );
+                                      _isNonPerishable = inference.isNonPerishable;
+                                      if (inference.suggestedShelfLifeDays != null) {
+                                        _defaultShelfLifeController.text = inference.suggestedShelfLifeDays.toString();
+                                      }
+
                                       if (result.brand != null || result.barcode != null) {
                                         _draftSubspecies.add(Subspecies(
                                           id: const Uuid().v4(),
@@ -659,37 +680,52 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Configuración de Caducidad (Opcional)
-                    Text('Configuración de Caducidad (Opcional)', style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _defaultShelfLifeController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'Vida útil (días)',
-                              hintText: 'ej. 30',
-                              prefixIcon: Icon(Icons.timer_outlined, size: 20),
+                    // Configuración de Caducidad (Solo visible para Especies de tipo Objeto)
+                    if (_selectedType == AppStrings.typeObject) ...[
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        title: const Text('Es producto perecedero (tiene fecha de caducidad)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                        subtitle: const Text('Por defecto los objetos son no perecederos', style: TextStyle(fontSize: 11)),
+                        value: !_isNonPerishable,
+                        onChanged: (isPerishable) {
+                          setState(() {
+                            _isNonPerishable = !isPerishable;
+                          });
+                        },
+                      ),
+                      if (!_isNonPerishable) ...[
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _defaultShelfLifeController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  labelText: 'Vida útil (días)',
+                                  hintText: 'ej. 30',
+                                  prefixIcon: Icon(Icons.timer_outlined, size: 20),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: _warningDaysController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'Aviso prev. (días)',
-                              hintText: 'ej. 7',
-                              prefixIcon: Icon(Icons.warning_amber_rounded, size: 20),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: _warningDaysController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  labelText: 'Aviso prev. (días)',
+                                  hintText: 'ej. 7',
+                                  prefixIcon: Icon(Icons.warning_amber_rounded, size: 20),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 10),
+                    ],
 
                     // Multiplicidad de Unidades y Magnitudes (+ / - Controls)
                     if (template.hasQuantity && !template.isAlwaysUnique) ...[

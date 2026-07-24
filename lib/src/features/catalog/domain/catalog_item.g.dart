@@ -20,6 +20,7 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       isUnique: json['isUnique'] as bool? ?? false,
+      isNonPerishable: json['isNonPerishable'] as bool? ?? true,
       defaultShelfLifeDays: (json['defaultShelfLifeDays'] as num?)?.toInt(),
       warningDaysBeforeExpiration:
           (json['warningDaysBeforeExpiration'] as num?)?.toInt(),
@@ -36,6 +37,7 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
       'customAttributes': instance.customAttributes,
       'magnitudes': instance.magnitudes,
       'isUnique': instance.isUnique,
+      'isNonPerishable': instance.isNonPerishable,
       'defaultShelfLifeDays': instance.defaultShelfLifeDays,
       'warningDaysBeforeExpiration': instance.warningDaysBeforeExpiration,
       'createdAt': instance.createdAt.toIso8601String(),

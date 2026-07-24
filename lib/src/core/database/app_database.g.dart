@@ -415,6 +415,16 @@ class $CatalogTableTable extends CatalogTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_unique" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _isNonPerishableMeta =
+      const VerificationMeta('isNonPerishable');
+  @override
+  late final GeneratedColumn<bool> isNonPerishable = GeneratedColumn<bool>(
+      'is_non_perishable', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_non_perishable" IN (0, 1))'),
+      defaultValue: const Constant(true));
   static const VerificationMeta _defaultShelfLifeDaysMeta =
       const VerificationMeta('defaultShelfLifeDays');
   @override
@@ -442,6 +452,7 @@ class $CatalogTableTable extends CatalogTable
         mainPhotoPath,
         customAttributes,
         isUnique,
+        isNonPerishable,
         defaultShelfLifeDays,
         warningDaysBeforeExpiration,
         createdAt
@@ -493,6 +504,12 @@ class $CatalogTableTable extends CatalogTable
       context.handle(_isUniqueMeta,
           isUnique.isAcceptableOrUnknown(data['is_unique']!, _isUniqueMeta));
     }
+    if (data.containsKey('is_non_perishable')) {
+      context.handle(
+          _isNonPerishableMeta,
+          isNonPerishable.isAcceptableOrUnknown(
+              data['is_non_perishable']!, _isNonPerishableMeta));
+    }
     if (data.containsKey('default_shelf_life_days')) {
       context.handle(
           _defaultShelfLifeDaysMeta,
@@ -535,6 +552,8 @@ class $CatalogTableTable extends CatalogTable
           DriftSqlType.string, data['${effectivePrefix}custom_attributes'])!,
       isUnique: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_unique'])!,
+      isNonPerishable: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}is_non_perishable'])!,
       defaultShelfLifeDays: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}default_shelf_life_days']),
       warningDaysBeforeExpiration: attachedDatabase.typeMapping.read(
@@ -560,6 +579,7 @@ class CatalogTableData extends DataClass
   final String? mainPhotoPath;
   final String customAttributes;
   final bool isUnique;
+  final bool isNonPerishable;
   final int? defaultShelfLifeDays;
   final int? warningDaysBeforeExpiration;
   final DateTime createdAt;
@@ -571,6 +591,7 @@ class CatalogTableData extends DataClass
       this.mainPhotoPath,
       required this.customAttributes,
       required this.isUnique,
+      required this.isNonPerishable,
       this.defaultShelfLifeDays,
       this.warningDaysBeforeExpiration,
       required this.createdAt});
@@ -588,6 +609,7 @@ class CatalogTableData extends DataClass
     }
     map['custom_attributes'] = Variable<String>(customAttributes);
     map['is_unique'] = Variable<bool>(isUnique);
+    map['is_non_perishable'] = Variable<bool>(isNonPerishable);
     if (!nullToAbsent || defaultShelfLifeDays != null) {
       map['default_shelf_life_days'] = Variable<int>(defaultShelfLifeDays);
     }
@@ -612,6 +634,7 @@ class CatalogTableData extends DataClass
           : Value(mainPhotoPath),
       customAttributes: Value(customAttributes),
       isUnique: Value(isUnique),
+      isNonPerishable: Value(isNonPerishable),
       defaultShelfLifeDays: defaultShelfLifeDays == null && nullToAbsent
           ? const Value.absent()
           : Value(defaultShelfLifeDays),
@@ -634,6 +657,7 @@ class CatalogTableData extends DataClass
       mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
       customAttributes: serializer.fromJson<String>(json['customAttributes']),
       isUnique: serializer.fromJson<bool>(json['isUnique']),
+      isNonPerishable: serializer.fromJson<bool>(json['isNonPerishable']),
       defaultShelfLifeDays:
           serializer.fromJson<int?>(json['defaultShelfLifeDays']),
       warningDaysBeforeExpiration:
@@ -652,6 +676,7 @@ class CatalogTableData extends DataClass
       'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
       'customAttributes': serializer.toJson<String>(customAttributes),
       'isUnique': serializer.toJson<bool>(isUnique),
+      'isNonPerishable': serializer.toJson<bool>(isNonPerishable),
       'defaultShelfLifeDays': serializer.toJson<int?>(defaultShelfLifeDays),
       'warningDaysBeforeExpiration':
           serializer.toJson<int?>(warningDaysBeforeExpiration),
@@ -667,6 +692,7 @@ class CatalogTableData extends DataClass
           Value<String?> mainPhotoPath = const Value.absent(),
           String? customAttributes,
           bool? isUnique,
+          bool? isNonPerishable,
           Value<int?> defaultShelfLifeDays = const Value.absent(),
           Value<int?> warningDaysBeforeExpiration = const Value.absent(),
           DateTime? createdAt}) =>
@@ -679,6 +705,7 @@ class CatalogTableData extends DataClass
             mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
         customAttributes: customAttributes ?? this.customAttributes,
         isUnique: isUnique ?? this.isUnique,
+        isNonPerishable: isNonPerishable ?? this.isNonPerishable,
         defaultShelfLifeDays: defaultShelfLifeDays.present
             ? defaultShelfLifeDays.value
             : this.defaultShelfLifeDays,
@@ -701,6 +728,9 @@ class CatalogTableData extends DataClass
           ? data.customAttributes.value
           : this.customAttributes,
       isUnique: data.isUnique.present ? data.isUnique.value : this.isUnique,
+      isNonPerishable: data.isNonPerishable.present
+          ? data.isNonPerishable.value
+          : this.isNonPerishable,
       defaultShelfLifeDays: data.defaultShelfLifeDays.present
           ? data.defaultShelfLifeDays.value
           : this.defaultShelfLifeDays,
@@ -721,6 +751,7 @@ class CatalogTableData extends DataClass
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
+          ..write('isNonPerishable: $isNonPerishable, ')
           ..write('defaultShelfLifeDays: $defaultShelfLifeDays, ')
           ..write('warningDaysBeforeExpiration: $warningDaysBeforeExpiration, ')
           ..write('createdAt: $createdAt')
@@ -737,6 +768,7 @@ class CatalogTableData extends DataClass
       mainPhotoPath,
       customAttributes,
       isUnique,
+      isNonPerishable,
       defaultShelfLifeDays,
       warningDaysBeforeExpiration,
       createdAt);
@@ -751,6 +783,7 @@ class CatalogTableData extends DataClass
           other.mainPhotoPath == this.mainPhotoPath &&
           other.customAttributes == this.customAttributes &&
           other.isUnique == this.isUnique &&
+          other.isNonPerishable == this.isNonPerishable &&
           other.defaultShelfLifeDays == this.defaultShelfLifeDays &&
           other.warningDaysBeforeExpiration ==
               this.warningDaysBeforeExpiration &&
@@ -765,6 +798,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   final Value<String?> mainPhotoPath;
   final Value<String> customAttributes;
   final Value<bool> isUnique;
+  final Value<bool> isNonPerishable;
   final Value<int?> defaultShelfLifeDays;
   final Value<int?> warningDaysBeforeExpiration;
   final Value<DateTime> createdAt;
@@ -777,6 +811,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
+    this.isNonPerishable = const Value.absent(),
     this.defaultShelfLifeDays = const Value.absent(),
     this.warningDaysBeforeExpiration = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -790,6 +825,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
+    this.isNonPerishable = const Value.absent(),
     this.defaultShelfLifeDays = const Value.absent(),
     this.warningDaysBeforeExpiration = const Value.absent(),
     required DateTime createdAt,
@@ -805,6 +841,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     Expression<String>? mainPhotoPath,
     Expression<String>? customAttributes,
     Expression<bool>? isUnique,
+    Expression<bool>? isNonPerishable,
     Expression<int>? defaultShelfLifeDays,
     Expression<int>? warningDaysBeforeExpiration,
     Expression<DateTime>? createdAt,
@@ -818,6 +855,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
       if (customAttributes != null) 'custom_attributes': customAttributes,
       if (isUnique != null) 'is_unique': isUnique,
+      if (isNonPerishable != null) 'is_non_perishable': isNonPerishable,
       if (defaultShelfLifeDays != null)
         'default_shelf_life_days': defaultShelfLifeDays,
       if (warningDaysBeforeExpiration != null)
@@ -835,6 +873,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       Value<String?>? mainPhotoPath,
       Value<String>? customAttributes,
       Value<bool>? isUnique,
+      Value<bool>? isNonPerishable,
       Value<int?>? defaultShelfLifeDays,
       Value<int?>? warningDaysBeforeExpiration,
       Value<DateTime>? createdAt,
@@ -847,6 +886,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
       customAttributes: customAttributes ?? this.customAttributes,
       isUnique: isUnique ?? this.isUnique,
+      isNonPerishable: isNonPerishable ?? this.isNonPerishable,
       defaultShelfLifeDays: defaultShelfLifeDays ?? this.defaultShelfLifeDays,
       warningDaysBeforeExpiration:
           warningDaysBeforeExpiration ?? this.warningDaysBeforeExpiration,
@@ -879,6 +919,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     if (isUnique.present) {
       map['is_unique'] = Variable<bool>(isUnique.value);
     }
+    if (isNonPerishable.present) {
+      map['is_non_perishable'] = Variable<bool>(isNonPerishable.value);
+    }
     if (defaultShelfLifeDays.present) {
       map['default_shelf_life_days'] =
           Variable<int>(defaultShelfLifeDays.value);
@@ -906,6 +949,7 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
+          ..write('isNonPerishable: $isNonPerishable, ')
           ..write('defaultShelfLifeDays: $defaultShelfLifeDays, ')
           ..write('warningDaysBeforeExpiration: $warningDaysBeforeExpiration, ')
           ..write('createdAt: $createdAt, ')
@@ -5499,6 +5543,7 @@ typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
   Value<String?> mainPhotoPath,
   Value<String> customAttributes,
   Value<bool> isUnique,
+  Value<bool> isNonPerishable,
   Value<int?> defaultShelfLifeDays,
   Value<int?> warningDaysBeforeExpiration,
   required DateTime createdAt,
@@ -5513,6 +5558,7 @@ typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
   Value<String?> mainPhotoPath,
   Value<String> customAttributes,
   Value<bool> isUnique,
+  Value<bool> isNonPerishable,
   Value<int?> defaultShelfLifeDays,
   Value<int?> warningDaysBeforeExpiration,
   Value<DateTime> createdAt,
@@ -5642,6 +5688,10 @@ class $$CatalogTableTableFilterComposer
 
   ColumnFilters<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isNonPerishable => $composableBuilder(
+      column: $table.isNonPerishable,
+      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get defaultShelfLifeDays => $composableBuilder(
       column: $table.defaultShelfLifeDays,
@@ -5796,6 +5846,10 @@ class $$CatalogTableTableOrderingComposer
   ColumnOrderings<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get isNonPerishable => $composableBuilder(
+      column: $table.isNonPerishable,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get defaultShelfLifeDays => $composableBuilder(
       column: $table.defaultShelfLifeDays,
       builder: (column) => ColumnOrderings(column));
@@ -5837,6 +5891,9 @@ class $$CatalogTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isUnique =>
       $composableBuilder(column: $table.isUnique, builder: (column) => column);
+
+  GeneratedColumn<bool> get isNonPerishable => $composableBuilder(
+      column: $table.isNonPerishable, builder: (column) => column);
 
   GeneratedColumn<int> get defaultShelfLifeDays => $composableBuilder(
       column: $table.defaultShelfLifeDays, builder: (column) => column);
@@ -5993,6 +6050,7 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
+            Value<bool> isNonPerishable = const Value.absent(),
             Value<int?> defaultShelfLifeDays = const Value.absent(),
             Value<int?> warningDaysBeforeExpiration = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -6006,6 +6064,7 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             customAttributes: customAttributes,
             isUnique: isUnique,
+            isNonPerishable: isNonPerishable,
             defaultShelfLifeDays: defaultShelfLifeDays,
             warningDaysBeforeExpiration: warningDaysBeforeExpiration,
             createdAt: createdAt,
@@ -6019,6 +6078,7 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
+            Value<bool> isNonPerishable = const Value.absent(),
             Value<int?> defaultShelfLifeDays = const Value.absent(),
             Value<int?> warningDaysBeforeExpiration = const Value.absent(),
             required DateTime createdAt,
@@ -6032,6 +6092,7 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             customAttributes: customAttributes,
             isUnique: isUnique,
+            isNonPerishable: isNonPerishable,
             defaultShelfLifeDays: defaultShelfLifeDays,
             warningDaysBeforeExpiration: warningDaysBeforeExpiration,
             createdAt: createdAt,

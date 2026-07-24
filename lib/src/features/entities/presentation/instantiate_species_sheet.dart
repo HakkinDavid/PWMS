@@ -77,7 +77,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       _availableSubspecies = [];
       _magnitudeControllers.clear();
 
-      if (species.defaultShelfLifeDays != null && species.defaultShelfLifeDays! > 0) {
+      if (species.canExpire && species.defaultShelfLifeDays != null && species.defaultShelfLifeDays! > 0) {
         _expirationDate = DateTime.now().add(Duration(days: species.defaultShelfLifeDays!));
       } else {
         _expirationDate = null;
@@ -467,57 +467,59 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               const SizedBox(height: 16),
             ],
 
-            // DatePicker de Caducidad
-            Text('Fecha de Caducidad (opcional)', style: theme.textTheme.labelLarge),
-            const SizedBox(height: 6),
-            InkWell(
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: _expirationDate ?? DateTime.now().add(const Duration(days: 30)),
-                  firstDate: DateTime(2020),
-                  lastDate: DateTime(2100),
-                );
-                if (picked != null) {
-                  setState(() => _expirationDate = picked);
-                }
-              },
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      color: _expirationDate != null ? theme.colorScheme.primary : Colors.grey,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        _expirationDate != null
-                            ? '${_expirationDate!.day.toString().padLeft(2, '0')}/${_expirationDate!.month.toString().padLeft(2, '0')}/${_expirationDate!.year}'
-                            : 'Sin fecha de caducidad',
-                        style: TextStyle(
-                          color: _expirationDate != null ? theme.colorScheme.onSurface : Colors.grey,
-                          fontWeight: _expirationDate != null ? FontWeight.w600 : FontWeight.normal,
+            // DatePicker de Caducidad (Solo para especies que pueden caducar)
+            if (_selectedSpecies != null && _selectedSpecies!.canExpire) ...[
+              Text('Fecha de Caducidad (opcional)', style: theme.textTheme.labelLarge),
+              const SizedBox(height: 6),
+              InkWell(
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: _expirationDate ?? DateTime.now().add(const Duration(days: 30)),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2100),
+                  );
+                  if (picked != null) {
+                    setState(() => _expirationDate = picked);
+                  }
+                },
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        color: _expirationDate != null ? theme.colorScheme.primary : Colors.grey,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          _expirationDate != null
+                              ? '${_expirationDate!.day.toString().padLeft(2, '0')}/${_expirationDate!.month.toString().padLeft(2, '0')}/${_expirationDate!.year}'
+                              : 'Sin fecha de caducidad',
+                          style: TextStyle(
+                            color: _expirationDate != null ? theme.colorScheme.onSurface : Colors.grey,
+                            fontWeight: _expirationDate != null ? FontWeight.w600 : FontWeight.normal,
+                          ),
                         ),
                       ),
-                    ),
-                    if (_expirationDate != null)
-                      IconButton(
-                        icon: const Icon(Icons.clear, size: 18),
-                        onPressed: () => setState(() => _expirationDate = null),
-                        tooltip: 'Quitar caducidad',
-                      ),
-                  ],
+                      if (_expirationDate != null)
+                        IconButton(
+                          icon: const Icon(Icons.clear, size: 18),
+                          onPressed: () => setState(() => _expirationDate = null),
+                          tooltip: 'Quitar caducidad',
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
+            ],
 
             // Optional Notes
             TextField(

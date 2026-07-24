@@ -32,17 +32,17 @@ void main() {
         updatedAt: now,
       );
 
-      expect(validEntity.isExpired(now), false);
-      expect(validEntity.isExpiringSoon(7, now), false);
-      expect(validEntity.isValid(now), true);
+      expect(validEntity.isExpired(now: now), false);
+      expect(validEntity.isExpiringSoon(warningDays: 7, now: now), false);
+      expect(validEntity.isValid(now: now), true);
 
-      expect(expiringSoonEntity.isExpired(now), false);
-      expect(expiringSoonEntity.isExpiringSoon(7, now), true);
-      expect(expiringSoonEntity.isValid(now), true);
+      expect(expiringSoonEntity.isExpired(now: now), false);
+      expect(expiringSoonEntity.isExpiringSoon(warningDays: 7, now: now), true);
+      expect(expiringSoonEntity.isValid(now: now), true);
 
-      expect(expiredEntity.isExpired(now), true);
-      expect(expiredEntity.isExpiringSoon(7, now), false);
-      expect(expiredEntity.isValid(now), false);
+      expect(expiredEntity.isExpired(now: now), true);
+      expect(expiredEntity.isExpiringSoon(warningDays: 7, now: now), false);
+      expect(expiredEntity.isValid(now: now), false);
     });
 
     test('EffectiveEntityGroup breakdown counts', () {
@@ -58,9 +58,9 @@ void main() {
       );
 
       expect(group.population, 3);
-      expect(group.expiredCount(now), 1);
-      expect(group.expiringSoonCount(7, now), 1);
-      expect(group.validCount(now), 2);
+      expect(group.expiredCount(now: now), 1);
+      expect(group.expiringSoonCount(warningDays: 7, now: now), 1);
+      expect(group.validCount(now: now), 2);
     });
 
     test('AppNotification snooze and active logic', () {

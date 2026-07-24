@@ -15,10 +15,15 @@ class CatalogItem with _$CatalogItem {
     @Default({}) Map<String, dynamic> customAttributes,
     @Default([]) List<SpeciesMagnitude> magnitudes,
     @Default(false) bool isUnique,
+    @Default(true) bool isNonPerishable,
     int? defaultShelfLifeDays,
     int? warningDaysBeforeExpiration,
     required DateTime createdAt,
   }) = _CatalogItem;
+
+  const CatalogItem._();
+
+  bool get canExpire => type == 'Objeto' && !isNonPerishable;
 
   factory CatalogItem.fromJson(Map<String, dynamic> json) => _$CatalogItemFromJson(json);
 }

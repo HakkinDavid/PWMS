@@ -15,12 +15,14 @@ class EffectiveEntityGroup {
 
   int get population => entities.length;
 
-  int expiredCount([DateTime? now]) => entities.where((e) => e.isExpired(now)).length;
+  int expiredCount({bool canExpire = true, DateTime? now}) =>
+      entities.where((e) => e.isExpired(canExpire: canExpire, now: now)).length;
 
-  int expiringSoonCount(int warningDays, [DateTime? now]) =>
-      entities.where((e) => e.isExpiringSoon(warningDays, now)).length;
+  int expiringSoonCount({required int warningDays, bool canExpire = true, DateTime? now}) =>
+      entities.where((e) => e.isExpiringSoon(warningDays: warningDays, canExpire: canExpire, now: now)).length;
 
-  int validCount([DateTime? now]) => entities.where((e) => e.isValid(now)).length;
+  int validCount({bool canExpire = true, DateTime? now}) =>
+      entities.where((e) => e.isValid(canExpire: canExpire, now: now)).length;
 
   WorldEntity get primaryEntity => entities.first;
 

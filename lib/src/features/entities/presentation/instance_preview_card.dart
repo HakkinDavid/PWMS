@@ -166,14 +166,17 @@ class InstancePreviewCard extends ConsumerWidget {
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                         ],
-                        // Expiration Badges for Entity or Group
+                        // Expiration Badges for Entity or Group (Only if species can expire)
                         Builder(
                           builder: (context) {
+                            final canExpire = species?.canExpire ?? false;
+                            if (!canExpire) return const SizedBox.shrink();
+
                             final warningDays = species?.warningDaysBeforeExpiration ?? 7;
                             final now = DateTime.now();
 
                             if (entity != null) {
-                              if (entity!.isExpired(now)) {
+                              if (entity!.isExpired(canExpire: canExpire, now: now)) {
                                 return Container(
                                   margin: const EdgeInsets.only(top: 4),
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -187,7 +190,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                     style: TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
                                   ),
                                 );
-                              } else if (entity!.isExpiringSoon(warningDays, now)) {
+                              } else if (entity!.isExpiringSoon(warningDays: warningDays, canExpire: canExpire, now: now)) {
                                 return Container(
                                   margin: const EdgeInsets.only(top: 4),
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -203,8 +206,8 @@ class InstancePreviewCard extends ConsumerWidget {
                                 );
                               }
                             } else if (group != null) {
-                              final expiredCnt = group!.expiredCount(now);
-                              final warningCnt = group!.expiringSoonCount(warningDays, now);
+                              final expiredCnt = group!.expiredCount(canExpire: canExpire, now: now);
+                              final warningCnt = group!.expiringSoonCount(warningDays: warningDays, canExpire: canExpire, now: now);
 
                               if (expiredCnt > 0 || warningCnt > 0) {
                                 return Padding(

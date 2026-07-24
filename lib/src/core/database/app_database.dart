@@ -25,6 +25,7 @@ class CatalogTable extends Table {
   TextColumn get mainPhotoPath => text().nullable()();
   TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
   BoolColumn get isUnique => boolean().withDefault(const Constant(false))();
+  BoolColumn get isNonPerishable => boolean().withDefault(const Constant(true))();
   IntColumn get defaultShelfLifeDays => integer().nullable()();
   IntColumn get warningDaysBeforeExpiration => integer().nullable()();
   DateTimeColumn get createdAt => dateTime()();

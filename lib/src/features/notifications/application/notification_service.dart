@@ -58,10 +58,13 @@ class NotificationService {
     // 1. Evaluate Entity Expirations & Warnings
     for (final entity in allEntities) {
       final species = catalogMap[entity.speciesId];
+      final canExpire = species?.canExpire ?? false;
+      if (!canExpire) continue;
+
       final speciesName = species?.name ?? 'Elemento';
       final warningDays = species?.warningDaysBeforeExpiration ?? 7;
 
-      if (entity.isExpired(now)) {
+      if (entity.isExpired(canExpire: canExpire, now: now)) {
         final key = 'expired_${entity.id}';
         final existing = existingMap[key];
 
@@ -83,7 +86,7 @@ class NotificationService {
             _showOSNotification(100 + entity.id.hashCode.abs() % 10000, notif.title, notif.message);
           }
         }
-      } else if (entity.isExpiringSoon(warningDays, now)) {
+      } else if (entity.isExpiringSoon(warningDays: warningDays, canExpire: canExpire, now: now)) {
         final key = 'expiring_soon_${entity.id}';
         final existing = existingMap[key];
 
@@ -124,9 +127,13 @@ class NotificationService {
 
       final species = catalogMap[reqSpeciesId];
       final speciesName = species?.name ?? 'Especie';
+      final canExpire = species?.canExpire ?? false;
 
       // Count valid non-expired stock
-      final validEntities = allEntities.where((e) => e.speciesId == reqSpeciesId && e.isValid(now)).toList();
+      final validEntities = allEntities.where((e) {
+        if (e.speciesId != reqSpeciesId) return false;
+        return e.isValid(canExpire: canExpire, now: now);
+      }).toList();
       final validStockCount = validEntities.length.toDouble();
 
       final key = 'unsatisfied_need_$reqSpeciesId';
