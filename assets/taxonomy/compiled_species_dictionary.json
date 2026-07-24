@@ -1,28 +1,31 @@
 [
   {
     "species": "Taladro",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "taladro",
       "taladro"
     ]
   },
   {
     "species": "Rotomartillo",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "rotomartillo",
       "rotomartillo"
     ]
   },
   {
     "species": "Esmeriladora",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "esmeriladora",
       "esmeriladora"
     ]
   },
   {
     "species": "Sierra Circular",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "sierra circular",
       "sierra",
@@ -31,7 +34,7 @@
   },
   {
     "species": "Sierra Caladora",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "sierra caladora",
       "sierra",
@@ -39,57 +42,73 @@
     ]
   },
   {
-    "species": "Lijadora",
-    "department": "Herramientas y Ferretería",
+    "species": "Sierra de Banco",
+    "department": "Herramientas",
     "keywords": [
+      "sierra de banco",
+      "sierra",
+      "banco"
+    ]
+  },
+  {
+    "species": "Lijadora",
+    "department": "Herramientas",
+    "keywords": [
+      "lijadora",
       "lijadora"
     ]
   },
   {
     "species": "Atornillador",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "atornillador",
       "atornillador"
     ]
   },
   {
     "species": "Martillo",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "martillo",
       "martillo"
     ]
   },
   {
     "species": "Marro",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "marro",
       "marro"
     ]
   },
   {
     "species": "Destornillador",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "destornillador",
       "destornillador"
     ]
   },
   {
     "species": "Desarmador",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "desarmador",
       "desarmador"
     ]
   },
   {
     "species": "Pinza",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "pinza",
       "pinza"
     ]
   },
   {
     "species": "Llave Perica",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "llave perica",
       "llave",
@@ -98,7 +117,7 @@
   },
   {
     "species": "Llave Española",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "llave española",
       "llave",
@@ -106,15 +125,25 @@
     ]
   },
   {
-    "species": "Flexómetro",
-    "department": "Herramientas y Ferretería",
+    "species": "Llave Allen",
+    "department": "Herramientas",
     "keywords": [
+      "llave allen",
+      "llave",
+      "allen"
+    ]
+  },
+  {
+    "species": "Flexómetro",
+    "department": "Herramientas",
+    "keywords": [
+      "flexómetro",
       "flexómetro"
     ]
   },
   {
     "species": "Cinta Métrica",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "cinta métrica",
       "cinta",
@@ -123,7 +152,7 @@
   },
   {
     "species": "Nivel de Gota",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "nivel de gota",
       "nivel",
@@ -132,14 +161,15 @@
   },
   {
     "species": "Cautín",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "cautín",
       "cautín"
     ]
   },
   {
     "species": "Pistola de Silicona",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "pistola de silicona",
       "pistola",
@@ -148,7 +178,7 @@
   },
   {
     "species": "Compresor de Aire",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "compresor de aire",
       "compresor",
@@ -157,7 +187,7 @@
   },
   {
     "species": "Caja de Herramienta",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "caja de herramienta",
       "caja",
@@ -166,63 +196,71 @@
   },
   {
     "species": "Tornillo",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "tornillo",
       "tornillo"
     ]
   },
   {
     "species": "Tuerca",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "tuerca",
       "tuerca"
     ]
   },
   {
     "species": "Rondana",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "rondana",
       "rondana"
     ]
   },
   {
     "species": "Clavo",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "clavo",
       "clavo"
     ]
   },
   {
     "species": "Taquete",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "taquete",
       "taquete"
     ]
   },
   {
     "species": "Pija",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "pija",
       "pija"
     ]
   },
   {
     "species": "Broca",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "broca",
       "broca"
     ]
   },
   {
     "species": "Lija",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
+      "lija",
       "lija"
     ]
   },
   {
     "species": "Cinta Aislar",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "cinta aislar",
       "cinta",
@@ -231,11 +269,92 @@
   },
   {
     "species": "Cinta Canela",
-    "department": "Herramientas y Ferretería",
+    "department": "Herramientas",
     "keywords": [
       "cinta canela",
       "cinta",
       "canela"
+    ]
+  },
+  {
+    "species": "Carretilla",
+    "department": "Herramientas",
+    "keywords": [
+      "carretilla",
+      "carretilla"
+    ]
+  },
+  {
+    "species": "Pala",
+    "department": "Herramientas",
+    "keywords": [
+      "pala",
+      "pala"
+    ]
+  },
+  {
+    "species": "Pico",
+    "department": "Herramientas",
+    "keywords": [
+      "pico",
+      "pico"
+    ]
+  },
+  {
+    "species": "Rastrillo",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "rastrillo",
+      "rastrillo"
+    ]
+  },
+  {
+    "species": "Machete",
+    "department": "Herramientas",
+    "keywords": [
+      "machete",
+      "machete"
+    ]
+  },
+  {
+    "species": "Cincel",
+    "department": "Herramientas",
+    "keywords": [
+      "cincel",
+      "cincel"
+    ]
+  },
+  {
+    "species": "Arco de Segueta",
+    "department": "Herramientas",
+    "keywords": [
+      "arco de segueta",
+      "arco",
+      "segueta"
+    ]
+  },
+  {
+    "species": "Segueta",
+    "department": "Herramientas",
+    "keywords": [
+      "segueta",
+      "segueta"
+    ]
+  },
+  {
+    "species": "Prensa C",
+    "department": "Herramientas",
+    "keywords": [
+      "prensa c",
+      "prensa"
+    ]
+  },
+  {
+    "species": "Cuchilla",
+    "department": "Herramientas",
+    "keywords": [
+      "cuchilla",
+      "cuchilla"
     ]
   },
   {
@@ -251,6 +370,7 @@
     "species": "Anticongelante",
     "department": "Automotriz",
     "keywords": [
+      "anticongelante",
       "anticongelante"
     ]
   },
@@ -285,6 +405,7 @@
     "species": "Llanta",
     "department": "Automotriz",
     "keywords": [
+      "llanta",
       "llanta"
     ]
   },
@@ -292,6 +413,7 @@
     "species": "Neumático",
     "department": "Automotriz",
     "keywords": [
+      "neumático",
       "neumático"
     ]
   },
@@ -354,6 +476,7 @@
     "species": "Bujía",
     "department": "Automotriz",
     "keywords": [
+      "bujía",
       "bujía"
     ]
   },
@@ -361,6 +484,7 @@
     "species": "Limpiaparabrisa",
     "department": "Automotriz",
     "keywords": [
+      "limpiaparabrisa",
       "limpiaparabrisa"
     ]
   },
@@ -371,6 +495,77 @@
       "gato hidráulico",
       "gato",
       "hidráulico"
+    ]
+  },
+  {
+    "species": "Amortiguador",
+    "department": "Automotriz",
+    "keywords": [
+      "amortiguador",
+      "amortiguador"
+    ]
+  },
+  {
+    "species": "Pastilla de Freno",
+    "department": "Automotriz",
+    "keywords": [
+      "pastilla de freno",
+      "pastilla",
+      "freno"
+    ]
+  },
+  {
+    "species": "Disco de Freno",
+    "department": "Automotriz",
+    "keywords": [
+      "disco de freno",
+      "disco",
+      "freno"
+    ]
+  },
+  {
+    "species": "Bomba de Agua Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "bomba de agua auto",
+      "bomba",
+      "agua",
+      "auto"
+    ]
+  },
+  {
+    "species": "Radiador",
+    "department": "Automotriz",
+    "keywords": [
+      "radiador",
+      "radiador"
+    ]
+  },
+  {
+    "species": "Faro Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "faro auto",
+      "faro",
+      "auto"
+    ]
+  },
+  {
+    "species": "Calavera Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "calavera auto",
+      "calavera",
+      "auto"
+    ]
+  },
+  {
+    "species": "Pluma Limpiaparabrisa",
+    "department": "Automotriz",
+    "keywords": [
+      "pluma limpiaparabrisa",
+      "pluma",
+      "limpiaparabrisa"
     ]
   },
   {
@@ -440,6 +635,7 @@
     "species": "Brocha",
     "department": "Plomería y Pintura",
     "keywords": [
+      "brocha",
       "brocha"
     ]
   },
@@ -447,6 +643,7 @@
     "species": "Rodillo",
     "department": "Plomería y Pintura",
     "keywords": [
+      "rodillo",
       "rodillo"
     ]
   },
@@ -454,6 +651,7 @@
     "species": "Sellador",
     "department": "Plomería y Pintura",
     "keywords": [
+      "sellador",
       "sellador"
     ]
   },
@@ -461,6 +659,7 @@
     "species": "Silicona",
     "department": "Plomería y Pintura",
     "keywords": [
+      "silicona",
       "silicona"
     ]
   },
@@ -468,7 +667,57 @@
     "species": "Impermeabilizante",
     "department": "Plomería y Pintura",
     "keywords": [
+      "impermeabilizante",
       "impermeabilizante"
+    ]
+  },
+  {
+    "species": "Fregadero",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "fregadero",
+      "fregadero"
+    ]
+  },
+  {
+    "species": "Mezcladora",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "mezcladora",
+      "mezcladora"
+    ]
+  },
+  {
+    "species": "Regadera",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "regadera",
+      "regadera"
+    ]
+  },
+  {
+    "species": "Cespól",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "cespól",
+      "cespól"
+    ]
+  },
+  {
+    "species": "Empaque",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "empaque",
+      "empaque"
+    ]
+  },
+  {
+    "species": "Conector PVC",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "conector pvc",
+      "conector",
+      "pvc"
     ]
   },
   {
@@ -484,6 +733,7 @@
     "species": "Procesador",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "procesador",
       "procesador"
     ]
   },
@@ -544,6 +794,7 @@
     "species": "Disipador",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "disipador",
       "disipador"
     ]
   },
@@ -559,6 +810,7 @@
     "species": "Monitor",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "monitor",
       "monitor"
     ]
   },
@@ -566,6 +818,7 @@
     "species": "Laptop",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "laptop",
       "laptop"
     ]
   },
@@ -582,6 +835,7 @@
     "species": "Smartphone",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "smartphone",
       "smartphone"
     ]
   },
@@ -589,6 +843,7 @@
     "species": "Tablet",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "tablet",
       "tablet"
     ]
   },
@@ -596,6 +851,7 @@
     "species": "Televisor",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "televisor",
       "televisor"
     ]
   },
@@ -603,6 +859,7 @@
     "species": "Audífono",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "audífono",
       "audífono"
     ]
   },
@@ -610,6 +867,7 @@
     "species": "Bocina",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "bocina",
       "bocina"
     ]
   },
@@ -626,6 +884,7 @@
     "species": "Mouse",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "mouse",
       "mouse"
     ]
   },
@@ -633,6 +892,7 @@
     "species": "Teclado",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "teclado",
       "teclado"
     ]
   },
@@ -640,6 +900,7 @@
     "species": "Cámara",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "cámara",
       "cámara"
     ]
   },
@@ -647,6 +908,7 @@
     "species": "Webcam",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "webcam",
       "webcam"
     ]
   },
@@ -654,6 +916,7 @@
     "species": "Dron",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "dron",
       "dron"
     ]
   },
@@ -661,6 +924,7 @@
     "species": "Impresora",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "impresora",
       "impresora"
     ]
   },
@@ -668,6 +932,7 @@
     "species": "Escáner",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "escáner",
       "escáner"
     ]
   },
@@ -675,6 +940,7 @@
     "species": "Router",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "router",
       "router"
     ]
   },
@@ -691,6 +957,7 @@
     "species": "Módem",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "módem",
       "módem"
     ]
   },
@@ -716,6 +983,7 @@
     "species": "Cargador",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "cargador",
       "cargador"
     ]
   },
@@ -741,6 +1009,7 @@
     "species": "Micrófono",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "micrófono",
       "micrófono"
     ]
   },
@@ -766,7 +1035,69 @@
     "species": "Proyector",
     "department": "Electrónica y Cómputo",
     "keywords": [
+      "proyector",
       "proyector"
+    ]
+  },
+  {
+    "species": "Servidor",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "servidor",
+      "servidor"
+    ]
+  },
+  {
+    "species": "Antena Wifi",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "antena wifi",
+      "antena",
+      "wifi"
+    ]
+  },
+  {
+    "species": "Disco Externo",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "disco externo",
+      "disco",
+      "externo"
+    ]
+  },
+  {
+    "species": "Lápiz Óptico",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "lápiz óptico",
+      "lápiz",
+      "óptico"
+    ]
+  },
+  {
+    "species": "Procesador de Audio",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "procesador de audio",
+      "procesador",
+      "audio"
+    ]
+  },
+  {
+    "species": "Mezcladora de Audio",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "mezcladora de audio",
+      "mezcladora",
+      "audio"
+    ]
+  },
+  {
+    "species": "Amplificador",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "amplificador",
+      "amplificador"
     ]
   },
   {
@@ -791,6 +1122,7 @@
     "species": "Videojuego",
     "department": "Videojuegos",
     "keywords": [
+      "videojuego",
       "videojuego"
     ]
   },
@@ -814,9 +1146,28 @@
     ]
   },
   {
+    "species": "Base de Carga",
+    "department": "Videojuegos",
+    "keywords": [
+      "base de carga",
+      "base",
+      "carga"
+    ]
+  },
+  {
+    "species": "Funda de Consola",
+    "department": "Videojuegos",
+    "keywords": [
+      "funda de consola",
+      "funda",
+      "consola"
+    ]
+  },
+  {
     "species": "Jabón",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "jabón",
       "jabón"
     ]
   },
@@ -824,6 +1175,7 @@
     "species": "Champú",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "champú",
       "champú"
     ]
   },
@@ -831,6 +1183,7 @@
     "species": "Acondicionador",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "acondicionador",
       "acondicionador"
     ]
   },
@@ -901,6 +1254,7 @@
     "species": "Desodorante",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "desodorante",
       "desodorante"
     ]
   },
@@ -908,20 +1262,15 @@
     "species": "Antitraspirante",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "antitraspirante",
       "antitraspirante"
-    ]
-  },
-  {
-    "species": "Rastrillo",
-    "department": "Salud y Cuidado Personal",
-    "keywords": [
-      "rastrillo"
     ]
   },
   {
     "species": "Rasuradora",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "rasuradora",
       "rasuradora"
     ]
   },
@@ -938,6 +1287,7 @@
     "species": "Perfume",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "perfume",
       "perfume"
     ]
   },
@@ -945,6 +1295,7 @@
     "species": "Loción",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "loción",
       "loción"
     ]
   },
@@ -952,6 +1303,7 @@
     "species": "Maquillaje",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "maquillaje",
       "maquillaje"
     ]
   },
@@ -959,6 +1311,7 @@
     "species": "Labial",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "labial",
       "labial"
     ]
   },
@@ -966,6 +1319,7 @@
     "species": "Rímel",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "rímel",
       "rímel"
     ]
   },
@@ -1000,6 +1354,7 @@
     "species": "Medicina",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "medicina",
       "medicina"
     ]
   },
@@ -1007,6 +1362,7 @@
     "species": "Analgésico",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "analgésico",
       "analgésico"
     ]
   },
@@ -1014,6 +1370,7 @@
     "species": "Antihistamínico",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "antihistamínico",
       "antihistamínico"
     ]
   },
@@ -1021,6 +1378,7 @@
     "species": "Vitamina",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "vitamina",
       "vitamina"
     ]
   },
@@ -1028,6 +1386,7 @@
     "species": "Jarabe",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "jarabe",
       "jarabe"
     ]
   },
@@ -1035,6 +1394,7 @@
     "species": "Termómetro",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "termómetro",
       "termómetro"
     ]
   },
@@ -1042,6 +1402,7 @@
     "species": "Curita",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "curita",
       "curita"
     ]
   },
@@ -1049,6 +1410,7 @@
     "species": "Algodón",
     "department": "Salud y Cuidado Personal",
     "keywords": [
+      "algodón",
       "algodón"
     ]
   },
@@ -1062,9 +1424,100 @@
     ]
   },
   {
+    "species": "Oxímetro",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "oxímetro",
+      "oxímetro"
+    ]
+  },
+  {
+    "species": "Baumanómetro",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "baumanómetro",
+      "baumanómetro"
+    ]
+  },
+  {
+    "species": "Glucómetro",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "glucómetro",
+      "glucómetro"
+    ]
+  },
+  {
+    "species": "Jeringa",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "jeringa",
+      "jeringa"
+    ]
+  },
+  {
+    "species": "Gasa",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "gasa",
+      "gasa"
+    ]
+  },
+  {
+    "species": "Venda",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "venda",
+      "venda"
+    ]
+  },
+  {
+    "species": "Suero Oral",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "suero oral",
+      "suero",
+      "oral"
+    ]
+  },
+  {
+    "species": "Pastilla",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "pastilla",
+      "pastilla"
+    ]
+  },
+  {
+    "species": "Cápsula",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "cápsula",
+      "cápsula"
+    ]
+  },
+  {
+    "species": "Pomada",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "pomada",
+      "pomada"
+    ]
+  },
+  {
+    "species": "Gel Antibacterial",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "gel antibacterial",
+      "gel",
+      "antibacterial"
+    ]
+  },
+  {
     "species": "Leche",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "leche",
       "leche"
     ]
   },
@@ -1072,6 +1525,7 @@
     "species": "Huevo",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "huevo",
       "huevo"
     ]
   },
@@ -1079,6 +1533,7 @@
     "species": "Queso",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "queso",
       "queso"
     ]
   },
@@ -1086,6 +1541,7 @@
     "species": "Yogurt",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "yogurt",
       "yogurt"
     ]
   },
@@ -1093,6 +1549,7 @@
     "species": "Mantequilla",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "mantequilla",
       "mantequilla"
     ]
   },
@@ -1100,6 +1557,7 @@
     "species": "Margarina",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "margarina",
       "margarina"
     ]
   },
@@ -1125,6 +1583,7 @@
     "species": "Tomate",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "tomate",
       "tomate"
     ]
   },
@@ -1132,6 +1591,7 @@
     "species": "Jitomate",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "jitomate",
       "jitomate"
     ]
   },
@@ -1139,6 +1599,7 @@
     "species": "Cebolla",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "cebolla",
       "cebolla"
     ]
   },
@@ -1146,6 +1607,7 @@
     "species": "Papa",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "papa",
       "papa"
     ]
   },
@@ -1153,6 +1615,7 @@
     "species": "Aguacate",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "aguacate",
       "aguacate"
     ]
   },
@@ -1160,6 +1623,7 @@
     "species": "Limón",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "limón",
       "limón"
     ]
   },
@@ -1167,6 +1631,7 @@
     "species": "Manzana",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "manzana",
       "manzana"
     ]
   },
@@ -1174,13 +1639,39 @@
     "species": "Plátano",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "plátano",
       "plátano"
+    ]
+  },
+  {
+    "species": "Naranja",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "naranja",
+      "naranja"
+    ]
+  },
+  {
+    "species": "Uva",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "uva",
+      "uva"
+    ]
+  },
+  {
+    "species": "Fresa",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "fresa",
+      "fresa"
     ]
   },
   {
     "species": "Azúcar",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "azúcar",
       "azúcar"
     ]
   },
@@ -1188,6 +1679,7 @@
     "species": "Harina",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "harina",
       "harina"
     ]
   },
@@ -1195,6 +1687,7 @@
     "species": "Arroz",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "arroz",
       "arroz"
     ]
   },
@@ -1202,6 +1695,7 @@
     "species": "Frijol",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "frijol",
       "frijol"
     ]
   },
@@ -1209,6 +1703,7 @@
     "species": "Maíz",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "maíz",
       "maíz"
     ]
   },
@@ -1216,6 +1711,7 @@
     "species": "Lenteja",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "lenteja",
       "lenteja"
     ]
   },
@@ -1223,6 +1719,7 @@
     "species": "Garbanzo",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "garbanzo",
       "garbanzo"
     ]
   },
@@ -1239,6 +1736,7 @@
     "species": "Salsa",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "salsa",
       "salsa"
     ]
   },
@@ -1264,6 +1762,7 @@
     "species": "Atún",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "atún",
       "atún"
     ]
   },
@@ -1271,6 +1770,7 @@
     "species": "Sardina",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "sardina",
       "sardina"
     ]
   },
@@ -1314,6 +1814,7 @@
     "species": "Galleta",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "galleta",
       "galleta"
     ]
   },
@@ -1321,6 +1822,7 @@
     "species": "Chocolate",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "chocolate",
       "chocolate"
     ]
   },
@@ -1328,6 +1830,7 @@
     "species": "Dulce",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "dulce",
       "dulce"
     ]
   },
@@ -1335,6 +1838,7 @@
     "species": "Palomita",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "palomita",
       "palomita"
     ]
   },
@@ -1342,6 +1846,7 @@
     "species": "Cereal",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "cereal",
       "cereal"
     ]
   },
@@ -1367,6 +1872,7 @@
     "species": "Tortilla",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "tortilla",
       "tortilla"
     ]
   },
@@ -1374,6 +1880,7 @@
     "species": "Jamón",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "jamón",
       "jamón"
     ]
   },
@@ -1381,6 +1888,7 @@
     "species": "Salchicha",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "salchicha",
       "salchicha"
     ]
   },
@@ -1388,13 +1896,89 @@
     "species": "Tocino",
     "department": "Alimentos y Abarrotes",
     "keywords": [
+      "tocino",
       "tocino"
+    ]
+  },
+  {
+    "species": "Chorizo",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "chorizo",
+      "chorizo"
+    ]
+  },
+  {
+    "species": "Carne de R",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "carne de r",
+      "carne"
+    ]
+  },
+  {
+    "species": "Carne de Cerdo",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "carne de cerdo",
+      "carne",
+      "cerdo"
+    ]
+  },
+  {
+    "species": "Pollo",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "pollo",
+      "pollo"
+    ]
+  },
+  {
+    "species": "Pescado",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "pescado",
+      "pescado"
+    ]
+  },
+  {
+    "species": "Camarón",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "camarón",
+      "camarón"
+    ]
+  },
+  {
+    "species": "Cereal de Trigo",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "cereal de trigo",
+      "cereal",
+      "trigo"
+    ]
+  },
+  {
+    "species": "Avena",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "avena",
+      "avena"
+    ]
+  },
+  {
+    "species": "Miel",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "miel",
+      "miel"
     ]
   },
   {
     "species": "Refresco",
     "department": "Bebidas",
     "keywords": [
+      "refresco",
       "refresco"
     ]
   },
@@ -1420,6 +2004,7 @@
     "species": "Jugo",
     "department": "Bebidas",
     "keywords": [
+      "jugo",
       "jugo"
     ]
   },
@@ -1427,6 +2012,7 @@
     "species": "Néctar",
     "department": "Bebidas",
     "keywords": [
+      "néctar",
       "néctar"
     ]
   },
@@ -1449,18 +2035,10 @@
     ]
   },
   {
-    "species": "Suero Oral",
-    "department": "Bebidas",
-    "keywords": [
-      "suero oral",
-      "suero",
-      "oral"
-    ]
-  },
-  {
     "species": "Cerveza",
     "department": "Bebidas",
     "keywords": [
+      "cerveza",
       "cerveza"
     ]
   },
@@ -1468,6 +2046,7 @@
     "species": "Vino",
     "department": "Bebidas",
     "keywords": [
+      "vino",
       "vino"
     ]
   },
@@ -1475,6 +2054,7 @@
     "species": "Tequila",
     "department": "Bebidas",
     "keywords": [
+      "tequila",
       "tequila"
     ]
   },
@@ -1482,6 +2062,7 @@
     "species": "Whisky",
     "department": "Bebidas",
     "keywords": [
+      "whisky",
       "whisky"
     ]
   },
@@ -1489,6 +2070,7 @@
     "species": "Ron",
     "department": "Bebidas",
     "keywords": [
+      "ron",
       "ron"
     ]
   },
@@ -1496,6 +2078,7 @@
     "species": "Vodka",
     "department": "Bebidas",
     "keywords": [
+      "vodka",
       "vodka"
     ]
   },
@@ -1503,13 +2086,31 @@
     "species": "Mezcal",
     "department": "Bebidas",
     "keywords": [
+      "mezcal",
       "mezcal"
+    ]
+  },
+  {
+    "species": "Brandy",
+    "department": "Bebidas",
+    "keywords": [
+      "brandy",
+      "brandy"
+    ]
+  },
+  {
+    "species": "Ginebra",
+    "department": "Bebidas",
+    "keywords": [
+      "ginebra",
+      "ginebra"
     ]
   },
   {
     "species": "Café",
     "department": "Bebidas",
     "keywords": [
+      "café",
       "café"
     ]
   },
@@ -1521,9 +2122,18 @@
     ]
   },
   {
+    "species": "Malteada",
+    "department": "Bebidas",
+    "keywords": [
+      "malteada",
+      "malteada"
+    ]
+  },
+  {
     "species": "Cloro",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "cloro",
       "cloro"
     ]
   },
@@ -1531,6 +2141,7 @@
     "species": "Detergente",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "detergente",
       "detergente"
     ]
   },
@@ -1538,6 +2149,7 @@
     "species": "Suavizante",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "suavizante",
       "suavizante"
     ]
   },
@@ -1545,6 +2157,7 @@
     "species": "Lavavajilla",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "lavavajilla",
       "lavavajilla"
     ]
   },
@@ -1552,6 +2165,7 @@
     "species": "Desinfectante",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "desinfectante",
       "desinfectante"
     ]
   },
@@ -1559,6 +2173,7 @@
     "species": "Limpiacristal",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "limpiacristal",
       "limpiacristal"
     ]
   },
@@ -1584,6 +2199,7 @@
     "species": "Escoba",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "escoba",
       "escoba"
     ]
   },
@@ -1591,6 +2207,7 @@
     "species": "Trapeador",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "trapeador",
       "trapeador"
     ]
   },
@@ -1598,6 +2215,7 @@
     "species": "Recogedor",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "recogedor",
       "recogedor"
     ]
   },
@@ -1605,6 +2223,7 @@
     "species": "Cubeta",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "cubeta",
       "cubeta"
     ]
   },
@@ -1630,6 +2249,7 @@
     "species": "Servilleta",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "servilleta",
       "servilleta"
     ]
   },
@@ -1655,6 +2275,7 @@
     "species": "Refrigerador",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "refrigerador",
       "refrigerador"
     ]
   },
@@ -1662,6 +2283,7 @@
     "species": "Lavadora",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "lavadora",
       "lavadora"
     ]
   },
@@ -1669,6 +2291,7 @@
     "species": "Secadora",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "secadora",
       "secadora"
     ]
   },
@@ -1676,6 +2299,7 @@
     "species": "Estufa",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "estufa",
       "estufa"
     ]
   },
@@ -1683,6 +2307,7 @@
     "species": "Horno",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "horno",
       "horno"
     ]
   },
@@ -1690,6 +2315,7 @@
     "species": "Microonda",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "microonda",
       "microonda"
     ]
   },
@@ -1697,6 +2323,7 @@
     "species": "Licuadora",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "licuadora",
       "licuadora"
     ]
   },
@@ -1713,6 +2340,7 @@
     "species": "Cafetera",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "cafetera",
       "cafetera"
     ]
   },
@@ -1720,6 +2348,7 @@
     "species": "Batidora",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "batidora",
       "batidora"
     ]
   },
@@ -1727,6 +2356,7 @@
     "species": "Tostadora",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "tostadora",
       "tostadora"
     ]
   },
@@ -1734,6 +2364,7 @@
     "species": "Aspiradora",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "aspiradora",
       "aspiradora"
     ]
   },
@@ -1741,6 +2372,7 @@
     "species": "Sartén",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "sartén",
       "sartén"
     ]
   },
@@ -1748,6 +2380,7 @@
     "species": "Olla",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "olla",
       "olla"
     ]
   },
@@ -1755,6 +2388,7 @@
     "species": "Vajilla",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "vajilla",
       "vajilla"
     ]
   },
@@ -1762,6 +2396,7 @@
     "species": "Vaso",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "vaso",
       "vaso"
     ]
   },
@@ -1769,13 +2404,48 @@
     "species": "Taza",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "taza",
       "taza"
+    ]
+  },
+  {
+    "species": "Plato",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "plato",
+      "plato"
+    ]
+  },
+  {
+    "species": "Cuchillo de Cocina",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "cuchillo de cocina",
+      "cuchillo",
+      "cocina"
+    ]
+  },
+  {
+    "species": "Tenedor",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "tenedor",
+      "tenedor"
+    ]
+  },
+  {
+    "species": "Cuchara",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "cuchara",
+      "cuchara"
     ]
   },
   {
     "species": "Foco",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "foco",
       "foco"
     ]
   },
@@ -1783,6 +2453,7 @@
     "species": "Lámpara",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "lámpara",
       "lámpara"
     ]
   },
@@ -1790,6 +2461,7 @@
     "species": "Manta",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "manta",
       "manta"
     ]
   },
@@ -1797,13 +2469,39 @@
     "species": "Almohada",
     "department": "Hogar y Limpieza",
     "keywords": [
+      "almohada",
       "almohada"
+    ]
+  },
+  {
+    "species": "Colchón",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "colchón",
+      "colchón"
+    ]
+  },
+  {
+    "species": "Sábana",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "sábana",
+      "sábana"
+    ]
+  },
+  {
+    "species": "Cama",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "cama",
+      "cama"
     ]
   },
   {
     "species": "Tenis",
     "department": "Ropa y Calzado",
     "keywords": [
+      "tenis",
       "tenis"
     ]
   },
@@ -1811,6 +2509,7 @@
     "species": "Zapato",
     "department": "Ropa y Calzado",
     "keywords": [
+      "zapato",
       "zapato"
     ]
   },
@@ -1818,6 +2517,7 @@
     "species": "Bota",
     "department": "Ropa y Calzado",
     "keywords": [
+      "bota",
       "bota"
     ]
   },
@@ -1825,6 +2525,7 @@
     "species": "Sandalia",
     "department": "Ropa y Calzado",
     "keywords": [
+      "sandalia",
       "sandalia"
     ]
   },
@@ -1832,6 +2533,7 @@
     "species": "Playera",
     "department": "Ropa y Calzado",
     "keywords": [
+      "playera",
       "playera"
     ]
   },
@@ -1839,6 +2541,7 @@
     "species": "Camisa",
     "department": "Ropa y Calzado",
     "keywords": [
+      "camisa",
       "camisa"
     ]
   },
@@ -1846,6 +2549,7 @@
     "species": "Pantalón",
     "department": "Ropa y Calzado",
     "keywords": [
+      "pantalón",
       "pantalón"
     ]
   },
@@ -1853,6 +2557,7 @@
     "species": "Jean",
     "department": "Ropa y Calzado",
     "keywords": [
+      "jean",
       "jean"
     ]
   },
@@ -1860,6 +2565,7 @@
     "species": "Chamarra",
     "department": "Ropa y Calzado",
     "keywords": [
+      "chamarra",
       "chamarra"
     ]
   },
@@ -1867,6 +2573,7 @@
     "species": "Sudadera",
     "department": "Ropa y Calzado",
     "keywords": [
+      "sudadera",
       "sudadera"
     ]
   },
@@ -1874,6 +2581,7 @@
     "species": "Vestido",
     "department": "Ropa y Calzado",
     "keywords": [
+      "vestido",
       "vestido"
     ]
   },
@@ -1881,6 +2589,7 @@
     "species": "Short",
     "department": "Ropa y Calzado",
     "keywords": [
+      "short",
       "short"
     ]
   },
@@ -1888,6 +2597,7 @@
     "species": "Calcetín",
     "department": "Ropa y Calzado",
     "keywords": [
+      "calcetín",
       "calcetín"
     ]
   },
@@ -1895,7 +2605,32 @@
     "species": "Interior",
     "department": "Ropa y Calzado",
     "keywords": [
+      "interior",
       "interior"
+    ]
+  },
+  {
+    "species": "Cinturón",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "cinturón",
+      "cinturón"
+    ]
+  },
+  {
+    "species": "Gorra",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "gorra",
+      "gorra"
+    ]
+  },
+  {
+    "species": "Sombrero",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "sombrero",
+      "sombrero"
     ]
   },
   {
@@ -1969,9 +2704,26 @@
     ]
   },
   {
+    "species": "Pechera",
+    "department": "Mascotas",
+    "keywords": [
+      "pechera",
+      "pechera"
+    ]
+  },
+  {
+    "species": "Correa",
+    "department": "Mascotas",
+    "keywords": [
+      "correa",
+      "correa"
+    ]
+  },
+  {
     "species": "Pañal",
     "department": "Bebés",
     "keywords": [
+      "pañal",
       "pañal"
     ]
   },
@@ -1997,6 +2749,7 @@
     "species": "Biberón",
     "department": "Bebés",
     "keywords": [
+      "biberón",
       "biberón"
     ]
   },
@@ -2004,6 +2757,7 @@
     "species": "Chupón",
     "department": "Bebés",
     "keywords": [
+      "chupón",
       "chupón"
     ]
   },
@@ -2011,6 +2765,7 @@
     "species": "Carriola",
     "department": "Bebés",
     "keywords": [
+      "carriola",
       "carriola"
     ]
   },
@@ -2018,13 +2773,24 @@
     "species": "Cuna",
     "department": "Bebés",
     "keywords": [
+      "cuna",
       "cuna"
+    ]
+  },
+  {
+    "species": "Silla de Bebé",
+    "department": "Bebés",
+    "keywords": [
+      "silla de bebé",
+      "silla",
+      "bebé"
     ]
   },
   {
     "species": "Juguete",
     "department": "Juguetes",
     "keywords": [
+      "juguete",
       "juguete"
     ]
   },
@@ -2032,6 +2798,7 @@
     "species": "Lego",
     "department": "Juguetes",
     "keywords": [
+      "lego",
       "lego"
     ]
   },
@@ -2048,6 +2815,7 @@
     "species": "Muñeca",
     "department": "Juguetes",
     "keywords": [
+      "muñeca",
       "muñeca"
     ]
   },
@@ -2064,6 +2832,7 @@
     "species": "Peluche",
     "department": "Juguetes",
     "keywords": [
+      "peluche",
       "peluche"
     ]
   },
@@ -2077,9 +2846,34 @@
     ]
   },
   {
+    "species": "Montable",
+    "department": "Juguetes",
+    "keywords": [
+      "montable",
+      "montable"
+    ]
+  },
+  {
+    "species": "Triciclo",
+    "department": "Juguetes",
+    "keywords": [
+      "triciclo",
+      "triciclo"
+    ]
+  },
+  {
+    "species": "Patín",
+    "department": "Juguetes",
+    "keywords": [
+      "patín",
+      "patín"
+    ]
+  },
+  {
     "species": "Cuaderno",
     "department": "Oficina y Papelería",
     "keywords": [
+      "cuaderno",
       "cuaderno"
     ]
   },
@@ -2087,6 +2881,7 @@
     "species": "Libreta",
     "department": "Oficina y Papelería",
     "keywords": [
+      "libreta",
       "libreta"
     ]
   },
@@ -2094,6 +2889,7 @@
     "species": "Pluma",
     "department": "Oficina y Papelería",
     "keywords": [
+      "pluma",
       "pluma"
     ]
   },
@@ -2101,6 +2897,7 @@
     "species": "Bolígrafo",
     "department": "Oficina y Papelería",
     "keywords": [
+      "bolígrafo",
       "bolígrafo"
     ]
   },
@@ -2108,6 +2905,7 @@
     "species": "Lápiz",
     "department": "Oficina y Papelería",
     "keywords": [
+      "lápiz",
       "lápiz"
     ]
   },
@@ -2115,6 +2913,7 @@
     "species": "Marcador",
     "department": "Oficina y Papelería",
     "keywords": [
+      "marcador",
       "marcador"
     ]
   },
@@ -2122,6 +2921,7 @@
     "species": "Carpeta",
     "department": "Oficina y Papelería",
     "keywords": [
+      "carpeta",
       "carpeta"
     ]
   },
@@ -2138,6 +2938,7 @@
     "species": "Grapa",
     "department": "Oficina y Papelería",
     "keywords": [
+      "grapa",
       "grapa"
     ]
   },
@@ -2145,6 +2946,7 @@
     "species": "Tijera",
     "department": "Oficina y Papelería",
     "keywords": [
+      "tijera",
       "tijera"
     ]
   },
@@ -2152,6 +2954,7 @@
     "species": "Mochila",
     "department": "Oficina y Papelería",
     "keywords": [
+      "mochila",
       "mochila"
     ]
   },
@@ -2159,13 +2962,48 @@
     "species": "Libro",
     "department": "Oficina y Papelería",
     "keywords": [
+      "libro",
       "libro"
+    ]
+  },
+  {
+    "species": "Calculadora",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "calculadora",
+      "calculadora"
+    ]
+  },
+  {
+    "species": "Engrapadora",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "engrapadora",
+      "engrapadora"
+    ]
+  },
+  {
+    "species": "Cinta Adhesiva",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "cinta adhesiva",
+      "cinta",
+      "adhesiva"
+    ]
+  },
+  {
+    "species": "Regla",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "regla",
+      "regla"
     ]
   },
   {
     "species": "Mancuerna",
     "department": "Deportes",
     "keywords": [
+      "mancuerna",
       "mancuerna"
     ]
   },
@@ -2197,9 +3035,19 @@
     ]
   },
   {
+    "species": "Balón de Voleibol",
+    "department": "Deportes",
+    "keywords": [
+      "balón de voleibol",
+      "balón",
+      "voleibol"
+    ]
+  },
+  {
     "species": "Bicicleta",
     "department": "Deportes",
     "keywords": [
+      "bicicleta",
       "bicicleta"
     ]
   },
@@ -2210,6 +3058,33 @@
       "casco de bicicleta",
       "casco",
       "bicicleta"
+    ]
+  },
+  {
+    "species": "Cuerda para Saltar",
+    "department": "Deportes",
+    "keywords": [
+      "cuerda para saltar",
+      "cuerda",
+      "para",
+      "saltar"
+    ]
+  },
+  {
+    "species": "Raqueta",
+    "department": "Deportes",
+    "keywords": [
+      "raqueta",
+      "raqueta"
+    ]
+  },
+  {
+    "species": "Guantes de Box",
+    "department": "Deportes",
+    "keywords": [
+      "guantes de box",
+      "guantes",
+      "box"
     ]
   }
 ]
