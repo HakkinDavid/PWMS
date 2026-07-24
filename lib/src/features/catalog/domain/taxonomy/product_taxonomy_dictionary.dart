@@ -69,7 +69,7 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Monitor',
       department: 'Electrónica y Cómputo',
-      keywords: ['monitor', 'pantalla', 'display', 'p2425de', 'g65b', 'odyssey', 'curved monitor', 'gaming monitor', 'hz monitor'],
+      keywords: ['monitor', 'pantalla', 'display', 'curved monitor', 'gaming monitor', 'hz monitor'],
       regexPatterns: [r'\b\d{2}"\s*monitor\b', r'\b\d{2}-inch\b'],
     ),
     CategoryDefinition(
@@ -110,7 +110,7 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Mouse',
       department: 'Electrónica y Cómputo',
-      keywords: ['g203', 'g502', 'mouse', 'raton', 'ratón', 'mouse gamer', 'mouse inalambrico'],
+      keywords: ['mouse', 'raton', 'ratón', 'mouse gamer', 'mouse inalambrico'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Teclado',
@@ -149,7 +149,7 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Control de Videojuegos',
       department: 'Videojuegos',
-      keywords: ['dualsense', 'dualshock', 'gamepad', 'controller', 'joy-con', 'controlador', 'control ps5', 'control xbox', 'volante gamer', 'joystick'],
+      keywords: ['gamepad', 'controller', 'joy-con', 'controlador', 'control ps5', 'control xbox', 'volante gamer', 'joystick'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Consola de Videojuegos',
@@ -168,7 +168,7 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Lavado Nasal',
       department: 'Salud y Cuidado Personal',
-      keywords: ['sinusrinse', 'neilmed', 'saline', 'nasal', 'rinse', 'solucion salina nasal', 'lavado nasal'],
+      keywords: ['saline', 'nasal', 'rinse', 'solucion salina nasal', 'lavado nasal'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Medicina',
@@ -242,7 +242,7 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Yogurt',
       department: 'Alimentos y Abarrotes',
-      keywords: ['yogurt', 'yogur', 'yoplait', 'activia', 'danone'],
+      keywords: ['yogurt', 'yogur', 'yogurt griego'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Mantequilla',
@@ -252,7 +252,7 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Puré de Tomate',
       department: 'Alimentos y Abarrotes',
-      keywords: ['pure de tomate', 'puré de tomate', 'tomate molido', 'del fuerte puré', 'del fuerte tomate'],
+      keywords: ['pure de tomate', 'puré de tomate', 'tomate molido', 'tomate en pasta'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Tomate',
@@ -267,7 +267,7 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Harina',
       department: 'Alimentos y Abarrotes',
-      keywords: ['harina', 'harina de trigo', 'harina de maiz', 'maseca', 'massa'],
+      keywords: ['harina', 'harina de trigo', 'harina de maiz', 'massa'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Arroz',
@@ -282,22 +282,22 @@ class ProductTaxonomyDictionary {
     CategoryDefinition(
       generalSpeciesName: 'Aceite Comestible',
       department: 'Alimentos y Abarrotes',
-      keywords: ['aceite comestible', 'aceite vegetal', 'aceite 123', 'aceite capullo', 'aceite de oliva'],
+      keywords: ['aceite comestible', 'aceite vegetal', 'aceite de oliva'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Salsa',
       department: 'Alimentos y Abarrotes',
-      keywords: ['salsa', 'salsa botanera', 'salsa valentina', 'salsa huichol', 'salsa de chile'],
+      keywords: ['salsa', 'salsa botanera', 'salsa picante', 'salsa de chile'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Dulce de Chile',
       department: 'Alimentos y Abarrotes',
-      keywords: ['miguelito', 'chile en polvo', 'dulce de chile', 'tajin', 'tajín'],
+      keywords: ['chile en polvo', 'dulce de chile', 'polvo picante'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Agua Embotellada',
       department: 'Alimentos y Abarrotes',
-      keywords: ['agua purificada', 'agua mineral', 'agua natural', 'garrafon de agua', 'bonafont', 'ciel', 'epura'],
+      keywords: ['agua purificada', 'agua mineral', 'agua natural', 'garrafon de agua'],
     ),
     CategoryDefinition(
       generalSpeciesName: 'Jugo',

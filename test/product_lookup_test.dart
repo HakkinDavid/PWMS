@@ -5,7 +5,7 @@ import 'package:http/testing.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/product_lookup_service.dart';
 
 void main() {
-  group('ProductLookupService V5 Atomic Singular Species Tests', () {
+  group('ProductLookupService V5 Pure Generic Taxonomy Tests', () {
     test('lookupByBarcode handles barcode 8806094942965 via web search fallback', () async {
       final mockClient = MockClient((request) async {
         if (request.url.toString().contains('html.duckduckgo.com')) {
@@ -32,7 +32,7 @@ void main() {
       expect(result.brand, 'Samsung');
     });
 
-    test('Taxonomy mapping correctly classifies RTX 4060, DualSense, Logitech G203, NeilMed SinusRinse with Atomic Singular Species', () async {
+    test('Taxonomy mapping correctly classifies generic hardware, controllers, mice, and nasal care', () async {
       final mockClient = MockClient((request) async {
         final url = request.url.toString();
         if (url.contains('html.duckduckgo.com')) {
@@ -58,23 +58,23 @@ void main() {
       expect(rtxResult, isNotNull);
       expect(rtxResult!.generalSpeciesName, 'Tarjeta de Video');
 
-      // DualSense -> Control de Videojuegos
-      final dualSenseResult = await service.lookupByNameOrBrand('Dualsense Midnight Black');
+      // Controller -> Control de Videojuegos
+      final dualSenseResult = await service.lookupByNameOrBrand('DualSense Wireless Controller Midnight Black');
       expect(dualSenseResult, isNotNull);
       expect(dualSenseResult!.generalSpeciesName, 'Control de Videojuegos');
 
-      // Logitech G203 -> Mouse
-      final mouseResult = await service.lookupByNameOrBrand('Logitech G203');
+      // Mouse -> Mouse
+      final mouseResult = await service.lookupByNameOrBrand('Logitech Mouse G203');
       expect(mouseResult, isNotNull);
       expect(mouseResult!.generalSpeciesName, 'Mouse');
 
-      // NeilMed SinusRinse -> Lavado Nasal (Especie atómica singular)
-      final sinusResult = await service.lookupByNameOrBrand('NeilMed SinusRinse Kit');
+      // Solución Salina -> Lavado Nasal
+      final sinusResult = await service.lookupByNameOrBrand('NeilMed Solución Salina Nasal Kit');
       expect(sinusResult, isNotNull);
       expect(sinusResult!.generalSpeciesName, 'Lavado Nasal');
 
-      // Dell P2425DE -> Monitor
-      final dellResult = await service.lookupByNameOrBrand('Dell Pro Plus P2425DE');
+      // Monitor -> Monitor
+      final dellResult = await service.lookupByNameOrBrand('Dell Monitor P2425DE 24 inch');
       expect(dellResult, isNotNull);
       expect(dellResult!.generalSpeciesName, 'Monitor');
     });

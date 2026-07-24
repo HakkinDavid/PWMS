@@ -303,13 +303,11 @@ class ProductLookupService {
     return null;
   }
 
-  /// Asegura foto limpia descargada localmente (Fallback DuckDuckGo Images si la foto es nula o sospechosa)
+  /// Asegura foto limpia descargada localmente
   Future<ProductLookupResult> _ensureCleanPhotoAndSave(ProductLookupResult result) async {
     String? photoUrl = result.photoUrl;
 
-    final isMonitorWithBadPhoto = result.generalSpeciesName == 'Monitor' && photoUrl != null && photoUrl.toLowerCase().contains('laptop');
-
-    if (photoUrl == null || photoUrl.isEmpty || isMonitorWithBadPhoto) {
+    if (photoUrl == null || photoUrl.isEmpty) {
       final fetchedPhoto = await _fetchCleanProductImage(result.brand ?? '', result.subspeciesName);
       if (fetchedPhoto != null && fetchedPhoto.isNotEmpty) {
         photoUrl = fetchedPhoto;
