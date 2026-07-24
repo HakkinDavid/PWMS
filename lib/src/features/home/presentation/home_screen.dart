@@ -106,7 +106,7 @@ class HomeScreen extends ConsumerWidget {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // App Bar Header & Search Icon Button
+            // App Bar Header & Search / Notification Icons
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -120,9 +120,53 @@ class HomeScreen extends ConsumerWidget {
                         letterSpacing: -0.5,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.search, size: 28),
-                      onPressed: () => context.push('/search'),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.search, size: 28),
+                          onPressed: () => context.push('/search'),
+                        ),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final notificationsAsync = ref.watch(notificationListProvider);
+                            final notifCount = notificationsAsync.asData?.value.length ?? 0;
+                            return Stack(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.notifications_outlined, size: 28),
+                                  onPressed: () => context.push('/notifications'),
+                                  tooltip: 'Notificaciones & Recordatorios',
+                                ),
+                                if (notifCount > 0)
+                                  Positioned(
+                                    right: 6,
+                                    top: 6,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      constraints: const BoxConstraints(
+                                        minWidth: 18,
+                                        minHeight: 18,
+                                      ),
+                                      child: Text(
+                                        '$notifCount',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

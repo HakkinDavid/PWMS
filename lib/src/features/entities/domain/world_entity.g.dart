@@ -17,6 +17,9 @@ _$WorldEntityImpl _$$WorldEntityImplFromJson(Map<String, dynamic> json) =>
                   (e) => InstanceMagnitude.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      expirationDate: json['expirationDate'] == null
+          ? null
+          : DateTime.parse(json['expirationDate'] as String),
       notes: json['notes'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
@@ -29,6 +32,7 @@ Map<String, dynamic> _$$WorldEntityImplToJson(_$WorldEntityImpl instance) =>
       'subspeciesId': instance.subspeciesId,
       'locationId': instance.locationId,
       'magnitudes': instance.magnitudes,
+      'expirationDate': instance.expirationDate?.toIso8601String(),
       'notes': instance.notes,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),

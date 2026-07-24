@@ -8,6 +8,7 @@ import '../../features/search/presentation/search_screen.dart';
 import '../../features/locations/presentation/locations_graph_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -69,7 +70,18 @@ final appRouter = GoRouter(
       builder: (context, state) => const SearchScreen(),
     ),
     GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
       path: '/entity/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return EntityDetailScreen(entityId: id);
+      },
+    ),
+    GoRoute(
+      path: '/entities/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
         return EntityDetailScreen(entityId: id);

@@ -20,6 +20,9 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       isUnique: json['isUnique'] as bool? ?? false,
+      defaultShelfLifeDays: (json['defaultShelfLifeDays'] as num?)?.toInt(),
+      warningDaysBeforeExpiration:
+          (json['warningDaysBeforeExpiration'] as num?)?.toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
@@ -33,5 +36,7 @@ Map<String, dynamic> _$$CatalogItemImplToJson(_$CatalogItemImpl instance) =>
       'customAttributes': instance.customAttributes,
       'magnitudes': instance.magnitudes,
       'isUnique': instance.isUnique,
+      'defaultShelfLifeDays': instance.defaultShelfLifeDays,
+      'warningDaysBeforeExpiration': instance.warningDaysBeforeExpiration,
       'createdAt': instance.createdAt.toIso8601String(),
     };

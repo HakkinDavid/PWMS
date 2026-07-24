@@ -28,6 +28,7 @@ mixin _$WorldEntity {
   String? get locationId =>
       throw _privateConstructorUsedError; // Link to Location Graph node
   List<InstanceMagnitude> get magnitudes => throw _privateConstructorUsedError;
+  DateTime? get expirationDate => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
@@ -54,6 +55,7 @@ abstract class $WorldEntityCopyWith<$Res> {
       String? subspeciesId,
       String? locationId,
       List<InstanceMagnitude> magnitudes,
+      DateTime? expirationDate,
       String? notes,
       DateTime createdAt,
       DateTime updatedAt});
@@ -79,6 +81,7 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
     Object? subspeciesId = freezed,
     Object? locationId = freezed,
     Object? magnitudes = null,
+    Object? expirationDate = freezed,
     Object? notes = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -104,6 +107,10 @@ class _$WorldEntityCopyWithImpl<$Res, $Val extends WorldEntity>
           ? _value.magnitudes
           : magnitudes // ignore: cast_nullable_to_non_nullable
               as List<InstanceMagnitude>,
+      expirationDate: freezed == expirationDate
+          ? _value.expirationDate
+          : expirationDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       notes: freezed == notes
           ? _value.notes
           : notes // ignore: cast_nullable_to_non_nullable
@@ -134,6 +141,7 @@ abstract class _$$WorldEntityImplCopyWith<$Res>
       String? subspeciesId,
       String? locationId,
       List<InstanceMagnitude> magnitudes,
+      DateTime? expirationDate,
       String? notes,
       DateTime createdAt,
       DateTime updatedAt});
@@ -157,6 +165,7 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
     Object? subspeciesId = freezed,
     Object? locationId = freezed,
     Object? magnitudes = null,
+    Object? expirationDate = freezed,
     Object? notes = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -182,6 +191,10 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
           ? _value._magnitudes
           : magnitudes // ignore: cast_nullable_to_non_nullable
               as List<InstanceMagnitude>,
+      expirationDate: freezed == expirationDate
+          ? _value.expirationDate
+          : expirationDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       notes: freezed == notes
           ? _value.notes
           : notes // ignore: cast_nullable_to_non_nullable
@@ -200,17 +213,19 @@ class __$$WorldEntityImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WorldEntityImpl implements _WorldEntity {
+class _$WorldEntityImpl extends _WorldEntity {
   const _$WorldEntityImpl(
       {required this.id,
       required this.speciesId,
       this.subspeciesId,
       this.locationId,
       final List<InstanceMagnitude> magnitudes = const [],
+      this.expirationDate,
       this.notes,
       required this.createdAt,
       required this.updatedAt})
-      : _magnitudes = magnitudes;
+      : _magnitudes = magnitudes,
+        super._();
 
   factory _$WorldEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$WorldEntityImplFromJson(json);
@@ -237,6 +252,8 @@ class _$WorldEntityImpl implements _WorldEntity {
   }
 
   @override
+  final DateTime? expirationDate;
+  @override
   final String? notes;
   @override
   final DateTime createdAt;
@@ -245,7 +262,7 @@ class _$WorldEntityImpl implements _WorldEntity {
 
   @override
   String toString() {
-    return 'WorldEntity(id: $id, speciesId: $speciesId, subspeciesId: $subspeciesId, locationId: $locationId, magnitudes: $magnitudes, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'WorldEntity(id: $id, speciesId: $speciesId, subspeciesId: $subspeciesId, locationId: $locationId, magnitudes: $magnitudes, expirationDate: $expirationDate, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -262,6 +279,8 @@ class _$WorldEntityImpl implements _WorldEntity {
                 other.locationId == locationId) &&
             const DeepCollectionEquality()
                 .equals(other._magnitudes, _magnitudes) &&
+            (identical(other.expirationDate, expirationDate) ||
+                other.expirationDate == expirationDate) &&
             (identical(other.notes, notes) || other.notes == notes) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
@@ -278,6 +297,7 @@ class _$WorldEntityImpl implements _WorldEntity {
       subspeciesId,
       locationId,
       const DeepCollectionEquality().hash(_magnitudes),
+      expirationDate,
       notes,
       createdAt,
       updatedAt);
@@ -298,16 +318,18 @@ class _$WorldEntityImpl implements _WorldEntity {
   }
 }
 
-abstract class _WorldEntity implements WorldEntity {
+abstract class _WorldEntity extends WorldEntity {
   const factory _WorldEntity(
       {required final String id,
       required final String speciesId,
       final String? subspeciesId,
       final String? locationId,
       final List<InstanceMagnitude> magnitudes,
+      final DateTime? expirationDate,
       final String? notes,
       required final DateTime createdAt,
       required final DateTime updatedAt}) = _$WorldEntityImpl;
+  const _WorldEntity._() : super._();
 
   factory _WorldEntity.fromJson(Map<String, dynamic> json) =
       _$WorldEntityImpl.fromJson;
@@ -322,6 +344,8 @@ abstract class _WorldEntity implements WorldEntity {
   String? get locationId; // Link to Location Graph node
   @override
   List<InstanceMagnitude> get magnitudes;
+  @override
+  DateTime? get expirationDate;
   @override
   String? get notes;
   @override

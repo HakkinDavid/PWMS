@@ -15,6 +15,8 @@ class CatalogItem with _$CatalogItem {
     @Default({}) Map<String, dynamic> customAttributes,
     @Default([]) List<SpeciesMagnitude> magnitudes,
     @Default(false) bool isUnique,
+    int? defaultShelfLifeDays,
+    int? warningDaysBeforeExpiration,
     required DateTime createdAt,
   }) = _CatalogItem;
 

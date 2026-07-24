@@ -25,6 +25,8 @@ class CatalogTable extends Table {
   TextColumn get mainPhotoPath => text().nullable()();
   TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
   BoolColumn get isUnique => boolean().withDefault(const Constant(false))();
+  IntColumn get defaultShelfLifeDays => integer().nullable()();
+  IntColumn get warningDaysBeforeExpiration => integer().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -63,6 +65,7 @@ class EntitiesTable extends Table {
   TextColumn get speciesId => text().references(CatalogTable, #id)();
   TextColumn get subspeciesId => text().nullable().references(SubspeciesTable, #id)();
   TextColumn get locationId => text().nullable().references(LocationsTable, #id)();
+  DateTimeColumn get expirationDate => dateTime().nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
@@ -155,6 +158,22 @@ class SpeciesRequirementsTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class NotificationsTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get type => text()(); // 'expired', 'expiring_soon', 'unsatisfied_need'
+  TextColumn get title => text()();
+  TextColumn get message => text()();
+  TextColumn get targetId => text()();
+  TextColumn get targetType => text()(); // 'entity', 'species'
+  TextColumn get status => text().withDefault(const Constant('active'))(); // 'active', 'snoozed', 'dismissed'
+  DateTimeColumn get snoozedUntil => dateTime().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   LocationsTable,
   CatalogTable,
@@ -168,6 +187,7 @@ class SpeciesRequirementsTable extends Table {
   HistoryEventsTable,
   CustomTemplatesTable,
   SpeciesRequirementsTable,
+  NotificationsTable,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());

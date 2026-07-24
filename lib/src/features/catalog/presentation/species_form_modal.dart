@@ -53,6 +53,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
+  final _defaultShelfLifeController = TextEditingController();
+  final _warningDaysController = TextEditingController();
 
   String _selectedType = AppStrings.typeObject;
   bool _isUnique = false;
@@ -79,6 +81,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       final s = widget.initialSpecies!;
       _nameController.text = s.name;
       _descController.text = s.description ?? '';
+      _defaultShelfLifeController.text = s.defaultShelfLifeDays?.toString() ?? '';
+      _warningDaysController.text = s.warningDaysBeforeExpiration?.toString() ?? '';
       _selectedType = s.type;
       _isUnique = s.isUnique;
       _magnitudes.addAll(s.magnitudes);
@@ -91,6 +95,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   void dispose() {
     _nameController.dispose();
     _descController.dispose();
+    _defaultShelfLifeController.dispose();
+    _warningDaysController.dispose();
     super.dispose();
   }
 
@@ -375,6 +381,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       final speciesId = widget.initialSpecies?.id ?? const Uuid().v4();
       final updatedMagnitudes = _magnitudes.map((m) => m.copyWith(speciesId: speciesId)).toList();
 
+      final defaultShelfLife = int.tryParse(_defaultShelfLifeController.text.trim());
+      final warningDays = int.tryParse(_warningDaysController.text.trim());
+
       final savedItem = CatalogItem(
         id: speciesId,
         name: _isEditMode ? widget.initialSpecies!.name : name,
@@ -383,6 +392,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         magnitudes: updatedMagnitudes,
         isUnique: effectiveUnique,
         mainPhotoPath: photoPath,
+        defaultShelfLifeDays: defaultShelfLife,
+        warningDaysBeforeExpiration: warningDays,
         createdAt: widget.initialSpecies?.createdAt ?? DateTime.now(),
       );
 
@@ -645,6 +656,38 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 _isUnique = val ?? false;
                               });
                             },
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Configuración de Caducidad (Opcional)
+                    Text('Configuración de Caducidad (Opcional)', style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _defaultShelfLifeController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: 'Vida útil (días)',
+                              hintText: 'ej. 30',
+                              prefixIcon: Icon(Icons.timer_outlined, size: 20),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            controller: _warningDaysController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: 'Aviso prev. (días)',
+                              hintText: 'ej. 7',
+                              prefixIcon: Icon(Icons.warning_amber_rounded, size: 20),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
 

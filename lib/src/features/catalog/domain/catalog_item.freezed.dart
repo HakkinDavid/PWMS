@@ -29,6 +29,8 @@ mixin _$CatalogItem {
       throw _privateConstructorUsedError;
   List<SpeciesMagnitude> get magnitudes => throw _privateConstructorUsedError;
   bool get isUnique => throw _privateConstructorUsedError;
+  int? get defaultShelfLifeDays => throw _privateConstructorUsedError;
+  int? get warningDaysBeforeExpiration => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this CatalogItem to a JSON map.
@@ -56,6 +58,8 @@ abstract class $CatalogItemCopyWith<$Res> {
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
+      int? defaultShelfLifeDays,
+      int? warningDaysBeforeExpiration,
       DateTime createdAt});
 }
 
@@ -82,6 +86,8 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
+    Object? defaultShelfLifeDays = freezed,
+    Object? warningDaysBeforeExpiration = freezed,
     Object? createdAt = null,
   }) {
     return _then(_value.copyWith(
@@ -117,6 +123,14 @@ class _$CatalogItemCopyWithImpl<$Res, $Val extends CatalogItem>
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
               as bool,
+      defaultShelfLifeDays: freezed == defaultShelfLifeDays
+          ? _value.defaultShelfLifeDays
+          : defaultShelfLifeDays // ignore: cast_nullable_to_non_nullable
+              as int?,
+      warningDaysBeforeExpiration: freezed == warningDaysBeforeExpiration
+          ? _value.warningDaysBeforeExpiration
+          : warningDaysBeforeExpiration // ignore: cast_nullable_to_non_nullable
+              as int?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -142,6 +156,8 @@ abstract class _$$CatalogItemImplCopyWith<$Res>
       Map<String, dynamic> customAttributes,
       List<SpeciesMagnitude> magnitudes,
       bool isUnique,
+      int? defaultShelfLifeDays,
+      int? warningDaysBeforeExpiration,
       DateTime createdAt});
 }
 
@@ -166,6 +182,8 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
     Object? customAttributes = null,
     Object? magnitudes = null,
     Object? isUnique = null,
+    Object? defaultShelfLifeDays = freezed,
+    Object? warningDaysBeforeExpiration = freezed,
     Object? createdAt = null,
   }) {
     return _then(_$CatalogItemImpl(
@@ -201,6 +219,14 @@ class __$$CatalogItemImplCopyWithImpl<$Res>
           ? _value.isUnique
           : isUnique // ignore: cast_nullable_to_non_nullable
               as bool,
+      defaultShelfLifeDays: freezed == defaultShelfLifeDays
+          ? _value.defaultShelfLifeDays
+          : defaultShelfLifeDays // ignore: cast_nullable_to_non_nullable
+              as int?,
+      warningDaysBeforeExpiration: freezed == warningDaysBeforeExpiration
+          ? _value.warningDaysBeforeExpiration
+          : warningDaysBeforeExpiration // ignore: cast_nullable_to_non_nullable
+              as int?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -221,6 +247,8 @@ class _$CatalogItemImpl implements _CatalogItem {
       final Map<String, dynamic> customAttributes = const {},
       final List<SpeciesMagnitude> magnitudes = const [],
       this.isUnique = false,
+      this.defaultShelfLifeDays,
+      this.warningDaysBeforeExpiration,
       required this.createdAt})
       : _customAttributes = customAttributes,
         _magnitudes = magnitudes;
@@ -261,11 +289,15 @@ class _$CatalogItemImpl implements _CatalogItem {
   @JsonKey()
   final bool isUnique;
   @override
+  final int? defaultShelfLifeDays;
+  @override
+  final int? warningDaysBeforeExpiration;
+  @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'CatalogItem(id: $id, name: $name, type: $type, description: $description, mainPhotoPath: $mainPhotoPath, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, createdAt: $createdAt)';
+    return 'CatalogItem(id: $id, name: $name, type: $type, description: $description, mainPhotoPath: $mainPhotoPath, customAttributes: $customAttributes, magnitudes: $magnitudes, isUnique: $isUnique, defaultShelfLifeDays: $defaultShelfLifeDays, warningDaysBeforeExpiration: $warningDaysBeforeExpiration, createdAt: $createdAt)';
   }
 
   @override
@@ -286,6 +318,12 @@ class _$CatalogItemImpl implements _CatalogItem {
                 .equals(other._magnitudes, _magnitudes) &&
             (identical(other.isUnique, isUnique) ||
                 other.isUnique == isUnique) &&
+            (identical(other.defaultShelfLifeDays, defaultShelfLifeDays) ||
+                other.defaultShelfLifeDays == defaultShelfLifeDays) &&
+            (identical(other.warningDaysBeforeExpiration,
+                    warningDaysBeforeExpiration) ||
+                other.warningDaysBeforeExpiration ==
+                    warningDaysBeforeExpiration) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
@@ -302,6 +340,8 @@ class _$CatalogItemImpl implements _CatalogItem {
       const DeepCollectionEquality().hash(_customAttributes),
       const DeepCollectionEquality().hash(_magnitudes),
       isUnique,
+      defaultShelfLifeDays,
+      warningDaysBeforeExpiration,
       createdAt);
 
   /// Create a copy of CatalogItem
@@ -330,6 +370,8 @@ abstract class _CatalogItem implements CatalogItem {
       final Map<String, dynamic> customAttributes,
       final List<SpeciesMagnitude> magnitudes,
       final bool isUnique,
+      final int? defaultShelfLifeDays,
+      final int? warningDaysBeforeExpiration,
       required final DateTime createdAt}) = _$CatalogItemImpl;
 
   factory _CatalogItem.fromJson(Map<String, dynamic> json) =
@@ -351,6 +393,10 @@ abstract class _CatalogItem implements CatalogItem {
   List<SpeciesMagnitude> get magnitudes;
   @override
   bool get isUnique;
+  @override
+  int? get defaultShelfLifeDays;
+  @override
+  int? get warningDaysBeforeExpiration;
   @override
   DateTime get createdAt;
 

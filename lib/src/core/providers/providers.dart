@@ -21,6 +21,10 @@ import '../../features/catalog/infrastructure/catalog_repository.dart';
 import '../../features/catalog/infrastructure/product_lookup_service.dart';
 import '../../features/catalog/infrastructure/visual_matching_service.dart';
 
+import '../../features/notifications/domain/app_notification.dart';
+import '../../features/notifications/infrastructure/notification_repository.dart';
+import '../../features/notifications/application/notification_service.dart';
+
 // Singletons / Core Services
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -254,6 +258,57 @@ final visualMatchingServiceProvider = Provider<VisualMatchingService>((ref) {
   return VisualMatchingService(
     catalogRepository: ref.watch(catalogRepositoryProvider),
     productLookupService: ref.watch(productLookupServiceProvider),
+  );
+});
+
+// Notification Feature Providers
+final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
+  return NotificationRepository(ref.watch(databaseProvider));
+});
+
+final notificationServiceProvider = Provider<NotificationService>((ref) {
+  return NotificationService(
+    db: ref.watch(databaseProvider),
+    entityRepo: ref.watch(entityRepositoryProvider) as EntityRepository,
+    catalogRepo: ref.watch(catalogRepositoryProvider),
+    notificationRepo: ref.watch(notificationRepositoryProvider),
+  );
+});
+
+class NotificationListNotifier extends StateNotifier<AsyncValue<List<AppNotification>>> {
+  final NotificationRepository _repo;
+  final NotificationService _service;
+
+  NotificationListNotifier(this._repo, this._service) : super(const AsyncValue.loading()) {
+    evaluateAndLoad();
+  }
+
+  Future<void> evaluateAndLoad() async {
+    state = const AsyncValue.loading();
+    try {
+      await _service.evaluateAllNotifications();
+      final active = await _repo.getActiveNotifications();
+      state = AsyncValue.data(active);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> snoozeNotification(String id, Duration duration) async {
+    await _repo.snoozeNotification(id, duration);
+    await evaluateAndLoad();
+  }
+
+  Future<void> dismissNotification(String id) async {
+    await _repo.dismissNotification(id);
+    await evaluateAndLoad();
+  }
+}
+
+final notificationListProvider = StateNotifierProvider<NotificationListNotifier, AsyncValue<List<AppNotification>>>((ref) {
+  return NotificationListNotifier(
+    ref.watch(notificationRepositoryProvider),
+    ref.watch(notificationServiceProvider),
   );
 });
 

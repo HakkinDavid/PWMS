@@ -40,6 +40,8 @@ class CatalogRepository {
       customAttributes: customAttrs,
       magnitudes: magnitudes,
       isUnique: row.isUnique,
+      defaultShelfLifeDays: row.defaultShelfLifeDays,
+      warningDaysBeforeExpiration: row.warningDaysBeforeExpiration,
       createdAt: row.createdAt,
     );
   }
@@ -126,6 +128,8 @@ class CatalogRepository {
       mainPhotoPath: Value(item.mainPhotoPath),
       customAttributes: Value(jsonEncode(item.customAttributes)),
       isUnique: Value(item.isUnique),
+      defaultShelfLifeDays: Value(item.defaultShelfLifeDays),
+      warningDaysBeforeExpiration: Value(item.warningDaysBeforeExpiration),
       createdAt: Value(item.createdAt),
     );
     await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);

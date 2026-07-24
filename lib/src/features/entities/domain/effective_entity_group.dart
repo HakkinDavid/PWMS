@@ -15,6 +15,13 @@ class EffectiveEntityGroup {
 
   int get population => entities.length;
 
+  int expiredCount([DateTime? now]) => entities.where((e) => e.isExpired(now)).length;
+
+  int expiringSoonCount(int warningDays, [DateTime? now]) =>
+      entities.where((e) => e.isExpiringSoon(warningDays, now)).length;
+
+  int validCount([DateTime? now]) => entities.where((e) => e.isValid(now)).length;
+
   WorldEntity get primaryEntity => entities.first;
 
   /// Determines the majority demographic archetype in the group (the most common profile of notes/magnitudes)

@@ -166,6 +166,86 @@ class InstancePreviewCard extends ConsumerWidget {
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                         ],
+                        // Expiration Badges for Entity or Group
+                        Builder(
+                          builder: (context) {
+                            final warningDays = species?.warningDaysBeforeExpiration ?? 7;
+                            final now = DateTime.now();
+
+                            if (entity != null) {
+                              if (entity!.isExpired(now)) {
+                                return Container(
+                                  margin: const EdgeInsets.only(top: 4),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade900.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: Colors.red.shade400, width: 0.8),
+                                  ),
+                                  child: const Text(
+                                    'Caducado',
+                                    style: TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              } else if (entity!.isExpiringSoon(warningDays, now)) {
+                                return Container(
+                                  margin: const EdgeInsets.only(top: 4),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange.shade900.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: Colors.orange.shade400, width: 0.8),
+                                  ),
+                                  child: const Text(
+                                    'Próximo a vencer',
+                                    style: TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              }
+                            } else if (group != null) {
+                              final expiredCnt = group!.expiredCount(now);
+                              final warningCnt = group!.expiringSoonCount(warningDays, now);
+
+                              if (expiredCnt > 0 || warningCnt > 0) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Wrap(
+                                    spacing: 4,
+                                    children: [
+                                      if (expiredCnt > 0)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.red.shade900.withOpacity(0.3),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(color: Colors.red.shade400, width: 0.8),
+                                          ),
+                                          child: Text(
+                                            '$expiredCnt Caducado(s)',
+                                            style: const TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      if (warningCnt > 0)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.orange.shade900.withOpacity(0.3),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(color: Colors.orange.shade400, width: 0.8),
+                                          ),
+                                          child: Text(
+                                            '$warningCnt Próximo(s)',
+                                            style: const TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
                       ],
                     ),
                   ),

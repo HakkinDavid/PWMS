@@ -415,6 +415,18 @@ class $CatalogTableTable extends CatalogTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_unique" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _defaultShelfLifeDaysMeta =
+      const VerificationMeta('defaultShelfLifeDays');
+  @override
+  late final GeneratedColumn<int> defaultShelfLifeDays = GeneratedColumn<int>(
+      'default_shelf_life_days', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _warningDaysBeforeExpirationMeta =
+      const VerificationMeta('warningDaysBeforeExpiration');
+  @override
+  late final GeneratedColumn<int> warningDaysBeforeExpiration =
+      GeneratedColumn<int>('warning_days_before_expiration', aliasedName, true,
+          type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -430,6 +442,8 @@ class $CatalogTableTable extends CatalogTable
         mainPhotoPath,
         customAttributes,
         isUnique,
+        defaultShelfLifeDays,
+        warningDaysBeforeExpiration,
         createdAt
       ];
   @override
@@ -479,6 +493,19 @@ class $CatalogTableTable extends CatalogTable
       context.handle(_isUniqueMeta,
           isUnique.isAcceptableOrUnknown(data['is_unique']!, _isUniqueMeta));
     }
+    if (data.containsKey('default_shelf_life_days')) {
+      context.handle(
+          _defaultShelfLifeDaysMeta,
+          defaultShelfLifeDays.isAcceptableOrUnknown(
+              data['default_shelf_life_days']!, _defaultShelfLifeDaysMeta));
+    }
+    if (data.containsKey('warning_days_before_expiration')) {
+      context.handle(
+          _warningDaysBeforeExpirationMeta,
+          warningDaysBeforeExpiration.isAcceptableOrUnknown(
+              data['warning_days_before_expiration']!,
+              _warningDaysBeforeExpirationMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -508,6 +535,11 @@ class $CatalogTableTable extends CatalogTable
           DriftSqlType.string, data['${effectivePrefix}custom_attributes'])!,
       isUnique: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_unique'])!,
+      defaultShelfLifeDays: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}default_shelf_life_days']),
+      warningDaysBeforeExpiration: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}warning_days_before_expiration']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -528,6 +560,8 @@ class CatalogTableData extends DataClass
   final String? mainPhotoPath;
   final String customAttributes;
   final bool isUnique;
+  final int? defaultShelfLifeDays;
+  final int? warningDaysBeforeExpiration;
   final DateTime createdAt;
   const CatalogTableData(
       {required this.id,
@@ -537,6 +571,8 @@ class CatalogTableData extends DataClass
       this.mainPhotoPath,
       required this.customAttributes,
       required this.isUnique,
+      this.defaultShelfLifeDays,
+      this.warningDaysBeforeExpiration,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -552,6 +588,13 @@ class CatalogTableData extends DataClass
     }
     map['custom_attributes'] = Variable<String>(customAttributes);
     map['is_unique'] = Variable<bool>(isUnique);
+    if (!nullToAbsent || defaultShelfLifeDays != null) {
+      map['default_shelf_life_days'] = Variable<int>(defaultShelfLifeDays);
+    }
+    if (!nullToAbsent || warningDaysBeforeExpiration != null) {
+      map['warning_days_before_expiration'] =
+          Variable<int>(warningDaysBeforeExpiration);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -569,6 +612,13 @@ class CatalogTableData extends DataClass
           : Value(mainPhotoPath),
       customAttributes: Value(customAttributes),
       isUnique: Value(isUnique),
+      defaultShelfLifeDays: defaultShelfLifeDays == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultShelfLifeDays),
+      warningDaysBeforeExpiration:
+          warningDaysBeforeExpiration == null && nullToAbsent
+              ? const Value.absent()
+              : Value(warningDaysBeforeExpiration),
       createdAt: Value(createdAt),
     );
   }
@@ -584,6 +634,10 @@ class CatalogTableData extends DataClass
       mainPhotoPath: serializer.fromJson<String?>(json['mainPhotoPath']),
       customAttributes: serializer.fromJson<String>(json['customAttributes']),
       isUnique: serializer.fromJson<bool>(json['isUnique']),
+      defaultShelfLifeDays:
+          serializer.fromJson<int?>(json['defaultShelfLifeDays']),
+      warningDaysBeforeExpiration:
+          serializer.fromJson<int?>(json['warningDaysBeforeExpiration']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -598,6 +652,9 @@ class CatalogTableData extends DataClass
       'mainPhotoPath': serializer.toJson<String?>(mainPhotoPath),
       'customAttributes': serializer.toJson<String>(customAttributes),
       'isUnique': serializer.toJson<bool>(isUnique),
+      'defaultShelfLifeDays': serializer.toJson<int?>(defaultShelfLifeDays),
+      'warningDaysBeforeExpiration':
+          serializer.toJson<int?>(warningDaysBeforeExpiration),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -610,6 +667,8 @@ class CatalogTableData extends DataClass
           Value<String?> mainPhotoPath = const Value.absent(),
           String? customAttributes,
           bool? isUnique,
+          Value<int?> defaultShelfLifeDays = const Value.absent(),
+          Value<int?> warningDaysBeforeExpiration = const Value.absent(),
           DateTime? createdAt}) =>
       CatalogTableData(
         id: id ?? this.id,
@@ -620,6 +679,12 @@ class CatalogTableData extends DataClass
             mainPhotoPath.present ? mainPhotoPath.value : this.mainPhotoPath,
         customAttributes: customAttributes ?? this.customAttributes,
         isUnique: isUnique ?? this.isUnique,
+        defaultShelfLifeDays: defaultShelfLifeDays.present
+            ? defaultShelfLifeDays.value
+            : this.defaultShelfLifeDays,
+        warningDaysBeforeExpiration: warningDaysBeforeExpiration.present
+            ? warningDaysBeforeExpiration.value
+            : this.warningDaysBeforeExpiration,
         createdAt: createdAt ?? this.createdAt,
       );
   CatalogTableData copyWithCompanion(CatalogTableCompanion data) {
@@ -636,6 +701,12 @@ class CatalogTableData extends DataClass
           ? data.customAttributes.value
           : this.customAttributes,
       isUnique: data.isUnique.present ? data.isUnique.value : this.isUnique,
+      defaultShelfLifeDays: data.defaultShelfLifeDays.present
+          ? data.defaultShelfLifeDays.value
+          : this.defaultShelfLifeDays,
+      warningDaysBeforeExpiration: data.warningDaysBeforeExpiration.present
+          ? data.warningDaysBeforeExpiration.value
+          : this.warningDaysBeforeExpiration,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -650,14 +721,25 @@ class CatalogTableData extends DataClass
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
+          ..write('defaultShelfLifeDays: $defaultShelfLifeDays, ')
+          ..write('warningDaysBeforeExpiration: $warningDaysBeforeExpiration, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, type, description, mainPhotoPath,
-      customAttributes, isUnique, createdAt);
+  int get hashCode => Object.hash(
+      id,
+      name,
+      type,
+      description,
+      mainPhotoPath,
+      customAttributes,
+      isUnique,
+      defaultShelfLifeDays,
+      warningDaysBeforeExpiration,
+      createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -669,6 +751,9 @@ class CatalogTableData extends DataClass
           other.mainPhotoPath == this.mainPhotoPath &&
           other.customAttributes == this.customAttributes &&
           other.isUnique == this.isUnique &&
+          other.defaultShelfLifeDays == this.defaultShelfLifeDays &&
+          other.warningDaysBeforeExpiration ==
+              this.warningDaysBeforeExpiration &&
           other.createdAt == this.createdAt);
 }
 
@@ -680,6 +765,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
   final Value<String?> mainPhotoPath;
   final Value<String> customAttributes;
   final Value<bool> isUnique;
+  final Value<int?> defaultShelfLifeDays;
+  final Value<int?> warningDaysBeforeExpiration;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const CatalogTableCompanion({
@@ -690,6 +777,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
+    this.defaultShelfLifeDays = const Value.absent(),
+    this.warningDaysBeforeExpiration = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -701,6 +790,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     this.mainPhotoPath = const Value.absent(),
     this.customAttributes = const Value.absent(),
     this.isUnique = const Value.absent(),
+    this.defaultShelfLifeDays = const Value.absent(),
+    this.warningDaysBeforeExpiration = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -714,6 +805,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     Expression<String>? mainPhotoPath,
     Expression<String>? customAttributes,
     Expression<bool>? isUnique,
+    Expression<int>? defaultShelfLifeDays,
+    Expression<int>? warningDaysBeforeExpiration,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -725,6 +818,10 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       if (mainPhotoPath != null) 'main_photo_path': mainPhotoPath,
       if (customAttributes != null) 'custom_attributes': customAttributes,
       if (isUnique != null) 'is_unique': isUnique,
+      if (defaultShelfLifeDays != null)
+        'default_shelf_life_days': defaultShelfLifeDays,
+      if (warningDaysBeforeExpiration != null)
+        'warning_days_before_expiration': warningDaysBeforeExpiration,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -738,6 +835,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       Value<String?>? mainPhotoPath,
       Value<String>? customAttributes,
       Value<bool>? isUnique,
+      Value<int?>? defaultShelfLifeDays,
+      Value<int?>? warningDaysBeforeExpiration,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
     return CatalogTableCompanion(
@@ -748,6 +847,9 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
       mainPhotoPath: mainPhotoPath ?? this.mainPhotoPath,
       customAttributes: customAttributes ?? this.customAttributes,
       isUnique: isUnique ?? this.isUnique,
+      defaultShelfLifeDays: defaultShelfLifeDays ?? this.defaultShelfLifeDays,
+      warningDaysBeforeExpiration:
+          warningDaysBeforeExpiration ?? this.warningDaysBeforeExpiration,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -777,6 +879,14 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
     if (isUnique.present) {
       map['is_unique'] = Variable<bool>(isUnique.value);
     }
+    if (defaultShelfLifeDays.present) {
+      map['default_shelf_life_days'] =
+          Variable<int>(defaultShelfLifeDays.value);
+    }
+    if (warningDaysBeforeExpiration.present) {
+      map['warning_days_before_expiration'] =
+          Variable<int>(warningDaysBeforeExpiration.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -796,6 +906,8 @@ class CatalogTableCompanion extends UpdateCompanion<CatalogTableData> {
           ..write('mainPhotoPath: $mainPhotoPath, ')
           ..write('customAttributes: $customAttributes, ')
           ..write('isUnique: $isUnique, ')
+          ..write('defaultShelfLifeDays: $defaultShelfLifeDays, ')
+          ..write('warningDaysBeforeExpiration: $warningDaysBeforeExpiration, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1604,6 +1716,12 @@ class $EntitiesTableTable extends EntitiesTable
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES locations_table (id)'));
+  static const VerificationMeta _expirationDateMeta =
+      const VerificationMeta('expirationDate');
+  @override
+  late final GeneratedColumn<DateTime> expirationDate =
+      GeneratedColumn<DateTime>('expiration_date', aliasedName, true,
+          type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -1622,8 +1740,16 @@ class $EntitiesTableTable extends EntitiesTable
       'updated_at', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, speciesId, subspeciesId, locationId, notes, createdAt, updatedAt];
+  List<GeneratedColumn> get $columns => [
+        id,
+        speciesId,
+        subspeciesId,
+        locationId,
+        expirationDate,
+        notes,
+        createdAt,
+        updatedAt
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1656,6 +1782,12 @@ class $EntitiesTableTable extends EntitiesTable
           _locationIdMeta,
           locationId.isAcceptableOrUnknown(
               data['location_id']!, _locationIdMeta));
+    }
+    if (data.containsKey('expiration_date')) {
+      context.handle(
+          _expirationDateMeta,
+          expirationDate.isAcceptableOrUnknown(
+              data['expiration_date']!, _expirationDateMeta));
     }
     if (data.containsKey('notes')) {
       context.handle(
@@ -1690,6 +1822,8 @@ class $EntitiesTableTable extends EntitiesTable
           .read(DriftSqlType.string, data['${effectivePrefix}subspecies_id']),
       locationId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}location_id']),
+      expirationDate: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}expiration_date']),
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes']),
       createdAt: attachedDatabase.typeMapping
@@ -1711,6 +1845,7 @@ class EntitiesTableData extends DataClass
   final String speciesId;
   final String? subspeciesId;
   final String? locationId;
+  final DateTime? expirationDate;
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -1719,6 +1854,7 @@ class EntitiesTableData extends DataClass
       required this.speciesId,
       this.subspeciesId,
       this.locationId,
+      this.expirationDate,
       this.notes,
       required this.createdAt,
       required this.updatedAt});
@@ -1732,6 +1868,9 @@ class EntitiesTableData extends DataClass
     }
     if (!nullToAbsent || locationId != null) {
       map['location_id'] = Variable<String>(locationId);
+    }
+    if (!nullToAbsent || expirationDate != null) {
+      map['expiration_date'] = Variable<DateTime>(expirationDate);
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
@@ -1751,6 +1890,9 @@ class EntitiesTableData extends DataClass
       locationId: locationId == null && nullToAbsent
           ? const Value.absent()
           : Value(locationId),
+      expirationDate: expirationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expirationDate),
       notes:
           notes == null && nullToAbsent ? const Value.absent() : Value(notes),
       createdAt: Value(createdAt),
@@ -1766,6 +1908,7 @@ class EntitiesTableData extends DataClass
       speciesId: serializer.fromJson<String>(json['speciesId']),
       subspeciesId: serializer.fromJson<String?>(json['subspeciesId']),
       locationId: serializer.fromJson<String?>(json['locationId']),
+      expirationDate: serializer.fromJson<DateTime?>(json['expirationDate']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1779,6 +1922,7 @@ class EntitiesTableData extends DataClass
       'speciesId': serializer.toJson<String>(speciesId),
       'subspeciesId': serializer.toJson<String?>(subspeciesId),
       'locationId': serializer.toJson<String?>(locationId),
+      'expirationDate': serializer.toJson<DateTime?>(expirationDate),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1790,6 +1934,7 @@ class EntitiesTableData extends DataClass
           String? speciesId,
           Value<String?> subspeciesId = const Value.absent(),
           Value<String?> locationId = const Value.absent(),
+          Value<DateTime?> expirationDate = const Value.absent(),
           Value<String?> notes = const Value.absent(),
           DateTime? createdAt,
           DateTime? updatedAt}) =>
@@ -1799,6 +1944,8 @@ class EntitiesTableData extends DataClass
         subspeciesId:
             subspeciesId.present ? subspeciesId.value : this.subspeciesId,
         locationId: locationId.present ? locationId.value : this.locationId,
+        expirationDate:
+            expirationDate.present ? expirationDate.value : this.expirationDate,
         notes: notes.present ? notes.value : this.notes,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -1812,6 +1959,9 @@ class EntitiesTableData extends DataClass
           : this.subspeciesId,
       locationId:
           data.locationId.present ? data.locationId.value : this.locationId,
+      expirationDate: data.expirationDate.present
+          ? data.expirationDate.value
+          : this.expirationDate,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -1825,6 +1975,7 @@ class EntitiesTableData extends DataClass
           ..write('speciesId: $speciesId, ')
           ..write('subspeciesId: $subspeciesId, ')
           ..write('locationId: $locationId, ')
+          ..write('expirationDate: $expirationDate, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1833,8 +1984,8 @@ class EntitiesTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, speciesId, subspeciesId, locationId, notes, createdAt, updatedAt);
+  int get hashCode => Object.hash(id, speciesId, subspeciesId, locationId,
+      expirationDate, notes, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1843,6 +1994,7 @@ class EntitiesTableData extends DataClass
           other.speciesId == this.speciesId &&
           other.subspeciesId == this.subspeciesId &&
           other.locationId == this.locationId &&
+          other.expirationDate == this.expirationDate &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1853,6 +2005,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
   final Value<String> speciesId;
   final Value<String?> subspeciesId;
   final Value<String?> locationId;
+  final Value<DateTime?> expirationDate;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1862,6 +2015,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     this.speciesId = const Value.absent(),
     this.subspeciesId = const Value.absent(),
     this.locationId = const Value.absent(),
+    this.expirationDate = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1872,6 +2026,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     required String speciesId,
     this.subspeciesId = const Value.absent(),
     this.locationId = const Value.absent(),
+    this.expirationDate = const Value.absent(),
     this.notes = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -1885,6 +2040,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     Expression<String>? speciesId,
     Expression<String>? subspeciesId,
     Expression<String>? locationId,
+    Expression<DateTime>? expirationDate,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1895,6 +2051,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       if (speciesId != null) 'species_id': speciesId,
       if (subspeciesId != null) 'subspecies_id': subspeciesId,
       if (locationId != null) 'location_id': locationId,
+      if (expirationDate != null) 'expiration_date': expirationDate,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1907,6 +2064,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       Value<String>? speciesId,
       Value<String?>? subspeciesId,
       Value<String?>? locationId,
+      Value<DateTime?>? expirationDate,
       Value<String?>? notes,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
@@ -1916,6 +2074,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
       speciesId: speciesId ?? this.speciesId,
       subspeciesId: subspeciesId ?? this.subspeciesId,
       locationId: locationId ?? this.locationId,
+      expirationDate: expirationDate ?? this.expirationDate,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1937,6 +2096,9 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
     }
     if (locationId.present) {
       map['location_id'] = Variable<String>(locationId.value);
+    }
+    if (expirationDate.present) {
+      map['expiration_date'] = Variable<DateTime>(expirationDate.value);
     }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
@@ -1960,6 +2122,7 @@ class EntitiesTableCompanion extends UpdateCompanion<EntitiesTableData> {
           ..write('speciesId: $speciesId, ')
           ..write('subspeciesId: $subspeciesId, ')
           ..write('locationId: $locationId, ')
+          ..write('expirationDate: $expirationDate, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -4314,6 +4477,519 @@ class SpeciesRequirementsTableCompanion
   }
 }
 
+class $NotificationsTableTable extends NotificationsTable
+    with TableInfo<$NotificationsTableTable, NotificationsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NotificationsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _messageMeta =
+      const VerificationMeta('message');
+  @override
+  late final GeneratedColumn<String> message = GeneratedColumn<String>(
+      'message', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _targetIdMeta =
+      const VerificationMeta('targetId');
+  @override
+  late final GeneratedColumn<String> targetId = GeneratedColumn<String>(
+      'target_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _targetTypeMeta =
+      const VerificationMeta('targetType');
+  @override
+  late final GeneratedColumn<String> targetType = GeneratedColumn<String>(
+      'target_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+      'status', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('active'));
+  static const VerificationMeta _snoozedUntilMeta =
+      const VerificationMeta('snoozedUntil');
+  @override
+  late final GeneratedColumn<DateTime> snoozedUntil = GeneratedColumn<DateTime>(
+      'snoozed_until', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        type,
+        title,
+        message,
+        targetId,
+        targetType,
+        status,
+        snoozedUntil,
+        createdAt,
+        updatedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'notifications_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<NotificationsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('message')) {
+      context.handle(_messageMeta,
+          message.isAcceptableOrUnknown(data['message']!, _messageMeta));
+    } else if (isInserting) {
+      context.missing(_messageMeta);
+    }
+    if (data.containsKey('target_id')) {
+      context.handle(_targetIdMeta,
+          targetId.isAcceptableOrUnknown(data['target_id']!, _targetIdMeta));
+    } else if (isInserting) {
+      context.missing(_targetIdMeta);
+    }
+    if (data.containsKey('target_type')) {
+      context.handle(
+          _targetTypeMeta,
+          targetType.isAcceptableOrUnknown(
+              data['target_type']!, _targetTypeMeta));
+    } else if (isInserting) {
+      context.missing(_targetTypeMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(_statusMeta,
+          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+    }
+    if (data.containsKey('snoozed_until')) {
+      context.handle(
+          _snoozedUntilMeta,
+          snoozedUntil.isAcceptableOrUnknown(
+              data['snoozed_until']!, _snoozedUntilMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NotificationsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NotificationsTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      type: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      message: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}message'])!,
+      targetId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}target_id'])!,
+      targetType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}target_type'])!,
+      status: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
+      snoozedUntil: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}snoozed_until']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $NotificationsTableTable createAlias(String alias) {
+    return $NotificationsTableTable(attachedDatabase, alias);
+  }
+}
+
+class NotificationsTableData extends DataClass
+    implements Insertable<NotificationsTableData> {
+  final String id;
+  final String type;
+  final String title;
+  final String message;
+  final String targetId;
+  final String targetType;
+  final String status;
+  final DateTime? snoozedUntil;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const NotificationsTableData(
+      {required this.id,
+      required this.type,
+      required this.title,
+      required this.message,
+      required this.targetId,
+      required this.targetType,
+      required this.status,
+      this.snoozedUntil,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['type'] = Variable<String>(type);
+    map['title'] = Variable<String>(title);
+    map['message'] = Variable<String>(message);
+    map['target_id'] = Variable<String>(targetId);
+    map['target_type'] = Variable<String>(targetType);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || snoozedUntil != null) {
+      map['snoozed_until'] = Variable<DateTime>(snoozedUntil);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  NotificationsTableCompanion toCompanion(bool nullToAbsent) {
+    return NotificationsTableCompanion(
+      id: Value(id),
+      type: Value(type),
+      title: Value(title),
+      message: Value(message),
+      targetId: Value(targetId),
+      targetType: Value(targetType),
+      status: Value(status),
+      snoozedUntil: snoozedUntil == null && nullToAbsent
+          ? const Value.absent()
+          : Value(snoozedUntil),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory NotificationsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NotificationsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      title: serializer.fromJson<String>(json['title']),
+      message: serializer.fromJson<String>(json['message']),
+      targetId: serializer.fromJson<String>(json['targetId']),
+      targetType: serializer.fromJson<String>(json['targetType']),
+      status: serializer.fromJson<String>(json['status']),
+      snoozedUntil: serializer.fromJson<DateTime?>(json['snoozedUntil']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'title': serializer.toJson<String>(title),
+      'message': serializer.toJson<String>(message),
+      'targetId': serializer.toJson<String>(targetId),
+      'targetType': serializer.toJson<String>(targetType),
+      'status': serializer.toJson<String>(status),
+      'snoozedUntil': serializer.toJson<DateTime?>(snoozedUntil),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  NotificationsTableData copyWith(
+          {String? id,
+          String? type,
+          String? title,
+          String? message,
+          String? targetId,
+          String? targetType,
+          String? status,
+          Value<DateTime?> snoozedUntil = const Value.absent(),
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      NotificationsTableData(
+        id: id ?? this.id,
+        type: type ?? this.type,
+        title: title ?? this.title,
+        message: message ?? this.message,
+        targetId: targetId ?? this.targetId,
+        targetType: targetType ?? this.targetType,
+        status: status ?? this.status,
+        snoozedUntil:
+            snoozedUntil.present ? snoozedUntil.value : this.snoozedUntil,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  NotificationsTableData copyWithCompanion(NotificationsTableCompanion data) {
+    return NotificationsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      title: data.title.present ? data.title.value : this.title,
+      message: data.message.present ? data.message.value : this.message,
+      targetId: data.targetId.present ? data.targetId.value : this.targetId,
+      targetType:
+          data.targetType.present ? data.targetType.value : this.targetType,
+      status: data.status.present ? data.status.value : this.status,
+      snoozedUntil: data.snoozedUntil.present
+          ? data.snoozedUntil.value
+          : this.snoozedUntil,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NotificationsTableData(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('title: $title, ')
+          ..write('message: $message, ')
+          ..write('targetId: $targetId, ')
+          ..write('targetType: $targetType, ')
+          ..write('status: $status, ')
+          ..write('snoozedUntil: $snoozedUntil, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, type, title, message, targetId,
+      targetType, status, snoozedUntil, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NotificationsTableData &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.title == this.title &&
+          other.message == this.message &&
+          other.targetId == this.targetId &&
+          other.targetType == this.targetType &&
+          other.status == this.status &&
+          other.snoozedUntil == this.snoozedUntil &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class NotificationsTableCompanion
+    extends UpdateCompanion<NotificationsTableData> {
+  final Value<String> id;
+  final Value<String> type;
+  final Value<String> title;
+  final Value<String> message;
+  final Value<String> targetId;
+  final Value<String> targetType;
+  final Value<String> status;
+  final Value<DateTime?> snoozedUntil;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const NotificationsTableCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.title = const Value.absent(),
+    this.message = const Value.absent(),
+    this.targetId = const Value.absent(),
+    this.targetType = const Value.absent(),
+    this.status = const Value.absent(),
+    this.snoozedUntil = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NotificationsTableCompanion.insert({
+    required String id,
+    required String type,
+    required String title,
+    required String message,
+    required String targetId,
+    required String targetType,
+    this.status = const Value.absent(),
+    this.snoozedUntil = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        type = Value(type),
+        title = Value(title),
+        message = Value(message),
+        targetId = Value(targetId),
+        targetType = Value(targetType),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<NotificationsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? type,
+    Expression<String>? title,
+    Expression<String>? message,
+    Expression<String>? targetId,
+    Expression<String>? targetType,
+    Expression<String>? status,
+    Expression<DateTime>? snoozedUntil,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (title != null) 'title': title,
+      if (message != null) 'message': message,
+      if (targetId != null) 'target_id': targetId,
+      if (targetType != null) 'target_type': targetType,
+      if (status != null) 'status': status,
+      if (snoozedUntil != null) 'snoozed_until': snoozedUntil,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NotificationsTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? type,
+      Value<String>? title,
+      Value<String>? message,
+      Value<String>? targetId,
+      Value<String>? targetType,
+      Value<String>? status,
+      Value<DateTime?>? snoozedUntil,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<int>? rowid}) {
+    return NotificationsTableCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      message: message ?? this.message,
+      targetId: targetId ?? this.targetId,
+      targetType: targetType ?? this.targetType,
+      status: status ?? this.status,
+      snoozedUntil: snoozedUntil ?? this.snoozedUntil,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (message.present) {
+      map['message'] = Variable<String>(message.value);
+    }
+    if (targetId.present) {
+      map['target_id'] = Variable<String>(targetId.value);
+    }
+    if (targetType.present) {
+      map['target_type'] = Variable<String>(targetType.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (snoozedUntil.present) {
+      map['snoozed_until'] = Variable<DateTime>(snoozedUntil.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NotificationsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('title: $title, ')
+          ..write('message: $message, ')
+          ..write('targetId: $targetId, ')
+          ..write('targetType: $targetType, ')
+          ..write('status: $status, ')
+          ..write('snoozedUntil: $snoozedUntil, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4337,6 +5013,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $CustomTemplatesTableTable(this);
   late final $SpeciesRequirementsTableTable speciesRequirementsTable =
       $SpeciesRequirementsTableTable(this);
+  late final $NotificationsTableTable notificationsTable =
+      $NotificationsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4353,7 +5031,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         attachmentsTable,
         historyEventsTable,
         customTemplatesTable,
-        speciesRequirementsTable
+        speciesRequirementsTable,
+        notificationsTable
       ];
 }
 
@@ -4820,6 +5499,8 @@ typedef $$CatalogTableTableCreateCompanionBuilder = CatalogTableCompanion
   Value<String?> mainPhotoPath,
   Value<String> customAttributes,
   Value<bool> isUnique,
+  Value<int?> defaultShelfLifeDays,
+  Value<int?> warningDaysBeforeExpiration,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -4832,6 +5513,8 @@ typedef $$CatalogTableTableUpdateCompanionBuilder = CatalogTableCompanion
   Value<String?> mainPhotoPath,
   Value<String> customAttributes,
   Value<bool> isUnique,
+  Value<int?> defaultShelfLifeDays,
+  Value<int?> warningDaysBeforeExpiration,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -4959,6 +5642,14 @@ class $$CatalogTableTableFilterComposer
 
   ColumnFilters<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get defaultShelfLifeDays => $composableBuilder(
+      column: $table.defaultShelfLifeDays,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get warningDaysBeforeExpiration => $composableBuilder(
+      column: $table.warningDaysBeforeExpiration,
+      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -5105,6 +5796,14 @@ class $$CatalogTableTableOrderingComposer
   ColumnOrderings<bool> get isUnique => $composableBuilder(
       column: $table.isUnique, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get defaultShelfLifeDays => $composableBuilder(
+      column: $table.defaultShelfLifeDays,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get warningDaysBeforeExpiration => $composableBuilder(
+      column: $table.warningDaysBeforeExpiration,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 }
@@ -5138,6 +5837,12 @@ class $$CatalogTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isUnique =>
       $composableBuilder(column: $table.isUnique, builder: (column) => column);
+
+  GeneratedColumn<int> get defaultShelfLifeDays => $composableBuilder(
+      column: $table.defaultShelfLifeDays, builder: (column) => column);
+
+  GeneratedColumn<int> get warningDaysBeforeExpiration => $composableBuilder(
+      column: $table.warningDaysBeforeExpiration, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -5288,6 +5993,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
+            Value<int?> defaultShelfLifeDays = const Value.absent(),
+            Value<int?> warningDaysBeforeExpiration = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -5299,6 +6006,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             customAttributes: customAttributes,
             isUnique: isUnique,
+            defaultShelfLifeDays: defaultShelfLifeDays,
+            warningDaysBeforeExpiration: warningDaysBeforeExpiration,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -5310,6 +6019,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             Value<String?> mainPhotoPath = const Value.absent(),
             Value<String> customAttributes = const Value.absent(),
             Value<bool> isUnique = const Value.absent(),
+            Value<int?> defaultShelfLifeDays = const Value.absent(),
+            Value<int?> warningDaysBeforeExpiration = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -5321,6 +6032,8 @@ class $$CatalogTableTableTableManager extends RootTableManager<
             mainPhotoPath: mainPhotoPath,
             customAttributes: customAttributes,
             isUnique: isUnique,
+            defaultShelfLifeDays: defaultShelfLifeDays,
+            warningDaysBeforeExpiration: warningDaysBeforeExpiration,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -6125,6 +6838,7 @@ typedef $$EntitiesTableTableCreateCompanionBuilder = EntitiesTableCompanion
   required String speciesId,
   Value<String?> subspeciesId,
   Value<String?> locationId,
+  Value<DateTime?> expirationDate,
   Value<String?> notes,
   required DateTime createdAt,
   required DateTime updatedAt,
@@ -6136,6 +6850,7 @@ typedef $$EntitiesTableTableUpdateCompanionBuilder = EntitiesTableCompanion
   Value<String> speciesId,
   Value<String?> subspeciesId,
   Value<String?> locationId,
+  Value<DateTime?> expirationDate,
   Value<String?> notes,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
@@ -6275,6 +6990,10 @@ class $$EntitiesTableTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get expirationDate => $composableBuilder(
+      column: $table.expirationDate,
+      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
@@ -6446,6 +7165,10 @@ class $$EntitiesTableTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<DateTime> get expirationDate => $composableBuilder(
+      column: $table.expirationDate,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
@@ -6527,6 +7250,9 @@ class $$EntitiesTableTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get expirationDate => $composableBuilder(
+      column: $table.expirationDate, builder: (column) => column);
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
@@ -6720,6 +7446,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             Value<String> speciesId = const Value.absent(),
             Value<String?> subspeciesId = const Value.absent(),
             Value<String?> locationId = const Value.absent(),
+            Value<DateTime?> expirationDate = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
@@ -6730,6 +7457,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             speciesId: speciesId,
             subspeciesId: subspeciesId,
             locationId: locationId,
+            expirationDate: expirationDate,
             notes: notes,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -6740,6 +7468,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             required String speciesId,
             Value<String?> subspeciesId = const Value.absent(),
             Value<String?> locationId = const Value.absent(),
+            Value<DateTime?> expirationDate = const Value.absent(),
             Value<String?> notes = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
@@ -6750,6 +7479,7 @@ class $$EntitiesTableTableTableManager extends RootTableManager<
             speciesId: speciesId,
             subspeciesId: subspeciesId,
             locationId: locationId,
+            expirationDate: expirationDate,
             notes: notes,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -8858,6 +9588,259 @@ typedef $$SpeciesRequirementsTableTableProcessedTableManager
         ),
         SpeciesRequirementsTableData,
         PrefetchHooks Function({bool requiredSpeciesId})>;
+typedef $$NotificationsTableTableCreateCompanionBuilder
+    = NotificationsTableCompanion Function({
+  required String id,
+  required String type,
+  required String title,
+  required String message,
+  required String targetId,
+  required String targetType,
+  Value<String> status,
+  Value<DateTime?> snoozedUntil,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<int> rowid,
+});
+typedef $$NotificationsTableTableUpdateCompanionBuilder
+    = NotificationsTableCompanion Function({
+  Value<String> id,
+  Value<String> type,
+  Value<String> title,
+  Value<String> message,
+  Value<String> targetId,
+  Value<String> targetType,
+  Value<String> status,
+  Value<DateTime?> snoozedUntil,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+class $$NotificationsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $NotificationsTableTable> {
+  $$NotificationsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get message => $composableBuilder(
+      column: $table.message, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get targetId => $composableBuilder(
+      column: $table.targetId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get targetType => $composableBuilder(
+      column: $table.targetType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get snoozedUntil => $composableBuilder(
+      column: $table.snoozedUntil, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$NotificationsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $NotificationsTableTable> {
+  $$NotificationsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get message => $composableBuilder(
+      column: $table.message, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get targetId => $composableBuilder(
+      column: $table.targetId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get targetType => $composableBuilder(
+      column: $table.targetType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get snoozedUntil => $composableBuilder(
+      column: $table.snoozedUntil,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$NotificationsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NotificationsTableTable> {
+  $$NotificationsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get message =>
+      $composableBuilder(column: $table.message, builder: (column) => column);
+
+  GeneratedColumn<String> get targetId =>
+      $composableBuilder(column: $table.targetId, builder: (column) => column);
+
+  GeneratedColumn<String> get targetType => $composableBuilder(
+      column: $table.targetType, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get snoozedUntil => $composableBuilder(
+      column: $table.snoozedUntil, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$NotificationsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $NotificationsTableTable,
+    NotificationsTableData,
+    $$NotificationsTableTableFilterComposer,
+    $$NotificationsTableTableOrderingComposer,
+    $$NotificationsTableTableAnnotationComposer,
+    $$NotificationsTableTableCreateCompanionBuilder,
+    $$NotificationsTableTableUpdateCompanionBuilder,
+    (
+      NotificationsTableData,
+      BaseReferences<_$AppDatabase, $NotificationsTableTable,
+          NotificationsTableData>
+    ),
+    NotificationsTableData,
+    PrefetchHooks Function()> {
+  $$NotificationsTableTableTableManager(
+      _$AppDatabase db, $NotificationsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NotificationsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NotificationsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NotificationsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> type = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String> message = const Value.absent(),
+            Value<String> targetId = const Value.absent(),
+            Value<String> targetType = const Value.absent(),
+            Value<String> status = const Value.absent(),
+            Value<DateTime?> snoozedUntil = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              NotificationsTableCompanion(
+            id: id,
+            type: type,
+            title: title,
+            message: message,
+            targetId: targetId,
+            targetType: targetType,
+            status: status,
+            snoozedUntil: snoozedUntil,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String type,
+            required String title,
+            required String message,
+            required String targetId,
+            required String targetType,
+            Value<String> status = const Value.absent(),
+            Value<DateTime?> snoozedUntil = const Value.absent(),
+            required DateTime createdAt,
+            required DateTime updatedAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              NotificationsTableCompanion.insert(
+            id: id,
+            type: type,
+            title: title,
+            message: message,
+            targetId: targetId,
+            targetType: targetType,
+            status: status,
+            snoozedUntil: snoozedUntil,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$NotificationsTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $NotificationsTableTable,
+    NotificationsTableData,
+    $$NotificationsTableTableFilterComposer,
+    $$NotificationsTableTableOrderingComposer,
+    $$NotificationsTableTableAnnotationComposer,
+    $$NotificationsTableTableCreateCompanionBuilder,
+    $$NotificationsTableTableUpdateCompanionBuilder,
+    (
+      NotificationsTableData,
+      BaseReferences<_$AppDatabase, $NotificationsTableTable,
+          NotificationsTableData>
+    ),
+    NotificationsTableData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -8890,4 +9873,6 @@ class $AppDatabaseManager {
   $$SpeciesRequirementsTableTableTableManager get speciesRequirementsTable =>
       $$SpeciesRequirementsTableTableTableManager(
           _db, _db.speciesRequirementsTable);
+  $$NotificationsTableTableTableManager get notificationsTable =>
+      $$NotificationsTableTableTableManager(_db, _db.notificationsTable);
 }
