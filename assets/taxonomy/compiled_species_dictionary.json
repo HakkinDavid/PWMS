@@ -1,0 +1,2215 @@
+[
+  {
+    "species": "Taladro",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "taladro"
+    ]
+  },
+  {
+    "species": "Rotomartillo",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "rotomartillo"
+    ]
+  },
+  {
+    "species": "Esmeriladora",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "esmeriladora"
+    ]
+  },
+  {
+    "species": "Sierra Circular",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "sierra circular",
+      "sierra",
+      "circular"
+    ]
+  },
+  {
+    "species": "Sierra Caladora",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "sierra caladora",
+      "sierra",
+      "caladora"
+    ]
+  },
+  {
+    "species": "Lijadora",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "lijadora"
+    ]
+  },
+  {
+    "species": "Atornillador",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "atornillador"
+    ]
+  },
+  {
+    "species": "Martillo",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "martillo"
+    ]
+  },
+  {
+    "species": "Marro",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "marro"
+    ]
+  },
+  {
+    "species": "Destornillador",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "destornillador"
+    ]
+  },
+  {
+    "species": "Desarmador",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "desarmador"
+    ]
+  },
+  {
+    "species": "Pinza",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "pinza"
+    ]
+  },
+  {
+    "species": "Llave Perica",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "llave perica",
+      "llave",
+      "perica"
+    ]
+  },
+  {
+    "species": "Llave Española",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "llave española",
+      "llave",
+      "española"
+    ]
+  },
+  {
+    "species": "Flexómetro",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "flexómetro"
+    ]
+  },
+  {
+    "species": "Cinta Métrica",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "cinta métrica",
+      "cinta",
+      "métrica"
+    ]
+  },
+  {
+    "species": "Nivel de Gota",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "nivel de gota",
+      "nivel",
+      "gota"
+    ]
+  },
+  {
+    "species": "Cautín",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "cautín"
+    ]
+  },
+  {
+    "species": "Pistola de Silicona",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "pistola de silicona",
+      "pistola",
+      "silicona"
+    ]
+  },
+  {
+    "species": "Compresor de Aire",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "compresor de aire",
+      "compresor",
+      "aire"
+    ]
+  },
+  {
+    "species": "Caja de Herramienta",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "caja de herramienta",
+      "caja",
+      "herramienta"
+    ]
+  },
+  {
+    "species": "Tornillo",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "tornillo"
+    ]
+  },
+  {
+    "species": "Tuerca",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "tuerca"
+    ]
+  },
+  {
+    "species": "Rondana",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "rondana"
+    ]
+  },
+  {
+    "species": "Clavo",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "clavo"
+    ]
+  },
+  {
+    "species": "Taquete",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "taquete"
+    ]
+  },
+  {
+    "species": "Pija",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "pija"
+    ]
+  },
+  {
+    "species": "Broca",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "broca"
+    ]
+  },
+  {
+    "species": "Lija",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "lija"
+    ]
+  },
+  {
+    "species": "Cinta Aislar",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "cinta aislar",
+      "cinta",
+      "aislar"
+    ]
+  },
+  {
+    "species": "Cinta Canela",
+    "department": "Herramientas y Ferretería",
+    "keywords": [
+      "cinta canela",
+      "cinta",
+      "canela"
+    ]
+  },
+  {
+    "species": "Aceite de Motor",
+    "department": "Automotriz",
+    "keywords": [
+      "aceite de motor",
+      "aceite",
+      "motor"
+    ]
+  },
+  {
+    "species": "Anticongelante",
+    "department": "Automotriz",
+    "keywords": [
+      "anticongelante"
+    ]
+  },
+  {
+    "species": "Líquido de Frenos",
+    "department": "Automotriz",
+    "keywords": [
+      "líquido de frenos",
+      "líquido",
+      "frenos"
+    ]
+  },
+  {
+    "species": "Líquido de Dirección",
+    "department": "Automotriz",
+    "keywords": [
+      "líquido de dirección",
+      "líquido",
+      "dirección"
+    ]
+  },
+  {
+    "species": "Aditivo de Motor",
+    "department": "Automotriz",
+    "keywords": [
+      "aditivo de motor",
+      "aditivo",
+      "motor"
+    ]
+  },
+  {
+    "species": "Llanta",
+    "department": "Automotriz",
+    "keywords": [
+      "llanta"
+    ]
+  },
+  {
+    "species": "Neumático",
+    "department": "Automotriz",
+    "keywords": [
+      "neumático"
+    ]
+  },
+  {
+    "species": "Batería de Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "batería de auto",
+      "batería",
+      "auto"
+    ]
+  },
+  {
+    "species": "Cargador de Batería Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "cargador de batería auto",
+      "cargador",
+      "batería",
+      "auto"
+    ]
+  },
+  {
+    "species": "Funda de Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "funda de auto",
+      "funda",
+      "auto"
+    ]
+  },
+  {
+    "species": "Tapete de Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "tapete de auto",
+      "tapete",
+      "auto"
+    ]
+  },
+  {
+    "species": "Filtro de Aceite",
+    "department": "Automotriz",
+    "keywords": [
+      "filtro de aceite",
+      "filtro",
+      "aceite"
+    ]
+  },
+  {
+    "species": "Filtro de Aire",
+    "department": "Automotriz",
+    "keywords": [
+      "filtro de aire",
+      "filtro",
+      "aire"
+    ]
+  },
+  {
+    "species": "Bujía",
+    "department": "Automotriz",
+    "keywords": [
+      "bujía"
+    ]
+  },
+  {
+    "species": "Limpiaparabrisa",
+    "department": "Automotriz",
+    "keywords": [
+      "limpiaparabrisa"
+    ]
+  },
+  {
+    "species": "Gato Hidráulico",
+    "department": "Automotriz",
+    "keywords": [
+      "gato hidráulico",
+      "gato",
+      "hidráulico"
+    ]
+  },
+  {
+    "species": "Tubo de PVC",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "tubo de pvc",
+      "tubo",
+      "pvc"
+    ]
+  },
+  {
+    "species": "Tubo de Cobre",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "tubo de cobre",
+      "tubo",
+      "cobre"
+    ]
+  },
+  {
+    "species": "Válvula de Paso",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "válvula de paso",
+      "válvula",
+      "paso"
+    ]
+  },
+  {
+    "species": "Llave de Agua",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "llave de agua",
+      "llave",
+      "agua"
+    ]
+  },
+  {
+    "species": "Cinta Teflon",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "cinta teflon",
+      "cinta",
+      "teflon"
+    ]
+  },
+  {
+    "species": "Pintura Vinílica",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "pintura vinílica",
+      "pintura",
+      "vinílica"
+    ]
+  },
+  {
+    "species": "Pintura en Aerosol",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "pintura en aerosol",
+      "pintura",
+      "aerosol"
+    ]
+  },
+  {
+    "species": "Brocha",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "brocha"
+    ]
+  },
+  {
+    "species": "Rodillo",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "rodillo"
+    ]
+  },
+  {
+    "species": "Sellador",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "sellador"
+    ]
+  },
+  {
+    "species": "Silicona",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "silicona"
+    ]
+  },
+  {
+    "species": "Impermeabilizante",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "impermeabilizante"
+    ]
+  },
+  {
+    "species": "Tarjeta de Video",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "tarjeta de video",
+      "tarjeta",
+      "video"
+    ]
+  },
+  {
+    "species": "Procesador",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "procesador"
+    ]
+  },
+  {
+    "species": "Tarjeta Madre",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "tarjeta madre",
+      "tarjeta",
+      "madre"
+    ]
+  },
+  {
+    "species": "Memoria RAM",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "memoria ram",
+      "memoria",
+      "ram"
+    ]
+  },
+  {
+    "species": "Disco Sólido",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "disco sólido",
+      "disco",
+      "sólido"
+    ]
+  },
+  {
+    "species": "Disco Duro",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "disco duro",
+      "disco",
+      "duro"
+    ]
+  },
+  {
+    "species": "Fuente de Poder",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "fuente de poder",
+      "fuente",
+      "poder"
+    ]
+  },
+  {
+    "species": "Gabinete PC",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "gabinete pc",
+      "gabinete"
+    ]
+  },
+  {
+    "species": "Disipador",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "disipador"
+    ]
+  },
+  {
+    "species": "Ventilador PC",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "ventilador pc",
+      "ventilador"
+    ]
+  },
+  {
+    "species": "Monitor",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "monitor"
+    ]
+  },
+  {
+    "species": "Laptop",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "laptop"
+    ]
+  },
+  {
+    "species": "Computadora de Escritorio",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "computadora de escritorio",
+      "computadora",
+      "escritorio"
+    ]
+  },
+  {
+    "species": "Smartphone",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "smartphone"
+    ]
+  },
+  {
+    "species": "Tablet",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "tablet"
+    ]
+  },
+  {
+    "species": "Televisor",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "televisor"
+    ]
+  },
+  {
+    "species": "Audífono",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "audífono"
+    ]
+  },
+  {
+    "species": "Bocina",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "bocina"
+    ]
+  },
+  {
+    "species": "Barra de Sonido",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "barra de sonido",
+      "barra",
+      "sonido"
+    ]
+  },
+  {
+    "species": "Mouse",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "mouse"
+    ]
+  },
+  {
+    "species": "Teclado",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "teclado"
+    ]
+  },
+  {
+    "species": "Cámara",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "cámara"
+    ]
+  },
+  {
+    "species": "Webcam",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "webcam"
+    ]
+  },
+  {
+    "species": "Dron",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "dron"
+    ]
+  },
+  {
+    "species": "Impresora",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "impresora"
+    ]
+  },
+  {
+    "species": "Escáner",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "escáner"
+    ]
+  },
+  {
+    "species": "Router",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "router"
+    ]
+  },
+  {
+    "species": "Switch de Red",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "switch de red",
+      "switch",
+      "red"
+    ]
+  },
+  {
+    "species": "Módem",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "módem"
+    ]
+  },
+  {
+    "species": "Cable HDMI",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "cable hdmi",
+      "cable",
+      "hdmi"
+    ]
+  },
+  {
+    "species": "Cable USB",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "cable usb",
+      "cable",
+      "usb"
+    ]
+  },
+  {
+    "species": "Cargador",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "cargador"
+    ]
+  },
+  {
+    "species": "Batería Portátil",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "batería portátil",
+      "batería",
+      "portátil"
+    ]
+  },
+  {
+    "species": "Hub USB",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "hub usb",
+      "hub",
+      "usb"
+    ]
+  },
+  {
+    "species": "Micrófono",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "micrófono"
+    ]
+  },
+  {
+    "species": "Silla Gamer",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "silla gamer",
+      "silla",
+      "gamer"
+    ]
+  },
+  {
+    "species": "Volante Gamer",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "volante gamer",
+      "volante",
+      "gamer"
+    ]
+  },
+  {
+    "species": "Proyector",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "proyector"
+    ]
+  },
+  {
+    "species": "Control de Videojuegos",
+    "department": "Videojuegos",
+    "keywords": [
+      "control de videojuegos",
+      "control",
+      "videojuegos"
+    ]
+  },
+  {
+    "species": "Consola de Videojuegos",
+    "department": "Videojuegos",
+    "keywords": [
+      "consola de videojuegos",
+      "consola",
+      "videojuegos"
+    ]
+  },
+  {
+    "species": "Videojuego",
+    "department": "Videojuegos",
+    "keywords": [
+      "videojuego"
+    ]
+  },
+  {
+    "species": "Tarjeta de Prepago",
+    "department": "Videojuegos",
+    "keywords": [
+      "tarjeta de prepago",
+      "tarjeta",
+      "prepago"
+    ]
+  },
+  {
+    "species": "Gafas de Realidad Virtual",
+    "department": "Videojuegos",
+    "keywords": [
+      "gafas de realidad virtual",
+      "gafas",
+      "realidad",
+      "virtual"
+    ]
+  },
+  {
+    "species": "Jabón",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "jabón"
+    ]
+  },
+  {
+    "species": "Champú",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "champú"
+    ]
+  },
+  {
+    "species": "Acondicionador",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "acondicionador"
+    ]
+  },
+  {
+    "species": "Pasta Dental",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "pasta dental",
+      "pasta",
+      "dental"
+    ]
+  },
+  {
+    "species": "Cepillo Dental",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "cepillo dental",
+      "cepillo",
+      "dental"
+    ]
+  },
+  {
+    "species": "Hilo Dental",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "hilo dental",
+      "hilo",
+      "dental"
+    ]
+  },
+  {
+    "species": "Enjuague Bucal",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "enjuague bucal",
+      "enjuague",
+      "bucal"
+    ]
+  },
+  {
+    "species": "Crema Corporal",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "crema corporal",
+      "crema",
+      "corporal"
+    ]
+  },
+  {
+    "species": "Crema Facial",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "crema facial",
+      "crema",
+      "facial"
+    ]
+  },
+  {
+    "species": "Bloqueador Solar",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "bloqueador solar",
+      "bloqueador",
+      "solar"
+    ]
+  },
+  {
+    "species": "Desodorante",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "desodorante"
+    ]
+  },
+  {
+    "species": "Antitraspirante",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "antitraspirante"
+    ]
+  },
+  {
+    "species": "Rastrillo",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "rastrillo"
+    ]
+  },
+  {
+    "species": "Rasuradora",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "rasuradora"
+    ]
+  },
+  {
+    "species": "Espuma de Afeitar",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "espuma de afeitar",
+      "espuma",
+      "afeitar"
+    ]
+  },
+  {
+    "species": "Perfume",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "perfume"
+    ]
+  },
+  {
+    "species": "Loción",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "loción"
+    ]
+  },
+  {
+    "species": "Maquillaje",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "maquillaje"
+    ]
+  },
+  {
+    "species": "Labial",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "labial"
+    ]
+  },
+  {
+    "species": "Rímel",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "rímel"
+    ]
+  },
+  {
+    "species": "Esmalte de Uña",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "esmalte de uña",
+      "esmalte",
+      "uña"
+    ]
+  },
+  {
+    "species": "Lavado Nasal",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "lavado nasal",
+      "lavado",
+      "nasal"
+    ]
+  },
+  {
+    "species": "Solución Salina",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "solución salina",
+      "solución",
+      "salina"
+    ]
+  },
+  {
+    "species": "Medicina",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "medicina"
+    ]
+  },
+  {
+    "species": "Analgésico",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "analgésico"
+    ]
+  },
+  {
+    "species": "Antihistamínico",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "antihistamínico"
+    ]
+  },
+  {
+    "species": "Vitamina",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "vitamina"
+    ]
+  },
+  {
+    "species": "Jarabe",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "jarabe"
+    ]
+  },
+  {
+    "species": "Termómetro",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "termómetro"
+    ]
+  },
+  {
+    "species": "Curita",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "curita"
+    ]
+  },
+  {
+    "species": "Algodón",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "algodón"
+    ]
+  },
+  {
+    "species": "Alcohol Etílico",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "alcohol etílico",
+      "alcohol",
+      "etílico"
+    ]
+  },
+  {
+    "species": "Leche",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "leche"
+    ]
+  },
+  {
+    "species": "Huevo",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "huevo"
+    ]
+  },
+  {
+    "species": "Queso",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "queso"
+    ]
+  },
+  {
+    "species": "Yogurt",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "yogurt"
+    ]
+  },
+  {
+    "species": "Mantequilla",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "mantequilla"
+    ]
+  },
+  {
+    "species": "Margarina",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "margarina"
+    ]
+  },
+  {
+    "species": "Crema de Leche",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "crema de leche",
+      "crema",
+      "leche"
+    ]
+  },
+  {
+    "species": "Puré de Tomate",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "puré de tomate",
+      "puré",
+      "tomate"
+    ]
+  },
+  {
+    "species": "Tomate",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "tomate"
+    ]
+  },
+  {
+    "species": "Jitomate",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "jitomate"
+    ]
+  },
+  {
+    "species": "Cebolla",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "cebolla"
+    ]
+  },
+  {
+    "species": "Papa",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "papa"
+    ]
+  },
+  {
+    "species": "Aguacate",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "aguacate"
+    ]
+  },
+  {
+    "species": "Limón",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "limón"
+    ]
+  },
+  {
+    "species": "Manzana",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "manzana"
+    ]
+  },
+  {
+    "species": "Plátano",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "plátano"
+    ]
+  },
+  {
+    "species": "Azúcar",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "azúcar"
+    ]
+  },
+  {
+    "species": "Harina",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "harina"
+    ]
+  },
+  {
+    "species": "Arroz",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "arroz"
+    ]
+  },
+  {
+    "species": "Frijol",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "frijol"
+    ]
+  },
+  {
+    "species": "Maíz",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "maíz"
+    ]
+  },
+  {
+    "species": "Lenteja",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "lenteja"
+    ]
+  },
+  {
+    "species": "Garbanzo",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "garbanzo"
+    ]
+  },
+  {
+    "species": "Aceite Comestible",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "aceite comestible",
+      "aceite",
+      "comestible"
+    ]
+  },
+  {
+    "species": "Salsa",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "salsa"
+    ]
+  },
+  {
+    "species": "Salsa de Chile",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "salsa de chile",
+      "salsa",
+      "chile"
+    ]
+  },
+  {
+    "species": "Dulce de Chile",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "dulce de chile",
+      "dulce",
+      "chile"
+    ]
+  },
+  {
+    "species": "Atún",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "atún"
+    ]
+  },
+  {
+    "species": "Sardina",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "sardina"
+    ]
+  },
+  {
+    "species": "Chiles en Lata",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "chiles en lata",
+      "chiles",
+      "lata"
+    ]
+  },
+  {
+    "species": "Elote en Lata",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "elote en lata",
+      "elote",
+      "lata"
+    ]
+  },
+  {
+    "species": "Sopa en Lata",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "sopa en lata",
+      "sopa",
+      "lata"
+    ]
+  },
+  {
+    "species": "Papa Frita",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "papa frita",
+      "papa",
+      "frita"
+    ]
+  },
+  {
+    "species": "Galleta",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "galleta"
+    ]
+  },
+  {
+    "species": "Chocolate",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "chocolate"
+    ]
+  },
+  {
+    "species": "Dulce",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "dulce"
+    ]
+  },
+  {
+    "species": "Palomita",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "palomita"
+    ]
+  },
+  {
+    "species": "Cereal",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "cereal"
+    ]
+  },
+  {
+    "species": "Pan Blanco",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "pan blanco",
+      "pan",
+      "blanco"
+    ]
+  },
+  {
+    "species": "Pan Dulce",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "pan dulce",
+      "pan",
+      "dulce"
+    ]
+  },
+  {
+    "species": "Tortilla",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "tortilla"
+    ]
+  },
+  {
+    "species": "Jamón",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "jamón"
+    ]
+  },
+  {
+    "species": "Salchicha",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "salchicha"
+    ]
+  },
+  {
+    "species": "Tocino",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "tocino"
+    ]
+  },
+  {
+    "species": "Refresco",
+    "department": "Bebidas",
+    "keywords": [
+      "refresco"
+    ]
+  },
+  {
+    "species": "Agua Embotellada",
+    "department": "Bebidas",
+    "keywords": [
+      "agua embotellada",
+      "agua",
+      "embotellada"
+    ]
+  },
+  {
+    "species": "Agua Mineral",
+    "department": "Bebidas",
+    "keywords": [
+      "agua mineral",
+      "agua",
+      "mineral"
+    ]
+  },
+  {
+    "species": "Jugo",
+    "department": "Bebidas",
+    "keywords": [
+      "jugo"
+    ]
+  },
+  {
+    "species": "Néctar",
+    "department": "Bebidas",
+    "keywords": [
+      "néctar"
+    ]
+  },
+  {
+    "species": "Bebida Energética",
+    "department": "Bebidas",
+    "keywords": [
+      "bebida energética",
+      "bebida",
+      "energética"
+    ]
+  },
+  {
+    "species": "Bebida Deportiva",
+    "department": "Bebidas",
+    "keywords": [
+      "bebida deportiva",
+      "bebida",
+      "deportiva"
+    ]
+  },
+  {
+    "species": "Suero Oral",
+    "department": "Bebidas",
+    "keywords": [
+      "suero oral",
+      "suero",
+      "oral"
+    ]
+  },
+  {
+    "species": "Cerveza",
+    "department": "Bebidas",
+    "keywords": [
+      "cerveza"
+    ]
+  },
+  {
+    "species": "Vino",
+    "department": "Bebidas",
+    "keywords": [
+      "vino"
+    ]
+  },
+  {
+    "species": "Tequila",
+    "department": "Bebidas",
+    "keywords": [
+      "tequila"
+    ]
+  },
+  {
+    "species": "Whisky",
+    "department": "Bebidas",
+    "keywords": [
+      "whisky"
+    ]
+  },
+  {
+    "species": "Ron",
+    "department": "Bebidas",
+    "keywords": [
+      "ron"
+    ]
+  },
+  {
+    "species": "Vodka",
+    "department": "Bebidas",
+    "keywords": [
+      "vodka"
+    ]
+  },
+  {
+    "species": "Mezcal",
+    "department": "Bebidas",
+    "keywords": [
+      "mezcal"
+    ]
+  },
+  {
+    "species": "Café",
+    "department": "Bebidas",
+    "keywords": [
+      "café"
+    ]
+  },
+  {
+    "species": "Té",
+    "department": "Bebidas",
+    "keywords": [
+      "té"
+    ]
+  },
+  {
+    "species": "Cloro",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "cloro"
+    ]
+  },
+  {
+    "species": "Detergente",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "detergente"
+    ]
+  },
+  {
+    "species": "Suavizante",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "suavizante"
+    ]
+  },
+  {
+    "species": "Lavavajilla",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "lavavajilla"
+    ]
+  },
+  {
+    "species": "Desinfectante",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "desinfectante"
+    ]
+  },
+  {
+    "species": "Limpiacristal",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "limpiacristal"
+    ]
+  },
+  {
+    "species": "Limpiador Multiusos",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "limpiador multiusos",
+      "limpiador",
+      "multiusos"
+    ]
+  },
+  {
+    "species": "Jabón Trast",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "jabón trast",
+      "jabón",
+      "trast"
+    ]
+  },
+  {
+    "species": "Escoba",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "escoba"
+    ]
+  },
+  {
+    "species": "Trapeador",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "trapeador"
+    ]
+  },
+  {
+    "species": "Recogedor",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "recogedor"
+    ]
+  },
+  {
+    "species": "Cubeta",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "cubeta"
+    ]
+  },
+  {
+    "species": "Fibra de Limpieza",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "fibra de limpieza",
+      "fibra",
+      "limpieza"
+    ]
+  },
+  {
+    "species": "Papel Higiénico",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "papel higiénico",
+      "papel",
+      "higiénico"
+    ]
+  },
+  {
+    "species": "Servilleta",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "servilleta"
+    ]
+  },
+  {
+    "species": "Toalla de Papel",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "toalla de papel",
+      "toalla",
+      "papel"
+    ]
+  },
+  {
+    "species": "Bolsa de Basura",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "bolsa de basura",
+      "bolsa",
+      "basura"
+    ]
+  },
+  {
+    "species": "Refrigerador",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "refrigerador"
+    ]
+  },
+  {
+    "species": "Lavadora",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "lavadora"
+    ]
+  },
+  {
+    "species": "Secadora",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "secadora"
+    ]
+  },
+  {
+    "species": "Estufa",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "estufa"
+    ]
+  },
+  {
+    "species": "Horno",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "horno"
+    ]
+  },
+  {
+    "species": "Microonda",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "microonda"
+    ]
+  },
+  {
+    "species": "Licuadora",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "licuadora"
+    ]
+  },
+  {
+    "species": "Freidora de Aire",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "freidora de aire",
+      "freidora",
+      "aire"
+    ]
+  },
+  {
+    "species": "Cafetera",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "cafetera"
+    ]
+  },
+  {
+    "species": "Batidora",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "batidora"
+    ]
+  },
+  {
+    "species": "Tostadora",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "tostadora"
+    ]
+  },
+  {
+    "species": "Aspiradora",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "aspiradora"
+    ]
+  },
+  {
+    "species": "Sartén",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "sartén"
+    ]
+  },
+  {
+    "species": "Olla",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "olla"
+    ]
+  },
+  {
+    "species": "Vajilla",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "vajilla"
+    ]
+  },
+  {
+    "species": "Vaso",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "vaso"
+    ]
+  },
+  {
+    "species": "Taza",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "taza"
+    ]
+  },
+  {
+    "species": "Foco",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "foco"
+    ]
+  },
+  {
+    "species": "Lámpara",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "lámpara"
+    ]
+  },
+  {
+    "species": "Manta",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "manta"
+    ]
+  },
+  {
+    "species": "Almohada",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "almohada"
+    ]
+  },
+  {
+    "species": "Tenis",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "tenis"
+    ]
+  },
+  {
+    "species": "Zapato",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "zapato"
+    ]
+  },
+  {
+    "species": "Bota",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "bota"
+    ]
+  },
+  {
+    "species": "Sandalia",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "sandalia"
+    ]
+  },
+  {
+    "species": "Playera",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "playera"
+    ]
+  },
+  {
+    "species": "Camisa",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "camisa"
+    ]
+  },
+  {
+    "species": "Pantalón",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "pantalón"
+    ]
+  },
+  {
+    "species": "Jean",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "jean"
+    ]
+  },
+  {
+    "species": "Chamarra",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "chamarra"
+    ]
+  },
+  {
+    "species": "Sudadera",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "sudadera"
+    ]
+  },
+  {
+    "species": "Vestido",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "vestido"
+    ]
+  },
+  {
+    "species": "Short",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "short"
+    ]
+  },
+  {
+    "species": "Calcetín",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "calcetín"
+    ]
+  },
+  {
+    "species": "Interior",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "interior"
+    ]
+  },
+  {
+    "species": "Alimento para Perro",
+    "department": "Mascotas",
+    "keywords": [
+      "alimento para perro",
+      "alimento",
+      "para",
+      "perro"
+    ]
+  },
+  {
+    "species": "Alimento para Gato",
+    "department": "Mascotas",
+    "keywords": [
+      "alimento para gato",
+      "alimento",
+      "para",
+      "gato"
+    ]
+  },
+  {
+    "species": "Premio para Mascota",
+    "department": "Mascotas",
+    "keywords": [
+      "premio para mascota",
+      "premio",
+      "para",
+      "mascota"
+    ]
+  },
+  {
+    "species": "Arena para Gato",
+    "department": "Mascotas",
+    "keywords": [
+      "arena para gato",
+      "arena",
+      "para",
+      "gato"
+    ]
+  },
+  {
+    "species": "Plato para Mascota",
+    "department": "Mascotas",
+    "keywords": [
+      "plato para mascota",
+      "plato",
+      "para",
+      "mascota"
+    ]
+  },
+  {
+    "species": "Juguete para Mascota",
+    "department": "Mascotas",
+    "keywords": [
+      "juguete para mascota",
+      "juguete",
+      "para",
+      "mascota"
+    ]
+  },
+  {
+    "species": "Collar para Perro",
+    "department": "Mascotas",
+    "keywords": [
+      "collar para perro",
+      "collar",
+      "para",
+      "perro"
+    ]
+  },
+  {
+    "species": "Pañal",
+    "department": "Bebés",
+    "keywords": [
+      "pañal"
+    ]
+  },
+  {
+    "species": "Toallita Húmeda",
+    "department": "Bebés",
+    "keywords": [
+      "toallita húmeda",
+      "toallita",
+      "húmeda"
+    ]
+  },
+  {
+    "species": "Fórmula Infantil",
+    "department": "Bebés",
+    "keywords": [
+      "fórmula infantil",
+      "fórmula",
+      "infantil"
+    ]
+  },
+  {
+    "species": "Biberón",
+    "department": "Bebés",
+    "keywords": [
+      "biberón"
+    ]
+  },
+  {
+    "species": "Chupón",
+    "department": "Bebés",
+    "keywords": [
+      "chupón"
+    ]
+  },
+  {
+    "species": "Carriola",
+    "department": "Bebés",
+    "keywords": [
+      "carriola"
+    ]
+  },
+  {
+    "species": "Cuna",
+    "department": "Bebés",
+    "keywords": [
+      "cuna"
+    ]
+  },
+  {
+    "species": "Juguete",
+    "department": "Juguetes",
+    "keywords": [
+      "juguete"
+    ]
+  },
+  {
+    "species": "Lego",
+    "department": "Juguetes",
+    "keywords": [
+      "lego"
+    ]
+  },
+  {
+    "species": "Figura de Acción",
+    "department": "Juguetes",
+    "keywords": [
+      "figura de acción",
+      "figura",
+      "acción"
+    ]
+  },
+  {
+    "species": "Muñeca",
+    "department": "Juguetes",
+    "keywords": [
+      "muñeca"
+    ]
+  },
+  {
+    "species": "Juego de Mesa",
+    "department": "Juguetes",
+    "keywords": [
+      "juego de mesa",
+      "juego",
+      "mesa"
+    ]
+  },
+  {
+    "species": "Peluche",
+    "department": "Juguetes",
+    "keywords": [
+      "peluche"
+    ]
+  },
+  {
+    "species": "Pista de Carrera",
+    "department": "Juguetes",
+    "keywords": [
+      "pista de carrera",
+      "pista",
+      "carrera"
+    ]
+  },
+  {
+    "species": "Cuaderno",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "cuaderno"
+    ]
+  },
+  {
+    "species": "Libreta",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "libreta"
+    ]
+  },
+  {
+    "species": "Pluma",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "pluma"
+    ]
+  },
+  {
+    "species": "Bolígrafo",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "bolígrafo"
+    ]
+  },
+  {
+    "species": "Lápiz",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "lápiz"
+    ]
+  },
+  {
+    "species": "Marcador",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "marcador"
+    ]
+  },
+  {
+    "species": "Carpeta",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "carpeta"
+    ]
+  },
+  {
+    "species": "Hoja de Papel",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "hoja de papel",
+      "hoja",
+      "papel"
+    ]
+  },
+  {
+    "species": "Grapa",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "grapa"
+    ]
+  },
+  {
+    "species": "Tijera",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "tijera"
+    ]
+  },
+  {
+    "species": "Mochila",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "mochila"
+    ]
+  },
+  {
+    "species": "Libro",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "libro"
+    ]
+  },
+  {
+    "species": "Mancuerna",
+    "department": "Deportes",
+    "keywords": [
+      "mancuerna"
+    ]
+  },
+  {
+    "species": "Tapete de Yoga",
+    "department": "Deportes",
+    "keywords": [
+      "tapete de yoga",
+      "tapete",
+      "yoga"
+    ]
+  },
+  {
+    "species": "Balón de Fútbol",
+    "department": "Deportes",
+    "keywords": [
+      "balón de fútbol",
+      "balón",
+      "fútbol"
+    ]
+  },
+  {
+    "species": "Balón de Basquetbol",
+    "department": "Deportes",
+    "keywords": [
+      "balón de basquetbol",
+      "balón",
+      "basquetbol"
+    ]
+  },
+  {
+    "species": "Bicicleta",
+    "department": "Deportes",
+    "keywords": [
+      "bicicleta"
+    ]
+  },
+  {
+    "species": "Casco de Bicicleta",
+    "department": "Deportes",
+    "keywords": [
+      "casco de bicicleta",
+      "casco",
+      "bicicleta"
+    ]
+  }
+]

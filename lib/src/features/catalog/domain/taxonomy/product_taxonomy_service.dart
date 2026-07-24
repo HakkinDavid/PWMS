@@ -1,4 +1,5 @@
 import 'brand_dictionary.dart';
+import 'fast_lazy_taxonomy_registry.dart';
 import 'product_taxonomy_dictionary.dart';
 import 'spanish_singularizer.dart';
 
@@ -19,7 +20,7 @@ class TaxonomyResolution {
 class ProductTaxonomyService {
   const ProductTaxonomyService();
 
-  /// Resolver la especie general atómica en SINGULAR, departamento y marca inferida
+  /// Resolver la especie general atómica en SINGULAR ESTRICTO a partir de millones de datos compilados
   TaxonomyResolution resolve({
     required String title,
     String? categoryHint,
@@ -42,10 +43,22 @@ class ProductTaxonomyService {
 
     final combinedText = '${genericName ?? ""} ${categoryHint ?? ""} $cleanTitle'.toLowerCase();
 
+    // 2. Consulta ultrarrápida O(1) en FastLazyTaxonomyRegistry (Catálogo Compilado Masivo)
+    final lazyMatch = FastLazyTaxonomyRegistry.lookup(combinedText);
+    if (lazyMatch != null) {
+      final singularName = SpanishSingularizer.toSingular(lazyMatch.species);
+      return TaxonomyResolution(
+        generalSpeciesName: singularName,
+        department: lazyMatch.department,
+        inferredBrand: finalBrand,
+        confidence: 0.95,
+      );
+    }
+
+    // 3. Evaluar reglas de ProductTaxonomyDictionary
     CategoryDefinition? bestMatch;
     int highestScore = 0;
 
-    // 2. Evaluar reglas de ProductTaxonomyDictionary (Especies Atómicas Singular)
     for (final def in ProductTaxonomyDictionary.definitions) {
       int score = 0;
 
@@ -71,7 +84,6 @@ class ProductTaxonomyService {
     }
 
     if (bestMatch != null && highestScore >= 10) {
-      // Garantizar que el nombre de la especie esté siempre en SINGULAR ESTRICTO
       final singularSpeciesName = SpanishSingularizer.toSingular(bestMatch.generalSpeciesName);
 
       return TaxonomyResolution(
@@ -82,7 +94,7 @@ class ProductTaxonomyService {
       );
     }
 
-    // 3. Fallback NLP + Singularizer: Extraer sustantivo principal en SINGULAR si no coincide con el diccionario estático
+    // 4. Fallback NLP + Singularizer: Extraer sustantivo principal en SINGULAR si no coincide en diccionarios
     final nlpSpeciesName = _extractNounFromTitle(cleanTitle, finalBrand);
 
     return TaxonomyResolution(
@@ -100,7 +112,6 @@ class ProductTaxonomyService {
       cleaned = cleaned.replaceAll(RegExp(brand, caseSensitive: false), '');
     }
 
-    // Eliminar especificaciones técnicas y unidades (ej. 600ml, 128GB, 4K, 8GB, 12V, 24", 930ml, 210g)
     cleaned = cleaned.replaceAll(RegExp(r'\b\d+(\.\d+)?\s*(ml|l|g|kg|gb|tb|mb|hz|v|w|in|mm|cm|m|k|p|fps)\b', caseSensitive: false), '');
     cleaned = cleaned.replaceAll(RegExp(r'\b\d{2,4}[a-z]*\b', caseSensitive: false), '');
     cleaned = cleaned.replaceAll(RegExp(r'[^\w\s\u00C0-\u017F]', unicode: true), ' ');
