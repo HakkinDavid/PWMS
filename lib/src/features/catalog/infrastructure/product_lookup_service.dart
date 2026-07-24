@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import '../domain/taxonomy/product_taxonomy_service.dart';
 
 class ProductLookupResult {
   final String generalSpeciesName; // ej. "Monitor", "Tarjeta de Video", "Control de Videojuegos", "Cuidado Personal / Salud"
@@ -57,8 +58,13 @@ class ProductLookupResult {
 
 class ProductLookupService {
   final http.Client _client;
+  final ProductTaxonomyService _taxonomyService;
 
-  ProductLookupService({http.Client? client}) : _client = client ?? http.Client();
+  ProductLookupService({
+    http.Client? client,
+    ProductTaxonomyService? taxonomyService,
+  })  : _client = client ?? http.Client(),
+        _taxonomyService = taxonomyService ?? const ProductTaxonomyService();
 
   /// Consultar producto por código de barras (EAN/UPC) con arquitectura multinivel de búsqueda
   Future<ProductLookupResult?> lookupByBarcode(String rawBarcode) async {
@@ -108,12 +114,17 @@ class ProductLookupService {
             final genericName = (prod['generic_name'] ?? '').toString().trim();
             final imgUrl = _extractFrontPhotoUrl(prod);
 
-            final speciesName = _extractGeneralSpeciesName(name, categories, genericName, brand);
+            final taxonomy = _taxonomyService.resolve(
+              title: name,
+              categoryHint: categories,
+              genericName: genericName,
+              brandHint: brand,
+            );
 
             final result = ProductLookupResult(
-              generalSpeciesName: speciesName,
+              generalSpeciesName: taxonomy.generalSpeciesName,
               subspeciesName: name,
-              brand: brand.isNotEmpty ? brand : null,
+              brand: taxonomy.inferredBrand ?? (brand.isNotEmpty ? brand : null),
               barcode: code.isNotEmpty ? code : null,
               photoUrl: imgUrl,
             );
@@ -148,12 +159,17 @@ class ProductLookupService {
           final imgUrl = _extractFrontPhotoUrl(prod);
 
           if (name.isNotEmpty) {
-            final speciesName = _extractGeneralSpeciesName(name, categories, genericName, brand);
+            final taxonomy = _taxonomyService.resolve(
+              title: name,
+              categoryHint: categories,
+              genericName: genericName,
+              brandHint: brand,
+            );
 
             return ProductLookupResult(
-              generalSpeciesName: speciesName,
+              generalSpeciesName: taxonomy.generalSpeciesName,
               subspeciesName: name,
-              brand: brand.isNotEmpty ? brand : null,
+              brand: taxonomy.inferredBrand ?? (brand.isNotEmpty ? brand : null),
               barcode: barcode,
               description: categories.isNotEmpty ? categories : null,
               photoUrl: imgUrl,
@@ -183,12 +199,16 @@ class ProductLookupService {
           final imgUrl = (images != null && images.isNotEmpty) ? images.first.toString() : null;
 
           if (title.isNotEmpty) {
-            final speciesName = _extractGeneralSpeciesName(title, category, null, brand);
+            final taxonomy = _taxonomyService.resolve(
+              title: title,
+              categoryHint: category,
+              brandHint: brand,
+            );
 
             return ProductLookupResult(
-              generalSpeciesName: speciesName,
+              generalSpeciesName: taxonomy.generalSpeciesName,
               subspeciesName: title,
-              brand: brand.isNotEmpty ? brand : null,
+              brand: taxonomy.inferredBrand ?? (brand.isNotEmpty ? brand : null),
               barcode: barcode,
               description: description.isNotEmpty ? description : null,
               photoUrl: imgUrl,
@@ -214,7 +234,6 @@ class ProductLookupService {
       if (response.statusCode == 200) {
         final html = response.body;
 
-        // Extraer títulos de resultados utilizando expresiones regulares simples
         final titleRegex = RegExp(r'<a class="result__a"[^>]*>(.*?)<\/a>', dotAll: true, caseSensitive: false);
         final matches = titleRegex.allMatches(html);
 
@@ -224,22 +243,12 @@ class ProductLookupService {
           rawTitle = rawTitle.replaceAll('&quot;', '"').replaceAll('&amp;', '&').replaceAll('&#39;', "'");
 
           if (rawTitle.isNotEmpty && rawTitle.length > 5 && !rawTitle.toLowerCase().contains('duckduckgo')) {
-            // Intentar inferir marca
-            String? inferredBrand;
-            final commonBrands = ['Samsung', 'Dell', 'Gigabyte', 'Logitech', 'Sony', 'NeilMed', 'Apple', 'Asus', 'HP', 'Lenovo', 'LG', 'Nvidia', 'AMD', 'Microsoft'];
-            for (final b in commonBrands) {
-              if (rawTitle.toLowerCase().contains(b.toLowerCase())) {
-                inferredBrand = b;
-                break;
-              }
-            }
-
-            final speciesName = _extractGeneralSpeciesName(rawTitle, null, null, inferredBrand);
+            final taxonomy = _taxonomyService.resolve(title: rawTitle);
 
             return ProductLookupResult(
-              generalSpeciesName: speciesName,
+              generalSpeciesName: taxonomy.generalSpeciesName,
               subspeciesName: rawTitle,
-              brand: inferredBrand,
+              brand: taxonomy.inferredBrand,
               barcode: RegExp(r'^\d+$').hasMatch(barcodeOrQuery) ? barcodeOrQuery : null,
             );
           }
@@ -298,7 +307,6 @@ class ProductLookupService {
   Future<ProductLookupResult> _ensureCleanPhotoAndSave(ProductLookupResult result) async {
     String? photoUrl = result.photoUrl;
 
-    // Si la foto es nula o si es un monitor (ej. Dell P2425DE) que suele traer foto incorrecta
     final isMonitorWithBadPhoto = result.generalSpeciesName == 'Monitor' && photoUrl != null && photoUrl.toLowerCase().contains('laptop');
 
     if (photoUrl == null || photoUrl.isEmpty || isMonitorWithBadPhoto) {
@@ -316,92 +324,6 @@ class ProductLookupService {
     }
 
     return result;
-  }
-
-  /// Taxonomía Completa y Extracción NLP de Especie General
-  String _extractGeneralSpeciesName(String title, String? categories, String? genericName, String? brand) {
-    final combined = '${genericName ?? ""} ${categories ?? ""} $title'.toLowerCase();
-
-    // 1. Tarjetas de Video / GPU
-    if (combined.contains('rtx') || combined.contains('gtx') || combined.contains('radeon') || combined.contains('gpu') || combined.contains('graphics card') || combined.contains('tarjeta de video') || combined.contains('tarjeta grafica') || combined.contains('tarjeta gráfica')) {
-      return 'Tarjeta de Video';
-    }
-
-    // 2. Controles de Videojuegos / Gamepads
-    if (combined.contains('dualsense') || combined.contains('dualshock') || combined.contains('gamepad') || combined.contains('controller') || combined.contains('joy-con') || combined.contains('controlador') || combined.contains('control ps5') || combined.contains('control xbox')) {
-      return 'Control de Videojuegos';
-    }
-
-    // 3. Monitores / Pantallas
-    if (combined.contains('monitor') || combined.contains('pantalla') || combined.contains('display') || combined.contains('p2425de') || combined.contains('g65b') || combined.contains('odyssey')) {
-      return 'Monitor';
-    }
-
-    // 4. Periféricos: Mouse y Teclados
-    if (combined.contains('g203') || combined.contains('g502') || combined.contains('mouse') || combined.contains('raton') || combined.contains('ratón')) {
-      return 'Mouse';
-    }
-    if (combined.contains('keyboard') || combined.contains('teclado') || combined.contains('keychron')) {
-      return 'Teclado';
-    }
-
-    // 5. Salud / Cuidado Personal / Farmacia
-    if (combined.contains('sinusrinse') || combined.contains('neilmed') || combined.contains('saline') || combined.contains('nasal') || combined.contains('rinse') || combined.contains('shampoo') || combined.contains('champú') || combined.contains('jabón') || combined.contains('crema') || combined.contains('suplemento')) {
-      return 'Cuidado Personal / Salud';
-    }
-
-    // 6. Smartphones / Celulares
-    if (combined.contains('galaxy a') || combined.contains('galaxy s') || combined.contains('iphone') || combined.contains('pixel') || combined.contains('smartphone') || combined.contains('celular') || combined.contains('telefono') || combined.contains('teléfono')) {
-      return 'Smartphone';
-    }
-
-    // 7. Televisores
-    if (combined.contains('smart tv') || combined.contains('televisor') || combined.contains('television') || combined.contains('televisión')) {
-      return 'Televisor';
-    }
-
-    // 8. Laptops / Portátiles
-    if (combined.contains('laptop') || combined.contains('notebook') || combined.contains('macbook') || combined.contains('portatil') || combined.contains('portátil')) {
-      return 'Laptop';
-    }
-
-    // 9. Audífonos / Audio
-    if (combined.contains('headphone') || combined.contains('headset') || combined.contains('audifono') || combined.contains('audífono') || combined.contains('earbuds') || combined.contains('airpods')) {
-      return 'Audífonos';
-    }
-
-    // 10. Procesadores
-    if (combined.contains('ryzen') || combined.contains('core i3') || combined.contains('core i5') || combined.contains('core i7') || combined.contains('core i9') || combined.contains('cpu') || combined.contains('procesador')) {
-      return 'Procesador';
-    }
-
-    // 11. Almacenamiento
-    if (combined.contains('ssd') || combined.contains('nvme') || combined.contains('disco duro') || combined.contains('hard drive')) {
-      return 'Almacenamiento';
-    }
-
-    // 12. Consolas de Videojuegos
-    if (combined.contains('playstation') || combined.contains('xbox') || combined.contains('nintendo switch') || combined.contains('ps5') || combined.contains('ps4')) {
-      return 'Consola de Videojuegos';
-    }
-
-    // 13. Bebidas
-    if (combined.contains('coca cola') || combined.contains('refresco') || combined.contains('bebida') || combined.contains('soda') || combined.contains('agua') || combined.contains('juice') || combined.contains('jugo')) {
-      return 'Bebida';
-    }
-
-    // 14. Impresoras
-    if (combined.contains('impresora') || combined.contains('printer') || combined.contains('laserjet') || combined.contains('ecotank')) {
-      return 'Impresora';
-    }
-
-    // Extractor NLP si el nombre genérico viene explícito en la meta-información
-    if (genericName != null && genericName.trim().isNotEmpty && genericName.trim().length <= 25) {
-      final cleanG = genericName.trim();
-      return cleanG[0].toUpperCase() + cleanG.substring(1);
-    }
-
-    return 'Objeto';
   }
 
   /// Descarga la imagen remota y la guarda localmente en el almacenamiento del dispositivo
