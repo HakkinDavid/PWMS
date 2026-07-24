@@ -134,6 +134,24 @@
     ]
   },
   {
+    "species": "Llave Combinada",
+    "department": "Herramientas",
+    "keywords": [
+      "llave combinada",
+      "llave",
+      "combinada"
+    ]
+  },
+  {
+    "species": "Llave de Estriada",
+    "department": "Herramientas",
+    "keywords": [
+      "llave de estriada",
+      "llave",
+      "estriada"
+    ]
+  },
+  {
     "species": "Flexómetro",
     "department": "Herramientas",
     "keywords": [
@@ -157,6 +175,15 @@
       "nivel de gota",
       "nivel",
       "gota"
+    ]
+  },
+  {
+    "species": "Nivel Laser",
+    "department": "Herramientas",
+    "keywords": [
+      "nivel laser",
+      "nivel",
+      "laser"
     ]
   },
   {
@@ -191,6 +218,15 @@
     "keywords": [
       "caja de herramienta",
       "caja",
+      "herramienta"
+    ]
+  },
+  {
+    "species": "Organizador de Herramienta",
+    "department": "Herramientas",
+    "keywords": [
+      "organizador de herramienta",
+      "organizador",
       "herramienta"
     ]
   },
@@ -358,6 +394,94 @@
     ]
   },
   {
+    "species": "Navaja",
+    "department": "Herramientas",
+    "keywords": [
+      "navaja",
+      "navaja"
+    ]
+  },
+  {
+    "species": "Cortador de Azulejo",
+    "department": "Herramientas",
+    "keywords": [
+      "cortador de azulejo",
+      "cortador",
+      "azulejo"
+    ]
+  },
+  {
+    "species": "Esmeril de Banco",
+    "department": "Herramientas",
+    "keywords": [
+      "esmeril de banco",
+      "esmeril",
+      "banco"
+    ]
+  },
+  {
+    "species": "Soldadora",
+    "department": "Herramientas",
+    "keywords": [
+      "soldadora",
+      "soldadora"
+    ]
+  },
+  {
+    "species": "Careta de Soldar",
+    "department": "Herramientas",
+    "keywords": [
+      "careta de soldar",
+      "careta",
+      "soldar"
+    ]
+  },
+  {
+    "species": "Mascarilla Respiradora",
+    "department": "Herramientas",
+    "keywords": [
+      "mascarilla respiradora",
+      "mascarilla",
+      "respiradora"
+    ]
+  },
+  {
+    "species": "Guantes de Trabajo",
+    "department": "Herramientas",
+    "keywords": [
+      "guantes de trabajo",
+      "guantes",
+      "trabajo"
+    ]
+  },
+  {
+    "species": "Casco de Seguridad",
+    "department": "Herramientas",
+    "keywords": [
+      "casco de seguridad",
+      "casco",
+      "seguridad"
+    ]
+  },
+  {
+    "species": "Chaleco Reflejante",
+    "department": "Herramientas",
+    "keywords": [
+      "chaleco reflejante",
+      "chaleco",
+      "reflejante"
+    ]
+  },
+  {
+    "species": "Gafas de Protección",
+    "department": "Herramientas",
+    "keywords": [
+      "gafas de protección",
+      "gafas",
+      "protección"
+    ]
+  },
+  {
     "species": "Aceite de Motor",
     "department": "Automotriz",
     "keywords": [
@@ -399,6 +523,15 @@
       "aditivo de motor",
       "aditivo",
       "motor"
+    ]
+  },
+  {
+    "species": "Aditivo de Gasolina",
+    "department": "Automotriz",
+    "keywords": [
+      "aditivo de gasolina",
+      "aditivo",
+      "gasolina"
     ]
   },
   {
@@ -473,6 +606,15 @@
     ]
   },
   {
+    "species": "Filtro de Gasolina",
+    "department": "Automotriz",
+    "keywords": [
+      "filtro de gasolina",
+      "filtro",
+      "gasolina"
+    ]
+  },
+  {
     "species": "Bujía",
     "department": "Automotriz",
     "keywords": [
@@ -495,6 +637,16 @@
       "gato hidráulico",
       "gato",
       "hidráulico"
+    ]
+  },
+  {
+    "species": "Torre de Soporte Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "torre de soporte auto",
+      "torre",
+      "soporte",
+      "auto"
     ]
   },
   {
@@ -534,6 +686,15 @@
     ]
   },
   {
+    "species": "Bomba de Gasolina",
+    "department": "Automotriz",
+    "keywords": [
+      "bomba de gasolina",
+      "bomba",
+      "gasolina"
+    ]
+  },
+  {
     "species": "Radiador",
     "department": "Automotriz",
     "keywords": [
@@ -569,6 +730,61 @@
     ]
   },
   {
+    "species": "Cera para Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "cera para auto",
+      "cera",
+      "para",
+      "auto"
+    ]
+  },
+  {
+    "species": "Shampoo para Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "shampoo para auto",
+      "shampoo",
+      "para",
+      "auto"
+    ]
+  },
+  {
+    "species": "Grasa Automotriz",
+    "department": "Automotriz",
+    "keywords": [
+      "grasa automotriz",
+      "grasa",
+      "automotriz"
+    ]
+  },
+  {
+    "species": "Sensor de Oxígeno",
+    "department": "Automotriz",
+    "keywords": [
+      "sensor de oxígeno",
+      "sensor",
+      "oxígeno"
+    ]
+  },
+  {
+    "species": "Alternador",
+    "department": "Automotriz",
+    "keywords": [
+      "alternador",
+      "alternador"
+    ]
+  },
+  {
+    "species": "Marcha Auto",
+    "department": "Automotriz",
+    "keywords": [
+      "marcha auto",
+      "marcha",
+      "auto"
+    ]
+  },
+  {
     "species": "Tubo de PVC",
     "department": "Plomería y Pintura",
     "keywords": [
@@ -587,12 +803,39 @@
     ]
   },
   {
+    "species": "Tubo CPVC",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "tubo cpvc",
+      "tubo",
+      "cpvc"
+    ]
+  },
+  {
+    "species": "Tubo Galvanizado",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "tubo galvanizado",
+      "tubo",
+      "galvanizado"
+    ]
+  },
+  {
     "species": "Válvula de Paso",
     "department": "Plomería y Pintura",
     "keywords": [
       "válvula de paso",
       "válvula",
       "paso"
+    ]
+  },
+  {
+    "species": "Válvula Check",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "válvula check",
+      "válvula",
+      "check"
     ]
   },
   {
@@ -620,6 +863,15 @@
       "pintura vinílica",
       "pintura",
       "vinílica"
+    ]
+  },
+  {
+    "species": "Pintura Esmalte",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "pintura esmalte",
+      "pintura",
+      "esmalte"
     ]
   },
   {
@@ -718,6 +970,75 @@
       "conector pvc",
       "conector",
       "pvc"
+    ]
+  },
+  {
+    "species": "Codo PVC",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "codo pvc",
+      "codo",
+      "pvc"
+    ]
+  },
+  {
+    "species": "Tee PVC",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "tee pvc",
+      "tee",
+      "pvc"
+    ]
+  },
+  {
+    "species": "Pegamento PVC",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "pegamento pvc",
+      "pegamento",
+      "pvc"
+    ]
+  },
+  {
+    "species": "Calentador de Agua",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "calentador de agua",
+      "calentador",
+      "agua"
+    ]
+  },
+  {
+    "species": "Boiler",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "boiler",
+      "boiler"
+    ]
+  },
+  {
+    "species": "Bomba de Agua",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "bomba de agua",
+      "bomba",
+      "agua"
+    ]
+  },
+  {
+    "species": "Tinaco",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "tinaco",
+      "tinaco"
+    ]
+  },
+  {
+    "species": "Cisterna",
+    "department": "Plomería y Pintura",
+    "keywords": [
+      "cisterna",
+      "cisterna"
     ]
   },
   {
@@ -980,6 +1301,15 @@
     ]
   },
   {
+    "species": "Cable Ethernet",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "cable ethernet",
+      "cable",
+      "ethernet"
+    ]
+  },
+  {
     "species": "Cargador",
     "department": "Electrónica y Cómputo",
     "keywords": [
@@ -1101,6 +1431,33 @@
     ]
   },
   {
+    "species": "Lector de Código de Barra",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "lector de código de barra",
+      "lector",
+      "código",
+      "barra"
+    ]
+  },
+  {
+    "species": "No-Break",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "no-break",
+      "no-break"
+    ]
+  },
+  {
+    "species": "Regulador de Voltaje",
+    "department": "Electrónica y Cómputo",
+    "keywords": [
+      "regulador de voltaje",
+      "regulador",
+      "voltaje"
+    ]
+  },
+  {
     "species": "Control de Videojuegos",
     "department": "Videojuegos",
     "keywords": [
@@ -1161,6 +1518,34 @@
       "funda de consola",
       "funda",
       "consola"
+    ]
+  },
+  {
+    "species": "Timón Gamer",
+    "department": "Videojuegos",
+    "keywords": [
+      "timón gamer",
+      "timón",
+      "gamer"
+    ]
+  },
+  {
+    "species": "Palanca de Cambio Gamer",
+    "department": "Videojuegos",
+    "keywords": [
+      "palanca de cambio gamer",
+      "palanca",
+      "cambio",
+      "gamer"
+    ]
+  },
+  {
+    "species": "Grip de Controller",
+    "department": "Videojuegos",
+    "keywords": [
+      "grip de controller",
+      "grip",
+      "controller"
     ]
   },
   {
@@ -1514,6 +1899,41 @@
     ]
   },
   {
+    "species": "Cortaúña",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "cortaúña",
+      "cortaúña"
+    ]
+  },
+  {
+    "species": "Cera Depilatoria",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "cera depilatoria",
+      "cera",
+      "depilatoria"
+    ]
+  },
+  {
+    "species": "Secadora de Cabello",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "secadora de cabello",
+      "secadora",
+      "cabello"
+    ]
+  },
+  {
+    "species": "Plancha de Cabello",
+    "department": "Salud y Cuidado Personal",
+    "keywords": [
+      "plancha de cabello",
+      "plancha",
+      "cabello"
+    ]
+  },
+  {
     "species": "Leche",
     "department": "Alimentos y Abarrotes",
     "keywords": [
@@ -1665,6 +2085,46 @@
     "keywords": [
       "fresa",
       "fresa"
+    ]
+  },
+  {
+    "species": "Melón",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "melón",
+      "melón"
+    ]
+  },
+  {
+    "species": "Sandía",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "sandía",
+      "sandía"
+    ]
+  },
+  {
+    "species": "Papaya",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "papaya",
+      "papaya"
+    ]
+  },
+  {
+    "species": "Piña",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "piña",
+      "piña"
+    ]
+  },
+  {
+    "species": "Mango",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "mango",
+      "mango"
     ]
   },
   {
@@ -1975,6 +2435,89 @@
     ]
   },
   {
+    "species": "Mayonesa",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "mayonesa",
+      "mayonesa"
+    ]
+  },
+  {
+    "species": "Mostaza",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "mostaza",
+      "mostaza"
+    ]
+  },
+  {
+    "species": "Cátsup",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "cátsup",
+      "cátsup"
+    ]
+  },
+  {
+    "species": "Vinagre",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "vinagre",
+      "vinagre"
+    ]
+  },
+  {
+    "species": "Mermelada",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "mermelada",
+      "mermelada"
+    ]
+  },
+  {
+    "species": "Crema de Cacahuate",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "crema de cacahuate",
+      "crema",
+      "cacahuate"
+    ]
+  },
+  {
+    "species": "Sopa de Pasta",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "sopa de pasta",
+      "sopa",
+      "pasta"
+    ]
+  },
+  {
+    "species": "Puré de Papa",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "puré de papa",
+      "puré",
+      "papa"
+    ]
+  },
+  {
+    "species": "Aceituna",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "aceituna",
+      "aceituna"
+    ]
+  },
+  {
+    "species": "Pepinillos",
+    "department": "Alimentos y Abarrotes",
+    "keywords": [
+      "pepinillos",
+      "pepinillos"
+    ]
+  },
+  {
     "species": "Refresco",
     "department": "Bebidas",
     "keywords": [
@@ -2127,6 +2670,23 @@
     "keywords": [
       "malteada",
       "malteada"
+    ]
+  },
+  {
+    "species": "Sidra",
+    "department": "Bebidas",
+    "keywords": [
+      "sidra",
+      "sidra"
+    ]
+  },
+  {
+    "species": "Licor de Café",
+    "department": "Bebidas",
+    "keywords": [
+      "licor de café",
+      "licor",
+      "café"
     ]
   },
   {
@@ -2498,6 +3058,41 @@
     ]
   },
   {
+    "species": "Ventilador",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "ventilador",
+      "ventilador"
+    ]
+  },
+  {
+    "species": "Aire Acondicionado",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "aire acondicionado",
+      "aire",
+      "acondicionado"
+    ]
+  },
+  {
+    "species": "Plancha de Ropa",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "plancha de ropa",
+      "plancha",
+      "ropa"
+    ]
+  },
+  {
+    "species": "Burro de Planchar",
+    "department": "Hogar y Limpieza",
+    "keywords": [
+      "burro de planchar",
+      "burro",
+      "planchar"
+    ]
+  },
+  {
     "species": "Tenis",
     "department": "Ropa y Calzado",
     "keywords": [
@@ -2634,6 +3229,31 @@
     ]
   },
   {
+    "species": "Bufanda",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "bufanda",
+      "bufanda"
+    ]
+  },
+  {
+    "species": "Guant",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "guant",
+      "guant"
+    ]
+  },
+  {
+    "species": "Traje de Baño",
+    "department": "Ropa y Calzado",
+    "keywords": [
+      "traje de baño",
+      "traje",
+      "baño"
+    ]
+  },
+  {
     "species": "Alimento para Perro",
     "department": "Mascotas",
     "keywords": [
@@ -2720,6 +3340,36 @@
     ]
   },
   {
+    "species": "Cama para Perro",
+    "department": "Mascotas",
+    "keywords": [
+      "cama para perro",
+      "cama",
+      "para",
+      "perro"
+    ]
+  },
+  {
+    "species": "Rascador para Gato",
+    "department": "Mascotas",
+    "keywords": [
+      "rascador para gato",
+      "rascador",
+      "para",
+      "gato"
+    ]
+  },
+  {
+    "species": "Shampoo para Perro",
+    "department": "Mascotas",
+    "keywords": [
+      "shampoo para perro",
+      "shampoo",
+      "para",
+      "perro"
+    ]
+  },
+  {
     "species": "Pañal",
     "department": "Bebés",
     "keywords": [
@@ -2784,6 +3434,23 @@
       "silla de bebé",
       "silla",
       "bebé"
+    ]
+  },
+  {
+    "species": "Esterilizador de Biberoón",
+    "department": "Bebés",
+    "keywords": [
+      "esterilizador de biberoón",
+      "esterilizador",
+      "biberoón"
+    ]
+  },
+  {
+    "species": "Mordedera",
+    "department": "Bebés",
+    "keywords": [
+      "mordedera",
+      "mordedera"
     ]
   },
   {
@@ -2867,6 +3534,23 @@
     "keywords": [
       "patín",
       "patín"
+    ]
+  },
+  {
+    "species": "Rompecabeza",
+    "department": "Juguetes",
+    "keywords": [
+      "rompecabeza",
+      "rompecabeza"
+    ]
+  },
+  {
+    "species": "Pistola de Juguete",
+    "department": "Juguetes",
+    "keywords": [
+      "pistola de juguete",
+      "pistola",
+      "juguete"
     ]
   },
   {
@@ -3000,6 +3684,31 @@
     ]
   },
   {
+    "species": "Sacapunta",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "sacapunta",
+      "sacapunta"
+    ]
+  },
+  {
+    "species": "Goma de Borrar",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "goma de borrar",
+      "goma",
+      "borrar"
+    ]
+  },
+  {
+    "species": "Folder",
+    "department": "Oficina y Papelería",
+    "keywords": [
+      "folder",
+      "folder"
+    ]
+  },
+  {
     "species": "Mancuerna",
     "department": "Deportes",
     "keywords": [
@@ -3085,6 +3794,15 @@
       "guantes de box",
       "guantes",
       "box"
+    ]
+  },
+  {
+    "species": "Banda de Resistencia",
+    "department": "Deportes",
+    "keywords": [
+      "banda de resistencia",
+      "banda",
+      "resistencia"
     ]
   }
 ]
