@@ -395,7 +395,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
       final savedItem = CatalogItem(
         id: speciesId,
-        name: _isEditMode ? widget.initialSpecies!.name : name,
+        name: name,
         type: effectiveType,
         description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
         magnitudes: updatedMagnitudes,
@@ -574,10 +574,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Name (Read-only in edit mode - Rule #4)
                     TextField(
                       controller: _nameController,
-                      enabled: !_isEditMode,
                       decoration: InputDecoration(
                         labelText: AppStrings.nameLabel,
                         prefixIcon: const Icon(Icons.auto_awesome),
@@ -637,7 +635,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 },
                               )
                             : null,
-                        helperText: _isEditMode ? AppStrings.nameIsImmutable : null,
+                        helperText: null,
                       ),
                     ),
                     const SizedBox(height: 10),

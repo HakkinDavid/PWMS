@@ -118,7 +118,7 @@ class CatalogRepository {
       }
     }
 
-    final finalName = existing != null ? existing.name : item.name.trim();
+    final finalName = item.name.trim();
     final finalType = existing != null ? existing.type : item.type;
 
     final companion = CatalogTableCompanion(
