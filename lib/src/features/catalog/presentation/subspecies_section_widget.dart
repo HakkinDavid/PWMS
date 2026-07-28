@@ -7,6 +7,8 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../domain/subspecies.dart';
+import 'taxonomy_operations_dialog.dart';
+import 'web_image_picker_dialog.dart';
 
 class SubspeciesSectionWidget extends ConsumerStatefulWidget {
   final String speciesId;
@@ -84,7 +86,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                         ? Image.file(File(newPickedImage!.path), fit: BoxFit.cover)
                         : (photoPath != null && photoPath.isNotEmpty)
                             ? FutureBuilder<String>(
-                                future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath),
+                                future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath!),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return Image.file(File(snapshot.data!), fit: BoxFit.cover);
@@ -105,69 +107,47 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                 const SizedBox(height: 12),
                 TextField(
                   controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: AppStrings.nameOrVariantLabel,
-                    hintText: AppStrings.nameOrVariantHint,
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.auto_fix_high, color: Colors.amber),
-                      tooltip: 'Autollenar desde Internet',
-                      onPressed: () async {
-                        final term = barcodeController.text.trim().isNotEmpty ? barcodeController.text.trim() : nameController.text.trim();
-                        if (term.isEmpty) {
-                          AppToast.showRestriction(context, 'Ingresa un nombre o código de barras');
-                          return;
-                        }
-                        AppToast.showSuccess(context, 'Buscando datos en Internet...');
-                        final lookupService = ref.read(productLookupServiceProvider);
-                        final result = barcodeController.text.trim().isNotEmpty
-                            ? await lookupService.lookupByBarcode(barcodeController.text.trim())
-                            : await lookupService.lookupByNameOrBrand(nameController.text.trim());
-                        if (result != null) {
-                          setStateModal(() {
-                            nameController.text = result.productName;
-                            if (result.brand != null) brandController.text = result.brand!;
-                            if (result.barcode != null) barcodeController.text = result.barcode!;
-                            if (result.description != null) notesController.text = result.description!;
-                            if (result.localPhotoPath != null) {
-                              newPickedImage = XFile(result.localPhotoPath!);
-                            }
-                          });
-                          if (context.mounted) {
-                            AppToast.showSuccess(context, 'Datos de subespecie poblados.');
-                          }
-                        } else {
-                          if (context.mounted) {
-                            AppToast.showError(context, 'No se hallaron datos en Internet.');
-                          }
-                        }
-                      },
-                    ),
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.subspeciesNameLabel,
+                    prefixIcon: Icon(Icons.style),
                   ),
                 ),
                 if (isObject) ...[
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   TextField(
                     controller: brandController,
-                    decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
+                    decoration: const InputDecoration(
+                      labelText: 'Marca (Opcional)',
+                      prefixIcon: Icon(Icons.branding_watermark_outlined),
+                    ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   TextField(
                     controller: barcodeController,
-                    decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
+                    decoration: const InputDecoration(
+                      labelText: 'Código de Barras (Opcional)',
+                      prefixIcon: Icon(Icons.qr_code_2_outlined),
+                    ),
                   ),
                 ],
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 TextField(
                   controller: notesController,
-                  decoration: const InputDecoration(labelText: AppStrings.notesLabel, hintText: AppStrings.notesSpecialEditionHint),
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.notesOptionalLabel,
+                    prefixIcon: Icon(Icons.notes_outlined),
+                  ),
                 ),
               ],
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
+            TextButton(
+              onPressed: () => Navigator.pop(c, false),
+              child: const Text(AppStrings.cancel),
+            ),
             ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, true),
+              onPressed: () => Navigator.pop(c, true),
               child: const Text(AppStrings.save),
             ),
           ],
@@ -175,25 +155,38 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
       ),
     );
 
-    if (confirm == true && nameController.text.trim().isNotEmpty) {
-      if (newPickedImage != null) {
-        final storage = ref.read(fileStorageServiceProvider);
-        photoPath = await storage.saveFile(newPickedImage!.path);
+    if (confirm == true) {
+      final name = nameController.text.trim();
+      if (name.isEmpty) {
+        AppToast.showRestriction(context, 'El nombre de la subespecie es obligatorio.');
+        return;
       }
 
-      final sub = Subspecies(
+      String? finalPhotoPath = photoPath;
+      if (newPickedImage != null) {
+        final fileStorage = ref.read(fileStorageServiceProvider);
+        finalPhotoPath = await fileStorage.saveFile(newPickedImage!.path);
+      }
+
+      final updated = Subspecies(
         id: initial?.id ?? const Uuid().v4(),
         speciesId: widget.speciesId,
-        subspeciesName: nameController.text.trim(),
+        subspeciesName: name,
         brand: isObject && brandController.text.trim().isNotEmpty ? brandController.text.trim() : null,
         barcode: isObject && barcodeController.text.trim().isNotEmpty ? barcodeController.text.trim() : null,
-        photoPath: photoPath,
+        photoPath: finalPhotoPath,
         notes: notesController.text.trim().isNotEmpty ? notesController.text.trim() : null,
         createdAt: initial?.createdAt ?? DateTime.now(),
       );
 
-      await ref.read(catalogRepositoryProvider).saveSubspecies(sub);
-      _loadSubspecies();
+      try {
+        await ref.read(catalogRepositoryProvider).saveSubspecies(updated);
+        await _loadSubspecies();
+      } catch (e) {
+        if (mounted) {
+          AppToast.showError(context, '${AppStrings.errorPrefix}$e');
+        }
+      }
     }
   }
 
@@ -249,11 +242,6 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
               final sub = _subspeciesList[index];
               final hasInstances = allEntities.any((e) => e.subspeciesId == sub.id);
               final canDelete = _subspeciesList.length > 1 && !hasInstances;
-              final deleteTooltip = _subspeciesList.length <= 1
-                  ? AppStrings.cannotDeleteOnlySubspeciesTooltip
-                  : (hasInstances
-                      ? 'No se puede eliminar una subespecie con instancias registradas.'
-                      : AppStrings.delete);
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 6),
@@ -287,42 +275,42 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                           style: const TextStyle(fontSize: 11),
                         )
                       : null,
-                  trailing: widget.isEditing
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit_outlined, size: 18),
-                              onPressed: () => _addOrEditSubspeciesModal(initial: sub),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.delete_outline,
-                                color: canDelete ? Colors.redAccent : Colors.grey.shade400,
-                                size: 18,
-                              ),
-                              tooltip: deleteTooltip,
-                              onPressed: canDelete
-                                  ? () async {
-                                      try {
-                                        await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
-                                        _loadSubspecies();
-                                      } catch (e) {
-                                        if (context.mounted) {
-                                          AppToast.showError(
-                                            context,
-                                            e.toString().replaceAll('Exception: ', ''),
-                                          );
-                                        }
-                                      }
-                                    }
-                                  : () {
-                                      AppToast.showRestriction(context, deleteTooltip);
-                                    },
-                            ),
-                          ],
-                        )
-                      : null,
+                  trailing: PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert, size: 18),
+                    onSelected: (val) async {
+                      if (val == 'edit') {
+                        _addOrEditSubspeciesModal(initial: sub);
+                      } else if (val == 'web_image') {
+                        await WebImagePickerDialog.show(
+                          context,
+                          searchQuery: '${sub.subspeciesName} ${sub.brand ?? ""}',
+                          targetSubspecies: sub,
+                        );
+                        _loadSubspecies();
+                      } else if (val == 'separate') {
+                        await TaxonomyOperationsDialog.showSeparateSubspeciesDialog(context, ref, sub);
+                        _loadSubspecies();
+                      } else if (val == 'move') {
+                        await TaxonomyOperationsDialog.showMoveSubspeciesDialog(context, ref, sub);
+                        _loadSubspecies();
+                      } else if (val == 'delete' && canDelete) {
+                        try {
+                          await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
+                          _loadSubspecies();
+                        } catch (e) {
+                          if (context.mounted) AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                        }
+                      }
+                    },
+                    itemBuilder: (ctx) => [
+                      const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Text('Editar')])),
+                      const PopupMenuItem(value: 'web_image', child: Row(children: [Icon(Icons.image_search, size: 16), SizedBox(width: 8), Text('Buscar foto en Web')])),
+                      const PopupMenuItem(value: 'separate', child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Text('Separar en nueva Especie')])),
+                      const PopupMenuItem(value: 'move', child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Text('Mover a otra Especie')])),
+                      if (canDelete)
+                        const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Text('Eliminar', style: TextStyle(color: Colors.redAccent))])),
+                    ],
+                  ),
                 ),
               );
             },

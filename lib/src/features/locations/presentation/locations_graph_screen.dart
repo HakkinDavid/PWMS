@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import 'package:go_router/go_router.dart';
 import '../../entities/domain/world_entity.dart';
-import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../domain/location_node.dart';
 import '../infrastructure/location_repository.dart';
@@ -145,7 +145,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
               title: const Text(AppStrings.createObjectHere),
               onTap: () {
                 Navigator.pop(ctx);
-                RegisterObjectModal.show(context, initialLocationId: node.id);
+                context.push('/create-master');
               },
             ),
             ListTile(
@@ -227,7 +227,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
                 icon: const Icon(Icons.add_circle_outline, size: 20),
                 tooltip: AppStrings.createObjectHere,
                 onPressed: () {
-                  RegisterObjectModal.show(context, initialLocationId: node.id);
+                  context.push('/create-master');
                 },
               ),
             ],
@@ -253,7 +253,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
               title: Text(AppStrings.storedObjectsTitle, style: theme.textTheme.labelLarge),
               trailing: IconButton(
                 icon: const Icon(Icons.add, size: 20),
-                onPressed: () => RegisterObjectModal.show(context, initialLocationId: node.id),
+                onPressed: () => context.push('/create-master'),
                 tooltip: AppStrings.createObjectHere,
               ),
             ),

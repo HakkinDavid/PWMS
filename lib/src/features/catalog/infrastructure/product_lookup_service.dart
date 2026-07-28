@@ -7,8 +7,8 @@ import 'package:uuid/uuid.dart';
 import '../domain/taxonomy/product_taxonomy_service.dart';
 
 class ProductLookupResult {
-  final String generalSpeciesName; // ej. "Monitor", "Tarjeta de Video", "Control de Videojuegos", "Cuidado Personal / Salud"
-  final String subspeciesName;     // ej. "Dell Pro Plus P2425DE", "GIGABYTE RTX 4060 GAMING OC"
+  final String generalSpeciesName; // ej. "Monitor", "Libro", "Control de Videojuegos"
+  final String subspeciesName;     // ej. "Cien Años de Soledad", "Dell P2425DE"
   final String? brand;
   final String? barcode;
   final String? description;
@@ -66,10 +66,18 @@ class ProductLookupService {
   })  : _client = client ?? http.Client(),
         _taxonomyService = taxonomyService ?? const ProductTaxonomyService();
 
-  /// Consultar producto por código de barras (EAN/UPC) con arquitectura multinivel de búsqueda
+  /// Consultar producto por código de barras o ISBN con arquitectura multinivel
   Future<ProductLookupResult?> lookupByBarcode(String rawBarcode) async {
-    final cleanCode = rawBarcode.trim();
+    final cleanCode = rawBarcode.trim().replaceAll('-', '').replaceAll(' ', '');
     if (cleanCode.isEmpty) return null;
+
+    // Level 0: ISBN Book Search (Google Books & Open Library)
+    if (_isPotentialIsbn(cleanCode)) {
+      final isbnResult = await _fetchFromIsbnApis(cleanCode);
+      if (isbnResult != null) {
+        return await _ensureCleanPhotoAndSave(isbnResult);
+      }
+    }
 
     // Level 1: Open Food Facts API (v2)
     final offResult = await _fetchFromOpenFoodFacts(cleanCode);
@@ -83,7 +91,7 @@ class ProductLookupService {
       return await _ensureCleanPhotoAndSave(upcResult);
     }
 
-    // Level 3: DuckDuckGo Web Search Fallback por Código de Barras (ej. 8806094942965)
+    // Level 3: Web Fallback por Código de Barras
     final webResult = await _fetchFromWebSearchFallback(cleanCode);
     if (webResult != null) {
       return await _ensureCleanPhotoAndSave(webResult);
@@ -92,53 +100,81 @@ class ProductLookupService {
     return null;
   }
 
-  /// Consultar producto por nombre o marca
-  Future<ProductLookupResult?> lookupByNameOrBrand(String query) async {
-    final cleanQuery = query.trim();
-    if (cleanQuery.isEmpty) return null;
+  bool _isPotentialIsbn(String code) {
+    if (code.length == 10) return true;
+    if (code.length == 13 && (code.startsWith('978') || code.startsWith('979'))) return true;
+    return false;
+  }
 
+  /// Nivel 0: Búsqueda específica de ISBN usando Google Books y Open Library API
+  Future<ProductLookupResult?> _fetchFromIsbnApis(String isbn) async {
+    // 1. Google Books API
     try {
-      final uri = Uri.parse('https://world.openfoodfacts.org/cgi/search.pl?search_terms=${Uri.encodeComponent(cleanQuery)}&search_simple=1&action=process&json=1&page_size=1');
+      final uri = Uri.parse('https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn');
       final response = await _client.get(uri).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final products = data['products'] as List?;
-        if (products != null && products.isNotEmpty) {
-          final prod = products.first as Map<String, dynamic>;
-          final name = (prod['product_name'] ?? prod['product_name_es'] ?? prod['generic_name'] ?? '').toString().trim();
-          if (name.isNotEmpty) {
-            final brand = (prod['brands'] ?? '').toString().trim();
-            final code = (prod['code'] ?? '').toString().trim();
-            final categories = (prod['categories'] ?? '').toString().trim();
-            final genericName = (prod['generic_name'] ?? '').toString().trim();
-            final imgUrl = _extractFrontPhotoUrl(prod);
+        final items = data['items'] as List?;
+        if (items != null && items.isNotEmpty) {
+          final volumeInfo = items.first['volumeInfo'] as Map<String, dynamic>?;
+          if (volumeInfo != null) {
+            final title = (volumeInfo['title'] ?? '').toString().trim();
+            final authorsList = volumeInfo['authors'] as List?;
+            final authorStr = (authorsList != null && authorsList.isNotEmpty) ? authorsList.join(', ') : null;
+            final publisher = volumeInfo['publisher']?.toString();
+            final description = volumeInfo['description']?.toString();
+            final imageLinks = volumeInfo['imageLinks'] as Map<String, dynamic>?;
+            var photoUrl = imageLinks?['thumbnail'] ?? imageLinks?['smallThumbnail'];
+            if (photoUrl != null && photoUrl.startsWith('http:')) {
+              photoUrl = photoUrl.replaceFirst('http:', 'https:');
+            }
 
-            final taxonomy = _taxonomyService.resolve(
-              title: name,
-              categoryHint: categories,
-              genericName: genericName,
-              brandHint: brand,
-            );
-
-            final result = ProductLookupResult(
-              generalSpeciesName: taxonomy.generalSpeciesName,
-              subspeciesName: name,
-              brand: taxonomy.inferredBrand ?? (brand.isNotEmpty ? brand : null),
-              barcode: code.isNotEmpty ? code : null,
-              photoUrl: imgUrl,
-            );
-            return await _ensureCleanPhotoAndSave(result);
+            if (title.isNotEmpty) {
+              return ProductLookupResult(
+                generalSpeciesName: 'Libro',
+                subspeciesName: title,
+                brand: authorStr ?? publisher,
+                barcode: isbn,
+                description: description,
+                type: 'Documento',
+                photoUrl: photoUrl?.toString(),
+              );
+            }
           }
         }
       }
     } catch (_) {}
 
-    // Fallback a web search por nombre/marca
-    final webFallback = await _fetchFromWebSearchFallback(cleanQuery);
-    if (webFallback != null) {
-      return await _ensureCleanPhotoAndSave(webFallback);
-    }
+    // 2. Open Library API Fallback
+    try {
+      final uri = Uri.parse('https://openlibrary.org/api/books?bibkeys=ISBN:$isbn&format=json&jscmd=data');
+      final response = await _client.get(uri).timeout(const Duration(seconds: 8));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final key = 'ISBN:$isbn';
+        if (data.containsKey(key)) {
+          final bookData = data[key] as Map<String, dynamic>;
+          final title = (bookData['title'] ?? '').toString().trim();
+          final authors = bookData['authors'] as List?;
+          final authorName = (authors != null && authors.isNotEmpty) ? authors.first['name']?.toString() : null;
+          final coverMap = bookData['cover'] as Map<String, dynamic>?;
+          final photoUrl = coverMap?['large'] ?? coverMap?['medium'];
+
+          if (title.isNotEmpty) {
+            return ProductLookupResult(
+              generalSpeciesName: 'Libro',
+              subspeciesName: title,
+              brand: authorName,
+              barcode: isbn,
+              type: 'Documento',
+              photoUrl: photoUrl?.toString(),
+            );
+          }
+        }
+      }
+    } catch (_) {}
 
     return null;
   }
@@ -220,7 +256,6 @@ class ProductLookupService {
     return null;
   }
 
-  /// Level 3: Fallback de búsqueda web (DuckDuckGo HTML) para códigos no registrados en DBs de alimentos
   Future<ProductLookupResult?> _fetchFromWebSearchFallback(String barcodeOrQuery) async {
     try {
       final uri = Uri.parse('https://html.duckduckgo.com/html/?q=${Uri.encodeComponent(barcodeOrQuery)}');
@@ -233,7 +268,6 @@ class ProductLookupService {
 
       if (response.statusCode == 200) {
         final html = response.body;
-
         final titleRegex = RegExp(r'<a class="result__a"[^>]*>(.*?)<\/a>', dotAll: true, caseSensitive: false);
         final matches = titleRegex.allMatches(html);
 
@@ -258,7 +292,6 @@ class ProductLookupService {
     return null;
   }
 
-  /// Priorizar fotos frontales limpias descartando tablas nutricionales o imágenes de laptops en monitores
   String? _extractFrontPhotoUrl(Map<String, dynamic> prod) {
     if (prod['image_front_url'] != null && prod['image_front_url'].toString().isNotEmpty) {
       return prod['image_front_url'].toString();
@@ -275,42 +308,47 @@ class ProductLookupService {
     return null;
   }
 
-  /// Búsqueda directa de imagen de producto limpia vía DuckDuckGo Images cuando la foto sea nula o imprecisa
-  Future<String?> _fetchCleanProductImage(String brand, String model) async {
+  /// Buscar múltiples opciones de imágenes en Internet para un término de búsqueda (Requisito 3)
+  Future<List<String>> searchWebImages(String query) async {
+    final cleanQuery = query.trim();
+    if (cleanQuery.isEmpty) return [];
+    final List<String> imageUrls = [];
+
     try {
-      final query = Uri.encodeComponent('$brand $model product photo');
-      final uri = Uri.parse('https://duckduckgo.com/i.js?q=$query');
+      final encoded = Uri.encodeComponent('$cleanQuery foto producto');
+      final uri = Uri.parse('https://duckduckgo.com/i.js?q=$encoded');
       final response = await _client.get(
         uri,
         headers: {
           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         },
-      ).timeout(const Duration(seconds: 6));
+      ).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final results = data['results'] as List?;
-        if (results != null && results.isNotEmpty) {
+        if (results != null) {
           for (final res in results) {
             final image = res['image']?.toString();
-            if (image != null && (image.endsWith('.jpg') || image.endsWith('.png') || image.endsWith('.jpeg') || image.contains('.jpg?') || image.contains('.png?'))) {
-              return image;
+            if (image != null && image.startsWith('http') && !imageUrls.contains(image)) {
+              imageUrls.add(image);
+              if (imageUrls.length >= 12) break;
             }
           }
         }
       }
     } catch (_) {}
-    return null;
+
+    return imageUrls;
   }
 
-  /// Asegura foto limpia descargada localmente
   Future<ProductLookupResult> _ensureCleanPhotoAndSave(ProductLookupResult result) async {
     String? photoUrl = result.photoUrl;
 
     if (photoUrl == null || photoUrl.isEmpty) {
-      final fetchedPhoto = await _fetchCleanProductImage(result.brand ?? '', result.subspeciesName);
-      if (fetchedPhoto != null && fetchedPhoto.isNotEmpty) {
-        photoUrl = fetchedPhoto;
+      final images = await searchWebImages('${result.brand ?? ''} ${result.subspeciesName}');
+      if (images.isNotEmpty) {
+        photoUrl = images.first;
       }
     }
 
@@ -324,7 +362,6 @@ class ProductLookupService {
     return result;
   }
 
-  /// Descarga la imagen remota y la guarda localmente en el almacenamiento del dispositivo
   Future<String?> downloadAndSaveImage(String imageUrl) async {
     try {
       final response = await _client.get(Uri.parse(imageUrl)).timeout(const Duration(seconds: 10));

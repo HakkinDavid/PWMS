@@ -84,7 +84,7 @@ void main() {
         targetId: 't2',
         targetType: 'entity',
         status: 'snoozed',
-        snoozedUntil: now.add(const Duration(days: 3)),
+        snoozedUntil: DateTime.now().add(const Duration(days: 3)),
         createdAt: now,
         updatedAt: now,
       );

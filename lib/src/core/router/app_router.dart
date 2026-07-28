@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/home/presentation/inventory_finder_screen.dart';
 import '../../features/home/presentation/main_shell_screen.dart';
-import '../../features/entities/presentation/entities_tab.dart';
+import '../../features/entities/presentation/create_master_screen.dart';
 import '../../features/entities/presentation/entity_detail_screen.dart';
+import '../../features/entities/presentation/grouped_instance_detail_screen.dart';
 import '../../features/search/presentation/search_screen.dart';
-import '../../features/locations/presentation/locations_graph_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
@@ -32,26 +33,16 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/entities',
-              builder: (context, state) => const EntitiesTab(),
+              path: '/inventory',
+              builder: (context, state) => const InventoryFinderScreen(),
             ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
+            GoRoute(
+              path: '/entities',
+              builder: (context, state) => const InventoryFinderScreen(),
+            ),
             GoRoute(
               path: '/locations',
-              builder: (context, state) {
-                final focusId = state.uri.queryParameters['focusNodeId'];
-                return LocationsGraphScreen(focusNodeId: focusId);
-              },
-            ),
-            GoRoute(
-              path: '/places',
-              builder: (context, state) {
-                final focusId = state.uri.queryParameters['focusNodeId'];
-                return LocationsGraphScreen(focusNodeId: focusId);
-              },
+              builder: (context, state) => const InventoryFinderScreen(),
             ),
           ],
         ),
@@ -64,6 +55,21 @@ final appRouter = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: '/create-master',
+      builder: (context, state) => const CreateMasterScreen(),
+    ),
+    GoRoute(
+      path: '/grouped-instance-detail',
+      builder: (context, state) {
+        final speciesId = state.uri.queryParameters['speciesId'] ?? '';
+        final locId = state.uri.queryParameters['locId'];
+        return GroupedInstanceDetailScreen(
+          speciesId: speciesId,
+          effectiveLocationId: locId != null && locId.isNotEmpty ? locId : null,
+        );
+      },
     ),
     GoRoute(
       path: '/search',

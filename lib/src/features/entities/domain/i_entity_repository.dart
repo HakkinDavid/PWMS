@@ -16,6 +16,8 @@ abstract class IEntityRepository {
     String? subspeciesId,
     String? notes,
     String? unit,
+    Map<String, double>? customMagnitudeValues,
+    DateTime? expirationDate,
   });
   Future<void> moveEntity(String entityId, String? newLocationId);
   Future<WorldEntity?> moveOrMergeEntity(String entityId, String? newLocationId);

@@ -21,7 +21,6 @@ class CatalogRepository {
       } catch (_) {}
     }
 
-    // Query 4NF Species Magnitudes (1:N)
     final magRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(row.id))).get();
     final magnitudes = magRows.map((m) => SpeciesMagnitude(
       id: m.id,
@@ -105,7 +104,6 @@ class CatalogRepository {
     final all = await getAllCatalogItems();
     final existing = await getCatalogItemById(item.id);
 
-    // Rule: No duplicate name or main photo
     final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
     if (nameDup != null) {
       throw Exception(AppStrings.duplicateSpeciesNameError);
@@ -119,7 +117,7 @@ class CatalogRepository {
     }
 
     final finalName = item.name.trim();
-    final finalType = existing != null ? existing.type : item.type;
+    final finalType = item.type;
 
     final companion = CatalogTableCompanion(
       id: Value(item.id),
@@ -136,7 +134,6 @@ class CatalogRepository {
     );
     await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);
 
-    // Persist 4NF Species Magnitudes (1:N)
     await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(item.id))).go();
     for (final mag in item.magnitudes) {
       await _db.into(_db.speciesMagnitudesTable).insert(SpeciesMagnitudesTableCompanion(
@@ -148,8 +145,17 @@ class CatalogRepository {
       ));
     }
 
-    // Rule #1: Ensure default generic subspecies exists ONLY if no subspecies exist
     await ensureDefaultSubspecies(item.id);
+  }
+
+  Future<void> updateSpeciesName(String speciesId, String newName) async {
+    final clean = newName.trim();
+    if (clean.isEmpty) return;
+    final item = await getCatalogItemById(speciesId);
+    if (item == null) return;
+
+    final updated = item.copyWith(name: clean);
+    await saveCatalogItem(updated);
   }
 
   Future<void> ensureDefaultSubspecies(String speciesId) async {
@@ -179,6 +185,82 @@ class CatalogRepository {
     await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(id) | t.requiredSpeciesId.equals(id))).go();
     await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(id))).go();
     await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(id))).go();
+  }
+
+  // --- REORGANIZACIÓN TAXONÓMICA ---
+
+  /// Unir Especie A en Especie B (Requisito 2a)
+  Future<void> mergeSpecies(String sourceSpeciesId, String targetSpeciesId) async {
+    if (sourceSpeciesId == targetSpeciesId) return;
+
+    await _db.transaction(() async {
+      // 1. Reasignar subespecies de origen a destino
+      await (_db.update(_db.subspeciesTable)..where((t) => t.speciesId.equals(sourceSpeciesId)))
+          .write(SubspeciesTableCompanion(speciesId: Value(targetSpeciesId)));
+
+      // 2. Reasignar entidades de origen a destino
+      await (_db.update(_db.entitiesTable)..where((t) => t.speciesId.equals(sourceSpeciesId)))
+          .write(EntitiesTableCompanion(speciesId: Value(targetSpeciesId)));
+
+      // 3. Reasignar adjuntos
+      await (_db.update(_db.attachmentsTable)..where((t) => t.speciesId.equals(sourceSpeciesId)))
+          .write(AttachmentsTableCompanion(speciesId: Value(targetSpeciesId)));
+
+      // 4. Reasignar requerimientos
+      await (_db.update(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(sourceSpeciesId)))
+          .write(SpeciesRequirementsTableCompanion(sourceId: Value(targetSpeciesId)));
+      await (_db.update(_db.speciesRequirementsTable)..where((t) => t.requiredSpeciesId.equals(sourceSpeciesId)))
+          .write(SpeciesRequirementsTableCompanion(requiredSpeciesId: Value(targetSpeciesId)));
+
+      // 5. Eliminar magnitudes y especie de origen
+      await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(sourceSpeciesId))).go();
+      await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(sourceSpeciesId))).go();
+    });
+  }
+
+  /// Separar Subespecie de su especie original a una nueva especie (Requisito 2b)
+  Future<CatalogItem> separateSubspecies(String subspeciesId, String newSpeciesName) async {
+    final sub = await getSubspeciesById(subspeciesId);
+    if (sub == null) throw Exception('Subespecie no encontrada');
+
+    final parentSpecies = await getCatalogItemById(sub.speciesId);
+    if (parentSpecies == null) throw Exception('Especie no encontrada');
+
+    final newSpecies = await getOrCreateSpecies(
+      newSpeciesName,
+      type: parentSpecies.type,
+      description: 'Separada de ${parentSpecies.name}',
+      mainPhotoPath: sub.photoPath ?? parentSpecies.mainPhotoPath,
+    );
+
+    await _db.transaction(() async {
+      // Mover la subespecie a la nueva especie
+      await (_db.update(_db.subspeciesTable)..where((t) => t.id.equals(subspeciesId)))
+          .write(SubspeciesTableCompanion(speciesId: Value(newSpecies.id)));
+
+      // Mover las entidades correspondientes a la nueva especie
+      await (_db.update(_db.entitiesTable)..where((t) => t.subspeciesId.equals(subspeciesId)))
+          .write(EntitiesTableCompanion(speciesId: Value(newSpecies.id)));
+    });
+
+    return newSpecies;
+  }
+
+  /// Mover Subespecie a otra especie existente (Requisito 2c)
+  Future<void> moveSubspecies(String subspeciesId, String targetSpeciesId) async {
+    final sub = await getSubspeciesById(subspeciesId);
+    if (sub == null) throw Exception('Subespecie no encontrada');
+    if (sub.speciesId == targetSpeciesId) return;
+
+    await _db.transaction(() async {
+      // Reasignar subespecie
+      await (_db.update(_db.subspeciesTable)..where((t) => t.id.equals(subspeciesId)))
+          .write(SubspeciesTableCompanion(speciesId: Value(targetSpeciesId)));
+
+      // Reasignar entidades que pertenecen a esta subespecie
+      await (_db.update(_db.entitiesTable)..where((t) => t.subspeciesId.equals(subspeciesId)))
+          .write(EntitiesTableCompanion(speciesId: Value(targetSpeciesId)));
+    });
   }
 
   // --- SUBSPECIES CRUD ---
@@ -230,7 +312,6 @@ class CatalogRepository {
   }
 
   Future<void> saveSubspecies(Subspecies subspecies) async {
-    // Structural constraint: Brand & Barcode ONLY exist for "Objeto"
     String? finalBrand = subspecies.brand?.trim();
     String? finalBarcode = subspecies.barcode?.trim();
 
@@ -272,7 +353,7 @@ class CatalogRepository {
     await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();
   }
 
-  // --- SPECIES & ENTITY REQUIREMENTS CRUD (NECESITA) ---
+  // --- SPECIES & ENTITY REQUIREMENTS CRUD ---
 
   Future<List<SpeciesRequirement>> getRequirementsForSource(String sourceId) async {
     final query = _db.select(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(sourceId));

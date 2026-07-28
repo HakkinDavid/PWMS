@@ -26,37 +26,25 @@ class EffectiveEntityGroup {
 
   WorldEntity get primaryEntity => entities.first;
 
-  /// Determines the majority demographic archetype in the group (the most common profile of notes/magnitudes)
-  WorldEntity get majorityEntity {
-    if (entities.isEmpty) throw StateError('Group is empty');
-    final Map<String, List<WorldEntity>> demographicMap = {};
+  /// Evalúa si el grupo es estrictamente homogéneo (Requisito 5)
+  /// Todos los elementos deben compartir la misma subespecie, misma ubicación y magnitudes idénticas (salvo fecha de caducidad).
+  bool get isHomogeneous {
+    if (entities.length <= 1) return true;
+    final firstSubId = primaryEntity.subspeciesId;
+    final firstMagSig = _magnitudeSignature(primaryEntity);
+    final firstNotes = primaryEntity.notes ?? '';
 
     for (final e in entities) {
-      final magSig = e.magnitudes.map((m) => '${m.propertyName}:${m.magnitudeValue}${m.unitSymbol}').join('|');
-      final signature = '${e.notes ?? ""}_$magSig';
-      demographicMap.putIfAbsent(signature, () => []).add(e);
+      if (e.subspeciesId != firstSubId) return false;
+      if (_magnitudeSignature(e) != firstMagSig) return false;
+      if ((e.notes ?? '') != firstNotes) return false;
     }
-
-    List<WorldEntity> largestGroup = entities;
-    int maxCount = 0;
-    for (final groupList in demographicMap.values) {
-      if (groupList.length > maxCount) {
-        maxCount = groupList.length;
-        largestGroup = groupList;
-      }
-    }
-
-    return largestGroup.first;
+    return true;
   }
 
-  /// Gets all instances matching the majority demographic
-  List<WorldEntity> get majorityInstances {
-    if (entities.isEmpty) return [];
-    final majoritySig = '${majorityEntity.notes ?? ""}_${majorityEntity.magnitudes.map((m) => '${m.propertyName}:${m.magnitudeValue}${m.unitSymbol}').join('|')}';
-    return entities.where((e) {
-      final sig = '${e.notes ?? ""}_${e.magnitudes.map((m) => '${m.propertyName}:${m.magnitudeValue}${m.unitSymbol}').join('|')}';
-      return sig == majoritySig;
-    }).toList();
+  static String _magnitudeSignature(WorldEntity entity) {
+    final sorted = List.of(entity.magnitudes)..sort((a, b) => a.propertyName.compareTo(b.propertyName));
+    return sorted.map((m) => '${m.propertyName}:${m.magnitudeValue}${m.unitSymbol}').join('|');
   }
 
   static List<EffectiveEntityGroup> groupEntities({

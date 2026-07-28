@@ -211,9 +211,10 @@ class EntityRepository implements IEntityRepository {
     String? subspeciesId,
     String? notes,
     String? unit,
+    Map<String, double>? customMagnitudeValues,
+    DateTime? expirationDate,
   }) async {
-    // Decision (b, e): No DB scalar merging! Always instantiate individual WorldEntity
-    final newId = const Uuid().v4();
+    final count = addQuantity.toInt() > 0 ? addQuantity.toInt() : 1;
 
     String? resolvedSubspeciesId = subspeciesId;
     if (resolvedSubspeciesId == null || resolvedSubspeciesId.trim().isEmpty) {
@@ -224,26 +225,41 @@ class EntityRepository implements IEntityRepository {
     }
 
     final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
-    final initialMags = speciesMagRows.map((sm) => InstanceMagnitude(
-      id: const Uuid().v4(),
-      instanceId: newId,
-      propertyName: sm.propertyName,
-      magnitudeValue: addQuantity,
-      unitSymbol: sm.unitSymbol,
-    )).toList();
 
-    final newEntity = WorldEntity(
-      id: newId,
-      speciesId: speciesId,
-      subspeciesId: resolvedSubspeciesId,
-      locationId: locationId,
-      magnitudes: initialMags,
-      notes: notes,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-    await saveEntity(newEntity);
-    return newEntity;
+    WorldEntity? primaryEntity;
+
+    for (int i = 0; i < count; i++) {
+      final newId = const Uuid().v4();
+      final initialMags = speciesMagRows.map((sm) {
+        final val = customMagnitudeValues?[sm.propertyName] ?? 1.0;
+        return InstanceMagnitude(
+          id: const Uuid().v4(),
+          instanceId: newId,
+          propertyName: sm.propertyName,
+          magnitudeValue: val,
+          unitSymbol: sm.unitSymbol,
+        );
+      }).toList();
+
+      final newEntity = WorldEntity(
+        id: newId,
+        speciesId: speciesId,
+        subspeciesId: resolvedSubspeciesId,
+        locationId: locationId,
+        magnitudes: initialMags,
+        expirationDate: expirationDate,
+        notes: notes,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await saveEntity(newEntity);
+      if (primaryEntity == null) {
+        primaryEntity = newEntity;
+      }
+    }
+
+    return primaryEntity!;
   }
 
   @override

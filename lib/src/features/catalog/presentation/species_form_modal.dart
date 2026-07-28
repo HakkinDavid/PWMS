@@ -581,56 +581,27 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                         prefixIcon: const Icon(Icons.auto_awesome),
                         suffixIcon: !_isEditMode
                             ? IconButton(
-                                icon: const Icon(Icons.auto_fix_high, color: Colors.amber),
-                                tooltip: 'Autollenar datos e imagen desde Internet',
+                                icon: const Icon(Icons.image_search, color: Colors.amber),
+                                tooltip: 'Buscar foto de producto en Internet',
                                 onPressed: () async {
                                   final query = _nameController.text.trim();
                                   if (query.isEmpty) {
-                                    AppToast.showRestriction(context, 'Ingresa un nombre o marca para buscar');
+                                    AppToast.showRestriction(context, 'Ingresa un nombre para buscar imagen');
                                     return;
                                   }
-                                  AppToast.showSuccess(context, 'Buscando datos en Internet...');
+                                  AppToast.showSuccess(context, 'Buscando imagen en Internet...');
                                   final lookupService = ref.read(productLookupServiceProvider);
-                                  final result = await lookupService.lookupByNameOrBrand(query);
-                                  if (result != null) {
-                                    setState(() {
-                                      _nameController.text = result.productName;
-                                      if (result.description != null && result.description!.isNotEmpty) {
-                                        _descController.text = result.description!;
-                                      }
-                                      if (result.localPhotoPath != null) {
-                                        _selectedImage = XFile(result.localPhotoPath!);
-                                      }
-                                      final inference = PerishabilityInferenceEngine.inferPerishability(
-                                        type: _selectedType,
-                                        title: result.productName,
-                                        category: result.description,
-                                        barcode: result.barcode,
-                                      );
-                                      _isNonPerishable = inference.isNonPerishable;
-                                      if (inference.suggestedShelfLifeDays != null) {
-                                        _defaultShelfLifeController.text = inference.suggestedShelfLifeDays.toString();
-                                      }
-
-                                      if (result.brand != null || result.barcode != null) {
-                                        _draftSubspecies.add(Subspecies(
-                                          id: const Uuid().v4(),
-                                          speciesId: '',
-                                          subspeciesName: result.productName,
-                                          brand: result.brand,
-                                          barcode: result.barcode,
-                                          photoPath: result.localPhotoPath,
-                                          createdAt: DateTime.now(),
-                                        ));
-                                      }
-                                    });
-                                    if (context.mounted) {
-                                      AppToast.showSuccess(context, 'Datos e imagen poblados. Revisa y guarda.');
+                                  final images = await lookupService.searchWebImages(query);
+                                  if (images.isNotEmpty) {
+                                    final localPath = await lookupService.downloadAndSaveImage(images.first);
+                                    if (localPath != null && mounted) {
+                                      setState(() {
+                                        _selectedImage = XFile(localPath);
+                                      });
+                                      AppToast.showSuccess(context, 'Imagen descargada.');
                                     }
-                                  } else {
-                                    if (context.mounted) {
-                                      AppToast.showError(context, 'No se encontraron resultados en Internet');
-                                    }
+                                  } else if (mounted) {
+                                    AppToast.showRestriction(context, 'No se halló imagen.');
                                   }
                                 },
                               )

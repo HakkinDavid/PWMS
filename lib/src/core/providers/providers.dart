@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/app_database.dart';
+import '../database/database_backup_service.dart';
 import '../storage/file_storage_service.dart';
 import '../../features/entities/domain/i_entity_repository.dart';
 import '../../features/entities/infrastructure/entity_repository.dart';
@@ -19,7 +20,6 @@ import '../../features/catalog/domain/catalog_item.dart';
 import '../../features/catalog/domain/subspecies.dart';
 import '../../features/catalog/infrastructure/catalog_repository.dart';
 import '../../features/catalog/infrastructure/product_lookup_service.dart';
-import '../../features/catalog/infrastructure/visual_matching_service.dart';
 
 import '../../features/notifications/domain/app_notification.dart';
 import '../../features/notifications/infrastructure/notification_repository.dart';
@@ -34,6 +34,10 @@ final databaseProvider = Provider<AppDatabase>((ref) {
 
 final fileStorageServiceProvider = Provider<FileStorageService>((ref) {
   return FileStorageService();
+});
+
+final databaseBackupServiceProvider = Provider<DatabaseBackupService>((ref) {
+  return DatabaseBackupService(ref.watch(databaseProvider));
 });
 
 // Repositories
@@ -94,7 +98,6 @@ final locationNodeListProvider = StateNotifierProvider<LocationNodeListNotifier,
   return LocationNodeListNotifier(ref.watch(locationRepositoryProvider));
 });
 
-// Legacy placeListProvider mapped directly to Location Nodes for backward compatibility
 final placeListProvider = Provider<AsyncValue<List<LocationNode>>>((ref) {
   return ref.watch(locationNodeListProvider);
 });
@@ -204,7 +207,7 @@ final entityDetailProvider = FutureProvider.family<WorldEntity?, String>((ref, i
   return repo.getEntityById(id);
 });
 
-// Species Attachments Provider (Attachments belong to Catalog species)
+// Species Attachments Provider
 final speciesAttachmentsProvider = FutureProvider.family<List<Attachment>, String>((ref, speciesId) async {
   final repo = ref.watch(entityRepositoryProvider);
   return repo.getAttachmentsForSpecies(speciesId);
@@ -249,16 +252,9 @@ final relationListProvider = StateNotifierProvider<RelationListNotifier, AsyncVa
   return RelationListNotifier(ref.watch(relationRepositoryProvider));
 });
 
-// Auto-fill & Visual Match Providers
+// Auto-fill Product Lookup Provider
 final productLookupServiceProvider = Provider<ProductLookupService>((ref) {
   return ProductLookupService();
-});
-
-final visualMatchingServiceProvider = Provider<VisualMatchingService>((ref) {
-  return VisualMatchingService(
-    catalogRepository: ref.watch(catalogRepositoryProvider),
-    productLookupService: ref.watch(productLookupServiceProvider),
-  );
 });
 
 // Notification Feature Providers
@@ -312,3 +308,11 @@ final notificationListProvider = StateNotifierProvider<NotificationListNotifier,
   );
 });
 
+/// Refresca todos los proveedores de la aplicación tras importar un respaldo
+void refreshAllAppProviders(WidgetRef ref) {
+  ref.read(catalogListProvider.notifier).loadCatalog();
+  ref.read(entityListProvider.notifier).loadEntities();
+  ref.read(locationNodeListProvider.notifier).loadNodes();
+  ref.read(relationListProvider.notifier).loadRelations();
+  ref.read(notificationListProvider.notifier).evaluateAndLoad();
+}

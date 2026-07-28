@@ -6,7 +6,6 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
-import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/infrastructure/location_repository.dart';
 
@@ -526,7 +525,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
-        onPressed: () => RegisterObjectModal.show(context),
+        onPressed: () => context.push('/create-master'),
         tooltip: AppStrings.registerObjectTitle,
         child: const Icon(Icons.add),
       ),

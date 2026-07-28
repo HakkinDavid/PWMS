@@ -6,6 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../entities/presentation/create_master_screen.dart';
 import '../domain/subspecies.dart';
 import '../infrastructure/product_lookup_service.dart';
 
@@ -90,54 +91,22 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
         }
       }
 
-      // 2. Si no existe localmente, consultar APIs en línea
+      // 2. Si no existe localmente, consultar APIs en línea y pasar a CreateMasterScreen para confirmación
       final onlineResult = await lookupService.lookupByBarcode(rawBarcode);
-      if (onlineResult != null) {
-        // A. Obtener o crear Especie General (ej. "Monitor")
-        final species = await catalogRepo.getOrCreateSpecies(
-          onlineResult.generalSpeciesName,
-          type: AppStrings.typeObject,
-          description: 'Categoría general ${onlineResult.generalSpeciesName}',
-          mainPhotoPath: onlineResult.localPhotoPath,
+      final resultToPass = onlineResult ?? ProductLookupResult(
+        generalSpeciesName: '',
+        subspeciesName: '',
+        barcode: rawBarcode,
+      );
+
+      if (mounted) {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CreateMasterScreen(scannedResult: resultToPass),
+          ),
         );
-
-        // B. Crear Subespecie específica (ej. "Dell Pro 24''") PRIMERO para evitar 'Genérica'
-        final newSubspecies = Subspecies(
-          id: const Uuid().v4(),
-          speciesId: species.id,
-          subspeciesName: onlineResult.subspeciesName,
-          brand: onlineResult.brand,
-          barcode: rawBarcode,
-          photoPath: onlineResult.localPhotoPath,
-          notes: onlineResult.description,
-          createdAt: DateTime.now(),
-        );
-
-        await catalogRepo.saveSubspecies(newSubspecies);
-
-        // Limpiar subespecies genéricas huérfanas si fueron creadas previamente para esta especie
-        final subsForSpecies = await catalogRepo.getSubspeciesForSpecies(species.id);
-        if (subsForSpecies.length > 1) {
-          final genericSub = subsForSpecies.where((s) => s.subspeciesName.toLowerCase() == 'genérica' && s.barcode == null).firstOrNull;
-          if (genericSub != null) {
-            try {
-              await catalogRepo.deleteSubspecies(genericSub.id);
-            } catch (_) {}
-          }
-        }
-
-        // C. Instanciar en automático en la Ubicación Selected
-        await entityRepo.instantiateOrMerge(
-          species.id,
-          _selectedLocationId,
-          1.0,
-          subspeciesId: newSubspecies.id,
-        );
-
-        _refreshState();
-        _showFeedback('Creado: [${species.name}] ${newSubspecies.subspeciesName}');
-      } else {
-        _showFeedback('Código no encontrado ($rawBarcode)', isError: true);
       }
     } catch (e) {
       _showFeedback('Error en autollenado: $e', isError: true);
@@ -172,63 +141,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
           }
         }
 
-        // 2. Coincidencia visual
-        final visualService = ref.read(visualMatchingServiceProvider);
-        final matchResult = await visualService.findMatchForImage(imageFile);
-
-        if (matchResult.matchedSubspecies != null) {
-          final sub = matchResult.matchedSubspecies!;
-          final catalogRepo = ref.read(catalogRepositoryProvider);
-          final species = await catalogRepo.getCatalogItemById(sub.speciesId);
-
-          if (species != null) {
-            final entityRepo = ref.read(entityRepositoryProvider);
-            await entityRepo.instantiateOrMerge(
-              species.id,
-              _selectedLocationId,
-              1.0,
-              subspeciesId: sub.id,
-            );
-            _refreshState();
-            _showFeedback('Coincidencia visual local: ${sub.subspeciesName}');
-            return;
-          }
-        } else if (matchResult.onlineProduct != null) {
-          final prod = matchResult.onlineProduct!;
-          final catalogRepo = ref.read(catalogRepositoryProvider);
-          final entityRepo = ref.read(entityRepositoryProvider);
-
-          final species = await catalogRepo.getOrCreateSpecies(
-            prod.generalSpeciesName,
-            type: AppStrings.typeObject,
-            description: prod.description,
-            mainPhotoPath: prod.localPhotoPath,
-          );
-
-          final newSubspecies = Subspecies(
-            id: const Uuid().v4(),
-            speciesId: species.id,
-            subspeciesName: prod.subspeciesName,
-            brand: prod.brand,
-            barcode: prod.barcode,
-            photoPath: prod.localPhotoPath,
-            notes: prod.description,
-            createdAt: DateTime.now(),
-          );
-
-          await catalogRepo.saveSubspecies(newSubspecies);
-
-          await entityRepo.instantiateOrMerge(
-            species.id,
-            _selectedLocationId,
-            1.0,
-            subspeciesId: newSubspecies.id,
-          );
-
-          _refreshState();
-          _showFeedback('Identificado: [${species.name}] ${newSubspecies.subspeciesName}');
-          return;
-        }
+        _showFeedback('No se detectó un código de barras o ISBN en la imagen.', isError: true);
 
         _showFeedback('No se halló coincidencia clara para la foto.', isError: true);
       } else {

@@ -31,12 +31,7 @@ class MainShellScreen extends StatelessWidget {
           NavigationDestination(
             icon: Icon(Icons.inventory_2_outlined),
             selectedIcon: Icon(Icons.inventory_2),
-            label: AppStrings.tabEntities,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.account_tree_outlined),
-            selectedIcon: Icon(Icons.account_tree),
-            label: AppStrings.tabLocations,
+            label: 'Inventario (Finder)',
           ),
           NavigationDestination(
             icon: Icon(Icons.public_outlined),

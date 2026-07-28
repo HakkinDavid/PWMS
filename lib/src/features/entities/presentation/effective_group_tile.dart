@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/effective_entity_group.dart';
-import 'grouped_instance_detail_sheet.dart';
 import 'instance_preview_card.dart';
 import 'quantity_operation_helper.dart';
 
@@ -22,6 +21,7 @@ class EffectiveGroupTile extends ConsumerWidget {
     final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
     final species = catalogItems.where((c) => c.id == group.speciesId).firstOrNull;
     final isUnique = species?.isUnique ?? false;
+    final isHomogeneous = group.isHomogeneous;
 
     return InstancePreviewCard(
       group: group,
@@ -29,17 +29,16 @@ class EffectiveGroupTile extends ConsumerWidget {
         if (group.population == 1) {
           context.push('/entity/${group.primaryEntity.id}');
         } else {
-          GroupedInstanceDetailSheet.show(context, group);
+          context.push('/grouped-instance-detail?speciesId=${group.speciesId}&locId=${group.effectiveLocationId ?? ""}');
         }
       },
-      trailing: isUnique
+      trailing: (isUnique || !isHomogeneous)
           ? Icon(Icons.chevron_right, color: theme.colorScheme.secondary)
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 GestureDetector(
-                  onTap: () => QuantityOperationHelper.removeOne(ref, group),
-                  onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: group, isAdd: false),
+                  onTap: () => QuantityOperationHelper.removeOne(context, ref, group),
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
@@ -78,8 +77,7 @@ class EffectiveGroupTile extends ConsumerWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => QuantityOperationHelper.addOne(ref, group),
-                  onLongPress: () => QuantityOperationHelper.showWheelPickerModal(context, ref, group: group, isAdd: true),
+                  onTap: () => QuantityOperationHelper.addOne(context, ref, group),
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(

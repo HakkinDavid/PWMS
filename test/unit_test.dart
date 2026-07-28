@@ -201,17 +201,16 @@ void main() {
       expect(toolUnlinked!.locationId, equals('loc-workshop'));
     });
 
-    test('5. Cascading Demographic Removal & Batch Operations', () async {
+    test('5. Homogeneous Group Rules & Batch Operations', () async {
       final species = await catalogRepo.getOrCreateSpecies('Pila AA', type: 'Objeto');
 
-      // Create 3 instances with note "Batería Marca A"
-      final e1 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca A');
-      final e2 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca A');
-      final e3 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca A');
+      // Create 3 identical instances
+      final e1 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Serie A');
+      final e2 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Serie A');
+      final e3 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Serie A');
 
-      // Create 2 instances with note "Batería Marca B"
-      await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
-      await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Batería Marca B');
+      // Create 1 instance with different note
+      final e4 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Serie B');
 
       final allEntities = await entityRepo.getAllEntities();
       final group = EffectiveEntityGroup.groupEntities(
@@ -219,23 +218,16 @@ void main() {
         effectiveLocationMap: {for (var e in allEntities) e.id: e.locationId},
       ).firstWhere((g) => g.speciesId == species.id);
 
-      expect(group.population, equals(5));
-      expect(group.majorityInstances.length, equals(3));
-      expect(group.majorityEntity.notes, equals('Batería Marca A'));
+      expect(group.population, equals(4));
+      expect(group.isHomogeneous, isFalse);
 
-      // Test cascading removal of 4 instances (should exhaust all 3 Marca A + 1 Marca B)
-      final idsToRemove = QuantityOperationHelper.getCascadingRemovalIds(group, 4);
-      expect(idsToRemove.length, equals(4));
-      expect(idsToRemove.contains(e1.id), isTrue);
-      expect(idsToRemove.contains(e2.id), isTrue);
-      expect(idsToRemove.contains(e3.id), isTrue);
-
+      final idsToRemove = [e1.id, e2.id, e3.id];
       await entityRepo.deleteEntitiesBatch(idsToRemove);
 
       final remaining = await entityRepo.getAllEntities();
       final remainingSpecies = remaining.where((e) => e.speciesId == species.id).toList();
       expect(remainingSpecies.length, equals(1));
-      expect(remainingSpecies.first.notes, equals('Batería Marca B'));
+      expect(remainingSpecies.first.id, equals(e4.id));
     });
 
     test('6. 4NF Subspecies, NECESITA Requirements & Effective Breadcrumbs with "@"', () async {

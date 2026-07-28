@@ -63,12 +63,10 @@ class InstancePreviewCard extends ConsumerWidget {
         final effectivePhotoPath = subspecies?.resolvePhotoPath(species?.mainPhotoPath);
         final isCustomSubspecies = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
 
-        final primaryTitle = isCustomSubspecies
-            ? '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}'
-            : speciesName;
+        final primaryTitle = speciesName;
 
         final typeAndSpeciesText = isCustomSubspecies
-            ? '$speciesType • $speciesName • '
+            ? '$speciesType • ${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""} • '
             : '$speciesType • ';
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
