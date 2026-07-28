@@ -39,5 +39,20 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+    end
+  end
+  xcconfig_paths = Dir.glob(File.join(__dir__, 'Pods', 'Target Support Files', 'Pods-Runner', '*.xcconfig'))
+  xcconfig_paths.each do |path|
+    content = File.read(path)
+    new_content = content.gsub(/EXCLUDED_ARCHS\[sdk=iphonesimulator\*\]\s*=\s*/, 'EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64')
+    File.write(path, new_content)
   end
 end
+
+
+
+
+

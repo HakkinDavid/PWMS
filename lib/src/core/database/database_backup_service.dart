@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:archive/archive.dart';
 import 'package:drift/drift.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'app_database.dart';
@@ -145,29 +147,147 @@ class DatabaseBackupService {
     };
   }
 
-  /// Exporta el respaldo a un archivo JSON temporal y abre la hoja de compartir nativa.
-  /// Limpia automáticamente el archivo temporal del directorio del sistema una vez compartido.
+  /// Resuelve la ruta física local de un archivo de media referenciado en BD.
+  Future<File?> _resolvePhysicalFile(String pathStr) async {
+    if (pathStr.isEmpty) return null;
+
+    final fDirect = File(pathStr);
+    if (await fDirect.exists()) return fDirect;
+
+    final docsDir = await getApplicationDocumentsDirectory();
+    final filename = p.basename(pathStr);
+
+    final fMedia = File(p.join(docsDir.path, 'pwms_media', filename));
+    if (await fMedia.exists()) return fMedia;
+
+    final fProd = File(p.join(docsDir.path, 'product_images', filename));
+    if (await fProd.exists()) return fProd;
+
+    final fRoot = File(p.join(docsDir.path, filename));
+    if (await fRoot.exists()) return fRoot;
+
+    return null;
+  }
+
+  /// Exporta un paquete completo ZIP (Base de datos JSON + Fotos y archivos adjuntos) y abre la ventana de compartir nativa.
+  /// Limpia automáticamente el archivo ZIP temporal al finalizar.
   Future<void> exportAndShareBackup() async {
     final data = await exportDatabaseToJsonMap();
     final jsonStr = const JsonEncoder.withIndent('  ').convert(data);
 
+    final archive = Archive();
+
+    // 1. Agregar el archivo de la base de datos
+    final jsonBytes = utf8.encode(jsonStr);
+    archive.addFile(ArchiveFile('database.json', jsonBytes.length, jsonBytes));
+
+    // 2. Recolectar todas las rutas de archivos multimedia referenciadas en las tablas
+    final Set<String> referencedPaths = {};
+    final tables = data['tables'] as Map<String, dynamic>? ?? {};
+
+    final catalogList = tables['catalog'] as List<dynamic>? ?? [];
+    for (final item in catalogList) {
+      if (item['mainPhotoPath'] != null && item['mainPhotoPath'].toString().isNotEmpty) {
+        referencedPaths.add(item['mainPhotoPath'].toString());
+      }
+    }
+
+    final subspeciesList = tables['subspecies'] as List<dynamic>? ?? [];
+    for (final item in subspeciesList) {
+      if (item['photoPath'] != null && item['photoPath'].toString().isNotEmpty) {
+        referencedPaths.add(item['photoPath'].toString());
+      }
+    }
+
+    final attachmentsList = tables['attachments'] as List<dynamic>? ?? [];
+    for (final item in attachmentsList) {
+      if (item['filePath'] != null && item['filePath'].toString().isNotEmpty) {
+        referencedPaths.add(item['filePath'].toString());
+      }
+    }
+
+    // 3. Incluir cada archivo físico en el archivo ZIP dentro de files/
+    for (final refPath in referencedPaths) {
+      final file = await _resolvePhysicalFile(refPath);
+      if (file != null && await file.exists()) {
+        final bytes = await file.readAsBytes();
+        final filename = p.basename(file.path);
+        archive.addFile(ArchiveFile('files/$filename', bytes.length, bytes));
+      }
+    }
+
+    final zipEncoder = ZipEncoder();
+    final zipBytes = zipEncoder.encode(archive);
+
+    if (zipBytes == null) {
+      throw Exception('Error al generar la compresión del paquete de respaldo.');
+    }
+
     final tempDir = await getTemporaryDirectory();
     final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
-    final tempFile = File('${tempDir.path}/pwms_backup_$timestamp.json');
+    final tempZipFile = File(p.join(tempDir.path, 'pwms_backup_$timestamp.zip'));
 
     try {
-      await tempFile.writeAsString(jsonStr);
+      await tempZipFile.writeAsBytes(zipBytes);
       await Share.shareXFiles(
-        [XFile(tempFile.path)],
-        subject: 'Respaldo PWMS',
-        text: 'Respaldo completo de la base de datos de PWMS.',
+        [XFile(tempZipFile.path)],
+        subject: 'Respaldo Completo PWMS',
+        text: 'Respaldo completo de base de datos y archivos de PWMS.',
       );
     } finally {
-      if (await tempFile.exists()) {
+      if (await tempZipFile.exists()) {
         try {
-          await tempFile.delete();
+          await tempZipFile.delete();
         } catch (_) {}
       }
+    }
+  }
+
+  /// Importa una copia de seguridad enviada como archivo (.zip o .json)
+  Future<void> importDatabaseFromFile(File file) async {
+    final bytes = await file.readAsBytes();
+
+    final isZip = file.path.toLowerCase().endsWith('.zip') ||
+        (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B);
+
+    if (isZip) {
+      final archive = ZipDecoder().decodeBytes(bytes);
+      String? jsonContent;
+
+      final docsDir = await getApplicationDocumentsDirectory();
+      final mediaDir = Directory(p.join(docsDir.path, 'pwms_media'));
+      if (!await mediaDir.exists()) {
+        await mediaDir.create(recursive: true);
+      }
+      final prodDir = Directory(p.join(docsDir.path, 'product_images'));
+      if (!await prodDir.exists()) {
+        await prodDir.create(recursive: true);
+      }
+
+      for (final archiveFile in archive) {
+        if (archiveFile.isFile) {
+          final name = archiveFile.name;
+          if (name == 'database.json' || name.endsWith('.json')) {
+            jsonContent = utf8.decode(archiveFile.content as List<int>);
+          } else if (name.startsWith('files/')) {
+            final filename = p.basename(name);
+            if (filename.isNotEmpty) {
+              final content = archiveFile.content as List<int>;
+              await File(p.join(mediaDir.path, filename)).writeAsBytes(content);
+              await File(p.join(prodDir.path, filename)).writeAsBytes(content);
+            }
+          }
+        }
+      }
+
+      if (jsonContent == null) {
+        throw Exception('El paquete ZIP no contiene un archivo database.json válido.');
+      }
+
+      await importDatabaseFromJsonString(jsonContent);
+    } else {
+      final jsonStr = utf8.decode(bytes);
+      await importDatabaseFromJsonString(jsonStr);
     }
   }
 

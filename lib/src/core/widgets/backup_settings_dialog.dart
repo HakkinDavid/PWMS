@@ -41,7 +41,7 @@ class _BackupSettingsDialogState extends ConsumerState<BackupSettingsDialog> {
   Future<void> _importBackup() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['json'],
+      allowedExtensions: ['zip', 'json'],
     );
 
     if (result == null || result.files.single.path == null) return;
@@ -51,7 +51,7 @@ class _BackupSettingsDialogState extends ConsumerState<BackupSettingsDialog> {
       builder: (ctx) => AlertDialog(
         title: const Text('Confirmar Restauración'),
         content: const Text(
-          'ADVERTENCIA: Importar un respaldo reemplazará todos los datos actuales de tu mundo con los datos del archivo seleccionado. ¿Deseas continuar?',
+          'ADVERTENCIA: Importar un respaldo reemplazará todos los datos y archivos actuales de tu mundo con los datos del paquete seleccionado. ¿Deseas continuar?',
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
@@ -69,15 +69,14 @@ class _BackupSettingsDialogState extends ConsumerState<BackupSettingsDialog> {
     setState(() => _isProcessing = true);
     try {
       final filePath = result.files.single.path!;
-      final jsonStr = await File(filePath).readAsString();
       final backupService = ref.read(databaseBackupServiceProvider);
 
-      await backupService.importDatabaseFromJsonString(jsonStr);
+      await backupService.importDatabaseFromFile(File(filePath));
       refreshAllAppProviders(ref);
 
       if (mounted) {
         Navigator.pop(context);
-        AppToast.showSuccess(context, 'Base de datos restaurada correctamente.');
+        AppToast.showSuccess(context, 'Respaldo completo y archivos restaurados correctamente.');
       }
     } catch (e) {
       if (mounted) AppToast.showError(context, 'Error importando respaldo: $e');
@@ -108,15 +107,15 @@ class _BackupSettingsDialogState extends ConsumerState<BackupSettingsDialog> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.file_upload_outlined, color: Colors.blueAccent),
-                  title: const Text('Exportar Respaldo'),
-                  subtitle: const Text('Guarda toda la base de datos en un archivo JSON local.'),
+                  title: const Text('Exportar Respaldo Completo (Zip)'),
+                  subtitle: const Text('Genera un paquete ZIP con la base de datos y todas las imágenes/archivos adjuntos.'),
                   onTap: _exportBackup,
                 ),
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.file_download_outlined, color: Colors.amber),
-                  title: const Text('Importar Respaldo'),
-                  subtitle: const Text('Restaura los datos desde un archivo JSON previa confirmación.'),
+                  title: const Text('Importar Respaldo (.zip / .json)'),
+                  subtitle: const Text('Restaura la base de datos e imágenes adjuntas desde un archivo de respaldo.'),
                   onTap: _importBackup,
                 ),
               ],
