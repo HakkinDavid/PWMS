@@ -143,5 +143,43 @@ void main() {
       expect(restoredFile.existsSync(), isTrue);
       expect(restoredFile.readAsStringSync(), equals('fake_image_bytes'));
     });
+
+    test('importDatabaseFromFile ignores macOS metadata files (__MACOSX, ._database.json)', () async {
+      final dummyMap = {
+        'version': 1,
+        'exportedAt': DateTime.now().toIso8601String(),
+        'tables': {
+          'locations': [],
+          'catalog': [],
+          'subspecies': [],
+          'speciesMagnitudes': [],
+          'entities': [],
+          'instanceMagnitudes': [],
+          'instanceLocations': [],
+          'relations': [],
+          'attachments': [],
+          'historyEvents': [],
+          'customTemplates': [],
+          'speciesRequirements': [],
+          'notifications': [],
+        }
+      };
+
+      final archive = Archive();
+      final jsonBytes = utf8.encode(jsonEncode(dummyMap));
+      archive.addFile(ArchiveFile('database.json', jsonBytes.length, jsonBytes));
+
+      // Simulate macOS AppleDouble metadata binary file
+      final macMetadataBytes = [0x00, 0x05, 0x16, 0x07, 0x00, 0x02, 0x00, 0x00, 0x4D, 0x61, 0x63, 0x20, 0x4F, 0x53];
+      archive.addFile(ArchiveFile('__MACOSX/._database.json', macMetadataBytes.length, macMetadataBytes));
+      archive.addFile(ArchiveFile('.DS_Store', 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
+
+      final zipBytes = ZipEncoder().encode(archive)!;
+      final zipFile = File(p.join(tempDir.path, 'mac_backup.zip'));
+      await zipFile.writeAsBytes(zipBytes);
+
+      // Should not throw FormatException / Unexpected extension byte
+      await expectLater(backupService.importDatabaseFromFile(zipFile), completes);
+    });
   });
 }

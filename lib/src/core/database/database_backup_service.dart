@@ -265,17 +265,23 @@ class DatabaseBackupService {
       }
 
       for (final archiveFile in archive) {
-        if (archiveFile.isFile) {
-          final name = archiveFile.name;
-          if (name == 'database.json' || name.endsWith('.json')) {
-            jsonContent = utf8.decode(archiveFile.content as List<int>);
-          } else if (name.startsWith('files/')) {
-            final filename = p.basename(name);
-            if (filename.isNotEmpty) {
-              final content = archiveFile.content as List<int>;
-              await File(p.join(mediaDir.path, filename)).writeAsBytes(content);
-              await File(p.join(prodDir.path, filename)).writeAsBytes(content);
-            }
+        if (!archiveFile.isFile) continue;
+
+        final name = archiveFile.name;
+        final baseName = p.basename(name);
+
+        // Ignorar carpetas/archivos de metadatos del sistema de macOS (__MACOSX, ._*, .DS_Store)
+        if (name.contains('__MACOSX') || baseName.startsWith('._') || baseName.startsWith('.')) {
+          continue;
+        }
+
+        if (baseName == 'database.json' || (jsonContent == null && baseName.endsWith('.json'))) {
+          jsonContent = utf8.decode(archiveFile.content as List<int>);
+        } else if (name.startsWith('files/') || name.contains('/files/')) {
+          if (baseName.isNotEmpty) {
+            final content = archiveFile.content as List<int>;
+            await File(p.join(mediaDir.path, baseName)).writeAsBytes(content);
+            await File(p.join(prodDir.path, baseName)).writeAsBytes(content);
           }
         }
       }
