@@ -11,6 +11,7 @@ PWMS enforces strict **Fourth Normal Form (4NF)** database normalization:
 1. **Elimination of Multi-Valued Dependencies**: Physical properties (such as mass, volume, length, counts, pricing) are stored in dedicated 1:N relational tables (`SpeciesMagnitudesTable` and `InstanceMagnitudesTable`) instead of concatenated string fields or primary columns.
 2. **Subspecies Normalization**: Variants and brands are stored in a dedicated 1:N relational table (`SubspeciesTable`) linked to `CatalogTable`.
 3. **No Primary Column Auto-Injection**: `CatalogTable` and `EntitiesTable` contain **NO** `quantity`, `unit`, `defaultUnit`, or monetary columns. Physical magnitudes exist strictly as relational rows.
+4. **Normalized Reactive System Notifications**: Expiration alerts and requirement dependencies are stored in a dedicated 4NF table (`NotificationsTable`).
 
 ---
 
@@ -30,11 +31,13 @@ erDiagram
     EntitiesTable ||--o| InstanceLocationsTable : "instanceId"
     EntitiesTable ||--o{ RelationsTable : "sourceEntityId"
     EntitiesTable ||--o{ RelationsTable : "targetEntityId"
+    NotificationsTable }o--|| EntitiesTable : "targetId (entity)"
+    NotificationsTable }o--|| CatalogTable : "targetId (species)"
 ```
 
 ---
 
-## 3. Drift Database Tables Specification (12 Tables)
+## 3. Drift Database Tables Specification (13 Tables)
 
 ### 3.1 `LocationsTable`
 Stores spatial nodes in the global location tree.
@@ -62,6 +65,9 @@ Master definitions for item species in the world.
 | `mainPhotoPath` | `Text` | Nullable | Relative disk path to main photo |
 | `customAttributes` | `Text` | Default: `'{}'` | JSON map of custom metadata |
 | `isUnique` | `Bool` | Default: `false` | Uniqueness flag |
+| `isNonPerishable` | `Bool` | Default: `true` | Indicates if product does not expire |
+| `defaultShelfLifeDays` | `Int` | Nullable | Default shelf life in days if perishable |
+| `warningDaysBeforeExpiration` | `Int` | Nullable | Advance alert trigger window in days |
 | `createdAt` | `DateTime` | NOT NULL | Creation timestamp |
 
 ---
@@ -104,6 +110,7 @@ Instantiated physical entities located in the world.
 | `speciesId` | `Text` | FK -> `CatalogTable.id` | Species foreign key |
 | `subspeciesId` | `Text` | Nullable, FK -> `SubspeciesTable.id` | Subspecies foreign key |
 | `locationId` | `Text` | Nullable, FK -> `LocationsTable.id` | Current location foreign key |
+| `expirationDate` | `DateTime` | Nullable | Specific instance expiration timestamp |
 | `notes` | `Text` | Nullable | Instance-specific notes |
 | `createdAt` | `DateTime` | NOT NULL | Creation timestamp |
 | `updatedAt` | `DateTime` | NOT NULL | Modification timestamp |
@@ -153,8 +160,8 @@ Dependency requirements between species (`sourceId NECESITA requiredSpeciesId`).
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | `Text` | Primary Key | Unique UUID string |
-| `sourceId` | `Text` | NOT NULL | Source species ID |
-| `sourceType` | `Text` | Default: `'species'` | Source type string |
+| `sourceId` | `Text` | NOT NULL | Source species or entity ID |
+| `sourceType` | `Text` | Default: `'species'` | Source type string (`'species'` or `'entity'`) |
 | `requiredSpeciesId` | `Text` | FK -> `CatalogTable.id` | Required species foreign key |
 | `requiredQuantity` | `Real` | Default: `1.0` | Required quantity amount |
 | `notes` | `Text` | Nullable | Requirement notes |
@@ -203,15 +210,35 @@ User-customized category templates.
 
 ---
 
+### 3.13 `NotificationsTable` (Notificaciones del Sistema 4NF)
+Persistent system alerts for expired entities, upcoming product expiration, and unsatisfied catalog dependencies.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `Text` | Primary Key | Unique UUID string |
+| `type` | `Text` | NOT NULL | Alert category (`'expired'`, `'expiring_soon'`, `'unsatisfied_need'`) |
+| `title` | `Text` | NOT NULL | Short alert title string |
+| `message` | `Text` | NOT NULL | Detailed descriptive notification message |
+| `targetId` | `Text` | NOT NULL | Target entity or species ID |
+| `targetType` | `Text` | NOT NULL | Target classification string (`'entity'` or `'species'`) |
+| `status` | `Text` | Default: `'active'` | Alert state (`'active'`, `'snoozed'`, `'dismissed'`) |
+| `snoozedUntil` | `DateTime` | Nullable | Expiration timestamp for snoozed alerts |
+| `createdAt` | `DateTime` | NOT NULL | Creation timestamp |
+| `updatedAt` | `DateTime` | NOT NULL | Last update timestamp |
+
+---
+
 ## 4. Freezed Domain Models Mappings
 
 All domain entities in Dart use `@freezed` to guarantee immutability:
 
-- `CatalogItem`: Freezed model mapping `CatalogTable` row and its list of `List<SpeciesMagnitude> magnitudes`.
+- `CatalogItem`: Freezed model mapping `CatalogTable` row (including `isNonPerishable`, `defaultShelfLifeDays`, `warningDaysBeforeExpiration`) and its list of `List<SpeciesMagnitude> magnitudes`.
 - `Subspecies`: Freezed model mapping `SubspeciesTable` row.
-- `WorldEntity`: Freezed model mapping `EntitiesTable` row and its list of `List<InstanceMagnitude> magnitudes`.
+- `WorldEntity`: Freezed model mapping `EntitiesTable` row (including `expirationDate`) and its list of `List<InstanceMagnitude> magnitudes`.
 - `LocationNode`: Freezed model mapping `LocationsTable` row.
 - `EntityRelation`: Freezed model mapping `RelationsTable` row.
-- `SpeciesRequirement`: Freezed model mapping `SpeciesRequirementsTable` row.
+- `SpeciesRequirement`: Freezed model mapping `SpeciesRequirementsTable` row (`sourceType` support).
 - `Attachment`: Freezed model mapping `AttachmentsTable` row.
 - `ActivityEvent`: Freezed model mapping `HistoryEventsTable` row.
+- `AppNotification`: Freezed model mapping `NotificationsTable` row (`id`, `type`, `title`, `message`, `targetId`, `targetType`, `status`, `snoozedUntil`, `createdAt`, `updatedAt`).
+

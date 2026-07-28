@@ -1,6 +1,6 @@
 # PWMS Subspecies, Brand Variants & Visual Hierarchy Specification
 
-This document details the subspecies and brand variant system, structural subgroup constraints, photo resolution fallback, and visual hierarchy inversion in **Platinum World Management System (PWMS)**.
+This document details the subspecies and brand variant system, structural subgroup constraints, taxonomy auto-fill (`ProductLookupService`), photo resolution fallback, and visual hierarchy inversion in **Platinum World Management System (PWMS)**.
 
 ---
 
@@ -57,7 +57,17 @@ Brand and Barcode attributes are strictly constrained by entity subgroup type:
 
 ---
 
-## 4. Main Photo Resolution & Fallback Logic
+## 4. Subspecies Registration & Product Taxonomy Intelligence
+
+When registering or editing a subspecies via `AddEditSubspeciesModal`:
+
+1. **Barcode Scan & Auto-Fill**: Scanning or entering a barcode triggers `ProductLookupService.lookupByBarcode()`.
+2. **Taxonomy & Brand Matching**: The system checks `BrandDictionary` and `ProductTaxonomyDictionary` to infer brand name, subspecies title, perishability status, and suggested magnitude units.
+3. **Dedicated Modal (`AddEditSubspeciesModal`)**: Provides isolated fields for variant title, brand, barcode, photo, and notes.
+
+---
+
+## 5. Main Photo Resolution & Fallback Logic
 
 Subspecies can have their own primary image. When rendering any instance or tile:
 
@@ -77,21 +87,22 @@ String? resolvePhotoPath(String? speciesMainPhotoPath) {
 
 ---
 
-## 5. UI Visual Hierarchy Inversion Rule
+## 6. UI Visual Hierarchy Inversion Rule
 
 To provide maximum clarity to the user, **subspecies information is presented as the primary identity**, while the species serves as secondary context:
 
-### 5.1 Detail Views (`SpeciesDetailView` & `EntityDetailScreen`)
+### 6.1 Detail Views (`SpeciesDetailView` & `EntityDetailScreen`)
 - **Primary Title**: Subspecies name (e.g. `"Bravia 4K 55"`).
 - **Secondary Context Badge**: Displays general species name and type (e.g. `Especie: Televisor (Objeto)`).
 
-### 5.2 Instance Tiles (`EntityTile`, Recent Instances on `HomeScreen`)
+### 6.2 Instance Tiles (`EntityTile`, Recent Instances on `HomeScreen`)
 - Displays subspecies photo, subspecies name, brand, barcode, and location trajectory without duplicating barcode legends when null.
 
 ---
 
-## 6. Deletion Protection Rules
+## 7. Deletion Protection Rules
 
 1. **Subspecies with Active Instances**: A subspecies cannot be deleted if any `WorldEntity` references `subspeciesId == sub.id`.
 2. **Single Subspecies Rule**: The last remaining subspecies of a species cannot be deleted. Every species MUST maintain at least 1 valid subspecies.
 3. **Creation Fallback**: If a species is created without adding draft subspecies, the system automatically creates a default `"Genérica"` subspecies.
+

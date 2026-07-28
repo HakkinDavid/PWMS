@@ -1,6 +1,6 @@
 # PWMS Directed Entity Relations, Requirements & Interactive Graph Specification
 
-This document details the directed relationships system, catalog requirement dependencies (`NECESITA`), interactive vertical graph widget, and edit-scoped relation modal in **Platinum World Management System (PWMS)**.
+This document details the directed relationships system, catalog requirement dependencies (`NECESITA`), automated unsatisfied requirement alert generation, interactive vertical graph widget, and edit-scoped relation modal in **Platinum World Management System (PWMS)**.
 
 ---
 
@@ -28,11 +28,13 @@ In addition to instance-level relations, species can define master dependencies 
 - **Definition**: A species (e.g. `"Refrigerador"`) requires a specific quantity of another species (e.g. 6 `"Huevos"`).
 - **Relational 4NF Table**:
   - `id`: Primary key.
-  - `sourceId`: Species ID requiring the dependency.
+  - `sourceId`: Species or instance ID requiring the dependency.
+  - `sourceType`: Identifier type string (`'species'` or `'entity'`).
   - `requiredSpeciesId`: FK referencing required `CatalogTable` item.
   - `requiredQuantity`: Double quantity value (e.g. `6.0`).
   - `notes`: Optional requirement notes.
 - **Form Component**: Defined via [RequirementsSectionWidget](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/catalog/presentation/requirements_section_widget.dart).
+- **Automated Alert Generation**: When an entity's required species count in the world falls below `requiredQuantity`, `NotificationService` automatically generates an `'unsatisfied_need'` notification row in `NotificationsTable`.
 
 ---
 
@@ -79,3 +81,4 @@ Located in [create_relation_modal.dart](file:///Users/hakkindavid/Documents/GitH
 1. Presents a search/picker list of all available target entities in the world.
 2. Provides an `AppWheelPicker` selector for choosing the directed relation type (`PARTE_DE`, `DOCUMENTA`, `PERTENECE_A`, `USA`, `GUARDADO_EN`).
 3. Saves `EntityRelation` to `RelationsTable` via `RelationRepository` and invalidates Riverpod providers to immediately refresh the graph.
+

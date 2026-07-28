@@ -22,7 +22,7 @@ Ejemplos:
 
 - objetos físicos y herramientas
 - marcas y variantes comerciales (subespecies)
-- consumibles y magnitudes físicas relacionales 4NF
+- consumibles, perecederos y magnitudes físicas relacionales 4NF
 - documentos y proyectos únicos
 - infraestructura digital y vehículos
 - seres vivos y plantas
@@ -47,13 +47,15 @@ El objetivo del MVP es demostrar que el modelo relacional normalizado funciona.
 
 Al terminar esta iteración el usuario puede:
 
-- crear especies y gestionar sus subespecies/marcas
-- instanciar elementos en el mundo
-- encontrarlos rápidamente mediante búsqueda en tiempo real
-- moverlos entre nodos del grafo de ubicaciones
+- crear especies y gestionar sus subespecies/marcas con auto-completado taxonómico
+- instanciar elementos en el mundo con seguimiento opcional de caducidad
+- encontrarlos rápidamente mediante el buscador unificado `InventoryFinderScreen` y búsqueda en tiempo real
+- moverlos entre nodos del grafo de ubicaciones mediante cortina desplegable `TopCurtainLocationSheet`
 - relacionarlos mediante vínculos dirigidos (`PARTE_DE`, `DOCUMENTA`, `PERTENECE_A`, `USA`, `GUARDADO_EN`)
-- establecer requisitos de dependencia (`NECESITA`)
+- establecer requisitos de dependencia (`NECESITA`) con alertas automáticas de falta de insumos
 - adjuntar fotografías y documentos
+- recibir alertas de notificaciones del sistema (`NotificationsTable`) para productos caducados o por vencer
+- exportar e importar respaldos completos de la base de datos de manera segura (`DatabaseBackupService`)
 - registrar eventos de auditoría automáticamente
 - organizar su mundo mediante el grafo espacial jerárquico
 
@@ -67,7 +69,7 @@ Toda decisión debe respetar estos principios.
 
 ## Offline First
 La aplicación funciona completamente sin Internet.
-Internet únicamente sirve para enriquecer información.
+Internet únicamente sirve para enriquecer información o buscar imágenes públicas.
 Nunca es requisito para utilizar el sistema.
 
 ## Local First
@@ -77,11 +79,11 @@ SQLite (`AppDatabase` Drift) es la fuente de verdad.
 
 ## Fricción mínima
 Registrar una entidad nueva toma menos de 30 segundos.
-Información progresiva con foto, nombre o código de barras sin formularios infinitos.
+Información progresiva con foto, auto-completado por escaneo de código de barras o taxonomía inteligente sin formularios infinitos.
 
 ## El sistema trabaja para el usuario
 El usuario realiza acciones.
-El sistema registra automáticamente el historial en `HistoryEventsTable`.
+El sistema registra automáticamente el historial en `HistoryEventsTable` y notificaciones reactivas en `NotificationsTable`.
 
 ---
 
@@ -89,23 +91,24 @@ El sistema registra automáticamente el historial en `HistoryEventsTable`.
 
 - **Flutter** & Material 3 (Modo Oscuro)
 - **Riverpod** para inyección de dependencias y estado reactivo
-- **GoRouter** (`StatefulShellRoute.indexedStack`)
-- **Drift (SQLite)** con 12 tablas en Cuarta Forma Normal (4NF)
+- **GoRouter** (`StatefulShellRoute.indexedStack` en 3 pestañas principales)
+- **Drift (SQLite)** con 13 tablas en Cuarta Forma Normal (4NF)
 - **Freezed** & JSON Serializable para modelos inmutables de dominio
-- **AppToast** para notificaciones flotantes de estado
+- **AppToast** y **NotificationsScreen** para notificaciones flotantes y reactivas del sistema
+- **DatabaseBackupService** para exportación e importación segura de datos en JSON
 - **FileStorageService** para gestión local de medios en disco
 
 ---
 
 # 5. Estructura de Subgrupos y Restricciones
 
-| Subgrupo | Marca y Código de Barras | Magnitudes Multiunidad | Siempre Único |
-| :--- | :---: | :---: | :---: |
-| **Objeto** | ✅ Sí | ✅ Sí | Opcional |
-| **Ser Vivo** | ❌ Descartado automáticamente | ✅ Sí | Opcional |
-| **Documento** | ❌ Descartado automáticamente | ❌ No | ✅ Siempre Único |
-| **Proyecto** | ❌ Descartado automáticamente | ❌ No | ✅ Siempre Único |
-| **Recuerdo** | ❌ Descartado automáticamente | ❌ No | ✅ Siempre Único |
+| Subgrupo | Marca y Código de Barras | Magnitudes Multiunidad | Perecedero | Siempre Único |
+| :--- | :---: | :---: | :---: | :---: |
+| **Objeto** | ✅ Sí | ✅ Sí | ✅ Sí (Opcional) | Opcional |
+| **Ser Vivo** | ❌ Descartado automáticamente | ✅ Sí | ✅ Sí (Opcional) | Opcional |
+| **Documento** | ❌ Descartado automáticamente | ❌ No | ❌ No perecedero | ✅ Siempre Único |
+| **Proyecto** | ❌ Descartado automáticamente | ❌ No | ❌ No perecedero | ✅ Siempre Único |
+| **Recuerdo** | ❌ Descartado automáticamente | ❌ No | ❌ No perecedero | ✅ Siempre Único |
 
 ---
 
@@ -118,9 +121,11 @@ El sistema registra automáticamente el historial en `HistoryEventsTable`.
 
 # 7. Criterios de Éxito Cumplidos
 
-✓ Registrar una entidad requiere menos de 30 segundos.
+✓ Registrar una entidad requiere menos de 30 segundos (acelerado con auto-llenado por código de barras).
 ✓ Encontrar cualquier entidad requiere menos de 5 segundos.
 ✓ Cambiar una entidad de lugar requiere menos de 10 segundos.
 ✓ Toda modificación genera historial automáticamente.
+✓ Alertas de expiración y faltante de requisitos notificadas de forma persistente.
+✓ Respaldo y restauración de la base de datos realizable localmente en un toque.
 ✓ Protección de eliminación activa de especies y subespecies con instancias registradas.
 ✓ Funciona 100% sin conexión a Internet.

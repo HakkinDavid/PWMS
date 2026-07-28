@@ -1,6 +1,6 @@
 # PWMS Spatial Location Graph & Hierarchy Specification
 
-This document details the spatial location graph, recursive item counter algorithm, anti-cycling reparenting rules, container `@` indicator, and path navigation helpers in **Platinum World Management System (PWMS)**.
+This document details the spatial location graph, recursive item counter algorithm, anti-cycling reparenting rules, top curtain location sheet (`TopCurtainLocationSheet`), container `@` indicator, and path navigation helpers in **Platinum World Management System (PWMS)**.
 
 ---
 
@@ -10,6 +10,7 @@ Locations in PWMS form a **Global Spatial Graph (Hierarchical Tree)** where each
 
 - **Root Location**: When `parentLocationId == null`, the location resides directly at the root of the world ("Mundo").
 - **Sub-Locations**: Locations nested inside other locations (e.g., `Mundo ➔ Casa ➔ Garaje ➔ Estante A ➔ Caja 1`).
+- **Interactive Spatial Picker**: Accessible directly from `InventoryFinderScreen` via [TopCurtainLocationSheet](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/locations/presentation/top_curtain_location_sheet.dart), providing a top-down sliding curtain to select target location subtrees or filter entity scope.
 
 ---
 
@@ -116,3 +117,4 @@ Mundo > Casa > Garaje > Estante 1 > [Caja 3]
 ```
 
 Implemented in [LocationPathHelper](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/locations/domain/location_path_helper.dart).
+

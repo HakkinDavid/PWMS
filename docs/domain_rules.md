@@ -1,6 +1,6 @@
 # PWMS Domain Rules & Single Source of Truth Specification
 
-This document details the domain rules, standardized terminology, validation matrices, active instance deletion protections, and SI unit property suggestions implemented in `DomainRules` ([domain_rules.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/core/domain/domain_rules.dart)) and `EntityTemplateRegistry` ([entity_template.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/entities/domain/entity_template.dart)).
+This document details the domain rules, standardized terminology, validation matrices, active instance deletion protections, perishability status rules, effective entity groupings, and SI unit property suggestions implemented in `DomainRules` ([domain_rules.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/core/domain/domain_rules.dart)) and `EntityTemplateRegistry` ([entity_template.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/entities/domain/entity_template.dart)).
 
 ---
 
@@ -10,6 +10,7 @@ To prevent scattered validations, UI inconsistencies, or conflicting business lo
 
 - **Domain Rules Enforcement**: Centralized in `DomainRules`.
 - **Subgroup Specifications & Capabilities**: Centralized in `EntityTemplateRegistry`.
+- **Product Taxonomy & Perishability Deduction**: Centralized in `ProductTaxonomyService` & `PerishabilityInferenceEngine`.
 
 ---
 
@@ -34,17 +35,31 @@ The codebase and user interface strictly enforce unambiguous domain terms:
 
 Different entity subgroup types have strict structural constraints enforced across UI and repository logic:
 
-| Subgroup | Barcode & Brand | Multi-Unit Magnitudes | Always Unique |
-| :--- | :---: | :---: | :---: |
-| **Objeto** | ✅ Yes | ✅ Yes | Optional |
-| **Ser Vivo** | ❌ Stripped automatically | ✅ Yes | Optional |
-| **Documento** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
-| **Proyecto** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
-| **Recuerdo** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
+| Subgroup | Barcode & Brand | Multi-Unit Magnitudes | Perishability Allowed | Always Unique |
+| :--- | :---: | :---: | :---: | :---: |
+| **Objeto** | ✅ Yes | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
+| **Ser Vivo** | ❌ Stripped automatically | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
+| **Documento** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
+| **Proyecto** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
+| **Recuerdo** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
 
 ---
 
-## 4. Deletion Protection Rules (Species & Subspecies)
+## 4. Perishability & Expiration Domain Rules
+
+1. **Perishability Status**:
+   - Products marked as `isNonPerishable == true` ignore shelf life and do not accept expiration dates.
+   - Perishable items (`isNonPerishable == false`) store `defaultShelfLifeDays` and `warningDaysBeforeExpiration`.
+2. **Instance Expiration Dates**:
+   - Instantiated entities of perishable species compute initial `expirationDate = createdAt + defaultShelfLifeDays`.
+   - Expiration dates can be adjusted per instance or per batch.
+3. **Automated Alert Triggers**:
+   - Entities whose `expirationDate` is past `DateTime.now()` generate `'expired'` alerts in `NotificationsTable`.
+   - Entities whose remaining shelf life is within `warningDaysBeforeExpiration` generate `'expiring_soon'` alerts in `NotificationsTable`.
+
+---
+
+## 5. Deletion Protection Rules (Species & Subspecies)
 
 1. **Active Instance Protection**:
    - Neither a species nor a subspecies can be deleted if active instances exist in `EntitiesTable`.
@@ -55,9 +70,9 @@ Different entity subgroup types have strict structural constraints enforced acro
 
 ---
 
-## 5. Integer Unit Formatting & Display Rules
+## 6. Integer Unit Formatting & Display Rules
 
-### 5.1 Whole Number Display Requirement
+### 6.1 Whole Number Display Requirement
 Integer magnitude values (such as count units `"unidad"`, `"unidades"`, `"piezas"`) **MUST ALWAYS** format without trailing decimals (`5`, `1`, `0`), never with `.0`.
 
 ```dart
@@ -69,7 +84,7 @@ static String formatMagnitude(double value, String? unitSymbol) {
 }
 ```
 
-### 5.2 Integer Counting Units Detection
+### 6.2 Integer Counting Units Detection
 ```dart
 static bool isIntegerUnit(String? unitSymbol) {
   if (unitSymbol == null || unitSymbol.isEmpty) return false;
@@ -79,7 +94,17 @@ static bool isIntegerUnit(String? unitSymbol) {
 
 ---
 
-## 6. SI Unit Prepopulated Property Name Suggestions
+## 7. Effective Entity Grouping Rules (`EffectiveEntityGroup`)
+
+To avoid UI clutter when multiple physical instances share identical traits:
+
+1. **Grouping Criteria**: Instances with the exact same `speciesId`, `subspeciesId`, and `effectiveLocationId` are aggregated into an `EffectiveEntityGroup`.
+2. **Display Tile (`EffectiveGroupTile`)**: Displays combined total count, species name, subspecies name, location breadcrumb, and primary magnitude.
+3. **Grouped Detail Inspector (`GroupedInstanceDetailScreen`)**: Tapping an effective group tile navigates to `/grouped-instance-detail`, allowing users to inspect individual physical instances or perform batch operations (moving, adjusting quantities, or deleting).
+
+---
+
+## 8. SI Unit Prepopulated Property Name Suggestions
 
 When adding a magnitude property row, `DomainRules.suggestPropertyNameForUnit` automatically suggests the property name based on the unit chosen:
 
@@ -103,7 +128,8 @@ When adding a magnitude property row, `DomainRules.suggestPropertyNameForUnit` a
 
 ---
 
-## 7. Unique Species Rules
+## 9. Unique Species Rules
 
 - **Evaluated Per Subspecies**: Subspecies allow multiple unique items under a unique species (e.g. if species `"Gato"` is unique, `"Pancho"` and `"Mino"` can coexist as distinct single instances).
 - **Batch Modifier Lock**: Quantity operation buttons (`- / +`, wheel pickers) are disabled for unique species instances.
+

@@ -69,15 +69,16 @@ Está **estrictamente prohibido** incrustar caracteres de formateo visual, viñe
 
 ## 3. Resumen del Trabajo Realizado
 
-### Archivos Refactorizados (46 archivos bajo `lib/`)
+### Cobertura Completa del Proyecto (Todas las capas bajo `lib/`)
 Se realizó la auditoría, extracción y refactorización completa en las siguientes áreas:
 
-1. **Capa Core**: [lib/main.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/main.dart), [app_strings.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/core/constants/app_strings.dart), `app_wheel_picker.dart`, `integer_wheel_picker.dart`.
-2. **Módulo de Catálogo**: `catalog_repository.dart`, `catalog_screen.dart`, `requirements_section_widget.dart`, `species_detail_screen.dart`, `species_detail_view.dart`, `species_form_modal.dart`, `species_tile.dart`, `subspecies_section_widget.dart`.
-3. **Módulo de Entidades e Instancias**: `entity_repository.dart`, `entity_template.dart`, `container_contents_view.dart`, `custom_attribute_editor_dialog.dart`, `custom_template_editor_sheet.dart`, `edit_entity_sheet.dart`, `effective_group_tile.dart`, `entities_tab.dart`, `entity_detail_screen.dart`, `entity_tile.dart`, `grouped_instance_detail_sheet.dart`, `instance_preview_card.dart`, `instantiate_species_sheet.dart`, `photo_viewer_dialog.dart`, `quantity_operation_helper.dart`, `register_object_modal.dart`.
-4. **Módulo de Ubicaciones y Lugares**: `location_repository.dart`, `location_tree_picker.dart`, `locations_graph_screen.dart`, `move_entity_sheet.dart`.
+1. **Capa Core**: [lib/main.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/main.dart), [app_strings.dart](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/core/constants/app_strings.dart), `app_wheel_picker.dart`, `integer_wheel_picker.dart`, `backup_settings_dialog.dart`, `database_backup_service.dart`.
+2. **Módulo de Catálogo y Taxonomía**: `catalog_repository.dart`, `catalog_screen.dart`, `requirements_section_widget.dart`, `species_detail_screen.dart`, `species_detail_view.dart`, `species_form_modal.dart`, `species_tile.dart`, `subspecies_section_widget.dart`, `add_edit_subspecies_modal.dart`, `auto_fill_scanner_widget.dart`, `web_image_picker_dialog.dart`, `taxonomy_operations_dialog.dart`, `product_lookup_service.dart`.
+3. **Módulo de Entidades e Instancias Agrupadas**: `entity_repository.dart`, `entity_template.dart`, `container_contents_view.dart`, `custom_attribute_editor_dialog.dart`, `custom_template_editor_sheet.dart`, `edit_entity_sheet.dart`, `effective_group_tile.dart`, `entities_tab.dart`, `entity_detail_screen.dart`, `entity_tile.dart`, `grouped_instance_detail_screen.dart`, `instance_preview_card.dart`, `instantiate_species_sheet.dart`, `photo_viewer_dialog.dart`, `quantity_operation_helper.dart`, `register_object_modal.dart`, `minecraft_tile_widget.dart`.
+4. **Módulo de Ubicaciones y Cortina Superior**: `location_repository.dart`, `location_tree_picker.dart`, `locations_graph_screen.dart`, `move_entity_sheet.dart`, `top_curtain_location_sheet.dart`.
 5. **Módulo de Relaciones y Grafo**: `create_relation_modal.dart`, `interactive_entity_graph_widget.dart`.
-6. **Módulo de Búsqueda e Historial**: `search_screen.dart`, `history_tab.dart`, `home_screen.dart`.
+6. **Módulo de Notificaciones y Alertas Persistentes**: `notification_repository.dart`, `notification_service.dart`, `notifications_screen.dart`.
+7. **Módulo de Búsqueda, Historial e Inventario**: `search_screen.dart`, `history_tab.dart`, `home_screen.dart`, `inventory_finder_screen.dart`.
 
 ### Verificación y Calidad de Código
 - **Analizador Estático (`flutter analyze`)**: 0 errores y 0 advertencias.
