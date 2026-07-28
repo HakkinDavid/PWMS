@@ -52,8 +52,30 @@ dev_dependencies:
   freezed: ^2.5.7
   json_serializable: ^6.9.0
   riverpod_generator: ^2.6.3
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/PWMS.png"
+  adaptive_icon_background: "assets/PWMS-background.png"
+  adaptive_icon_foreground: "assets/PWMS-foreground.png"
+  macos:
+    generate: true
+    image_path: "assets/PWMS.png"
+  windows:
+    generate: true
+    image_path: "assets/PWMS.png"
+  linux:
+    generate: true
+    image_path: "assets/PWMS.png"
+  web:
+    generate: true
+    image_path: "assets/PWMS.png"
+
