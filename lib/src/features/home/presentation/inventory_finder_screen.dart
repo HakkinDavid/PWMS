@@ -13,6 +13,8 @@ import '../../locations/domain/location_node.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../../locations/presentation/top_curtain_location_sheet.dart';
 
+import '../../entities/presentation/register_object_modal.dart';
+
 enum FinderViewMode { detailedList, standardGrid, minecraftGrid }
 
 class InventoryFinderScreen extends ConsumerStatefulWidget {
@@ -205,7 +207,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         padding: EdgeInsets.only(bottom: (_isSelectionMode && _selectedEntityIds.isNotEmpty) ? 60.0 : 0.0),
         child: FloatingActionButton(
           heroTag: null,
-          onPressed: () => context.push('/create-master'),
+          onPressed: () => RegisterObjectModal.show(context, initialLocationId: _selectedLocationId),
           tooltip: 'Crear o Instanciar',
           child: const Icon(Icons.add),
         ),
