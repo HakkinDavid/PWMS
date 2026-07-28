@@ -93,7 +93,14 @@ class InstancePreviewCard extends ConsumerWidget {
                             : Future.value(''),
                         builder: (context, photoSnapshot) {
                           if (photoSnapshot.hasData && photoSnapshot.data!.isNotEmpty && File(photoSnapshot.data!).existsSync()) {
-                            return Image.file(File(photoSnapshot.data!), fit: BoxFit.cover);
+                            return Image.file(
+                              File(photoSnapshot.data!),
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(
+                                color: theme.colorScheme.primary.withAlpha(20),
+                                child: Icon(Icons.category, color: theme.colorScheme.primary, size: 24),
+                              ),
+                            );
                           }
                           return Container(
                             color: theme.colorScheme.primary.withAlpha(20),

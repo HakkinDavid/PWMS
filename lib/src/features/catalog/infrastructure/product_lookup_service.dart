@@ -340,8 +340,11 @@ class ProductLookupService {
           for (final res in results) {
             final image = res['image']?.toString();
             if (image != null && image.startsWith('http') && !imageUrls.contains(image)) {
-              imageUrls.add(image);
-              if (imageUrls.length >= 12) break;
+              final lower = image.toLowerCase();
+              if (!lower.endsWith('.svg') && !lower.endsWith('.avif') && !lower.contains('data:image')) {
+                imageUrls.add(image);
+                if (imageUrls.length >= 12) break;
+              }
             }
           }
         }

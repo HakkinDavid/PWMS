@@ -6,16 +6,18 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
-import '../../entities/presentation/create_master_screen.dart';
+
 import '../domain/subspecies.dart';
 import '../infrastructure/product_lookup_service.dart';
 
 class AutoFillScannerWidget extends ConsumerStatefulWidget {
   final String? initialLocationId;
+  final Function(ProductLookupResult scannedResult)? onScannedResult;
 
   const AutoFillScannerWidget({
     super.key,
     this.initialLocationId,
+    this.onScannedResult,
   });
 
   @override
@@ -72,7 +74,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
       final entityRepo = ref.read(entityRepositoryProvider);
       final lookupService = ref.read(productLookupServiceProvider);
 
-      // 1. Buscar en subespecies existentes
+      // 1. Buscar en subespecies o especies existentes localmente
       final allSubspecies = await catalogRepo.getAllSubspecies();
       final existingSub = allSubspecies.where((s) => s.barcode != null && s.barcode!.trim() == rawBarcode.trim()).firstOrNull;
 
@@ -91,7 +93,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
         }
       }
 
-      // 2. Si no existe localmente, consultar APIs en línea y pasar a CreateMasterScreen para confirmación
+      // 2. Si no existe localmente, consultar APIs en línea y notificar al modal para confirmación
       final onlineResult = await lookupService.lookupByBarcode(rawBarcode);
       final resultToPass = onlineResult ?? ProductLookupResult(
         generalSpeciesName: '',
@@ -100,13 +102,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
       );
 
       if (mounted) {
-        Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CreateMasterScreen(scannedResult: resultToPass),
-          ),
-        );
+        widget.onScannedResult?.call(resultToPass);
       }
     } catch (e) {
       _showFeedback('Error en autollenado: $e', isError: true);

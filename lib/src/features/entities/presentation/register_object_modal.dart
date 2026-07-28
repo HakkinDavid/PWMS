@@ -14,17 +14,20 @@ enum RegisterModalMode { selectFromCatalog, createNewSpecies, addSubspeciesToExi
 class RegisterObjectModal extends ConsumerStatefulWidget {
   final String? initialLocationId;
   final bool startInCreateSpecies;
+  final dynamic scannedResult;
 
   const RegisterObjectModal({
     super.key,
     this.initialLocationId,
     this.startInCreateSpecies = false,
+    this.scannedResult,
   });
 
   static Future<void> show(
     BuildContext context, {
     String? initialLocationId,
     bool startInCreateSpecies = false,
+    dynamic scannedResult,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -34,6 +37,7 @@ class RegisterObjectModal extends ConsumerStatefulWidget {
       builder: (_) => RegisterObjectModal(
         initialLocationId: initialLocationId,
         startInCreateSpecies: startInCreateSpecies,
+        scannedResult: scannedResult,
       ),
     );
   }
@@ -45,11 +49,15 @@ class RegisterObjectModal extends ConsumerStatefulWidget {
 class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
   late RegisterModalMode _currentMode;
   String? _selectedSpeciesIdForSubspecies;
+  dynamic _activeScannedResult;
 
   @override
   void initState() {
     super.initState();
-    _currentMode = widget.startInCreateSpecies ? RegisterModalMode.createNewSpecies : RegisterModalMode.selectFromCatalog;
+    _activeScannedResult = widget.scannedResult;
+    _currentMode = (widget.startInCreateSpecies || _activeScannedResult != null)
+        ? RegisterModalMode.createNewSpecies
+        : RegisterModalMode.selectFromCatalog;
   }
 
   @override
@@ -146,6 +154,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         return _buildBrowseCatalogView(context, catalogState);
       case RegisterModalMode.createNewSpecies:
         return SpeciesFormModal(
+          scannedResult: _activeScannedResult,
           onSpeciesSaved: (createdSpecies) {
             Navigator.pop(context);
             InstantiateSpeciesSheet.show(
@@ -160,6 +169,12 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
       case RegisterModalMode.autoFillScanner:
         return AutoFillScannerWidget(
           initialLocationId: widget.initialLocationId,
+          onScannedResult: (result) {
+            setState(() {
+              _activeScannedResult = result;
+              _currentMode = RegisterModalMode.createNewSpecies;
+            });
+          },
         );
     }
   }

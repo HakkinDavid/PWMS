@@ -4,16 +4,16 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/web_image_picker_dialog.dart';
 import '../../entities/domain/effective_entity_group.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/effective_group_tile.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
-import '../../locations/domain/location_node.dart';
+import '../../entities/presentation/register_object_modal.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../../locations/presentation/top_curtain_location_sheet.dart';
-
-import '../../entities/presentation/register_object_modal.dart';
+import '../../relations/domain/entity_relation.dart';
 
 enum FinderViewMode { detailedList, standardGrid, minecraftGrid }
 
@@ -31,7 +31,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   String _selectedTypeFilter = AppStrings.all;
   FinderViewMode _viewMode = FinderViewMode.detailedList;
 
-  // Set of expanded container entity IDs (for inline expansion of contained tiles)
+  // Set of expanded container entity IDs for inline container stacking (Point 1)
   final Set<String> _expandedContainerEntityIds = {};
 
   final List<String> _filters = [
@@ -57,6 +57,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     ref.invalidate(catalogListProvider);
     ref.invalidate(locationNodeListProvider);
     ref.invalidate(subspeciesListProvider);
+    ref.invalidate(relationListProvider);
   }
 
   Future<void> _moveEntitiesToLocation(List<String> entityIds, String? targetLocId) async {
@@ -76,6 +77,34 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
     if (mounted) {
       AppToast.showSuccess(context, 'Movido(s) correctamente.');
+    }
+  }
+
+  Future<void> _moveEntitiesToContainer(List<String> entityIds, String targetContainerEntityId) async {
+    if (entityIds.isEmpty) return;
+
+    final relationRepo = ref.read(relationRepositoryProvider);
+
+    for (final sourceId in entityIds) {
+      if (sourceId == targetContainerEntityId) continue; // Prevent self-containment
+      await relationRepo.addRelation(EntityRelation(
+        id: '${sourceId}_$targetContainerEntityId',
+        sourceEntityId: sourceId,
+        targetEntityId: targetContainerEntityId,
+        relationType: 'GUARDADO_EN',
+        createdAt: DateTime.now(),
+      ));
+    }
+
+    _refreshAllState();
+
+    setState(() {
+      _selectedEntityIds.removeAll(entityIds);
+      if (_selectedEntityIds.isEmpty) _isSelectionMode = false;
+    });
+
+    if (mounted) {
+      AppToast.showSuccess(context, 'Elementos guardados en el contenedor.');
     }
   }
 
@@ -112,18 +141,30 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (mounted) AppToast.showSuccess(context, 'Elementos eliminados.');
   }
 
+  // Bulk Web Image Search for ALL selected items (Point 4)
   Future<void> _bulkWebImageSearch() async {
     if (_selectedEntityIds.isEmpty) return;
     final allEntities = ref.read(entityListProvider).asData?.value ?? [];
     final catalog = ref.read(catalogListProvider).asData?.value ?? [];
+    final allSubspecies = ref.read(subspeciesListProvider).asData?.value ?? [];
 
-    final firstEntity = allEntities.where((e) => _selectedEntityIds.contains(e.id)).firstOrNull;
-    if (firstEntity == null) return;
+    final selectedEntities = allEntities.where((e) => _selectedEntityIds.contains(e.id)).toList();
+    final selectedSpeciesIds = selectedEntities.map((e) => e.speciesId).toSet();
+    final selectedSubspeciesIds = selectedEntities.map((e) => e.subspeciesId).whereType<String>().toSet();
 
-    final species = catalog.where((c) => c.id == firstEntity.speciesId).firstOrNull;
-    if (species == null) return;
+    final targetSpeciesList = catalog.where((c) => selectedSpeciesIds.contains(c.id)).toList();
+    final targetSubspeciesList = allSubspecies.where((s) => selectedSubspeciesIds.contains(s.id)).toList();
 
-    await WebImagePickerDialog.show(context, searchQuery: species.name, targetSpecies: species);
+    if (targetSpeciesList.isEmpty && targetSubspeciesList.isEmpty) return;
+
+    final queryName = targetSpeciesList.isNotEmpty ? targetSpeciesList.first.name : 'Producto';
+
+    await WebImagePickerDialog.show(
+      context,
+      searchQuery: queryName,
+      bulkSpecies: targetSpeciesList.isNotEmpty ? targetSpeciesList : null,
+      bulkSubspecies: targetSubspeciesList.isNotEmpty ? targetSubspeciesList : null,
+    );
   }
 
   @override
@@ -132,13 +173,23 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final entitiesState = ref.watch(entityListProvider);
     final catalogState = ref.watch(catalogListProvider);
     final locationsState = ref.watch(locationNodeListProvider);
+    final relationsState = ref.watch(relationListProvider);
 
     final catalogItems = catalogState.asData?.value ?? [];
     final locationNodes = locationsState.asData?.value ?? [];
     final allEntities = entitiesState.asData?.value ?? [];
+    final relations = relationsState.asData?.value ?? [];
 
-    // Map catalog items by ID for fast lookup
+    // Map catalog items by ID
     final catalogMap = {for (var c in catalogItems) c.id: c};
+
+    // Build GUARDADO_EN relations container map (Point 1)
+    final guardadoEnRelations = relations.where((r) => r.relationType == 'GUARDADO_EN').toList();
+    final Set<String> containedEntityIds = guardadoEnRelations.map((r) => r.sourceEntityId).toSet();
+    final Map<String, List<String>> containerChildrenMap = {};
+    for (final r in guardadoEnRelations) {
+      containerChildrenMap.putIfAbsent(r.targetEntityId, () => []).add(r.sourceEntityId);
+    }
 
     // Filter entities by selected location
     var filteredEntities = allEntities.toList();
@@ -159,15 +210,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       }).toList();
     }
 
-    // Group into effective groups
-    final groups = EffectiveEntityGroup.groupEntities(
-      entities: filteredEntities,
-      effectiveLocationMap: {for (var e in filteredEntities) e.id: e.locationId},
+    // Separate Top-Level entities from Contained entities (Point 1)
+    final topLevelEntities = filteredEntities.where((e) => !containedEntityIds.contains(e.id)).toList();
+
+    // Group Top-Level entities into effective groups
+    final topGroups = EffectiveEntityGroup.groupEntities(
+      entities: topLevelEntities,
+      effectiveLocationMap: {for (var e in topLevelEntities) e.id: e.locationId},
     );
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inventario Finder'),
+        title: const Text('Inventario'),
         actions: [
           // 3-Way View Mode Switcher
           IconButton(
@@ -202,7 +256,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         ],
       ),
 
-      // Single Round FAB '+' (Rule 1.c - No text)
+      // Single Round FAB '+'
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: (_isSelectionMode && _selectedEntityIds.isNotEmpty) ? 60.0 : 0.0),
         child: FloatingActionButton(
@@ -215,19 +269,19 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
       body: Column(
         children: [
-          // Top Curtain Location Sheet & Breadcrumb Route Bar (Rule 1.b)
+          // Top Curtain Location Sheet & Breadcrumb Route Bar
           TopCurtainLocationSheet(
             allLocations: locationNodes,
             selectedLocationId: _selectedLocationId,
             onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
             onDropOnLocation: (payload, targetLocId) {
-              if (payload is EffectiveEntityGroup) {
+              if (payload is List<String>) {
+                _moveEntitiesToLocation(payload, targetLocId);
+              } else if (payload is EffectiveEntityGroup) {
                 final ids = payload.entities.map((e) => e.id).toList();
                 _moveEntitiesToLocation(ids, targetLocId);
               } else if (payload is WorldEntity) {
                 _moveEntitiesToLocation([payload.id], targetLocId);
-              } else if (payload is String) {
-                _moveEntitiesToLocation([payload], targetLocId);
               }
             },
           ),
@@ -254,9 +308,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           ),
           const Divider(height: 1),
 
-          // Main Inventory Grid / List View (Supporting 3 View Modes + Universal Drag & Drop)
+          // Main Inventory Content with Container Stacking & Drag Logic
           Expanded(
-            child: groups.isEmpty
+            child: topGroups.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -267,10 +321,10 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                       ],
                     ),
                   )
-                : _buildInventoryContent(groups, catalogMap),
+                : _buildInventoryContent(topGroups, catalogMap, containerChildrenMap, allEntities),
           ),
 
-          // Floating Bulk Actions Bar (Rule 1.d - Fixed overlap)
+          // Floating Bulk Actions Bar
           if (_isSelectionMode && _selectedEntityIds.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -296,7 +350,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.image_search),
-                        tooltip: 'Buscar Imagen Web',
+                        tooltip: 'Buscar Imagen Web (Asignación Masiva)',
                         onPressed: _bulkWebImageSearch,
                       ),
                       IconButton(
@@ -314,11 +368,17 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     );
   }
 
-  Widget _buildInventoryContent(List<EffectiveEntityGroup> groups, Map<String, dynamic> catalogMap) {
+  Widget _buildInventoryContent(
+    List<EffectiveEntityGroup> topGroups,
+    Map<String, CatalogItem> catalogMap,
+    Map<String, List<String>> containerChildrenMap,
+    List<WorldEntity> allEntities,
+  ) {
     final theme = Theme.of(context);
+    final allEntitiesMap = {for (var e in allEntities) e.id: e};
 
     if (_viewMode == FinderViewMode.minecraftGrid) {
-      // 3. Minecraft Grid Mode (Square tiles with quantity badge overlay & status)
+      // Minecraft Grid Mode
       return GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -327,13 +387,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           mainAxisSpacing: 12,
           childAspectRatio: 1.0,
         ),
-        itemCount: groups.length,
+        itemCount: topGroups.length,
         itemBuilder: (ctx, idx) {
-          final grp = groups[idx];
+          final grp = topGroups[idx];
           final primary = grp.primaryEntity;
           final species = catalogMap[grp.speciesId];
           final isSelected = _selectedEntityIds.contains(primary.id);
           final isExpired = grp.expiredCount(now: DateTime.now()) > 0;
+
+          // Drag payload in selection mode vs normal mode (Point 3)
+          final dragPayload = _isSelectionMode && _selectedEntityIds.isNotEmpty
+              ? _selectedEntityIds.toList()
+              : grp;
 
           return MinecraftTileWidget(
             group: grp,
@@ -361,35 +426,122 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           );
         },
       );
-    } else if (_viewMode == FinderViewMode.standardGrid) {
-      // 2. Standard Grid Mode
-      return GridView.builder(
-        padding: const EdgeInsets.all(12),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 1.2,
-        ),
-        itemCount: groups.length,
-        itemBuilder: (ctx, idx) {
-          final grp = groups[idx];
-          return EffectiveGroupTile(group: grp);
-        },
-      );
     }
 
-    // 1. Detailed List Mode
+    // Detailed List / Standard Grid Mode with Container Stacking (Point 1, 2, 3)
     return ListView.builder(
       padding: const EdgeInsets.all(12),
-      itemCount: groups.length,
+      itemCount: topGroups.length,
       itemBuilder: (ctx, idx) {
-        final grp = groups[idx];
-        final primaryId = grp.primaryEntity.id;
+        final grp = topGroups[idx];
+        final primary = grp.primaryEntity;
+        final primaryId = primary.id;
         final isSelected = _selectedEntityIds.contains(primaryId);
 
-        final tileWidget = EffectiveGroupTile(group: grp);
+        final containedIds = containerChildrenMap[primaryId] ?? [];
+        final isContainer = containedIds.isNotEmpty;
+        final isExpanded = _expandedContainerEntityIds.contains(primaryId);
 
+        Widget tileWidget = EffectiveGroupTile(group: grp);
+
+        // Container Expand Chevron overlay if entity is a container (Point 1)
+        if (isContainer) {
+          tileWidget = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  tileWidget,
+                  Positioned(
+                    right: 48,
+                    child: IconButton(
+                      icon: Icon(
+                        isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        color: theme.colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (isExpanded) {
+                            _expandedContainerEntityIds.remove(primaryId);
+                          } else {
+                            _expandedContainerEntityIds.add(primaryId);
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              // Indented Contained Stack Items (Point 1)
+              if (isExpanded)
+                Padding(
+                  padding: const EdgeInsets.only(left: 28.0, top: 4.0, bottom: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
+                    ),
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: containedIds.map((cId) {
+                        final childEntity = allEntitiesMap[cId];
+                        if (childEntity == null) return const SizedBox.shrink();
+                        final childSpecies = catalogMap[childEntity.speciesId];
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 4.0),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            leading: Icon(Icons.inventory_2, size: 16, color: theme.colorScheme.secondary),
+                            title: Text(childSpecies?.name ?? 'Elemento Contenido', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                            subtitle: const Text('Guardado en contenedor (Sin arrastre directo)', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                            onTap: () => context.push('/entity/${childEntity.id}'),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        }
+
+        // Drag Target for dropping items into Container Entity (Point 1)
+        final innerTileWidget = tileWidget;
+
+        tileWidget = DragTarget<Object>(
+          onWillAcceptWithDetails: (details) => details.data != grp && details.data != primaryId,
+          onAcceptWithDetails: (details) {
+            final data = details.data;
+            if (data is List<String>) {
+              _moveEntitiesToContainer(data, primaryId);
+            } else if (data is EffectiveEntityGroup) {
+              final ids = data.entities.map((e) => e.id).toList();
+              _moveEntitiesToContainer(ids, primaryId);
+            } else if (data is WorldEntity) {
+              _moveEntitiesToContainer([data.id], primaryId);
+            }
+          },
+          builder: (context, candidateData, rejectedData) {
+            final isHovered = candidateData.isNotEmpty;
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: isHovered ? theme.colorScheme.primaryContainer.withAlpha(100) : null,
+              ),
+              child: innerTileWidget,
+            );
+          },
+        );
+
+        // Selection Mode Checkbox / Draggable Logic (Point 2 & 3)
         if (!_isSelectionMode) {
           return LongPressDraggable<Object>(
             data: grp,
@@ -410,7 +562,10 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           );
         }
 
-        return Row(
+        // Selection Mode active: Draggable carries selected entity IDs (Point 3)
+        final isItemDraggableInSelection = isSelected;
+
+        Widget selectionContent = Row(
           children: [
             Checkbox(
               value: isSelected,
@@ -419,6 +574,28 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             Expanded(child: tileWidget),
           ],
         );
+
+        if (isItemDraggableInSelection && _selectedEntityIds.isNotEmpty) {
+          return LongPressDraggable<Object>(
+            data: _selectedEntityIds.toList(),
+            feedback: Material(
+              elevation: 6,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                color: theme.colorScheme.primaryContainer,
+                child: Text(
+                  'Arrastrando ${_selectedEntityIds.length} elementos seleccionados',
+                  style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
+                ),
+              ),
+            ),
+            childWhenDragging: Opacity(opacity: 0.4, child: selectionContent),
+            child: selectionContent,
+          );
+        }
+
+        return selectionContent;
       },
     );
   }

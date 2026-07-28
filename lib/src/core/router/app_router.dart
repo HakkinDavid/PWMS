@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/inventory_finder_screen.dart';
 import '../../features/home/presentation/main_shell_screen.dart';
-import '../../features/entities/presentation/create_master_screen.dart';
+
 import '../../features/entities/presentation/entity_detail_screen.dart';
 import '../../features/entities/presentation/grouped_instance_detail_screen.dart';
 import '../../features/search/presentation/search_screen.dart';
@@ -56,10 +56,7 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-    GoRoute(
-      path: '/create-master',
-      builder: (context, state) => const CreateMasterScreen(),
-    ),
+
     GoRoute(
       path: '/grouped-instance-detail',
       builder: (context, state) {

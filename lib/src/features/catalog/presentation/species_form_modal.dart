@@ -17,21 +17,25 @@ import '../domain/species_magnitude.dart';
 import '../domain/subspecies.dart';
 import '../domain/taxonomy/perishability_inference_engine.dart';
 import 'subspecies_section_widget.dart';
+import 'web_image_picker_dialog.dart';
 
 class SpeciesFormModal extends ConsumerStatefulWidget {
   final CatalogItem? initialSpecies; // Null for Create mode, Non-null for Edit mode
   final Function(CatalogItem savedSpecies)? onSpeciesSaved;
+  final dynamic scannedResult;
 
   const SpeciesFormModal({
     super.key,
     this.initialSpecies,
     this.onSpeciesSaved,
+    this.scannedResult,
   });
 
   static Future<CatalogItem?> show(
     BuildContext context, {
     CatalogItem? initialSpecies,
     Function(CatalogItem savedSpecies)? onSpeciesSaved,
+    dynamic scannedResult,
   }) {
     return showModalBottomSheet<CatalogItem?>(
       context: context,
@@ -41,6 +45,7 @@ class SpeciesFormModal extends ConsumerStatefulWidget {
       builder: (_) => SpeciesFormModal(
         initialSpecies: initialSpecies,
         onSpeciesSaved: onSpeciesSaved,
+        scannedResult: scannedResult,
       ),
     );
   }
@@ -89,6 +94,28 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _isUnique = s.isUnique;
       _isNonPerishable = s.isNonPerishable;
       _magnitudes.addAll(s.magnitudes);
+    } else if (widget.scannedResult != null) {
+      final res = widget.scannedResult;
+      final genName = res.generalSpeciesName?.toString() ?? '';
+      final subName = res.subspeciesName?.toString() ?? '';
+
+      _nameController.text = genName.isNotEmpty ? genName : (subName.isNotEmpty ? subName : 'Nuevo Objeto');
+      _descController.text = res.description?.toString() ?? '';
+      _selectedType = res.type?.toString() ?? AppStrings.typeObject;
+
+      if (subName.isNotEmpty && genName.isNotEmpty && subName != genName) {
+        _draftSubspecies.add(Subspecies(
+          id: const Uuid().v4(),
+          speciesId: '',
+          subspeciesName: subName,
+          brand: res.brand?.toString(),
+          barcode: res.barcode?.toString(),
+          photoPath: res.localPhotoPath?.toString(),
+          notes: res.description?.toString(),
+          createdAt: DateTime.now(),
+        ));
+      }
+      _applySubgroupConstraints(_selectedType);
     } else {
       _applySubgroupConstraints(_selectedType);
     }
@@ -283,9 +310,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     ),
                     child: newPickedImage != null
                         ? Image.file(File(newPickedImage!.path), fit: BoxFit.cover)
-                        : (photoPath != null && photoPath.isNotEmpty)
+                        : (photoPath != null && photoPath!.isNotEmpty)
                             ? FutureBuilder<String>(
-                                future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath),
+                                future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath!),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) return Image.file(File(snapshot.data!), fit: BoxFit.cover);
                                   return const Icon(Icons.add_a_photo, size: 24);
@@ -301,7 +328,23 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                               ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                TextButton.icon(
+                  onPressed: () async {
+                    final query = nameCtrl.text.trim().isNotEmpty
+                        ? nameCtrl.text.trim()
+                        : _nameController.text.trim();
+                    final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
+                    if (relPath != null && relPath.isNotEmpty) {
+                      setStateModal(() {
+                        photoPath = relPath;
+                        newPickedImage = null;
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.image_search, size: 16),
+                  label: const Text('Buscar foto en Web'),
+                ),
+                const SizedBox(height: 8),
                 TextField(
                   controller: nameCtrl,
                   decoration: const InputDecoration(labelText: AppStrings.nameOrVariantLabel, hintText: AppStrings.nameOrVariantHint),

@@ -69,6 +69,11 @@ class MinecraftTileWidget extends StatelessWidget {
                       width: 54,
                       height: 54,
                       fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Icon(
+                        icon,
+                        size: 40,
+                        color: isExpired ? Colors.redAccent : theme.colorScheme.primary,
+                      ),
                     ),
                   )
                 : Icon(

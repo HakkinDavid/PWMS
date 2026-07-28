@@ -55,7 +55,7 @@ class _TopCurtainLocationSheetState extends State<TopCurtainLocationSheet> with 
   }
 
   String _buildBreadcrumbPath() {
-    if (widget.selectedLocationId == null) return 'Inventario Principal (Todas las ubicaciones)';
+    if (widget.selectedLocationId == null) return 'Todo';
     final locMap = {for (var l in widget.allLocations) l.id: l};
 
     final path = <String>[];
@@ -194,7 +194,7 @@ class _TopCurtainLocationSheetState extends State<TopCurtainLocationSheet> with 
                           dense: true,
                           visualDensity: VisualDensity.compact,
                           leading: const Icon(Icons.all_inbox_outlined),
-                          title: const Text('Todas las ubicaciones', style: TextStyle(fontWeight: FontWeight.bold)),
+                          title: const Text('Todo', style: TextStyle(fontWeight: FontWeight.bold)),
                           selected: widget.selectedLocationId == null,
                           onTap: () {
                             widget.onLocationSelected(null);

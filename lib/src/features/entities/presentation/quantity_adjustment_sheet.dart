@@ -62,11 +62,50 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
         _currentPopulation--;
         _countController.text = _currentPopulation.toString();
       });
+    } else {
+      _confirmDeleteAll();
+    }
+  }
+
+  Future<void> _confirmDeleteAll() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Eliminar Grupo'),
+        content: const Text('¿Estás seguro de que deseas reducir la cantidad a 0 y eliminar todas las instancias de este grupo?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final repo = ref.read(entityRepositoryProvider);
+      final idsToRemove = widget.group.entities.map((e) => e.id).toList();
+      await repo.deleteEntitiesBatch(idsToRemove);
+
+      ref.invalidate(entityListProvider);
+      ref.invalidate(catalogListProvider);
+
+      if (mounted) {
+        Navigator.pop(context);
+        AppToast.showSuccess(context, 'Instancias eliminadas.');
+      }
     }
   }
 
   Future<void> _handleSave() async {
     final newCount = int.tryParse(_countController.text.trim()) ?? _currentPopulation;
+    if (newCount <= 0) {
+      await _confirmDeleteAll();
+      return;
+    }
+
     if (newCount == widget.group.population) {
       Navigator.pop(context);
       return;

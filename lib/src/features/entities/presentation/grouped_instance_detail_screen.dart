@@ -5,9 +5,10 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/effective_entity_group.dart';
 import 'instance_preview_card.dart';
-import 'quantity_operation_helper.dart';
 
-class GroupedInstanceDetailScreen extends ConsumerStatefulWidget {
+import 'quantity_adjustment_sheet.dart';
+
+class GroupedInstanceDetailScreen extends ConsumerWidget {
   final String speciesId;
   final String? effectiveLocationId;
 
@@ -18,24 +19,17 @@ class GroupedInstanceDetailScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<GroupedInstanceDetailScreen> createState() => _GroupedInstanceDetailScreenState();
-}
-
-class _GroupedInstanceDetailScreenState extends ConsumerState<GroupedInstanceDetailScreen> {
-  bool _isEditing = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
     final catalog = ref.watch(catalogListProvider).asData?.value ?? [];
-    final species = catalog.where((c) => c.id == widget.speciesId).firstOrNull;
+    final species = catalog.where((c) => c.id == speciesId).firstOrNull;
     final speciesName = species?.name ?? AppStrings.typeObject;
 
     // Build matching EffectiveEntityGroup
     final matchingEntities = allEntities.where((e) {
-      final locMatch = widget.effectiveLocationId == null ? (e.locationId == null) : (e.locationId == widget.effectiveLocationId);
-      return e.speciesId == widget.speciesId && locMatch;
+      final locMatch = effectiveLocationId == null ? (e.locationId == null) : (e.locationId == effectiveLocationId);
+      return e.speciesId == speciesId && locMatch;
     }).toList();
 
     if (matchingEntities.isEmpty) {
@@ -46,41 +40,60 @@ class _GroupedInstanceDetailScreenState extends ConsumerState<GroupedInstanceDet
     }
 
     final group = EffectiveEntityGroup(
-      key: '${widget.speciesId}_${widget.effectiveLocationId ?? "root"}',
-      speciesId: widget.speciesId,
-      effectiveLocationId: widget.effectiveLocationId,
+      key: '${speciesId}_${effectiveLocationId ?? "root"}',
+      speciesId: speciesId,
+      effectiveLocationId: effectiveLocationId,
       entities: matchingEntities,
     );
 
     final isHomogeneous = group.isHomogeneous;
+    final isUnique = species?.isUnique ?? false;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(speciesName),
         actions: [
-          IconButton(
-            icon: Icon(_isEditing ? Icons.check : Icons.edit_outlined),
-            tooltip: _isEditing ? 'Guardar Cambios' : 'Editar Grupo',
-            onPressed: () {
-              setState(() => _isEditing = !_isEditing);
-            },
-          ),
-          if (_isEditing && isHomogeneous && !(species?.isUnique ?? false))
-            IconButton(
-              icon: const Icon(Icons.add_circle_outline, color: Colors.green),
-              tooltip: 'Añadir Instancia Duplicada',
-              onPressed: () => QuantityOperationHelper.addOne(context, ref, group),
+          // Insignia circular de población (Regla 7)
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: GestureDetector(
+              onTap: () {
+                if (isHomogeneous && !isUnique) {
+                  QuantityAdjustmentSheet.show(context, group);
+                }
+              },
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: (isHomogeneous && !isUnique)
+                      ? theme.colorScheme.primaryContainer
+                      : theme.colorScheme.surfaceContainerHighest,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: (isHomogeneous && !isUnique)
+                        ? theme.colorScheme.primary
+                        : theme.dividerColor,
+                    width: 1.5,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    '${group.population}',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: (isHomogeneous && !isUnique)
+                          ? theme.colorScheme.onPrimaryContainer
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
             ),
+          ),
         ],
       ),
-      floatingActionButton: (_isEditing && isHomogeneous && !(species?.isUnique ?? false))
-          ? FloatingActionButton.extended(
-              heroTag: null,
-              onPressed: () => QuantityOperationHelper.addOne(context, ref, group),
-              icon: const Icon(Icons.add),
-              label: const Text('Añadir Duplicado'),
-            )
-          : null,
       body: Column(
         children: [
           // Banner Informativo
@@ -127,6 +140,24 @@ class _GroupedInstanceDetailScreenState extends ConsumerState<GroupedInstanceDet
                 return Dismissible(
                   key: Key(entity.id),
                   direction: DismissDirection.endToStart,
+                  confirmDismiss: (direction) async {
+                    // Confirmación obligatoria antes de eliminar (Regla 8)
+                    return await showDialog<bool>(
+                      context: context,
+                      builder: (c) => AlertDialog(
+                        title: const Text('Eliminar Instancia'),
+                        content: const Text('¿Estás seguro de que deseas eliminar esta instancia?'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
+                            onPressed: () => Navigator.pop(c, true),
+                            child: const Text('Eliminar'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                   background: Container(
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 20),
@@ -139,7 +170,9 @@ class _GroupedInstanceDetailScreenState extends ConsumerState<GroupedInstanceDet
                   },
                   child: InstancePreviewCard(
                     entity: entity,
-                    onTap: () => context.push('/entity/${entity.id}'),
+                    onTap: () {
+                      context.push('/entity/${entity.id}');
+                    },
                   ),
                 );
               },

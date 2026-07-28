@@ -10,26 +10,34 @@ class WebImagePickerDialog extends ConsumerStatefulWidget {
   final String searchQuery;
   final CatalogItem? targetSpecies;
   final Subspecies? targetSubspecies;
+  final List<CatalogItem>? bulkSpecies;
+  final List<Subspecies>? bulkSubspecies;
 
   const WebImagePickerDialog({
     super.key,
     required this.searchQuery,
     this.targetSpecies,
     this.targetSubspecies,
-  }) : assert(targetSpecies != null || targetSubspecies != null, 'Debe proveer especie o subespecie');
+    this.bulkSpecies,
+    this.bulkSubspecies,
+  });
 
-  static Future<void> show(
+  static Future<String?> show(
     BuildContext context, {
     required String searchQuery,
     CatalogItem? targetSpecies,
     Subspecies? targetSubspecies,
+    List<CatalogItem>? bulkSpecies,
+    List<Subspecies>? bulkSubspecies,
   }) async {
-    await showDialog(
+    return await showDialog<String>(
       context: context,
       builder: (_) => WebImagePickerDialog(
         searchQuery: searchQuery,
         targetSpecies: targetSpecies,
         targetSubspecies: targetSubspecies,
+        bulkSpecies: bulkSpecies,
+        bulkSubspecies: bulkSubspecies,
       ),
     );
   }
@@ -92,18 +100,41 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
 
       if (localPath != null && mounted) {
         final relPath = await fileStorage.saveFile(localPath);
+        final catalogRepo = ref.read(catalogRepositoryProvider);
 
+        // Single subspecies
         if (widget.targetSubspecies != null) {
           final updatedSub = widget.targetSubspecies!.copyWith(photoPath: relPath);
-          await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
-        } else if (widget.targetSpecies != null) {
+          await catalogRepo.saveSubspecies(updatedSub);
+        }
+
+        // Single species
+        if (widget.targetSpecies != null) {
           final updatedSpecies = widget.targetSpecies!.copyWith(mainPhotoPath: relPath);
-          await ref.read(catalogRepositoryProvider).saveCatalogItem(updatedSpecies);
+          await catalogRepo.saveCatalogItem(updatedSpecies);
+        }
+
+        // Bulk species (Point 4)
+        if (widget.bulkSpecies != null) {
+          for (final sp in widget.bulkSpecies!) {
+            final updatedSp = sp.copyWith(mainPhotoPath: relPath);
+            await catalogRepo.saveCatalogItem(updatedSp);
+          }
+        }
+
+        // Bulk subspecies (Point 4)
+        if (widget.bulkSubspecies != null) {
+          for (final sub in widget.bulkSubspecies!) {
+            final updatedSub = sub.copyWith(photoPath: relPath);
+            await catalogRepo.saveSubspecies(updatedSub);
+          }
         }
 
         ref.read(catalogListProvider.notifier).loadCatalog();
+        ref.invalidate(subspeciesListProvider);
+
         if (mounted) {
-          Navigator.pop(context);
+          Navigator.pop(context, relPath);
           AppToast.showSuccess(context, 'Imagen de Internet asignada correctamente.');
         }
       }
@@ -182,7 +213,7 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
                                     url,
                                     fit: BoxFit.cover,
                                     errorBuilder: (_, __, ___) => const Center(
-                                      child: Icon(Icons.broken_image, size: 24, color: Colors.grey),
+                                      child: Icon(Icons.broken_image_outlined, size: 24, color: Colors.grey),
                                     ),
                                   ),
                                 ),
@@ -201,7 +232,9 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
         ),
         ElevatedButton(
           onPressed: _selectedUrl != null && !_isSaving ? _assignSelectedImage : null,
-          child: _isSaving ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Asignar Foto'),
+          child: _isSaving
+              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Text('Asignar Foto'),
         ),
       ],
     );

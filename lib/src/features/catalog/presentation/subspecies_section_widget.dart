@@ -84,7 +84,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                     ),
                     child: newPickedImage != null
                         ? Image.file(File(newPickedImage!.path), fit: BoxFit.cover)
-                        : (photoPath != null && photoPath.isNotEmpty)
+                        : (photoPath != null && photoPath!.isNotEmpty)
                             ? FutureBuilder<String>(
                                 future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath!),
                                 builder: (context, snapshot) {
@@ -104,7 +104,23 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                               ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                TextButton.icon(
+                  onPressed: () async {
+                    final query = nameController.text.trim().isNotEmpty
+                        ? nameController.text.trim()
+                        : (species?.name ?? '');
+                    final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
+                    if (relPath != null && relPath.isNotEmpty) {
+                      setStateModal(() {
+                        photoPath = relPath;
+                        newPickedImage = null;
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.image_search, size: 16),
+                  label: const Text('Buscar foto en Web'),
+                ),
+                const SizedBox(height: 8),
                 TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
