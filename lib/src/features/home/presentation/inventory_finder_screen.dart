@@ -438,7 +438,10 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         final primaryId = primary.id;
         final isSelected = _selectedEntityIds.contains(primaryId);
 
-        final containedIds = containerChildrenMap[primaryId] ?? [];
+        final containedIds = grp.entities
+            .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+            .toSet()
+            .toList();
         final isContainer = containedIds.isNotEmpty;
         final isExpanded = _expandedContainerEntityIds.contains(primaryId);
 
@@ -446,44 +449,39 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           group: grp,
           onTap: isContainer
               ? () {
-                  if (isExpanded) {
-                    // Second tap when expanded -> navigate to detail
-                    if (grp.population == 1) {
-                      context.push('/entity/$primaryId');
+                  setState(() {
+                    if (isExpanded) {
+                      _expandedContainerEntityIds.remove(primaryId);
                     } else {
-                      context.push('/grouped-instance-detail?speciesId=${grp.speciesId}&locId=${grp.effectiveLocationId ?? ""}');
+                      _expandedContainerEntityIds.add(primaryId);
                     }
-                  } else {
-                    // First tap when collapsed -> expand
-                    setState(() => _expandedContainerEntityIds.add(primaryId));
-                  }
+                  });
                 }
               : null,
         );
 
-        // Container Stack Items (Point 1: First tap expands, second tap opens detail, recursive subtree)
-        if (isContainer) {
+        // Container Stack Items (Point 1: First tap expands/collapses, recursive subtree)
+        if (isContainer && isExpanded) {
           tileWidget = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               tileWidget,
-              if (isExpanded)
-                Padding(
-                  padding: const EdgeInsets.only(left: 28.0, top: 4.0, bottom: 8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
-                    ),
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: _buildContainerSubtree(
-                      parentEntityId: primaryId,
-                      containerChildrenMap: containerChildrenMap,
-                      allEntitiesMap: allEntitiesMap,
-                      theme: theme,
-                      visited: {primaryId},
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(left: 28.0, top: 4.0, bottom: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
+                  ),
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: _buildContainerSubtree(
+                    parentGroup: grp,
+                    containerChildrenMap: containerChildrenMap,
+                    allEntitiesMap: allEntitiesMap,
+                    theme: theme,
+                    visited: {for (var e in grp.entities) e.id},
                   ),
                 ),
+              ),
             ],
           );
         }
@@ -576,16 +574,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   }
 
   Widget _buildContainerSubtree({
-    required String parentEntityId,
+    required EffectiveEntityGroup parentGroup,
     required Map<String, List<String>> containerChildrenMap,
     required Map<String, WorldEntity> allEntitiesMap,
     required ThemeData theme,
     required Set<String> visited,
   }) {
-    if (visited.contains(parentEntityId)) return const SizedBox.shrink();
-    visited.add(parentEntityId);
+    final containedIds = parentGroup.entities
+        .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+        .where((id) => !visited.contains(id))
+        .toSet()
+        .toList();
 
-    final containedIds = containerChildrenMap[parentEntityId] ?? [];
     if (containedIds.isEmpty) return const SizedBox.shrink();
 
     final containedEntitiesList = containedIds
@@ -593,58 +593,66 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         .whereType<WorldEntity>()
         .toList();
 
+    if (containedEntitiesList.isEmpty) return const SizedBox.shrink();
+
+    for (final e in containedEntitiesList) {
+      visited.add(e.id);
+    }
+
     final containedGroups = EffectiveEntityGroup.groupEntities(
       entities: containedEntitiesList,
-      effectiveLocationMap: {for (var e in containedEntitiesList) e.id: e.locationId},
+      effectiveLocationMap: {for (var e in containedEntitiesList) e.id: parentGroup.effectiveLocationId},
     );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: containedGroups.map((cGrp) {
         final cPrimaryId = cGrp.primaryEntity.id;
-        final cChildContainedIds = containerChildrenMap[cPrimaryId] ?? [];
-        final cIsContainer = cChildContainedIds.isNotEmpty;
+        final cContainedIds = cGrp.entities
+            .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+            .where((id) => !visited.contains(id))
+            .toSet()
+            .toList();
+
+        final cIsContainer = cContainedIds.isNotEmpty;
         final cIsExpanded = _expandedContainerEntityIds.contains(cPrimaryId);
 
         Widget cTile = EffectiveGroupTile(
           group: cGrp,
           onTap: cIsContainer
               ? () {
-                  if (cIsExpanded) {
-                    if (cGrp.population == 1) {
-                      context.push('/entity/$cPrimaryId');
+                  setState(() {
+                    if (cIsExpanded) {
+                      _expandedContainerEntityIds.remove(cPrimaryId);
                     } else {
-                      context.push('/grouped-instance-detail?speciesId=${cGrp.speciesId}&locId=${cGrp.effectiveLocationId ?? ""}');
+                      _expandedContainerEntityIds.add(cPrimaryId);
                     }
-                  } else {
-                    setState(() => _expandedContainerEntityIds.add(cPrimaryId));
-                  }
+                  });
                 }
               : null,
         );
 
-        if (cIsContainer) {
+        if (cIsContainer && cIsExpanded) {
           cTile = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               cTile,
-              if (cIsExpanded)
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0, top: 4.0, bottom: 6.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
-                    ),
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: _buildContainerSubtree(
-                      parentEntityId: cPrimaryId,
-                      containerChildrenMap: containerChildrenMap,
-                      allEntitiesMap: allEntitiesMap,
-                      theme: theme,
-                      visited: Set.from(visited),
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, top: 4.0, bottom: 6.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
+                  ),
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: _buildContainerSubtree(
+                    parentGroup: cGrp,
+                    containerChildrenMap: containerChildrenMap,
+                    allEntitiesMap: allEntitiesMap,
+                    theme: theme,
+                    visited: Set.from(visited),
                   ),
                 ),
+              ),
             ],
           );
         }
