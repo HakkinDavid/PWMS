@@ -218,7 +218,7 @@ class CatalogRepository {
     });
   }
 
-  /// Separar Subespecie de su especie original a una nueva especie (Requisito 2b)
+  /// Separar Subespecie de su especie original a una nueva especie (Requisitos 2b, 6a, 6b)
   Future<CatalogItem> separateSubspecies(String subspeciesId, String newSpeciesName) async {
     final sub = await getSubspeciesById(subspeciesId);
     if (sub == null) throw Exception('Subespecie no encontrada');
@@ -234,6 +234,12 @@ class CatalogRepository {
     );
 
     await _db.transaction(() async {
+      // 6.a: Si la especie de origen tiene la misma foto que la subespecie, limpiar foto de origen
+      if (parentSpecies.mainPhotoPath != null && parentSpecies.mainPhotoPath == sub.photoPath) {
+        await (_db.update(_db.catalogTable)..where((t) => t.id.equals(parentSpecies.id)))
+            .write(const CatalogTableCompanion(mainPhotoPath: Value(null)));
+      }
+
       // Mover la subespecie a la nueva especie
       await (_db.update(_db.subspeciesTable)..where((t) => t.id.equals(subspeciesId)))
           .write(SubspeciesTableCompanion(speciesId: Value(newSpecies.id)));
@@ -241,16 +247,25 @@ class CatalogRepository {
       // Mover las entidades correspondientes a la nueva especie
       await (_db.update(_db.entitiesTable)..where((t) => t.subspeciesId.equals(subspeciesId)))
           .write(EntitiesTableCompanion(speciesId: Value(newSpecies.id)));
+
+      // 6.b: Si la especie de origen quedó sin subespecies, eliminarla
+      final remainingSubs = await (_db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(parentSpecies.id))).get();
+      if (remainingSubs.isEmpty) {
+        await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(parentSpecies.id) | t.requiredSpeciesId.equals(parentSpecies.id))).go();
+        await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(parentSpecies.id))).go();
+        await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(parentSpecies.id))).go();
+      }
     });
 
     return newSpecies;
   }
 
-  /// Mover Subespecie a otra especie existente (Requisito 2c)
+  /// Mover Subespecie a otra especie existente (Requisitos 2c y 7)
   Future<void> moveSubspecies(String subspeciesId, String targetSpeciesId) async {
     final sub = await getSubspeciesById(subspeciesId);
     if (sub == null) throw Exception('Subespecie no encontrada');
-    if (sub.speciesId == targetSpeciesId) return;
+    final oldSpeciesId = sub.speciesId;
+    if (oldSpeciesId == targetSpeciesId) return;
 
     await _db.transaction(() async {
       // Reasignar subespecie
@@ -260,6 +275,14 @@ class CatalogRepository {
       // Reasignar entidades que pertenecen a esta subespecie
       await (_db.update(_db.entitiesTable)..where((t) => t.subspeciesId.equals(subspeciesId)))
           .write(EntitiesTableCompanion(speciesId: Value(targetSpeciesId)));
+
+      // 7: Si la especie de origen quedó sin subespecies, eliminarla
+      final remainingSubs = await (_db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(oldSpeciesId))).get();
+      if (remainingSubs.isEmpty) {
+        await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(oldSpeciesId) | t.requiredSpeciesId.equals(oldSpeciesId))).go();
+        await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(oldSpeciesId))).go();
+        await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(oldSpeciesId))).go();
+      }
     });
   }
 

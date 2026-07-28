@@ -129,7 +129,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                   setState(() => _isEditing = !_isEditing);
                 },
               ),
-              if (_isEditing)
+              if (_isEditing) ...[
                 IconButton(
                   icon: const Icon(Icons.settings_outlined),
                   tooltip: AppStrings.editSpeciesTitle,
@@ -137,46 +137,47 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                     SpeciesFormModal.show(context, initialSpecies: species);
                   },
                 ),
-              IconButton(
-                icon: Icon(
-                  Icons.delete_outline,
-                  color: hasExistingInstance ? Colors.grey.shade400 : Colors.redAccent,
-                ),
-                tooltip: hasExistingInstance
-                    ? 'No se puede eliminar una especie con instancias registradas.'
-                    : AppStrings.delete,
-                onPressed: hasExistingInstance
-                    ? () {
-                        AppToast.showRestriction(context, 'No se puede eliminar una especie con instancias registradas.');
-                      }
-                    : () async {
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (c) => AlertDialog(
-                            title: const Text(AppStrings.deleteConfirmationTitle),
-                            content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
-                            actions: [
-                              TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
-                              TextButton(
-                                onPressed: () => Navigator.pop(c, true),
-                                child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-                              ),
-                            ],
-                          ),
-                        );
+                IconButton(
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: hasExistingInstance ? Colors.grey.shade400 : Colors.redAccent,
+                  ),
+                  tooltip: hasExistingInstance
+                      ? 'No se puede eliminar una especie con instancias registradas.'
+                      : AppStrings.delete,
+                  onPressed: hasExistingInstance
+                      ? () {
+                          AppToast.showRestriction(context, 'No se puede eliminar una especie con instancias registradas.');
+                        }
+                      : () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (c) => AlertDialog(
+                              title: const Text(AppStrings.deleteConfirmationTitle),
+                              content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(c, true),
+                                  child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                                ),
+                              ],
+                            ),
+                          );
 
-                        if (confirm == true) {
-                          try {
-                            await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
-                            if (context.mounted) context.pop();
-                          } catch (e) {
-                            if (context.mounted) {
-                              AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                          if (confirm == true) {
+                            try {
+                              await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
+                              if (context.mounted) context.pop();
+                            } catch (e) {
+                              if (context.mounted) {
+                                AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                              }
                             }
                           }
-                        }
-                      },
-              ),
+                        },
+                ),
+              ],
             ],
           ),
 

@@ -226,12 +226,30 @@ class EntityRepository implements IEntityRepository {
 
     final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
 
+    // Si no se proveyeron magnitudes explícitas, copiar de una instancia existente de la misma subespecie (si existe)
+    Map<String, double> effectiveMagnitudeValues = Map.from(customMagnitudeValues ?? {});
+    if (customMagnitudeValues == null && resolvedSubspeciesId != null && resolvedSubspeciesId.isNotEmpty) {
+      final subId = resolvedSubspeciesId;
+      final existingEntities = await (_db.select(_db.entitiesTable)
+        ..where((t) => t.speciesId.equals(speciesId) & t.subspeciesId.equals(subId))
+        ..limit(1)).get();
+
+      if (existingEntities.isNotEmpty) {
+        final existingMags = await (_db.select(_db.instanceMagnitudesTable)
+          ..where((t) => t.instanceId.equals(existingEntities.first.id))).get();
+
+        for (final m in existingMags) {
+          effectiveMagnitudeValues[m.propertyName] = m.magnitudeValue;
+        }
+      }
+    }
+
     WorldEntity? primaryEntity;
 
     for (int i = 0; i < count; i++) {
       final newId = const Uuid().v4();
       final initialMags = speciesMagRows.map((sm) {
-        final val = customMagnitudeValues?[sm.propertyName] ?? 1.0;
+        final val = effectiveMagnitudeValues[sm.propertyName] ?? 1.0;
         return InstanceMagnitude(
           id: const Uuid().v4(),
           instanceId: newId,

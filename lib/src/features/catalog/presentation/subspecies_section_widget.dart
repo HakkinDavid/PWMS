@@ -275,42 +275,44 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                           style: const TextStyle(fontSize: 11),
                         )
                       : null,
-                  trailing: PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert, size: 18),
-                    onSelected: (val) async {
-                      if (val == 'edit') {
-                        _addOrEditSubspeciesModal(initial: sub);
-                      } else if (val == 'web_image') {
-                        await WebImagePickerDialog.show(
-                          context,
-                          searchQuery: '${sub.subspeciesName} ${sub.brand ?? ""}',
-                          targetSubspecies: sub,
-                        );
-                        _loadSubspecies();
-                      } else if (val == 'separate') {
-                        await TaxonomyOperationsDialog.showSeparateSubspeciesDialog(context, ref, sub);
-                        _loadSubspecies();
-                      } else if (val == 'move') {
-                        await TaxonomyOperationsDialog.showMoveSubspeciesDialog(context, ref, sub);
-                        _loadSubspecies();
-                      } else if (val == 'delete' && canDelete) {
-                        try {
-                          await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
-                          _loadSubspecies();
-                        } catch (e) {
-                          if (context.mounted) AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
-                        }
-                      }
-                    },
-                    itemBuilder: (ctx) => [
-                      const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Text('Editar')])),
-                      const PopupMenuItem(value: 'web_image', child: Row(children: [Icon(Icons.image_search, size: 16), SizedBox(width: 8), Text('Buscar foto en Web')])),
-                      const PopupMenuItem(value: 'separate', child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Text('Separar en nueva Especie')])),
-                      const PopupMenuItem(value: 'move', child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Text('Mover a otra Especie')])),
-                      if (canDelete)
-                        const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Text('Eliminar', style: TextStyle(color: Colors.redAccent))])),
-                    ],
-                  ),
+                  trailing: widget.isEditing
+                      ? PopupMenuButton<String>(
+                          icon: const Icon(Icons.more_vert, size: 18),
+                          onSelected: (val) async {
+                            if (val == 'edit') {
+                              _addOrEditSubspeciesModal(initial: sub);
+                            } else if (val == 'web_image') {
+                              await WebImagePickerDialog.show(
+                                context,
+                                searchQuery: '${sub.subspeciesName} ${sub.brand ?? ""}',
+                                targetSubspecies: sub,
+                              );
+                              _loadSubspecies();
+                            } else if (val == 'separate') {
+                              await TaxonomyOperationsDialog.showSeparateSubspeciesDialog(context, ref, sub);
+                              _loadSubspecies();
+                            } else if (val == 'move') {
+                              await TaxonomyOperationsDialog.showMoveSubspeciesDialog(context, ref, sub);
+                              _loadSubspecies();
+                            } else if (val == 'delete' && canDelete) {
+                              try {
+                                await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
+                                _loadSubspecies();
+                              } catch (e) {
+                                if (context.mounted) AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                              }
+                            }
+                          },
+                          itemBuilder: (ctx) => [
+                            const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Text('Editar')])),
+                            const PopupMenuItem(value: 'web_image', child: Row(children: [Icon(Icons.image_search, size: 16), SizedBox(width: 8), Text('Buscar foto en Web')])),
+                            const PopupMenuItem(value: 'separate', child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Text('Separar en nueva Especie')])),
+                            const PopupMenuItem(value: 'move', child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Text('Mover a otra Especie')])),
+                            if (canDelete)
+                              const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Text('Eliminar', style: TextStyle(color: Colors.redAccent))])),
+                          ],
+                        )
+                      : null,
                 ),
               );
             },

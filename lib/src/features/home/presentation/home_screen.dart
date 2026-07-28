@@ -8,6 +8,7 @@ import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/infrastructure/location_repository.dart';
+import '../../../core/widgets/backup_settings_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -121,6 +122,11 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     Row(
                       children: [
+                        IconButton(
+                          icon: const Icon(Icons.backup_outlined, size: 28),
+                          tooltip: 'Respaldos de Base de Datos',
+                          onPressed: () => BackupSettingsDialog.show(context),
+                        ),
                         IconButton(
                           icon: const Icon(Icons.search, size: 28),
                           onPressed: () => context.push('/search'),

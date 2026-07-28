@@ -308,21 +308,30 @@ class ProductLookupService {
     return null;
   }
 
-  /// Buscar múltiples opciones de imágenes en Internet para un término de búsqueda (Requisito 3)
+  /// Buscar múltiples opciones de imágenes en Internet para un término de búsqueda (Requisito 3 y 5)
   Future<List<String>> searchWebImages(String query) async {
     final cleanQuery = query.trim();
     if (cleanQuery.isEmpty) return [];
     final List<String> imageUrls = [];
+    final headers = {
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    };
 
+    // 1. DuckDuckGo Image Search con token vqd
     try {
-      final encoded = Uri.encodeComponent('$cleanQuery foto producto');
-      final uri = Uri.parse('https://duckduckgo.com/i.js?q=$encoded');
-      final response = await _client.get(
-        uri,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        },
-      ).timeout(const Duration(seconds: 8));
+      String vqd = '';
+      final initRes = await _client.get(
+        Uri.parse('https://duckduckgo.com/?q=${Uri.encodeComponent(cleanQuery)}'),
+        headers: headers,
+      ).timeout(const Duration(seconds: 4));
+
+      final vqdMatch = RegExp(r'vqd="([^"]+)"').firstMatch(initRes.body) ?? RegExp(r"vqd=([^&'\s]+)").firstMatch(initRes.body);
+      if (vqdMatch != null) {
+        vqd = vqdMatch.group(1) ?? '';
+      }
+
+      final uri = Uri.parse('https://duckduckgo.com/i.js?q=${Uri.encodeComponent(cleanQuery)}&o=json&vqd=$vqd');
+      final response = await _client.get(uri, headers: headers).timeout(const Duration(seconds: 6));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -338,6 +347,28 @@ class ProductLookupService {
         }
       }
     } catch (_) {}
+
+    // 2. Fallback Wikimedia Commons API si se obtuvieron menos de 4 imágenes
+    if (imageUrls.length < 4) {
+      try {
+        final wikiUri = Uri.parse(
+          'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&piprop=original&generator=search&gsrsearch=${Uri.encodeComponent(cleanQuery)}&gsrlimit=8',
+        );
+        final res = await _client.get(wikiUri, headers: headers).timeout(const Duration(seconds: 4));
+        if (res.statusCode == 200) {
+          final data = jsonDecode(res.body);
+          final pages = data['query']?['pages'] as Map<String, dynamic>?;
+          if (pages != null) {
+            for (final page in pages.values) {
+              final original = page['original']?['source']?.toString();
+              if (original != null && original.startsWith('http') && !imageUrls.contains(original)) {
+                imageUrls.add(original);
+              }
+            }
+          }
+        }
+      } catch (_) {}
+    }
 
     return imageUrls;
   }

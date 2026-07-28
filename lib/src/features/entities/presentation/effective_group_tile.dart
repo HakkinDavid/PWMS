@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/effective_entity_group.dart';
 import 'instance_preview_card.dart';
-import 'quantity_operation_helper.dart';
+import 'quantity_adjustment_sheet.dart';
 
 class EffectiveGroupTile extends ConsumerWidget {
   final EffectiveEntityGroup group;
@@ -32,63 +32,44 @@ class EffectiveGroupTile extends ConsumerWidget {
           context.push('/grouped-instance-detail?speciesId=${group.speciesId}&locId=${group.effectiveLocationId ?? ""}');
         }
       },
-      trailing: (isUnique || !isHomogeneous)
-          ? Icon(Icons.chevron_right, color: theme.colorScheme.secondary)
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: () => QuantityOperationHelper.removeOne(context, ref, group),
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withAlpha(20),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.remove, size: 18, color: Colors.redAccent),
-                  ),
-                ),
-                InkWell(
-                  onTap: () => QuantityOperationHelper.showDirectNumericInputDialog(context, ref, group: group),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: theme.colorScheme.primary.withAlpha(80)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '${group.population}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.onPrimaryContainer,
-                          ),
-                        ),
-                        const SizedBox(width: 2),
-                        Icon(Icons.edit_note, size: 14, color: theme.colorScheme.primary),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => QuantityOperationHelper.addOne(context, ref, group),
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withAlpha(20),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.add, size: 18, color: Colors.green),
-                  ),
-                ),
-              ],
+      trailing: GestureDetector(
+        onTap: () {
+          // CORRECCIÓN 1: Solo grupos homogéneos y no únicos pueden abrir QuantityAdjustmentSheet
+          if (isHomogeneous && !isUnique) {
+            QuantityAdjustmentSheet.show(context, group);
+          } else {
+            context.push('/grouped-instance-detail?speciesId=${group.speciesId}&locId=${group.effectiveLocationId ?? ""}');
+          }
+        },
+        child: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: (isHomogeneous && !isUnique)
+                ? theme.colorScheme.primaryContainer
+                : theme.colorScheme.surfaceContainerHighest,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: (isHomogeneous && !isUnique)
+                  ? theme.colorScheme.primary
+                  : theme.dividerColor,
+              width: 1.5,
             ),
+          ),
+          child: Center(
+            child: Text(
+              '${group.population}',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: (isHomogeneous && !isUnique)
+                    ? theme.colorScheme.onPrimaryContainer
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -7,7 +7,7 @@ import '../domain/effective_entity_group.dart';
 import 'instance_preview_card.dart';
 import 'quantity_operation_helper.dart';
 
-class GroupedInstanceDetailScreen extends ConsumerWidget {
+class GroupedInstanceDetailScreen extends ConsumerStatefulWidget {
   final String speciesId;
   final String? effectiveLocationId;
 
@@ -18,17 +18,24 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GroupedInstanceDetailScreen> createState() => _GroupedInstanceDetailScreenState();
+}
+
+class _GroupedInstanceDetailScreenState extends ConsumerState<GroupedInstanceDetailScreen> {
+  bool _isEditing = false;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
     final catalog = ref.watch(catalogListProvider).asData?.value ?? [];
-    final species = catalog.where((c) => c.id == speciesId).firstOrNull;
+    final species = catalog.where((c) => c.id == widget.speciesId).firstOrNull;
     final speciesName = species?.name ?? AppStrings.typeObject;
 
     // Build matching EffectiveEntityGroup
     final matchingEntities = allEntities.where((e) {
-      final locMatch = effectiveLocationId == null ? (e.locationId == null) : (e.locationId == effectiveLocationId);
-      return e.speciesId == speciesId && locMatch;
+      final locMatch = widget.effectiveLocationId == null ? (e.locationId == null) : (e.locationId == widget.effectiveLocationId);
+      return e.speciesId == widget.speciesId && locMatch;
     }).toList();
 
     if (matchingEntities.isEmpty) {
@@ -39,9 +46,9 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
     }
 
     final group = EffectiveEntityGroup(
-      key: '${speciesId}_${effectiveLocationId ?? "root"}',
-      speciesId: speciesId,
-      effectiveLocationId: effectiveLocationId,
+      key: '${widget.speciesId}_${widget.effectiveLocationId ?? "root"}',
+      speciesId: widget.speciesId,
+      effectiveLocationId: widget.effectiveLocationId,
       entities: matchingEntities,
     );
 
@@ -51,7 +58,14 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(speciesName),
         actions: [
-          if (isHomogeneous && !(species?.isUnique ?? false))
+          IconButton(
+            icon: Icon(_isEditing ? Icons.check : Icons.edit_outlined),
+            tooltip: _isEditing ? 'Guardar Cambios' : 'Editar Grupo',
+            onPressed: () {
+              setState(() => _isEditing = !_isEditing);
+            },
+          ),
+          if (_isEditing && isHomogeneous && !(species?.isUnique ?? false))
             IconButton(
               icon: const Icon(Icons.add_circle_outline, color: Colors.green),
               tooltip: 'Añadir Instancia Duplicada',
@@ -59,7 +73,7 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
             ),
         ],
       ),
-      floatingActionButton: isHomogeneous && !(species?.isUnique ?? false)
+      floatingActionButton: (_isEditing && isHomogeneous && !(species?.isUnique ?? false))
           ? FloatingActionButton.extended(
               heroTag: null,
               onPressed: () => QuantityOperationHelper.addOne(context, ref, group),
