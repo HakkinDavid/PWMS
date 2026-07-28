@@ -35,7 +35,7 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
     if (matchingEntities.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: Text(speciesName)),
-        body: const Center(child: Text('No hay instancias disponibles en este grupo.')),
+        body: const Center(child: Text(AppStrings.noInstancesAvailableInGroup)),
       );
     }
 
@@ -113,13 +113,13 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Población Total: ${group.population} unidades',
+                        '${AppStrings.totalPopulationPrefix}${group.population} ${AppStrings.unitUnits}',
                         style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text(
                         isHomogeneous
-                            ? 'Grupo Homogéneo (Propiedades idénticas)'
-                            : 'Grupo Heterogéneo (Distintas subespecies/propiedades)',
+                            ? AppStrings.homogeneousGroupProperties
+                            : 'Grupo heterogéneo (distintas subespecies o propiedades)',
                         style: theme.textTheme.bodySmall,
                       ),
                     ],
@@ -145,14 +145,14 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
                     return await showDialog<bool>(
                       context: context,
                       builder: (c) => AlertDialog(
-                        title: const Text('Eliminar Instancia'),
-                        content: const Text('¿Estás seguro de que deseas eliminar esta instancia?'),
+                        title: const Text(AppStrings.deleteInstanceTitle),
+                        content: const Text(AppStrings.deleteInstanceConfirmationMessage),
                         actions: [
-                          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
+                          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
                             onPressed: () => Navigator.pop(c, true),
-                            child: const Text('Eliminar'),
+                            child: const Text(AppStrings.delete),
                           ),
                         ],
                       ),

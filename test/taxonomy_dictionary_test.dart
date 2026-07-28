@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/taxonomy/brand_dictionary.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/taxonomy/fast_lazy_taxonomy_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/taxonomy/product_taxonomy_service.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/taxonomy/spanish_singularizer.dart';

@@ -72,7 +72,7 @@ class InstancePreviewCard extends ConsumerWidget {
         if (isHeterogeneousGroup) {
           // Heterogeneous group: strictly General Species Name only (Point 3)
           primaryTitle = speciesName;
-          typeAndSpeciesText = '$speciesType • (Subespecies variadas) • ';
+          typeAndSpeciesText = '$speciesType • (${AppStrings.variedSubspeciesLabel}) • ';
         } else {
           // Homogeneous or singular: Subspecies info as primary title (Point 2)
           final isCustomSub = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
@@ -207,7 +207,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                     border: Border.all(color: Colors.red.shade400, width: 0.8),
                                   ),
                                   child: const Text(
-                                    'Caducado',
+                                    AppStrings.statusExpired,
                                     style: TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
                                   ),
                                 );
@@ -221,7 +221,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                     border: Border.all(color: Colors.orange.shade400, width: 0.8),
                                   ),
                                   child: const Text(
-                                    'Próximo a vencer',
+                                    AppStrings.statusWarning,
                                     style: TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
                                   ),
                                 );
@@ -245,7 +245,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                             border: Border.all(color: Colors.red.shade400, width: 0.8),
                                           ),
                                           child: Text(
-                                            '$expiredCnt Caducado(s)',
+                                            '$expiredCnt ${AppStrings.statusExpired}',
                                             style: const TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -258,7 +258,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                             border: Border.all(color: Colors.orange.shade400, width: 0.8),
                                           ),
                                           child: Text(
-                                            '$warningCnt Próximo(s)',
+                                            '$warningCnt ${AppStrings.statusWarning}',
                                             style: const TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
                                           ),
                                         ),

@@ -361,4 +361,50 @@ class AppStrings {
   static const objectsCategory = 'Objetos';
   static const historyCategory = 'Historial';
   static const noHistoryResults = 'Sin resultados de historial.';
+
+  // Notificaciones y Recordatorios
+  static const notificationsAndRemindersTitle = 'Notificaciones y recordatorios';
+  static const refreshAction = 'Actualizar';
+  static const noPendingNotifications = 'No tienes notificaciones pendientes.';
+  static const allElementsUpToDate = 'Todos tus elementos están al día y requerimientos cubiertos.';
+  static const loadNotificationsErrorPrefix = 'Error al cargar notificaciones: ';
+  static const snoozeReminderTitle = 'Posponer recordatorio';
+  static const snoozeReminderPrompt = 'Elige por cuánto tiempo deseas ocultar este aviso:';
+  static const snoozeOneDay = 'Posponer 1 día';
+  static const snoozeThreeDays = 'Posponer 3 días';
+  static const snoozeOneWeek = 'Posponer 1 semana';
+  static const snoozeAction = 'Posponer';
+  static const dismissAction = 'Descartar';
+
+  // Gestión de Población y Caducidad
+  static const heterogeneousGroupQuantityError = 'No se puede modificar la cantidad en grupos heterogéneos.';
+  static const heterogeneousGroupQuickAdjustmentError = 'No se pueden realizar ajustes rápidos en grupos heterogéneos.';
+  static const expirationDateForNewInstancePrompt = 'Fecha de caducidad para la nueva instancia';
+  static const expirationDateForNewInstancesPrompt = 'Fecha de caducidad para las nuevas instancias';
+  static const adjustQuantityTitle = 'Ajustar cantidad';
+  static const newTotalQuantityLabel = 'Nueva cantidad total';
+  static const deleteGroupTitle = 'Eliminar grupo';
+  static const confirmDeleteGroupMessage = '¿Estás seguro de que deseas reducir la cantidad a cero y eliminar todas las instancias de este grupo?';
+  static const instancesDeletedSuccess = 'Instancias eliminadas con éxito.';
+  static const selectExpirationDateForNewInstancesPrompt = 'Selecciona la fecha de caducidad de las nuevas instancias.';
+  static const populationUpdatedSuccessPrefix = 'Población actualizada correctamente a ';
+  static const adjustPopulationErrorPrefix = 'Error al ajustar la población: ';
+  static const adjustmentNotAvailableTitle = 'Ajuste no disponible';
+  static const heterogeneousGroupAdjustmentMessage = 'No es posible ajustar la población directamente en grupos heterogéneos. Abre la vista dedicada de grupo para gestionar cada instancia individualmente.';
+  static const understoodAction = 'Entendido';
+  static const adjustPopulationTitle = 'Ajustar población';
+  static const homogeneousGroupHeaderPrefix = 'Grupo homogéneo (';
+  static const homogeneousGroupHeaderSuffix = ' actuales)';
+  static const variedSubspeciesLabel = 'Subespecies variadas';
+  static const statusExpired = 'Caducado';
+  static const statusWarning = 'Próximo a vencer';
+  static const generalSpeciesPrefix = 'Especie general: ';
+  static const expirationDateOptionalLabel = 'Fecha de caducidad (opcional)';
+  static const noExpirationDate = 'Sin fecha de caducidad';
+  static const removeExpirationDateTooltip = 'Quitar fecha de caducidad';
+  static const noInstancesAvailableInGroup = 'No hay instancias disponibles en este grupo.';
+  static const totalPopulationPrefix = 'Población total: ';
+  static const homogeneousGroupProperties = 'Grupo homogéneo (propiedades idénticas)';
+  static const deleteInstanceTitle = 'Eliminar instancia';
+  static const deleteInstanceConfirmationMessage = '¿Estás seguro de que deseas eliminar esta instancia de tu mundo?';
 }

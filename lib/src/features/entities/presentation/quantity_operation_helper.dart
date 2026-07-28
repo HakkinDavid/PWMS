@@ -11,7 +11,7 @@ class QuantityOperationHelper {
   /// Short tap: Add 1 duplicate instance (solicitando fecha de caducidad si es perecedero)
   static Future<void> addOne(BuildContext context, WidgetRef ref, EffectiveEntityGroup group) async {
     if (!group.isHomogeneous) {
-      AppToast.showRestriction(context, 'No se puede modificar cantidad en grupos heterogéneos.');
+      AppToast.showRestriction(context, AppStrings.heterogeneousGroupQuantityError);
       return;
     }
 
@@ -25,7 +25,7 @@ class QuantityOperationHelper {
         initialDate: DateTime.now().add(Duration(days: species.defaultShelfLifeDays ?? 7)),
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(const Duration(days: 3650)),
-        helpText: 'Fecha de Caducidad para la Nueva Instancia',
+        helpText: AppStrings.expirationDateForNewInstancePrompt,
       );
       if (pickedDate == null) return; // Cancelado por el usuario
       expirationDate = pickedDate;
@@ -49,7 +49,7 @@ class QuantityOperationHelper {
   /// Short tap: Remove 1 instance
   static Future<void> removeOne(BuildContext context, WidgetRef ref, EffectiveEntityGroup group) async {
     if (!group.isHomogeneous) {
-      AppToast.showRestriction(context, 'No se puede modificar cantidad en grupos heterogéneos.');
+      AppToast.showRestriction(context, AppStrings.heterogeneousGroupQuantityError);
       return;
     }
 
@@ -70,7 +70,7 @@ class QuantityOperationHelper {
     required EffectiveEntityGroup group,
   }) async {
     if (!group.isHomogeneous) {
-      AppToast.showRestriction(context, 'No se pueden realizar ajustes rápidos en grupos heterogéneos.');
+      AppToast.showRestriction(context, AppStrings.heterogeneousGroupQuickAdjustmentError);
       return;
     }
 
@@ -80,27 +80,27 @@ class QuantityOperationHelper {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('Ajustar Cantidad'),
+          title: const Text(AppStrings.adjustQuantityTitle),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
             autofocus: true,
             decoration: const InputDecoration(
-              labelText: 'Nueva Cantidad Total',
+              labelText: AppStrings.newTotalQuantityLabel,
               border: OutlineInputBorder(),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancelar'),
+              child: const Text(AppStrings.cancel),
             ),
             ElevatedButton(
               onPressed: () {
                 final parsed = int.tryParse(controller.text.trim());
                 Navigator.pop(ctx, parsed);
               },
-              child: const Text('Guardar'),
+              child: const Text(AppStrings.save),
             ),
           ],
         );
@@ -119,7 +119,7 @@ class QuantityOperationHelper {
           initialDate: DateTime.now().add(Duration(days: species.defaultShelfLifeDays ?? 7)),
           firstDate: DateTime.now(),
           lastDate: DateTime.now().add(const Duration(days: 3650)),
-          helpText: 'Fecha de Caducidad para las $diff Nuevas Instancias',
+          helpText: AppStrings.expirationDateForNewInstancesPrompt,
         );
         if (picked == null) return;
         expirationDate = picked;

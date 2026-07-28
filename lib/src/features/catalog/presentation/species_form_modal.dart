@@ -15,7 +15,6 @@ import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
 import '../domain/subspecies.dart';
-import '../domain/taxonomy/perishability_inference_engine.dart';
 import 'subspecies_section_widget.dart';
 import 'web_image_picker_dialog.dart';
 import 'add_edit_subspecies_modal.dart';

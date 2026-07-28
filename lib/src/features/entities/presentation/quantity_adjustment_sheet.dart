@@ -15,11 +15,6 @@ class QuantityAdjustmentSheet extends ConsumerStatefulWidget {
   });
 
   static Future<void> show(BuildContext context, EffectiveEntityGroup group) async {
-    // CORRECCIÓN 1: Especies únicas y grupos heterogéneos NO pueden abrir este sheet bajo ningún concepto.
-    final catalogList = context.findAncestorWidgetOfExactType<ProviderScope>() != null
-        ? null
-        : null; // Se valida dentro del widget o mediante provider
-
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -71,14 +66,14 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Eliminar Grupo'),
-        content: const Text('¿Estás seguro de que deseas reducir la cantidad a 0 y eliminar todas las instancias de este grupo?'),
+        title: const Text(AppStrings.deleteGroupTitle),
+        content: const Text(AppStrings.confirmDeleteGroupMessage),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Eliminar'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -94,7 +89,7 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
 
       if (mounted) {
         Navigator.pop(context);
-        AppToast.showSuccess(context, 'Instancias eliminadas.');
+        AppToast.showSuccess(context, AppStrings.instancesDeletedSuccess);
       }
     }
   }
@@ -128,7 +123,7 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
             initialDate: DateTime.now().add(Duration(days: species.defaultShelfLifeDays ?? 30)),
             firstDate: DateTime.now(),
             lastDate: DateTime.now().add(const Duration(days: 3650)),
-            helpText: 'Selecciona la fecha de caducidad de las nuevas instancias',
+            helpText: AppStrings.selectExpirationDateForNewInstancesPrompt,
           );
           if (pickedDate != null) {
             newExpDate = pickedDate;
@@ -160,11 +155,11 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
 
       if (mounted) {
         Navigator.pop(context);
-        AppToast.showSuccess(context, 'Población actualizada correctamente a $newCount.');
+        AppToast.showSuccess(context, '${AppStrings.populationUpdatedSuccessPrefix}$newCount.');
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, 'Error ajustando población: $e');
+        AppToast.showError(context, '${AppStrings.adjustPopulationErrorPrefix}$e');
       }
     }
   }
@@ -172,7 +167,6 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isUnique = widget.group.speciesId.contains('unique'); // Safety fallback
     final isHomogeneous = widget.group.isHomogeneous;
 
     // Validación de seguridad: no permitir ajustar si es heterogéneo o único
@@ -189,18 +183,18 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
             const Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 48),
             const SizedBox(height: 12),
             const Text(
-              'Ajuste No Disponible',
+              AppStrings.adjustmentNotAvailableTitle,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 8),
             const Text(
-              'No es posible ajustar la población directamente en grupos heterogéneos. Abre la vista dedicada de grupo para gestionar cada instancia individualmente.',
+              AppStrings.heterogeneousGroupAdjustmentMessage,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Entendido'),
+              child: const Text(AppStrings.understoodAction),
             ),
           ],
         ),
@@ -231,12 +225,12 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
           ),
           const SizedBox(height: 16),
           Text(
-            'Ajustar Población',
+            AppStrings.adjustPopulationTitle,
             style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
-            'Grupo Homogéneo (${widget.group.population} actuales)',
+            '${AppStrings.homogeneousGroupHeaderPrefix}${widget.group.population}${AppStrings.homogeneousGroupHeaderSuffix}',
             style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
           const SizedBox(height: 24),
@@ -286,14 +280,14 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancelar'),
+                  child: const Text(AppStrings.cancel),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _handleSave,
-                  child: const Text('Guardar'),
+                  child: const Text(AppStrings.save),
                 ),
               ),
             ],

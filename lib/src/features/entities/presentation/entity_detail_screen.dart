@@ -180,7 +180,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Especie general: ${species.name} (${species.type})',
+                                  '${AppStrings.generalSpeciesPrefix}${species.name} (${species.type})',
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                 ),
                                 if (sub.barcode != null)

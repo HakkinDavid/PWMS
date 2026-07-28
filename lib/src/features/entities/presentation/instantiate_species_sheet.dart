@@ -469,7 +469,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
             // DatePicker de Caducidad (Solo para especies que pueden caducar)
             if (_selectedSpecies != null && _selectedSpecies!.canExpire) ...[
-              Text('Fecha de Caducidad (opcional)', style: theme.textTheme.labelLarge),
+              Text(AppStrings.expirationDateOptionalLabel, style: theme.textTheme.labelLarge),
               const SizedBox(height: 6),
               InkWell(
                 onTap: () async {
@@ -501,7 +501,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                         child: Text(
                           _expirationDate != null
                               ? '${_expirationDate!.day.toString().padLeft(2, '0')}/${_expirationDate!.month.toString().padLeft(2, '0')}/${_expirationDate!.year}'
-                              : 'Sin fecha de caducidad',
+                              : AppStrings.noExpirationDate,
                           style: TextStyle(
                             color: _expirationDate != null ? theme.colorScheme.onSurface : Colors.grey,
                             fontWeight: _expirationDate != null ? FontWeight.w600 : FontWeight.normal,
@@ -512,7 +512,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                         IconButton(
                           icon: const Icon(Icons.clear, size: 18),
                           onPressed: () => setState(() => _expirationDate = null),
-                          tooltip: 'Quitar caducidad',
+                          tooltip: AppStrings.removeExpirationDateTooltip,
                         ),
                     ],
                   ),

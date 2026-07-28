@@ -395,14 +395,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           final isSelected = _selectedEntityIds.contains(primary.id);
           final isExpired = grp.expiredCount(now: DateTime.now()) > 0;
 
-          // Drag payload in selection mode vs normal mode (Point 3)
-          final dragPayload = _isSelectionMode && _selectedEntityIds.isNotEmpty
-              ? _selectedEntityIds.toList()
-              : grp;
-
           return MinecraftTileWidget(
             group: grp,
-            title: species?.name ?? 'Elemento',
+            title: species?.name ?? AppStrings.typeObject,
             photoPath: species?.mainPhotoPath,
             isSelected: isSelected,
             isExpired: isExpired,

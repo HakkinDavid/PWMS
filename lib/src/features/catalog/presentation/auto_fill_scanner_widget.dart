@@ -1,13 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:uuid/uuid.dart';
-import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
-
-import '../domain/subspecies.dart';
 import '../infrastructure/product_lookup_service.dart';
 
 class AutoFillScannerWidget extends ConsumerStatefulWidget {
@@ -125,8 +120,6 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
       final picker = ImagePicker();
       final pickedImage = await picker.pickImage(source: ImageSource.camera, imageQuality: 85);
       if (pickedImage != null) {
-        final imageFile = File(pickedImage.path);
-
         // 1. Intentar si la foto contiene código de barras
         final barcodeResult = await _scannerController.analyzeImage(pickedImage.path);
         if (barcodeResult != null && barcodeResult.barcodes.isNotEmpty) {

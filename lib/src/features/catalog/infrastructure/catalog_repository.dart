@@ -102,7 +102,6 @@ class CatalogRepository {
 
   Future<void> saveCatalogItem(CatalogItem item) async {
     final all = await getAllCatalogItems();
-    final existing = await getCatalogItemById(item.id);
 
     final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
     if (nameDup != null) {

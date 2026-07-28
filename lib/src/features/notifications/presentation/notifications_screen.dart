@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/app_notification.dart';
 
@@ -13,14 +14,14 @@ class NotificationsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notificaciones & Recordatorios'),
+        title: const Text(AppStrings.notificationsAndRemindersTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
               ref.read(notificationListProvider.notifier).evaluateAndLoad();
             },
-            tooltip: 'Actualizar',
+            tooltip: AppStrings.refreshAction,
           ),
         ],
       ),
@@ -34,12 +35,12 @@ class NotificationsScreen extends ConsumerWidget {
                   Icon(Icons.notifications_off_outlined, size: 64, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
                   Text(
-                    'No tienes notificaciones pendientes',
+                    AppStrings.noPendingNotifications,
                     style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Todos tus elementos están al día y requerimientos cubiertos.',
+                    AppStrings.allElementsUpToDate,
                     style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
                     textAlign: TextAlign.center,
                   ),
@@ -65,7 +66,7 @@ class NotificationsScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, st) => Center(
-          child: Text('Error al cargar notificaciones: $err'),
+          child: Text('${AppStrings.loadNotificationsErrorPrefix}$err'),
         ),
       ),
     );
@@ -125,18 +126,18 @@ class _NotificationTile extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'Posponer Recordatorio',
+                  AppStrings.snoozeReminderTitle,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Elige por cuánto tiempo deseas ocultar este aviso:',
+                  AppStrings.snoozeReminderPrompt,
                   style: TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(height: 16),
                 ListTile(
                   leading: const Icon(Icons.timer_outlined, color: Colors.blue),
-                  title: const Text('Posponer 1 día'),
+                  title: const Text(AppStrings.snoozeOneDay),
                   onTap: () {
                     ref.read(notificationListProvider.notifier).snoozeNotification(notification.id, const Duration(days: 1));
                     Navigator.pop(context);
@@ -144,7 +145,7 @@ class _NotificationTile extends ConsumerWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.date_range_outlined, color: Colors.indigo),
-                  title: const Text('Posponer 3 días'),
+                  title: const Text(AppStrings.snoozeThreeDays),
                   onTap: () {
                     ref.read(notificationListProvider.notifier).snoozeNotification(notification.id, const Duration(days: 3));
                     Navigator.pop(context);
@@ -152,7 +153,7 @@ class _NotificationTile extends ConsumerWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.event_outlined, color: Colors.purple),
-                  title: const Text('Posponer 1 semana (7 días)'),
+                  title: const Text(AppStrings.snoozeOneWeek),
                   onTap: () {
                     ref.read(notificationListProvider.notifier).snoozeNotification(notification.id, const Duration(days: 7));
                     Navigator.pop(context);
@@ -219,7 +220,7 @@ class _NotificationTile extends ConsumerWidget {
                 children: [
                   OutlinedButton.icon(
                     icon: const Icon(Icons.snooze, size: 18),
-                    label: const Text('Posponer'),
+                    label: const Text(AppStrings.snoozeAction),
                     style: OutlinedButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                       foregroundColor: Colors.blue.shade800,
@@ -229,7 +230,7 @@ class _NotificationTile extends ConsumerWidget {
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.close, size: 20, color: Colors.grey),
-                    tooltip: 'Descartar',
+                    tooltip: AppStrings.dismissAction,
                     onPressed: () {
                       ref.read(notificationListProvider.notifier).dismissNotification(notification.id);
                     },
