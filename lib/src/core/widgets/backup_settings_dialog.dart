@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_filex/open_filex.dart';
 import '../providers/providers.dart';
 import 'app_toast.dart';
 
@@ -27,11 +26,10 @@ class _BackupSettingsDialogState extends ConsumerState<BackupSettingsDialog> {
     setState(() => _isProcessing = true);
     try {
       final backupService = ref.read(databaseBackupServiceProvider);
-      final file = await backupService.exportBackupToFile();
+      await backupService.exportAndShareBackup();
 
       if (mounted) {
-        AppToast.showSuccess(context, 'Respaldo guardado exitosamente: ${file.path.split('/').last}');
-        await OpenFilex.open(file.path);
+        AppToast.showSuccess(context, 'Respaldo preparado y compartido.');
       }
     } catch (e) {
       if (mounted) AppToast.showError(context, 'Error exportando respaldo: $e');

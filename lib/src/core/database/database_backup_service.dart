@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:drift/drift.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'app_database.dart';
 
 class DatabaseBackupService {
@@ -145,21 +145,30 @@ class DatabaseBackupService {
     };
   }
 
-  /// Exporta el respaldo a un archivo JSON local
-  Future<File> exportBackupToFile() async {
+  /// Exporta el respaldo a un archivo JSON temporal y abre la hoja de compartir nativa.
+  /// Limpia automáticamente el archivo temporal del directorio del sistema una vez compartido.
+  Future<void> exportAndShareBackup() async {
     final data = await exportDatabaseToJsonMap();
     final jsonStr = const JsonEncoder.withIndent('  ').convert(data);
-    
-    final appDir = await getApplicationDocumentsDirectory();
-    final backupsDir = Directory('${appDir.path}/backups');
-    if (!await backupsDir.exists()) {
-      await backupsDir.create(recursive: true);
-    }
 
+    final tempDir = await getTemporaryDirectory();
     final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
-    final file = File('${backupsDir.path}/pwms_backup_$timestamp.json');
-    await file.writeAsString(jsonStr);
-    return file;
+    final tempFile = File('${tempDir.path}/pwms_backup_$timestamp.json');
+
+    try {
+      await tempFile.writeAsString(jsonStr);
+      await Share.shareXFiles(
+        [XFile(tempFile.path)],
+        subject: 'Respaldo PWMS',
+        text: 'Respaldo completo de la base de datos de PWMS.',
+      );
+    } finally {
+      if (await tempFile.exists()) {
+        try {
+          await tempFile.delete();
+        } catch (_) {}
+      }
+    }
   }
 
   /// Importa la base de datos a partir de una cadena JSON
