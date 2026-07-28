@@ -18,6 +18,7 @@ import '../domain/subspecies.dart';
 import '../domain/taxonomy/perishability_inference_engine.dart';
 import 'subspecies_section_widget.dart';
 import 'web_image_picker_dialog.dart';
+import 'add_edit_subspecies_modal.dart';
 
 class SpeciesFormModal extends ConsumerStatefulWidget {
   final CatalogItem? initialSpecies; // Null for Create mode, Non-null for Edit mode
@@ -66,6 +67,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   bool _isUnique = false;
   bool _isNonPerishable = true;
   XFile? _selectedImage;
+  String? _speciesPhotoPath;
   bool _isSaving = false;
 
   // Multiplicity of Units & Magnitudes
@@ -93,6 +95,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _selectedType = s.type;
       _isUnique = s.isUnique;
       _isNonPerishable = s.isNonPerishable;
+      _speciesPhotoPath = s.mainPhotoPath;
       _magnitudes.addAll(s.magnitudes);
     } else if (widget.scannedResult != null) {
       final res = widget.scannedResult;
@@ -102,15 +105,16 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _nameController.text = genName.isNotEmpty ? genName : (subName.isNotEmpty ? subName : 'Nuevo Objeto');
       _descController.text = res.description?.toString() ?? '';
       _selectedType = res.type?.toString() ?? AppStrings.typeObject;
+      _speciesPhotoPath = res.localPhotoPath?.toString() ?? res.photoUrl?.toString();
 
-      if (subName.isNotEmpty && genName.isNotEmpty && subName != genName) {
+      if (subName.isNotEmpty) {
         _draftSubspecies.add(Subspecies(
           id: const Uuid().v4(),
           speciesId: '',
           subspeciesName: subName,
           brand: res.brand?.toString(),
           barcode: res.barcode?.toString(),
-          photoPath: res.localPhotoPath?.toString(),
+          photoPath: res.localPhotoPath?.toString() ?? res.photoUrl?.toString(),
           notes: res.description?.toString(),
           createdAt: DateTime.now(),
         ));
@@ -276,132 +280,19 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   }
 
   Future<void> _addOrEditDraftSubspeciesModal({Subspecies? initial, int? editIndex}) async {
-    final nameCtrl = TextEditingController(text: initial?.subspeciesName ?? '');
-    final brandCtrl = TextEditingController(text: initial?.brand ?? '');
-    final barcodeCtrl = TextEditingController(text: initial?.barcode ?? '');
-    final notesCtrl = TextEditingController(text: initial?.notes ?? '');
-    String? photoPath = initial?.photoPath;
-    XFile? newPickedImage;
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (c, setStateModal) => AlertDialog(
-          title: Text(initial != null ? AppStrings.editSubspeciesDraftTitle : AppStrings.newSubspeciesVariantTitle),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    final picker = ImagePicker();
-                    final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-                    if (img != null) {
-                      setStateModal(() => newPickedImage = img);
-                    }
-                  },
-                  child: Container(
-                    height: 70,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Theme.of(context).dividerColor),
-                    ),
-                    child: newPickedImage != null
-                        ? Image.file(File(newPickedImage!.path), fit: BoxFit.cover)
-                        : (photoPath != null && photoPath!.isNotEmpty)
-                            ? FutureBuilder<String>(
-                                future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath!),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) return Image.file(File(snapshot.data!), fit: BoxFit.cover);
-                                  return const Icon(Icons.add_a_photo, size: 24);
-                                },
-                              )
-                            : const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add_a_photo_outlined, size: 20),
-                                  SizedBox(height: 2),
-                                  Text(AppStrings.subspeciesPhotoLabel, style: TextStyle(fontSize: 11)),
-                                ],
-                              ),
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: () async {
-                    final query = nameCtrl.text.trim().isNotEmpty
-                        ? nameCtrl.text.trim()
-                        : _nameController.text.trim();
-                    final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
-                    if (relPath != null && relPath.isNotEmpty) {
-                      setStateModal(() {
-                        photoPath = relPath;
-                        newPickedImage = null;
-                      });
-                    }
-                  },
-                  icon: const Icon(Icons.image_search, size: 16),
-                  label: const Text('Buscar foto en Web'),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: nameCtrl,
-                  decoration: const InputDecoration(labelText: AppStrings.nameOrVariantLabel, hintText: AppStrings.nameOrVariantHint),
-                ),
-                if (_selectedType == AppStrings.typeObject) ...[
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: brandCtrl,
-                    decoration: const InputDecoration(labelText: AppStrings.brandLabel, hintText: AppStrings.brandHint),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: barcodeCtrl,
-                    decoration: const InputDecoration(labelText: AppStrings.barcodeLabel, hintText: AppStrings.barcodeHint),
-                  ),
-                ],
-                const SizedBox(height: 12),
-                TextField(
-                  controller: notesCtrl,
-                  decoration: const InputDecoration(labelText: AppStrings.notesLabel, hintText: AppStrings.notesSpecialEditionHint),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text(AppStrings.save),
-            ),
-          ],
-        ),
-      ),
+    final resultSub = await AddEditSubspeciesModal.show(
+      context,
+      initialSubspecies: initial,
+      defaultSpeciesName: _nameController.text.trim(),
+      isObject: _selectedType == AppStrings.typeObject,
     );
 
-    if (confirm == true && nameCtrl.text.trim().isNotEmpty) {
-      if (newPickedImage != null) {
-        final storage = ref.read(fileStorageServiceProvider);
-        photoPath = await storage.saveFile(newPickedImage!.path);
-      }
-
-      final sub = Subspecies(
-        id: initial?.id ?? const Uuid().v4(),
-        speciesId: '',
-        subspeciesName: nameCtrl.text.trim(),
-        brand: brandCtrl.text.trim().isNotEmpty ? brandCtrl.text.trim() : null,
-        barcode: barcodeCtrl.text.trim().isNotEmpty ? barcodeCtrl.text.trim() : null,
-        photoPath: photoPath,
-        notes: notesCtrl.text.trim().isNotEmpty ? notesCtrl.text.trim() : null,
-        createdAt: initial?.createdAt ?? DateTime.now(),
-      );
-
+    if (resultSub != null) {
       setState(() {
         if (editIndex != null) {
-          _draftSubspecies[editIndex] = sub;
+          _draftSubspecies[editIndex] = resultSub;
         } else {
-          _draftSubspecies.add(sub);
+          _draftSubspecies.add(resultSub);
         }
       });
     }
@@ -422,7 +313,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     try {
       final storage = ref.read(fileStorageServiceProvider);
 
-      String? photoPath = widget.initialSpecies?.mainPhotoPath;
+      String? photoPath = _speciesPhotoPath;
       if (_selectedImage != null) {
         photoPath = await storage.saveFile(_selectedImage!.path);
       }
@@ -587,32 +478,49 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                         );
                       },
                       child: Container(
-                        height: 75,
+                        height: 85,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: theme.cardColor,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: theme.dividerColor),
-                          image: _selectedImage != null
-                              ? DecorationImage(
-                                  image: FileImage(File(_selectedImage!.path)),
-                                  fit: BoxFit.contain, // Point 2: BoxFit.contain
-                                )
-                              : null,
                         ),
-                        child: _selectedImage == null
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add_a_photo_outlined, size: 22, color: theme.colorScheme.primary),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    AppStrings.photoLabel,
-                                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
-                                  ),
-                                ],
-                              )
-                            : null,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: _selectedImage != null
+                              ? Image.file(File(_selectedImage!.path), fit: BoxFit.contain)
+                              : (_speciesPhotoPath != null && _speciesPhotoPath!.isNotEmpty)
+                                  ? (_speciesPhotoPath!.startsWith('http')
+                                      ? Image.network(
+                                          _speciesPhotoPath!,
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                                        )
+                                      : FutureBuilder<String>(
+                                          future: ref.read(fileStorageServiceProvider).getAbsolutePath(_speciesPhotoPath!),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                                              return Image.file(
+                                                File(snapshot.data!),
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                                              );
+                                            }
+                                            return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                                          },
+                                        ))
+                                  : Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.add_a_photo_outlined, size: 22, color: theme.colorScheme.primary),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          AppStrings.photoLabel,
+                                          style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
+                                        ),
+                                      ],
+                                    ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -622,33 +530,24 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       decoration: InputDecoration(
                         labelText: AppStrings.nameLabel,
                         prefixIcon: const Icon(Icons.auto_awesome),
-                        suffixIcon: !_isEditMode
-                            ? IconButton(
-                                icon: const Icon(Icons.image_search, color: Colors.amber),
-                                tooltip: 'Buscar foto de producto en Internet',
-                                onPressed: () async {
-                                  final query = _nameController.text.trim();
-                                  if (query.isEmpty) {
-                                    AppToast.showRestriction(context, 'Ingresa un nombre para buscar imagen');
-                                    return;
-                                  }
-                                  AppToast.showSuccess(context, 'Buscando imagen en Internet...');
-                                  final lookupService = ref.read(productLookupServiceProvider);
-                                  final images = await lookupService.searchWebImages(query);
-                                  if (images.isNotEmpty) {
-                                    final localPath = await lookupService.downloadAndSaveImage(images.first);
-                                    if (localPath != null && mounted) {
-                                      setState(() {
-                                        _selectedImage = XFile(localPath);
-                                      });
-                                      AppToast.showSuccess(context, 'Imagen descargada.');
-                                    }
-                                  } else if (mounted) {
-                                    AppToast.showRestriction(context, 'No se halló imagen.');
-                                  }
-                                },
-                              )
-                            : null,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.image_search, color: Colors.amber),
+                          tooltip: 'Buscar foto de especie en Internet',
+                          onPressed: () async {
+                            final query = _nameController.text.trim();
+                            if (query.isEmpty) {
+                              AppToast.showRestriction(context, 'Ingresa un nombre para buscar imagen');
+                              return;
+                            }
+                            final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
+                            if (relPath != null && relPath.isNotEmpty && mounted) {
+                              setState(() {
+                                _speciesPhotoPath = relPath;
+                                _selectedImage = null;
+                              });
+                            }
+                          },
+                        ),
                         helperText: null,
                       ),
                     ),

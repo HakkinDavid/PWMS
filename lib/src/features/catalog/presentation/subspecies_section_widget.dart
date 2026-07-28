@@ -8,6 +8,7 @@ import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../domain/subspecies.dart';
 import 'taxonomy_operations_dialog.dart';
+import 'add_edit_subspecies_modal.dart';
 import 'web_image_picker_dialog.dart';
 
 class SubspeciesSectionWidget extends ConsumerStatefulWidget {
@@ -48,161 +49,18 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
   Future<void> _addOrEditSubspeciesModal({Subspecies? initial}) async {
     final species = await ref.read(catalogRepositoryProvider).getCatalogItemById(widget.speciesId);
     if (!mounted) return;
-    final isObject = species == null || species.type == AppStrings.typeObject;
 
-    final nameController = TextEditingController(text: initial?.subspeciesName ?? '');
-    final brandController = TextEditingController(text: initial?.brand ?? '');
-    final barcodeController = TextEditingController(text: initial?.barcode ?? '');
-    final notesController = TextEditingController(text: initial?.notes ?? '');
-    String? photoPath = initial?.photoPath;
-    XFile? newPickedImage;
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (c, setStateModal) => AlertDialog(
-          title: Text(initial != null ? AppStrings.editSubspecies : AppStrings.newSubspeciesVariantTitle),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    final picker = ImagePicker();
-                    final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-                    if (img != null) {
-                      setStateModal(() => newPickedImage = img);
-                    }
-                  },
-                  child: Container(
-                    height: 70,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Theme.of(context).dividerColor),
-                    ),
-                    child: newPickedImage != null
-                        ? Image.file(File(newPickedImage!.path), fit: BoxFit.cover)
-                        : (photoPath != null && photoPath!.isNotEmpty)
-                            ? FutureBuilder<String>(
-                                future: ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath!),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Image.file(File(snapshot.data!), fit: BoxFit.cover);
-                                  }
-                                  return const Icon(Icons.add_a_photo, size: 24);
-                                },
-                              )
-                            : const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add_a_photo_outlined, size: 20),
-                                  SizedBox(height: 2),
-                                  Text(AppStrings.subspeciesPhotoLabel, style: TextStyle(fontSize: 11)),
-                                ],
-                              ),
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: () async {
-                    final query = nameController.text.trim().isNotEmpty
-                        ? nameController.text.trim()
-                        : (species?.name ?? '');
-                    final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
-                    if (relPath != null && relPath.isNotEmpty) {
-                      setStateModal(() {
-                        photoPath = relPath;
-                        newPickedImage = null;
-                      });
-                    }
-                  },
-                  icon: const Icon(Icons.image_search, size: 16),
-                  label: const Text('Buscar foto en Web'),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.subspeciesNameLabel,
-                    prefixIcon: Icon(Icons.style),
-                  ),
-                ),
-                if (isObject) ...[
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: brandController,
-                    decoration: const InputDecoration(
-                      labelText: 'Marca (Opcional)',
-                      prefixIcon: Icon(Icons.branding_watermark_outlined),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: barcodeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Código de Barras (Opcional)',
-                      prefixIcon: Icon(Icons.qr_code_2_outlined),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 8),
-                TextField(
-                  controller: notesController,
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.notesOptionalLabel,
-                    prefixIcon: Icon(Icons.notes_outlined),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(c, false),
-              child: const Text(AppStrings.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(c, true),
-              child: const Text(AppStrings.save),
-            ),
-          ],
-        ),
-      ),
+    final resultSubspecies = await AddEditSubspeciesModal.show(
+      context,
+      species: species,
+      initialSubspecies: initial,
     );
 
-    if (confirm == true) {
-      final name = nameController.text.trim();
-      if (name.isEmpty) {
-        AppToast.showRestriction(context, 'El nombre de la subespecie es obligatorio.');
-        return;
-      }
-
-      String? finalPhotoPath = photoPath;
-      if (newPickedImage != null) {
-        final fileStorage = ref.read(fileStorageServiceProvider);
-        finalPhotoPath = await fileStorage.saveFile(newPickedImage!.path);
-      }
-
-      final updated = Subspecies(
-        id: initial?.id ?? const Uuid().v4(),
-        speciesId: widget.speciesId,
-        subspeciesName: name,
-        brand: isObject && brandController.text.trim().isNotEmpty ? brandController.text.trim() : null,
-        barcode: isObject && barcodeController.text.trim().isNotEmpty ? barcodeController.text.trim() : null,
-        photoPath: finalPhotoPath,
-        notes: notesController.text.trim().isNotEmpty ? notesController.text.trim() : null,
-        createdAt: initial?.createdAt ?? DateTime.now(),
-      );
-
-      try {
-        await ref.read(catalogRepositoryProvider).saveSubspecies(updated);
-        await _loadSubspecies();
-      } catch (e) {
-        if (mounted) {
-          AppToast.showError(context, '${AppStrings.errorPrefix}$e');
-        }
-      }
+    if (resultSubspecies != null) {
+      await ref.read(catalogRepositoryProvider).saveSubspecies(resultSubspecies);
+      _loadSubspecies();
+      ref.invalidate(catalogListProvider);
+      ref.invalidate(entityListProvider);
     }
   }
 

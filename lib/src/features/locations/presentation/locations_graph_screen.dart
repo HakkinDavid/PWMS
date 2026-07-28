@@ -3,13 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
-import 'package:go_router/go_router.dart';
+
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../domain/location_node.dart';
 import '../infrastructure/location_repository.dart';
 import 'location_tree_picker.dart';
 import 'visual_locations_graph.dart';
+
+import '../../entities/presentation/register_object_modal.dart';
 
 class LocationsGraphScreen extends ConsumerStatefulWidget {
   final String? focusNodeId;
@@ -145,7 +147,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
               title: const Text(AppStrings.createObjectHere),
               onTap: () {
                 Navigator.pop(ctx);
-                context.push('/create-master');
+                RegisterObjectModal.show(context, initialLocationId: node.id);
               },
             ),
             ListTile(
@@ -227,7 +229,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
                 icon: const Icon(Icons.add_circle_outline, size: 20),
                 tooltip: AppStrings.createObjectHere,
                 onPressed: () {
-                  context.push('/create-master');
+                  RegisterObjectModal.show(context, initialLocationId: node.id);
                 },
               ),
             ],
@@ -253,7 +255,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
               title: Text(AppStrings.storedObjectsTitle, style: theme.textTheme.labelLarge),
               trailing: IconButton(
                 icon: const Icon(Icons.add, size: 20),
-                onPressed: () => context.push('/create-master'),
+                onPressed: () => RegisterObjectModal.show(context, initialLocationId: node.id),
                 tooltip: AppStrings.createObjectHere,
               ),
             ),

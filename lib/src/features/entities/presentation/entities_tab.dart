@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/effective_entity_group.dart';
 import 'effective_group_tile.dart';
+
+import 'register_object_modal.dart';
 
 class EntitiesTab extends ConsumerStatefulWidget {
   const EntitiesTab({super.key});
@@ -36,7 +38,7 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
-        onPressed: () => context.push('/create-master'),
+        onPressed: () => RegisterObjectModal.show(context),
         tooltip: AppStrings.registerObjectTitle,
         child: const Icon(Icons.add),
       ),

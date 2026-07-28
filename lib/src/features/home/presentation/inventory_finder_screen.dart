@@ -485,27 +485,24 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: containedIds.map((cId) {
-                        final childEntity = allEntitiesMap[cId];
-                        if (childEntity == null) return const SizedBox.shrink();
-                        final childSpecies = catalogMap[childEntity.speciesId];
+                      children: () {
+                        final containedEntitiesList = containedIds
+                            .map((cId) => allEntitiesMap[cId])
+                            .whereType<WorldEntity>()
+                            .toList();
 
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 4.0),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity.compact,
-                            leading: Icon(Icons.inventory_2, size: 16, color: theme.colorScheme.secondary),
-                            title: Text(childSpecies?.name ?? 'Elemento Contenido', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                            subtitle: const Text('Guardado en contenedor (Sin arrastre directo)', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                            onTap: () => context.push('/entity/${childEntity.id}'),
-                          ),
+                        final containedGroups = EffectiveEntityGroup.groupEntities(
+                          entities: containedEntitiesList,
+                          effectiveLocationMap: {for (var e in containedEntitiesList) e.id: e.locationId},
                         );
-                      }).toList(),
+
+                        return containedGroups.map((cGrp) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 6.0),
+                            child: EffectiveGroupTile(group: cGrp),
+                          );
+                        }).toList();
+                      }(),
                     ),
                   ),
                 ),

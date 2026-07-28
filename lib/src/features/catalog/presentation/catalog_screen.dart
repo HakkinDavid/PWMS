@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
-import 'package:go_router/go_router.dart';
+
 import 'species_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
+
+import '../../entities/presentation/register_object_modal.dart';
 
 class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key});
@@ -35,7 +37,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
-        onPressed: () => context.push('/create-master'),
+        onPressed: () => RegisterObjectModal.show(context, startInCreateSpecies: true),
         tooltip: AppStrings.newSpeciesTitle,
         child: const Icon(Icons.add),
       ),
