@@ -442,39 +442,31 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         final isContainer = containedIds.isNotEmpty;
         final isExpanded = _expandedContainerEntityIds.contains(primaryId);
 
-        Widget tileWidget = EffectiveGroupTile(group: grp);
+        Widget tileWidget = EffectiveGroupTile(
+          group: grp,
+          onTap: isContainer
+              ? () {
+                  if (isExpanded) {
+                    // Second tap when expanded -> navigate to detail
+                    if (grp.population == 1) {
+                      context.push('/entity/$primaryId');
+                    } else {
+                      context.push('/grouped-instance-detail?speciesId=${grp.speciesId}&locId=${grp.effectiveLocationId ?? ""}');
+                    }
+                  } else {
+                    // First tap when collapsed -> expand
+                    setState(() => _expandedContainerEntityIds.add(primaryId));
+                  }
+                }
+              : null,
+        );
 
-        // Container Expand Chevron overlay if entity is a container (Point 1)
+        // Container Stack Items (Point 1: First tap expands, second tap opens detail, recursive subtree)
         if (isContainer) {
           tileWidget = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  tileWidget,
-                  Positioned(
-                    right: 48,
-                    child: IconButton(
-                      icon: Icon(
-                        isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                        color: theme.colorScheme.primary,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          if (isExpanded) {
-                            _expandedContainerEntityIds.remove(primaryId);
-                          } else {
-                            _expandedContainerEntityIds.add(primaryId);
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              // Indented Contained Stack Items (Point 1)
+              tileWidget,
               if (isExpanded)
                 Padding(
                   padding: const EdgeInsets.only(left: 28.0, top: 4.0, bottom: 8.0),
@@ -483,26 +475,12 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                       border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
                     ),
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: () {
-                        final containedEntitiesList = containedIds
-                            .map((cId) => allEntitiesMap[cId])
-                            .whereType<WorldEntity>()
-                            .toList();
-
-                        final containedGroups = EffectiveEntityGroup.groupEntities(
-                          entities: containedEntitiesList,
-                          effectiveLocationMap: {for (var e in containedEntitiesList) e.id: e.locationId},
-                        );
-
-                        return containedGroups.map((cGrp) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 6.0),
-                            child: EffectiveGroupTile(group: cGrp),
-                          );
-                        }).toList();
-                      }(),
+                    child: _buildContainerSubtree(
+                      parentEntityId: primaryId,
+                      containerChildrenMap: containerChildrenMap,
+                      allEntitiesMap: allEntitiesMap,
+                      theme: theme,
+                      visited: {primaryId},
                     ),
                   ),
                 ),
@@ -594,6 +572,88 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
         return selectionContent;
       },
+    );
+  }
+
+  Widget _buildContainerSubtree({
+    required String parentEntityId,
+    required Map<String, List<String>> containerChildrenMap,
+    required Map<String, WorldEntity> allEntitiesMap,
+    required ThemeData theme,
+    required Set<String> visited,
+  }) {
+    if (visited.contains(parentEntityId)) return const SizedBox.shrink();
+    visited.add(parentEntityId);
+
+    final containedIds = containerChildrenMap[parentEntityId] ?? [];
+    if (containedIds.isEmpty) return const SizedBox.shrink();
+
+    final containedEntitiesList = containedIds
+        .map((cId) => allEntitiesMap[cId])
+        .whereType<WorldEntity>()
+        .toList();
+
+    final containedGroups = EffectiveEntityGroup.groupEntities(
+      entities: containedEntitiesList,
+      effectiveLocationMap: {for (var e in containedEntitiesList) e.id: e.locationId},
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: containedGroups.map((cGrp) {
+        final cPrimaryId = cGrp.primaryEntity.id;
+        final cChildContainedIds = containerChildrenMap[cPrimaryId] ?? [];
+        final cIsContainer = cChildContainedIds.isNotEmpty;
+        final cIsExpanded = _expandedContainerEntityIds.contains(cPrimaryId);
+
+        Widget cTile = EffectiveGroupTile(
+          group: cGrp,
+          onTap: cIsContainer
+              ? () {
+                  if (cIsExpanded) {
+                    if (cGrp.population == 1) {
+                      context.push('/entity/$cPrimaryId');
+                    } else {
+                      context.push('/grouped-instance-detail?speciesId=${cGrp.speciesId}&locId=${cGrp.effectiveLocationId ?? ""}');
+                    }
+                  } else {
+                    setState(() => _expandedContainerEntityIds.add(cPrimaryId));
+                  }
+                }
+              : null,
+        );
+
+        if (cIsContainer) {
+          cTile = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              cTile,
+              if (cIsExpanded)
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, top: 4.0, bottom: 6.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
+                    ),
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: _buildContainerSubtree(
+                      parentEntityId: cPrimaryId,
+                      containerChildrenMap: containerChildrenMap,
+                      allEntitiesMap: allEntitiesMap,
+                      theme: theme,
+                      visited: Set.from(visited),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: cTile,
+        );
+      }).toList(),
     );
   }
 }

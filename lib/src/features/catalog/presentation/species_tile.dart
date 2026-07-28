@@ -6,6 +6,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
+import 'species_text_badge_avatar.dart';
 
 class SpeciesTile extends ConsumerWidget {
   final CatalogItem species;
@@ -108,9 +109,9 @@ class SpeciesTile extends ConsumerWidget {
                           fit: BoxFit.contain, // Transparent PNG support
                         );
                       }
-                      return Container(
-                        color: theme.colorScheme.primary.withAlpha(20),
-                        child: Icon(Icons.auto_awesome, color: theme.colorScheme.primary, size: 22),
+                      return SpeciesTextBadgeAvatar(
+                        speciesName: species.name,
+                        size: 44,
                       );
                     },
                   ),

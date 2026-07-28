@@ -19,6 +19,7 @@ import '../domain/taxonomy/perishability_inference_engine.dart';
 import 'subspecies_section_widget.dart';
 import 'web_image_picker_dialog.dart';
 import 'add_edit_subspecies_modal.dart';
+import 'subspecies_tile.dart';
 
 class SpeciesFormModal extends ConsumerStatefulWidget {
   final CatalogItem? initialSpecies; // Null for Create mode, Non-null for Edit mode
@@ -726,21 +727,10 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                   itemCount: _draftSubspecies.length,
                                   itemBuilder: (ctx, idx) {
                                     final sub = _draftSubspecies[idx];
-                                    return ListTile(
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      leading: CircleAvatar(
-                                        radius: 14,
-                                        backgroundColor: theme.colorScheme.secondary.withAlpha(30),
-                                        child: Icon(Icons.branding_watermark, size: 14, color: theme.colorScheme.secondary),
-                                      ),
-                                      title: Text('${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                                       subtitle: (sub.barcode != null || sub.notes != null)
-                                           ? Text(
-                                               sub.barcode != null ? '${AppStrings.barcodeLabel}: ${sub.barcode}' : sub.notes!,
-                                               style: const TextStyle(fontSize: 11),
-                                             )
-                                           : null,
+                                    return SubspeciesTile(
+                                      subspecies: sub,
+                                      speciesName: _nameController.text.trim(),
+                                      onTap: () => _addOrEditDraftSubspeciesModal(initial: sub, editIndex: idx),
                                       trailing: IconButton(
                                         icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
                                         onPressed: () => setState(() => _draftSubspecies.removeAt(idx)),

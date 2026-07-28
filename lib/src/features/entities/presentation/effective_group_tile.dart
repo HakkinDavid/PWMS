@@ -8,10 +8,12 @@ import 'quantity_adjustment_sheet.dart';
 
 class EffectiveGroupTile extends ConsumerWidget {
   final EffectiveEntityGroup group;
+  final VoidCallback? onTap;
 
   const EffectiveGroupTile({
     super.key,
     required this.group,
+    this.onTap,
   });
 
   @override
@@ -25,7 +27,7 @@ class EffectiveGroupTile extends ConsumerWidget {
 
     return InstancePreviewCard(
       group: group,
-      onTap: () {
+      onTap: onTap ?? () {
         if (group.population == 1) {
           context.push('/entity/${group.primaryEntity.id}');
         } else {

@@ -9,6 +9,8 @@ import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
 import '../domain/world_entity.dart';
 
+import '../../catalog/presentation/species_text_badge_avatar.dart';
+
 class InstancePreviewCard extends ConsumerWidget {
   final WorldEntity? entity;
   final EffectiveEntityGroup? group;
@@ -61,13 +63,27 @@ class InstancePreviewCard extends ConsumerWidget {
       builder: (context, subSnapshot) {
         final subspecies = subSnapshot.data;
         final effectivePhotoPath = subspecies?.resolvePhotoPath(species?.mainPhotoPath);
-        final isCustomSubspecies = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
 
-        final primaryTitle = speciesName;
+        final isHeterogeneousGroup = group != null && !group!.isHomogeneous;
 
-        final typeAndSpeciesText = isCustomSubspecies
-            ? '$speciesType • ${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""} • '
-            : '$speciesType • ';
+        final String primaryTitle;
+        final String typeAndSpeciesText;
+
+        if (isHeterogeneousGroup) {
+          // Heterogeneous group: strictly General Species Name only (Point 3)
+          primaryTitle = speciesName;
+          typeAndSpeciesText = '$speciesType • (Subespecies variadas) • ';
+        } else {
+          // Homogeneous or singular: Subspecies info as primary title (Point 2)
+          final isCustomSub = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
+          if (isCustomSub) {
+            primaryTitle = '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}';
+            typeAndSpeciesText = '$speciesType • $speciesName • ';
+          } else {
+            primaryTitle = speciesName;
+            typeAndSpeciesText = '$speciesType • ';
+          }
+        }
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
 
@@ -81,7 +97,7 @@ class InstancePreviewCard extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
-                  // Photo with Subspecies Fallback to Species
+                  // Photo with Subspecies Fallback to Species Text Badge (Point 4)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: SizedBox(
@@ -96,15 +112,15 @@ class InstancePreviewCard extends ConsumerWidget {
                             return Image.file(
                               File(photoSnapshot.data!),
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
-                                color: theme.colorScheme.primary.withAlpha(20),
-                                child: Icon(Icons.category, color: theme.colorScheme.primary, size: 24),
+                              errorBuilder: (_, __, ___) => SpeciesTextBadgeAvatar(
+                                speciesName: speciesName,
+                                size: 48,
                               ),
                             );
                           }
-                          return Container(
-                            color: theme.colorScheme.primary.withAlpha(20),
-                            child: Icon(Icons.category, color: theme.colorScheme.primary, size: 24),
+                          return SpeciesTextBadgeAvatar(
+                            speciesName: speciesName,
+                            size: 48,
                           );
                         },
                       ),
