@@ -79,10 +79,18 @@ class ProductLookupService {
       }
     }
 
-    // Level 1: Open Food Facts API (v2)
-    final offResult = await _fetchFromOpenFoodFacts(cleanCode);
-    if (offResult != null) {
-      return await _ensureCleanPhotoAndSave(offResult);
+    // Level 1: Open Food Facts, Open Beauty Facts, Open Products Facts, Open Pet Food Facts APIs (v2)
+    final openFactsDomains = [
+      'world.openfoodfacts.org',
+      'world.openbeautyfacts.org',
+      'world.openproductsfacts.org',
+      'world.openpetfoodfacts.org',
+    ];
+    for (final domain in openFactsDomains) {
+      final offResult = await _fetchFromOpenFactsApi(domain, cleanCode);
+      if (offResult != null) {
+        return await _ensureCleanPhotoAndSave(offResult);
+      }
     }
 
     // Level 2: UPC Item DB Trial API
@@ -179,9 +187,9 @@ class ProductLookupService {
     return null;
   }
 
-  Future<ProductLookupResult?> _fetchFromOpenFoodFacts(String barcode) async {
+  Future<ProductLookupResult?> _fetchFromOpenFactsApi(String domain, String barcode) async {
     try {
-      final uri = Uri.parse('https://world.openfoodfacts.org/api/v2/product/$barcode.json');
+      final uri = Uri.parse('https://$domain/api/v2/product/$barcode.json');
       final response = await _client.get(uri).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {

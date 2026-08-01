@@ -203,6 +203,23 @@ class SpeciesDetailView extends ConsumerWidget {
                         avatar: Icon(Icons.star, size: 12, color: Colors.amber),
                         label: Text(AppStrings.isUniqueLabel, style: TextStyle(fontSize: 11)),
                       ),
+                    Chip(
+                      visualDensity: VisualDensity.compact,
+                      avatar: Icon(
+                        species.isNonPerishable ? Icons.shield_outlined : Icons.timer_outlined,
+                        size: 12,
+                        color: species.isNonPerishable ? Colors.green : Colors.orange,
+                      ),
+                      label: Text(
+                        species.isNonPerishable
+                            ? 'Imperecedero'
+                            : 'Perecedero${species.defaultShelfLifeDays != null ? " (${species.defaultShelfLifeDays} días de vida útil)" : ""}',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: species.isNonPerishable ? Colors.green.shade800 : Colors.orange.shade900,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

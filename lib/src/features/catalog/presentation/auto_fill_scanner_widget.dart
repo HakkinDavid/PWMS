@@ -21,7 +21,7 @@ class AutoFillScannerWidget extends ConsumerStatefulWidget {
 
 class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
   late MobileScannerController _scannerController;
-  String? _selectedLocationId;
+  final TextEditingController _manualBarcodeCtrl = TextEditingController();
   bool _isProcessing = false;
 
   // Smart Cooldown tracking
@@ -32,7 +32,6 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
   @override
   void initState() {
     super.initState();
-    _selectedLocationId = widget.initialLocationId;
     _scannerController = MobileScannerController(
       detectionSpeed: DetectionSpeed.normal,
       torchEnabled: false,
@@ -41,6 +40,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
 
   @override
   void dispose() {
+    _manualBarcodeCtrl.dispose();
     _scannerController.dispose();
     super.dispose();
   }
@@ -78,7 +78,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
         if (species != null) {
           await entityRepo.instantiateOrMerge(
             species.id,
-            _selectedLocationId,
+            widget.initialLocationId,
             1.0,
             subspeciesId: existingSub.id,
           );
@@ -88,16 +88,36 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
         }
       }
 
-      // 2. Si no existe localmente, consultar APIs en línea y notificar al modal para confirmación
+      // 2. Si no existe localmente, consultar APIs en línea
       final onlineResult = await lookupService.lookupByBarcode(rawBarcode);
-      final resultToPass = onlineResult ?? ProductLookupResult(
-        generalSpeciesName: '',
-        subspeciesName: '',
-        barcode: rawBarcode,
-      );
-
-      if (mounted) {
-        widget.onScannedResult?.call(resultToPass);
+      
+      if (onlineResult != null) {
+        if (mounted) {
+          widget.onScannedResult?.call(onlineResult);
+        }
+      } else {
+        // Punto 2: Código inválido o no encontrado: mostrar diálogo y negarse
+        if (mounted) {
+          await showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: Colors.amber),
+                  SizedBox(width: 8),
+                  Text('Código Inválido / No Hallado'),
+                ],
+              ),
+              content: Text('El código de barras "$rawBarcode" no corresponde a un producto conocido ni se encontró en las bases de datos en línea.'),
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Aceptar'),
+                ),
+              ],
+            ),
+          );
+        }
       }
     } catch (e) {
       _showFeedback('Error en autollenado: $e', isError: true);
@@ -131,8 +151,6 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
         }
 
         _showFeedback('No se detectó un código de barras o ISBN en la imagen.', isError: true);
-
-        _showFeedback('No se halló coincidencia clara para la foto.', isError: true);
       } else {
         _showFeedback('No se seleccionó ninguna foto.');
       }
@@ -167,54 +185,14 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final locationState = ref.watch(locationNodeListProvider);
-    final locations = locationState.asData?.value ?? [];
-
-    _selectedLocationId ??= locations.firstOrNull?.id;
 
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Selector de Ubicación Actual
-          Card(
-            elevation: 0,
-            color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
-            margin: const EdgeInsets.only(bottom: 12),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: Row(
-                children: [
-                  const Icon(Icons.location_on, size: 20, color: Colors.blueAccent),
-                  const SizedBox(width: 8),
-                  const Text('Ubicación actual:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: _selectedLocationId,
-                        hint: const Text('Seleccionar ubicación'),
-                        items: locations.map((loc) {
-                          return DropdownMenuItem(
-                            value: loc.id,
-                            child: Text(loc.name, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          if (val != null) setState(() => _selectedLocationId = val);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
           // Visor de Cámara Compacto en Ratio Rectangular 16:9
           Container(
-            height: 220,
+            height: 200,
             width: double.infinity,
             margin: const EdgeInsets.only(bottom: 12),
             child: AspectRatio(
@@ -276,7 +254,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
           // Botón Obturador para Capturar Coincidencia Visual
           SizedBox(
             width: double.infinity,
-            height: 46,
+            height: 44,
             child: ElevatedButton.icon(
               onPressed: _isProcessing ? null : _handleShutterCapture,
               style: ElevatedButton.styleFrom(
@@ -289,6 +267,48 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
                   : const Icon(Icons.camera_alt, size: 20),
               label: Text(_isProcessing ? 'Procesando...' : 'Capturar Coincidencia Visual', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
             ),
+          ),
+          const SizedBox(height: 12),
+
+          // Punto 5: Campo de texto para Ingreso Manual de Código de Barras
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _manualBarcodeCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'Código de barras manual...',
+                    prefixIcon: Icon(Icons.qr_code, size: 20),
+                    isDense: true,
+                  ),
+                  onSubmitted: (val) {
+                    if (val.trim().isNotEmpty) {
+                      _handleBarcodeDetected(val.trim());
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton.icon(
+                onPressed: _isProcessing
+                    ? null
+                    : () {
+                        final code = _manualBarcodeCtrl.text.trim();
+                        if (code.isNotEmpty) {
+                          _handleBarcodeDetected(code);
+                        } else {
+                          _showFeedback('Ingresa un código de barras', isError: true);
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                icon: const Icon(Icons.search, size: 18),
+                label: const Text('Buscar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              ),
+            ],
           ),
         ],
       ),

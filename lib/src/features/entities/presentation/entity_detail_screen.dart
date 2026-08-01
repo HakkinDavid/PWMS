@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
-import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_detail_view.dart';
@@ -14,7 +13,6 @@ import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
 import '../../catalog/presentation/requirements_section_widget.dart';
 import '../domain/entity_template.dart';
-import '../domain/instance_magnitude.dart';
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
   final String entityId;
@@ -30,6 +28,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   final _qtyController = TextEditingController();
   final _notesController = TextEditingController();
   String? _selectedLocationId;
+  DateTime? _selectedExpirationDate;
+  final Map<String, double> _editedMagnitudeValues = {};
 
   @override
   void dispose() {
@@ -89,6 +89,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             _qtyController.text = hasMagnitudes ? DomainRules.formatMagnitude(primaryVal, primaryUnit) : '';
             _notesController.text = entity.notes ?? '';
             _selectedLocationId = entity.locationId;
+            _selectedExpirationDate = entity.expirationDate;
+            for (final mag in entity.magnitudes) {
+              _editedMagnitudeValues[mag.id] = mag.magnitudeValue;
+            }
           }
 
           final catalogItems = catalogState.asData?.value ?? [];
@@ -115,7 +119,6 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             catalogItems: catalogItems,
             subspeciesList: subspeciesList,
           );
-          final isIntegerUnit = DomainRules.isIntegerUnit(primaryUnit);
 
           // Instance Header Controls & Interactive Directed Graph
           final instanceHeader = Column(
@@ -261,6 +264,71 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
+              // Punto 8: Sección de Fecha de Caducidad (expirationDate)
+              Card(
+                margin: EdgeInsets.zero,
+                color: _selectedExpirationDate != null && _selectedExpirationDate!.isBefore(DateTime.now())
+                    ? Colors.red.withAlpha(30)
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.event_available, color: Colors.orangeAccent, size: 22),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Fecha de Caducidad', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                            const SizedBox(height: 2),
+                            if (_selectedExpirationDate == null)
+                              const Text('Sin fecha asignada', style: TextStyle(color: Colors.grey, fontSize: 11))
+                            else
+                              Builder(
+                                builder: (_) {
+                                  final now = DateTime.now();
+                                  final diffDays = _selectedExpirationDate!.difference(now).inDays;
+                                  final dateStr = '${_selectedExpirationDate!.day}/${_selectedExpirationDate!.month}/${_selectedExpirationDate!.year}';
+                                  if (diffDays < 0) {
+                                    return Text('$dateStr (Vencido hace ${-diffDays} días)', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 11));
+                                  } else if (diffDays <= 7) {
+                                    return Text('$dateStr (¡Vence en $diffDays días!)', style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 11));
+                                  } else {
+                                    return Text('$dateStr (Vence en $diffDays días)', style: const TextStyle(color: Colors.green, fontSize: 11));
+                                  }
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                      if (_isEditingInPlace) ...[
+                        IconButton(
+                          icon: const Icon(Icons.edit_calendar, size: 20),
+                          onPressed: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: _selectedExpirationDate ?? DateTime.now().add(const Duration(days: 30)),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                            if (picked != null) {
+                              setState(() => _selectedExpirationDate = picked);
+                            }
+                          },
+                        ),
+                        if (_selectedExpirationDate != null)
+                          IconButton(
+                            icon: const Icon(Icons.clear, size: 18, color: Colors.grey),
+                            onPressed: () => setState(() => _selectedExpirationDate = null),
+                          ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+
               // Interactive Directed Entity Relations Graph (Passes isEditing mode!)
               InteractiveEntityGraphWidget(
                 currentEntity: entity,
@@ -276,116 +344,91 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
-              // Magnitud Control (Only if magnitudes exist!)
+              // Punto 8: Magnitudes 4NF de la Instancia (Lista Interactiva Completa)
               if (template.hasQuantity && hasMagnitudes) ...[
-                Row(
-                  children: [
-                    Text(
-                      AppStrings.quantityLabel,
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: _isEditingInPlace ? theme.colorScheme.primary.withAlpha(20) : theme.cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: theme.dividerColor),
-                      ),
-                      child: isIntegerUnit
-                          ? Row(
-                              children: [
-                                if (_isEditingInPlace)
-                                  IconButton(
-                                    icon: const Icon(Icons.remove, size: 16),
-                                    onPressed: () async {
-                                      final currentQty = double.tryParse(_qtyController.text.trim()) ?? 1.0;
-                                      final newQty = currentQty - 1.0;
-                                      if (newQty <= 0) {
-                                        await _handleDeletion(species: species, entityId: entity.id);
-                                      } else {
-                                        setState(() => _qtyController.text = DomainRules.formatMagnitude(newQty, primaryUnit));
-                                      }
-                                    },
-                                  ),
-                                GestureDetector(
-                                  onTap: isIntegerUnit && _isEditingInPlace
-                                      ? () async {
-                                          final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
-                                          final picked = await IntegerWheelPicker.show(context, initialValue: currentVal, minValue: 0);
-                                          if (picked != null) {
-                                            if (picked == 0) {
-                                              await _handleDeletion(species: species, entityId: entity.id);
-                                            } else {
-                                              setState(() => _qtyController.text = '$picked');
-                                            }
-                                          }
-                                        }
-                                      : null,
-                                  child: Container(
-                                    width: 60,
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text(
-                                      _qtyController.text,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                    ),
-                                  ),
-                                ),
-                                if (primaryUnit.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Text(
-                                      primaryUnit,
-                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                if (_isEditingInPlace)
-                                  IconButton(
-                                    icon: const Icon(Icons.add, size: 16),
-                                    onPressed: () {
-                                      final currentQty = double.tryParse(_qtyController.text.trim()) ?? 0.0;
-                                      final newQty = currentQty + 1.0;
-                                      setState(() => _qtyController.text = DomainRules.formatMagnitude(newQty, primaryUnit));
-                                    },
-                                  ),
-                              ],
-                            )
-                          : Container(
-                              width: 110,
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                Card(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Magnitudes Físicas de la Instancia (4NF)',
+                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: entity.magnitudes.length,
+                          itemBuilder: (ctx, idx) {
+                            final mag = entity.magnitudes[idx];
+                            final currentVal = _editedMagnitudeValues[mag.id] ?? mag.magnitudeValue;
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4.0),
                               child: Row(
                                 children: [
+                                  const Icon(Icons.straighten, size: 18, color: Colors.blueAccent),
+                                  const SizedBox(width: 8),
                                   Expanded(
-                                    child: TextField(
-                                      controller: _qtyController,
-                                      enabled: _isEditingInPlace,
-                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.zero,
-                                        isDense: true,
-                                      ),
+                                    child: Text(
+                                      mag.propertyName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                     ),
                                   ),
-                                  if (primaryUnit.isNotEmpty)
+                                  if (_isEditingInPlace)
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.remove_circle_outline, size: 20),
+                                          onPressed: () {
+                                            final val = _editedMagnitudeValues[mag.id] ?? mag.magnitudeValue;
+                                            final next = (val - 1.0) > 0 ? (val - 1.0) : 0.0;
+                                            setState(() => _editedMagnitudeValues[mag.id] = next);
+                                          },
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: theme.dividerColor),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            DomainRules.formatMagnitude(currentVal, mag.unitSymbol),
+                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.add_circle_outline, size: 20),
+                                          onPressed: () {
+                                            final val = _editedMagnitudeValues[mag.id] ?? mag.magnitudeValue;
+                                            setState(() => _editedMagnitudeValues[mag.id] = val + 1.0);
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  else
                                     Text(
-                                      primaryUnit,
-                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                      '${DomainRules.formatMagnitude(currentVal, mag.unitSymbol)} ${mag.unitSymbol}',
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.blueAccent),
                                     ),
                                 ],
                               ),
-                            ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 14),
               ],
             ],
           );
 
-          // Instance Footer (Notes)
+          // Instance Footer (Notes & Save Action)
           final hasNotes = entity.notes != null && entity.notes!.trim().isNotEmpty;
           final Widget? instanceFooter = (_isEditingInPlace || hasNotes)
               ? Column(
@@ -411,27 +454,20 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         height: 48,
                         child: ElevatedButton.icon(
                           onPressed: () async {
-                            final newQty = double.tryParse(_qtyController.text.trim()) ?? primaryVal;
-                            final hasLocationChanged = _selectedLocationId != entity.locationId;
-                            final hasQtyChanged = newQty != primaryVal;
-                            final hasNotesChanged = _notesController.text.trim() != (entity.notes ?? '');
+                            final updatedMags = entity.magnitudes.map((m) {
+                              final newV = _editedMagnitudeValues[m.id];
+                              return newV != null ? m.copyWith(magnitudeValue: newV) : m;
+                            }).toList();
 
-                            if (hasLocationChanged || hasQtyChanged || hasNotesChanged) {
-                              final updatedMags = List<InstanceMagnitude>.from(entity.magnitudes);
-                              if (updatedMags.isNotEmpty) {
-                                updatedMags[0] = updatedMags[0].copyWith(magnitudeValue: newQty);
-                              }
+                            final updated = entity.copyWith(
+                              locationId: _selectedLocationId,
+                              expirationDate: _selectedExpirationDate,
+                              magnitudes: updatedMags,
+                              notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+                              updatedAt: DateTime.now(),
+                            );
 
-                              final updated = entity.copyWith(
-                                locationId: _selectedLocationId,
-                                magnitudes: updatedMags,
-                                notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-                                updatedAt: DateTime.now(),
-                              );
-
-                              await ref.read(entityListProvider.notifier).saveEntity(updated);
-                            }
-
+                            await ref.read(entityListProvider.notifier).saveEntity(updated);
                             setState(() => _isEditingInPlace = false);
                           },
                           icon: const Icon(Icons.check),

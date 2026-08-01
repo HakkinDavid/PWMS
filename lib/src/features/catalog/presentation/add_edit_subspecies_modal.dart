@@ -14,6 +14,7 @@ class AddEditSubspeciesModal extends ConsumerStatefulWidget {
   final Subspecies? initialSubspecies;
   final String? defaultSpeciesName;
   final bool isObject;
+  final bool isFromAutoFill;
 
   const AddEditSubspeciesModal({
     super.key,
@@ -21,6 +22,7 @@ class AddEditSubspeciesModal extends ConsumerStatefulWidget {
     this.initialSubspecies,
     this.defaultSpeciesName,
     this.isObject = true,
+    this.isFromAutoFill = false,
   });
 
   static Future<Subspecies?> show(
@@ -29,6 +31,7 @@ class AddEditSubspeciesModal extends ConsumerStatefulWidget {
     Subspecies? initialSubspecies,
     String? defaultSpeciesName,
     bool isObject = true,
+    bool isFromAutoFill = false,
   }) async {
     return showDialog<Subspecies?>(
       context: context,
@@ -37,6 +40,7 @@ class AddEditSubspeciesModal extends ConsumerStatefulWidget {
         initialSubspecies: initialSubspecies,
         defaultSpeciesName: defaultSpeciesName,
         isObject: isObject,
+        isFromAutoFill: isFromAutoFill,
       ),
     );
   }
@@ -51,6 +55,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
   late TextEditingController _barcodeController;
   late TextEditingController _notesController;
 
+  String? _selectedSpeciesId;
   String? _photoPath;
   XFile? _newPickedImage;
 
@@ -58,6 +63,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
   void initState() {
     super.initState();
     final initial = widget.initialSubspecies;
+    _selectedSpeciesId = widget.species?.id ?? initial?.speciesId;
     _nameController = TextEditingController(text: initial?.subspeciesName ?? '');
     _brandController = TextEditingController(text: initial?.brand ?? '');
     _barcodeController = TextEditingController(text: initial?.barcode ?? '');
@@ -85,9 +91,11 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       finalPhotoPath = await storage.saveFile(_newPickedImage!.path);
     }
 
+    final targetSpeciesId = _selectedSpeciesId ?? widget.species?.id ?? widget.initialSubspecies?.speciesId ?? '';
+
     final resultSubspecies = Subspecies(
       id: widget.initialSubspecies?.id ?? const Uuid().v4(),
-      speciesId: widget.species?.id ?? widget.initialSubspecies?.speciesId ?? '',
+      speciesId: targetSpeciesId,
       subspeciesName: name,
       brand: _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
       barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
@@ -110,7 +118,11 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     final query = [if (name.isNotEmpty) name, if (brand.isNotEmpty) brand].join(' ');
     final finalQuery = query.isNotEmpty ? query : (widget.species?.name ?? widget.defaultSpeciesName ?? '');
 
-    final relPath = await WebImagePickerDialog.show(context, searchQuery: finalQuery);
+    final relPath = await WebImagePickerDialog.show(
+      context,
+      searchQuery: finalQuery,
+      targetSubspecies: widget.initialSubspecies,
+    );
     if (relPath != null && relPath.isNotEmpty && mounted) {
       setState(() {
         _photoPath = relPath;
@@ -123,6 +135,10 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isEditing = widget.initialSubspecies != null;
+    final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
+    
+    _selectedSpeciesId ??= catalogItems.firstOrNull?.id;
+
     final isObjectMode = widget.species == null
         ? widget.isObject
         : widget.species!.type == AppStrings.typeObject;
@@ -135,7 +151,31 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Punto 9: Desplegable de selección de Especie (únicamente si es llenado automático)
+            if (widget.isFromAutoFill && catalogItems.isNotEmpty) ...[
+              const Text('Especie asociada:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              const SizedBox(height: 4),
+              DropdownButtonFormField<String>(
+                initialValue: catalogItems.any((c) => c.id == _selectedSpeciesId) ? _selectedSpeciesId : catalogItems.first.id,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.public),
+                  isDense: true,
+                ),
+                items: catalogItems.map((c) {
+                  return DropdownMenuItem(
+                    value: c.id,
+                    child: Text('${c.name} (${c.type})', overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null) setState(() => _selectedSpeciesId = val);
+                },
+              ),
+              const SizedBox(height: 12),
+            ],
+
             // Photo Picker Box
             GestureDetector(
               onTap: () async {
@@ -185,10 +225,12 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
             const SizedBox(height: 6),
 
             // Web Image Search Button strictly for Subspecies (Point 4)
-            TextButton.icon(
-              onPressed: _searchSubspeciesWebImage,
-              icon: const Icon(Icons.image_search, size: 16),
-              label: const Text('Buscar foto en Web'),
+            Center(
+              child: TextButton.icon(
+                onPressed: _searchSubspeciesWebImage,
+                icon: const Icon(Icons.image_search, size: 16),
+                label: const Text('Buscar foto en Web'),
+              ),
             ),
             const SizedBox(height: 8),
 

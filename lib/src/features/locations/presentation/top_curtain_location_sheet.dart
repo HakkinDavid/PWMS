@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/providers/providers.dart';
 import '../domain/location_node.dart';
 
-class TopCurtainLocationSheet extends StatefulWidget {
+class TopCurtainLocationSheet extends ConsumerStatefulWidget {
   final List<LocationNode> allLocations;
   final String? selectedLocationId;
   final ValueChanged<String?> onLocationSelected;
@@ -16,10 +20,10 @@ class TopCurtainLocationSheet extends StatefulWidget {
   });
 
   @override
-  State<TopCurtainLocationSheet> createState() => _TopCurtainLocationSheetState();
+  ConsumerState<TopCurtainLocationSheet> createState() => _TopCurtainLocationSheetState();
 }
 
-class _TopCurtainLocationSheetState extends State<TopCurtainLocationSheet> with SingleTickerProviderStateMixin {
+class _TopCurtainLocationSheetState extends ConsumerState<TopCurtainLocationSheet> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _expandAnimation;
   bool _isExpanded = false;
@@ -52,6 +56,58 @@ class _TopCurtainLocationSheetState extends State<TopCurtainLocationSheet> with 
         _controller.reverse();
       }
     });
+  }
+
+  void _showCreateLocationDialog(BuildContext context, {String? parentId}) {
+    final nameCtrl = TextEditingController();
+    final descCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(parentId == null ? AppStrings.newLocationTitle : AppStrings.newSubLocationTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameCtrl,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: AppStrings.locationNameLabel,
+                prefixIcon: Icon(Icons.account_tree_outlined),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: descCtrl,
+              decoration: const InputDecoration(
+                labelText: AppStrings.locationDescriptionLabel,
+                prefixIcon: Icon(Icons.notes_outlined),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(AppStrings.cancel)),
+          ElevatedButton(
+            onPressed: () async {
+              final name = nameCtrl.text.trim();
+              if (name.isEmpty) return;
+              final newNode = LocationNode(
+                id: const Uuid().v4(),
+                name: name,
+                parentLocationId: parentId,
+                description: descCtrl.text.trim().isNotEmpty ? descCtrl.text.trim() : null,
+                createdAt: DateTime.now(),
+              );
+              await ref.read(locationNodeListProvider.notifier).saveNode(newNode);
+              if (ctx.mounted) Navigator.pop(ctx);
+            },
+            child: const Text(AppStrings.save),
+          ),
+        ],
+      ),
+    );
   }
 
   String _buildBreadcrumbPath() {
@@ -105,6 +161,11 @@ class _TopCurtainLocationSheetState extends State<TopCurtainLocationSheet> with 
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     color: isSelected ? theme.colorScheme.primary : null,
                   ),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_location_alt_outlined, size: 18),
+                  tooltip: AppStrings.newSubLocationTitle,
+                  onPressed: () => _showCreateLocationDialog(context, parentId: node.id),
                 ),
                 onTap: () {
                   widget.onLocationSelected(node.id);
@@ -166,6 +227,11 @@ class _TopCurtainLocationSheetState extends State<TopCurtainLocationSheet> with 
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add_location_alt_outlined, size: 20),
+                        tooltip: AppStrings.newLocationTitle,
+                        onPressed: () => _showCreateLocationDialog(context),
                       ),
                       IconButton(
                         icon: AnimatedRotation(

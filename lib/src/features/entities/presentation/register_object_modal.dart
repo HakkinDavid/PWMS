@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/subspecies.dart';
+import '../../catalog/presentation/add_edit_subspecies_modal.dart';
 import '../../catalog/presentation/auto_fill_scanner_widget.dart';
 import '../../catalog/presentation/species_form_modal.dart';
 import '../../catalog/presentation/species_tile.dart';
@@ -170,10 +173,49 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         return AutoFillScannerWidget(
           initialLocationId: widget.initialLocationId,
           onScannedResult: (result) {
-            setState(() {
-              _activeScannedResult = result;
-              _currentMode = RegisterModalMode.createNewSpecies;
-            });
+            final catalog = catalogItems;
+            final genName = result.generalSpeciesName.trim().toLowerCase();
+            final matchingSpecies = catalog.where((c) => c.name.trim().toLowerCase() == genName && genName.isNotEmpty).firstOrNull;
+
+            if (matchingSpecies != null) {
+              // Punto 3 & 9: Especie conocida -> abrir creador de Subespecies para esa Especie (con isFromAutoFill: true)
+              setState(() {
+                _selectedSpeciesIdForSubspecies = matchingSpecies.id;
+                _currentMode = RegisterModalMode.addSubspeciesToExisting;
+              });
+
+              final subName = result.subspeciesName.trim();
+              final finalSubName = subName.isNotEmpty ? subName : matchingSpecies.name;
+
+              AddEditSubspeciesModal.show(
+                context,
+                species: matchingSpecies,
+                initialSubspecies: Subspecies(
+                  id: const Uuid().v4(),
+                  speciesId: matchingSpecies.id,
+                  subspeciesName: finalSubName,
+                  brand: result.brand?.toString(),
+                  barcode: result.barcode?.toString(),
+                  photoPath: result.localPhotoPath?.toString() ?? result.photoUrl?.toString(),
+                  notes: result.description?.toString(),
+                  createdAt: DateTime.now(),
+                ),
+                isFromAutoFill: true,
+              ).then((newSub) async {
+                if (newSub != null && mounted) {
+                  await ref.read(catalogRepositoryProvider).saveSubspecies(newSub);
+                  ref.invalidate(catalogListProvider);
+                  ref.invalidate(subspeciesListProvider);
+                  ref.invalidate(entityListProvider);
+                }
+              });
+            } else {
+              // Especie desconocida -> crear nueva especie
+              setState(() {
+                _activeScannedResult = result;
+                _currentMode = RegisterModalMode.createNewSpecies;
+              });
+            }
           },
         );
     }
