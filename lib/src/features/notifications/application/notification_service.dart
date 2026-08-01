@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../catalog/infrastructure/catalog_repository.dart';
 import '../../entities/infrastructure/entity_repository.dart';
@@ -72,7 +73,7 @@ class NotificationService {
           final notif = AppNotification(
             id: existing?.id ?? const Uuid().v4(),
             type: 'expired',
-            title: 'Ítem Caducado',
+            title: AppStrings.expiredItemTitle,
             message: '"$speciesName" ha caducado (${_formatDate(entity.expirationDate)}).',
             targetId: entity.id,
             targetType: 'entity',
@@ -95,7 +96,7 @@ class NotificationService {
           final notif = AppNotification(
             id: existing?.id ?? const Uuid().v4(),
             type: 'expiring_soon',
-            title: 'Caducidad Próxima',
+            title: AppStrings.expiringSoonTitle,
             message: '"$speciesName" caducará en $daysLeft día(s) (${_formatDate(entity.expirationDate)}).',
             targetId: entity.id,
             targetType: 'entity',
@@ -126,7 +127,7 @@ class NotificationService {
       final requiredQty = entry.value;
 
       final species = catalogMap[reqSpeciesId];
-      final speciesName = species?.name ?? 'Especie';
+      final speciesName = species?.name ?? AppStrings.typeObject;
       final canExpire = species?.canExpire ?? false;
 
       // Count valid non-expired stock
@@ -145,7 +146,7 @@ class NotificationService {
         final notif = AppNotification(
           id: existing?.id ?? const Uuid().v4(),
           type: 'unsatisfied_need',
-          title: 'Necesidad Insatisfecha',
+          title: AppStrings.unsatisfiedNeedTitle,
           message: 'Faltan $deficitStr unidad(es) de "$speciesName" para cubrir los requerimientos totales ($validStockCount/$requiredQty disponible).',
           targetId: reqSpeciesId,
           targetType: 'species',

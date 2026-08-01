@@ -280,10 +280,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Fecha de Caducidad', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                            const Text(AppStrings.expirationDateLabel, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                             const SizedBox(height: 2),
                             if (_selectedExpirationDate == null)
-                              const Text('Sin fecha asignada', style: TextStyle(color: Colors.grey, fontSize: 11))
+                              const Text(AppStrings.noExpirationDateAssigned, style: TextStyle(color: Colors.grey, fontSize: 11))
                             else
                               Builder(
                                 builder: (_) {
@@ -291,11 +291,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   final diffDays = _selectedExpirationDate!.difference(now).inDays;
                                   final dateStr = '${_selectedExpirationDate!.day}/${_selectedExpirationDate!.month}/${_selectedExpirationDate!.year}';
                                   if (diffDays < 0) {
-                                    return Text('$dateStr (Vencido hace ${-diffDays} días)', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 11));
+                                    return Text('$dateStr (${AppStrings.expiredDaysAgoPrefix}${-diffDays}${AppStrings.expiredDaysAgoSuffix})', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 11));
                                   } else if (diffDays <= 7) {
-                                    return Text('$dateStr (¡Vence en $diffDays días!)', style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 11));
+                                    return Text('$dateStr (${AppStrings.expiresInDaysAlertPrefix}$diffDays${AppStrings.expiresInDaysAlertSuffix})', style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 11));
                                   } else {
-                                    return Text('$dateStr (Vence en $diffDays días)', style: const TextStyle(color: Colors.green, fontSize: 11));
+                                    return Text('$dateStr (${AppStrings.expiresInDaysPrefix}$diffDays${AppStrings.expiresInDaysSuffix})', style: const TextStyle(color: Colors.green, fontSize: 11));
                                   }
                                 },
                               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../domain/catalog_item.dart';
@@ -107,10 +108,10 @@ class TaxonomyOperationsDialog {
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(AppStrings.cancel)),
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Separar'),
+              child: Text(AppStrings.separateAction),
             ),
           ],
         );
@@ -124,10 +125,10 @@ class TaxonomyOperationsDialog {
         ref.read(catalogListProvider.notifier).loadCatalog();
         ref.read(entityListProvider.notifier).loadEntities();
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Subespecie separada en la especie "${newSpecies.name}".');
+          AppToast.showSuccess(context, '${AppStrings.subspeciesSeparatedSuccessPrefix}"${newSpecies.name}".');
         }
       } catch (e) {
-        if (context.mounted) AppToast.showError(context, 'Error al separar subespecie: $e');
+        if (context.mounted) AppToast.showError(context, '${AppStrings.separateSubspeciesErrorPrefix}$e');
       }
     }
   }
@@ -138,7 +139,7 @@ class TaxonomyOperationsDialog {
     final targetOptions = catalog.where((c) => c.id != subspecies.speciesId).toList();
 
     if (targetOptions.isEmpty) {
-      AppToast.showRestriction(context, 'No hay otras especies disponibles para mover.');
+      AppToast.showRestriction(context, AppStrings.noOtherSpeciesToMoveError);
       return;
     }
 
@@ -150,7 +151,7 @@ class TaxonomyOperationsDialog {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Mover Subespecie'),
+              title: Text(AppStrings.moveSubspeciesTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,9 +163,9 @@ class TaxonomyOperationsDialog {
                   const SizedBox(height: 16),
                   DropdownButtonFormField<CatalogItem>(
                     value: selectedTarget,
-                    decoration: const InputDecoration(
-                      labelText: 'Nueva Especie Destino',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: AppStrings.targetSpeciesLabel,
+                      border: const OutlineInputBorder(),
                     ),
                     items: targetOptions.map((c) {
                       return DropdownMenuItem(value: c, child: Text(c.name));
@@ -174,10 +175,10 @@ class TaxonomyOperationsDialog {
                 ],
               ),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(AppStrings.cancel)),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(ctx, true),
-                  child: const Text('Mover Subespecie'),
+                  child: Text(AppStrings.moveSubspeciesTitle),
                 ),
               ],
             );
@@ -193,10 +194,10 @@ class TaxonomyOperationsDialog {
         ref.read(catalogListProvider.notifier).loadCatalog();
         ref.read(entityListProvider.notifier).loadEntities();
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Subespecie movida a "${selectedTarget!.name}".');
+          AppToast.showSuccess(context, '${AppStrings.subspeciesMovedSuccessPrefix}"${selectedTarget!.name}".');
         }
       } catch (e) {
-        if (context.mounted) AppToast.showError(context, 'Error al mover subespecie: $e');
+        if (context.mounted) AppToast.showError(context, '${AppStrings.moveSubspeciesErrorPrefix}$e');
       }
     }
   }

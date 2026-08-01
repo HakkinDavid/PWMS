@@ -375,6 +375,35 @@ class AppStrings {
   static const snoozeOneWeek = 'Posponer 1 semana';
   static const snoozeAction = 'Posponer';
   static const dismissAction = 'Descartar';
+  static const expiredItemTitle = 'Elemento caducado';
+  static const expiringSoonTitle = 'Caducidad próxima';
+  static const unsatisfiedNeedTitle = 'Requisito no cubierto';
+
+  // Formularios de Subespecie y Edición
+  static const searchPhotoOnWebAction = 'Buscar foto en la web';
+  static const brandOptionalLabel = 'Marca (opcional)';
+  static const barcodeOptionalLabel = 'Código de barras (opcional)';
+  static const specialNotesOptionalLabel = 'Notas de edición especial (opcional)';
+  static const cannotDeleteSpeciesWithInstancesError = 'No se puede eliminar una especie con instancias registradas.';
+  static const expirationDateLabel = 'Fecha de caducidad';
+  static const noExpirationDateAssigned = 'Sin fecha asignada';
+  static const expiredDaysAgoPrefix = 'Vencido hace ';
+  static const expiredDaysAgoSuffix = ' días';
+  static const expiresInDaysAlertPrefix = '¡Vence en ';
+  static const expiresInDaysAlertSuffix = ' días!';
+  static const expiresInDaysPrefix = 'Vence en ';
+  static const expiresInDaysSuffix = ' días';
+  static const objectsInLocationAndSublocationsSuffix = ' objetos en esta ubicación y sububicaciones';
+  static const moveSubspeciesTitle = 'Mover subespecie';
+  static const targetSpeciesLabel = 'Nueva especie destino';
+  static const subspeciesMovedSuccessPrefix = 'Subespecie movida a ';
+  static const moveSubspeciesErrorPrefix = 'Error al mover subespecie: ';
+  static const associatedSpeciesLabel = 'Especie asociada:';
+  static const separateAction = 'Separar';
+  static const subspeciesSeparatedSuccessPrefix = 'Subespecie separada en la especie ';
+  static const separateSubspeciesErrorPrefix = 'Error al separar subespecie: ';
+  static const noOtherSpeciesToMoveError = 'No hay otras especies disponibles para mover.';
+  static const noOtherSpeciesToMergeError = 'No hay otras especies disponibles para fusionar.';
 
   // Gestión de Población y Caducidad
   static const heterogeneousGroupQuantityError = 'No se puede modificar la cantidad en grupos heterogéneos.';

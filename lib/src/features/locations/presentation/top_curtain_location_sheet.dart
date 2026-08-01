@@ -260,7 +260,7 @@ class _TopCurtainLocationSheetState extends ConsumerState<TopCurtainLocationShee
                           dense: true,
                           visualDensity: VisualDensity.compact,
                           leading: const Icon(Icons.all_inbox_outlined),
-                          title: const Text('Todo', style: TextStyle(fontWeight: FontWeight.bold)),
+                          title: const Text(AppStrings.all, style: TextStyle(fontWeight: FontWeight.bold)),
                           selected: widget.selectedLocationId == null,
                           onTap: () {
                             widget.onLocationSelected(null);

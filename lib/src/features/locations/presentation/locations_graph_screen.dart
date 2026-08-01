@@ -211,7 +211,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
             ),
           ),
           title: Text(node.name, style: TextStyle(fontWeight: FontWeight.bold, color: isFocused ? theme.colorScheme.primary : null)),
-          subtitle: Text('$totalCount objetos en esta ubicación e hijas'),
+          subtitle: Text('$totalCount${AppStrings.objectsInLocationAndSublocationsSuffix}'),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -155,7 +155,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
           children: [
             // Punto 9: Desplegable de selección de Especie (únicamente si es llenado automático)
             if (widget.isFromAutoFill && catalogItems.isNotEmpty) ...[
-              const Text('Especie asociada:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              const Text(AppStrings.associatedSpeciesLabel, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
               const SizedBox(height: 4),
               DropdownButtonFormField<String>(
                 initialValue: catalogItems.any((c) => c.id == _selectedSpeciesId) ? _selectedSpeciesId : catalogItems.first.id,
@@ -229,7 +229,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
               child: TextButton.icon(
                 onPressed: _searchSubspeciesWebImage,
                 icon: const Icon(Icons.image_search, size: 16),
-                label: const Text('Buscar foto en Web'),
+                label: const Text(AppStrings.searchPhotoOnWebAction),
               ),
             ),
             const SizedBox(height: 8),
@@ -249,7 +249,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
               TextField(
                 controller: _brandController,
                 decoration: const InputDecoration(
-                  labelText: 'Marca (Opcional)',
+                  labelText: AppStrings.brandOptionalLabel,
                   prefixIcon: Icon(Icons.branding_watermark),
                   isDense: true,
                 ),
@@ -258,7 +258,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
               TextField(
                 controller: _barcodeController,
                 decoration: const InputDecoration(
-                  labelText: 'Código de Barras (Opcional)',
+                  labelText: AppStrings.barcodeOptionalLabel,
                   prefixIcon: Icon(Icons.qr_code),
                   isDense: true,
                 ),
@@ -269,7 +269,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
             TextField(
               controller: _notesController,
               decoration: const InputDecoration(
-                labelText: 'Notas de Edición Especial (Opcional)',
+                labelText: AppStrings.specialNotesOptionalLabel,
                 prefixIcon: Icon(Icons.notes),
                 isDense: true,
               ),

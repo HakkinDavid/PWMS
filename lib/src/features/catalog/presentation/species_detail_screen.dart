@@ -133,7 +133,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
               if (_isEditing) ...[
                 IconButton(
                   icon: const Icon(Icons.image_search),
-                  tooltip: 'Buscar Foto en Web',
+                  tooltip: AppStrings.searchPhotoOnWebAction,
                   onPressed: () {
                     WebImagePickerDialog.show(context, searchQuery: species.name, targetSpecies: species);
                   },
@@ -151,11 +151,11 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                     color: hasExistingInstance ? Colors.grey.shade400 : Colors.redAccent,
                   ),
                   tooltip: hasExistingInstance
-                      ? 'No se puede eliminar una especie con instancias registradas.'
+                      ? AppStrings.cannotDeleteSpeciesWithInstancesError
                       : AppStrings.delete,
                   onPressed: hasExistingInstance
                       ? () {
-                          AppToast.showRestriction(context, 'No se puede eliminar una especie con instancias registradas.');
+                          AppToast.showRestriction(context, AppStrings.cannotDeleteSpeciesWithInstancesError);
                         }
                       : () async {
                           final confirm = await showDialog<bool>(
