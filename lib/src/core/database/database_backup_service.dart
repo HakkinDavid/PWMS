@@ -231,8 +231,6 @@ class DatabaseBackupService {
       await tempZipFile.writeAsBytes(zipBytes);
       await Share.shareXFiles(
         [XFile(tempZipFile.path)],
-        subject: 'Respaldo Completo PWMS',
-        text: 'Respaldo completo de base de datos y archivos de PWMS.',
       );
     } finally {
       if (await tempZipFile.exists()) {
