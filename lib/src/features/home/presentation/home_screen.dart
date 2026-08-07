@@ -9,8 +9,6 @@ import '../../catalog/presentation/species_tile.dart';
 import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/infrastructure/location_repository.dart';
-import '../../../core/widgets/app_settings_dialog.dart';
-
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -126,7 +124,7 @@ class HomeScreen extends ConsumerWidget {
                         IconButton(
                           icon: const Icon(Icons.settings_outlined, size: 28),
                           tooltip: 'Configuración de App & Respaldos',
-                          onPressed: () => AppSettingsDialog.show(context),
+                          onPressed: () => context.push('/settings'),
                         ),
                         IconButton(
                           icon: const Icon(Icons.search, size: 28),
