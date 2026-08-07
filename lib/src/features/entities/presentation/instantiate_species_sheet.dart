@@ -16,17 +16,29 @@ import '../domain/instance_magnitude.dart';
 class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
   final CatalogItem? species;
   final String? initialLocationId;
+  final Subspecies? initialSubspecies;
+  final Map<String, double>? initialMagnitudeValues;
+  final String? initialNotes;
+  final String? secondaryPhotoPath;
 
   const InstantiateSpeciesSheet({
     super.key,
     this.species,
     this.initialLocationId,
+    this.initialSubspecies,
+    this.initialMagnitudeValues,
+    this.initialNotes,
+    this.secondaryPhotoPath,
   });
 
   static Future<void> show(
     BuildContext context, {
     CatalogItem? species,
     String? initialLocationId,
+    Subspecies? initialSubspecies,
+    Map<String, double>? initialMagnitudeValues,
+    String? initialNotes,
+    String? secondaryPhotoPath,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -36,6 +48,10 @@ class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
       builder: (_) => InstantiateSpeciesSheet(
         species: species,
         initialLocationId: initialLocationId,
+        initialSubspecies: initialSubspecies,
+        initialMagnitudeValues: initialMagnitudeValues,
+        initialNotes: initialNotes,
+        secondaryPhotoPath: secondaryPhotoPath,
       ),
     );
   }
@@ -65,6 +81,9 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   void initState() {
     super.initState();
     _selectedLocationId = widget.initialLocationId;
+    if (widget.initialNotes != null && widget.initialNotes!.isNotEmpty) {
+      _notesController.text = widget.initialNotes!;
+    }
     if (widget.species != null) {
       _onSpeciesSelected(widget.species!);
     }
@@ -73,7 +92,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   void _onSpeciesSelected(CatalogItem species) {
     setState(() {
       _selectedSpecies = species;
-      _selectedSubspecies = null;
+      _selectedSubspecies = widget.initialSubspecies;
       _availableSubspecies = [];
       _magnitudeControllers.clear();
 
@@ -84,7 +103,9 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       }
 
       for (final mag in species.magnitudes) {
-        _magnitudeControllers[mag.propertyName] = TextEditingController(text: '1');
+        final prefilledVal = widget.initialMagnitudeValues?[mag.propertyName];
+        final initialText = prefilledVal != null ? (prefilledVal == prefilledVal.roundToDouble() ? prefilledVal.toInt().toString() : prefilledVal.toString()) : '1';
+        _magnitudeControllers[mag.propertyName] = TextEditingController(text: initialText);
       }
     });
 
@@ -97,7 +118,13 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       if (mounted) {
         setState(() {
           _availableSubspecies = list;
-          if (list.isNotEmpty) {
+          if (widget.initialSubspecies != null) {
+            final match = list.where((s) => s.id == widget.initialSubspecies!.id).firstOrNull;
+            _selectedSubspecies = match ?? widget.initialSubspecies;
+            if (match == null && widget.initialSubspecies != null) {
+              _availableSubspecies = [widget.initialSubspecies!, ...list];
+            }
+          } else if (list.isNotEmpty) {
             _selectedSubspecies = list.first;
           }
         });
@@ -186,6 +213,16 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
         final updatedWithMags = result.copyWith(magnitudes: customInstanceMags);
         await entityRepo.saveEntity(updatedWithMags);
+      }
+
+      if (widget.secondaryPhotoPath != null && widget.secondaryPhotoPath!.isNotEmpty) {
+        final catalogRepo = ref.read(catalogRepositoryProvider);
+        await catalogRepo.addAttachment(
+          speciesId: species.id,
+          filePath: widget.secondaryPhotoPath!,
+          fileName: 'Reverso_${species.name}.jpg',
+          fileType: 'image',
+        );
       }
 
       if (_expirationDate != null) {

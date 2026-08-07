@@ -175,6 +175,14 @@ class NotificationsTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class AppSettingsTable extends Table {
+  TextColumn get key => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
 @DriftDatabase(tables: [
   LocationsTable,
   CatalogTable,
@@ -189,6 +197,7 @@ class NotificationsTable extends Table {
   CustomTemplatesTable,
   SpeciesRequirementsTable,
   NotificationsTable,
+  AppSettingsTable,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
@@ -198,5 +207,18 @@ class AppDatabase extends _$AppDatabase {
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'pwms_database');
+  }
+
+  // App Settings Helper Methods
+  Future<String?> getSetting(String key) async {
+    final query = select(appSettingsTable)..where((tbl) => tbl.key.equals(key));
+    final row = await query.getSingleOrNull();
+    return row?.value;
+  }
+
+  Future<void> setSetting(String key, String value) async {
+    await into(appSettingsTable).insertOnConflictUpdate(
+      AppSettingsTableCompanion.insert(key: key, value: value),
+    );
   }
 }

@@ -7,12 +7,13 @@ import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/add_edit_subspecies_modal.dart';
 import '../../catalog/presentation/auto_fill_scanner_widget.dart';
+import '../../catalog/presentation/guided_dual_scan_widget.dart';
 import '../../catalog/presentation/species_form_modal.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../catalog/presentation/subspecies_section_widget.dart';
 import 'instantiate_species_sheet.dart';
 
-enum RegisterModalMode { selectFromCatalog, createNewSpecies, addSubspeciesToExisting, autoFillScanner }
+enum RegisterModalMode { selectFromCatalog, createNewSpecies, addSubspeciesToExisting, autoFillScanner, numismaticScanner }
 
 class RegisterObjectModal extends ConsumerStatefulWidget {
   final String? initialLocationId;
@@ -128,6 +129,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                     label: Text(AppStrings.autoFillTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                     icon: Icon(Icons.qr_code_scanner, size: 14),
                   ),
+                  ButtonSegment(
+                    value: RegisterModalMode.numismaticScanner,
+                    label: Text('Numismática', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    icon: Icon(Icons.monetization_on, size: 14),
+                  ),
                 ],
                 selected: {_currentMode},
                 onSelectionChanged: (set) {
@@ -178,7 +184,6 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             final matchingSpecies = catalog.where((c) => c.name.trim().toLowerCase() == genName && genName.isNotEmpty).firstOrNull;
 
             if (matchingSpecies != null) {
-              // Punto 3 & 9: Especie conocida -> abrir creador de Subespecies para esa Especie (con isFromAutoFill: true)
               setState(() {
                 _selectedSpeciesIdForSubspecies = matchingSpecies.id;
                 _currentMode = RegisterModalMode.addSubspeciesToExisting;
@@ -210,11 +215,65 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 }
               });
             } else {
-              // Especie desconocida -> crear nueva especie
               setState(() {
                 _activeScannedResult = result;
                 _currentMode = RegisterModalMode.createNewSpecies;
               });
+            }
+          },
+        );
+      case RegisterModalMode.numismaticScanner:
+        return GuidedDualScanWidget(
+          onScannedResult: (result) async {
+            final catalogRepo = ref.read(catalogRepositoryProvider);
+            final catalog = catalogItems;
+
+            final speciesName = result.generalSpeciesName.trim().isNotEmpty
+                ? result.generalSpeciesName.trim()
+                : result.speciesType;
+
+            var matchingSpecies = catalog.where((c) => c.name.trim().toLowerCase() == speciesName.toLowerCase()).firstOrNull;
+
+            if (matchingSpecies == null) {
+              matchingSpecies = await catalogRepo.getOrCreateSpecies(
+                speciesName,
+                type: 'Objeto',
+                description: 'Especie para piezas numismáticas (${result.speciesType})',
+                mainPhotoPath: result.obversePhotoPath,
+              );
+
+              if (result.speciesType == 'Moneda') {
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Masa', 'g');
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Diámetro', 'mm');
+              }
+              ref.invalidate(catalogListProvider);
+            }
+
+            final newSubspecies = Subspecies(
+              id: const Uuid().v4(),
+              speciesId: matchingSpecies.id,
+              subspeciesName: result.subspeciesName,
+              brand: result.brandOrMint,
+              photoPath: result.obversePhotoPath,
+              notes: result.notes != null ? 'Año: ${result.year ?? "N/A"} | Valor: ${result.faceValue ?? "N/A"} | Metal: ${result.composition ?? "N/A"}\n${result.notes}' : null,
+              createdAt: DateTime.now(),
+            );
+
+            await catalogRepo.saveSubspecies(newSubspecies);
+            ref.invalidate(subspeciesListProvider);
+
+            if (mounted) {
+              Navigator.pop(context);
+
+              InstantiateSpeciesSheet.show(
+                context,
+                species: matchingSpecies,
+                initialSubspecies: newSubspecies,
+                initialLocationId: widget.initialLocationId,
+                initialMagnitudeValues: result.toMagnitudeValues(),
+                initialNotes: 'Grado: ${result.grade ?? "No especificado"} | Serie: ${result.serialNumber ?? "N/A"}\nCatálogo: ${result.catalogCode ?? "N/A"}\nMotor: ${result.sourceEngine}',
+                secondaryPhotoPath: result.reversePhotoPath,
+              );
             }
           },
         );

@@ -407,4 +407,41 @@ class CatalogRepository {
   Future<void> deleteRequirement(String requirementId) async {
     await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.id.equals(requirementId))).go();
   }
+
+  // --- ATTACHMENTS & MAGNITUDES ---
+
+  Future<void> addAttachment({
+    required String speciesId,
+    required String filePath,
+    required String fileName,
+    required String fileType,
+  }) async {
+    final companion = AttachmentsTableCompanion(
+      id: Value(const Uuid().v4()),
+      speciesId: Value(speciesId),
+      filePath: Value(filePath),
+      fileName: Value(fileName),
+      fileType: Value(fileType),
+      createdAt: Value(DateTime.now()),
+    );
+    await _db.into(_db.attachmentsTable).insertOnConflictUpdate(companion);
+  }
+
+  Future<void> addSpeciesMagnitude(String speciesId, String propertyName, String unitSymbol) async {
+    final existing = await (_db.select(_db.speciesMagnitudesTable)
+      ..where((t) => t.speciesId.equals(speciesId) & t.propertyName.equals(propertyName)))
+      .getSingleOrNull();
+
+    if (existing == null) {
+      await _db.into(_db.speciesMagnitudesTable).insert(
+        SpeciesMagnitudesTableCompanion(
+          id: Value(const Uuid().v4()),
+          speciesId: Value(speciesId),
+          propertyName: Value(propertyName),
+          unitSymbol: Value(unitSymbol),
+          createdAt: Value(DateTime.now()),
+        ),
+      );
+    }
+  }
 }
