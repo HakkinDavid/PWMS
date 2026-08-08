@@ -274,16 +274,23 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           alignment: Alignment.center,
           children: [
             AspectRatio(
-              aspectRatio: 1 / _cameraController!.value.aspectRatio,
+              aspectRatio: 1.0,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(24),
-                child: CameraPreview(_cameraController!),
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: 1080,
+                    height: 1080 * _cameraController!.value.aspectRatio,
+                    child: CameraPreview(_cameraController!),
+                  ),
+                ),
               ),
             ),
 
             // Frame overlay
             AspectRatio(
-              aspectRatio: 1 / _cameraController!.value.aspectRatio,
+              aspectRatio: 1.0,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
