@@ -283,7 +283,9 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
             ),
 
             // Target Overlay
-            _buildTargetOverlay(theme),
+            Positioned.fill(
+              child: _buildTargetOverlay(theme),
+            ),
 
             // Steps Indicator Banner
             Positioned(
