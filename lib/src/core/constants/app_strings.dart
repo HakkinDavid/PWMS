@@ -3,8 +3,8 @@ class AppStrings {
 
   // Navegación y General
   static const appName = 'PWMS';
-  static const appTitle = 'PWMS: Sistema de Gestión del Mundo Platinum';
-  static const searchHint = 'Buscar especies, instancias o ubicaciones...';
+  static const appTitle = 'PWMS: Gestión de Mundo';
+  static const searchHint = 'Buscar en el mundo...';
   static const rootLocationName = 'Mundo';
   static const cancel = 'Cancelar';
   static const save = 'Guardar';
@@ -21,8 +21,8 @@ class AppStrings {
   static const viewAll = 'Ver todo';
   static const apply = 'Aplicar';
   static const all = 'Todos';
-  static const selectOptionPrompt = 'Seleccionar opción.';
-  static const selectMagnitudePrompt = 'Seleccionar magnitud.';
+  static const selectOptionPrompt = 'Selecciona una opción.';
+  static const selectMagnitudePrompt = 'Selecciona una magnitud.';
   static const errorPrefix = 'Error: ';
   static const errorGeneric = 'Ha ocurrido un error inesperado.';
 
@@ -42,7 +42,7 @@ class AppStrings {
   static const noRecentObjects = 'Sin objetos recientes.';
   static const mainLocations = 'Ubicaciones principales';
   static const objectsCountSuffix = 'objetos';
-  static const latestCatalogSpecies = 'Últimas especies en el catálogo';
+  static const latestCatalogSpecies = 'Últimas especies en catálogo';
   static const viewCatalog = 'Ver catálogo';
   static const noRecentActivity = 'Sin actividad reciente.';
   static const topLocationsTitle = 'Ubicaciones principales';
@@ -60,7 +60,7 @@ class AppStrings {
   // Formularios y Terminología de Registro
   static const registerObjectTitle = 'Registrar en el mundo';
   static const editInstanceTitle = 'Editar instancia';
-  static const nameLabel = 'Nombre de la especie';
+  static const nameLabel = 'Nombre de especie';
   static const typeLabel = 'Tipo de especie';
   static const locationLabel = 'Ubicación';
   static const quantityLabel = 'Magnitud';
@@ -72,13 +72,13 @@ class AppStrings {
   static const isUniqueLabel = 'Especie única';
   static const monetaryValueLabel = 'Valor monetario';
   static const currencyLabel = 'Moneda';
-  static const isSaleLabel = '¿Registrar como venta?';
+  static const isSaleLabel = 'Registrar como venta';
   static const takePhoto = 'Tomar fotografía';
-  static const chooseGallery = 'Elegir de la galería';
+  static const chooseGallery = 'Elegir de galería';
   static const photoLabel = 'Fotografía principal';
   static const chooseFromCatalog = 'Elegir del catálogo';
-  static const showMoreFields = 'Campos adicionales';
-  static const showFewerFields = 'Ocultar campos adicionales';
+  static const showMoreFields = 'Más campos';
+  static const showFewerFields = 'Menos campos';
   static const registerAction = 'Registrar en el mundo';
   static const saveChangesAction = 'Guardar cambios';
   static const changePhotoAction = 'Cambiar fotografía';
@@ -96,9 +96,9 @@ class AppStrings {
   static const createSpeciesHeader = 'Crear especie en catálogo';
   static const saveSpeciesAction = 'Guardar especie';
   static const instantiateAction = 'Instanciar';
-  static const emptyCatalog = 'El catálogo está vacío.';
+  static const emptyCatalog = 'Catálogo vacío.';
   static const singleInstanceError = 'Esta especie es única y ya existe en tu mundo.';
-  static const singleInstanceSubspeciesError = 'La subespecie de esta especie única ya está instanciada en el mundo.';
+  static const singleInstanceSubspeciesError = 'La subespecie de esta especie única ya existe en tu mundo.';
   static const duplicateSpeciesNameError = 'Ya existe una especie con este nombre.';
   static const duplicatePhotoError = 'Ya existe una especie con esta misma imagen.';
   static const duplicateAttachmentError = 'Este archivo adjunto ya existe en la especie.';
@@ -110,49 +110,49 @@ class AppStrings {
   static const addSubspecies = 'Añadir subespecie';
   static const addBrand = 'Agregar subespecie';
   static const noSubspecies = 'Sin subespecies registradas.';
-  static const noSubspeciesDefined = 'No hay subespecies.';
+  static const noSubspeciesDefined = 'Sin subespecies.';
   static const subspeciesNameLabel = 'Nombre de subespecie';
   static const editSubspecies = 'Editar subespecie';
   static const deleteSubspecies = 'Eliminar subespecie';
   static const defaultSubspeciesName = 'Genérica';
   static const viewCatalogSpecies = 'Ver especie en catálogo';
   static const viewSpeciesDetail = 'Ver detalle de especie';
-  static const masterCatalogSpeciesBadge = 'ESPECIE DE CATÁLOGO MAESTRO';
+  static const masterCatalogSpeciesBadge = 'CATÁLOGO MAESTRO';
   static const registeredPropertiesAndMagnitudes = 'Propiedades y magnitudes registradas';
-  static const notInstantiatedYet = 'Esta especie aún no ha sido instanciada en tu mundo.';
+  static const notInstantiatedYet = 'Esta especie aún no ha sido instanciada.';
   static const registeredInstance = 'Instancia registrada';
   static const speciesInstantiatedSuccess = 'Especie instanciada con éxito.';
   static const selectSpeciesToInstantiate = 'Selecciona una especie para instanciar.';
   static const instantiateCatalogSpeciesHeader = 'Instanciar especie de catálogo';
-  static const catalogSpeciesLabel = 'Especie de catálogo:';
+  static const catalogSpeciesLabel = 'Especie de catálogo';
   static const selectSpeciesPrompt = 'Selecciona una especie...';
   static const physicalLocation = 'Ubicación física';
   static const savedInContainer = 'Guardado en contenedor';
-  static const selectContainerPrompt = 'Selecciona contenedor (relación GUARDADO_EN):';
-  static const noContainerObjectsAvailable = 'No hay objetos contenedores disponibles.';
+  static const selectContainerPrompt = 'Selecciona contenedor:';
+  static const noContainerObjectsAvailable = 'Sin objetos contenedores disponibles.';
   static const selectContainerObject = 'Selecciona objeto contenedor';
   static const containerObjectLabel = 'Objeto contenedor';
-  static const magnitudesAndSpecificProps = 'Magnitudes y propiedades específicas:';
+  static const magnitudesAndSpecificProps = 'Magnitudes y propiedades:';
   static const subspeciesOrBrandCommercialLabel = 'Subespecie';
   static const selectSubspeciesOrBrandPrompt = 'Selecciona subespecie';
   static const quantityToInstantiateLabel = 'Cantidad';
   static const addPropertyOrUnitTitle = 'Agregar propiedad o unidad';
-  static const propertyNameHint = 'Nombre de la propiedad (ej. Masa, Volumen, Longitud)';
+  static const propertyNameHint = 'Nombre de la propiedad';
   static const selectUnitPrompt = 'Seleccionar unidad de medida';
-  static const editSubspeciesDraftTitle = 'Editar subespecie (borrador)';
-  static const newSubspeciesVariantTitle = 'Nueva subespecie (variante)';
-  static const subspeciesPhotoLabel = 'Fotografía de la subespecie';
+  static const editSubspeciesDraftTitle = 'Editar subespecie';
+  static const newSubspeciesVariantTitle = 'Nueva subespecie';
+  static const subspeciesPhotoLabel = 'Fotografía de subespecie';
   static const nameOrVariantLabel = 'Nombre';
-  static const nameOrVariantHint = 'Ej. Alcalina de alto rendimiento';
-  static const brandHint = 'Ej. Duracell';
-  static const barcodeHint = 'Ej. 750123456789';
-  static const notesSpecialEditionHint = 'Ej. Edición especial';
+  static const nameOrVariantHint = 'Nombre';
+  static const brandHint = 'Marca';
+  static const barcodeHint = 'Código de barras';
+  static const notesSpecialEditionHint = 'Notas';
   static const editSpeciesTitle = 'Editar especie';
   static const createSpeciesTitle = 'Crear nueva especie';
   static const noTemplate = 'Sin plantilla';
   static const selectBaseSpeciesPrompt = 'Seleccionar especie base';
   static const useSpeciesAsBaseTemplate = 'Usar especie como plantilla base';
-  static const selectBaseTemplateHint = 'Seleccionar plantilla base...';
+  static const selectBaseTemplateHint = 'Seleccionar plantilla...';
   static const nameIsImmutable = 'El nombre es inmutable.';
   static const unitsAndMagnitudesTitle = 'Unidades de medida';
   static const addUnitAction = 'Agregar medida';
@@ -181,10 +181,10 @@ class AppStrings {
   static const storedObjectsTitle = 'Instancias almacenadas aquí';
   static const emptyLocation = 'Ubicación vacía.';
   static const selectLocationPrompt = 'Seleccionar ubicación';
-  static const locationHasNoObjectsOrSublocations = 'Esta ubicación no contiene objetos ni sububicaciones.';
+  static const locationHasNoObjectsOrSublocations = 'Ubicación vacía.';
   static const containerLabel = 'Contenedor';
-  static const cannotMoveLocationSelfError = 'No se puede mover una ubicación dentro de sí misma ni de sus ubicaciones hijas.';
-  static const circularLocationError = 'No se puede mover una ubicación dentro de sí misma ni de sus ubicaciones hijas.';
+  static const cannotMoveLocationSelfError = 'Ubicación destino no válida.';
+  static const circularLocationError = 'Ubicación destino no válida.';
   static const instantiateObjectHere = 'Instanciar objeto aquí';
   static const treeView = 'Vista de árbol';
   static const graphView = 'Vista de grafo';
@@ -194,8 +194,8 @@ class AppStrings {
   static const moveErrorPrefix = 'Error al mover: ';
   static const moveInGraph = 'Trasladar en el grafo';
   static const selectNewLocationOrContainer = 'Selecciona la nueva ubicación o contenedor:';
-  static const createLocationOnTheFly = 'Crear nueva ubicación sobre la marcha';
-  static const locationNameHint = 'Ej. Estantería 3 o Garaje';
+  static const createLocationOnTheFly = 'Crear nueva ubicación';
+  static const locationNameHint = 'Nombre de ubicación';
   static const confirmMoveAction = 'Confirmar traslado';
   static const locationGraphNode = 'Ubicación en el grafo';
 
@@ -211,16 +211,16 @@ class AppStrings {
   static const instanceUpdatedSuccess = 'Instancia actualizada con éxito.';
   static const updateErrorPrefix = 'Error al actualizar: ';
   static const instantiatedObject = 'Objeto instanciado';
-  static const graphLocationOrContainer = 'Ubicación en el grafo (lugar o contenedor)';
+  static const graphLocationOrContainer = 'Ubicación o contenedor';
   static const instanceNotesLabel = 'Notas';
-  static const specificDetailsHint = 'Detalles específicos...';
+  static const specificDetailsHint = 'Detalles';
 
   // Unidades y Categorías de Medida
-  static const unitCategoryPhysical = 'Magnitudes físicas y métricas';
-  static const unitCategoryDigital = 'Digital y almacenamiento';
-  static const unitCategoryFinancial = 'Financiero y monetario';
-  static const unitCategoryTime = 'Tiempo y duración';
-  static const unitCategoryAbstract = 'General y conteo';
+  static const unitCategoryPhysical = 'Magnitudes físicas';
+  static const unitCategoryDigital = 'Almacenamiento digital';
+  static const unitCategoryFinancial = 'Finanzas';
+  static const unitCategoryTime = 'Tiempo';
+  static const unitCategoryAbstract = 'General';
   static const unitUnits = 'unidades';
   static const unitUnitSingle = 'unidad';
   static const unitPieces = 'piezas';
@@ -231,56 +231,56 @@ class AppStrings {
   static const unitsLabel = 'unidades';
 
   // Servicio de Almacenamiento Local
-  static const fileNotFoundInStorage = 'Archivo no encontrado en el almacenamiento local.';
+  static const fileNotFoundInStorage = 'Archivo no encontrado en almacenamiento local.';
   static const fileDeleteFailure = 'Error al eliminar el archivo local.';
 
   // Requisitos y Dependencias (NECESITA)
   static const requirementsTitle = 'Relaciones de necesidad';
   static const addRequirement = 'Añadir requisito';
-  static const addRequirementTitle = 'Agregar requisito NECESITA';
+  static const addRequirementTitle = 'Agregar requisito';
   static const noRequirements = 'Sin requisitos registrados.';
-  static const noRequirementsDefined = 'No hay necesidades definidas.';
+  static const noRequirementsDefined = 'Sin necesidades definidas.';
   static const noCatalogSpeciesForRequirement = 'No hay especies en el catálogo para requerir.';
-  static const selectRequiredSpeciesPrompt = 'Selecciona la especie requerida e indica la cantidad necesaria:';
+  static const selectRequiredSpeciesPrompt = 'Selecciona la especie requerida e indica la cantidad:';
   static const requiredSpeciesLabel = 'Especie requerida';
   static const requirementTypeLabel = 'Tipo de requisito';
-  static const requirementTargetLabel = 'Especie o elemento requerido';
+  static const requirementTargetLabel = 'Elemento requerido';
   static const quantityRequiredLabel = 'Cantidad requerida';
-  static const quantityRequiredHint = 'Ej. 6';
+  static const quantityRequiredHint = 'Cantidad';
   static const requirementNotesLabel = 'Notas del requisito';
-  static const notesOptionalLabel = 'Notas (opcional)';
-  static const notesRequirementHint = 'Ej. Baterías para encendido';
+  static const notesOptionalLabel = 'Notas';
+  static const notesRequirementHint = 'Notas';
   static const needsPrefix = 'NECESITA';
 
   // Atributos y Plantillas Personalizadas
   static const customAttributesTitle = 'Atributos personalizados';
   static const noCustomAttributesDefined = 'Sin atributos personalizados definidos.';
   static const addAttributeTitle = 'Agregar atributo';
-  static const attributeNameHint = 'Ej. Voltaje, Garantía, Color...';
-  static const attributeValueHint = 'Ej. 220V, 2 años, Rojo...';
+  static const attributeNameHint = 'Nombre del atributo';
+  static const attributeValueHint = 'Valor';
   static const templateCustomCreate = 'Crear plantilla personalizada';
-  static const templateNameLabel = 'Nombre de la plantilla';
-  static const templateExamplesHint = 'Ej. Herramienta eléctrica, Dispositivo...';
-  static const templateUnitsHintLabel = 'Unidades de medida habituales (separadas por coma)';
-  static const templateUnitsExamples = 'Ej. piezas, kg, metros';
+  static const templateNameLabel = 'Nombre de plantilla';
+  static const templateExamplesHint = 'Nombre de plantilla';
+  static const templateUnitsHintLabel = 'Unidades habituales separadas por coma';
+  static const templateUnitsExamples = 'Unidades';
   static const saveTemplateAction = 'Guardar plantilla';
   static const customAttributeEditorTitle = 'Editor de atributo personalizado';
-  static const attributeNameLabel = 'Nombre del atributo';
+  static const attributeNameLabel = 'Nombre de atributo';
   static const attributeTypeLabel = 'Tipo de dato';
   static const attributeValueLabel = 'Valor';
   static const templateSavedSuccess = 'Plantilla guardada con éxito.';
 
   // Entidades, Demografía y Grupos
-  static const noEntitiesRegistered = 'No hay objetos registrados.';
+  static const noEntitiesRegistered = 'Sin objetos registrados.';
   static const instanceWorldHeader = 'INSTANCIA DEL MUNDO';
   static const addInstanceNotesHint = 'Añadir notas sobre esta instancia...';
   static const majorityDemographics = 'Demografía mayoritaria';
-  static const standardSpeciesProfile = 'Perfil estándar de la especie (sin notas diferenciales)';
+  static const standardSpeciesProfile = 'Perfil estándar de especie';
   static const dynamicPopulationManagement = 'Gestión dinámica de población';
-  static const populationManagementInstruction = 'El toque corto en los botones de ajuste resta o suma una unidad. El toque prolongado activa la rueda de selección. El toque en la cifra permite ingresar la población objetivo directamente.';
+  static const populationManagementInstruction = 'Ajusta la población con los botones o la cifra directamente.';
   static const populationLabel = 'Población';
-  static const groupInstanceDetail = 'Detalle de instancias en el grupo';
-  static const noInstancesAvailableToDelete = 'No hay instancias disponibles para eliminar.';
+  static const groupInstanceDetail = 'Detalle de instancias en grupo';
+  static const noInstancesAvailableToDelete = 'Sin instancias disponibles para eliminar.';
   static const addByWheelTitle = 'Añadir por rueda de selección';
   static const removeByWheelTitle = 'Eliminar por rueda de selección';
   static const directPopulationAdjustmentTitle = 'Ajuste directo de población';
@@ -288,24 +288,24 @@ class AppStrings {
   static const newTargetPopulationLabel = 'Nueva población objetivo';
   static const applyCalculationAction = 'Aplicar cálculo';
   static const noChangesLabel = 'Sin cambios';
-  static const noInstancesToDelete = 'No hay instancias disponibles para eliminar.';
+  static const noInstancesToDelete = 'Sin instancias disponibles para eliminar.';
   static const addByWheel = 'Añadir por rueda de selección';
   static const removeByWheel = 'Eliminar por rueda de selección';
   static const noChanges = 'Sin cambios';
   static const directPopulationAdjustment = 'Ajuste directo de población';
   static const currentPopulation = 'Población actual:';
   static const newTargetPopulation = 'Nueva población objetivo';
-  static const targetPopulationHint = 'Ej. 15';
+  static const targetPopulationHint = 'Población';
   static const applyCalculation = 'Aplicar cálculo';
 
   // Relaciones y Grafo Semántico
   static const selectTargetEntityError = 'Selecciona una entidad objetivo.';
   static const selectDirectedRelationTypePrompt = 'Seleccionar tipo de relación dirigida';
-  static const directedRelationTypeLabel = 'Tipo de relación dirigida de origen a destino';
+  static const directedRelationTypeLabel = 'Tipo de relación dirigida';
   static const searchTargetEntityLabel = 'Buscar entidad destino';
-  static const noEntitiesAvailableToRelate = 'No hay entidades disponibles para relacionar.';
+  static const noEntitiesAvailableToRelate = 'Sin entidades disponibles para relacionar.';
   static const createDirectedRelationAction = 'Crear relación dirigida';
-  static const circularRelationError = 'No se puede crear un vínculo circular: el elemento ya forma parte o contiene la entidad destino.';
+  static const circularRelationError = 'No se pueden crear vínculos circulares.';
   static const selectElementToRelate = 'Selecciona el elemento a relacionar';
   static const directedRelationCreatedSuccess = 'Relación dirigida creada con éxito.';
   static const saveRelationErrorPrefix = 'Error al guardar relación: ';
@@ -313,7 +313,7 @@ class AppStrings {
   static const directedRelationInWorld = 'Relación dirigida en tu mundo';
   static const semanticRelationType = 'Tipo de vínculo semántico';
   static const targetOfRelation = 'Destino del vínculo:';
-  static const noOtherRelationCandidates = 'No hay otros elementos disponibles para relacionar.';
+  static const noOtherRelationCandidates = 'Sin otros elementos disponibles para relacionar.';
   static const selectTargetElement = 'Selecciona elemento destino';
   static const targetObjectLabel = 'Objeto destino';
   static const establishDirectedRelation = 'Establecer vínculo dirigido';
@@ -365,11 +365,11 @@ class AppStrings {
   // Notificaciones y Recordatorios
   static const notificationsAndRemindersTitle = 'Notificaciones y recordatorios';
   static const refreshAction = 'Actualizar';
-  static const noPendingNotifications = 'No tienes notificaciones pendientes.';
+  static const noPendingNotifications = 'Sin notificaciones pendientes.';
   static const allElementsUpToDate = 'Todos tus elementos están al día y requerimientos cubiertos.';
   static const loadNotificationsErrorPrefix = 'Error al cargar notificaciones: ';
   static const snoozeReminderTitle = 'Posponer recordatorio';
-  static const snoozeReminderPrompt = 'Elige por cuánto tiempo deseas ocultar este aviso:';
+  static const snoozeReminderPrompt = 'Selecciona la duración para ocultar este aviso:';
   static const snoozeOneDay = 'Posponer 1 día';
   static const snoozeThreeDays = 'Posponer 3 días';
   static const snoozeOneWeek = 'Posponer 1 semana';
@@ -381,9 +381,9 @@ class AppStrings {
 
   // Formularios de Subespecie y Edición
   static const searchPhotoOnWebAction = 'Buscar foto en la web';
-  static const brandOptionalLabel = 'Marca (opcional)';
-  static const barcodeOptionalLabel = 'Código de barras (opcional)';
-  static const specialNotesOptionalLabel = 'Notas de edición especial (opcional)';
+  static const brandOptionalLabel = 'Marca';
+  static const barcodeOptionalLabel = 'Código de barras';
+  static const specialNotesOptionalLabel = 'Notas de edición especial';
   static const cannotDeleteSpeciesWithInstancesError = 'No se puede eliminar una especie con instancias registradas.';
   static const expirationDateLabel = 'Fecha de caducidad';
   static const noExpirationDateAssigned = 'Sin fecha asignada';
@@ -393,7 +393,7 @@ class AppStrings {
   static const expiresInDaysAlertSuffix = ' días!';
   static const expiresInDaysPrefix = 'Vence en ';
   static const expiresInDaysSuffix = ' días';
-  static const objectsInLocationAndSublocationsSuffix = ' objetos en esta ubicación y sububicaciones';
+  static const objectsInLocationAndSublocationsSuffix = ' objetos contenidos';
   static const moveSubspeciesTitle = 'Mover subespecie';
   static const targetSpeciesLabel = 'Nueva especie destino';
   static const subspeciesMovedSuccessPrefix = 'Subespecie movida a ';
@@ -402,15 +402,15 @@ class AppStrings {
   static const separateAction = 'Separar';
   static const subspeciesSeparatedSuccessPrefix = 'Subespecie separada en la especie ';
   static const separateSubspeciesErrorPrefix = 'Error al separar subespecie: ';
-  static const noOtherSpeciesToMoveError = 'No hay otras especies disponibles para mover.';
-  static const noOtherSpeciesToMergeError = 'No hay otras especies disponibles para fusionar.';
+  static const noOtherSpeciesToMoveError = 'Sin otras especies disponibles para mover.';
+  static const noOtherSpeciesToMergeError = 'Sin otras especies disponibles para fusionar.';
   static const mergeSpeciesTitle = 'Unir especie';
   static const mergeSpeciesAction = 'Unir especies';
   static const speciesMergedSuccessPrefix = 'Especie "';
   static const speciesMergedSuccessMiddle = '" unida exitosamente en "';
   static const separateInNewSpeciesTitle = 'Separar en nueva especie';
   static const specialEditionTitle = 'Edición especial';
-  static const specialEditionCheckSubtitle = 'Marca si la pieza posee alguna particularidad o conmemoración.';
+  static const specialEditionCheckSubtitle = 'Indica si la pieza posee particularidades.';
   static const specialEditionReasonLabel = 'Razón de edición especial';
   static const specialEditionNotesLabel = 'Anotaciones de edición especial';
   static const confirmAndRegisterPieceAction = 'Confirmar y registrar pieza';
@@ -421,25 +421,25 @@ class AppStrings {
   static const enterNameForImageSearchError = 'Ingresa un nombre para buscar imagen.';
 
   static const instanceSpecificAttachment = 'Adjunto propio de la instancia';
-  static const coinCircularLabel = 'Moneda (circular)';
-  static const banknoteRectangleLabel = 'Billete (rectángulo)';
+  static const coinCircularLabel = 'Moneda';
+  static const banknoteRectangleLabel = 'Billete';
   static const webImageAssignedSuccess = 'Imagen de Internet asignada correctamente.';
-  static const noWebImagesFound = 'No se encontraron imágenes en Internet.';
+  static const noWebImagesFound = 'Sin imágenes encontradas en Internet.';
   static const assignPhotoAction = 'Asignar foto';
 
   // Configuración de Respaldos y Base de Datos
   static const backupExportSuccess = 'Respaldo preparado y compartido.';
   static const backupExportErrorPrefix = 'Error exportando respaldo: ';
   static const confirmRestoreTitle = 'Confirmar restauración';
-  static const confirmRestoreWarningMessage = 'Importar un respaldo reemplazará todos los datos y archivos actuales de tu mundo con los datos del paquete seleccionado. ¿Deseas continuar?';
+  static const confirmRestoreWarningMessage = 'Importar un respaldo reemplazará los datos actuales de tu mundo. ¿Deseas continuar?';
   static const restoreAllAction = 'Restaurar todo';
   static const backupImportSuccess = 'Respaldo completo y archivos restaurados correctamente.';
   static const backupImportErrorPrefix = 'Error importando respaldo: ';
   static const backupsAndDatabaseTitle = 'Respaldos y base de datos';
-  static const exportBackupTitle = 'Exportar respaldo completo (ZIP)';
-  static const exportBackupSubtitle = 'Genera un paquete ZIP con la base de datos y todas las imágenes y archivos adjuntos.';
-  static const importBackupTitle = 'Importar respaldo (ZIP / JSON)';
-  static const importBackupSubtitle = 'Restaura la base de datos e imágenes adjuntas desde un archivo de respaldo.';
+  static const exportBackupTitle = 'Exportar respaldo completo';
+  static const exportBackupSubtitle = 'Genera un archivo comprimido de tu mundo.';
+  static const importBackupTitle = 'Importar respaldo';
+  static const importBackupSubtitle = 'Restaura tu mundo desde un archivo de respaldo.';
 
   // Excepciones e Infraestructura de Catálogo
   static const genericSubspeciesName = 'Genérica';
@@ -471,28 +471,28 @@ class AppStrings {
   static const currencyNotePrefix = 'Moneda: ';
   static const yearNotePrefix = 'Año: ';
   static const materialNotePrefix = 'Material: ';
-  static const otherSpecifyOption = 'Otro (especificar)';
+  static const otherSpecifyOption = 'Otro';
   static const specialEditionNotePrefix = 'Edición especial: ';
 
   // Tipos de Datos Primitivos
-  static const dataTypeRealLabel = 'Número real (decimal)';
+  static const dataTypeRealLabel = 'Número decimal';
   static const dataTypeIntegerLabel = 'Número entero';
   static const dataTypeStringLabel = 'Texto';
-  static const dataTypeBooleanLabel = 'Booleano (sí o no)';
+  static const dataTypeBooleanLabel = 'Booleano';
 
   // Catálogo y Escáner
   static const defaultNonPerishableSubtitle = 'Por defecto los objetos son no perecederos.';
-  static const isPerishableProductTitle = 'Es producto perecedero (tiene fecha de caducidad)';
-  static const invalidOrNotFoundCodeTitle = 'Código inválido o no hallado';
+  static const isPerishableProductTitle = 'Producto perecedero';
+  static const invalidOrNotFoundCodeTitle = 'Código no hallado';
   static const invalidOrNotFoundCodeMessagePrefix = 'El código de barras "';
-  static const invalidOrNotFoundCodeMessageSuffix = '" no corresponde a un producto conocido ni se encontró en las bases de datos en línea.';
+  static const invalidOrNotFoundCodeMessageSuffix = '" no se encontró en las bases de datos en línea.';
   static const enterBarcodePrompt = 'Ingresa un código de barras.';
   static const acceptAction = 'Aceptar';
 
   // Búsqueda y Consola SQL
-  static const arbitrarySqlConsoleTitle = 'Consola SQL arbitraria (lectura)';
+  static const arbitrarySqlConsoleTitle = 'Consola SQL';
   static const searchDetailedHint = 'Buscar por especie, subespecie, marca, ubicación, propiedad...';
-  static const arbitrarySqlQueryLabel = 'Consulta SQL arbitraria (SELECT)';
+  static const arbitrarySqlQueryLabel = 'Consulta SQL';
   static const selectSqlHint = 'SELECT * FROM ...';
   static const subspeciesCategory = 'Subespecies';
   static const instanceMagnitudesCategory = 'Magnitudes de instancia';
@@ -525,7 +525,7 @@ class AppStrings {
   static const populationUpdatedSuccessPrefix = 'Población actualizada correctamente a ';
   static const adjustPopulationErrorPrefix = 'Error al ajustar la población: ';
   static const adjustmentNotAvailableTitle = 'Ajuste no disponible';
-  static const heterogeneousGroupAdjustmentMessage = 'No es posible ajustar la población directamente en grupos heterogéneos. Abre la vista dedicada de grupo para gestionar cada instancia individualmente.';
+  static const heterogeneousGroupAdjustmentMessage = 'No es posible ajustar la población en grupos heterogéneos. Abre la vista de grupo para gestionar las instancias.';
   static const understoodAction = 'Entendido';
   static const adjustPopulationTitle = 'Ajustar población';
   static const homogeneousGroupHeaderPrefix = 'Grupo homogéneo (';
@@ -534,12 +534,12 @@ class AppStrings {
   static const statusExpired = 'Caducado';
   static const statusWarning = 'Próximo a vencer';
   static const generalSpeciesPrefix = 'Especie general: ';
-  static const expirationDateOptionalLabel = 'Fecha de caducidad (opcional)';
+  static const expirationDateOptionalLabel = 'Fecha de caducidad';
   static const noExpirationDate = 'Sin fecha de caducidad';
   static const removeExpirationDateTooltip = 'Quitar fecha de caducidad';
-  static const noInstancesAvailableInGroup = 'No hay instancias disponibles en este grupo.';
+  static const noInstancesAvailableInGroup = 'Sin instancias disponibles en este grupo.';
   static const totalPopulationPrefix = 'Población total: ';
-  static const homogeneousGroupProperties = 'Grupo homogéneo (propiedades idénticas)';
+  static const homogeneousGroupProperties = 'Grupo homogéneo';
   static const deleteInstanceTitle = 'Eliminar instancia';
   static const deleteInstanceConfirmationMessage = '¿Estás seguro de que deseas eliminar esta instancia de tu mundo?';
 }

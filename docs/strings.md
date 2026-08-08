@@ -69,6 +69,20 @@ Está **estrictamente prohibido** incrustar caracteres de formateo visual, viñe
   - *Antes*: `'(Origen ➔ Destino)'` $\rightarrow$ *Ahora*: `'de origen a destino'`
   - *Antes*: `'• Toque corto en -/+'` $\rightarrow$ *Ahora*: `'El toque corto en los botones de ajuste resta o suma una unidad.'`
 
+### 2.5. Concisión y Eliminación de Paréntesis y Explicaciones Embebidas
+Todas las cadenas de la aplicación deben ser concisas, elegantes y directas. Se prohíbe el uso de paréntesis aclaratorios innecesarios `(...)` y explicaciones o instrucciones sobre-específicas embebidas.
+
+- **Eliminación de Paréntesis**:
+  - *Antes*: `'Marca (opcional)'` $\rightarrow$ *Ahora*: `'Marca'`
+  - *Antes*: `'Exportar respaldo completo (ZIP)'` $\rightarrow$ *Ahora*: `'Exportar respaldo completo'`
+  - *Antes*: `'Moneda (circular)'` $\rightarrow$ *Ahora*: `'Moneda'`
+  - *Antes*: `'Número real (decimal)'` $\rightarrow$ *Ahora*: `'Número decimal'`
+  - *Antes*: `'Consola SQL arbitraria (lectura)'` $\rightarrow$ *Ahora*: `'Consola SQL'`
+- **Eliminación de Redundancias y Explicaciones**:
+  - *Antes*: `'Genera un paquete ZIP con la base de datos y todas las imágenes y archivos adjuntos.'` $\rightarrow$ *Ahora*: `'Genera un archivo comprimido de tu mundo.'`
+  - *Antes*: `'Perfil estándar de la especie (sin notas diferenciales)'` $\rightarrow$ *Ahora*: `'Perfil estándar de especie'`
+  - *Antes*: `'El toque corto en los botones de ajuste resta o suma una unidad. El toque prolongado activa la rueda de selección. El toque en la cifra permite ingresar la población objetivo directamente.'` $\rightarrow$ *Ahora*: `'Ajusta la población con los botones o la cifra directamente.'`
+
 ---
 
 ## 3. Resumen del Trabajo Realizado
