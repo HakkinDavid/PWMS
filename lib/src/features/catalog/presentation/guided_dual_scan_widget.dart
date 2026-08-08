@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:camera/camera.dart';
+import 'package:image/image.dart' as img;
 import '../domain/numismatic_recognition_models.dart';
 import '../infrastructure/numismatic_recognition_engine.dart';
 
@@ -18,47 +19,168 @@ class GuidedDualScanWidget extends ConsumerStatefulWidget {
 }
 
 class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
-  File? _obverseFile;
-  File? _reverseFile;
+  CameraController? _cameraController;
+  List<CameraDescription> _cameras = [];
+  bool _isCameraInitialized = false;
   bool _isProcessing = false;
   String? _statusMessage;
 
-  final ImagePicker _picker = ImagePicker();
+  // 1: Obverse, 2: Reverse
+  int _currentStep = 1; 
+  File? _obverseFile;
+  File? _reverseFile;
 
-  Future<void> _pickPhoto({required bool isObverse, required ImageSource source}) async {
+  // Configuration
+  bool _isCoinMode = true; // True for Coin (Circle), False for Banknote (Rectangle)
+  double _currentZoom = 1.0;
+  double _maxZoom = 4.0;
+  double _minZoom = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
     try {
-      final XFile? image = await _picker.pickImage(
-        source: source,
-        imageQuality: 90,
-        maxWidth: 1600,
-      );
-      if (image != null) {
-        setState(() {
-          if (isObverse) {
-            _obverseFile = File(image.path);
-          } else {
-            _reverseFile = File(image.path);
-          }
-        });
+      _cameras = await availableCameras();
+      if (_cameras.isNotEmpty) {
+        // Prefer back camera
+        final backCam = _cameras.firstWhere(
+          (c) => c.lensDirection == CameraLensDirection.back,
+          orElse: () => _cameras.first,
+        );
+
+        _cameraController = CameraController(
+          backCam,
+          ResolutionPreset.high,
+          enableAudio: false,
+        );
+
+        await _cameraController!.initialize();
+        _maxZoom = await _cameraController!.getMaxZoomLevel();
+        _minZoom = await _cameraController!.getMinZoomLevel();
+
+        // Configure macro/autofocus parameters
+        try {
+          await _cameraController!.setFocusMode(FocusMode.auto);
+          await _cameraController!.setFocusPoint(const Offset(0.5, 0.5));
+        } catch (_) {}
+
+        if (mounted) {
+          setState(() {
+            _isCameraInitialized = true;
+          });
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al capturar foto: $e'), backgroundColor: Colors.redAccent),
-      );
+      if (mounted) {
+        setState(() {
+          _statusMessage = 'Error al inicializar cámara: $e';
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _adjustZoom(double value) async {
+    if (_cameraController == null || !_isCameraInitialized) return;
+    try {
+      final zoom = value.clamp(_minZoom, _maxZoom);
+      await _cameraController!.setZoomLevel(zoom);
+      setState(() {
+        _currentZoom = zoom;
+      });
+    } catch (_) {}
+  }
+
+  Future<File> _cropImageCenter(File originalFile) async {
+    final bytes = await originalFile.readAsBytes();
+    final image = img.decodeImage(bytes);
+    if (image == null) return originalFile;
+
+    // Determine crop dimensions
+    int size;
+    int x;
+    int y;
+    img.Image cropped;
+
+    if (_isCoinMode) {
+      // Circular crop helper (crop square from center, which Gemini interprets as the coin)
+      size = (image.width < image.height ? image.width : image.height) * 3 ~/ 4;
+      x = (image.width - size) ~/ 2;
+      y = (image.height - size) ~/ 2;
+      cropped = img.copyCrop(image, x: x, y: y, width: size, height: size);
+    } else {
+      // Rectangular crop for banknote (4:3 aspect ratio)
+      final width = (image.width * 0.85).toInt();
+      final height = (width * 0.55).toInt();
+      x = (image.width - width) ~/ 2;
+      y = (image.height - height) ~/ 2;
+      cropped = img.copyCrop(image, x: x, y: y, width: width, height: height);
+    }
+
+    final newPath = originalFile.path.replaceAll('.jpg', '_cropped.jpg');
+    final croppedFile = File(newPath);
+    await croppedFile.writeAsBytes(img.encodeJpg(cropped, quality: 90));
+    return croppedFile;
+  }
+
+  Future<void> _capturePhoto() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized || _isProcessing) return;
+
+    setState(() {
+      _isProcessing = true;
+      _statusMessage = 'Capturando cara...';
+    });
+
+    try {
+      // Trigger center autofocus before capturing
+      try {
+        await _cameraController!.setFocusMode(FocusMode.auto);
+        await _cameraController!.setFocusPoint(const Offset(0.5, 0.5));
+        await Future.delayed(const Duration(milliseconds: 300));
+      } catch (_) {}
+
+      final XFile photo = await _cameraController!.takePicture();
+      final File rawFile = File(photo.path);
+
+      // Programmatically crop to the center frame area
+      final File croppedFile = await _cropImageCenter(rawFile);
+
+      if (_currentStep == 1) {
+        _obverseFile = croppedFile;
+        setState(() {
+          _currentStep = 2;
+          _isProcessing = false;
+          _statusMessage = null;
+        });
+      } else {
+        _reverseFile = croppedFile;
+        await _processRecognition();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+          _statusMessage = 'Error en captura: $e';
+        });
+      }
     }
   }
 
   Future<void> _processRecognition() async {
-    if (_obverseFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Debes capturar al menos la foto del Anverso (cara principal).')),
-      );
-      return;
-    }
+    if (_obverseFile == null) return;
 
     setState(() {
       _isProcessing = true;
-      _statusMessage = 'Identificando pieza numismática...';
+      _statusMessage = 'Identificando pieza numismática en la nube/local...';
     });
 
     try {
@@ -73,15 +195,13 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error en análisis: $e'), backgroundColor: Colors.redAccent),
-        );
-      }
-    } finally {
-      if (mounted) {
         setState(() {
           _isProcessing = false;
-          _statusMessage = null;
+          _statusMessage = 'Error al identificar: $e';
+          // Fallback to let user try again or submit manually
+          _currentStep = 1;
+          _obverseFile = null;
+          _reverseFile = null;
         });
       }
     }
@@ -91,201 +211,318 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer.withAlpha(80),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.monetization_on_outlined, color: Colors.amber, size: 24),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Escaneo Numismático Guiado: Toma una foto clara del Anverso (obligatorio) y del Reverso (opcional) de tu moneda o billete.',
-                    style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Tarjetas de Captura Dual
-          Row(
+    if (!_isCameraInitialized) {
+      return SizedBox(
+        height: 400,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: _buildPhotoCard(
-                  title: '1. Anverso (Obligatorio)',
-                  subtitle: 'Cara principal',
-                  file: _obverseFile,
-                  isObverse: true,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildPhotoCard(
-                  title: '2. Reverso (Opcional)',
-                  subtitle: 'Cara secundaria',
-                  file: _reverseFile,
-                  isObverse: false,
-                ),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(
+                _statusMessage ?? 'Iniciando cámara trasera...',
+                style: const TextStyle(color: Colors.grey),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-
-          // Status message
-          if (_statusMessage != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Center(
-                child: Text(
-                  _statusMessage!,
-                  style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12),
-                ),
-              ),
-            ),
-
-          // Botón de Análisis
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton.icon(
-              onPressed: (_isProcessing || _obverseFile == null) ? null : _processRecognition,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
-                foregroundColor: theme.colorScheme.onPrimary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              ),
-              icon: _isProcessing
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Icon(Icons.auto_awesome),
-              label: Text(
-                _isProcessing ? 'Procesando Escaneo...' : 'Analizar e Instanciar Pieza',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPhotoCard({
-    required String title,
-    required String subtitle,
-    required File? file,
-    required bool isObverse,
-  }) {
-    final theme = Theme.of(context);
-
-    return Container(
-      height: 210,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: file != null ? Colors.green.shade600 : theme.colorScheme.outline.withAlpha(100),
-          width: file != null ? 2 : 1,
         ),
-      ),
-      child: Column(
-        children: [
+      );
+    }
+
+    return Column(
+      children: [
+        // Mode Selector: Moneda vs Billete
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilterChip(
+                label: const Text('Moneda (Circular)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                selected: _isCoinMode,
+                onSelected: (val) {
+                  setState(() => _isCoinMode = val);
+                },
+                avatar: const Icon(Icons.circle_outlined, size: 16),
+              ),
+              const SizedBox(width: 12),
+              FilterChip(
+                label: const Text('Billete (Rectángulo)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                selected: !_isCoinMode,
+                onSelected: (val) {
+                  setState(() => _isCoinMode = !val);
+                },
+                avatar: const Icon(Icons.crop_landscape, size: 16),
+              ),
+            ],
+          ),
+        ),
+
+        // Live Camera Preview with Custom Overlays
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            AspectRatio(
+              aspectRatio: 3 / 4,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: CameraPreview(_cameraController!),
+              ),
+            ),
+
+            // Frame overlay
+            AspectRatio(
+              aspectRatio: 3 / 4,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: theme.colorScheme.primary.withAlpha(120), width: 2),
+                ),
+              ),
+            ),
+
+            // Target Overlay
+            _buildTargetOverlay(theme),
+
+            // Steps Indicator Banner
+            Positioned(
+              top: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.black87,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _currentStep == 1 ? Icons.looks_one : Icons.looks_two,
+                      color: Colors.amber,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _currentStep == 1
+                          ? 'PASO 1: ENCUADRA EL ANVERSO'
+                          : 'PASO 2: ENCUADRA EL REVERSO',
+                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Focus Lock / Center indicator
+            const Icon(Icons.center_focus_weak, color: Colors.white54, size: 40),
+
+            // Zoom Controller Slider Overlay
+            Positioned(
+              bottom: 16,
+              left: 20,
+              right: 20,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.zoom_out, color: Colors.white, size: 16),
+                    Expanded(
+                      child: Slider(
+                        value: _currentZoom,
+                        min: _minZoom,
+                        max: _maxZoom,
+                        onChanged: _adjustZoom,
+                        activeColor: Colors.amber,
+                        inactiveColor: Colors.white24,
+                      ),
+                    ),
+                    const Icon(Icons.zoom_in, color: Colors.white, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${_currentZoom.toStringAsFixed(1)}x',
+                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // Status or guidance messages
+        if (_statusMessage != null)
           Padding(
-            padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-            child: Column(
-              children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11), textAlign: TextAlign.center),
-                Text(subtitle, style: const TextStyle(fontSize: 10, color: Colors.grey), textAlign: TextAlign.center),
-              ],
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              _statusMessage!,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12),
             ),
           ),
-          const SizedBox(height: 6),
-          Expanded(
-            child: file != null
-                ? Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(file, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
-                      ),
-                      Positioned(
-                        right: 4,
-                        top: 4,
-                        child: CircleAvatar(
-                          radius: 14,
-                          backgroundColor: Colors.black87,
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: const Icon(Icons.close, size: 14, color: Colors.white),
-                            onPressed: () {
-                              setState(() {
-                                if (isObverse) {
-                                  _obverseFile = null;
-                                } else {
-                                  _reverseFile = null;
-                                }
-                              });
-                            },
-                          ),
+
+        // Shutter Button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (_currentStep == 2)
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: OutlinedButton.icon(
+                  onPressed: _isProcessing
+                      ? null
+                      : () {
+                          setState(() {
+                            _currentStep = 1;
+                            _obverseFile = null;
+                          });
+                        },
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Re-capturar Anverso'),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
+              ),
+            GestureDetector(
+              onTap: (_isProcessing) ? null : _capturePhoto,
+              child: Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: theme.colorScheme.primary, width: 4),
+                  color: Colors.transparent,
+                ),
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _isProcessing ? Colors.grey : theme.colorScheme.primary,
+                  ),
+                  child: _isProcessing
+                      ? const Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3))
+                      : Icon(
+                          _isCoinMode ? Icons.circle : Icons.crop_free,
+                          color: Colors.white,
+                          size: 32,
                         ),
-                      ),
-                    ],
-                  )
-                : Container(
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.add_a_photo_outlined, size: 36, color: Colors.grey),
-                    ),
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  onTap: () => _pickPhoto(isObverse: isObverse, source: ImageSource.camera),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4),
-                    child: Row(
-                      children: [
-                        Icon(Icons.camera_alt, size: 14),
-                        SizedBox(width: 2),
-                        Text('Cámara', style: TextStyle(fontSize: 10)),
-                      ],
-                    ),
-                  ),
                 ),
-                InkWell(
-                  onTap: () => _pickPhoto(isObverse: isObverse, source: ImageSource.gallery),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4),
-                    child: Row(
-                      children: [
-                        Icon(Icons.photo_library, size: 14),
-                        SizedBox(width: 2),
-                        Text('Galería', style: TextStyle(fontSize: 10)),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      ],
     );
   }
+
+  Widget _buildTargetOverlay(ThemeData theme) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = constraints.maxWidth;
+        final double height = constraints.maxHeight;
+
+        if (_isCoinMode) {
+          // Circle targeting frame
+          final double radius = width * 0.35;
+          return Stack(
+            children: [
+              CustomPaint(
+                size: Size(width, height),
+                painter: _OverlayShadingPainter(
+                  isCircle: true,
+                  center: Offset(width / 2, height / 2),
+                  size: radius * 2,
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: radius * 2,
+                  height: radius * 2,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.amber, width: 2.5),
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else {
+          // Rectangular targeting frame
+          final double rectWidth = width * 0.8;
+          final double rectHeight = rectWidth * 0.55;
+          return Stack(
+            children: [
+              CustomPaint(
+                size: Size(width, height),
+                painter: _OverlayShadingPainter(
+                  isCircle: false,
+                  center: Offset(width / 2, height / 2),
+                  size: rectWidth,
+                  height: rectHeight,
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: rectWidth,
+                  height: rectHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.amber, width: 2.5),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+      },
+    );
+  }
+}
+
+class _OverlayShadingPainter extends CustomPainter {
+  final bool isCircle;
+  final Offset center;
+  final double size;
+  final double? height;
+
+  _OverlayShadingPainter({
+    required this.isCircle,
+    required this.center,
+    required this.size,
+    this.height,
+  });
+
+  @override
+  void paint(Canvas canvas, Size sizeObj) {
+    final backgroundPaint = Paint()..color = Colors.black45;
+
+    final path = Path()
+      ..addRect(Rect.fromLTWH(0, 0, sizeObj.width, sizeObj.height));
+
+    Path holePath;
+    if (isCircle) {
+      holePath = Path()
+        ..addOval(Rect.fromCircle(center: center, radius: size / 2));
+    } else {
+      final h = height ?? (size * 0.55);
+      holePath = Path()
+        ..addRRect(RRect.fromRectAndRadius(
+          Rect.fromCenter(center: center, width: size, height: h),
+          const Radius.circular(16),
+        ));
+    }
+
+    final shadowPath = Path.combine(PathOperation.difference, path, holePath);
+    canvas.drawPath(shadowPath, backgroundPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

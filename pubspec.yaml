@@ -38,6 +38,8 @@ dependencies:
   flutter_animate: ^4.5.2
   open_filex: ^4.7.0
   mobile_scanner: ^6.0.4
+  camera: ^0.11.0+2
+  image: ^4.3.0
   http: ^1.2.2
   flutter_local_notifications: ^18.0.1
   share_plus: ^10.1.3
