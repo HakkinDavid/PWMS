@@ -182,7 +182,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   }
 
   Future<void> _processRecognition() async {
-    if (_obverseFile == null) return;
+    if (_obverseFile == null || _isProcessing) return;
 
     setState(() {
       _isProcessing = true;

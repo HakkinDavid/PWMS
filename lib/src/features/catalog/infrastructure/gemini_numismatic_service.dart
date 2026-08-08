@@ -65,160 +65,105 @@ Si un valor numérico no es deducible, coloca null para los campos numéricos (f
         });
       }
 
-      // Candidatos a modelos multimodales de Gemini
-      final candidateModels = [
-        'gemini-2.5-flash',
-        'gemini-2.0-flash',
-        'gemini-1.5-flash',
-        'gemini-2.5-flash-latest',
-        'gemini-1.5-flash-latest',
-        'models/gemini-2.5-flash',
-        'models/gemini-2.0-flash',
-        'models/gemini-1.5-flash',
-        'gemini-1.5-pro',
-      ];
+      print('🌐 [PWMS Gemini] Obteniendo lista de modelos disponibles para la API Key...');
+      String targetModel = 'gemini-1.5-flash';
 
-      for (final model in candidateModels) {
-        final cleanModelPath = model.startsWith('models/') ? model.substring(7) : model;
-        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$cleanModelPath:generateContent?key=$cleanKey');
-
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({
-            'contents': [
-              {'parts': parts}
-            ],
-            'generationConfig': {
-              'response_mime_type': 'application/json',
-              'temperature': 0.1,
-            }
-          }),
-        ).timeout(const Duration(seconds: 25));
-
-        if (response.statusCode == 200) {
-          final decoded = jsonDecode(response.body);
-          final candidates = decoded['candidates'] as List?;
-          if (candidates != null && candidates.isNotEmpty) {
-            final contentParts = candidates.first['content']['parts'] as List?;
-            if (contentParts != null && contentParts.isNotEmpty) {
-              final rawText = contentParts.first['text'] as String;
-              final cleanJsonText = rawText.replaceAll(RegExp(r'^```json\s*|\s*```$'), '').trim();
-              final data = jsonDecode(cleanJsonText) as Map<String, dynamic>;
-
-              return NumismaticScanResult(
-                speciesType: (data['speciesType']?.toString() ?? 'Moneda').trim(),
-                generalSpeciesName: (data['generalSpeciesName']?.toString() ?? 'Moneda').trim(),
-                subspeciesName: (data['subspeciesName']?.toString() ?? 'Moneda / Billete Numismático').trim(),
-                brandOrMint: data['brandOrMint']?.toString(),
-                country: data['country']?.toString(),
-                year: data['year']?.toString(),
-                faceValueNumber: (data['faceValueNumber'] is num) ? (data['faceValueNumber'] as num).toDouble() : double.tryParse(data['faceValueNumber']?.toString() ?? ''),
-                currencyCode: data['currencyCode']?.toString(),
-                currencyName: data['currencyName']?.toString(),
-                composition: data['composition']?.toString(),
-                massGrams: (data['massGrams'] is num) ? (data['massGrams'] as num).toDouble() : double.tryParse(data['massGrams']?.toString() ?? ''),
-                diameterMm: (data['diameterMm'] is num) ? (data['diameterMm'] as num).toDouble() : double.tryParse(data['diameterMm']?.toString() ?? ''),
-                thicknessMm: (data['thicknessMm'] is num) ? (data['thicknessMm'] as num).toDouble() : double.tryParse(data['thicknessMm']?.toString() ?? ''),
-                lengthMm: (data['lengthMm'] is num) ? (data['lengthMm'] as num).toDouble() : double.tryParse(data['lengthMm']?.toString() ?? ''),
-                widthMm: (data['widthMm'] is num) ? (data['widthMm'] as num).toDouble() : double.tryParse(data['widthMm']?.toString() ?? ''),
-                grade: data['grade']?.toString(),
-                serialNumber: data['serialNumber']?.toString(),
-                catalogCode: data['catalogCode']?.toString(),
-                notes: data['notes']?.toString(),
-                obversePhotoPath: obversePhoto.path,
-                reversePhotoPath: reversePhoto?.path,
-                sourceEngine: 'Gemini Vision ($cleanModelPath)',
-              );
-            }
-          }
-        } else if (response.statusCode == 401 || response.statusCode == 403) {
-          throw Exception('Clave API de Gemini inválida o sin permisos (HTTP ${response.statusCode}). Revisa tu API Key en la tuerca ⚙️ de ajustes.');
-        } else if (response.statusCode == 429) {
-          throw Exception('Límite de solicitudes alcanzado en Gemini (HTTP 429). Espera unos segundos antes de intentar un nuevo escaneo.');
-        } else if (response.statusCode == 404) {
-          // Probar el siguiente modelo candidato de la lista
-          continue;
-        } else {
-          throw Exception('Error en Gemini (HTTP ${response.statusCode}): ${response.body}');
-        }
-      }
-
-      // Si todos los candidatos estáticos devolvieron 404, intentar descubrimiento dinámico llamando a v1beta/models
       try {
         final listUrl = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models?key=$cleanKey');
-        final listResponse = await http.get(listUrl).timeout(const Duration(seconds: 10));
+        final listResponse = await http.get(listUrl).timeout(const Duration(seconds: 8));
+
+        print('📋 [PWMS Gemini] Models Discovery Status: ${listResponse.statusCode}');
         if (listResponse.statusCode == 200) {
           final listDecoded = jsonDecode(listResponse.body);
           final modelsList = listDecoded['models'] as List?;
-          if (modelsList != null) {
+          if (modelsList != null && modelsList.isNotEmpty) {
+            print('📋 [PWMS Gemini] Modelos disponibles en tu cuenta Google AI Studio:');
             for (final m in modelsList) {
-              final name = m['name'] as String?;
-              final supportedMethods = m['supportedGenerationMethods'] as List?;
-              if (name != null && supportedMethods != null && supportedMethods.contains('generateContent')) {
-                final modelName = name.replaceFirst('models/', '');
-                final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$modelName:generateContent?key=$cleanKey');
-
-                final res = await http.post(
-                  url,
-                  headers: {'Content-Type': 'application/json'},
-                  body: jsonEncode({
-                    'contents': [
-                      {'parts': parts}
-                    ],
-                    'generationConfig': {
-                      'response_mime_type': 'application/json',
-                      'temperature': 0.1,
-                    }
-                  }),
-                ).timeout(const Duration(seconds: 25));
-
-                if (res.statusCode == 200) {
-                  final decoded = jsonDecode(res.body);
-                  final candidates = decoded['candidates'] as List?;
-                  if (candidates != null && candidates.isNotEmpty) {
-                    final contentParts = candidates.first['content']['parts'] as List?;
-                    if (contentParts != null && contentParts.isNotEmpty) {
-                      final rawText = contentParts.first['text'] as String;
-                      final cleanJsonText = rawText.replaceAll(RegExp(r'^```json\s*|\s*```$'), '').trim();
-                      final data = jsonDecode(cleanJsonText) as Map<String, dynamic>;
-
-                      return NumismaticScanResult(
-                        speciesType: (data['speciesType']?.toString() ?? 'Moneda').trim(),
-                        generalSpeciesName: (data['generalSpeciesName']?.toString() ?? 'Moneda').trim(),
-                        subspeciesName: (data['subspeciesName']?.toString() ?? 'Moneda / Billete Numismático').trim(),
-                        brandOrMint: data['brandOrMint']?.toString(),
-                        country: data['country']?.toString(),
-                        year: data['year']?.toString(),
-                        faceValueNumber: (data['faceValueNumber'] is num) ? (data['faceValueNumber'] as num).toDouble() : double.tryParse(data['faceValueNumber']?.toString() ?? ''),
-                        currencyCode: data['currencyCode']?.toString(),
-                        currencyName: data['currencyName']?.toString(),
-                        composition: data['composition']?.toString(),
-                        massGrams: (data['massGrams'] is num) ? (data['massGrams'] as num).toDouble() : double.tryParse(data['massGrams']?.toString() ?? ''),
-                        diameterMm: (data['diameterMm'] is num) ? (data['diameterMm'] as num).toDouble() : double.tryParse(data['diameterMm']?.toString() ?? ''),
-                        thicknessMm: (data['thicknessMm'] is num) ? (data['thicknessMm'] as num).toDouble() : double.tryParse(data['thicknessMm']?.toString() ?? ''),
-                        lengthMm: (data['lengthMm'] is num) ? (data['lengthMm'] as num).toDouble() : double.tryParse(data['lengthMm']?.toString() ?? ''),
-                        widthMm: (data['widthMm'] is num) ? (data['widthMm'] as num).toDouble() : double.tryParse(data['widthMm']?.toString() ?? ''),
-                        grade: data['grade']?.toString(),
-                        serialNumber: data['serialNumber']?.toString(),
-                        catalogCode: data['catalogCode']?.toString(),
-                        notes: data['notes']?.toString(),
-                        obversePhotoPath: obversePhoto.path,
-                        reversePhotoPath: reversePhoto?.path,
-                        sourceEngine: 'Gemini Vision ($modelName)',
-                      );
-                    }
-                  }
-                }
-              }
+              print('   - ${m['name']}');
             }
+            final flashModel = modelsList.firstWhere(
+              (m) => (m['name'] as String? ?? '').contains('flash') && (m['supportedGenerationMethods'] as List? ?? []).contains('generateContent'),
+              orElse: () => modelsList.firstWhere(
+                (m) => (m['supportedGenerationMethods'] as List? ?? []).contains('generateContent'),
+                orElse: () => {'name': 'models/gemini-1.5-flash'},
+              ),
+            );
+            final rawName = flashModel['name'] as String? ?? 'models/gemini-1.5-flash';
+            targetModel = rawName.replaceFirst('models/', '');
           }
         }
-      } catch (_) {}
+      } catch (e) {
+        print('⚠️ [PWMS Gemini] Fallo en la llamada a v1beta/models: $e');
+      }
 
-      throw Exception('Modelo Gemini no disponible (HTTP 404). Verifica que tu cuenta de Google AI Studio tenga acceso a los modelos de Gemini.');
+      print('🚀 [PWMS Gemini] Enviando fotos a modelo objetivo: $targetModel...');
+      final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$targetModel:generateContent?key=$cleanKey');
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'contents': [
+            {'parts': parts}
+          ],
+          'generationConfig': {
+            'response_mime_type': 'application/json',
+            'temperature': 0.1,
+          }
+        }),
+      ).timeout(const Duration(seconds: 25));
+
+      print('📥 [PWMS Gemini] Response Status Code: ${response.statusCode}');
+      print('📦 [PWMS Gemini] RESPUESTA COMPLETA DE GEMINI:\n${response.body}\n----------------------------------');
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        final candidates = decoded['candidates'] as List?;
+        if (candidates != null && candidates.isNotEmpty) {
+          final contentParts = candidates.first['content']['parts'] as List?;
+          if (contentParts != null && contentParts.isNotEmpty) {
+            final rawText = contentParts.first['text'] as String;
+            print('✨ [PWMS Gemini] JSON de Gemini Parsedeado:\n$rawText');
+            final cleanJsonText = rawText.replaceAll(RegExp(r'^```json\s*|\s*```$'), '').trim();
+            final data = jsonDecode(cleanJsonText) as Map<String, dynamic>;
+
+            return NumismaticScanResult(
+              speciesType: (data['speciesType']?.toString() ?? 'Moneda').trim(),
+              generalSpeciesName: (data['generalSpeciesName']?.toString() ?? 'Moneda').trim(),
+              subspeciesName: (data['subspeciesName']?.toString() ?? 'Moneda / Billete Numismático').trim(),
+              brandOrMint: data['brandOrMint']?.toString(),
+              country: data['country']?.toString(),
+              year: data['year']?.toString(),
+              faceValueNumber: (data['faceValueNumber'] is num) ? (data['faceValueNumber'] as num).toDouble() : double.tryParse(data['faceValueNumber']?.toString() ?? ''),
+              currencyCode: data['currencyCode']?.toString(),
+              currencyName: data['currencyName']?.toString(),
+              composition: data['composition']?.toString(),
+              massGrams: (data['massGrams'] is num) ? (data['massGrams'] as num).toDouble() : double.tryParse(data['massGrams']?.toString() ?? ''),
+              diameterMm: (data['diameterMm'] is num) ? (data['diameterMm'] as num).toDouble() : double.tryParse(data['diameterMm']?.toString() ?? ''),
+              thicknessMm: (data['thicknessMm'] is num) ? (data['thicknessMm'] as num).toDouble() : double.tryParse(data['thicknessMm']?.toString() ?? ''),
+              lengthMm: (data['lengthMm'] is num) ? (data['lengthMm'] as num).toDouble() : double.tryParse(data['lengthMm']?.toString() ?? ''),
+              widthMm: (data['widthMm'] is num) ? (data['widthMm'] as num).toDouble() : double.tryParse(data['widthMm']?.toString() ?? ''),
+              grade: data['grade']?.toString(),
+              serialNumber: data['serialNumber']?.toString(),
+              catalogCode: data['catalogCode']?.toString(),
+              notes: data['notes']?.toString(),
+              obversePhotoPath: obversePhoto.path,
+              reversePhotoPath: reversePhoto?.path,
+              sourceEngine: 'Gemini Vision ($targetModel)',
+            );
+          }
+        }
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        throw Exception('Clave API de Gemini inválida o sin permisos (HTTP ${response.statusCode}). Revisa tu API Key en la tuerca ⚙️ de ajustes.');
+      } else if (response.statusCode == 429) {
+        throw Exception('Límite de solicitudes alcanzado en Gemini (HTTP 429). Espera unos segundos antes de intentar un nuevo escaneo.');
+      } else {
+        throw Exception('Error en Gemini (HTTP ${response.statusCode}): ${response.body}');
+      }
     } catch (e) {
+      print('❌ [PWMS Gemini Error]: $e');
       rethrow;
     }
+    return null;
   }
 }
