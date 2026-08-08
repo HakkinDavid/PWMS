@@ -184,11 +184,23 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   Future<void> _processRecognition() async {
     if (_obverseFile == null) return;
 
+    // Pausar preview de la cámara para liberar GPU/CPU mientras se llena el formulario
+    try {
+      await _cameraController?.pausePreview();
+    } catch (_) {}
+
     final result = await NumismaticQuickFillSheet.show(
       context,
       obversePhoto: _obverseFile!,
       reversePhoto: _reverseFile,
+      isCoin: _isCoinMode,
     );
+
+    if (result == null) {
+      try {
+        await _cameraController?.resumePreview();
+      } catch (_) {}
+    }
 
     if (result != null && mounted) {
       widget.onScannedResult?.call(result);

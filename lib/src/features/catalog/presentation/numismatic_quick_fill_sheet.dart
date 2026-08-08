@@ -5,17 +5,20 @@ import '../domain/numismatic_recognition_models.dart';
 class NumismaticQuickFillSheet extends StatefulWidget {
   final File obversePhoto;
   final File? reversePhoto;
+  final bool isCoin;
 
   const NumismaticQuickFillSheet({
     super.key,
     required this.obversePhoto,
     this.reversePhoto,
+    required this.isCoin,
   });
 
   static Future<NumismaticScanResult?> show(
     BuildContext context, {
     required File obversePhoto,
     File? reversePhoto,
+    required bool isCoin,
   }) {
     return showModalBottomSheet<NumismaticScanResult>(
       context: context,
@@ -28,6 +31,7 @@ class NumismaticQuickFillSheet extends StatefulWidget {
         child: NumismaticQuickFillSheet(
           obversePhoto: obversePhoto,
           reversePhoto: reversePhoto,
+          isCoin: isCoin,
         ),
       ),
     );
@@ -38,14 +42,12 @@ class NumismaticQuickFillSheet extends StatefulWidget {
 }
 
 class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
-  String _speciesType = 'Moneda';
-
-  // Preset lists for instant selection
+  // Preset lists for instant selection with Mexico defaults first
   static const Map<String, String> _currencyMap = {
-    'ESP': 'Pesetas',
-    'EUR': 'Euros',
     'MXN': 'Pesos Mexicanos',
+    'EUR': 'Euros',
     'USD': 'Dólares US',
+    'ESP': 'Pesetas',
     'GBP': 'Libras Esterlinas',
     'CAD': 'Dólares Canadienses',
     'CLP': 'Pesos Chilenos',
@@ -55,8 +57,8 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   };
 
   static const List<String> _countries = [
-    'España',
     'México',
+    'España',
     'Estados Unidos',
     'Unión Europea',
     'Reino Unido',
@@ -101,8 +103,14 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
     'Acero',
   ];
 
-  static const List<String> _banknoteMaterials = [
-    'Papel',
+  static const List<String> _specialEditionReasons = [
+    'Conmemorativa',
+    'Prueba de acuñación (Proof)',
+    'Error de acuñación / Impresión',
+    'Serie limitada / Numeración especial',
+    'Aniversario / Evento histórico',
+    'Emisión de cambio de régimen',
+    'Otro (especificar)',
   ];
 
   late String _country;
@@ -110,21 +118,29 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   late String _denomination;
   late String _grade;
   late String _composition;
-  final TextEditingController _yearController = TextEditingController(text: '1982');
+
+  // Empty year text field by default
+  final TextEditingController _yearController = TextEditingController(text: '');
+
+  // Special Edition Controls
+  bool _isSpecialEdition = false;
+  String _specialReason = _specialEditionReasons.first;
+  final TextEditingController _specialNotesController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _country = _countries.first;
-    _currencyCode = _currencyMap.keys.first;
+    _country = 'México';
+    _currencyCode = 'MXN';
     _denomination = '5';
     _grade = _grades[2]; // MBC / VF
-    _composition = _coinMaterials.first;
+    _composition = widget.isCoin ? _coinMaterials.first : 'Papel';
   }
 
   @override
   void dispose() {
     _yearController.dispose();
+    _specialNotesController.dispose();
     super.dispose();
   }
 
@@ -132,19 +148,28 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
     final faceVal = double.tryParse(_denomination);
     final currName = _currencyMap[_currencyCode] ?? _currencyCode;
     final yearStr = _yearController.text.trim();
-    final title = '$_denomination $currName - $_country ($yearStr)';
+    final speciesType = widget.isCoin ? 'Moneda' : 'Billete';
+
+    final titleParts = <String>['$_denomination $currName', _country];
+    if (yearStr.isNotEmpty) titleParts.add('($yearStr)');
+    final title = titleParts.join(' - ');
 
     final result = NumismaticScanResult(
-      speciesType: _speciesType,
-      generalSpeciesName: _speciesType,
+      speciesType: speciesType,
+      generalSpeciesName: speciesType,
       subspeciesName: title,
       country: _country,
       year: yearStr.isNotEmpty ? yearStr : null,
       faceValueNumber: faceVal,
       currencyCode: _currencyCode,
       currencyName: currName,
-      composition: _composition,
+      composition: widget.isCoin ? _composition : 'Papel',
       grade: _grade,
+      isSpecialEdition: _isSpecialEdition,
+      specialEditionReason: _isSpecialEdition ? _specialReason : null,
+      specialEditionNotes: (_isSpecialEdition && _specialReason == 'Otro (especificar)')
+          ? _specialNotesController.text.trim()
+          : null,
       obversePhotoPath: widget.obversePhoto.path,
       reversePhotoPath: widget.reversePhoto?.path,
       sourceEngine: 'Formulario Rápido In-App',
@@ -156,7 +181,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final materials = _speciesType == 'Moneda' ? _coinMaterials : _banknoteMaterials;
+    final speciesLabel = widget.isCoin ? 'Moneda (Circular)' : 'Billete (Rectangular)';
 
     return Container(
       decoration: BoxDecoration(
@@ -182,13 +207,13 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
             ),
             const SizedBox(height: 12),
 
-            // Header Title
+            // Header Title & Fixed Species Indicator
             Row(
               children: [
-                Icon(Icons.flash_on, color: theme.colorScheme.primary),
+                Icon(widget.isCoin ? Icons.circle_outlined : Icons.crop_landscape, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
-                  'Datos Numismáticos Rápidos',
+                  'Datos Numismáticos - $speciesLabel',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -197,23 +222,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
             ),
             const SizedBox(height: 16),
 
-            // Species Type Segmented Control
-            SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: 'Moneda', label: Text('Moneda'), icon: Icon(Icons.circle_outlined)),
-                ButtonSegment(value: 'Billete', label: Text('Billete'), icon: Icon(Icons.crop_landscape)),
-              ],
-              selected: {_speciesType},
-              onSelectionChanged: (val) {
-                setState(() {
-                  _speciesType = val.first;
-                  _composition = (_speciesType == 'Moneda' ? _coinMaterials : _banknoteMaterials).first;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-
-            // Country Dropdown
+            // Country Dropdown (Default México)
             DropdownButtonFormField<String>(
               initialValue: _country,
               decoration: InputDecoration(
@@ -269,7 +278,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                     controller: _yearController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Año',
+                      labelText: 'Año (opcional)',
                       prefixIcon: const Icon(Icons.calendar_today),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
@@ -293,25 +302,78 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
             ),
             const SizedBox(height: 12),
 
-            // Composition Chips Section
-            Text(
-              'Material / Composición',
-              style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: materials.map((mat) {
-                final isSelected = _composition == mat;
-                return ChoiceChip(
-                  label: Text(mat),
-                  selected: isSelected,
-                  onSelected: (val) {
-                    if (val) setState(() => _composition = mat);
-                  },
-                );
-              }).toList(),
+            // Composition Chips Section (Only shown for Coins, automatically Papel for Banknotes)
+            if (widget.isCoin) ...[
+              Text(
+                'Material / Composición',
+                style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: _coinMaterials.map((mat) {
+                  final isSelected = _composition == mat;
+                  return ChoiceChip(
+                    label: Text(mat),
+                    selected: isSelected,
+                    onSelected: (val) {
+                      if (val) setState(() => _composition = mat);
+                    },
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Special Edition Checkbox Section
+            Container(
+              decoration: BoxDecoration(
+                color: _isSpecialEdition ? theme.colorScheme.primaryContainer.withAlpha(50) : Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _isSpecialEdition ? theme.colorScheme.primary : Colors.grey.shade300,
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Column(
+                children: [
+                  CheckboxListTile(
+                    title: const Text('Edición Especial', style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: const Text('Marca si la pieza posee alguna particularidad o conmemoración'),
+                    value: _isSpecialEdition,
+                    activeColor: theme.colorScheme.primary,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (val) => setState(() => _isSpecialEdition = val ?? false),
+                  ),
+                  if (_isSpecialEdition) ...[
+                    const Divider(),
+                    const SizedBox(height: 4),
+                    DropdownButtonFormField<String>(
+                      initialValue: _specialReason,
+                      decoration: InputDecoration(
+                        labelText: 'Razón de Edición Especial',
+                        prefixIcon: const Icon(Icons.star),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                      ),
+                      items: _specialEditionReasons.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
+                      onChanged: (val) => setState(() => _specialReason = val!),
+                    ),
+                    if (_specialReason == 'Otro (especificar)') ...[
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _specialNotesController,
+                        decoration: InputDecoration(
+                          labelText: 'Anotaciones de Edición Especial',
+                          prefixIcon: const Icon(Icons.edit_note),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 8),
+                  ],
+                ],
+              ),
             ),
 
             const SizedBox(height: 20),

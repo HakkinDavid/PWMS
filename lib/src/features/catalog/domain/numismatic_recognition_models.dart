@@ -1,47 +1,35 @@
 class NumismaticScanResult {
   final String speciesType; // 'Moneda' or 'Billete'
   final String generalSpeciesName; // 'Moneda' or 'Billete'
-  final String subspeciesName; // e.g. '5 Pesetas (Juan Carlos I - 1982)'
-  final String? brandOrMint; // e.g. 'FNMT - Real Casa de la Moneda (M)'
-  final String? country; // e.g. 'España'
+  final String subspeciesName; // e.g. '5 Pesetas - España (1982)'
+  final String? country; // e.g. 'México', 'España'
   final String? year; // e.g. '1982'
   final double? faceValueNumber; // e.g. 5.0
-  final String? currencyCode; // e.g. 'ESP', 'EUR', 'USD', 'MXN'
-  final String? currencyName; // e.g. 'Pesetas', 'Euros'
-  final String? composition; // e.g. 'Cuproníquel', 'Plata .925'
-  final double? massGrams; // e.g. 5.75
-  final double? diameterMm; // e.g. 23.0
-  final double? thicknessMm; // e.g. 1.8
-  final double? lengthMm; // e.g. 140.0
-  final double? widthMm; // e.g. 75.0
-  final String? grade; // e.g. 'MBC / VF'
-  final String? serialNumber; // for banknotes
-  final String? catalogCode; // e.g. 'KM# 821' / 'Pick# 142'
-  final String? notes; // Description/historical summary
+  final String? currencyCode; // e.g. 'MXN', 'ESP', 'EUR', 'USD'
+  final String? currencyName; // e.g. 'Pesos Mexicanos', 'Pesetas'
+  final String? composition; // e.g. 'Cuproníquel', 'Plata', 'Papel'
+  final String? grade; // e.g. 'MBC / VF (Muy Buena)'
+  final bool isSpecialEdition;
+  final String? specialEditionReason; // e.g. 'Conmemorativa', 'Otro'
+  final String? specialEditionNotes; // free text when 'Otro'
   final String obversePhotoPath;
   final String? reversePhotoPath;
-  final String sourceEngine; // 'Gemini Vision', 'Numista API', 'Modo Local'
+  final String sourceEngine;
 
   NumismaticScanResult({
     required this.speciesType,
     required this.generalSpeciesName,
     required this.subspeciesName,
-    this.brandOrMint,
     this.country,
     this.year,
     this.faceValueNumber,
     this.currencyCode,
     this.currencyName,
     this.composition,
-    this.massGrams,
-    this.diameterMm,
-    this.thicknessMm,
-    this.lengthMm,
-    this.widthMm,
     this.grade,
-    this.serialNumber,
-    this.catalogCode,
-    this.notes,
+    this.isSpecialEdition = false,
+    this.specialEditionReason,
+    this.specialEditionNotes,
     required this.obversePhotoPath,
     this.reversePhotoPath,
     required this.sourceEngine,
@@ -49,21 +37,6 @@ class NumismaticScanResult {
 
   Map<String, double> toMagnitudeValues() {
     final map = <String, double>{};
-    if (massGrams != null && massGrams! > 0) {
-      map['Masa'] = massGrams!;
-    }
-    if (diameterMm != null && diameterMm! > 0) {
-      map['Diámetro'] = diameterMm!;
-    }
-    if (thicknessMm != null && thicknessMm! > 0) {
-      map['Espesor'] = thicknessMm!;
-    }
-    if (lengthMm != null && lengthMm! > 0) {
-      map['Longitud'] = lengthMm!;
-    }
-    if (widthMm != null && widthMm! > 0) {
-      map['Ancho'] = widthMm!;
-    }
     if (faceValueNumber != null && faceValueNumber! > 0) {
       map['Unidad Monetaria'] = faceValueNumber!;
     }

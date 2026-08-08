@@ -227,6 +227,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
       case RegisterModalMode.numismaticScanner:
         return GuidedDualScanWidget(
           onScannedResult: (result) async {
+            if (!mounted) return;
             final catalogRepo = ref.read(catalogRepositoryProvider);
             final catalog = catalogItems;
 
@@ -250,24 +251,21 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 : 'MXN';
 
             UnitsRegistry.registerUnknownUnit(currencyUnit);
+            if (result.composition != null) UnitsRegistry.registerUnknownUnit(result.composition!);
+            if (result.grade != null) UnitsRegistry.registerUnknownUnit(result.grade!);
 
-            if (result.speciesType == 'Moneda') {
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Masa', 'g');
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Diámetro', 'mm');
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Espesor', 'mm');
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Unidad Monetaria', currencyUnit);
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
-            } else {
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Longitud', 'mm');
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Ancho', 'mm');
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Unidad Monetaria', currencyUnit);
-              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
-            }
+            // Registrar magnitudes 4NF relacionales de la especie (Unidad Monetaria, Año, Material, Grado)
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Unidad Monetaria', currencyUnit);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Material', result.composition ?? 'mat');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Grado', result.grade ?? 'grado');
+
+            if (!mounted) return;
             ref.invalidate(catalogListProvider);
 
             final freshSpecies = await catalogRepo.getCatalogItemById(matchingSpecies.id) ?? matchingSpecies;
 
-            // 1. Reutilizar subespecie existente si coincide el nombre (ej: "5 Pesetas - España (1982)")
+            // 1. Reutilizar subespecie existente si coincide el nombre (ej: "5 Pesos Mexicanos - México (2022)")
             final existingSubspeciesList = await catalogRepo.getSubspeciesForSpecies(freshSpecies.id);
             Subspecies? targetSubspecies;
 
@@ -295,28 +293,54 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               );
 
               await catalogRepo.saveSubspecies(targetSubspecies);
+              if (!mounted) return;
               ref.invalidate(subspeciesListProvider);
             }
 
-            // 2. Instanciar directamente en inventario (Sin desplegar InstantiateSpeciesSheet)
+            // 2. Determinar anotaciones: Únicamente la información de Edición Especial va en las anotaciones
+            String? instanceNotes;
+            if (result.isSpecialEdition) {
+              final reason = result.specialEditionReason ?? 'Edición Especial';
+              if (reason == 'Otro (especificar)' && result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
+                instanceNotes = 'Edición Especial: ${result.specialEditionNotes}';
+              } else {
+                instanceNotes = 'Edición Especial: $reason';
+                if (result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
+                  instanceNotes = '$instanceNotes (${result.specialEditionNotes})';
+                }
+              }
+            }
+
+            // 3. Instanciar directamente en inventario (Sin desplegar InstantiateSpeciesSheet)
+            if (!mounted) return;
             final entityRepo = ref.read(entityRepositoryProvider);
             final createdInstance = await entityRepo.instantiateOrMerge(
               freshSpecies.id,
               widget.initialLocationId,
               1.0,
               subspeciesId: targetSubspecies.id,
-              notes: 'Grado: ${result.grade ?? "N/A"} | Material: ${result.composition ?? "N/A"}',
+              notes: instanceNotes,
             );
 
-            // 3. Guardar magnitudes 4NF en la instancia
+            // 4. Guardar magnitudes 4NF relacionales en la instancia
             if (freshSpecies.magnitudes.isNotEmpty) {
               final List<InstanceMagnitude> customInstanceMags = [];
               for (final sm in freshSpecies.magnitudes) {
                 double val = 1.0;
+                String unit = sm.unitSymbol;
+
                 if (sm.propertyName == 'Unidad Monetaria' && result.faceValueNumber != null) {
                   val = result.faceValueNumber!;
+                  unit = currencyUnit;
                 } else if (sm.propertyName == 'Año' && result.year != null && double.tryParse(result.year!) != null) {
                   val = double.parse(result.year!);
+                  unit = 'año';
+                } else if (sm.propertyName == 'Material' && result.composition != null) {
+                  val = 1.0;
+                  unit = result.composition!;
+                } else if (sm.propertyName == 'Grado' && result.grade != null) {
+                  val = 1.0;
+                  unit = result.grade!;
                 }
 
                 customInstanceMags.add(InstanceMagnitude(
@@ -324,7 +348,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   instanceId: createdInstance.id,
                   propertyName: sm.propertyName,
                   magnitudeValue: val,
-                  unitSymbol: sm.unitSymbol,
+                  unitSymbol: unit,
                 ));
               }
 
@@ -332,7 +356,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               await entityRepo.saveEntity(updatedWithMags);
             }
 
-            // 4. Guardar foto de reverso como adjunto si existe
+            // 5. Guardar foto de reverso como adjunto si existe
             if (result.reversePhotoPath != null && result.reversePhotoPath!.isNotEmpty) {
               await catalogRepo.addAttachment(
                 speciesId: freshSpecies.id,
@@ -342,19 +366,18 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               );
             }
 
+            if (!mounted) return;
             ref.invalidate(entityListProvider);
             ref.invalidate(catalogListProvider);
 
-            if (mounted) {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Pieza "${result.subspeciesName}" instanciada directamente.'),
-                  backgroundColor: Colors.green.shade800,
-                  duration: const Duration(seconds: 4),
-                ),
-              );
-            }
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Pieza "${result.subspeciesName}" instanciada directamente.'),
+                backgroundColor: Colors.green.shade800,
+                duration: const Duration(seconds: 4),
+              ),
+            );
           },
         );
     }
