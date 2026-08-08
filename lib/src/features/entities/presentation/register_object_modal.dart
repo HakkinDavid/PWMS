@@ -252,13 +252,13 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 ? result.currencyCode!.trim()
                 : 'MXN';
 
-            // Registrar magnitudes 4NF relacionales de la especie con tipos primitivos:
-            // 1. Valor nominal (tipo: real, unidad: divisa)
+            // Registrar magnitudes 4NF relacionales de la especie con tipos primitivos (Opción 2):
+            // 1. Valor nominal (tipo: real, sin unidad)
             // 2. Acuñación (tipo: integer, unidad: año)
             // 3. Divisa (tipo: string, sin unidad)
             // 4. Material (tipo: string, sin unidad)
             // 5. Grado (tipo: string, sin unidad)
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor nominal', dataType: 'real', unitSymbol: currencyUnit);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor nominal', dataType: 'real');
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Acuñación', dataType: 'integer', unitSymbol: 'año');
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Divisa', dataType: 'string');
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Material', dataType: 'string');
@@ -336,7 +336,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
                 if (sm.propertyName == 'Valor nominal') {
                   val = result.faceValueNumber ?? 1.0;
-                  unit = currencyUnit;
+                  unit = null;
                 } else if (sm.propertyName == 'Acuñación') {
                   if (result.year != null && double.tryParse(result.year!) != null) {
                     val = double.parse(result.year!);

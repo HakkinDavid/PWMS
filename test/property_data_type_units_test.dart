@@ -36,9 +36,20 @@ void main() {
         propertyName: 'Valor nominal',
         dataType: 'real',
         magnitudeValue: 5.0,
-        unitSymbol: 'MXN',
+        unitSymbol: null,
       );
-      expect(realMag.displayValue, equals('5 MXN'));
+      expect(realMag.displayValue, equals('5'));
+
+      final currencyMag = InstanceMagnitude(
+        id: '1b',
+        instanceId: 'inst1',
+        propertyName: 'Divisa',
+        dataType: 'string',
+        magnitudeValue: 0.0,
+        stringValue: 'MXN',
+        unitSymbol: null,
+      );
+      expect(currencyMag.displayValue, equals('MXN'));
 
       final intMag = InstanceMagnitude(
         id: '2',
