@@ -54,7 +54,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
 
         _cameraController = CameraController(
           backCam,
-          ResolutionPreset.high,
+          ResolutionPreset.veryHigh,
           enableAudio: false,
         );
 
@@ -124,6 +124,16 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       x = (image.width - width) ~/ 2;
       y = (image.height - height) ~/ 2;
       cropped = img.copyCrop(image, x: x, y: y, width: width, height: height);
+    }
+
+    // Resize down if it exceeds 1080p (max 1080 in any dimension)
+    if (cropped.width > 1080 || cropped.height > 1080) {
+      if (_isCoinMode) {
+        cropped = img.copyResize(cropped, width: 1080, height: 1080);
+      } else {
+        final double ratio = cropped.width / cropped.height;
+        cropped = img.copyResize(cropped, width: 1080, height: (1080 / ratio).toInt());
+      }
     }
 
     final newPath = originalFile.path.replaceAll('.jpg', '_cropped.jpg');
