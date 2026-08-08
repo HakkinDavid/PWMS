@@ -246,7 +246,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
             final currencyUnit = (result.currencyCode != null && result.currencyCode!.trim().isNotEmpty)
                 ? result.currencyCode!.trim()
-                : 'EUR';
+                : 'MXN';
 
             UnitsRegistry.registerUnknownUnit(currencyUnit);
 
