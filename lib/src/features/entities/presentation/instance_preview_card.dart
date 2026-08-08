@@ -7,6 +7,7 @@ import '../../../core/providers/providers.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
+import '../domain/entity_photo_helper.dart';
 import '../domain/world_entity.dart';
 
 import '../../catalog/presentation/species_text_badge_avatar.dart';
@@ -62,7 +63,6 @@ class InstancePreviewCard extends ConsumerWidget {
           : Future.value(null),
       builder: (context, subSnapshot) {
         final subspecies = subSnapshot.data;
-        final effectivePhotoPath = subspecies?.resolvePhotoPath(species?.mainPhotoPath);
 
         final isHeterogeneousGroup = group != null && !group!.isHomogeneous;
 
@@ -87,52 +87,62 @@ class InstancePreviewCard extends ConsumerWidget {
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
 
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          elevation: 1.5,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Row(
-                children: [
-                  // Photo with Subspecies Fallback to Species Text Badge (Point 4)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: SizedBox(
-                      width: 48,
-                      height: 48,
-                      child: FutureBuilder<String>(
-                        future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
-                            ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
-                            : Future.value(''),
-                        builder: (context, photoSnapshot) {
-                          if (photoSnapshot.hasData && photoSnapshot.data!.isNotEmpty && File(photoSnapshot.data!).existsSync()) {
-                            return Image.file(
-                              File(photoSnapshot.data!),
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => SpeciesTextBadgeAvatar(
+        return FutureBuilder<String?>(
+          future: resolveEffectiveEntityPhotoPath(
+            ref,
+            subspecies: subspecies,
+            species: species,
+            instanceId: targetEntity.id,
+          ),
+          builder: (context, photoPathSnapshot) {
+            final effectivePhotoPath = photoPathSnapshot.data;
+
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              elevation: 1.5,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: Row(
+                    children: [
+                      // Photo with Subspecies Fallback to Species Text Badge (Point 4)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: FutureBuilder<String>(
+                            future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
+                                ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
+                                : Future.value(''),
+                            builder: (context, photoSnapshot) {
+                              if (photoSnapshot.hasData && photoSnapshot.data!.isNotEmpty && File(photoSnapshot.data!).existsSync()) {
+                                return Image.file(
+                                  File(photoSnapshot.data!),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => SpeciesTextBadgeAvatar(
+                                    speciesName: speciesName,
+                                    size: 48,
+                                  ),
+                                );
+                              }
+                              return SpeciesTextBadgeAvatar(
                                 speciesName: speciesName,
                                 size: 48,
-                              ),
-                            );
-                          }
-                          return SpeciesTextBadgeAvatar(
-                            speciesName: speciesName,
-                            size: 48,
-                          );
-                        },
+                              );
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
-                  // Info Column (Subspecies as main title, Species as secondary context)
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      // Info Column (Subspecies as main title, Species as secondary context)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                         Text(
                           primaryTitle,
                           style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -285,5 +295,7 @@ class InstancePreviewCard extends ConsumerWidget {
         );
       },
     );
+  },
+);
   }
 }

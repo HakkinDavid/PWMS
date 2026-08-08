@@ -252,7 +252,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 speciesName,
                 type: AppStrings.typeObject,
                 description: '${AppStrings.numismaticSpeciesDescriptionPrefix}${result.speciesType})',
-                mainPhotoPath: result.obversePhotoPath,
+                mainPhotoPath: null,
               );
             }
 
@@ -293,7 +293,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 id: const Uuid().v4(),
                 speciesId: freshSpecies.id,
                 subspeciesName: result.subspeciesName,
-                photoPath: result.obversePhotoPath, // Foto del anverso del primer ejemplar como imagen principal
+                photoPath: null,
                 notes: notesParts.isNotEmpty ? notesParts.join(' | ') : null,
                 createdAt: DateTime.now(),
               );
@@ -370,50 +370,36 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               await entityRepo.saveEntity(updatedWithMags);
             }
 
-            // 5. Stitch de Anverso y Reverso y adjunto a la instancia con formato <subespecie>_<uuid>.jpg
+            // 5. Adjuntos de Anverso y Reverso por instancia (sin stitching)
             final sanitizedSubname = targetSubspecies.subspeciesName.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
-            final compositeFileName = '$sanitizedSubname (${createdInstance.id}).jpg';
 
-            File compositeFile = File(result.obversePhotoPath);
-            if (result.reversePhotoPath != null && await File(result.reversePhotoPath!).exists()) {
-              try {
-                final obvFile = File(result.obversePhotoPath);
-                final revFile = File(result.reversePhotoPath!);
-                final bytes1 = await obvFile.readAsBytes();
-                final bytes2 = await revFile.readAsBytes();
-
-                final img1 = img.decodeImage(bytes1);
-                final img2 = img.decodeImage(bytes2);
-
-                if (img1 != null && img2 != null) {
-                  final targetHeight = img1.height;
-                  final resizedImg2 = (img2.height != targetHeight)
-                      ? img.copyResize(img2, height: targetHeight)
-                      : img2;
-
-                  const margin = 20;
-                  final totalWidth = img1.width + resizedImg2.width + margin;
-                  final totalHeight = targetHeight;
-
-                  final combined = img.Image(width: totalWidth, height: totalHeight);
-                  img.fill(combined, color: img.ColorRgb8(30, 30, 30));
-
-                  img.compositeImage(combined, img1, dstX: 0, dstY: 0);
-                  img.compositeImage(combined, resizedImg2, dstX: img1.width + margin, dstY: 0);
-
-                  final compositePath = '${obvFile.parent.path}/$compositeFileName';
-                  compositeFile = File(compositePath);
-                  await compositeFile.writeAsBytes(img.encodeJpg(combined, quality: 85));
-                }
-              } catch (_) {}
+            final obverseFile = File(result.obversePhotoPath);
+            if (await obverseFile.exists()) {
+              final ext = obverseFile.path.contains('.') ? obverseFile.path.split('.').last : 'jpg';
+              final obverseFileName = '$sanitizedSubname (${createdInstance.id}) (anverso).$ext';
+              await catalogRepo.addAttachment(
+                speciesId: freshSpecies.id,
+                instanceId: createdInstance.id,
+                filePath: obverseFile.path,
+                fileName: obverseFileName,
+                fileType: 'image',
+              );
             }
 
-            await catalogRepo.addAttachment(
-              speciesId: freshSpecies.id,
-              filePath: compositeFile.path,
-              fileName: compositeFileName,
-              fileType: 'image',
-            );
+            if (result.reversePhotoPath != null) {
+              final reverseFile = File(result.reversePhotoPath!);
+              if (await reverseFile.exists()) {
+                final ext = reverseFile.path.contains('.') ? reverseFile.path.split('.').last : 'jpg';
+                final reverseFileName = '$sanitizedSubname (${createdInstance.id}) (reverso).$ext';
+                await catalogRepo.addAttachment(
+                  speciesId: freshSpecies.id,
+                  instanceId: createdInstance.id,
+                  filePath: reverseFile.path,
+                  fileName: reverseFileName,
+                  fileType: 'image',
+                );
+              }
+            }
 
             if (!mounted) return;
             ref.invalidate(entityListProvider);
