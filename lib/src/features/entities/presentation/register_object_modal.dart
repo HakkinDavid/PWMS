@@ -264,6 +264,8 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             }
             ref.invalidate(catalogListProvider);
 
+            final freshSpecies = await catalogRepo.getCatalogItemById(matchingSpecies.id) ?? matchingSpecies;
+
             final currencyStr = result.currencyName ?? result.currencyCode ?? '';
             final notesParts = <String>[];
             if (currencyStr.isNotEmpty) notesParts.add('Moneda: $currencyStr');
@@ -273,7 +275,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
             final newSubspecies = Subspecies(
               id: const Uuid().v4(),
-              speciesId: matchingSpecies.id,
+              speciesId: freshSpecies.id,
               subspeciesName: result.subspeciesName,
               brand: result.brandOrMint,
               photoPath: result.obversePhotoPath,
@@ -289,7 +291,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
               InstantiateSpeciesSheet.show(
                 context,
-                species: matchingSpecies,
+                species: freshSpecies,
                 initialSubspecies: newSubspecies,
                 initialLocationId: widget.initialLocationId,
                 initialMagnitudeValues: result.toMagnitudeValues(),
