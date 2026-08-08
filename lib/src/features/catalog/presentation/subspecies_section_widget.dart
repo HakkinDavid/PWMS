@@ -9,6 +9,8 @@ import 'add_edit_subspecies_modal.dart';
 import 'subspecies_tile.dart';
 import 'web_image_picker_dialog.dart';
 
+import '../../entities/presentation/instantiate_species_sheet.dart';
+
 class SubspeciesSectionWidget extends ConsumerStatefulWidget {
   final String speciesId;
   final bool isEditing;
@@ -59,6 +61,14 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
       _loadSubspecies();
       ref.invalidate(catalogListProvider);
       ref.invalidate(entityListProvider);
+
+      if (initial == null && mounted) {
+        InstantiateSpeciesSheet.show(
+          context,
+          species: species,
+          initialSubspecies: resultSubspecies,
+        );
+      }
     }
   }
 

@@ -10,6 +10,7 @@ _$AttachmentImpl _$$AttachmentImplFromJson(Map<String, dynamic> json) =>
     _$AttachmentImpl(
       id: json['id'] as String,
       speciesId: json['speciesId'] as String,
+      instanceId: json['instanceId'] as String?,
       filePath: json['filePath'] as String,
       fileName: json['fileName'] as String,
       fileType: json['fileType'] as String,
@@ -20,6 +21,7 @@ Map<String, dynamic> _$$AttachmentImplToJson(_$AttachmentImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'speciesId': instance.speciesId,
+      'instanceId': instance.instanceId,
       'filePath': instance.filePath,
       'fileName': instance.fileName,
       'fileType': instance.fileType,

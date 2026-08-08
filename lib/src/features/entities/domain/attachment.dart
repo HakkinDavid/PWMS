@@ -8,6 +8,7 @@ class Attachment with _$Attachment {
   const factory Attachment({
     required String id,
     required String speciesId, // Attachments belong to the Catalog Species!
+    String? instanceId, // Optional link to specific World Entity Instance
     required String filePath,
     required String fileName,
     required String fileType,

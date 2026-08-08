@@ -52,6 +52,7 @@ class EntityRepository implements IEntityRepository {
     return Attachment(
       id: row.id,
       speciesId: row.speciesId,
+      instanceId: row.instanceId,
       filePath: row.filePath,
       fileName: row.fileName,
       fileType: row.fileType,
@@ -150,17 +151,54 @@ class EntityRepository implements IEntityRepository {
     if (cleanQuery.isEmpty) return getAllEntities();
 
     final catalogRows = await _db.select(_db.catalogTable).get();
+    final subspeciesRows = await _db.select(_db.subspeciesTable).get();
+    final locationRows = await _db.select(_db.locationsTable).get();
     final allEntities = await getAllEntities();
 
     return allEntities.where((e) {
       final species = catalogRows.where((c) => c.id == e.speciesId).firstOrNull;
-      if (species == null) return false;
+      if (species != null) {
+        if (species.name.toLowerCase().contains(cleanQuery) ||
+            species.type.toLowerCase().contains(cleanQuery) ||
+            (species.description?.toLowerCase().contains(cleanQuery) ?? false)) {
+          return true;
+        }
+      }
 
-      final nameMatch = species.name.toLowerCase().contains(cleanQuery);
-      final typeMatch = species.type.toLowerCase().contains(cleanQuery);
-      final notesMatch = e.notes?.toLowerCase().contains(cleanQuery) ?? false;
+      if (e.subspeciesId != null) {
+        final sub = subspeciesRows.where((s) => s.id == e.subspeciesId).firstOrNull;
+        if (sub != null) {
+          if (sub.subspeciesName.toLowerCase().contains(cleanQuery) ||
+              (sub.brand?.toLowerCase().contains(cleanQuery) ?? false) ||
+              (sub.barcode?.toLowerCase().contains(cleanQuery) ?? false) ||
+              (sub.notes?.toLowerCase().contains(cleanQuery) ?? false)) {
+            return true;
+          }
+        }
+      }
 
-      return nameMatch || typeMatch || notesMatch;
+      if (e.locationId != null) {
+        final loc = locationRows.where((l) => l.id == e.locationId).firstOrNull;
+        if (loc != null) {
+          if (loc.name.toLowerCase().contains(cleanQuery) ||
+              (loc.description?.toLowerCase().contains(cleanQuery) ?? false)) {
+            return true;
+          }
+        }
+      }
+
+      if (e.notes?.toLowerCase().contains(cleanQuery) ?? false) return true;
+
+      for (final mag in e.magnitudes) {
+        if (mag.propertyName.toLowerCase().contains(cleanQuery) ||
+            (mag.unitSymbol?.toLowerCase().contains(cleanQuery) ?? false) ||
+            (mag.stringValue?.toLowerCase().contains(cleanQuery) ?? false) ||
+            mag.displayValue.toLowerCase().contains(cleanQuery)) {
+          return true;
+        }
+      }
+
+      return false;
     }).toList();
   }
 
@@ -330,6 +368,13 @@ class EntityRepository implements IEntityRepository {
   }
 
   @override
+  Future<List<Attachment>> getAttachmentsForInstance(String instanceId) async {
+    final query = _db.select(_db.attachmentsTable)..where((t) => t.instanceId.equals(instanceId));
+    final rows = await query.get();
+    return rows.map(_mapAttachmentToDomain).toList();
+  }
+
+  @override
   Future<void> addAttachment(Attachment attachment) async {
     final existing = await getAttachmentsForSpecies(attachment.speciesId);
     final isDuplicate = existing.any((a) => a.filePath == attachment.filePath || a.fileName.toLowerCase() == attachment.fileName.toLowerCase());
@@ -340,6 +385,7 @@ class EntityRepository implements IEntityRepository {
     final companion = AttachmentsTableCompanion(
       id: Value(attachment.id),
       speciesId: Value(attachment.speciesId),
+      instanceId: Value(attachment.instanceId),
       filePath: Value(attachment.filePath),
       fileName: Value(attachment.fileName),
       fileType: Value(attachment.fileType),

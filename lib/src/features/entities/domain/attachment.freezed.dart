@@ -23,6 +23,8 @@ mixin _$Attachment {
   String get id => throw _privateConstructorUsedError;
   String get speciesId =>
       throw _privateConstructorUsedError; // Attachments belong to the Catalog Species!
+  String? get instanceId =>
+      throw _privateConstructorUsedError; // Optional link to specific World Entity Instance
   String get filePath => throw _privateConstructorUsedError;
   String get fileName => throw _privateConstructorUsedError;
   String get fileType => throw _privateConstructorUsedError;
@@ -47,6 +49,7 @@ abstract class $AttachmentCopyWith<$Res> {
   $Res call(
       {String id,
       String speciesId,
+      String? instanceId,
       String filePath,
       String fileName,
       String fileType,
@@ -70,6 +73,7 @@ class _$AttachmentCopyWithImpl<$Res, $Val extends Attachment>
   $Res call({
     Object? id = null,
     Object? speciesId = null,
+    Object? instanceId = freezed,
     Object? filePath = null,
     Object? fileName = null,
     Object? fileType = null,
@@ -84,6 +88,10 @@ class _$AttachmentCopyWithImpl<$Res, $Val extends Attachment>
           ? _value.speciesId
           : speciesId // ignore: cast_nullable_to_non_nullable
               as String,
+      instanceId: freezed == instanceId
+          ? _value.instanceId
+          : instanceId // ignore: cast_nullable_to_non_nullable
+              as String?,
       filePath: null == filePath
           ? _value.filePath
           : filePath // ignore: cast_nullable_to_non_nullable
@@ -115,6 +123,7 @@ abstract class _$$AttachmentImplCopyWith<$Res>
   $Res call(
       {String id,
       String speciesId,
+      String? instanceId,
       String filePath,
       String fileName,
       String fileType,
@@ -136,6 +145,7 @@ class __$$AttachmentImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? speciesId = null,
+    Object? instanceId = freezed,
     Object? filePath = null,
     Object? fileName = null,
     Object? fileType = null,
@@ -150,6 +160,10 @@ class __$$AttachmentImplCopyWithImpl<$Res>
           ? _value.speciesId
           : speciesId // ignore: cast_nullable_to_non_nullable
               as String,
+      instanceId: freezed == instanceId
+          ? _value.instanceId
+          : instanceId // ignore: cast_nullable_to_non_nullable
+              as String?,
       filePath: null == filePath
           ? _value.filePath
           : filePath // ignore: cast_nullable_to_non_nullable
@@ -176,6 +190,7 @@ class _$AttachmentImpl implements _Attachment {
   const _$AttachmentImpl(
       {required this.id,
       required this.speciesId,
+      this.instanceId,
       required this.filePath,
       required this.fileName,
       required this.fileType,
@@ -190,6 +205,9 @@ class _$AttachmentImpl implements _Attachment {
   final String speciesId;
 // Attachments belong to the Catalog Species!
   @override
+  final String? instanceId;
+// Optional link to specific World Entity Instance
+  @override
   final String filePath;
   @override
   final String fileName;
@@ -200,7 +218,7 @@ class _$AttachmentImpl implements _Attachment {
 
   @override
   String toString() {
-    return 'Attachment(id: $id, speciesId: $speciesId, filePath: $filePath, fileName: $fileName, fileType: $fileType, createdAt: $createdAt)';
+    return 'Attachment(id: $id, speciesId: $speciesId, instanceId: $instanceId, filePath: $filePath, fileName: $fileName, fileType: $fileType, createdAt: $createdAt)';
   }
 
   @override
@@ -211,6 +229,8 @@ class _$AttachmentImpl implements _Attachment {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.speciesId, speciesId) ||
                 other.speciesId == speciesId) &&
+            (identical(other.instanceId, instanceId) ||
+                other.instanceId == instanceId) &&
             (identical(other.filePath, filePath) ||
                 other.filePath == filePath) &&
             (identical(other.fileName, fileName) ||
@@ -223,8 +243,8 @@ class _$AttachmentImpl implements _Attachment {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, speciesId, filePath, fileName, fileType, createdAt);
+  int get hashCode => Object.hash(runtimeType, id, speciesId, instanceId,
+      filePath, fileName, fileType, createdAt);
 
   /// Create a copy of Attachment
   /// with the given fields replaced by the non-null parameter values.
@@ -246,6 +266,7 @@ abstract class _Attachment implements Attachment {
   const factory _Attachment(
       {required final String id,
       required final String speciesId,
+      final String? instanceId,
       required final String filePath,
       required final String fileName,
       required final String fileType,
@@ -258,6 +279,8 @@ abstract class _Attachment implements Attachment {
   String get id;
   @override
   String get speciesId; // Attachments belong to the Catalog Species!
+  @override
+  String? get instanceId; // Optional link to specific World Entity Instance
   @override
   String get filePath;
   @override

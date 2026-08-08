@@ -26,21 +26,8 @@ class EffectiveEntityGroup {
 
   WorldEntity get primaryEntity => entities.first;
 
-  /// Evalúa si el grupo es estrictamente homogéneo (Requisito 5)
-  /// Todos los elementos deben compartir la misma subespecie, misma ubicación y magnitudes idénticas (salvo fecha de caducidad).
-  bool get isHomogeneous {
-    if (entities.length <= 1) return true;
-    final firstSubId = primaryEntity.subspeciesId;
-    final firstMagSig = _magnitudeSignature(primaryEntity);
-    final firstNotes = primaryEntity.notes ?? '';
-
-    for (final e in entities) {
-      if (e.subspeciesId != firstSubId) return false;
-      if (_magnitudeSignature(e) != firstMagSig) return false;
-      if ((e.notes ?? '') != firstNotes) return false;
-    }
-    return true;
-  }
+  /// Todos los grupos producidos son 100% homogéneos (Requisito 5)
+  bool get isHomogeneous => true;
 
   static String _magnitudeSignature(WorldEntity entity) {
     final sorted = List.of(entity.magnitudes)..sort((a, b) => a.propertyName.compareTo(b.propertyName));
@@ -50,17 +37,32 @@ class EffectiveEntityGroup {
   static List<EffectiveEntityGroup> groupEntities({
     required List<WorldEntity> entities,
     required Map<String, String?> effectiveLocationMap,
+    Set<String>? containerEntityIds,
   }) {
     final Map<String, List<WorldEntity>> grouped = {};
 
     for (final entity in entities) {
       final locId = effectiveLocationMap[entity.id] ?? entity.locationId;
-      final groupKey = '${entity.speciesId}_${locId ?? "root"}';
+      final isContainer = containerEntityIds != null && containerEntityIds.contains(entity.id);
 
-      if (!grouped.containsKey(groupKey)) {
-        grouped[groupKey] = [];
+      // Requisito 6: Los elementos que contengan a otros (recibidores de GUARDADO_EN) NO deben agruparse.
+      // Permanecen como instancias únicas e independientes.
+      if (isContainer) {
+        final uniqueKey = 'container_${entity.id}';
+        grouped[uniqueKey] = [entity];
+      } else {
+        // Requisitos 5 y 6: Solo agrupar elementos homogéneos con idéntica ubicación efectiva,
+        // misma subespecie, mismas magnitudes y notas idénticas.
+        final subId = entity.subspeciesId ?? 'generic';
+        final magSig = _magnitudeSignature(entity);
+        final notesKey = entity.notes?.trim() ?? '';
+        final groupKey = '${entity.speciesId}_${locId ?? "root"}_${subId}_${magSig}_$notesKey';
+
+        if (!grouped.containsKey(groupKey)) {
+          grouped[groupKey] = [];
+        }
+        grouped[groupKey]!.add(entity);
       }
-      grouped[groupKey]!.add(entity);
     }
 
     return grouped.entries.map((entry) {

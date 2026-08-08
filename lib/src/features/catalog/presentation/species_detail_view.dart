@@ -322,10 +322,21 @@ class SpeciesDetailView extends ConsumerWidget {
                         itemCount: attachments.length,
                         itemBuilder: (context, idx) {
                           final att = attachments[idx];
+                          final isInstanceAttachment = att.instanceId != null && att.instanceId!.isNotEmpty;
+
                           return ListTile(
                             dense: true,
                             leading: Icon(att.fileType == 'image' ? Icons.image : Icons.picture_as_pdf, size: 20),
                             title: Text(att.fileName, style: const TextStyle(fontSize: 13)),
+                            subtitle: isInstanceAttachment
+                                ? const Row(
+                                    children: [
+                                      Icon(Icons.inventory_2, size: 12, color: Colors.amber),
+                                      SizedBox(width: 4),
+                                      Text('Adjunto propio de Instancia', style: TextStyle(fontSize: 11, color: Colors.amber)),
+                                    ],
+                                  )
+                                : null,
                             trailing: IconButton(
                               icon: const Icon(Icons.open_in_new, size: 18),
                               onPressed: () async {

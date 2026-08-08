@@ -99,9 +99,13 @@ class _EntitiesTabState extends ConsumerState<EntitiesTab> {
                   );
                 }
 
+                final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
+                final containerEntityIds = allRelations.where((r) => r.relationType == 'GUARDADO_EN').map((r) => r.targetEntityId).toSet();
+
                 final groups = EffectiveEntityGroup.groupEntities(
                   entities: activeEntities,
                   effectiveLocationMap: {for (var e in activeEntities) e.id: e.locationId},
+                  containerEntityIds: containerEntityIds,
                 );
 
                 return ListView.builder(

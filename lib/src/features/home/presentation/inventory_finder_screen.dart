@@ -214,9 +214,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final topLevelEntities = filteredEntities.where((e) => !containedEntityIds.contains(e.id)).toList();
 
     // Group Top-Level entities into effective groups
+    final groupsContainerEntityIds = relations.where((r) => r.relationType == 'GUARDADO_EN').map((r) => r.targetEntityId).toSet();
     final topGroups = EffectiveEntityGroup.groupEntities(
       entities: topLevelEntities,
       effectiveLocationMap: {for (var e in topLevelEntities) e.id: e.locationId},
+      containerEntityIds: groupsContainerEntityIds,
     );
 
     return Scaffold(

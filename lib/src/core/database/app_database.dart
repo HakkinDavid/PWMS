@@ -106,6 +106,7 @@ class RelationsTable extends Table {
 class AttachmentsTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
+  TextColumn get instanceId => text().nullable().references(EntitiesTable, #id)();
   TextColumn get filePath => text()();
   TextColumn get fileName => text()();
   TextColumn get fileType => text()();
@@ -206,7 +207,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -216,6 +217,9 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (m, from, to) async {
           if (from < 2) {
             await m.createTable(appSettingsTable);
+          }
+          if (from < 3) {
+            await m.addColumn(attachmentsTable, attachmentsTable.instanceId);
           }
         },
       );

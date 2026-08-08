@@ -12,6 +12,8 @@ import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 
+import '../../features/control_center/presentation/control_center_screen.dart';
+
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
@@ -76,6 +78,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/notifications',
       builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: '/control-center',
+      builder: (context, state) => const ControlCenterScreen(),
     ),
     GoRoute(
       path: '/settings',

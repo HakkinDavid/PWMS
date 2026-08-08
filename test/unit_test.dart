@@ -212,13 +212,15 @@ void main() {
       final e4 = await entityRepo.instantiateOrMerge(species.id, null, 1, notes: 'Serie B');
 
       final allEntities = await entityRepo.getAllEntities();
-      final group = EffectiveEntityGroup.groupEntities(
+      final groups = EffectiveEntityGroup.groupEntities(
         entities: allEntities,
         effectiveLocationMap: {for (var e in allEntities) e.id: e.locationId},
-      ).firstWhere((g) => g.speciesId == species.id);
+      ).where((g) => g.speciesId == species.id).toList();
 
-      expect(group.population, equals(4));
-      expect(group.isHomogeneous, isFalse);
+      expect(groups.length, equals(2));
+      final serieAGroup = groups.firstWhere((g) => g.primaryEntity.notes == 'Serie A');
+      expect(serieAGroup.population, equals(3));
+      expect(serieAGroup.isHomogeneous, isTrue);
 
       final idsToRemove = [e1.id, e2.id, e3.id];
       await entityRepo.deleteEntitiesBatch(idsToRemove);

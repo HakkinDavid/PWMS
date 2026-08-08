@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
@@ -19,6 +20,12 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   String _selectedScope = AppStrings.all;
+  final TextEditingController _sqlController = TextEditingController(text: 'SELECT * FROM catalog_table LIMIT 20;');
+
+  bool _isExecutingSql = false;
+  List<String> _sqlColumns = [];
+  List<List<dynamic>> _sqlRows = [];
+  String? _sqlError;
 
   final List<String> _scopes = [
     AppStrings.all,
@@ -26,7 +33,73 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     AppStrings.tabLocations,
     AppStrings.tabCatalog,
     AppStrings.tabHistory,
+    'Consulta SQL (SELECT)',
   ];
+
+  @override
+  void dispose() {
+    _sqlController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _executeSqlQuery() async {
+    final queryStr = _sqlController.text.trim();
+    if (queryStr.isEmpty) return;
+
+    final forbiddenKeywords = ['INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'CREATE', 'REPLACE', 'TRUNCATE'];
+    final upperQuery = queryStr.toUpperCase();
+
+    for (final kw in forbiddenKeywords) {
+      if (upperQuery.contains(kw)) {
+        setState(() {
+          _sqlError = 'Por seguridad, las consultas SQL están restringidas a lectura exclusivamente (SELECT). El comando "$kw" está prohibido.';
+          _sqlColumns = [];
+          _sqlRows = [];
+        });
+        return;
+      }
+    }
+
+    setState(() {
+      _isExecutingSql = true;
+      _sqlError = null;
+    });
+
+    try {
+      final db = ref.read(databaseProvider);
+      final results = await db.customSelect(queryStr).get();
+
+      if (results.isEmpty) {
+        setState(() {
+          _sqlColumns = [];
+          _sqlRows = [];
+          _sqlError = 'La consulta se ejecutó correctamente pero no retornó registros.';
+        });
+      } else {
+        final firstRowData = results.first.data;
+        final columns = firstRowData.keys.toList();
+        final List<List<dynamic>> rows = [];
+
+        for (final row in results) {
+          rows.add(columns.map((col) => row.data[col]).toList());
+        }
+
+        setState(() {
+          _sqlColumns = columns;
+          _sqlRows = rows;
+          _sqlError = null;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _sqlError = 'Error de sintaxis SQL o ejecución: $e';
+        _sqlColumns = [];
+        _sqlRows = [];
+      });
+    } finally {
+      if (mounted) setState(() => _isExecutingSql = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,20 +109,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final catalogState = ref.watch(catalogListProvider);
     final activityState = ref.watch(recentActivityProvider);
 
+    final isSqlMode = _selectedScope == 'Consulta SQL (SELECT)';
+
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          autofocus: true,
-          decoration: const InputDecoration(
-            hintText: AppStrings.searchHint,
-            border: InputBorder.none,
-          ),
-          onChanged: (val) {
-            ref.read(searchQueryProvider.notifier).state = val;
-          },
-        ),
+        title: isSqlMode
+            ? const Text('Consola SQL Arbitraria (Lectura)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+            : TextField(
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Buscar por especie, subespecie, marca, ubicación, propiedad...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (val) {
+                  ref.read(searchQueryProvider.notifier).state = val;
+                },
+              ),
         actions: [
-          if (query.isNotEmpty)
+          if (!isSqlMode && query.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
@@ -60,7 +137,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       ),
       body: Column(
         children: [
-          // Filter Chips (Todos, Objetos, Ubicaciones, Catálogo, Historial)
+          // Filter Chips (Todos, Objetos, Ubicaciones, Catálogo, Historial, Consulta SQL)
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -83,15 +160,178 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           const Divider(height: 1),
 
           Expanded(
-            child: _buildSearchResults(
-              context,
-              ref,
-              query,
-              searchResultsAsync,
-              locationsState,
-              catalogState,
-              activityState,
+            child: isSqlMode
+                ? _buildSqlRunnerView(context)
+                : _buildSearchResults(
+                    context,
+                    ref,
+                    query,
+                    searchResultsAsync,
+                    locationsState,
+                    catalogState,
+                    activityState,
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSqlRunnerView(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Preset SQL Samples
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ActionChip(
+                  label: const Text('Especies', style: TextStyle(fontSize: 11)),
+                  onPressed: () {
+                    _sqlController.text = 'SELECT id, name, type, is_unique FROM catalog_table;';
+                    _executeSqlQuery();
+                  },
+                ),
+                const SizedBox(width: 6),
+                ActionChip(
+                  label: const Text('Subespecies', style: TextStyle(fontSize: 11)),
+                  onPressed: () {
+                    _sqlController.text = 'SELECT id, species_id, subspecies_name, brand, barcode FROM subspecies_table;';
+                    _executeSqlQuery();
+                  },
+                ),
+                const SizedBox(width: 6),
+                ActionChip(
+                  label: const Text('Instancias', style: TextStyle(fontSize: 11)),
+                  onPressed: () {
+                    _sqlController.text = 'SELECT id, species_id, subspecies_id, location_id, notes FROM entities_table;';
+                    _executeSqlQuery();
+                  },
+                ),
+                const SizedBox(width: 6),
+                ActionChip(
+                  label: const Text('Ubicaciones', style: TextStyle(fontSize: 11)),
+                  onPressed: () {
+                    _sqlController.text = 'SELECT id, name, parent_location_id, description FROM locations_table;';
+                    _executeSqlQuery();
+                  },
+                ),
+                const SizedBox(width: 6),
+                ActionChip(
+                  label: const Text('Magnitudes Instancia', style: TextStyle(fontSize: 11)),
+                  onPressed: () {
+                    _sqlController.text = 'SELECT instance_id, property_name, data_type, magnitude_value, unit_symbol FROM instance_magnitudes_table;';
+                    _executeSqlQuery();
+                  },
+                ),
+              ],
             ),
+          ),
+          const SizedBox(height: 10),
+
+          // SQL Input Field
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _sqlController,
+                  maxLines: 2,
+                  decoration: const InputDecoration(
+                    labelText: 'Consulta SQL Arbitraria (SELECT)',
+                    hintText: 'SELECT * FROM ...',
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton.icon(
+                onPressed: _isExecutingSql ? null : _executeSqlQuery,
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Ejecutar'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // SQL Error Banner
+          if (_sqlError != null) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withAlpha(30),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.redAccent),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded, color: Colors.redAccent),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(_sqlError!, style: const TextStyle(fontSize: 12, color: Colors.redAccent))),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+
+          // SQL DataGrid Results View
+          Expanded(
+            child: _isExecutingSql
+                ? const Center(child: CircularProgressIndicator())
+                : _sqlColumns.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Escribe una consulta SQL SELECT o presiona un botón rápido arriba para inspeccionar la base de datos local.',
+                          style: TextStyle(color: theme.hintColor),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Filas obtenidas: ${_sqlRows.length}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          const SizedBox(height: 6),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: DataTable(
+                                  border: TableBorder.all(color: theme.dividerColor, width: 0.5),
+                                  columnSpacing: 16,
+                                  headingRowColor: MaterialStateProperty.all(theme.colorScheme.primary.withAlpha(20)),
+                                  columns: _sqlColumns.map((col) {
+                                    return DataColumn(
+                                      label: Text(
+                                        col,
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  rows: _sqlRows.map((row) {
+                                    return DataRow(
+                                      cells: row.map((cell) {
+                                        final cellStr = cell != null ? cell.toString() : 'NULL';
+                                        return DataCell(
+                                          Text(cellStr, style: const TextStyle(fontSize: 12)),
+                                        );
+                                      }).toList(),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
           ),
         ],
       ),
@@ -113,7 +353,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     // 1. Ubicaciones (Strictly typed LocationNode)
     if (_selectedScope == AppStrings.tabLocations) {
       final nodes = locationsState.asData?.value ?? <LocationNode>[];
-      final filtered = nodes.where((LocationNode n) => n.name.toLowerCase().contains(cleanQuery)).toList();
+      final filtered = nodes.where((LocationNode n) =>
+        n.name.toLowerCase().contains(cleanQuery) ||
+        (n.description?.toLowerCase().contains(cleanQuery) ?? false)
+      ).toList();
       if (filtered.isEmpty) return const Center(child: Text(AppStrings.emptyLocation));
 
       return ListView.builder(
@@ -138,7 +381,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       final species = catalogState.asData?.value ?? <CatalogItem>[];
       final filtered = species.where((CatalogItem s) =>
         s.name.toLowerCase().contains(cleanQuery) ||
-        s.type.toLowerCase().contains(cleanQuery)
+        s.type.toLowerCase().contains(cleanQuery) ||
+        (s.description?.toLowerCase().contains(cleanQuery) ?? false)
       ).toList();
 
       if (filtered.isEmpty) return const Center(child: Text(AppStrings.emptyCatalog));
@@ -172,7 +416,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
     }
 
-    // 4. Objetos / Todos
+    // 4. Objetos / Todos (Resultados Refactorizados con búsqueda multinivel)
     return searchResultsAsync.when(
       data: (entities) {
         if (entities.isEmpty) {
@@ -183,7 +427,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 Icon(Icons.search_off, size: 64, color: theme.colorScheme.primary.withAlpha(100)),
                 const SizedBox(height: 16),
                 Text(
-                  AppStrings.emptyCatalog,
+                  'No se encontraron coincidencias para "$query"',
                   style: theme.textTheme.titleMedium,
                 ),
               ],

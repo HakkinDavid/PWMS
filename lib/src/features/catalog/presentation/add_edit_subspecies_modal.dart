@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
 import 'web_image_picker_dialog.dart';
@@ -80,32 +81,44 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     super.dispose();
   }
 
+  bool _isSaving = false;
+
   Future<void> _handleSave() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) return;
 
-    String? finalPhotoPath = _photoPath;
+    setState(() => _isSaving = true);
 
-    if (_newPickedImage != null) {
-      final storage = ref.read(fileStorageServiceProvider);
-      finalPhotoPath = await storage.saveFile(_newPickedImage!.path);
-    }
+    try {
+      String? finalPhotoPath = _photoPath;
 
-    final targetSpeciesId = _selectedSpeciesId ?? widget.species?.id ?? widget.initialSubspecies?.speciesId ?? '';
+      if (_newPickedImage != null) {
+        final storage = ref.read(fileStorageServiceProvider);
+        finalPhotoPath = await storage.saveFile(_newPickedImage!.path);
+      }
 
-    final resultSubspecies = Subspecies(
-      id: widget.initialSubspecies?.id ?? const Uuid().v4(),
-      speciesId: targetSpeciesId,
-      subspeciesName: name,
-      brand: _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
-      barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
-      photoPath: finalPhotoPath,
-      notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-      createdAt: widget.initialSubspecies?.createdAt ?? DateTime.now(),
-    );
+      final targetSpeciesId = widget.species?.id ?? widget.initialSubspecies?.speciesId ?? _selectedSpeciesId ?? '';
 
-    if (mounted) {
-      Navigator.pop(context, resultSubspecies);
+      final resultSubspecies = Subspecies(
+        id: widget.initialSubspecies?.id ?? const Uuid().v4(),
+        speciesId: targetSpeciesId,
+        subspeciesName: name,
+        brand: _brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null,
+        barcode: _barcodeController.text.trim().isNotEmpty ? _barcodeController.text.trim() : null,
+        photoPath: finalPhotoPath,
+        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+        createdAt: widget.initialSubspecies?.createdAt ?? DateTime.now(),
+      );
+
+      if (mounted) {
+        Navigator.pop(context, resultSubspecies);
+      }
+    } catch (e) {
+      if (mounted) {
+        AppToast.showError(context, 'Error al guardar subespecie: $e');
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
@@ -279,12 +292,14 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: _isSaving ? null : () => Navigator.pop(context),
           child: const Text(AppStrings.cancel),
         ),
         ElevatedButton(
-          onPressed: _handleSave,
-          child: const Text(AppStrings.save),
+          onPressed: _isSaving ? null : _handleSave,
+          child: _isSaving
+              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Text(AppStrings.save),
         ),
       ],
     );

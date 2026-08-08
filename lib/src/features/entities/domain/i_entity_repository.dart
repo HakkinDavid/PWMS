@@ -24,8 +24,9 @@ abstract class IEntityRepository {
   Future<void> deleteEntity(String id);
   Future<void> deleteEntitiesBatch(List<String> ids);
 
-  // Attachments belong to Species
+  // Attachments belong to Species & Instances
   Future<List<Attachment>> getAttachmentsForSpecies(String speciesId);
+  Future<List<Attachment>> getAttachmentsForInstance(String instanceId);
   Future<void> addAttachment(Attachment attachment);
   Future<void> deleteAttachment(String attachmentId);
 

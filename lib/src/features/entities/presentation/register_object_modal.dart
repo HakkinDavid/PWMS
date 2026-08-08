@@ -216,6 +216,15 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   ref.invalidate(catalogListProvider);
                   ref.invalidate(subspeciesListProvider);
                   ref.invalidate(entityListProvider);
+                  if (mounted) {
+                    Navigator.pop(context);
+                    InstantiateSpeciesSheet.show(
+                      context,
+                      species: matchingSpecies,
+                      initialSubspecies: newSub,
+                      initialLocationId: widget.initialLocationId,
+                    );
+                  }
                 }
               });
             } else {

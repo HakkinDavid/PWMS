@@ -101,12 +101,48 @@ class CatalogRepository {
     return newItem;
   }
 
-  Future<void> saveCatalogItem(CatalogItem item) async {
+  Future<CatalogItem> saveCatalogItem(CatalogItem item) async {
     final all = await getAllCatalogItems();
 
     final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
+    final isNewSpecies = !all.any((c) => c.id == item.id);
+
     if (nameDup != null) {
-      throw Exception(AppStrings.duplicateSpeciesNameError);
+      if (isNewSpecies) {
+        // Requisito 1: Si se intenta crear una especie existente, integrar subespecies y magnitudes a la especie existente
+        final targetSpeciesId = nameDup.id;
+
+        // Reasignar subespecies que hayan sido vinculadas al id temporal
+        await (_db.update(_db.subspeciesTable)..where((t) => t.speciesId.equals(item.id)))
+            .write(SubspeciesTableCompanion(speciesId: Value(targetSpeciesId)));
+
+        // Integrar magnitudes faltantes
+        final existingMags = nameDup.magnitudes;
+        for (final mag in item.magnitudes) {
+          final isDup = existingMags.any((m) =>
+              m.propertyName.toLowerCase() == mag.propertyName.toLowerCase() &&
+              m.unitSymbol == mag.unitSymbol);
+          if (!isDup) {
+            await addSpeciesMagnitude(
+              targetSpeciesId,
+              mag.propertyName,
+              dataType: mag.dataType,
+              unitSymbol: mag.unitSymbol,
+            );
+          }
+        }
+
+        // Actualizar foto principal o descripción si la existente no tenía
+        if ((nameDup.mainPhotoPath == null || nameDup.mainPhotoPath!.isEmpty) && item.mainPhotoPath != null) {
+          await (_db.update(_db.catalogTable)..where((t) => t.id.equals(targetSpeciesId)))
+              .write(CatalogTableCompanion(mainPhotoPath: Value(item.mainPhotoPath)));
+        }
+
+        final updated = await getCatalogItemById(targetSpeciesId);
+        return updated ?? nameDup;
+      } else {
+        throw Exception(AppStrings.duplicateSpeciesNameError);
+      }
     }
 
     if (item.mainPhotoPath != null && item.mainPhotoPath!.isNotEmpty) {
@@ -147,6 +183,8 @@ class CatalogRepository {
     }
 
     await ensureDefaultSubspecies(item.id);
+    final saved = await getCatalogItemById(item.id);
+    return saved ?? item;
   }
 
   Future<void> updateSpeciesName(String speciesId, String newName) async {
@@ -414,6 +452,7 @@ class CatalogRepository {
 
   Future<void> addAttachment({
     required String speciesId,
+    String? instanceId,
     required String filePath,
     required String fileName,
     required String fileType,
@@ -421,6 +460,7 @@ class CatalogRepository {
     final companion = AttachmentsTableCompanion(
       id: Value(const Uuid().v4()),
       speciesId: Value(speciesId),
+      instanceId: Value(instanceId),
       filePath: Value(filePath),
       fileName: Value(fileName),
       fileType: Value(fileType),
@@ -435,18 +475,28 @@ class CatalogRepository {
     String dataType = 'real',
     String? unitSymbol,
   }) async {
-    final existing = await (_db.select(_db.speciesMagnitudesTable)
-      ..where((t) => t.speciesId.equals(speciesId) & t.propertyName.equals(propertyName)))
-      .getSingleOrNull();
+    final cleanName = propertyName.trim();
+    final cleanUnit = unitSymbol?.trim();
+
+    final query = _db.select(_db.speciesMagnitudesTable)
+      ..where((t) {
+        final nameCond = t.speciesId.equals(speciesId) & t.propertyName.equals(cleanName);
+        if (cleanUnit != null && cleanUnit.isNotEmpty) {
+          return nameCond & t.unitSymbol.equals(cleanUnit);
+        } else {
+          return nameCond & (t.unitSymbol.isNull() | t.unitSymbol.equals(''));
+        }
+      });
+    final existing = await query.getSingleOrNull();
 
     if (existing == null) {
       await _db.into(_db.speciesMagnitudesTable).insert(
         SpeciesMagnitudesTableCompanion(
           id: Value(const Uuid().v4()),
           speciesId: Value(speciesId),
-          propertyName: Value(propertyName),
+          propertyName: Value(cleanName),
           dataType: Value(dataType),
-          unitSymbol: Value(unitSymbol),
+          unitSymbol: Value(cleanUnit),
           createdAt: Value(DateTime.now()),
         ),
       );

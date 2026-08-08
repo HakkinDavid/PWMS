@@ -12,7 +12,9 @@ import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
 import '../../catalog/presentation/requirements_section_widget.dart';
-import '../../../core/domain/property_data_type.dart';
+import 'package:uuid/uuid.dart';
+import '../../catalog/domain/species_magnitude.dart';
+import '../domain/instance_magnitude.dart';
 import '../domain/entity_template.dart';
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
@@ -30,13 +32,122 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   final _notesController = TextEditingController();
   String? _selectedLocationId;
   DateTime? _selectedExpirationDate;
-  final Map<String, double> _editedMagnitudeValues = {};
+  List<InstanceMagnitude> _workingMagnitudes = [];
 
   @override
   void dispose() {
     _qtyController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  Future<void> _editMagnitudeDialog(InstanceMagnitude mag) async {
+    final valCtrl = TextEditingController(
+      text: mag.type.isNumeric
+          ? mag.magnitudeValue.toString()
+          : (mag.stringValue ?? ''),
+    );
+
+    final result = await showDialog<InstanceMagnitude>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Editar propiedad "${mag.propertyName}"'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: valCtrl,
+              keyboardType: mag.type.isNumeric
+                  ? const TextInputType.numberWithOptions(decimal: true)
+                  : TextInputType.text,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
+                    ? 'Valor (${mag.unitSymbol})'
+                    : 'Valor',
+                suffixText: mag.unitSymbol,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(AppStrings.cancel)),
+          ElevatedButton(
+            onPressed: () {
+              final raw = valCtrl.text.trim();
+              if (mag.type.isNumeric) {
+                final dVal = double.tryParse(raw) ?? mag.magnitudeValue;
+                Navigator.pop(ctx, mag.copyWith(magnitudeValue: dVal));
+              } else {
+                Navigator.pop(ctx, mag.copyWith(stringValue: raw));
+              }
+            },
+            child: const Text(AppStrings.save),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        final idx = _workingMagnitudes.indexWhere((m) => m.id == mag.id);
+        if (idx != -1) {
+          _workingMagnitudes[idx] = result;
+        }
+      });
+    }
+  }
+
+  Future<void> _addInstancePropertyDialog(CatalogItem species) async {
+    final existingNames = _workingMagnitudes.map((m) => '${m.propertyName}_${m.unitSymbol ?? ""}').toSet();
+    final availableSpeciesMags = species.magnitudes.where((sm) =>
+      !existingNames.contains('${sm.propertyName}_${sm.unitSymbol ?? ""}')
+    ).toList();
+
+    if (availableSpeciesMags.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Esta instancia ya posee todas las propiedades definidas por la especie.')),
+      );
+      return;
+    }
+
+    final selectedMag = await showDialog<SpeciesMagnitude>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: const Text('Agregar propiedad de Especie'),
+        children: availableSpeciesMags.map((sm) {
+          final unitText = sm.unitSymbol != null ? ' (${sm.unitSymbol})' : '';
+          return SimpleDialogOption(
+            onPressed: () => Navigator.pop(ctx, sm),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: Row(
+                children: [
+                  const Icon(Icons.add_circle_outline, size: 18, color: Colors.blueAccent),
+                  const SizedBox(width: 8),
+                  Text('${sm.propertyName}$unitText', style: const TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+
+    if (selectedMag != null && mounted) {
+      setState(() {
+        _workingMagnitudes.add(InstanceMagnitude(
+          id: const Uuid().v4(),
+          instanceId: widget.entityId,
+          propertyName: selectedMag.propertyName,
+          dataType: selectedMag.dataType,
+          magnitudeValue: 0.0,
+          unitSymbol: selectedMag.unitSymbol,
+        ));
+      });
+    }
   }
 
   // Confirm Deletion Flow
@@ -91,9 +202,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             _notesController.text = entity.notes ?? '';
             _selectedLocationId = entity.locationId;
             _selectedExpirationDate = entity.expirationDate;
-            for (final mag in entity.magnitudes) {
-              _editedMagnitudeValues[mag.id] = mag.magnitudeValue;
-            }
+            _workingMagnitudes = List.from(entity.magnitudes);
           }
 
           final catalogItems = catalogState.asData?.value ?? [];
@@ -345,27 +454,42 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
-              // Punto 8: Magnitudes 4NF de la Instancia (Lista Interactiva Completa)
-              if (template.hasQuantity && hasMagnitudes) ...[
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Magnitudes Físicas de la Instancia (4NF)',
-                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
+              // Requisitos 3 & 10: Magnitudes y Propiedades de la Instancia (Lista Interactiva)
+              Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Propiedades y Magnitudes de la Instancia',
+                            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          if (_isEditingInPlace)
+                            TextButton.icon(
+                              onPressed: () => _addInstancePropertyDialog(species),
+                              icon: const Icon(Icons.add, size: 16),
+                              label: const Text('Añadir propiedad', style: TextStyle(fontSize: 12)),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      if (_workingMagnitudes.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text('Sin propiedades asignadas a esta instancia.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        )
+                      else
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: entity.magnitudes.length,
+                          itemCount: _workingMagnitudes.length,
                           itemBuilder: (ctx, idx) {
-                            final mag = entity.magnitudes[idx];
-                            final currentVal = _editedMagnitudeValues[mag.id] ?? mag.magnitudeValue;
+                            final mag = _workingMagnitudes[idx];
 
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -375,39 +499,36 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      mag.propertyName,
+                                      mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
+                                          ? '${mag.propertyName} (${mag.unitSymbol})'
+                                          : mag.propertyName,
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                     ),
                                   ),
-                                  if (_isEditingInPlace && mag.type.isNumeric)
+                                  if (_isEditingInPlace)
                                     Row(
                                       children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.remove_circle_outline, size: 20),
-                                          onPressed: () {
-                                            final val = _editedMagnitudeValues[mag.id] ?? mag.magnitudeValue;
-                                            final next = (val - 1.0) > 0 ? (val - 1.0) : 0.0;
-                                            setState(() => _editedMagnitudeValues[mag.id] = next);
-                                          },
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(color: theme.dividerColor),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Text(
-                                            mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
-                                                ? '${DomainRules.formatMagnitude(currentVal, mag.unitSymbol)} ${mag.unitSymbol}'
-                                                : DomainRules.formatMagnitude(currentVal, null),
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                        InkWell(
+                                          onTap: () => _editMagnitudeDialog(mag),
+                                          borderRadius: BorderRadius.circular(8),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: theme.colorScheme.primary),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              mag.displayValue,
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: theme.colorScheme.primary),
+                                            ),
                                           ),
                                         ),
+                                        const SizedBox(width: 4),
                                         IconButton(
-                                          icon: const Icon(Icons.add_circle_outline, size: 20),
+                                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                                          tooltip: 'Eliminar propiedad de esta instancia',
                                           onPressed: () {
-                                            final val = _editedMagnitudeValues[mag.id] ?? mag.magnitudeValue;
-                                            setState(() => _editedMagnitudeValues[mag.id] = val + 1.0);
+                                            setState(() => _workingMagnitudes.removeAt(idx));
                                           },
                                         ),
                                       ],
@@ -422,12 +543,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                             );
                           },
                         ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 14),
-              ],
+              ),
+              const SizedBox(height: 14),
             ],
           );
 
@@ -457,20 +577,16 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         height: 48,
                         child: ElevatedButton.icon(
                           onPressed: () async {
-                            final updatedMags = entity.magnitudes.map((m) {
-                              final newV = _editedMagnitudeValues[m.id];
-                              return newV != null ? m.copyWith(magnitudeValue: newV) : m;
-                            }).toList();
-
                             final updated = entity.copyWith(
                               locationId: _selectedLocationId,
                               expirationDate: _selectedExpirationDate,
-                              magnitudes: updatedMags,
+                              magnitudes: _workingMagnitudes,
                               notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
                               updatedAt: DateTime.now(),
                             );
 
                             await ref.read(entityListProvider.notifier).saveEntity(updated);
+                            ref.invalidate(entityDetailProvider(widget.entityId));
                             setState(() => _isEditingInPlace = false);
                           },
                           icon: const Icon(Icons.check),
