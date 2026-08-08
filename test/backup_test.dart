@@ -181,5 +181,35 @@ void main() {
       // Should not throw FormatException / Unexpected extension byte
       await expectLater(backupService.importDatabaseFromFile(zipFile), completes);
     });
+
+    test('migrateImportedData executes sequential step migrations for v1.0 to v3', () async {
+      final v1Map = {
+        'version': '1.0',
+        'exportedAt': DateTime.now().toIso8601String(),
+        'tables': {
+          'catalog': [
+            {'id': 'c1', 'name': 'Objeto Antiguo'}
+          ],
+          'attachments': [
+            {'id': 'a1', 'speciesId': 'c1', 'filePath': 'doc.pdf', 'fileName': 'doc.pdf', 'fileType': 'doc', 'createdAt': DateTime.now().toIso8601String()}
+          ]
+        }
+      };
+
+      final migrated = backupService.migrateImportedData(v1Map, targetVersion: 3);
+
+      expect(migrated['version'], equals(3));
+      final tables = migrated['tables'] as Map<String, dynamic>;
+
+      // Verify v1 -> v2 defaults
+      final catalogItem = (tables['catalog'] as List).first as Map<String, dynamic>;
+      expect(catalogItem['type'], equals('Objeto'));
+      expect(catalogItem['isNonPerishable'], equals(true));
+
+      // Verify v2 -> v3 defaults
+      final attachmentItem = (tables['attachments'] as List).first as Map<String, dynamic>;
+      expect(attachmentItem.containsKey('instanceId'), isTrue);
+      expect(attachmentItem['instanceId'], isNull);
+    });
   });
 }

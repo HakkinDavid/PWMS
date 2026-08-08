@@ -29,7 +29,7 @@ class DatabaseBackupService {
     final notifications = await _db.select(_db.notificationsTable).get();
 
     return {
-      'version': 1,
+      'version': _db.schemaVersion,
       'exportedAt': DateTime.now().toIso8601String(),
       'tables': {
         'locations': locations.map((r) => {
@@ -102,6 +102,7 @@ class DatabaseBackupService {
         'attachments': attachments.map((r) => {
           'id': r.id,
           'speciesId': r.speciesId,
+          'instanceId': r.instanceId,
           'filePath': r.filePath,
           'fileName': r.fileName,
           'fileType': r.fileType,
@@ -295,14 +296,132 @@ class DatabaseBackupService {
     }
   }
 
+  /// Realiza la migración secuencial paso a paso de los datos JSON importados
+  /// según la versión de origen (e.g. 1.0, 2.0 -> N)
+  Map<String, dynamic> migrateImportedData(Map<String, dynamic> data, {required int targetVersion}) {
+    final rawVersion = data['version'] ?? data['schemaVersion'] ?? data['versionCheck'] ?? 1;
+    int importedVersion = 1;
+
+    if (rawVersion is int) {
+      importedVersion = rawVersion;
+    } else if (rawVersion is num) {
+      importedVersion = rawVersion.floor();
+    } else if (rawVersion is String) {
+      final parsed = double.tryParse(rawVersion);
+      if (parsed != null) {
+        importedVersion = parsed.floor();
+      }
+    }
+
+    if (importedVersion < 1) importedVersion = 1;
+
+    Map<String, dynamic> currentData = Map<String, dynamic>.from(data);
+
+    for (int v = importedVersion; v < targetVersion; v++) {
+      currentData = _migrateJsonStep(currentData, fromVersion: v, toVersion: v + 1);
+    }
+
+    currentData['version'] = targetVersion;
+    return currentData;
+  }
+
+  Map<String, dynamic> _migrateJsonStep(Map<String, dynamic> data, {required int fromVersion, required int toVersion}) {
+    final tables = Map<String, dynamic>.from(data['tables'] as Map<String, dynamic>? ?? {});
+
+    if (fromVersion == 1 && toVersion >= 2) {
+      // Migración 1 -> 2:
+      // Asegurar tabla de appSettings y columnas predeterminadas agregadas en v2
+      tables.putIfAbsent('appSettings', () => <Map<String, dynamic>>[]);
+
+      final catalog = (tables['catalog'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedCatalog = [];
+      for (var item in catalog) {
+        if (item is Map) {
+          final m = Map<String, dynamic>.from(item);
+          m.putIfAbsent('type', () => 'Objeto');
+          m.putIfAbsent('customAttributes', () => '{}');
+          m.putIfAbsent('isUnique', () => false);
+          m.putIfAbsent('isNonPerishable', () => true);
+          updatedCatalog.add(m);
+        }
+      }
+      tables['catalog'] = updatedCatalog;
+
+      final speciesMagnitudes = (tables['speciesMagnitudes'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedSM = [];
+      for (var item in speciesMagnitudes) {
+        if (item is Map) {
+          final m = Map<String, dynamic>.from(item);
+          m.putIfAbsent('dataType', () => 'real');
+          updatedSM.add(m);
+        }
+      }
+      tables['speciesMagnitudes'] = updatedSM;
+
+      final instanceMagnitudes = (tables['instanceMagnitudes'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedIM = [];
+      for (var item in instanceMagnitudes) {
+        if (item is Map) {
+          final m = Map<String, dynamic>.from(item);
+          m.putIfAbsent('dataType', () => 'real');
+          m.putIfAbsent('magnitudeValue', () => 0.0);
+          updatedIM.add(m);
+        }
+      }
+      tables['instanceMagnitudes'] = updatedIM;
+
+      final speciesRequirements = (tables['speciesRequirements'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedSR = [];
+      for (var item in speciesRequirements) {
+        if (item is Map) {
+          final m = Map<String, dynamic>.from(item);
+          m.putIfAbsent('sourceType', () => 'species');
+          m.putIfAbsent('requiredQuantity', () => 1.0);
+          updatedSR.add(m);
+        }
+      }
+      tables['speciesRequirements'] = updatedSR;
+
+      final notifications = (tables['notifications'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedNotif = [];
+      for (var item in notifications) {
+        if (item is Map) {
+          final m = Map<String, dynamic>.from(item);
+          m.putIfAbsent('status', () => 'active');
+          updatedNotif.add(m);
+        }
+      }
+      tables['notifications'] = updatedNotif;
+    }
+
+    if (fromVersion == 2 && toVersion >= 3) {
+      // Migración 2 -> 3:
+      // Agregar campo instanceId en la tabla de attachments
+      final attachments = (tables['attachments'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedAtt = [];
+      for (var item in attachments) {
+        if (item is Map) {
+          final m = Map<String, dynamic>.from(item);
+          m.putIfAbsent('instanceId', () => null);
+          updatedAtt.add(m);
+        }
+      }
+      tables['attachments'] = updatedAtt;
+    }
+
+    data['tables'] = tables;
+    return data;
+  }
+
   /// Importa la base de datos a partir de una cadena JSON
   Future<void> importDatabaseFromJsonString(String jsonString) async {
-    final Map<String, dynamic> data = jsonDecode(jsonString);
-    if (!data.containsKey('tables')) {
+    final Map<String, dynamic> rawData = jsonDecode(jsonString);
+    if (!rawData.containsKey('tables')) {
       throw const FormatException('El archivo de respaldo no tiene una estructura válida.');
     }
 
-    final tables = data['tables'] as Map<String, dynamic>;
+    final migratedData = migrateImportedData(rawData, targetVersion: _db.schemaVersion);
+    final tables = migratedData['tables'] as Map<String, dynamic>;
 
     await _db.transaction(() async {
       // Limpiar datos existentes en orden inverso de clave foránea
@@ -436,6 +555,7 @@ class DatabaseBackupService {
         await _db.into(_db.attachmentsTable).insert(AttachmentsTableCompanion.insert(
           id: r['id'],
           speciesId: r['speciesId'],
+          instanceId: Value(r['instanceId']),
           filePath: r['filePath'],
           fileName: r['fileName'],
           fileType: r['fileType'],

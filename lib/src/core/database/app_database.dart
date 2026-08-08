@@ -215,11 +215,13 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
         },
         onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            await m.createTable(appSettingsTable);
-          }
-          if (from < 3) {
-            await m.addColumn(attachmentsTable, attachmentsTable.instanceId);
+          for (int v = from; v < to; v++) {
+            if (v == 1) {
+              await m.createTable(appSettingsTable);
+            }
+            if (v == 2) {
+              await m.addColumn(attachmentsTable, attachmentsTable.instanceId);
+            }
           }
         },
       );
