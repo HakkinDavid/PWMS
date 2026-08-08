@@ -12,6 +12,7 @@ import '../../catalog/presentation/guided_dual_scan_widget.dart';
 import '../../catalog/presentation/species_form_modal.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../catalog/presentation/subspecies_section_widget.dart';
+import '../domain/instance_magnitude.dart';
 import 'instantiate_species_sheet.dart';
 
 enum RegisterModalMode { selectFromCatalog, createNewSpecies, addSubspeciesToExisting, autoFillScanner, numismaticScanner }
@@ -266,37 +267,92 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
             final freshSpecies = await catalogRepo.getCatalogItemById(matchingSpecies.id) ?? matchingSpecies;
 
-            final currencyStr = result.currencyName ?? result.currencyCode ?? '';
-            final notesParts = <String>[];
-            if (currencyStr.isNotEmpty) notesParts.add('Moneda: $currencyStr');
-            if (result.year != null) notesParts.add('Año: ${result.year}');
-            if (result.composition != null) notesParts.add('Material: ${result.composition}');
-            if (result.notes != null) notesParts.add(result.notes!);
+            // 1. Reutilizar subespecie existente si coincide el nombre (ej: "5 Pesetas - España (1982)")
+            final existingSubspeciesList = await catalogRepo.getSubspeciesForSpecies(freshSpecies.id);
+            Subspecies? targetSubspecies;
 
-            final newSubspecies = Subspecies(
-              id: const Uuid().v4(),
-              speciesId: freshSpecies.id,
-              subspeciesName: result.subspeciesName,
-              brand: result.brandOrMint,
-              photoPath: result.obversePhotoPath,
-              notes: notesParts.isNotEmpty ? notesParts.join(' | ') : null,
-              createdAt: DateTime.now(),
+            for (final sub in existingSubspeciesList) {
+              if (sub.subspeciesName.trim().toLowerCase() == result.subspeciesName.trim().toLowerCase()) {
+                targetSubspecies = sub;
+                break;
+              }
+            }
+
+            if (targetSubspecies == null) {
+              final currencyStr = result.currencyName ?? result.currencyCode ?? '';
+              final notesParts = <String>[];
+              if (currencyStr.isNotEmpty) notesParts.add('Moneda: $currencyStr');
+              if (result.year != null) notesParts.add('Año: ${result.year}');
+              if (result.composition != null) notesParts.add('Material: ${result.composition}');
+
+              targetSubspecies = Subspecies(
+                id: const Uuid().v4(),
+                speciesId: freshSpecies.id,
+                subspeciesName: result.subspeciesName,
+                photoPath: result.obversePhotoPath,
+                notes: notesParts.isNotEmpty ? notesParts.join(' | ') : null,
+                createdAt: DateTime.now(),
+              );
+
+              await catalogRepo.saveSubspecies(targetSubspecies);
+              ref.invalidate(subspeciesListProvider);
+            }
+
+            // 2. Instanciar directamente en inventario (Sin desplegar InstantiateSpeciesSheet)
+            final entityRepo = ref.read(entityRepositoryProvider);
+            final createdInstance = await entityRepo.instantiateOrMerge(
+              freshSpecies.id,
+              widget.initialLocationId,
+              1.0,
+              subspeciesId: targetSubspecies.id,
+              notes: 'Grado: ${result.grade ?? "N/A"} | Material: ${result.composition ?? "N/A"}',
             );
 
-            await catalogRepo.saveSubspecies(newSubspecies);
-            ref.invalidate(subspeciesListProvider);
+            // 3. Guardar magnitudes 4NF en la instancia
+            if (freshSpecies.magnitudes.isNotEmpty) {
+              final List<InstanceMagnitude> customInstanceMags = [];
+              for (final sm in freshSpecies.magnitudes) {
+                double val = 1.0;
+                if (sm.propertyName == 'Unidad Monetaria' && result.faceValueNumber != null) {
+                  val = result.faceValueNumber!;
+                } else if (sm.propertyName == 'Año' && result.year != null && double.tryParse(result.year!) != null) {
+                  val = double.parse(result.year!);
+                }
+
+                customInstanceMags.add(InstanceMagnitude(
+                  id: const Uuid().v4(),
+                  instanceId: createdInstance.id,
+                  propertyName: sm.propertyName,
+                  magnitudeValue: val,
+                  unitSymbol: sm.unitSymbol,
+                ));
+              }
+
+              final updatedWithMags = createdInstance.copyWith(magnitudes: customInstanceMags);
+              await entityRepo.saveEntity(updatedWithMags);
+            }
+
+            // 4. Guardar foto de reverso como adjunto si existe
+            if (result.reversePhotoPath != null && result.reversePhotoPath!.isNotEmpty) {
+              await catalogRepo.addAttachment(
+                speciesId: freshSpecies.id,
+                filePath: result.reversePhotoPath!,
+                fileName: 'Reverso_${targetSubspecies.subspeciesName}.jpg',
+                fileType: 'image',
+              );
+            }
+
+            ref.invalidate(entityListProvider);
+            ref.invalidate(catalogListProvider);
 
             if (mounted) {
               Navigator.pop(context);
-
-              InstantiateSpeciesSheet.show(
-                context,
-                species: freshSpecies,
-                initialSubspecies: newSubspecies,
-                initialLocationId: widget.initialLocationId,
-                initialMagnitudeValues: result.toMagnitudeValues(),
-                initialNotes: 'Grado: ${result.grade ?? "No especificado"} | Serie: ${result.serialNumber ?? "N/A"}\nCatálogo: ${result.catalogCode ?? "N/A"}\nMotor: ${result.sourceEngine}',
-                secondaryPhotoPath: result.reversePhotoPath,
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Pieza "${result.subspeciesName}" instanciada directamente.'),
+                  backgroundColor: Colors.green.shade800,
+                  duration: const Duration(seconds: 4),
+                ),
               );
             }
           },

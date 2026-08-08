@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_recognition_models.dart';
 

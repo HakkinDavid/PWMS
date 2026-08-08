@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import '../domain/numismatic_recognition_models.dart';
-import '../infrastructure/numismatic_recognition_engine.dart';
+import 'numismatic_quick_fill_sheet.dart';
 
 class GuidedDualScanWidget extends ConsumerStatefulWidget {
   final Function(NumismaticScanResult result)? onScannedResult;
@@ -182,41 +182,16 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   }
 
   Future<void> _processRecognition() async {
-    if (_obverseFile == null || _isProcessing) return;
+    if (_obverseFile == null) return;
 
-    setState(() {
-      _isProcessing = true;
-      _statusMessage = 'Identificando pieza numismática en la nube/local...';
-    });
+    final result = await NumismaticQuickFillSheet.show(
+      context,
+      obversePhoto: _obverseFile!,
+      reversePhoto: _reverseFile,
+    );
 
-    try {
-      final engine = ref.read(numismaticRecognitionEngineProvider);
-      final result = await engine.processDualPhotos(
-        obversePhoto: _obverseFile!,
-        reversePhoto: _reverseFile,
-      );
-
-      if (mounted) {
-        widget.onScannedResult?.call(result);
-      }
-    } catch (e) {
-      if (mounted) {
-        final cleanMsg = e.toString().replaceAll('Exception: ', '');
-        setState(() {
-          _isProcessing = false;
-          _statusMessage = cleanMsg;
-          _currentStep = 1;
-          _obverseFile = null;
-          _reverseFile = null;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(cleanMsg),
-            backgroundColor: Colors.red.shade800,
-            duration: const Duration(seconds: 5),
-          ),
-        );
-      }
+    if (result != null && mounted) {
+      widget.onScannedResult?.call(result);
     }
   }
 
@@ -466,10 +441,10 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
             onPressed: (_obverseFile != null && !_isProcessing) ? _processRecognition : null,
             icon: _isProcessing
                 ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
-                : const Icon(Icons.send_rounded),
-            label: Text(
-              _isProcessing ? 'Analizando...' : 'Enviar y Analizar Pieza',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                : const Icon(Icons.arrow_forward_rounded),
+            label: const Text(
+              'Continuar a Datos Numismáticos',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.colorScheme.primary,
