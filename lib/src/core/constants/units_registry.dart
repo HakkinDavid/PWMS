@@ -108,6 +108,8 @@ class UnitsRegistry {
   static const List<String> digitalUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
   static const List<String> financialUnits = ['\$', 'USD', 'MXN', 'EUR', 'ESP'];
 
+  static final Map<String, SIUnitDefinition> _dynamicDefinitions = {};
+
   static List<String> get allSiUnits => [
         ...massUnits,
         ...lengthUnits,
@@ -121,13 +123,32 @@ class UnitsRegistry {
         ...energyAndPowerUnits,
         ...digitalUnits,
         ...financialUnits,
+        ..._dynamicDefinitions.keys,
       ];
+
+  static void registerUnknownUnit(String symbol) {
+    final trimmed = symbol.trim();
+    if (trimmed.isEmpty) return;
+    if (!definitions.containsKey(trimmed)) {
+      _dynamicDefinitions.putIfAbsent(
+        trimmed,
+        () => SIUnitDefinition(symbol: trimmed, allowDecimals: true),
+      );
+    }
+  }
 
   static SIUnitDefinition getDefinition(String? unitSymbol) {
     if (unitSymbol == null || unitSymbol.isEmpty) {
       return const SIUnitDefinition(symbol: '', allowDecimals: true);
     }
-    return definitions[unitSymbol] ?? const SIUnitDefinition(symbol: '', allowDecimals: true);
+    final trimmed = unitSymbol.trim();
+    if (definitions.containsKey(trimmed)) {
+      return definitions[trimmed]!;
+    }
+    return _dynamicDefinitions.putIfAbsent(
+      trimmed,
+      () => SIUnitDefinition(symbol: trimmed, allowDecimals: true),
+    );
   }
 
   static bool allowsDecimals(String? unitSymbol) {

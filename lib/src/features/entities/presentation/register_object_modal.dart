@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/units_registry.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
@@ -241,21 +242,34 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 description: 'Especie para piezas numismáticas (${result.speciesType})',
                 mainPhotoPath: result.obversePhotoPath,
               );
-
-              if (result.speciesType == 'Moneda') {
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Masa', 'g');
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Diámetro', 'mm');
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Espesor', 'mm');
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor Facial', 'MXN');
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
-              } else {
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Longitud', 'mm');
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Ancho', 'mm');
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor Facial', 'MXN');
-                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
-              }
-              ref.invalidate(catalogListProvider);
             }
+
+            final currencyUnit = (result.currencyCode != null && result.currencyCode!.trim().isNotEmpty)
+                ? result.currencyCode!.trim()
+                : 'EUR';
+
+            UnitsRegistry.registerUnknownUnit(currencyUnit);
+
+            if (result.speciesType == 'Moneda') {
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Masa', 'g');
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Diámetro', 'mm');
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Espesor', 'mm');
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Unidad Monetaria', currencyUnit);
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
+            } else {
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Longitud', 'mm');
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Ancho', 'mm');
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Unidad Monetaria', currencyUnit);
+              await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
+            }
+            ref.invalidate(catalogListProvider);
+
+            final currencyStr = result.currencyName ?? result.currencyCode ?? '';
+            final notesParts = <String>[];
+            if (currencyStr.isNotEmpty) notesParts.add('Moneda: $currencyStr');
+            if (result.year != null) notesParts.add('Año: ${result.year}');
+            if (result.composition != null) notesParts.add('Material: ${result.composition}');
+            if (result.notes != null) notesParts.add(result.notes!);
 
             final newSubspecies = Subspecies(
               id: const Uuid().v4(),
@@ -263,7 +277,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               subspeciesName: result.subspeciesName,
               brand: result.brandOrMint,
               photoPath: result.obversePhotoPath,
-              notes: result.notes != null ? 'Año: ${result.year ?? "N/A"} | Valor: ${result.faceValue ?? "N/A"} | Metal: ${result.composition ?? "N/A"}\n${result.notes}' : null,
+              notes: notesParts.isNotEmpty ? notesParts.join(' | ') : null,
               createdAt: DateTime.now(),
             );
 

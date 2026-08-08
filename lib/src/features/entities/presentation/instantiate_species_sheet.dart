@@ -104,7 +104,9 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
       for (final mag in species.magnitudes) {
         final prefilledVal = widget.initialMagnitudeValues?[mag.propertyName];
-        final initialText = prefilledVal != null ? (prefilledVal == prefilledVal.roundToDouble() ? prefilledVal.toInt().toString() : prefilledVal.toString()) : '1';
+        final initialText = prefilledVal != null
+            ? (prefilledVal == prefilledVal.roundToDouble() ? prefilledVal.toInt().toString() : prefilledVal.toString())
+            : '';
         _magnitudeControllers[mag.propertyName] = TextEditingController(text: initialText);
       }
     });

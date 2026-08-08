@@ -29,17 +29,22 @@ Responde ÚNICA Y EXCLUSIVAMENTE con un objeto JSON válido sin bloques de códi
   "subspeciesName": "Nombre específico con denominación, año y personaje/emisor (ej: 5 Pesetas - Juan Carlos I - 1982)",
   "brandOrMint": "Marca de ceca o banco emisor (ej: Real Casa de la Moneda, FNMT, US Mint, Banco de España)",
   "country": "País emisor",
-  "year": "Año de acuñación o emisión",
-  "faceValue": "Valor facial con moneda (ej: 5 Pesetas, 1 Dollar, 2 Euros)",
+  "year": "Año de acuñación o emisión (ej: 1982)",
+  "faceValueNumber": 5.0,
+  "currencyCode": "Código ISO o abreviación de la moneda (ej: ESP, EUR, USD, MXN)",
+  "currencyName": "Nombre de la moneda o unidad monetaria (ej: Pesetas, Euros, Dólares, Pesos)",
   "composition": "Composición metálica o material (ej: Plata .925, Cuproníquel, Bronce, Papel)",
   "massGrams": 5.75,
   "diameterMm": 23.0,
+  "thicknessMm": 1.8,
+  "lengthMm": 140.0,
+  "widthMm": 75.0,
   "grade": "Estimación del estado de conservación (ej: BC, MBC, EBC, FDC / VF, XF, UNC)",
   "serialNumber": "Número de serie si es billete",
   "catalogCode": "Código de catálogo (ej: KM# 821, Pick# 142)",
   "notes": "Resumen histórico o descripción numismática resumida de la pieza"
 }
-Si un valor numérico no es deducible, coloca null para massGrams o diameterMm.
+Si un valor numérico no es deducible, coloca null para los campos numéricos (faceValueNumber, massGrams, diameterMm, thicknessMm, lengthMm, widthMm).
 '''
         },
         {
@@ -97,10 +102,15 @@ Si un valor numérico no es deducible, coloca null para massGrams o diameterMm.
                 brandOrMint: data['brandOrMint']?.toString(),
                 country: data['country']?.toString(),
                 year: data['year']?.toString(),
-                faceValue: data['faceValue']?.toString(),
+                faceValueNumber: (data['faceValueNumber'] is num) ? (data['faceValueNumber'] as num).toDouble() : double.tryParse(data['faceValueNumber']?.toString() ?? ''),
+                currencyCode: data['currencyCode']?.toString(),
+                currencyName: data['currencyName']?.toString(),
                 composition: data['composition']?.toString(),
                 massGrams: (data['massGrams'] is num) ? (data['massGrams'] as num).toDouble() : double.tryParse(data['massGrams']?.toString() ?? ''),
                 diameterMm: (data['diameterMm'] is num) ? (data['diameterMm'] as num).toDouble() : double.tryParse(data['diameterMm']?.toString() ?? ''),
+                thicknessMm: (data['thicknessMm'] is num) ? (data['thicknessMm'] as num).toDouble() : double.tryParse(data['thicknessMm']?.toString() ?? ''),
+                lengthMm: (data['lengthMm'] is num) ? (data['lengthMm'] as num).toDouble() : double.tryParse(data['lengthMm']?.toString() ?? ''),
+                widthMm: (data['widthMm'] is num) ? (data['widthMm'] as num).toDouble() : double.tryParse(data['widthMm']?.toString() ?? ''),
                 grade: data['grade']?.toString(),
                 serialNumber: data['serialNumber']?.toString(),
                 catalogCode: data['catalogCode']?.toString(),
