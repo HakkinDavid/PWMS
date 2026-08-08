@@ -9,7 +9,10 @@ class GeminiNumismaticService {
     File? reversePhoto,
     required String apiKey,
   }) async {
-    if (apiKey.isEmpty) return null;
+    final cleanKey = apiKey.trim();
+    if (cleanKey.isEmpty) {
+      throw Exception('La clave API de Gemini está vacía. Configúrala en los ajustes.');
+    }
 
     try {
       final obverseBytes = await obversePhoto.readAsBytes();
@@ -18,25 +21,25 @@ class GeminiNumismaticService {
       final parts = <Map<String, dynamic>>[
         {
           'text': '''
-Analiza numismáticamente este par de fotos (Anverso y opcionalmente Reverso) de una moneda o billete.
-Responde ÚNICA Y EXCLUSIVAMENTE en JSON estricto con esta estructura:
+Eres un experto numismático mundial. Analiza las imágenes adjuntas de la moneda o billete (Anverso y Reverso) e identifica la pieza con la mayor precisión técnica posible.
+Responde ÚNICA Y EXCLUSIVAMENTE con un objeto JSON válido sin bloques de código markdown:
 {
   "speciesType": "Moneda" o "Billete",
   "generalSpeciesName": "Moneda" o "Billete",
-  "subspeciesName": "Ej: 5 Pesetas (Juan Carlos I - 1982)",
-  "brandOrMint": "Ej: Real Casa de la Moneda (M) o Banco de España",
-  "country": "Ej: España",
-  "year": "Ej: 1982",
-  "faceValue": "Ej: 5 Pesetas",
-  "composition": "Ej: Cuproníquel, Plata .925, Bronce, Papel",
+  "subspeciesName": "Nombre específico con denominación, año y personaje/emisor (ej: 5 Pesetas - Juan Carlos I - 1982)",
+  "brandOrMint": "Marca de ceca o banco emisor (ej: Real Casa de la Moneda, FNMT, US Mint, Banco de España)",
+  "country": "País emisor",
+  "year": "Año de acuñación o emisión",
+  "faceValue": "Valor facial con moneda (ej: 5 Pesetas, 1 Dollar, 2 Euros)",
+  "composition": "Composición metálica o material (ej: Plata .925, Cuproníquel, Bronce, Papel)",
   "massGrams": 5.75,
   "diameterMm": 23.0,
-  "grade": "Ej: MBC / VF / EBC",
+  "grade": "Estimación del estado de conservación (ej: BC, MBC, EBC, FDC / VF, XF, UNC)",
   "serialNumber": "Número de serie si es billete",
-  "catalogCode": "Ej: KM# 821 o Pick# 142",
-  "notes": "Resumen histórico o descripción numismática"
+  "catalogCode": "Código de catálogo (ej: KM# 821, Pick# 142)",
+  "notes": "Resumen histórico o descripción numismática resumida de la pieza"
 }
-Si un valor numérico como massGrams o diameterMm no es deducible, usa null.
+Si un valor numérico no es deducible, coloca null para massGrams o diameterMm.
 '''
         },
         {
@@ -57,11 +60,11 @@ Si un valor numérico como massGrams o diameterMm no es deducible, usa null.
         });
       }
 
-      // Probar modelos de Gemini en orden (2.5-flash -> 2.0-flash -> 1.5-flash)
-      final models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+      // Usar los modelos oficiales estables de Gemini API
+      final models = ['gemini-1.5-flash', 'gemini-1.5-pro'];
 
       for (final model in models) {
-        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey');
+        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$cleanKey');
 
         final response = await http.post(
           url,
@@ -75,7 +78,7 @@ Si un valor numérico como massGrams o diameterMm no es deducible, usa null.
               'temperature': 0.1,
             }
           }),
-        ).timeout(const Duration(seconds: 18));
+        ).timeout(const Duration(seconds: 25));
 
         if (response.statusCode == 200) {
           final decoded = jsonDecode(response.body);
@@ -104,14 +107,22 @@ Si un valor numérico como massGrams o diameterMm no es deducible, usa null.
                 notes: data['notes']?.toString(),
                 obversePhotoPath: obversePhoto.path,
                 reversePhotoPath: reversePhoto?.path,
-                sourceEngine: 'Gemini Vision',
+                sourceEngine: 'Gemini Vision ($model)',
               );
             }
           }
+        } else if (response.statusCode == 401 || response.statusCode == 403) {
+          throw Exception('Clave API de Gemini inválida o sin permisos (HTTP ${response.statusCode}). Revisa tu API Key en la tuerca ⚙️ de ajustes.');
+        } else if (response.statusCode == 429) {
+          throw Exception('Límite de solicitudes alcanzado en Gemini (HTTP 429). Espera unos segundos antes de intentar un nuevo escaneo.');
+        } else if (response.statusCode == 404) {
+          continue;
+        } else {
+          throw Exception('Error en Gemini (HTTP ${response.statusCode}): ${response.body}');
         }
       }
     } catch (e) {
-      // Ignorar excepción y permitir fallback en cascada
+      rethrow;
     }
     return null;
   }

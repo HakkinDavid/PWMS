@@ -41,6 +41,8 @@ class UnitsRegistry {
     's': SIUnitDefinition(symbol: 's', allowDecimals: true),
     'min': SIUnitDefinition(symbol: 'min', allowDecimals: true),
     'h': SIUnitDefinition(symbol: 'h', allowDecimals: true),
+    'año': SIUnitDefinition(symbol: 'año', allowDecimals: false),
+
 
     // Electricidad y Magnetismo
     'A': SIUnitDefinition(symbol: 'A', allowDecimals: true),
@@ -90,20 +92,21 @@ class UnitsRegistry {
     'USD': SIUnitDefinition(symbol: 'USD', allowDecimals: true),
     'MXN': SIUnitDefinition(symbol: 'MXN', allowDecimals: true),
     'EUR': SIUnitDefinition(symbol: 'EUR', allowDecimals: true),
+    'ESP': SIUnitDefinition(symbol: 'ESP', allowDecimals: true),
   };
 
   static const List<String> massUnits = ['t', 'kg', 'g', 'mg'];
   static const List<String> lengthUnits = ['km', 'm', 'cm', 'mm'];
   static const List<String> volumeUnits = ['m³', 'cm³', 'L', 'mL'];
   static const List<String> areaUnits = ['km²', 'm²', 'cm²'];
-  static const List<String> timeUnits = ['s', 'min', 'h'];
+  static const List<String> timeUnits = ['s', 'min', 'h', 'año'];
   static const List<String> electricalUnits = ['A', 'mA', 'V', 'mV', 'kV', 'Ω'];
   static const List<String> temperatureUnits = ['K', '°C', '°F'];
   static const List<String> substanceAndLightUnits = ['mol', 'cd'];
   static const List<String> forceAndPressureUnits = ['N', 'kN', 'Pa', 'kPa', 'bar'];
   static const List<String> energyAndPowerUnits = ['J', 'kJ', 'cal', 'W', 'kW', 'MW', 'Hz', 'kHz', 'MHz', 'GHz'];
   static const List<String> digitalUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
-  static const List<String> financialUnits = ['\$', 'USD', 'MXN', 'EUR'];
+  static const List<String> financialUnits = ['\$', 'USD', 'MXN', 'EUR', 'ESP'];
 
   static List<String> get allSiUnits => [
         ...massUnits,

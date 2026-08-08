@@ -19,13 +19,17 @@ class NumismaticRecognitionEngine {
     // 1. Intento con Gemini Vision API
     final geminiKey = await _settingsRepo.getGeminiApiKey();
     if (geminiKey != null && geminiKey.trim().isNotEmpty) {
-      final geminiResult = await _geminiService.analyzeNumismaticItem(
-        obversePhoto: obversePhoto,
-        reversePhoto: reversePhoto,
-        apiKey: geminiKey,
-      );
-      if (geminiResult != null) {
-        return geminiResult;
+      try {
+        final geminiResult = await _geminiService.analyzeNumismaticItem(
+          obversePhoto: obversePhoto,
+          reversePhoto: reversePhoto,
+          apiKey: geminiKey,
+        );
+        if (geminiResult != null) {
+          return geminiResult;
+        }
+      } catch (e) {
+        rethrow;
       }
     }
 

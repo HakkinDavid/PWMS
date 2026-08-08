@@ -245,6 +245,14 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               if (result.speciesType == 'Moneda') {
                 await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Masa', 'g');
                 await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Diámetro', 'mm');
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Espesor', 'mm');
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor Facial', 'MXN');
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
+              } else {
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Longitud', 'mm');
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Ancho', 'mm');
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor Facial', 'MXN');
+                await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
               }
               ref.invalidate(catalogListProvider);
             }

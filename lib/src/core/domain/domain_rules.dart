@@ -108,11 +108,18 @@ class DomainRules {
       case 'GB':
       case 'TB':
         return 'Almacenamiento';
+      case 'año':
+        return 'Año';
+      case 'unidad':
+      case 'piezas':
+        return 'Cantidad';
       case '\$':
       case 'USD':
       case 'MXN':
       case 'EUR':
         return 'Precio';
+      case 'ESP':
+        return 'Valor Facial';
       default:
         return 'Propiedad';
     }

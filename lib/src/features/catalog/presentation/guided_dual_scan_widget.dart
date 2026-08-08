@@ -147,24 +147,17 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
 
     setState(() {
       _isProcessing = true;
-      _statusMessage = 'Capturando cara...';
+      _statusMessage = 'Capturando...';
     });
 
     try {
-      // Trigger center autofocus before capturing
-      try {
-        await _cameraController!.setFocusMode(FocusMode.auto);
-        await _cameraController!.setFocusPoint(const Offset(0.5, 0.5));
-        await Future.delayed(const Duration(milliseconds: 300));
-      } catch (_) {}
-
       final XFile photo = await _cameraController!.takePicture();
       final File rawFile = File(photo.path);
 
       // Programmatically crop to the center frame area
       final File croppedFile = await _cropImageCenter(rawFile);
 
-      if (_currentStep == 1) {
+      if (_obverseFile == null || _currentStep == 1) {
         _obverseFile = croppedFile;
         setState(() {
           _currentStep = 2;
@@ -173,7 +166,10 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
         });
       } else {
         _reverseFile = croppedFile;
-        await _processRecognition();
+        setState(() {
+          _isProcessing = false;
+          _statusMessage = null;
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -205,14 +201,21 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       }
     } catch (e) {
       if (mounted) {
+        final cleanMsg = e.toString().replaceAll('Exception: ', '');
         setState(() {
           _isProcessing = false;
-          _statusMessage = 'Error al identificar: $e';
-          // Fallback to let user try again or submit manually
+          _statusMessage = cleanMsg;
           _currentStep = 1;
           _obverseFile = null;
           _reverseFile = null;
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(cleanMsg),
+            backgroundColor: Colors.red.shade800,
+            duration: const Duration(seconds: 5),
+          ),
+        );
       }
     }
   }
@@ -373,12 +376,46 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           ],
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
+
+        // Preview Thumbnails of Captured Photos (Anverso & Reverso)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Anverso Thumbnail
+            _buildThumbnailCard(
+              title: 'Anverso',
+              file: _obverseFile,
+              isSelected: _currentStep == 1,
+              onTapSelect: () => setState(() => _currentStep = 1),
+              onDelete: () => setState(() {
+                _obverseFile = null;
+                _currentStep = 1;
+              }),
+              theme: theme,
+            ),
+            const SizedBox(width: 16),
+            // Reverso Thumbnail
+            _buildThumbnailCard(
+              title: 'Reverso',
+              file: _reverseFile,
+              isSelected: _currentStep == 2,
+              onTapSelect: () => setState(() => _currentStep = 2),
+              onDelete: () => setState(() {
+                _reverseFile = null;
+                _currentStep = 2;
+              }),
+              theme: theme,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 12),
 
         // Status or guidance messages
         if (_statusMessage != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               _statusMessage!,
               textAlign: TextAlign.center,
@@ -386,37 +423,18 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
             ),
           ),
 
-        // Shutter Button
+        // Shutter Button Row
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_currentStep == 2)
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: OutlinedButton.icon(
-                  onPressed: _isProcessing
-                      ? null
-                      : () {
-                          setState(() {
-                            _currentStep = 1;
-                            _obverseFile = null;
-                          });
-                        },
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text('Re-capturar Anverso'),
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                ),
-              ),
             GestureDetector(
-              onTap: (_isProcessing) ? null : _capturePhoto,
+              onTap: _isProcessing ? null : _capturePhoto,
               child: Container(
-                width: 72,
-                height: 72,
+                width: 64,
+                height: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: theme.colorScheme.primary, width: 4),
+                  border: Border.all(color: theme.colorScheme.primary, width: 3),
                   color: Colors.transparent,
                 ),
                 padding: const EdgeInsets.all(4),
@@ -428,16 +446,138 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                   child: _isProcessing
                       ? const Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3))
                       : Icon(
-                          _isCoinMode ? Icons.circle : Icons.crop_free,
+                          _isCoinMode ? Icons.camera_alt : Icons.crop_free,
                           color: Colors.white,
-                          size: 32,
+                          size: 28,
                         ),
                 ),
               ),
             ),
           ],
         ),
+
+        const SizedBox(height: 12),
+
+        // Send to API Button
+        SizedBox(
+          width: double.infinity,
+          height: 48,
+          child: ElevatedButton.icon(
+            onPressed: (_obverseFile != null && !_isProcessing) ? _processRecognition : null,
+            icon: _isProcessing
+                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
+                : const Icon(Icons.send_rounded),
+            label: Text(
+              _isProcessing ? 'Analizando...' : 'Enviar y Analizar Pieza',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.primary,
+              foregroundColor: theme.colorScheme.onPrimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget _buildThumbnailCard({
+    required String title,
+    required File? file,
+    required bool isSelected,
+    required VoidCallback onTapSelect,
+    required VoidCallback onDelete,
+    required ThemeData theme,
+  }) {
+    final hasFile = file != null && file.existsSync();
+
+    return InkWell(
+      onTap: onTapSelect,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? theme.colorScheme.primary : (hasFile ? Colors.grey.shade400 : Colors.grey.shade300),
+            width: isSelected ? 2.5 : 1,
+          ),
+          color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            if (hasFile)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.file(
+                  file,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+              )
+            else
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    isSelected ? Icons.add_a_photo : Icons.photo_camera_outlined,
+                    color: isSelected ? theme.colorScheme.primary : Colors.grey,
+                    size: 26,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected ? theme.colorScheme.primary : Colors.grey.shade700,
+                    ),
+                  ),
+                ],
+              ),
+
+            if (hasFile)
+              Positioned(
+                bottom: 4,
+                left: 4,
+                right: 4,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+
+            if (hasFile)
+              Positioned(
+                top: 4,
+                right: 4,
+                child: GestureDetector(
+                  onTap: onDelete,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.close, color: Colors.white, size: 12),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
