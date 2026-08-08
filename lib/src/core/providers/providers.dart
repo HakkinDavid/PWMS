@@ -111,11 +111,14 @@ class EntityListNotifier extends StateNotifier<AsyncValue<List<WorldEntity>>> {
   }
 
   Future<void> loadEntities() async {
+    if (!mounted) return;
     state = const AsyncValue.loading();
     try {
       final list = await _repository.getAllEntities();
+      if (!mounted) return;
       state = AsyncValue.data(list);
     } catch (e, st) {
+      if (!mounted) return;
       state = AsyncValue.error(e, st);
     }
   }
@@ -144,11 +147,14 @@ class CatalogListNotifier extends StateNotifier<AsyncValue<List<CatalogItem>>> {
   }
 
   Future<void> loadCatalog() async {
+    if (!mounted) return;
     state = const AsyncValue.loading();
     try {
       final list = await _repository.getAllCatalogItems();
+      if (!mounted) return;
       state = AsyncValue.data(list);
     } catch (e, st) {
+      if (!mounted) return;
       state = AsyncValue.error(e, st);
     }
   }

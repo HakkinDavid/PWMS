@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image/image.dart' as img;
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/units_registry.dart';
@@ -250,15 +252,21 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 ? result.currencyCode!.trim()
                 : 'MXN';
 
-            UnitsRegistry.registerUnknownUnit(currencyUnit);
-            if (result.composition != null) UnitsRegistry.registerUnknownUnit(result.composition!);
-            if (result.grade != null) UnitsRegistry.registerUnknownUnit(result.grade!);
+            UnitsRegistry.registerUnknownUnit('número real');
+            UnitsRegistry.registerUnknownUnit('año');
+            UnitsRegistry.registerUnknownUnit('string');
 
-            // Registrar magnitudes 4NF relacionales de la especie (Unidad Monetaria, Año, Material, Grado)
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Unidad Monetaria', currencyUnit);
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Año', 'año');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Material', result.composition ?? 'mat');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Grado', result.grade ?? 'grado');
+            // Registrar magnitudes 4NF relacionales de la especie:
+            // 1. Valor nominal (unidad: número real)
+            // 2. Acuñación (unidad: año)
+            // 3. Divisa (unidad: string)
+            // 4. Material (unidad: string)
+            // 5. Grado (unidad: string)
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor nominal', 'número real');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Acuñación', 'año');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Divisa', 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Material', 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Grado', 'string');
 
             if (!mounted) return;
             ref.invalidate(catalogListProvider);
@@ -287,7 +295,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 id: const Uuid().v4(),
                 speciesId: freshSpecies.id,
                 subspeciesName: result.subspeciesName,
-                photoPath: result.obversePhotoPath,
+                photoPath: result.obversePhotoPath, // Foto del anverso del primer ejemplar como imagen principal
                 notes: notesParts.isNotEmpty ? notesParts.join(' | ') : null,
                 createdAt: DateTime.now(),
               );
@@ -329,12 +337,15 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 double val = 1.0;
                 String unit = sm.unitSymbol;
 
-                if (sm.propertyName == 'Unidad Monetaria' && result.faceValueNumber != null) {
+                if (sm.propertyName == 'Valor nominal' && result.faceValueNumber != null) {
                   val = result.faceValueNumber!;
-                  unit = currencyUnit;
-                } else if (sm.propertyName == 'Año' && result.year != null && double.tryParse(result.year!) != null) {
+                  unit = 'número real';
+                } else if (sm.propertyName == 'Acuñación' && result.year != null && double.tryParse(result.year!) != null) {
                   val = double.parse(result.year!);
                   unit = 'año';
+                } else if (sm.propertyName == 'Divisa') {
+                  val = 1.0;
+                  unit = currencyUnit; // e.g. "MXN", "MXP", "ESP"
                 } else if (sm.propertyName == 'Material' && result.composition != null) {
                   val = 1.0;
                   unit = result.composition!;
@@ -356,15 +367,50 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               await entityRepo.saveEntity(updatedWithMags);
             }
 
-            // 5. Guardar foto de reverso como adjunto si existe
-            if (result.reversePhotoPath != null && result.reversePhotoPath!.isNotEmpty) {
-              await catalogRepo.addAttachment(
-                speciesId: freshSpecies.id,
-                filePath: result.reversePhotoPath!,
-                fileName: 'Reverso_${targetSubspecies.subspeciesName}.jpg',
-                fileType: 'image',
-              );
+            // 5. Stitch de Anverso y Reverso y adjunto a la instancia con formato <subespecie>_<uuid>.jpg
+            final sanitizedSubname = targetSubspecies.subspeciesName.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+            final compositeFileName = '$sanitizedSubname (${createdInstance.id}).jpg';
+
+            File compositeFile = File(result.obversePhotoPath);
+            if (result.reversePhotoPath != null && await File(result.reversePhotoPath!).exists()) {
+              try {
+                final obvFile = File(result.obversePhotoPath);
+                final revFile = File(result.reversePhotoPath!);
+                final bytes1 = await obvFile.readAsBytes();
+                final bytes2 = await revFile.readAsBytes();
+
+                final img1 = img.decodeImage(bytes1);
+                final img2 = img.decodeImage(bytes2);
+
+                if (img1 != null && img2 != null) {
+                  final targetHeight = img1.height;
+                  final resizedImg2 = (img2.height != targetHeight)
+                      ? img.copyResize(img2, height: targetHeight)
+                      : img2;
+
+                  const margin = 20;
+                  final totalWidth = img1.width + resizedImg2.width + margin;
+                  final totalHeight = targetHeight;
+
+                  final combined = img.Image(width: totalWidth, height: totalHeight);
+                  img.fill(combined, color: img.ColorRgb8(30, 30, 30));
+
+                  img.compositeImage(combined, img1, dstX: 0, dstY: 0);
+                  img.compositeImage(combined, resizedImg2, dstX: img1.width + margin, dstY: 0);
+
+                  final compositePath = '${obvFile.parent.path}/$compositeFileName';
+                  compositeFile = File(compositePath);
+                  await compositeFile.writeAsBytes(img.encodeJpg(combined, quality: 85));
+                }
+              } catch (_) {}
             }
+
+            await catalogRepo.addAttachment(
+              speciesId: freshSpecies.id,
+              filePath: compositeFile.path,
+              fileName: compositeFileName,
+              fileType: 'image',
+            );
 
             if (!mounted) return;
             ref.invalidate(entityListProvider);

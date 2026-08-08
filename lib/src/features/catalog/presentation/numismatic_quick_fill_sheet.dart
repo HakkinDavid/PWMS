@@ -45,6 +45,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   // Preset lists for instant selection with Mexico defaults first
   static const Map<String, String> _currencyMap = {
     'MXN': 'Pesos Mexicanos',
+    'MXP': 'Pesos Mexicanos (Antiguos)',
     'EUR': 'Euros',
     'USD': 'Dólares US',
     'ESP': 'Pesetas',
