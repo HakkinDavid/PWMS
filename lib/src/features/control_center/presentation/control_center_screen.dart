@@ -6,8 +6,13 @@ import '../../../core/widgets/app_toast.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_form_modal.dart';
+import '../../catalog/presentation/species_tile.dart';
+import '../../catalog/presentation/subspecies_tile.dart';
+import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
+import '../../entities/presentation/instance_preview_card.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
+import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 
 enum AuditCardType {
@@ -27,11 +32,12 @@ class AuditCardData {
   final String question;
   final IconData icon;
   final Color themeColor;
+  final Widget tile;
   final CatalogItem? species;
   final Subspecies? subspecies;
   final WorldEntity? entity;
-  final Future<void> Function(BuildContext context, WidgetRef ref) onConfirm; // ✅
-  final Future<void> Function(BuildContext context, WidgetRef ref) onFix; // ❌
+  final Future<void> Function(BuildContext context, WidgetRef ref) onConfirm;
+  final Future<void> Function(BuildContext context, WidgetRef ref) onFix;
 
   AuditCardData({
     required this.id,
@@ -41,6 +47,7 @@ class AuditCardData {
     required this.question,
     required this.icon,
     required this.themeColor,
+    required this.tile,
     this.species,
     this.subspecies,
     this.entity,
@@ -74,11 +81,13 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
       final catalogRepo = ref.read(catalogRepositoryProvider);
       final entityRepo = ref.read(entityRepositoryProvider);
       final locationRepo = ref.read(locationRepositoryProvider);
+      final relationRepo = ref.read(relationRepositoryProvider);
 
       final speciesList = await catalogRepo.getAllCatalogItems();
       final subspeciesList = await catalogRepo.getAllSubspecies();
       final entitiesList = await entityRepo.getAllEntities();
       final locationNodes = await locationRepo.getAllNodes();
+      final relationsList = await relationRepo.getAllRelations();
 
       final List<AuditCardData> cards = [];
 
@@ -87,24 +96,28 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         final instanceCount = entitiesList.where((e) => e.subspeciesId == sub.id).length;
         if (instanceCount == 0 && sub.subspeciesName.toLowerCase() != 'genérica') {
           final parentSpecies = speciesList.where((c) => c.id == sub.speciesId).firstOrNull;
+          final subNameStr = '${sub.subspeciesName}${sub.brand != null && sub.brand!.isNotEmpty ? " (${sub.brand})" : ""}';
 
           cards.add(AuditCardData(
             id: 'sub_${sub.id}',
             type: AuditCardType.uninstantiatedSubspecies,
             title: 'Subespecie sin Instancia',
-            subtitle: '${sub.subspeciesName} ${sub.brand != null ? "(${sub.brand})" : ""} • Especie: ${parentSpecies?.name ?? "Desconocida"}',
-            question: 'No existe ninguna instancia de esta subespecie registrada. ¿Es correcto?',
+            subtitle: '$subNameStr • Especie: ${parentSpecies?.name ?? "Desconocida"}',
+            question: 'No existe ninguna instancia registrada para la subespecie "$subNameStr". ¿Deseas mantenerla o eliminarla?',
             icon: Icons.unarchive_outlined,
             themeColor: Colors.amber,
             subspecies: sub,
             species: parentSpecies,
+            tile: SubspeciesTile(
+              subspecies: sub,
+              speciesName: parentSpecies?.name,
+            ),
             onConfirm: (context, ref) async {
-              // Confirmar -> Eliminar o Mantener Subespecie
               final delete = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('Confirmar Subespecie'),
-                  content: Text('¿Deseas eliminar la subespecie "${sub.subspeciesName}" de tu catálogo o mantenerla?'),
+                  content: Text('¿Deseas eliminar la subespecie "$subNameStr" de tu catálogo o mantenerla?'),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Mantener')),
                     TextButton(
@@ -118,14 +131,17 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
               if (delete == true) {
                 try {
                   await catalogRepo.deleteSubspecies(sub.id);
-                  AppToast.showSuccess(context, 'Subespecie eliminada.');
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Subespecie eliminada.');
+                  }
                 } catch (e) {
-                  AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                  if (context.mounted) {
+                    AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                  }
                 }
               }
             },
             onFix: (context, ref) async {
-              // Abrir menú para instanciar
               if (parentSpecies != null) {
                 await InstantiateSpeciesSheet.show(
                   context,
@@ -142,59 +158,93 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
       final orphanEntities = entitiesList.where((e) => e.locationId == null).take(10);
       for (final entity in orphanEntities) {
         final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
+        final displayName = EntityDisplayHelper.getDisplayName(
+          entity: entity,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
+
+        final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+          entityId: entity.id,
+          effectiveLocationId: entity.locationId,
+          allEntities: entitiesList,
+          allRelations: relationsList,
+          allNodes: locationNodes,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
+
         cards.add(AuditCardData(
           id: 'orphan_${entity.id}',
           type: AuditCardType.orphanEntity,
           title: 'Instancia sin Ubicación',
-          subtitle: 'Especie: ${species?.name ?? "Objeto"} • ID: ${entity.id.substring(0, 8)}',
-          question: 'Esta instancia no tiene una ubicación física asignada. ¿Asignarle ubicación ahora?',
+          subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
+          question: 'La instancia "$displayName" no tiene ubicación física asignada. ¿Asignarle una ubicación efectiva ahora?',
           icon: Icons.wrong_location_outlined,
           themeColor: Colors.orangeAccent,
           entity: entity,
           species: species,
+          tile: InstancePreviewCard(entity: entity),
           onConfirm: (context, ref) async {
-            // ✅ Dejar sin ubicación por ahora
-            AppToast.showSuccess(context, 'Ubicación mantenida como no asignada.');
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Ubicación mantenida como no asignada.');
+            }
           },
           onFix: (context, ref) async {
-            // ❌ Abrir selector de árbol de ubicación
             final result = await LocationTreePicker.show(context);
             if (result != null) {
               final updated = entity.copyWith(locationId: result.locationId);
               await entityRepo.saveEntity(updated);
-              AppToast.showSuccess(context, 'Ubicación asignada correctamente.');
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Ubicación asignada correctamente.');
+              }
             }
           },
         ));
       }
 
-      // 3. Auditoría de Posesión y Conservación (Muestra aleatoria de instancias para verificar conservado)
+      // 3. Auditoría de Posesión y Conservación
       final sampleEntities = (entitiesList.toList()..shuffle()).take(8);
       for (final entity in sampleEntities) {
         final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
-        final locNode = locationNodes.where((n) => n.id == entity.locationId).firstOrNull;
+        final displayName = EntityDisplayHelper.getDisplayName(
+          entity: entity,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
+
+        final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+          entityId: entity.id,
+          effectiveLocationId: entity.locationId,
+          allEntities: entitiesList,
+          allRelations: relationsList,
+          allNodes: locationNodes,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
 
         cards.add(AuditCardData(
           id: 'own_${entity.id}',
           type: AuditCardType.ownershipCheck,
           title: 'Verificación de Inventario',
-          subtitle: '${species?.name ?? "Objeto"} • Ubicación: ${locNode?.name ?? "Sin ubicación"}',
-          question: '¿Aún conservas esta instancia en tu inventario?',
+          subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
+          question: '¿Aún conservas la instancia "$displayName" en su ubicación efectiva "${breadcrumb.fullPath}"?',
           icon: Icons.inventory_outlined,
           themeColor: Colors.blueAccent,
           entity: entity,
           species: species,
+          tile: InstancePreviewCard(entity: entity),
           onConfirm: (context, ref) async {
-            // ✅ Sí la conservo
-            AppToast.showSuccess(context, 'Instancia confirmada en inventario.');
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Instancia confirmada en inventario.');
+            }
           },
           onFix: (context, ref) async {
-            // ❌ No la conservo -> Dar de baja / eliminar
             final confirm = await showDialog<bool>(
               context: context,
               builder: (ctx) => AlertDialog(
                 title: const Text('Dar de Baja Instancia'),
-                content: Text('¿Confirmas que deseas eliminar del inventario esta instancia de "${species?.name ?? "Objeto"}"?'),
+                content: Text('¿Confirmas que deseas eliminar del inventario esta instancia de "$displayName"?'),
                 actions: [
                   TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
                   TextButton(
@@ -207,7 +257,9 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
 
             if (confirm == true) {
               await entityRepo.deleteEntity(entity.id);
-              AppToast.showSuccess(context, 'Instancia dada de baja.');
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Instancia dada de baja.');
+              }
             }
           },
         ));
@@ -217,35 +269,52 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
       final locationCheckSample = (entitiesList.where((e) => e.locationId != null).toList()..shuffle()).take(6);
       for (final entity in locationCheckSample) {
         final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
-        final locNode = locationNodes.where((n) => n.id == entity.locationId).firstOrNull;
+        final displayName = EntityDisplayHelper.getDisplayName(
+          entity: entity,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
+
+        final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+          entityId: entity.id,
+          effectiveLocationId: entity.locationId,
+          allEntities: entitiesList,
+          allRelations: relationsList,
+          allNodes: locationNodes,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
 
         cards.add(AuditCardData(
           id: 'loc_verif_${entity.id}',
           type: AuditCardType.locationVerification,
           title: 'Confirmación de Ubicación',
-          subtitle: '${species?.name ?? "Objeto"} • Ubicación registrada: ${locNode?.name ?? "Desconocida"}',
-          question: '¿La ubicación actual sigue siendo exactamente "${locNode?.name ?? "Desconocida"}"?',
+          subtitle: '$displayName • Ubicación registrada: ${breadcrumb.fullPath}',
+          question: '¿La ubicación efectiva actual de "$displayName" sigue siendo exactamente "${breadcrumb.fullPath}"?',
           icon: Icons.edit_location_alt_outlined,
           themeColor: Colors.teal,
           entity: entity,
           species: species,
+          tile: InstancePreviewCard(entity: entity),
           onConfirm: (context, ref) async {
-            // ✅ Ubicación correcta
-            AppToast.showSuccess(context, 'Ubicación confirmada.');
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Ubicación confirmada.');
+            }
           },
           onFix: (context, ref) async {
-            // ❌ Modificar ubicación
             final result = await LocationTreePicker.show(context, initialSelectedId: entity.locationId);
             if (result != null) {
               final updated = entity.copyWith(locationId: result.locationId);
               await entityRepo.saveEntity(updated);
-              AppToast.showSuccess(context, 'Ubicación actualizada.');
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Ubicación actualizada.');
+              }
             }
           },
         ));
       }
 
-      // 5. Especie con información incompleta (sin foto o sin descripción)
+      // 5. Especie con información incompleta
       final incompleteSpecies = speciesList.where((c) => (c.mainPhotoPath == null || c.mainPhotoPath!.isEmpty)).take(5);
       for (final sp in incompleteSpecies) {
         cards.add(AuditCardData(
@@ -253,16 +322,17 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
           type: AuditCardType.incompleteSpeciesInfo,
           title: 'Especie sin Imagen Principal',
           subtitle: '${sp.name} (${sp.type})',
-          question: 'Esta especie no tiene una imagen principal asignada. ¿Deseas agregarle una foto o buscarla en Internet?',
+          question: 'La especie "${sp.name}" no tiene una imagen principal asignada. ¿Deseas agregarle una foto o buscarla en Internet?',
           icon: Icons.add_a_photo_outlined,
           themeColor: Colors.purpleAccent,
           species: sp,
+          tile: SpeciesTile(species: sp),
           onConfirm: (context, ref) async {
-            // ✅ Omitir por ahora
-            AppToast.showSuccess(context, 'Información omitida por el momento.');
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Información omitida por el momento.');
+            }
           },
           onFix: (context, ref) async {
-            // ❌ Abrir modal de editar especie
             await SpeciesFormModal.show(context, initialSpecies: sp);
           },
         ));
@@ -385,10 +455,8 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                 direction: DismissDirection.horizontal,
                 onDismissed: (direction) async {
                   if (direction == DismissDirection.endToStart) {
-                    // Swipe left -> Action ❌
                     await card.onFix(context, ref);
                   } else {
-                    // Swipe right -> Confirm ✅
                     await card.onConfirm(context, ref);
                   }
                   ref.invalidate(entityListProvider);
@@ -399,20 +467,20 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                 background: _buildSwipeBackground(
                   color: Colors.green.shade700,
                   icon: Icons.check_circle_outline,
-                  label: 'CONFIRMAR / CORRECTO ✅',
+                  label: 'CONFIRMAR / CORRECTO',
                   alignment: Alignment.centerLeft,
                 ),
                 secondaryBackground: _buildSwipeBackground(
                   color: Colors.orange.shade800,
                   icon: Icons.build_circle_outlined,
-                  label: 'CORREGIR / ACCIÓN ❌',
+                  label: 'CORREGIR / ACCIÓN',
                   alignment: Alignment.centerRight,
                 ),
                 child: Card(
                   elevation: 8,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                   child: Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(color: card.themeColor.withAlpha(100), width: 2),
@@ -420,35 +488,36 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Card Header
+                        // Header Icon and Audit Title
                         Column(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(16),
+                              padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
                                 color: card.themeColor.withAlpha(30),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(card.icon, size: 42, color: card.themeColor),
+                              child: Icon(card.icon, size: 36, color: card.themeColor),
                             ),
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 10),
                             Text(
                               card.title,
-                              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              card.subtitle,
-                              style: const TextStyle(color: Colors.grey, fontSize: 13),
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             ),
                           ],
                         ),
 
-                        // Card Question
+                        // Reusable Tile Widget (InstancePreviewCard, SubspeciesTile, or SpeciesTile)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: card.tile,
+                        ),
+
+                        // Card Question Box
                         Container(
-                          padding: const EdgeInsets.all(16),
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: theme.cardColor,
                             borderRadius: BorderRadius.circular(16),
@@ -456,12 +525,12 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                           ),
                           child: Text(
                             card.question,
-                            style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                             textAlign: TextAlign.center,
                           ),
                         ),
 
-                        // Card Action Buttons (Quick Tap or Swipe)
+                        // Action Buttons with Icons (No emojis)
                         Row(
                           children: [
                             Expanded(
@@ -474,7 +543,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                   _advanceCard();
                                 },
                                 icon: const Icon(Icons.check_circle),
-                                label: const Text('Correcto ✅'),
+                                label: const Text('Correcto'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.green.shade700,
                                   foregroundColor: Colors.white,
@@ -494,7 +563,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                   _advanceCard();
                                 },
                                 icon: const Icon(Icons.build_circle),
-                                label: const Text('Corregir ❌'),
+                                label: const Text('Corregir'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.orange.shade800,
                                   foregroundColor: Colors.white,
