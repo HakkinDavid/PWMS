@@ -8,10 +8,12 @@ class SpeciesMagnitude with _$SpeciesMagnitude {
   const factory SpeciesMagnitude({
     required String id,
     required String speciesId,
-    required String propertyName, // e.g. "Masa", "Volumen", "Magnitud Principal"
-    required String unitSymbol,
+    required String propertyName, // e.g. "Masa", "Volumen", "Material"
+    @Default('real') String dataType, // 'real', 'integer', 'string', 'boolean'
+    String? unitSymbol, // null for non-numeric, or valid unit for numeric
     required DateTime createdAt,
   }) = _SpeciesMagnitude;
 
   factory SpeciesMagnitude.fromJson(Map<String, dynamic> json) => _$SpeciesMagnitudeFromJson(json);
 }
+

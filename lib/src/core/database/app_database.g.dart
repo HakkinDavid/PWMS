@@ -1423,12 +1423,20 @@ class $SpeciesMagnitudesTableTable extends SpeciesMagnitudesTable
   late final GeneratedColumn<String> propertyName = GeneratedColumn<String>(
       'property_name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _dataTypeMeta =
+      const VerificationMeta('dataType');
+  @override
+  late final GeneratedColumn<String> dataType = GeneratedColumn<String>(
+      'data_type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('real'));
   static const VerificationMeta _unitSymbolMeta =
       const VerificationMeta('unitSymbol');
   @override
   late final GeneratedColumn<String> unitSymbol = GeneratedColumn<String>(
-      'unit_symbol', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'unit_symbol', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -1437,7 +1445,7 @@ class $SpeciesMagnitudesTableTable extends SpeciesMagnitudesTable
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, speciesId, propertyName, unitSymbol, createdAt];
+      [id, speciesId, propertyName, dataType, unitSymbol, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1468,13 +1476,15 @@ class $SpeciesMagnitudesTableTable extends SpeciesMagnitudesTable
     } else if (isInserting) {
       context.missing(_propertyNameMeta);
     }
+    if (data.containsKey('data_type')) {
+      context.handle(_dataTypeMeta,
+          dataType.isAcceptableOrUnknown(data['data_type']!, _dataTypeMeta));
+    }
     if (data.containsKey('unit_symbol')) {
       context.handle(
           _unitSymbolMeta,
           unitSymbol.isAcceptableOrUnknown(
               data['unit_symbol']!, _unitSymbolMeta));
-    } else if (isInserting) {
-      context.missing(_unitSymbolMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1498,8 +1508,10 @@ class $SpeciesMagnitudesTableTable extends SpeciesMagnitudesTable
           .read(DriftSqlType.string, data['${effectivePrefix}species_id'])!,
       propertyName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}property_name'])!,
+      dataType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}data_type'])!,
       unitSymbol: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}unit_symbol'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}unit_symbol']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -1516,13 +1528,15 @@ class SpeciesMagnitudesTableData extends DataClass
   final String id;
   final String speciesId;
   final String propertyName;
-  final String unitSymbol;
+  final String dataType;
+  final String? unitSymbol;
   final DateTime createdAt;
   const SpeciesMagnitudesTableData(
       {required this.id,
       required this.speciesId,
       required this.propertyName,
-      required this.unitSymbol,
+      required this.dataType,
+      this.unitSymbol,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1530,7 +1544,10 @@ class SpeciesMagnitudesTableData extends DataClass
     map['id'] = Variable<String>(id);
     map['species_id'] = Variable<String>(speciesId);
     map['property_name'] = Variable<String>(propertyName);
-    map['unit_symbol'] = Variable<String>(unitSymbol);
+    map['data_type'] = Variable<String>(dataType);
+    if (!nullToAbsent || unitSymbol != null) {
+      map['unit_symbol'] = Variable<String>(unitSymbol);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -1540,7 +1557,10 @@ class SpeciesMagnitudesTableData extends DataClass
       id: Value(id),
       speciesId: Value(speciesId),
       propertyName: Value(propertyName),
-      unitSymbol: Value(unitSymbol),
+      dataType: Value(dataType),
+      unitSymbol: unitSymbol == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unitSymbol),
       createdAt: Value(createdAt),
     );
   }
@@ -1552,7 +1572,8 @@ class SpeciesMagnitudesTableData extends DataClass
       id: serializer.fromJson<String>(json['id']),
       speciesId: serializer.fromJson<String>(json['speciesId']),
       propertyName: serializer.fromJson<String>(json['propertyName']),
-      unitSymbol: serializer.fromJson<String>(json['unitSymbol']),
+      dataType: serializer.fromJson<String>(json['dataType']),
+      unitSymbol: serializer.fromJson<String?>(json['unitSymbol']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -1563,7 +1584,8 @@ class SpeciesMagnitudesTableData extends DataClass
       'id': serializer.toJson<String>(id),
       'speciesId': serializer.toJson<String>(speciesId),
       'propertyName': serializer.toJson<String>(propertyName),
-      'unitSymbol': serializer.toJson<String>(unitSymbol),
+      'dataType': serializer.toJson<String>(dataType),
+      'unitSymbol': serializer.toJson<String?>(unitSymbol),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -1572,13 +1594,15 @@ class SpeciesMagnitudesTableData extends DataClass
           {String? id,
           String? speciesId,
           String? propertyName,
-          String? unitSymbol,
+          String? dataType,
+          Value<String?> unitSymbol = const Value.absent(),
           DateTime? createdAt}) =>
       SpeciesMagnitudesTableData(
         id: id ?? this.id,
         speciesId: speciesId ?? this.speciesId,
         propertyName: propertyName ?? this.propertyName,
-        unitSymbol: unitSymbol ?? this.unitSymbol,
+        dataType: dataType ?? this.dataType,
+        unitSymbol: unitSymbol.present ? unitSymbol.value : this.unitSymbol,
         createdAt: createdAt ?? this.createdAt,
       );
   SpeciesMagnitudesTableData copyWithCompanion(
@@ -1589,6 +1613,7 @@ class SpeciesMagnitudesTableData extends DataClass
       propertyName: data.propertyName.present
           ? data.propertyName.value
           : this.propertyName,
+      dataType: data.dataType.present ? data.dataType.value : this.dataType,
       unitSymbol:
           data.unitSymbol.present ? data.unitSymbol.value : this.unitSymbol,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -1601,6 +1626,7 @@ class SpeciesMagnitudesTableData extends DataClass
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
           ..write('propertyName: $propertyName, ')
+          ..write('dataType: $dataType, ')
           ..write('unitSymbol: $unitSymbol, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -1609,7 +1635,7 @@ class SpeciesMagnitudesTableData extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, speciesId, propertyName, unitSymbol, createdAt);
+      Object.hash(id, speciesId, propertyName, dataType, unitSymbol, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1617,6 +1643,7 @@ class SpeciesMagnitudesTableData extends DataClass
           other.id == this.id &&
           other.speciesId == this.speciesId &&
           other.propertyName == this.propertyName &&
+          other.dataType == this.dataType &&
           other.unitSymbol == this.unitSymbol &&
           other.createdAt == this.createdAt);
 }
@@ -1626,13 +1653,15 @@ class SpeciesMagnitudesTableCompanion
   final Value<String> id;
   final Value<String> speciesId;
   final Value<String> propertyName;
-  final Value<String> unitSymbol;
+  final Value<String> dataType;
+  final Value<String?> unitSymbol;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const SpeciesMagnitudesTableCompanion({
     this.id = const Value.absent(),
     this.speciesId = const Value.absent(),
     this.propertyName = const Value.absent(),
+    this.dataType = const Value.absent(),
     this.unitSymbol = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1641,18 +1670,19 @@ class SpeciesMagnitudesTableCompanion
     required String id,
     required String speciesId,
     required String propertyName,
-    required String unitSymbol,
+    this.dataType = const Value.absent(),
+    this.unitSymbol = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         speciesId = Value(speciesId),
         propertyName = Value(propertyName),
-        unitSymbol = Value(unitSymbol),
         createdAt = Value(createdAt);
   static Insertable<SpeciesMagnitudesTableData> custom({
     Expression<String>? id,
     Expression<String>? speciesId,
     Expression<String>? propertyName,
+    Expression<String>? dataType,
     Expression<String>? unitSymbol,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -1661,6 +1691,7 @@ class SpeciesMagnitudesTableCompanion
       if (id != null) 'id': id,
       if (speciesId != null) 'species_id': speciesId,
       if (propertyName != null) 'property_name': propertyName,
+      if (dataType != null) 'data_type': dataType,
       if (unitSymbol != null) 'unit_symbol': unitSymbol,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -1671,13 +1702,15 @@ class SpeciesMagnitudesTableCompanion
       {Value<String>? id,
       Value<String>? speciesId,
       Value<String>? propertyName,
-      Value<String>? unitSymbol,
+      Value<String>? dataType,
+      Value<String?>? unitSymbol,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
     return SpeciesMagnitudesTableCompanion(
       id: id ?? this.id,
       speciesId: speciesId ?? this.speciesId,
       propertyName: propertyName ?? this.propertyName,
+      dataType: dataType ?? this.dataType,
       unitSymbol: unitSymbol ?? this.unitSymbol,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -1695,6 +1728,9 @@ class SpeciesMagnitudesTableCompanion
     }
     if (propertyName.present) {
       map['property_name'] = Variable<String>(propertyName.value);
+    }
+    if (dataType.present) {
+      map['data_type'] = Variable<String>(dataType.value);
     }
     if (unitSymbol.present) {
       map['unit_symbol'] = Variable<String>(unitSymbol.value);
@@ -1714,6 +1750,7 @@ class SpeciesMagnitudesTableCompanion
           ..write('id: $id, ')
           ..write('speciesId: $speciesId, ')
           ..write('propertyName: $propertyName, ')
+          ..write('dataType: $dataType, ')
           ..write('unitSymbol: $unitSymbol, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -2202,21 +2239,44 @@ class $InstanceMagnitudesTableTable extends InstanceMagnitudesTable
   late final GeneratedColumn<String> propertyName = GeneratedColumn<String>(
       'property_name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _dataTypeMeta =
+      const VerificationMeta('dataType');
+  @override
+  late final GeneratedColumn<String> dataType = GeneratedColumn<String>(
+      'data_type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('real'));
   static const VerificationMeta _magnitudeValueMeta =
       const VerificationMeta('magnitudeValue');
   @override
   late final GeneratedColumn<double> magnitudeValue = GeneratedColumn<double>(
       'magnitude_value', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0.0));
+  static const VerificationMeta _stringValueMeta =
+      const VerificationMeta('stringValue');
+  @override
+  late final GeneratedColumn<String> stringValue = GeneratedColumn<String>(
+      'string_value', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _unitSymbolMeta =
       const VerificationMeta('unitSymbol');
   @override
   late final GeneratedColumn<String> unitSymbol = GeneratedColumn<String>(
-      'unit_symbol', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'unit_symbol', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, instanceId, propertyName, magnitudeValue, unitSymbol];
+  List<GeneratedColumn> get $columns => [
+        id,
+        instanceId,
+        propertyName,
+        dataType,
+        magnitudeValue,
+        stringValue,
+        unitSymbol
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2249,21 +2309,27 @@ class $InstanceMagnitudesTableTable extends InstanceMagnitudesTable
     } else if (isInserting) {
       context.missing(_propertyNameMeta);
     }
+    if (data.containsKey('data_type')) {
+      context.handle(_dataTypeMeta,
+          dataType.isAcceptableOrUnknown(data['data_type']!, _dataTypeMeta));
+    }
     if (data.containsKey('magnitude_value')) {
       context.handle(
           _magnitudeValueMeta,
           magnitudeValue.isAcceptableOrUnknown(
               data['magnitude_value']!, _magnitudeValueMeta));
-    } else if (isInserting) {
-      context.missing(_magnitudeValueMeta);
+    }
+    if (data.containsKey('string_value')) {
+      context.handle(
+          _stringValueMeta,
+          stringValue.isAcceptableOrUnknown(
+              data['string_value']!, _stringValueMeta));
     }
     if (data.containsKey('unit_symbol')) {
       context.handle(
           _unitSymbolMeta,
           unitSymbol.isAcceptableOrUnknown(
               data['unit_symbol']!, _unitSymbolMeta));
-    } else if (isInserting) {
-      context.missing(_unitSymbolMeta);
     }
     return context;
   }
@@ -2281,10 +2347,14 @@ class $InstanceMagnitudesTableTable extends InstanceMagnitudesTable
           .read(DriftSqlType.string, data['${effectivePrefix}instance_id'])!,
       propertyName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}property_name'])!,
+      dataType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}data_type'])!,
       magnitudeValue: attachedDatabase.typeMapping.read(
           DriftSqlType.double, data['${effectivePrefix}magnitude_value'])!,
+      stringValue: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}string_value']),
       unitSymbol: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}unit_symbol'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}unit_symbol']),
     );
   }
 
@@ -2299,22 +2369,32 @@ class InstanceMagnitudesTableData extends DataClass
   final String id;
   final String instanceId;
   final String propertyName;
+  final String dataType;
   final double magnitudeValue;
-  final String unitSymbol;
+  final String? stringValue;
+  final String? unitSymbol;
   const InstanceMagnitudesTableData(
       {required this.id,
       required this.instanceId,
       required this.propertyName,
+      required this.dataType,
       required this.magnitudeValue,
-      required this.unitSymbol});
+      this.stringValue,
+      this.unitSymbol});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['instance_id'] = Variable<String>(instanceId);
     map['property_name'] = Variable<String>(propertyName);
+    map['data_type'] = Variable<String>(dataType);
     map['magnitude_value'] = Variable<double>(magnitudeValue);
-    map['unit_symbol'] = Variable<String>(unitSymbol);
+    if (!nullToAbsent || stringValue != null) {
+      map['string_value'] = Variable<String>(stringValue);
+    }
+    if (!nullToAbsent || unitSymbol != null) {
+      map['unit_symbol'] = Variable<String>(unitSymbol);
+    }
     return map;
   }
 
@@ -2323,8 +2403,14 @@ class InstanceMagnitudesTableData extends DataClass
       id: Value(id),
       instanceId: Value(instanceId),
       propertyName: Value(propertyName),
+      dataType: Value(dataType),
       magnitudeValue: Value(magnitudeValue),
-      unitSymbol: Value(unitSymbol),
+      stringValue: stringValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stringValue),
+      unitSymbol: unitSymbol == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unitSymbol),
     );
   }
 
@@ -2335,8 +2421,10 @@ class InstanceMagnitudesTableData extends DataClass
       id: serializer.fromJson<String>(json['id']),
       instanceId: serializer.fromJson<String>(json['instanceId']),
       propertyName: serializer.fromJson<String>(json['propertyName']),
+      dataType: serializer.fromJson<String>(json['dataType']),
       magnitudeValue: serializer.fromJson<double>(json['magnitudeValue']),
-      unitSymbol: serializer.fromJson<String>(json['unitSymbol']),
+      stringValue: serializer.fromJson<String?>(json['stringValue']),
+      unitSymbol: serializer.fromJson<String?>(json['unitSymbol']),
     );
   }
   @override
@@ -2346,8 +2434,10 @@ class InstanceMagnitudesTableData extends DataClass
       'id': serializer.toJson<String>(id),
       'instanceId': serializer.toJson<String>(instanceId),
       'propertyName': serializer.toJson<String>(propertyName),
+      'dataType': serializer.toJson<String>(dataType),
       'magnitudeValue': serializer.toJson<double>(magnitudeValue),
-      'unitSymbol': serializer.toJson<String>(unitSymbol),
+      'stringValue': serializer.toJson<String?>(stringValue),
+      'unitSymbol': serializer.toJson<String?>(unitSymbol),
     };
   }
 
@@ -2355,14 +2445,18 @@ class InstanceMagnitudesTableData extends DataClass
           {String? id,
           String? instanceId,
           String? propertyName,
+          String? dataType,
           double? magnitudeValue,
-          String? unitSymbol}) =>
+          Value<String?> stringValue = const Value.absent(),
+          Value<String?> unitSymbol = const Value.absent()}) =>
       InstanceMagnitudesTableData(
         id: id ?? this.id,
         instanceId: instanceId ?? this.instanceId,
         propertyName: propertyName ?? this.propertyName,
+        dataType: dataType ?? this.dataType,
         magnitudeValue: magnitudeValue ?? this.magnitudeValue,
-        unitSymbol: unitSymbol ?? this.unitSymbol,
+        stringValue: stringValue.present ? stringValue.value : this.stringValue,
+        unitSymbol: unitSymbol.present ? unitSymbol.value : this.unitSymbol,
       );
   InstanceMagnitudesTableData copyWithCompanion(
       InstanceMagnitudesTableCompanion data) {
@@ -2373,9 +2467,12 @@ class InstanceMagnitudesTableData extends DataClass
       propertyName: data.propertyName.present
           ? data.propertyName.value
           : this.propertyName,
+      dataType: data.dataType.present ? data.dataType.value : this.dataType,
       magnitudeValue: data.magnitudeValue.present
           ? data.magnitudeValue.value
           : this.magnitudeValue,
+      stringValue:
+          data.stringValue.present ? data.stringValue.value : this.stringValue,
       unitSymbol:
           data.unitSymbol.present ? data.unitSymbol.value : this.unitSymbol,
     );
@@ -2387,15 +2484,17 @@ class InstanceMagnitudesTableData extends DataClass
           ..write('id: $id, ')
           ..write('instanceId: $instanceId, ')
           ..write('propertyName: $propertyName, ')
+          ..write('dataType: $dataType, ')
           ..write('magnitudeValue: $magnitudeValue, ')
+          ..write('stringValue: $stringValue, ')
           ..write('unitSymbol: $unitSymbol')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, instanceId, propertyName, magnitudeValue, unitSymbol);
+  int get hashCode => Object.hash(id, instanceId, propertyName, dataType,
+      magnitudeValue, stringValue, unitSymbol);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2403,7 +2502,9 @@ class InstanceMagnitudesTableData extends DataClass
           other.id == this.id &&
           other.instanceId == this.instanceId &&
           other.propertyName == this.propertyName &&
+          other.dataType == this.dataType &&
           other.magnitudeValue == this.magnitudeValue &&
+          other.stringValue == this.stringValue &&
           other.unitSymbol == this.unitSymbol);
 }
 
@@ -2412,14 +2513,18 @@ class InstanceMagnitudesTableCompanion
   final Value<String> id;
   final Value<String> instanceId;
   final Value<String> propertyName;
+  final Value<String> dataType;
   final Value<double> magnitudeValue;
-  final Value<String> unitSymbol;
+  final Value<String?> stringValue;
+  final Value<String?> unitSymbol;
   final Value<int> rowid;
   const InstanceMagnitudesTableCompanion({
     this.id = const Value.absent(),
     this.instanceId = const Value.absent(),
     this.propertyName = const Value.absent(),
+    this.dataType = const Value.absent(),
     this.magnitudeValue = const Value.absent(),
+    this.stringValue = const Value.absent(),
     this.unitSymbol = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2427,19 +2532,21 @@ class InstanceMagnitudesTableCompanion
     required String id,
     required String instanceId,
     required String propertyName,
-    required double magnitudeValue,
-    required String unitSymbol,
+    this.dataType = const Value.absent(),
+    this.magnitudeValue = const Value.absent(),
+    this.stringValue = const Value.absent(),
+    this.unitSymbol = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         instanceId = Value(instanceId),
-        propertyName = Value(propertyName),
-        magnitudeValue = Value(magnitudeValue),
-        unitSymbol = Value(unitSymbol);
+        propertyName = Value(propertyName);
   static Insertable<InstanceMagnitudesTableData> custom({
     Expression<String>? id,
     Expression<String>? instanceId,
     Expression<String>? propertyName,
+    Expression<String>? dataType,
     Expression<double>? magnitudeValue,
+    Expression<String>? stringValue,
     Expression<String>? unitSymbol,
     Expression<int>? rowid,
   }) {
@@ -2447,7 +2554,9 @@ class InstanceMagnitudesTableCompanion
       if (id != null) 'id': id,
       if (instanceId != null) 'instance_id': instanceId,
       if (propertyName != null) 'property_name': propertyName,
+      if (dataType != null) 'data_type': dataType,
       if (magnitudeValue != null) 'magnitude_value': magnitudeValue,
+      if (stringValue != null) 'string_value': stringValue,
       if (unitSymbol != null) 'unit_symbol': unitSymbol,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2457,14 +2566,18 @@ class InstanceMagnitudesTableCompanion
       {Value<String>? id,
       Value<String>? instanceId,
       Value<String>? propertyName,
+      Value<String>? dataType,
       Value<double>? magnitudeValue,
-      Value<String>? unitSymbol,
+      Value<String?>? stringValue,
+      Value<String?>? unitSymbol,
       Value<int>? rowid}) {
     return InstanceMagnitudesTableCompanion(
       id: id ?? this.id,
       instanceId: instanceId ?? this.instanceId,
       propertyName: propertyName ?? this.propertyName,
+      dataType: dataType ?? this.dataType,
       magnitudeValue: magnitudeValue ?? this.magnitudeValue,
+      stringValue: stringValue ?? this.stringValue,
       unitSymbol: unitSymbol ?? this.unitSymbol,
       rowid: rowid ?? this.rowid,
     );
@@ -2482,8 +2595,14 @@ class InstanceMagnitudesTableCompanion
     if (propertyName.present) {
       map['property_name'] = Variable<String>(propertyName.value);
     }
+    if (dataType.present) {
+      map['data_type'] = Variable<String>(dataType.value);
+    }
     if (magnitudeValue.present) {
       map['magnitude_value'] = Variable<double>(magnitudeValue.value);
+    }
+    if (stringValue.present) {
+      map['string_value'] = Variable<String>(stringValue.value);
     }
     if (unitSymbol.present) {
       map['unit_symbol'] = Variable<String>(unitSymbol.value);
@@ -2500,7 +2619,9 @@ class InstanceMagnitudesTableCompanion
           ..write('id: $id, ')
           ..write('instanceId: $instanceId, ')
           ..write('propertyName: $propertyName, ')
+          ..write('dataType: $dataType, ')
           ..write('magnitudeValue: $magnitudeValue, ')
+          ..write('stringValue: $stringValue, ')
           ..write('unitSymbol: $unitSymbol, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -6811,7 +6932,8 @@ typedef $$SpeciesMagnitudesTableTableCreateCompanionBuilder
   required String id,
   required String speciesId,
   required String propertyName,
-  required String unitSymbol,
+  Value<String> dataType,
+  Value<String?> unitSymbol,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -6820,7 +6942,8 @@ typedef $$SpeciesMagnitudesTableTableUpdateCompanionBuilder
   Value<String> id,
   Value<String> speciesId,
   Value<String> propertyName,
-  Value<String> unitSymbol,
+  Value<String> dataType,
+  Value<String?> unitSymbol,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -6860,6 +6983,9 @@ class $$SpeciesMagnitudesTableTableFilterComposer
 
   ColumnFilters<String> get propertyName => $composableBuilder(
       column: $table.propertyName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get dataType => $composableBuilder(
+      column: $table.dataType, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get unitSymbol => $composableBuilder(
       column: $table.unitSymbol, builder: (column) => ColumnFilters(column));
@@ -6904,6 +7030,9 @@ class $$SpeciesMagnitudesTableTableOrderingComposer
       column: $table.propertyName,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get dataType => $composableBuilder(
+      column: $table.dataType, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get unitSymbol => $composableBuilder(
       column: $table.unitSymbol, builder: (column) => ColumnOrderings(column));
 
@@ -6945,6 +7074,9 @@ class $$SpeciesMagnitudesTableTableAnnotationComposer
 
   GeneratedColumn<String> get propertyName => $composableBuilder(
       column: $table.propertyName, builder: (column) => column);
+
+  GeneratedColumn<String> get dataType =>
+      $composableBuilder(column: $table.dataType, builder: (column) => column);
 
   GeneratedColumn<String> get unitSymbol => $composableBuilder(
       column: $table.unitSymbol, builder: (column) => column);
@@ -7003,7 +7135,8 @@ class $$SpeciesMagnitudesTableTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> speciesId = const Value.absent(),
             Value<String> propertyName = const Value.absent(),
-            Value<String> unitSymbol = const Value.absent(),
+            Value<String> dataType = const Value.absent(),
+            Value<String?> unitSymbol = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -7011,6 +7144,7 @@ class $$SpeciesMagnitudesTableTableTableManager extends RootTableManager<
             id: id,
             speciesId: speciesId,
             propertyName: propertyName,
+            dataType: dataType,
             unitSymbol: unitSymbol,
             createdAt: createdAt,
             rowid: rowid,
@@ -7019,7 +7153,8 @@ class $$SpeciesMagnitudesTableTableTableManager extends RootTableManager<
             required String id,
             required String speciesId,
             required String propertyName,
-            required String unitSymbol,
+            Value<String> dataType = const Value.absent(),
+            Value<String?> unitSymbol = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -7027,6 +7162,7 @@ class $$SpeciesMagnitudesTableTableTableManager extends RootTableManager<
             id: id,
             speciesId: speciesId,
             propertyName: propertyName,
+            dataType: dataType,
             unitSymbol: unitSymbol,
             createdAt: createdAt,
             rowid: rowid,
@@ -7896,8 +8032,10 @@ typedef $$InstanceMagnitudesTableTableCreateCompanionBuilder
   required String id,
   required String instanceId,
   required String propertyName,
-  required double magnitudeValue,
-  required String unitSymbol,
+  Value<String> dataType,
+  Value<double> magnitudeValue,
+  Value<String?> stringValue,
+  Value<String?> unitSymbol,
   Value<int> rowid,
 });
 typedef $$InstanceMagnitudesTableTableUpdateCompanionBuilder
@@ -7905,8 +8043,10 @@ typedef $$InstanceMagnitudesTableTableUpdateCompanionBuilder
   Value<String> id,
   Value<String> instanceId,
   Value<String> propertyName,
+  Value<String> dataType,
   Value<double> magnitudeValue,
-  Value<String> unitSymbol,
+  Value<String?> stringValue,
+  Value<String?> unitSymbol,
   Value<int> rowid,
 });
 
@@ -7946,9 +8086,15 @@ class $$InstanceMagnitudesTableTableFilterComposer
   ColumnFilters<String> get propertyName => $composableBuilder(
       column: $table.propertyName, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<String> get dataType => $composableBuilder(
+      column: $table.dataType, builder: (column) => ColumnFilters(column));
+
   ColumnFilters<double> get magnitudeValue => $composableBuilder(
       column: $table.magnitudeValue,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get stringValue => $composableBuilder(
+      column: $table.stringValue, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get unitSymbol => $composableBuilder(
       column: $table.unitSymbol, builder: (column) => ColumnFilters(column));
@@ -7990,9 +8136,15 @@ class $$InstanceMagnitudesTableTableOrderingComposer
       column: $table.propertyName,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get dataType => $composableBuilder(
+      column: $table.dataType, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<double> get magnitudeValue => $composableBuilder(
       column: $table.magnitudeValue,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get stringValue => $composableBuilder(
+      column: $table.stringValue, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get unitSymbol => $composableBuilder(
       column: $table.unitSymbol, builder: (column) => ColumnOrderings(column));
@@ -8033,8 +8185,14 @@ class $$InstanceMagnitudesTableTableAnnotationComposer
   GeneratedColumn<String> get propertyName => $composableBuilder(
       column: $table.propertyName, builder: (column) => column);
 
+  GeneratedColumn<String> get dataType =>
+      $composableBuilder(column: $table.dataType, builder: (column) => column);
+
   GeneratedColumn<double> get magnitudeValue => $composableBuilder(
       column: $table.magnitudeValue, builder: (column) => column);
+
+  GeneratedColumn<String> get stringValue => $composableBuilder(
+      column: $table.stringValue, builder: (column) => column);
 
   GeneratedColumn<String> get unitSymbol => $composableBuilder(
       column: $table.unitSymbol, builder: (column) => column);
@@ -8090,15 +8248,19 @@ class $$InstanceMagnitudesTableTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> instanceId = const Value.absent(),
             Value<String> propertyName = const Value.absent(),
+            Value<String> dataType = const Value.absent(),
             Value<double> magnitudeValue = const Value.absent(),
-            Value<String> unitSymbol = const Value.absent(),
+            Value<String?> stringValue = const Value.absent(),
+            Value<String?> unitSymbol = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               InstanceMagnitudesTableCompanion(
             id: id,
             instanceId: instanceId,
             propertyName: propertyName,
+            dataType: dataType,
             magnitudeValue: magnitudeValue,
+            stringValue: stringValue,
             unitSymbol: unitSymbol,
             rowid: rowid,
           ),
@@ -8106,15 +8268,19 @@ class $$InstanceMagnitudesTableTableTableManager extends RootTableManager<
             required String id,
             required String instanceId,
             required String propertyName,
-            required double magnitudeValue,
-            required String unitSymbol,
+            Value<String> dataType = const Value.absent(),
+            Value<double> magnitudeValue = const Value.absent(),
+            Value<String?> stringValue = const Value.absent(),
+            Value<String?> unitSymbol = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               InstanceMagnitudesTableCompanion.insert(
             id: id,
             instanceId: instanceId,
             propertyName: propertyName,
+            dataType: dataType,
             magnitudeValue: magnitudeValue,
+            stringValue: stringValue,
             unitSymbol: unitSymbol,
             rowid: rowid,
           ),

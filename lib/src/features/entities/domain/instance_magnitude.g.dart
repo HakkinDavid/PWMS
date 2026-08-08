@@ -12,8 +12,10 @@ _$InstanceMagnitudeImpl _$$InstanceMagnitudeImplFromJson(
       id: json['id'] as String,
       instanceId: json['instanceId'] as String,
       propertyName: json['propertyName'] as String,
-      magnitudeValue: (json['magnitudeValue'] as num).toDouble(),
-      unitSymbol: json['unitSymbol'] as String,
+      dataType: json['dataType'] as String? ?? 'real',
+      magnitudeValue: (json['magnitudeValue'] as num?)?.toDouble() ?? 0.0,
+      stringValue: json['stringValue'] as String?,
+      unitSymbol: json['unitSymbol'] as String?,
     );
 
 Map<String, dynamic> _$$InstanceMagnitudeImplToJson(
@@ -22,6 +24,8 @@ Map<String, dynamic> _$$InstanceMagnitudeImplToJson(
       'id': instance.id,
       'instanceId': instance.instanceId,
       'propertyName': instance.propertyName,
+      'dataType': instance.dataType,
       'magnitudeValue': instance.magnitudeValue,
+      'stringValue': instance.stringValue,
       'unitSymbol': instance.unitSymbol,
     };

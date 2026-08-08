@@ -44,7 +44,7 @@ class EffectiveEntityGroup {
 
   static String _magnitudeSignature(WorldEntity entity) {
     final sorted = List.of(entity.magnitudes)..sort((a, b) => a.propertyName.compareTo(b.propertyName));
-    return sorted.map((m) => '${m.propertyName}:${m.magnitudeValue}${m.unitSymbol}').join('|');
+    return sorted.map((m) => '${m.propertyName}:${m.displayValue}').join('|');
   }
 
   static List<EffectiveEntityGroup> groupEntities({

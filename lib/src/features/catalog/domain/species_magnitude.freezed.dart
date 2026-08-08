@@ -23,8 +23,11 @@ mixin _$SpeciesMagnitude {
   String get id => throw _privateConstructorUsedError;
   String get speciesId => throw _privateConstructorUsedError;
   String get propertyName =>
-      throw _privateConstructorUsedError; // e.g. "Masa", "Volumen", "Magnitud Principal"
-  String get unitSymbol => throw _privateConstructorUsedError;
+      throw _privateConstructorUsedError; // e.g. "Masa", "Volumen", "Material"
+  String get dataType =>
+      throw _privateConstructorUsedError; // 'real', 'integer', 'string', 'boolean'
+  String? get unitSymbol =>
+      throw _privateConstructorUsedError; // null for non-numeric, or valid unit for numeric
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this SpeciesMagnitude to a JSON map.
@@ -47,7 +50,8 @@ abstract class $SpeciesMagnitudeCopyWith<$Res> {
       {String id,
       String speciesId,
       String propertyName,
-      String unitSymbol,
+      String dataType,
+      String? unitSymbol,
       DateTime createdAt});
 }
 
@@ -69,7 +73,8 @@ class _$SpeciesMagnitudeCopyWithImpl<$Res, $Val extends SpeciesMagnitude>
     Object? id = null,
     Object? speciesId = null,
     Object? propertyName = null,
-    Object? unitSymbol = null,
+    Object? dataType = null,
+    Object? unitSymbol = freezed,
     Object? createdAt = null,
   }) {
     return _then(_value.copyWith(
@@ -85,10 +90,14 @@ class _$SpeciesMagnitudeCopyWithImpl<$Res, $Val extends SpeciesMagnitude>
           ? _value.propertyName
           : propertyName // ignore: cast_nullable_to_non_nullable
               as String,
-      unitSymbol: null == unitSymbol
+      dataType: null == dataType
+          ? _value.dataType
+          : dataType // ignore: cast_nullable_to_non_nullable
+              as String,
+      unitSymbol: freezed == unitSymbol
           ? _value.unitSymbol
           : unitSymbol // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -109,7 +118,8 @@ abstract class _$$SpeciesMagnitudeImplCopyWith<$Res>
       {String id,
       String speciesId,
       String propertyName,
-      String unitSymbol,
+      String dataType,
+      String? unitSymbol,
       DateTime createdAt});
 }
 
@@ -129,7 +139,8 @@ class __$$SpeciesMagnitudeImplCopyWithImpl<$Res>
     Object? id = null,
     Object? speciesId = null,
     Object? propertyName = null,
-    Object? unitSymbol = null,
+    Object? dataType = null,
+    Object? unitSymbol = freezed,
     Object? createdAt = null,
   }) {
     return _then(_$SpeciesMagnitudeImpl(
@@ -145,10 +156,14 @@ class __$$SpeciesMagnitudeImplCopyWithImpl<$Res>
           ? _value.propertyName
           : propertyName // ignore: cast_nullable_to_non_nullable
               as String,
-      unitSymbol: null == unitSymbol
+      dataType: null == dataType
+          ? _value.dataType
+          : dataType // ignore: cast_nullable_to_non_nullable
+              as String,
+      unitSymbol: freezed == unitSymbol
           ? _value.unitSymbol
           : unitSymbol // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -164,7 +179,8 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
       {required this.id,
       required this.speciesId,
       required this.propertyName,
-      required this.unitSymbol,
+      this.dataType = 'real',
+      this.unitSymbol,
       required this.createdAt});
 
   factory _$SpeciesMagnitudeImpl.fromJson(Map<String, dynamic> json) =>
@@ -176,15 +192,20 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
   final String speciesId;
   @override
   final String propertyName;
-// e.g. "Masa", "Volumen", "Magnitud Principal"
+// e.g. "Masa", "Volumen", "Material"
   @override
-  final String unitSymbol;
+  @JsonKey()
+  final String dataType;
+// 'real', 'integer', 'string', 'boolean'
+  @override
+  final String? unitSymbol;
+// null for non-numeric, or valid unit for numeric
   @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'SpeciesMagnitude(id: $id, speciesId: $speciesId, propertyName: $propertyName, unitSymbol: $unitSymbol, createdAt: $createdAt)';
+    return 'SpeciesMagnitude(id: $id, speciesId: $speciesId, propertyName: $propertyName, dataType: $dataType, unitSymbol: $unitSymbol, createdAt: $createdAt)';
   }
 
   @override
@@ -197,6 +218,8 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
                 other.speciesId == speciesId) &&
             (identical(other.propertyName, propertyName) ||
                 other.propertyName == propertyName) &&
+            (identical(other.dataType, dataType) ||
+                other.dataType == dataType) &&
             (identical(other.unitSymbol, unitSymbol) ||
                 other.unitSymbol == unitSymbol) &&
             (identical(other.createdAt, createdAt) ||
@@ -205,8 +228,8 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, speciesId, propertyName, unitSymbol, createdAt);
+  int get hashCode => Object.hash(runtimeType, id, speciesId, propertyName,
+      dataType, unitSymbol, createdAt);
 
   /// Create a copy of SpeciesMagnitude
   /// with the given fields replaced by the non-null parameter values.
@@ -230,7 +253,8 @@ abstract class _SpeciesMagnitude implements SpeciesMagnitude {
       {required final String id,
       required final String speciesId,
       required final String propertyName,
-      required final String unitSymbol,
+      final String dataType,
+      final String? unitSymbol,
       required final DateTime createdAt}) = _$SpeciesMagnitudeImpl;
 
   factory _SpeciesMagnitude.fromJson(Map<String, dynamic> json) =
@@ -241,9 +265,11 @@ abstract class _SpeciesMagnitude implements SpeciesMagnitude {
   @override
   String get speciesId;
   @override
-  String get propertyName; // e.g. "Masa", "Volumen", "Magnitud Principal"
+  String get propertyName; // e.g. "Masa", "Volumen", "Material"
   @override
-  String get unitSymbol;
+  String get dataType; // 'real', 'integer', 'string', 'boolean'
+  @override
+  String? get unitSymbol; // null for non-numeric, or valid unit for numeric
   @override
   DateTime get createdAt;
 

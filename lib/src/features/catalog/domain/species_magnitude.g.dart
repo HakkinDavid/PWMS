@@ -12,7 +12,8 @@ _$SpeciesMagnitudeImpl _$$SpeciesMagnitudeImplFromJson(
       id: json['id'] as String,
       speciesId: json['speciesId'] as String,
       propertyName: json['propertyName'] as String,
-      unitSymbol: json['unitSymbol'] as String,
+      dataType: json['dataType'] as String? ?? 'real',
+      unitSymbol: json['unitSymbol'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
@@ -22,6 +23,7 @@ Map<String, dynamic> _$$SpeciesMagnitudeImplToJson(
       'id': instance.id,
       'speciesId': instance.speciesId,
       'propertyName': instance.propertyName,
+      'dataType': instance.dataType,
       'unitSymbol': instance.unitSymbol,
       'createdAt': instance.createdAt.toIso8601String(),
     };

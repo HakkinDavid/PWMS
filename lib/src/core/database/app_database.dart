@@ -53,8 +53,9 @@ class SubspeciesTable extends Table {
 class SpeciesMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
-  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen"
-  TextColumn get unitSymbol => text()();
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Material"
+  TextColumn get dataType => text().withDefault(const Constant('real'))(); // 'real', 'integer', 'string', 'boolean'
+  TextColumn get unitSymbol => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -79,9 +80,11 @@ class EntitiesTable extends Table {
 class InstanceMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get instanceId => text().references(EntitiesTable, #id)();
-  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen"
-  RealColumn get magnitudeValue => real()();
-  TextColumn get unitSymbol => text()();
+  TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Material"
+  TextColumn get dataType => text().withDefault(const Constant('real'))(); // 'real', 'integer', 'string', 'boolean'
+  RealColumn get magnitudeValue => real().withDefault(const Constant(0.0))();
+  TextColumn get stringValue => text().nullable()();
+  TextColumn get unitSymbol => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

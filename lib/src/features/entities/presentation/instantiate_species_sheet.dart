@@ -11,6 +11,7 @@ import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/domain/entity_relation.dart';
 import '../domain/entity_display_helper.dart';
 import '../domain/entity_template.dart';
+import '../../../core/domain/property_data_type.dart';
 import '../domain/instance_magnitude.dart';
 
 class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
@@ -197,19 +198,32 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
       );
 
-      // Build specific instance magnitudes with explicit property names
+      // Build specific instance magnitudes with explicit property names & primitive data types
       if (species.magnitudes.isNotEmpty) {
         final List<InstanceMagnitude> customInstanceMags = [];
         for (final sm in species.magnitudes) {
           final ctrl = _magnitudeControllers[sm.propertyName];
-          final customVal = ctrl != null ? (double.tryParse(ctrl.text.trim()) ?? 1.0) : 1.0;
+          final rawText = ctrl?.text.trim() ?? '';
+          final type = PropertyDataType.fromCode(sm.dataType);
+
+          double magVal = 0.0;
+          String? strVal;
+
+          if (type.isNumeric) {
+            final parsedVal = double.tryParse(rawText) ?? 1.0;
+            magVal = parsedVal * addQty;
+          } else {
+            strVal = rawText;
+          }
 
           customInstanceMags.add(InstanceMagnitude(
             id: const Uuid().v4(),
             instanceId: result.id,
             propertyName: sm.propertyName,
-            magnitudeValue: customVal * addQty,
-            unitSymbol: sm.unitSymbol,
+            dataType: sm.dataType,
+            magnitudeValue: magVal,
+            stringValue: strVal,
+            unitSymbol: type.isNumeric ? sm.unitSymbol : null,
           ));
         }
 
@@ -463,14 +477,21 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                   child: Column(
                     children: _selectedSpecies!.magnitudes.map((sm) {
                       final ctrl = _magnitudeControllers[sm.propertyName];
+                      final type = PropertyDataType.fromCode(sm.dataType);
+                      final labelText = sm.unitSymbol != null && sm.unitSymbol!.isNotEmpty
+                          ? '${sm.propertyName} (${sm.unitSymbol})'
+                          : sm.propertyName;
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: TextField(
                           controller: ctrl,
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          keyboardType: type.isNumeric
+                              ? const TextInputType.numberWithOptions(decimal: true)
+                              : TextInputType.text,
                           decoration: InputDecoration(
-                            labelText: '${sm.propertyName} (${sm.unitSymbol})',
-                            prefixIcon: const Icon(Icons.straighten),
+                            labelText: labelText,
+                            prefixIcon: Icon(type.isNumeric ? Icons.straighten : Icons.text_fields),
                           ),
                         ),
                       );

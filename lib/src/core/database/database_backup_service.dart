@@ -373,7 +373,8 @@ class DatabaseBackupService {
           id: r['id'],
           speciesId: r['speciesId'],
           propertyName: r['propertyName'],
-          unitSymbol: r['unitSymbol'],
+          dataType: Value(r['dataType'] ?? 'real'),
+          unitSymbol: Value(r['unitSymbol']),
           createdAt: DateTime.parse(r['createdAt']),
         ));
       }
@@ -400,8 +401,10 @@ class DatabaseBackupService {
           id: r['id'],
           instanceId: r['instanceId'],
           propertyName: r['propertyName'],
-          magnitudeValue: (r['magnitudeValue'] as num).toDouble(),
-          unitSymbol: r['unitSymbol'],
+          dataType: Value(r['dataType'] ?? 'real'),
+          magnitudeValue: Value((r['magnitudeValue'] as num?)?.toDouble() ?? 0.0),
+          stringValue: Value(r['stringValue']),
+          unitSymbol: Value(r['unitSymbol']),
         ));
       }
 

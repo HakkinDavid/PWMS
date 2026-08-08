@@ -252,21 +252,17 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 ? result.currencyCode!.trim()
                 : 'MXN';
 
-            UnitsRegistry.registerUnknownUnit('número real');
-            UnitsRegistry.registerUnknownUnit('año');
-            UnitsRegistry.registerUnknownUnit('string');
-
-            // Registrar magnitudes 4NF relacionales de la especie:
-            // 1. Valor nominal (unidad: número real)
-            // 2. Acuñación (unidad: año)
-            // 3. Divisa (unidad: string)
-            // 4. Material (unidad: string)
-            // 5. Grado (unidad: string)
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor nominal', 'número real');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Acuñación', 'año');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Divisa', 'string');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Material', 'string');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Grado', 'string');
+            // Registrar magnitudes 4NF relacionales de la especie con tipos primitivos:
+            // 1. Valor nominal (tipo: real, unidad: divisa)
+            // 2. Acuñación (tipo: integer, unidad: año)
+            // 3. Divisa (tipo: string, sin unidad)
+            // 4. Material (tipo: string, sin unidad)
+            // 5. Grado (tipo: string, sin unidad)
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor nominal', dataType: 'real', unitSymbol: currencyUnit);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Acuñación', dataType: 'integer', unitSymbol: 'año');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Divisa', dataType: 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Material', dataType: 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Grado', dataType: 'string');
 
             if (!mounted) return;
             ref.invalidate(catalogListProvider);
@@ -334,31 +330,36 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             if (freshSpecies.magnitudes.isNotEmpty) {
               final List<InstanceMagnitude> customInstanceMags = [];
               for (final sm in freshSpecies.magnitudes) {
-                double val = 1.0;
-                String unit = sm.unitSymbol;
+                double val = 0.0;
+                String? strVal;
+                String? unit = sm.unitSymbol;
 
-                if (sm.propertyName == 'Valor nominal' && result.faceValueNumber != null) {
-                  val = result.faceValueNumber!;
-                  unit = 'número real';
-                } else if (sm.propertyName == 'Acuñación' && result.year != null && double.tryParse(result.year!) != null) {
-                  val = double.parse(result.year!);
+                if (sm.propertyName == 'Valor nominal') {
+                  val = result.faceValueNumber ?? 1.0;
+                  unit = currencyUnit;
+                } else if (sm.propertyName == 'Acuñación') {
+                  if (result.year != null && double.tryParse(result.year!) != null) {
+                    val = double.parse(result.year!);
+                  }
                   unit = 'año';
                 } else if (sm.propertyName == 'Divisa') {
-                  val = 1.0;
-                  unit = currencyUnit; // e.g. "MXN", "MXP", "ESP"
-                } else if (sm.propertyName == 'Material' && result.composition != null) {
-                  val = 1.0;
-                  unit = result.composition!;
-                } else if (sm.propertyName == 'Grado' && result.grade != null) {
-                  val = 1.0;
-                  unit = result.grade!;
+                  strVal = currencyUnit;
+                  unit = null;
+                } else if (sm.propertyName == 'Material') {
+                  strVal = result.composition;
+                  unit = null;
+                } else if (sm.propertyName == 'Grado') {
+                  strVal = result.grade;
+                  unit = null;
                 }
 
                 customInstanceMags.add(InstanceMagnitude(
                   id: const Uuid().v4(),
                   instanceId: createdInstance.id,
                   propertyName: sm.propertyName,
+                  dataType: sm.dataType,
                   magnitudeValue: val,
+                  stringValue: strVal,
                   unitSymbol: unit,
                 ));
               }

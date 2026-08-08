@@ -26,6 +26,7 @@ class CatalogRepository {
       id: m.id,
       speciesId: m.speciesId,
       propertyName: m.propertyName,
+      dataType: m.dataType,
       unitSymbol: m.unitSymbol,
       createdAt: m.createdAt,
     )).toList();
@@ -139,6 +140,7 @@ class CatalogRepository {
         id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
         speciesId: Value(item.id),
         propertyName: Value(mag.propertyName),
+        dataType: Value(mag.dataType),
         unitSymbol: Value(mag.unitSymbol),
         createdAt: Value(mag.createdAt),
       ));
@@ -427,7 +429,12 @@ class CatalogRepository {
     await _db.into(_db.attachmentsTable).insertOnConflictUpdate(companion);
   }
 
-  Future<void> addSpeciesMagnitude(String speciesId, String propertyName, String unitSymbol) async {
+  Future<void> addSpeciesMagnitude(
+    String speciesId,
+    String propertyName, {
+    String dataType = 'real',
+    String? unitSymbol,
+  }) async {
     final existing = await (_db.select(_db.speciesMagnitudesTable)
       ..where((t) => t.speciesId.equals(speciesId) & t.propertyName.equals(propertyName)))
       .getSingleOrNull();
@@ -438,6 +445,7 @@ class CatalogRepository {
           id: Value(const Uuid().v4()),
           speciesId: Value(speciesId),
           propertyName: Value(propertyName),
+          dataType: Value(dataType),
           unitSymbol: Value(unitSymbol),
           createdAt: Value(DateTime.now()),
         ),

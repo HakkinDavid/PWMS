@@ -25,7 +25,9 @@ class EntityRepository implements IEntityRepository {
       id: m.id,
       instanceId: m.instanceId,
       propertyName: m.propertyName,
+      dataType: m.dataType,
       magnitudeValue: m.magnitudeValue,
+      stringValue: m.stringValue,
       unitSymbol: m.unitSymbol,
     )).toList();
 
@@ -197,7 +199,9 @@ class EntityRepository implements IEntityRepository {
         id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
         instanceId: Value(entity.id),
         propertyName: Value(mag.propertyName),
+        dataType: Value(mag.dataType),
         magnitudeValue: Value(mag.magnitudeValue),
+        stringValue: Value(mag.stringValue),
         unitSymbol: Value(mag.unitSymbol),
       ));
     }

@@ -12,6 +12,7 @@ import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
 import '../../catalog/presentation/requirements_section_widget.dart';
+import '../../../core/domain/property_data_type.dart';
 import '../domain/entity_template.dart';
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
@@ -370,7 +371,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.straighten, size: 18, color: Colors.blueAccent),
+                                  Icon(mag.type.isNumeric ? Icons.straighten : Icons.label_outlined, size: 18, color: Colors.blueAccent),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
@@ -378,7 +379,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                     ),
                                   ),
-                                  if (_isEditingInPlace)
+                                  if (_isEditingInPlace && mag.type.isNumeric)
                                     Row(
                                       children: [
                                         IconButton(
@@ -396,7 +397,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                           child: Text(
-                                            DomainRules.formatMagnitude(currentVal, mag.unitSymbol),
+                                            mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
+                                                ? '${DomainRules.formatMagnitude(currentVal, mag.unitSymbol)} ${mag.unitSymbol}'
+                                                : DomainRules.formatMagnitude(currentVal, null),
                                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                           ),
                                         ),
@@ -411,7 +414,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                     )
                                   else
                                     Text(
-                                      '${DomainRules.formatMagnitude(currentVal, mag.unitSymbol)} ${mag.unitSymbol}',
+                                      mag.displayValue,
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.blueAccent),
                                     ),
                                 ],

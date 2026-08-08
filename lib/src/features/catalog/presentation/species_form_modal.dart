@@ -9,6 +9,7 @@ import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
+import '../../../core/domain/property_data_type.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
@@ -201,49 +202,75 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   void _addMagnitudeRow() async {
     final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
     String chosenUnit = allowedUnits.first;
+    PropertyDataType chosenType = PropertyDataType.real;
     final propCtrl = TextEditingController(text: DomainRules.suggestPropertyNameForUnit(chosenUnit));
 
     final result = await showDialog<SpeciesMagnitude>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateDialog) => AlertDialog(
-          title: const Text(AppStrings.addPropertyOrUnitTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: propCtrl,
-                decoration: const InputDecoration(labelText: AppStrings.propertyNameHint),
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: () async {
-                  final picked = await AppWheelPicker.show<String>(
-                    context,
-                    items: allowedUnits,
-                    initialValue: chosenUnit,
-                    labelBuilder: (u) => u,
-                    title: AppStrings.selectUnitPrompt,
-                  );
-                  if (picked != null) {
-                    setStateDialog(() {
-                      chosenUnit = picked;
-                      propCtrl.text = DomainRules.suggestPropertyNameForUnit(picked);
-                    });
-                  }
-                },
-                child: InputDecorator(
-                  decoration: const InputDecoration(labelText: AppStrings.unitLabel),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(chosenUnit, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const Icon(Icons.swap_vert),
-                    ],
-                  ),
+          title: const Text('Añadir propiedad / magnitud'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: propCtrl,
+                  decoration: const InputDecoration(labelText: AppStrings.propertyNameHint),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                const Text('Tipo de dato primitivo:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                DropdownButtonFormField<PropertyDataType>(
+                  value: chosenType,
+                  decoration: const InputDecoration(border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8)),
+                  items: PropertyDataType.values.map((t) {
+                    return DropdownMenuItem(
+                      value: t,
+                      child: Text(t.label, style: const TextStyle(fontSize: 13)),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) {
+                      setStateDialog(() {
+                        chosenType = val;
+                      });
+                    }
+                  },
+                ),
+                if (chosenType.isNumeric) ...[
+                  const SizedBox(height: 12),
+                  InkWell(
+                    onTap: () async {
+                      final picked = await AppWheelPicker.show<String>(
+                        context,
+                        items: allowedUnits,
+                        initialValue: chosenUnit,
+                        labelBuilder: (u) => u,
+                        title: AppStrings.selectUnitPrompt,
+                      );
+                      if (picked != null) {
+                        setStateDialog(() {
+                          chosenUnit = picked;
+                          propCtrl.text = DomainRules.suggestPropertyNameForUnit(picked);
+                        });
+                      }
+                    },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(labelText: AppStrings.unitLabel),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(chosenUnit, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          const Icon(Icons.swap_vert),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
           actions: [
             TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(AppStrings.cancel)),
@@ -257,7 +284,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       id: const Uuid().v4(),
                       speciesId: widget.initialSpecies?.id ?? '',
                       propertyName: propName,
-                      unitSymbol: chosenUnit,
+                      dataType: chosenType.code,
+                      unitSymbol: chosenType.isNumeric ? chosenUnit : null,
                       createdAt: DateTime.now(),
                     ),
                   );
@@ -676,7 +704,12 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                     return ListTile(
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
-                                      title: Text('${mag.propertyName} (${mag.unitSymbol})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                      title: Text(
+                                        mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
+                                            ? '${mag.propertyName} (${mag.unitSymbol})'
+                                            : '${mag.propertyName} [${mag.dataType}]',
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                      ),
                                       trailing: IconButton(
                                         icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
                                         tooltip: AppStrings.removeUnitAction,

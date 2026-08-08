@@ -23,8 +23,10 @@ mixin _$InstanceMagnitude {
   String get id => throw _privateConstructorUsedError;
   String get instanceId => throw _privateConstructorUsedError;
   String get propertyName => throw _privateConstructorUsedError;
+  String get dataType => throw _privateConstructorUsedError;
   double get magnitudeValue => throw _privateConstructorUsedError;
-  String get unitSymbol => throw _privateConstructorUsedError;
+  String? get stringValue => throw _privateConstructorUsedError;
+  String? get unitSymbol => throw _privateConstructorUsedError;
 
   /// Serializes this InstanceMagnitude to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -46,8 +48,10 @@ abstract class $InstanceMagnitudeCopyWith<$Res> {
       {String id,
       String instanceId,
       String propertyName,
+      String dataType,
       double magnitudeValue,
-      String unitSymbol});
+      String? stringValue,
+      String? unitSymbol});
 }
 
 /// @nodoc
@@ -68,8 +72,10 @@ class _$InstanceMagnitudeCopyWithImpl<$Res, $Val extends InstanceMagnitude>
     Object? id = null,
     Object? instanceId = null,
     Object? propertyName = null,
+    Object? dataType = null,
     Object? magnitudeValue = null,
-    Object? unitSymbol = null,
+    Object? stringValue = freezed,
+    Object? unitSymbol = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -84,14 +90,22 @@ class _$InstanceMagnitudeCopyWithImpl<$Res, $Val extends InstanceMagnitude>
           ? _value.propertyName
           : propertyName // ignore: cast_nullable_to_non_nullable
               as String,
+      dataType: null == dataType
+          ? _value.dataType
+          : dataType // ignore: cast_nullable_to_non_nullable
+              as String,
       magnitudeValue: null == magnitudeValue
           ? _value.magnitudeValue
           : magnitudeValue // ignore: cast_nullable_to_non_nullable
               as double,
-      unitSymbol: null == unitSymbol
+      stringValue: freezed == stringValue
+          ? _value.stringValue
+          : stringValue // ignore: cast_nullable_to_non_nullable
+              as String?,
+      unitSymbol: freezed == unitSymbol
           ? _value.unitSymbol
           : unitSymbol // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -108,8 +122,10 @@ abstract class _$$InstanceMagnitudeImplCopyWith<$Res>
       {String id,
       String instanceId,
       String propertyName,
+      String dataType,
       double magnitudeValue,
-      String unitSymbol});
+      String? stringValue,
+      String? unitSymbol});
 }
 
 /// @nodoc
@@ -128,8 +144,10 @@ class __$$InstanceMagnitudeImplCopyWithImpl<$Res>
     Object? id = null,
     Object? instanceId = null,
     Object? propertyName = null,
+    Object? dataType = null,
     Object? magnitudeValue = null,
-    Object? unitSymbol = null,
+    Object? stringValue = freezed,
+    Object? unitSymbol = freezed,
   }) {
     return _then(_$InstanceMagnitudeImpl(
       id: null == id
@@ -144,27 +162,38 @@ class __$$InstanceMagnitudeImplCopyWithImpl<$Res>
           ? _value.propertyName
           : propertyName // ignore: cast_nullable_to_non_nullable
               as String,
+      dataType: null == dataType
+          ? _value.dataType
+          : dataType // ignore: cast_nullable_to_non_nullable
+              as String,
       magnitudeValue: null == magnitudeValue
           ? _value.magnitudeValue
           : magnitudeValue // ignore: cast_nullable_to_non_nullable
               as double,
-      unitSymbol: null == unitSymbol
+      stringValue: freezed == stringValue
+          ? _value.stringValue
+          : stringValue // ignore: cast_nullable_to_non_nullable
+              as String?,
+      unitSymbol: freezed == unitSymbol
           ? _value.unitSymbol
           : unitSymbol // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$InstanceMagnitudeImpl implements _InstanceMagnitude {
+class _$InstanceMagnitudeImpl extends _InstanceMagnitude {
   const _$InstanceMagnitudeImpl(
       {required this.id,
       required this.instanceId,
       required this.propertyName,
-      required this.magnitudeValue,
-      required this.unitSymbol});
+      this.dataType = 'real',
+      this.magnitudeValue = 0.0,
+      this.stringValue,
+      this.unitSymbol})
+      : super._();
 
   factory _$InstanceMagnitudeImpl.fromJson(Map<String, dynamic> json) =>
       _$$InstanceMagnitudeImplFromJson(json);
@@ -176,13 +205,19 @@ class _$InstanceMagnitudeImpl implements _InstanceMagnitude {
   @override
   final String propertyName;
   @override
+  @JsonKey()
+  final String dataType;
+  @override
+  @JsonKey()
   final double magnitudeValue;
   @override
-  final String unitSymbol;
+  final String? stringValue;
+  @override
+  final String? unitSymbol;
 
   @override
   String toString() {
-    return 'InstanceMagnitude(id: $id, instanceId: $instanceId, propertyName: $propertyName, magnitudeValue: $magnitudeValue, unitSymbol: $unitSymbol)';
+    return 'InstanceMagnitude(id: $id, instanceId: $instanceId, propertyName: $propertyName, dataType: $dataType, magnitudeValue: $magnitudeValue, stringValue: $stringValue, unitSymbol: $unitSymbol)';
   }
 
   @override
@@ -195,16 +230,20 @@ class _$InstanceMagnitudeImpl implements _InstanceMagnitude {
                 other.instanceId == instanceId) &&
             (identical(other.propertyName, propertyName) ||
                 other.propertyName == propertyName) &&
+            (identical(other.dataType, dataType) ||
+                other.dataType == dataType) &&
             (identical(other.magnitudeValue, magnitudeValue) ||
                 other.magnitudeValue == magnitudeValue) &&
+            (identical(other.stringValue, stringValue) ||
+                other.stringValue == stringValue) &&
             (identical(other.unitSymbol, unitSymbol) ||
                 other.unitSymbol == unitSymbol));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, instanceId, propertyName, magnitudeValue, unitSymbol);
+  int get hashCode => Object.hash(runtimeType, id, instanceId, propertyName,
+      dataType, magnitudeValue, stringValue, unitSymbol);
 
   /// Create a copy of InstanceMagnitude
   /// with the given fields replaced by the non-null parameter values.
@@ -223,13 +262,16 @@ class _$InstanceMagnitudeImpl implements _InstanceMagnitude {
   }
 }
 
-abstract class _InstanceMagnitude implements InstanceMagnitude {
+abstract class _InstanceMagnitude extends InstanceMagnitude {
   const factory _InstanceMagnitude(
       {required final String id,
       required final String instanceId,
       required final String propertyName,
-      required final double magnitudeValue,
-      required final String unitSymbol}) = _$InstanceMagnitudeImpl;
+      final String dataType,
+      final double magnitudeValue,
+      final String? stringValue,
+      final String? unitSymbol}) = _$InstanceMagnitudeImpl;
+  const _InstanceMagnitude._() : super._();
 
   factory _InstanceMagnitude.fromJson(Map<String, dynamic> json) =
       _$InstanceMagnitudeImpl.fromJson;
@@ -241,9 +283,13 @@ abstract class _InstanceMagnitude implements InstanceMagnitude {
   @override
   String get propertyName;
   @override
+  String get dataType;
+  @override
   double get magnitudeValue;
   @override
-  String get unitSymbol;
+  String? get stringValue;
+  @override
+  String? get unitSymbol;
 
   /// Create a copy of InstanceMagnitude
   /// with the given fields replaced by the non-null parameter values.
