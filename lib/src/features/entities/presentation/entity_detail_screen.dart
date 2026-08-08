@@ -15,7 +15,7 @@ import '../../catalog/presentation/requirements_section_widget.dart';
 import 'package:uuid/uuid.dart';
 import '../../catalog/domain/species_magnitude.dart';
 import '../domain/instance_magnitude.dart';
-import '../domain/entity_template.dart';
+
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
   final String entityId;
@@ -51,7 +51,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     final result = await showDialog<InstanceMagnitude>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Editar propiedad "${mag.propertyName}"'),
+        title: Text('${AppStrings.editPropertyTitlePrefix}${mag.propertyName}"'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +108,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
     if (availableSpeciesMags.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Esta instancia ya posee todas las propiedades definidas por la especie.')),
+        const SnackBar(content: Text(AppStrings.instanceHasAllPropertiesMessage)),
       );
       return;
     }
@@ -116,7 +116,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     final selectedMag = await showDialog<SpeciesMagnitude>(
       context: context,
       builder: (ctx) => SimpleDialog(
-        title: const Text('Agregar propiedad de Especie'),
+        title: const Text(AppStrings.addSpeciesPropertyTitle),
         children: availableSpeciesMags.map((sm) {
           final unitText = sm.unitSymbol != null ? ' (${sm.unitSymbol})' : '';
           return SimpleDialogOption(
@@ -214,7 +214,6 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 createdAt: DateTime.now(),
               );
 
-          final template = EntityTemplateRegistry.getTemplate(species.type);
           final locationNodes = locationsState.asData?.value ?? [];
           final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
           final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
@@ -473,7 +472,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                             TextButton.icon(
                               onPressed: () => _addInstancePropertyDialog(species),
                               icon: const Icon(Icons.add, size: 16),
-                              label: const Text('Añadir propiedad', style: TextStyle(fontSize: 12)),
+                              label: const Text(AppStrings.addPropertyAction, style: TextStyle(fontSize: 12)),
                             ),
                         ],
                       ),
@@ -481,7 +480,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       if (_workingMagnitudes.isEmpty)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text('Sin propiedades asignadas a esta instancia.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                          child: Text(AppStrings.noPropertiesAssignedToInstance, style: TextStyle(color: Colors.grey, fontSize: 12)),
                         )
                       else
                         ListView.builder(

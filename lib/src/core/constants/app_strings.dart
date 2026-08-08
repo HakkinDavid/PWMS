@@ -404,6 +404,112 @@ class AppStrings {
   static const separateSubspeciesErrorPrefix = 'Error al separar subespecie: ';
   static const noOtherSpeciesToMoveError = 'No hay otras especies disponibles para mover.';
   static const noOtherSpeciesToMergeError = 'No hay otras especies disponibles para fusionar.';
+  static const mergeSpeciesTitle = 'Unir especie';
+  static const mergeSpeciesAction = 'Unir especies';
+  static const speciesMergedSuccessPrefix = 'Especie "';
+  static const speciesMergedSuccessMiddle = '" unida exitosamente en "';
+  static const separateInNewSpeciesTitle = 'Separar en nueva especie';
+  static const specialEditionTitle = 'Edición especial';
+  static const specialEditionCheckSubtitle = 'Marca si la pieza posee alguna particularidad o conmemoración.';
+  static const specialEditionReasonLabel = 'Razón de edición especial';
+  static const specialEditionNotesLabel = 'Anotaciones de edición especial';
+  static const confirmAndRegisterPieceAction = 'Confirmar y registrar pieza';
+  static const fileAttachedToSpeciesPrefix = 'Archivo "';
+  static const fileAttachedToSpeciesSuffix = '" adjuntado a la especie.';
+  static const addPropertyOrMagnitudeTitle = 'Añadir propiedad o magnitud';
+  static const primitiveDataTypeLabel = 'Tipo de dato primitivo:';
+  static const enterNameForImageSearchError = 'Ingresa un nombre para buscar imagen.';
+
+  static const instanceSpecificAttachment = 'Adjunto propio de la instancia';
+  static const coinCircularLabel = 'Moneda (circular)';
+  static const banknoteRectangleLabel = 'Billete (rectángulo)';
+  static const webImageAssignedSuccess = 'Imagen de Internet asignada correctamente.';
+  static const noWebImagesFound = 'No se encontraron imágenes en Internet.';
+  static const assignPhotoAction = 'Asignar foto';
+
+  // Configuración de Respaldos y Base de Datos
+  static const backupExportSuccess = 'Respaldo preparado y compartido.';
+  static const backupExportErrorPrefix = 'Error exportando respaldo: ';
+  static const confirmRestoreTitle = 'Confirmar restauración';
+  static const confirmRestoreWarningMessage = 'Importar un respaldo reemplazará todos los datos y archivos actuales de tu mundo con los datos del paquete seleccionado. ¿Deseas continuar?';
+  static const restoreAllAction = 'Restaurar todo';
+  static const backupImportSuccess = 'Respaldo completo y archivos restaurados correctamente.';
+  static const backupImportErrorPrefix = 'Error importando respaldo: ';
+  static const backupsAndDatabaseTitle = 'Respaldos y base de datos';
+  static const exportBackupTitle = 'Exportar respaldo completo (ZIP)';
+  static const exportBackupSubtitle = 'Genera un paquete ZIP con la base de datos y todas las imágenes y archivos adjuntos.';
+  static const importBackupTitle = 'Importar respaldo (ZIP / JSON)';
+  static const importBackupSubtitle = 'Restaura la base de datos e imágenes adjuntas desde un archivo de respaldo.';
+
+  // Excepciones e Infraestructura de Catálogo
+  static const genericSubspeciesName = 'Genérica';
+  static const subspeciesNotFoundError = 'Subespecie no encontrada.';
+  static const speciesNotFoundError = 'Especie no encontrada.';
+  static const separatedFromSpeciesPrefix = 'Separada de ';
+  static const cannotDeleteSubspeciesWithInstancesError = 'No se puede eliminar una subespecie que tiene instancias registradas en tu mundo.';
+
+  // Notificaciones y Canales
+  static const defaultItemName = 'Elemento';
+  static const expiredNotificationMessagePrefix = '"';
+  static const expiredNotificationMessageSuffix = '" ha caducado (';
+  static const expiringSoonNotificationMessagePrefix = '"';
+  static const expiringSoonNotificationMessageMiddle = '" caducará en ';
+  static const expiringSoonNotificationMessageSuffix = ' día(s) (';
+  static const unsatisfiedNeedNotificationMessagePrefix = 'Faltan ';
+  static const unsatisfiedNeedNotificationMessageMiddle = ' unidad(es) de "';
+  static const unsatisfiedNeedNotificationMessageSuffix = '" para cubrir los requerimientos totales (';
+  static const notificationChannelName = 'Notificaciones PWMS';
+  static const notificationChannelDescription = 'Notificaciones de caducidad y necesidades insatisfechas.';
+
+  // Propiedades Numismáticas y Notas
+  static const numismaticSpeciesDescriptionPrefix = 'Especie para piezas numismáticas (';
+  static const nominalValuePropertyName = 'Valor nominal';
+  static const mintagePropertyName = 'Acuñación';
+  static const currencyPropertyName = 'Divisa';
+  static const materialPropertyName = 'Material';
+  static const gradePropertyName = 'Grado';
+  static const currencyNotePrefix = 'Moneda: ';
+  static const yearNotePrefix = 'Año: ';
+  static const materialNotePrefix = 'Material: ';
+  static const otherSpecifyOption = 'Otro (especificar)';
+  static const specialEditionNotePrefix = 'Edición especial: ';
+
+  // Tipos de Datos Primitivos
+  static const dataTypeRealLabel = 'Número real (decimal)';
+  static const dataTypeIntegerLabel = 'Número entero';
+  static const dataTypeStringLabel = 'Texto';
+  static const dataTypeBooleanLabel = 'Booleano (sí o no)';
+
+  // Catálogo y Escáner
+  static const defaultNonPerishableSubtitle = 'Por defecto los objetos son no perecederos.';
+  static const isPerishableProductTitle = 'Es producto perecedero (tiene fecha de caducidad)';
+  static const invalidOrNotFoundCodeTitle = 'Código inválido o no hallado';
+  static const invalidOrNotFoundCodeMessagePrefix = 'El código de barras "';
+  static const invalidOrNotFoundCodeMessageSuffix = '" no corresponde a un producto conocido ni se encontró en las bases de datos en línea.';
+  static const enterBarcodePrompt = 'Ingresa un código de barras.';
+  static const acceptAction = 'Aceptar';
+
+  // Búsqueda y Consola SQL
+  static const arbitrarySqlConsoleTitle = 'Consola SQL arbitraria (lectura)';
+  static const searchDetailedHint = 'Buscar por especie, subespecie, marca, ubicación, propiedad...';
+  static const arbitrarySqlQueryLabel = 'Consulta SQL arbitraria (SELECT)';
+  static const selectSqlHint = 'SELECT * FROM ...';
+  static const subspeciesCategory = 'Subespecies';
+  static const instanceMagnitudesCategory = 'Magnitudes de instancia';
+  static const executeAction = 'Ejecutar';
+  static const rowsRetrievedPrefix = 'Filas obtenidas: ';
+
+  // Propiedades de Entidades
+  static const editPropertyTitlePrefix = 'Editar propiedad "';
+  static const instanceHasAllPropertiesMessage = 'Esta instancia ya posee todas las propiedades definidas por la especie.';
+  static const addSpeciesPropertyTitle = 'Agregar propiedad de especie';
+  static const addPropertyAction = 'Añadir propiedad';
+  static const noPropertiesAssignedToInstance = 'Sin propiedades asignadas a esta instancia.';
+
+  // Registro Numismático y Hojas
+  static const numismaticsCategory = 'Numismática';
+  static const pieceInstantiatedDirectlyPrefix = 'Pieza "';
+  static const pieceInstantiatedDirectlySuffix = '" instanciada directamente.';
 
   // Gestión de Población y Caducidad
   static const heterogeneousGroupQuantityError = 'No se puede modificar la cantidad en grupos heterogéneos.';

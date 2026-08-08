@@ -204,7 +204,7 @@ class CatalogRepository {
       await saveSubspecies(Subspecies(
         id: const Uuid().v4(),
         speciesId: speciesId,
-        subspeciesName: 'Genérica',
+        subspeciesName: AppStrings.genericSubspeciesName,
         brand: null,
         barcode: null,
         photoPath: null,
@@ -217,7 +217,7 @@ class CatalogRepository {
   Future<void> deleteCatalogItem(String id) async {
     final entityRows = await (_db.select(_db.entitiesTable)..where((t) => t.speciesId.equals(id))).get();
     if (entityRows.isNotEmpty) {
-      throw Exception('No se puede eliminar una especie que tiene instancias registradas en tu mundo.');
+      throw Exception(AppStrings.cannotDeleteSpeciesWithInstancesError);
     }
 
     await (_db.delete(_db.subspeciesTable)..where((t) => t.speciesId.equals(id))).go();
@@ -260,15 +260,15 @@ class CatalogRepository {
   /// Separar Subespecie de su especie original a una nueva especie (Requisitos 2b, 6a, 6b)
   Future<CatalogItem> separateSubspecies(String subspeciesId, String newSpeciesName) async {
     final sub = await getSubspeciesById(subspeciesId);
-    if (sub == null) throw Exception('Subespecie no encontrada');
+    if (sub == null) throw Exception(AppStrings.subspeciesNotFoundError);
 
     final parentSpecies = await getCatalogItemById(sub.speciesId);
-    if (parentSpecies == null) throw Exception('Especie no encontrada');
+    if (parentSpecies == null) throw Exception(AppStrings.speciesNotFoundError);
 
     final newSpecies = await getOrCreateSpecies(
       newSpeciesName,
       type: parentSpecies.type,
-      description: 'Separada de ${parentSpecies.name}',
+      description: '${AppStrings.separatedFromSpeciesPrefix}${parentSpecies.name}',
       mainPhotoPath: sub.photoPath ?? parentSpecies.mainPhotoPath,
     );
 
@@ -409,7 +409,7 @@ class CatalogRepository {
 
     final entityRows = await (_db.select(_db.entitiesTable)..where((t) => t.subspeciesId.equals(id))).get();
     if (entityRows.isNotEmpty) {
-      throw Exception('No se puede eliminar una subespecie que tiene instancias registradas en tu mundo.');
+      throw Exception(AppStrings.cannotDeleteSubspeciesWithInstancesError);
     }
 
     await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();

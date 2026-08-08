@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../infrastructure/product_lookup_service.dart';
 
@@ -105,14 +106,14 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
                 children: [
                   Icon(Icons.warning_amber_rounded, color: Colors.amber),
                   SizedBox(width: 8),
-                  Text('Código Inválido / No Hallado'),
+                  Text(AppStrings.invalidOrNotFoundCodeTitle),
                 ],
               ),
-              content: Text('El código de barras "$rawBarcode" no corresponde a un producto conocido ni se encontró en las bases de datos en línea.'),
+              content: Text('${AppStrings.invalidOrNotFoundCodeMessagePrefix}$rawBarcode${AppStrings.invalidOrNotFoundCodeMessageSuffix}'),
               actions: [
                 ElevatedButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Aceptar'),
+                  child: const Text(AppStrings.acceptAction),
                 ),
               ],
             ),
@@ -298,7 +299,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
                         if (code.isNotEmpty) {
                           _handleBarcodeDetected(code);
                         } else {
-                          _showFeedback('Ingresa un código de barras', isError: true);
+                          _showFeedback(AppStrings.enterBarcodePrompt, isError: true);
                         }
                       },
                 style: ElevatedButton.styleFrom(
@@ -306,7 +307,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 icon: const Icon(Icons.search, size: 18),
-                label: const Text('Buscar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                label: const Text(AppStrings.tabSearch, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
               ),
             ],
           ),

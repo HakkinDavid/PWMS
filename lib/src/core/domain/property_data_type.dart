@@ -1,8 +1,10 @@
+import '../constants/app_strings.dart';
+
 enum PropertyDataType {
-  real('real', 'Número Real (Decimal)'),
-  integer('integer', 'Número Entero'),
-  string('string', 'Texto (String)'),
-  boolean('boolean', 'Booleano (Sí/No)');
+  real('real', AppStrings.dataTypeRealLabel),
+  integer('integer', AppStrings.dataTypeIntegerLabel),
+  string('string', AppStrings.dataTypeStringLabel),
+  boolean('boolean', AppStrings.dataTypeBooleanLabel);
 
   final String code;
   final String label;

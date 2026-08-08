@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
 import '../domain/numismatic_recognition_models.dart';
 
 class NumismaticQuickFillSheet extends StatefulWidget {
@@ -340,8 +341,8 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
               child: Column(
                 children: [
                   CheckboxListTile(
-                    title: const Text('Edición Especial', style: TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: const Text('Marca si la pieza posee alguna particularidad o conmemoración'),
+                    title: const Text(AppStrings.specialEditionTitle, style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: const Text(AppStrings.specialEditionCheckSubtitle),
                     value: _isSpecialEdition,
                     activeColor: theme.colorScheme.primary,
                     contentPadding: EdgeInsets.zero,
@@ -353,7 +354,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                     DropdownButtonFormField<String>(
                       initialValue: _specialReason,
                       decoration: InputDecoration(
-                        labelText: 'Razón de Edición Especial',
+                        labelText: AppStrings.specialEditionReasonLabel,
                         prefixIcon: const Icon(Icons.star),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                       ),
@@ -365,7 +366,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                       TextField(
                         controller: _specialNotesController,
                         decoration: InputDecoration(
-                          labelText: 'Anotaciones de Edición Especial',
+                          labelText: AppStrings.specialEditionNotesLabel,
                           prefixIcon: const Icon(Icons.edit_note),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                         ),
@@ -383,7 +384,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
             ElevatedButton.icon(
               onPressed: _submit,
               icon: const Icon(Icons.check_circle_outline),
-              label: const Text('Confirmar y Registrar Pieza', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              label: const Text(AppStrings.confirmAndRegisterPieceAction, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.colorScheme.primary,
                 foregroundColor: theme.colorScheme.onPrimary,

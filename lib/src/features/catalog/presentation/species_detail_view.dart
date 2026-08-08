@@ -333,7 +333,7 @@ class SpeciesDetailView extends ConsumerWidget {
                                     children: [
                                       Icon(Icons.inventory_2, size: 12, color: Colors.amber),
                                       SizedBox(width: 4),
-                                      Text('Adjunto propio de Instancia', style: TextStyle(fontSize: 11, color: Colors.amber)),
+                                      Text(AppStrings.instanceSpecificAttachment, style: TextStyle(fontSize: 11, color: Colors.amber)),
                                     ],
                                   )
                                 : null,

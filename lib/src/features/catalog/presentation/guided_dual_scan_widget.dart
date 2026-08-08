@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../core/constants/app_strings.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import '../domain/numismatic_recognition_models.dart';
@@ -239,7 +241,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FilterChip(
-                label: const Text('Moneda (Circular)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                label: const Text(AppStrings.coinCircularLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                 selected: _isCoinMode,
                 onSelected: (val) {
                   setState(() => _isCoinMode = val);
@@ -248,7 +250,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
               ),
               const SizedBox(width: 12),
               FilterChip(
-                label: const Text('Billete (Rectángulo)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                label: const Text(AppStrings.banknoteRectangleLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                 selected: !_isCoinMode,
                 onSelected: (val) {
                   setState(() => _isCoinMode = !val);

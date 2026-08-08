@@ -197,7 +197,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
               ),
               child: _isMoving
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Confirmar Traslado', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text(AppStrings.confirmMoveAction, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

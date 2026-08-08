@@ -114,11 +114,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: isSqlMode
-            ? const Text('Consola SQL Arbitraria (Lectura)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+            ? const Text(AppStrings.arbitrarySqlConsoleTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
             : TextField(
                 autofocus: true,
                 decoration: const InputDecoration(
-                  hintText: 'Buscar por especie, subespecie, marca, ubicación, propiedad...',
+                  hintText: AppStrings.searchDetailedHint,
                   border: InputBorder.none,
                 ),
                 onChanged: (val) {
@@ -191,7 +191,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: Row(
               children: [
                 ActionChip(
-                  label: const Text('Especies', style: TextStyle(fontSize: 11)),
+                  label: const Text(AppStrings.tabCatalog, style: TextStyle(fontSize: 11)),
                   onPressed: () {
                     _sqlController.text = 'SELECT id, name, type, is_unique FROM catalog_table;';
                     _executeSqlQuery();
@@ -199,7 +199,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 const SizedBox(width: 6),
                 ActionChip(
-                  label: const Text('Subespecies', style: TextStyle(fontSize: 11)),
+                  label: const Text(AppStrings.subspeciesCategory, style: TextStyle(fontSize: 11)),
                   onPressed: () {
                     _sqlController.text = 'SELECT id, species_id, subspecies_name, brand, barcode FROM subspecies_table;';
                     _executeSqlQuery();
@@ -207,7 +207,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 const SizedBox(width: 6),
                 ActionChip(
-                  label: const Text('Instancias', style: TextStyle(fontSize: 11)),
+                  label: const Text(AppStrings.tabEntities, style: TextStyle(fontSize: 11)),
                   onPressed: () {
                     _sqlController.text = 'SELECT id, species_id, subspecies_id, location_id, notes FROM entities_table;';
                     _executeSqlQuery();
@@ -215,7 +215,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 const SizedBox(width: 6),
                 ActionChip(
-                  label: const Text('Ubicaciones', style: TextStyle(fontSize: 11)),
+                  label: const Text(AppStrings.tabLocations, style: TextStyle(fontSize: 11)),
                   onPressed: () {
                     _sqlController.text = 'SELECT id, name, parent_location_id, description FROM locations_table;';
                     _executeSqlQuery();
@@ -223,7 +223,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 const SizedBox(width: 6),
                 ActionChip(
-                  label: const Text('Magnitudes Instancia', style: TextStyle(fontSize: 11)),
+                  label: const Text(AppStrings.instanceMagnitudesCategory, style: TextStyle(fontSize: 11)),
                   onPressed: () {
                     _sqlController.text = 'SELECT instance_id, property_name, data_type, magnitude_value, unit_symbol FROM instance_magnitudes_table;';
                     _executeSqlQuery();
@@ -242,8 +242,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   controller: _sqlController,
                   maxLines: 2,
                   decoration: const InputDecoration(
-                    labelText: 'Consulta SQL Arbitraria (SELECT)',
-                    hintText: 'SELECT * FROM ...',
+                    labelText: AppStrings.arbitrarySqlQueryLabel,
+                    hintText: AppStrings.selectSqlHint,
                     border: OutlineInputBorder(),
                     isDense: true,
                   ),
@@ -253,7 +253,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ElevatedButton.icon(
                 onPressed: _isExecutingSql ? null : _executeSqlQuery,
                 icon: const Icon(Icons.play_arrow),
-                label: const Text('Ejecutar'),
+                label: const Text(AppStrings.executeAction),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
                 ),
@@ -297,7 +297,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Filas obtenidas: ${_sqlRows.length}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          Text('${AppStrings.rowsRetrievedPrefix}${_sqlRows.length}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                           const SizedBox(height: 6),
                           Expanded(
                             child: SingleChildScrollView(

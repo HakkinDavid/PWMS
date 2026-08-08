@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../domain/catalog_item.dart';
@@ -134,7 +135,7 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
 
         if (mounted) {
           Navigator.pop(context, relPath);
-          AppToast.showSuccess(context, 'Imagen de Internet asignada correctamente.');
+          AppToast.showSuccess(context, AppStrings.webImageAssignedSuccess);
         }
       }
     } catch (e) {
@@ -183,7 +184,7 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _imageUrls.isEmpty
-                      ? const Center(child: Text('No se encontraron imágenes en Internet.'))
+                      ? const Center(child: Text(AppStrings.noWebImagesFound))
                       : GridView.builder(
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
@@ -227,13 +228,13 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancelar'),
+          child: const Text(AppStrings.cancel),
         ),
         ElevatedButton(
           onPressed: _selectedUrl != null && !_isSaving ? _assignSelectedImage : null,
           child: _isSaving
               ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-              : const Text('Asignar Foto'),
+              : const Text(AppStrings.assignPhotoAction),
         ),
       ],
     );

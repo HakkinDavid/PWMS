@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/units_registry.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
@@ -135,7 +134,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.numismaticScanner,
-                    label: Text('Numismática', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    label: Text(AppStrings.numismaticsCategory, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                     icon: Icon(Icons.monetization_on, size: 14),
                   ),
                 ],
@@ -251,8 +250,8 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             if (matchingSpecies == null) {
               matchingSpecies = await catalogRepo.getOrCreateSpecies(
                 speciesName,
-                type: 'Objeto',
-                description: 'Especie para piezas numismáticas (${result.speciesType})',
+                type: AppStrings.typeObject,
+                description: '${AppStrings.numismaticSpeciesDescriptionPrefix}${result.speciesType})',
                 mainPhotoPath: result.obversePhotoPath,
               );
             }
@@ -261,17 +260,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 ? result.currencyCode!.trim()
                 : 'MXN';
 
-            // Registrar magnitudes 4NF relacionales de la especie con tipos primitivos (Opción 2):
-            // 1. Valor nominal (tipo: real, sin unidad)
-            // 2. Acuñación (tipo: integer, unidad: año)
-            // 3. Divisa (tipo: string, sin unidad)
-            // 4. Material (tipo: string, sin unidad)
-            // 5. Grado (tipo: string, sin unidad)
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Valor nominal', dataType: 'real');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Acuñación', dataType: 'integer', unitSymbol: 'año');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Divisa', dataType: 'string');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Material', dataType: 'string');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, 'Grado', dataType: 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.nominalValuePropertyName, dataType: 'real');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.mintagePropertyName, dataType: 'integer', unitSymbol: 'año');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.currencyPropertyName, dataType: 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.materialPropertyName, dataType: 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.gradePropertyName, dataType: 'string');
 
             if (!mounted) return;
             ref.invalidate(catalogListProvider);
@@ -292,9 +285,9 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             if (targetSubspecies == null) {
               final currencyStr = result.currencyName ?? result.currencyCode ?? '';
               final notesParts = <String>[];
-              if (currencyStr.isNotEmpty) notesParts.add('Moneda: $currencyStr');
-              if (result.year != null) notesParts.add('Año: ${result.year}');
-              if (result.composition != null) notesParts.add('Material: ${result.composition}');
+              if (currencyStr.isNotEmpty) notesParts.add('${AppStrings.currencyNotePrefix}$currencyStr');
+              if (result.year != null) notesParts.add('${AppStrings.yearNotePrefix}${result.year}');
+              if (result.composition != null) notesParts.add('${AppStrings.materialNotePrefix}${result.composition}');
 
               targetSubspecies = Subspecies(
                 id: const Uuid().v4(),
@@ -313,11 +306,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             // 2. Determinar anotaciones: Únicamente la información de Edición Especial va en las anotaciones
             String? instanceNotes;
             if (result.isSpecialEdition) {
-              final reason = result.specialEditionReason ?? 'Edición Especial';
-              if (reason == 'Otro (especificar)' && result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
-                instanceNotes = 'Edición Especial: ${result.specialEditionNotes}';
+              final reason = result.specialEditionReason ?? AppStrings.specialEditionTitle;
+              if (reason == AppStrings.otherSpecifyOption && result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
+                instanceNotes = '${AppStrings.specialEditionNotePrefix}${result.specialEditionNotes}';
               } else {
-                instanceNotes = 'Edición Especial: $reason';
+                instanceNotes = '${AppStrings.specialEditionNotePrefix}$reason';
                 if (result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
                   instanceNotes = '$instanceNotes (${result.specialEditionNotes})';
                 }
@@ -429,7 +422,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Pieza "${result.subspeciesName}" instanciada directamente.'),
+                content: Text('${AppStrings.pieceInstantiatedDirectlyPrefix}${result.subspeciesName}${AppStrings.pieceInstantiatedDirectlySuffix}'),
                 backgroundColor: Colors.green.shade800,
                 duration: const Duration(seconds: 4),
               ),

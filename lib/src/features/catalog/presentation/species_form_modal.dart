@@ -187,7 +187,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         await ref.read(entityRepositoryProvider).addAttachment(attachment);
         ref.invalidate(speciesAttachmentsProvider(speciesId));
         if (mounted) {
-          AppToast.showSuccess(context, 'Archivo "${file.name}" adjuntado a la especie');
+          AppToast.showSuccess(context, '${AppStrings.fileAttachedToSpeciesPrefix}${file.name}${AppStrings.fileAttachedToSpeciesSuffix}');
         }
       } catch (e) {
         if (mounted) {
@@ -209,7 +209,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (c, setStateDialog) => AlertDialog(
-          title: const Text('Añadir propiedad / magnitud'),
+          title: const Text(AppStrings.addPropertyOrMagnitudeTitle),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -220,7 +220,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                   decoration: const InputDecoration(labelText: AppStrings.propertyNameHint),
                 ),
                 const SizedBox(height: 12),
-                const Text('Tipo de dato primitivo:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                const Text(AppStrings.primitiveDataTypeLabel, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 DropdownButtonFormField<PropertyDataType>(
                   value: chosenType,
@@ -560,11 +560,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                         prefixIcon: const Icon(Icons.auto_awesome),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.image_search, color: Colors.amber),
-                          tooltip: 'Buscar foto de especie en Internet',
+                          tooltip: AppStrings.searchPhotoOnWebAction,
                           onPressed: () async {
                             final query = _nameController.text.trim();
                             if (query.isEmpty) {
-                              AppToast.showRestriction(context, 'Ingresa un nombre para buscar imagen');
+                              AppToast.showRestriction(context, AppStrings.enterNameForImageSearchError);
                               return;
                             }
                             final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
@@ -624,8 +624,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
                         dense: true,
-                        title: const Text('Es producto perecedero (tiene fecha de caducidad)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                        subtitle: const Text('Por defecto los objetos son no perecederos', style: TextStyle(fontSize: 11)),
+                        title: const Text(AppStrings.isPerishableProductTitle, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                        subtitle: const Text(AppStrings.defaultNonPerishableSubtitle, style: TextStyle(fontSize: 11)),
                         value: !_isNonPerishable,
                         onChanged: (isPerishable) {
                           setState(() {

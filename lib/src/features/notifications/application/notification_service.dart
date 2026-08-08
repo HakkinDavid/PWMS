@@ -62,7 +62,7 @@ class NotificationService {
       final canExpire = species?.canExpire ?? false;
       if (!canExpire) continue;
 
-      final speciesName = species?.name ?? 'Elemento';
+      final speciesName = species?.name ?? AppStrings.defaultItemName;
       final warningDays = species?.warningDaysBeforeExpiration ?? 7;
 
       if (entity.isExpired(canExpire: canExpire, now: now)) {
@@ -74,7 +74,7 @@ class NotificationService {
             id: existing?.id ?? const Uuid().v4(),
             type: 'expired',
             title: AppStrings.expiredItemTitle,
-            message: '"$speciesName" ha caducado (${_formatDate(entity.expirationDate)}).',
+            message: '${AppStrings.expiredNotificationMessagePrefix}$speciesName${AppStrings.expiredNotificationMessageSuffix}${_formatDate(entity.expirationDate)}).',
             targetId: entity.id,
             targetType: 'entity',
             status: existing?.status ?? 'active',
@@ -97,7 +97,7 @@ class NotificationService {
             id: existing?.id ?? const Uuid().v4(),
             type: 'expiring_soon',
             title: AppStrings.expiringSoonTitle,
-            message: '"$speciesName" caducará en $daysLeft día(s) (${_formatDate(entity.expirationDate)}).',
+            message: '${AppStrings.expiringSoonNotificationMessagePrefix}$speciesName${AppStrings.expiringSoonNotificationMessageMiddle}$daysLeft${AppStrings.expiringSoonNotificationMessageSuffix}${_formatDate(entity.expirationDate)}).',
             targetId: entity.id,
             targetType: 'entity',
             status: existing?.status ?? 'active',
@@ -147,7 +147,7 @@ class NotificationService {
           id: existing?.id ?? const Uuid().v4(),
           type: 'unsatisfied_need',
           title: AppStrings.unsatisfiedNeedTitle,
-          message: 'Faltan $deficitStr unidad(es) de "$speciesName" para cubrir los requerimientos totales ($validStockCount/$requiredQty disponible).',
+          message: '${AppStrings.unsatisfiedNeedNotificationMessagePrefix}$deficitStr${AppStrings.unsatisfiedNeedNotificationMessageMiddle}$speciesName${AppStrings.unsatisfiedNeedNotificationMessageSuffix}$validStockCount/$requiredQty disponible).',
           targetId: reqSpeciesId,
           targetType: 'species',
           status: existing?.status ?? 'active',
@@ -173,8 +173,8 @@ class NotificationService {
     try {
       const androidDetails = AndroidNotificationDetails(
         'pwms_notifications',
-        'PWMS Notifications',
-        channelDescription: 'Notificaciones de caducidad y necesidades insatisfechas',
+        AppStrings.notificationChannelName,
+        channelDescription: AppStrings.notificationChannelDescription,
         importance: Importance.high,
         priority: Priority.high,
       );

@@ -13,10 +13,14 @@ Todas las cadenas de texto legibles para el usuario final (títulos, mensajes de
 lib/src/core/constants/app_strings.dart
 ```
 
-### Regla Fundamental de Implementación
-Está **estrictamente prohibido** incrustar cadenas de texto literales (*hardcoded strings*) dentro de componentes visuales (`Widget`), hojas desplegables (`ModalBottomSheet`), cuadros de diálogo (`AlertDialog`), delegados de búsqueda o clases de infraestructura (`Repository`). Toda referencia textual debe realizarse mediante constantes estáticas de `AppStrings`.
+### Regla Absoluta de Cero Cadenas Literales (`Zero Hardcoded Strings`)
+Está **estrictamente prohibido** incrustar cualquier cadena de texto literal (*hardcoded string*) fuera de `app_strings.dart` dentro de todo el directorio `lib/`. 
 
-*Identificadores técnicos, esquemas SQL de Drift, rutas de GoRouter, tipos de relación de base de datos (`GUARDADO_EN`, `PERTENECE_A`, etc.) y rutas de archivos son la única excepción y permanecen definidos en sus respectivas capas.*
+Esta norma aplica **sin excepción alguna**, incluyendo:
+1. **Cadenas Visibles para el Usuario**: Títulos, botones, etiquetas de formulario, menús contextuales, cuadros de diálogo (`AlertDialog`), hojas desplegables (`ModalBottomSheet`), notificaciones, mensajes de éxito y restricciones.
+2. **Cadenas Internas y No Visibles para el Usuario**: Mensajes de excepciones (`throw Exception(...)`), mensajes de error en bloques `catch`, plantillas de logueros/registros (`AppLogger` / `print`), valores de respaldo o fallback, títulos por defecto, nombres de propiedades numismáticas o de especie predefinidas, y descripciones internas en repositorios y servicios.
+
+*Únicamente los identificadores técnicos nativos de esquemas SQL en Drift (`catalog_table`, `subspecies_table`, etc.), rutas del enrutador `GoRouter` y esquemas de claves de serialización de bajo nivel quedan excluidos por ser tokens de compilación/base de datos.*
 
 ---
 
@@ -81,5 +85,6 @@ Se realizó la auditoría, extracción y refactorización completa en las siguie
 7. **Módulo de Búsqueda, Historial e Inventario**: `search_screen.dart`, `history_tab.dart`, `home_screen.dart`, `inventory_finder_screen.dart`.
 
 ### Verificación y Calidad de Código
+- **Prohibición de Cadenas Literales en el Proyecto**: 100% de cumplimiento en toda la codebase (`lib/`).
 - **Analizador Estático (`flutter analyze`)**: 0 errores y 0 advertencias.
-- **Suite de Pruebas (`flutter test`)**: 100% de las pruebas unitarias y de widgets aprobadas.
+- **Suite de Pruebas (`flutter test`)**: 100% de las 36 pruebas unitarias y de widgets aprobadas.
