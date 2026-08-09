@@ -172,6 +172,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
               const SizedBox(height: 4),
               DropdownButtonFormField<String>(
                 initialValue: catalogItems.any((c) => c.id == _selectedSpeciesId) ? _selectedSpeciesId : catalogItems.first.id,
+                isExpanded: true,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.public),
                   isDense: true,

@@ -343,6 +343,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             const SizedBox(height: 6),
             DropdownButtonFormField<String>(
               initialValue: _selectedSpecies?.id,
+              isExpanded: true,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.public),
                 hintText: AppStrings.selectSpeciesPrompt,
@@ -350,7 +351,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               items: catalogItems.map((c) {
                 return DropdownMenuItem(
                   value: c.id,
-                  child: Text('${c.name} (${c.type})'),
+                  child: Text('${c.name} (${c.type})', overflow: TextOverflow.ellipsis),
                 );
               }).toList(),
               onChanged: (val) {
@@ -370,6 +371,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               const SizedBox(height: 6),
               DropdownButtonFormField<String>(
                 initialValue: _selectedSubspecies?.id,
+                isExpanded: true,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.branding_watermark),
                   hintText: AppStrings.selectSubspeciesOrBrandPrompt,
@@ -378,7 +380,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                   final brandText = sub.brand != null ? ' (${sub.brand})' : '';
                   return DropdownMenuItem(
                     value: sub.id,
-                    child: Text('${sub.subspeciesName}$brandText'),
+                    child: Text('${sub.subspeciesName}$brandText', overflow: TextOverflow.ellipsis),
                   );
                 }).toList(),
                 onChanged: (val) {

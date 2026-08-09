@@ -412,6 +412,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
           const SizedBox(height: 6),
           DropdownButtonFormField<String>(
             initialValue: _selectedSpeciesIdForSubspecies,
+            isExpanded: true,
             decoration: const InputDecoration(
               prefixIcon: Icon(Icons.public),
               hintText: AppStrings.selectSpeciesPrompt,
@@ -419,7 +420,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             items: catalogItems.map((c) {
               return DropdownMenuItem(
                 value: c.id,
-                child: Text('${c.name} (${c.type})'),
+                child: Text('${c.name} (${c.type})', overflow: TextOverflow.ellipsis),
               );
             }).toList(),
             onChanged: (val) {
