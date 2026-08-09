@@ -373,7 +373,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             SizedBox(width: 8),
             Flexible(
               child: Text(
-                'Centro de Control & Salud de Datos',
+                'Centro de Control y Salud de Datos',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

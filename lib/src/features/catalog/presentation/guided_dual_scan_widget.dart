@@ -21,10 +21,12 @@ class GuidedDualScanWidget extends ConsumerStatefulWidget {
 }
 
 class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
+  static List<CameraDescription>? _cachedCameras;
   CameraController? _cameraController;
   List<CameraDescription> _cameras = [];
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
+  bool _showQuickFillForm = false;
   String? _statusMessage;
 
   // 1: Obverse, 2: Reverse
@@ -45,10 +47,12 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   }
 
   Future<void> _initializeCamera() async {
+    if (!mounted) return;
     try {
-      _cameras = await availableCameras();
+      _cameras = _cachedCameras ?? await availableCameras();
+      _cachedCameras = _cameras;
+
       if (_cameras.isNotEmpty) {
-        // Prefer back camera
         final backCam = _cameras.firstWhere(
           (c) => c.lensDirection == CameraLensDirection.back,
           orElse: () => _cameras.first,
@@ -56,15 +60,16 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
 
         _cameraController = CameraController(
           backCam,
-          ResolutionPreset.veryHigh,
+          ResolutionPreset.medium, // Inicialización instantánea
           enableAudio: false,
         );
 
         await _cameraController!.initialize();
+        if (!mounted) return;
+
         _maxZoom = await _cameraController!.getMaxZoomLevel();
         _minZoom = await _cameraController!.getMinZoomLevel();
 
-        // Configure macro/autofocus parameters
         try {
           await _cameraController!.setFocusMode(FocusMode.auto);
           await _cameraController!.setFocusPoint(const Offset(0.5, 0.5));
@@ -92,13 +97,15 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   }
 
   Future<void> _adjustZoom(double value) async {
-    if (_cameraController == null || !_isCameraInitialized) return;
+    if (_cameraController == null || !_isCameraInitialized || !mounted) return;
     try {
       final zoom = value.clamp(_minZoom, _maxZoom);
       await _cameraController!.setZoomLevel(zoom);
-      setState(() {
-        _currentZoom = zoom;
-      });
+      if (mounted) {
+        setState(() {
+          _currentZoom = zoom;
+        });
+      }
     } catch (_) {}
   }
 
@@ -107,20 +114,33 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
     final image = img.decodeImage(bytes);
     if (image == null) return originalFile;
 
-    // Determine crop dimensions
     int size;
     int x;
     int y;
     img.Image cropped;
 
     if (_isCoinMode) {
-      // Circular crop helper (crop square from center, which Gemini interprets as the coin)
       size = (image.width < image.height ? image.width : image.height) * 3 ~/ 4;
       x = (image.width - size) ~/ 2;
       y = (image.height - size) ~/ 2;
       cropped = img.copyCrop(image, x: x, y: y, width: size, height: size);
+
+      // Recorte circular con transparencia (Canal Alfa PNG)
+      cropped = cropped.convert(numChannels: 4);
+      final radius = cropped.width / 2.0;
+      final centerX = radius;
+      final centerY = radius;
+
+      for (int yPixel = 0; yPixel < cropped.height; yPixel++) {
+        for (int xPixel = 0; xPixel < cropped.width; xPixel++) {
+          final dx = xPixel - centerX;
+          final dy = yPixel - centerY;
+          if ((dx * dx + dy * dy) > (radius * radius)) {
+            cropped.setPixelRgba(xPixel, yPixel, 0, 0, 0, 0);
+          }
+        }
+      }
     } else {
-      // Rectangular crop for banknote (4:3 aspect ratio)
       final width = (image.width * 0.85).toInt();
       final height = (width * 0.55).toInt();
       x = (image.width - width) ~/ 2;
@@ -128,7 +148,6 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       cropped = img.copyCrop(image, x: x, y: y, width: width, height: height);
     }
 
-    // Resize down if it exceeds 1080p (max 1080 in any dimension)
     if (cropped.width > 1080 || cropped.height > 1080) {
       if (_isCoinMode) {
         cropped = img.copyResize(cropped, width: 1080, height: 1080);
@@ -138,9 +157,14 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       }
     }
 
-    final newPath = originalFile.path.replaceAll('.jpg', '_cropped.jpg');
+    final ext = _isCoinMode ? '_cropped.png' : '_cropped.jpg';
+    final newPath = originalFile.path.replaceAll(RegExp(r'\.(jpg|jpeg|png)$'), ext);
     final croppedFile = File(newPath);
-    await croppedFile.writeAsBytes(img.encodeJpg(cropped, quality: 90));
+    if (_isCoinMode) {
+      await croppedFile.writeAsBytes(img.encodePng(cropped));
+    } else {
+      await croppedFile.writeAsBytes(img.encodeJpg(cropped, quality: 90));
+    }
     return croppedFile;
   }
 
@@ -156,10 +180,9 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       final XFile photo = await _cameraController!.takePicture();
       final File rawFile = File(photo.path);
 
-      // Programmatically crop to the center frame area
       final File croppedFile = await _cropImageCenter(rawFile);
 
-      if (_obverseFile == null || _currentStep == 1) {
+      if (_currentStep == 1) {
         _obverseFile = croppedFile;
         setState(() {
           _currentStep = 2;
@@ -184,34 +207,44 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   }
 
   Future<void> _processRecognition() async {
-    if (_obverseFile == null) return;
+    final primaryPhoto = _obverseFile ?? _reverseFile;
+    if (primaryPhoto == null) return;
 
-    // Pausar preview de la cámara para liberar GPU/CPU mientras se llena el formulario
     try {
       await _cameraController?.pausePreview();
     } catch (_) {}
 
-    final result = await NumismaticQuickFillSheet.show(
-      context,
-      obversePhoto: _obverseFile!,
-      reversePhoto: _reverseFile,
-      isCoin: _isCoinMode,
-    );
-
-    if (result == null) {
-      try {
-        await _cameraController?.resumePreview();
-      } catch (_) {}
-    }
-
-    if (result != null && mounted) {
-      widget.onScannedResult?.call(result);
+    if (mounted) {
+      setState(() {
+        _showQuickFillForm = true;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (_showQuickFillForm) {
+      final primaryPhoto = _obverseFile ?? _reverseFile!;
+      return NumismaticQuickFillSheet(
+        obversePhoto: primaryPhoto,
+        reversePhoto: _obverseFile != null ? _reverseFile : null,
+        isCoin: _isCoinMode,
+        onResultSubmitted: (result) async {
+          if (result != null && mounted) {
+            widget.onScannedResult?.call(result);
+          } else if (mounted) {
+            setState(() {
+              _showQuickFillForm = false;
+            });
+            try {
+              await _cameraController?.resumePreview();
+            } catch (_) {}
+          }
+        },
+      );
+    }
 
     if (!_isCameraInitialized) {
       return SizedBox(

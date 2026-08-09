@@ -47,20 +47,18 @@ class MinecraftTileWidget extends ConsumerWidget {
     final species = speciesId != null ? catalogItems.where((c) => c.id == speciesId).firstOrNull : null;
 
     return FutureBuilder<String?>(
-      future: (photoPath != null && photoPath!.isNotEmpty)
-          ? Future.value(photoPath)
-          : (subspeciesId != null
-              ? ref.read(catalogRepositoryProvider).getSubspeciesById(subspeciesId).then((sub) => resolveEffectiveEntityPhotoPath(
-                    ref,
-                    subspecies: sub,
-                    species: species,
-                    instanceId: targetEntityId,
-                  ))
-              : resolveEffectiveEntityPhotoPath(
-                  ref,
-                  species: species,
-                  instanceId: targetEntityId,
-                )),
+      future: (subspeciesId != null
+          ? ref.read(catalogRepositoryProvider).getSubspeciesById(subspeciesId).then((sub) => resolveEffectiveEntityPhotoPath(
+                ref,
+                subspecies: sub,
+                species: species,
+                instanceId: targetEntityId,
+              ))
+          : resolveEffectiveEntityPhotoPath(
+              ref,
+              species: species,
+              instanceId: targetEntityId,
+            )),
       builder: (context, photoPathSnapshot) {
         final resolvedPhotoPath = photoPathSnapshot.data ?? photoPath;
 

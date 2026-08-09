@@ -7,12 +7,14 @@ class NumismaticQuickFillSheet extends StatefulWidget {
   final File obversePhoto;
   final File? reversePhoto;
   final bool isCoin;
+  final Function(NumismaticScanResult? result)? onResultSubmitted;
 
   const NumismaticQuickFillSheet({
     super.key,
     required this.obversePhoto,
     this.reversePhoto,
     required this.isCoin,
+    this.onResultSubmitted,
   });
 
   static Future<NumismaticScanResult?> show(
@@ -182,7 +184,11 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
       sourceEngine: 'Formulario Rápido In-App',
     );
 
-    Navigator.pop(context, result);
+    if (widget.onResultSubmitted != null) {
+      widget.onResultSubmitted!(result);
+    } else {
+      Navigator.pop(context, result);
+    }
   }
 
   @override
@@ -318,24 +324,17 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
 
             // Composition Chips Section (Only shown for Coins, automatically Papel for Banknotes)
             if (widget.isCoin) ...[
-              Text(
-                'Material / Composición',
-                style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 6),
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: _coinMaterials.map((mat) {
-                  final isSelected = _composition == mat;
-                  return ChoiceChip(
-                    label: Text(mat),
-                    selected: isSelected,
-                    onSelected: (val) {
-                      if (val) setState(() => _composition = mat);
-                    },
-                  );
-                }).toList(),
+              DropdownButtonFormField<String>(
+                initialValue: _coinMaterials.contains(_composition) ? _composition : _coinMaterials.first,
+                decoration: InputDecoration(
+                  labelText: 'Material / Composición',
+                  prefixIcon: const Icon(Icons.token),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                items: _coinMaterials.map((mat) => DropdownMenuItem(value: mat, child: Text(mat))).toList(),
+                onChanged: (val) {
+                  if (val != null) setState(() => _composition = val);
+                },
               ),
               const SizedBox(height: 12),
             ],

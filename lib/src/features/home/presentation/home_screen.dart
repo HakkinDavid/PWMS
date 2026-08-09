@@ -10,6 +10,7 @@ import '../../entities/domain/entity_photo_helper.dart';
 import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/infrastructure/location_repository.dart';
+import '../../locations/presentation/location_tile.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -124,12 +125,12 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.style_outlined, size: 28, color: Colors.amber),
-                          tooltip: 'Centro de Control & Salud de Datos',
+                          tooltip: 'Centro de Control y Salud de Datos',
                           onPressed: () => context.push('/control-center'),
                         ),
                         IconButton(
                           icon: const Icon(Icons.settings_outlined, size: 28),
-                          tooltip: 'Configuración de App & Respaldos',
+                          tooltip: 'Configuración de App y Respaldos',
                           onPressed: () => context.push('/settings'),
                         ),
                         IconButton(
@@ -145,7 +146,7 @@ class HomeScreen extends ConsumerWidget {
                                 IconButton(
                                   icon: const Icon(Icons.notifications_outlined, size: 28),
                                   onPressed: () => context.push('/notifications'),
-                                  tooltip: 'Notificaciones & Recordatorios',
+                                  tooltip: 'Notificaciones y Recordatorios',
                                 ),
                                 if (notifCount > 0)
                                   Positioned(
@@ -369,52 +370,10 @@ class HomeScreen extends ConsumerWidget {
                             final node = topNodes[index];
                             final count = LocationRepository.getRecursiveItemCount(node.id, nodes, allEntities);
 
-                            return InkWell(
+                            return LocationTile(
+                              node: node,
+                              itemCount: count,
                               onTap: () => context.push('/locations'),
-                              borderRadius: BorderRadius.circular(18),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                                decoration: BoxDecoration(
-                                  color: theme.cardColor,
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(color: theme.dividerColor),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.secondary.withAlpha(25),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(
-                                        Icons.location_on,
-                                        color: theme.colorScheme.secondary,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            node.name,
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            '$count ${AppStrings.objectsLabel}',
-                                            style: theme.textTheme.bodySmall,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             );
                           },
                         );
@@ -458,7 +417,8 @@ class HomeScreen extends ConsumerWidget {
                           return const Text(AppStrings.emptyCatalog, style: TextStyle(color: Colors.grey));
                         }
 
-                        final recentItems = items.take(4).toList();
+                        final sortedItems = List.of(items)..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                        final recentItems = sortedItems.take(4).toList();
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),

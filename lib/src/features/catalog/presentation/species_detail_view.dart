@@ -291,13 +291,6 @@ class SpeciesDetailView extends ConsumerWidget {
                 const SizedBox(height: 14),
               ],
 
-              // Technical Description
-              if (species.description != null && species.description!.trim().isNotEmpty) ...[
-                Text(AppStrings.masterDescription, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Text(species.description!, style: theme.textTheme.bodyMedium),
-                const SizedBox(height: 16),
-              ],
 
               // Instance Specific Footer
               if (instanceSpecificsFooter != null) ...[

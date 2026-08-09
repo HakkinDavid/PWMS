@@ -362,7 +362,8 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<List<Attachment>> getAttachmentsForSpecies(String speciesId) async {
-    final query = _db.select(_db.attachmentsTable)..where((t) => t.speciesId.equals(speciesId));
+    final query = _db.select(_db.attachmentsTable)
+      ..where((t) => t.speciesId.equals(speciesId) & t.instanceId.isNull());
     final rows = await query.get();
     return rows.map(_mapAttachmentToDomain).toList();
   }

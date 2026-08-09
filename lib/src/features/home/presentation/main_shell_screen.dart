@@ -38,6 +38,16 @@ class MainShellScreen extends StatelessWidget {
             selectedIcon: Icon(Icons.public),
             label: AppStrings.tabCatalog,
           ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: AppStrings.tabSearch,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_outlined),
+            selectedIcon: Icon(Icons.notifications),
+            label: 'Notificaciones',
+          ),
         ],
       ),
     );

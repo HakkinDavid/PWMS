@@ -812,15 +812,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       const SizedBox(height: 14),
                     ],
 
-                    TextField(
-                      controller: _descController,
-                      maxLines: 2,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.descriptionLabel,
-                        prefixIcon: Icon(Icons.notes),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+
 
                     SizedBox(
                       width: double.infinity,

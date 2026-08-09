@@ -57,6 +57,22 @@ final appRouter = GoRouter(
             ),
           ],
         ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/search',
+              builder: (context, state) => const SearchScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/notifications',
+              builder: (context, state) => const NotificationsScreen(),
+            ),
+          ],
+        ),
       ],
     ),
 

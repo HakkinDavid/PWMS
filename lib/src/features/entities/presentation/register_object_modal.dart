@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image/image.dart' as img;
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
@@ -36,16 +35,13 @@ class RegisterObjectModal extends ConsumerStatefulWidget {
     bool startInCreateSpecies = false,
     dynamic scannedResult,
   }) {
-    return showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => RegisterObjectModal(
-        initialLocationId: initialLocationId,
-        startInCreateSpecies: startInCreateSpecies,
-        scannedResult: scannedResult,
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RegisterObjectModal(
+          initialLocationId: initialLocationId,
+          startInCreateSpecies: startInCreateSpecies,
+          scannedResult: scannedResult,
+        ),
       ),
     );
   }
@@ -74,40 +70,16 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     final catalogState = ref.watch(catalogListProvider);
     final catalogItems = catalogState.asData?.value ?? [];
 
-    final mediaQuery = MediaQuery.of(context);
-    final bottomPadding = mediaQuery.viewInsets.bottom > 0
-        ? mediaQuery.viewInsets.bottom + 16
-        : mediaQuery.padding.bottom + 16;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppStrings.registerObjectTitle),
       ),
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 14,
-        bottom: bottomPadding,
-      ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: mediaQuery.size.height * 0.94,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withAlpha(100),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
             // Segmented Button
             SizedBox(
@@ -161,8 +133,9 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildBodyView(
     BuildContext context,

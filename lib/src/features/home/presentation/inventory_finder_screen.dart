@@ -9,6 +9,7 @@ import '../../catalog/presentation/web_image_picker_dialog.dart';
 import '../../entities/domain/effective_entity_group.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/effective_group_tile.dart';
+import '../../entities/presentation/instance_preview_card.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
 import '../../entities/presentation/register_object_modal.dart';
 import '../../locations/presentation/location_tree_picker.dart';
@@ -425,7 +426,58 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       );
     }
 
-    // Detailed List / Standard Grid Mode with Container Stacking (Point 1, 2, 3)
+    if (_viewMode == FinderViewMode.standardGrid) {
+      // Standard Grid Mode (2-column cards)
+      return GridView.builder(
+        padding: const EdgeInsets.all(12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.82,
+        ),
+        itemCount: topGroups.length,
+        itemBuilder: (ctx, idx) {
+          final grp = topGroups[idx];
+          final primary = grp.primaryEntity;
+          final isSelected = _selectedEntityIds.contains(primary.id);
+
+          return InkWell(
+            onLongPress: () {
+              if (!_isSelectionMode) {
+                setState(() {
+                  _isSelectionMode = true;
+                  _selectedEntityIds.add(primary.id);
+                });
+              }
+            },
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: isSelected
+                  ? BoxDecoration(
+                      border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
+                      borderRadius: BorderRadius.circular(16),
+                    )
+                  : null,
+              child: InstancePreviewCard(
+                group: grp,
+                onTap: () {
+                  if (_isSelectionMode) {
+                    _toggleSelection(primary.id);
+                  } else if (grp.population == 1) {
+                    context.push('/entity/${primary.id}');
+                  } else {
+                    context.push('/grouped-instance-detail?speciesId=${grp.speciesId}&locId=${grp.effectiveLocationId ?? ""}');
+                  }
+                },
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    // Detailed List Mode with Container Stacking
     return ListView.builder(
       padding: const EdgeInsets.all(12),
       itemCount: topGroups.length,

@@ -64,25 +64,16 @@ class InstancePreviewCard extends ConsumerWidget {
       builder: (context, subSnapshot) {
         final subspecies = subSnapshot.data;
 
-        final isHeterogeneousGroup = group != null && !group!.isHomogeneous;
-
+        final isCustomSub = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
         final String primaryTitle;
         final String typeAndSpeciesText;
 
-        if (isHeterogeneousGroup) {
-          // Heterogeneous group: strictly General Species Name only (Point 3)
-          primaryTitle = speciesName;
-          typeAndSpeciesText = '$speciesType • (${AppStrings.variedSubspeciesLabel}) • ';
+        if (isCustomSub) {
+          primaryTitle = '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}';
+          typeAndSpeciesText = '$speciesType • $speciesName • ';
         } else {
-          // Homogeneous or singular: Subspecies info as primary title (Point 2)
-          final isCustomSub = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
-          if (isCustomSub) {
-            primaryTitle = '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}';
-            typeAndSpeciesText = '$speciesType • $speciesName • ';
-          } else {
-            primaryTitle = speciesName;
-            typeAndSpeciesText = '$speciesType • ';
-          }
+          primaryTitle = speciesName;
+          typeAndSpeciesText = '$speciesType • ';
         }
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
