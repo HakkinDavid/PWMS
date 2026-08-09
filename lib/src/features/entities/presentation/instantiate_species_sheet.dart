@@ -45,6 +45,7 @@ class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => InstantiateSpeciesSheet(
         species: species,
@@ -297,6 +298,11 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       });
     }
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 20
+        : mediaQuery.padding.bottom + 20;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -306,7 +312,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         left: 24,
         right: 24,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: bottomPadding,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -447,6 +453,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                   }
                   return DropdownButtonFormField<String>(
                     initialValue: _selectedContainerEntityId,
+                    isExpanded: true,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.inventory_2_outlined),
                       hintText: AppStrings.selectContainerObject,
@@ -457,7 +464,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                         catalogItems: catalogItems,
                         subspeciesList: subspeciesList,
                       );
-                      return DropdownMenuItem(value: e.id, child: Text(name));
+                      return DropdownMenuItem(value: e.id, child: Text(name, overflow: TextOverflow.ellipsis));
                     }).toList(),
                     onChanged: (val) => setState(() => _selectedContainerEntityId = val),
                   );

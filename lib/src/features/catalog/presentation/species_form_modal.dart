@@ -43,6 +43,7 @@ class SpeciesFormModal extends ConsumerStatefulWidget {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => SpeciesFormModal(
         initialSpecies: initialSpecies,
@@ -262,7 +263,14 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(chosenUnit, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          Expanded(
+                            child: Text(
+                              chosenUnit,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
                           const Icon(Icons.swap_vert),
                         ],
                       ),
@@ -408,6 +416,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     final existingItems = catalogState.asData?.value ?? [];
     final template = EntityTemplateRegistry.getTemplate(_selectedType);
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 16
+        : mediaQuery.padding.bottom + 16;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -417,10 +430,12 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         left: 20,
         right: 20,
         top: 14,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        bottom: bottomPadding,
       ),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.82,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: mediaQuery.size.height * 0.85,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -678,9 +693,13 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    AppStrings.unitsAndMagnitudesTitle,
-                                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                  Expanded(
+                                    child: Text(
+                                      AppStrings.unitsAndMagnitudesTitle,
+                                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
                                   ),
                                   TextButton.icon(
                                     onPressed: _addMagnitudeRow,

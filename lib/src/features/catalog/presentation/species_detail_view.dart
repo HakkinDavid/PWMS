@@ -265,9 +265,13 @@ class SpeciesDetailView extends ConsumerWidget {
                                 children: [
                                   const Icon(Icons.straighten, size: 14, color: Colors.grey),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    '${mag.propertyName} (${mag.unitSymbol})',
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                  Expanded(
+                                    child: Text(
+                                      '${mag.propertyName} (${mag.unitSymbol})',
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
                                   ),
                                 ],
                               ),

@@ -23,6 +23,7 @@ class CreateRelationModal extends ConsumerStatefulWidget {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => CreateRelationModal(sourceEntity: sourceEntity),
     );
@@ -108,6 +109,11 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
       return targetDisplayName.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 16
+        : mediaQuery.padding.bottom + 16;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -117,10 +123,12 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
         left: 20,
         right: 20,
         top: 14,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        bottom: bottomPadding,
       ),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.82,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: mediaQuery.size.height * 0.85,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

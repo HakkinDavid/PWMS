@@ -63,6 +63,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
       builder: (ctx) => StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
+            scrollable: true,
             title: const Text(AppStrings.addRequirementTitle),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -71,8 +72,9 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: selectedSpeciesId,
+                  isExpanded: true,
                   decoration: const InputDecoration(labelText: AppStrings.requiredSpeciesLabel),
-                  items: catalogItems.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name))).toList(),
+                  items: catalogItems.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name, overflow: TextOverflow.ellipsis))).toList(),
                   onChanged: (val) => setState(() => selectedSpeciesId = val),
                 ),
                 const SizedBox(height: 12),
@@ -129,9 +131,13 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              widget.title,
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                widget.title,
+                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
             if (widget.isEditing)
               TextButton.icon(
@@ -156,7 +162,13 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
               children: [
                 Icon(Icons.info_outline, size: 18, color: Colors.grey),
                 SizedBox(width: 8),
-                Text(AppStrings.noRequirementsDefined, style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Expanded(
+                  child: Text(
+                    AppStrings.noRequirementsDefined,
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
           )

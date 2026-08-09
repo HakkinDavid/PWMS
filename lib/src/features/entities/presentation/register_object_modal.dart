@@ -40,6 +40,7 @@ class RegisterObjectModal extends ConsumerStatefulWidget {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => RegisterObjectModal(
         initialLocationId: initialLocationId,
@@ -73,6 +74,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
     final catalogState = ref.watch(catalogListProvider);
     final catalogItems = catalogState.asData?.value ?? [];
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 16
+        : mediaQuery.padding.bottom + 16;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -82,10 +88,12 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         left: 16,
         right: 16,
         top: 14,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        bottom: bottomPadding,
       ),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.94, // Modal más grande (94% screen height)
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: mediaQuery.size.height * 0.94,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

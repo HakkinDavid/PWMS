@@ -18,6 +18,7 @@ class QuantityAdjustmentSheet extends ConsumerStatefulWidget {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => QuantityAdjustmentSheet(group: group),
     );
@@ -201,12 +202,17 @@ class _QuantityAdjustmentSheetState extends ConsumerState<QuantityAdjustmentShee
       );
     }
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 20
+        : mediaQuery.padding.bottom + 20;
+
     return Container(
       padding: EdgeInsets.only(
         left: 24,
         right: 24,
         top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: bottomPadding,
       ),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,

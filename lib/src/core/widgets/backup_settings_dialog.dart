@@ -89,11 +89,18 @@ class _BackupSettingsDialogState extends ConsumerState<BackupSettingsDialog> {
     final theme = Theme.of(context);
 
     return AlertDialog(
+      scrollable: true,
       title: Row(
         children: [
           Icon(Icons.backup_outlined, color: theme.colorScheme.primary),
           const SizedBox(width: 10),
-          const Text(AppStrings.backupsAndDatabaseTitle),
+          const Expanded(
+            child: Text(
+              AppStrings.backupsAndDatabaseTitle,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
         ],
       ),
       content: _isProcessing

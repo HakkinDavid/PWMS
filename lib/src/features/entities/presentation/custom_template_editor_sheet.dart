@@ -13,6 +13,7 @@ class CustomTemplateEditorSheet extends ConsumerStatefulWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => const CustomTemplateEditorSheet(),
     );
@@ -74,6 +75,11 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 20
+        : mediaQuery.padding.bottom + 20;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -83,7 +89,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
         left: 24,
         right: 24,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: bottomPadding,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

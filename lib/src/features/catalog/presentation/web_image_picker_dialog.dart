@@ -150,13 +150,16 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
     final theme = Theme.of(context);
 
     return AlertDialog(
+      scrollable: true,
       title: Text(
         'Buscar Imagen en Internet',
         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
       ),
-      content: SizedBox(
-        width: double.maxFinite,
-        height: 400,
+      content: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 500,
+          maxHeight: MediaQuery.of(context).size.height * 0.55,
+        ),
         child: Column(
           children: [
             Row(

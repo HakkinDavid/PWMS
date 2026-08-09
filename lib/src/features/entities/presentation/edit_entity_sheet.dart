@@ -19,6 +19,7 @@ class EditEntitySheet extends ConsumerStatefulWidget {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => EditEntitySheet(entity: entity),
     );
@@ -105,6 +106,11 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
           createdAt: DateTime.now(),
         );
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 20
+        : mediaQuery.padding.bottom + 20;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -114,7 +120,7 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
         left: 24,
         right: 24,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: bottomPadding,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -135,9 +141,13 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${AppStrings.editInstanceTitle} "${species.name}"',
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Text(
+                    '${AppStrings.editInstanceTitle} "${species.name}"',
+                    style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close),
@@ -171,7 +181,14 @@ class _EditEntitySheetState extends ConsumerState<EditEntitySheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(selectedNode?.name ?? AppStrings.rootLocationName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Expanded(
+                          child: Text(
+                            selectedNode?.name ?? AppStrings.rootLocationName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
                         const Icon(Icons.unfold_more),
                       ],
                     ),

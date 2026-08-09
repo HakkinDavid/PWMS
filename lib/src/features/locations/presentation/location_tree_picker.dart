@@ -31,9 +31,15 @@ class LocationTreePicker extends ConsumerStatefulWidget {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         final theme = Theme.of(ctx);
+        final mediaQuery = MediaQuery.of(ctx);
+        final bottomPadding = mediaQuery.viewInsets.bottom > 0
+            ? mediaQuery.viewInsets.bottom + 20
+            : mediaQuery.padding.bottom + 20;
+
         return Container(
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
@@ -43,10 +49,12 @@ class LocationTreePicker extends ConsumerStatefulWidget {
             left: 24,
             right: 24,
             top: 16,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+            bottom: bottomPadding,
           ),
-          child: SizedBox(
-            height: MediaQuery.of(ctx).size.height * 0.65,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: mediaQuery.size.height * 0.75,
+            ),
             child: LocationTreePicker(
               initialSelectedId: initialSelectedId,
               movingNodeId: movingNodeId,

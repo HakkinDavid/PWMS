@@ -6,6 +6,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
+import 'species_form_modal.dart';
 import 'species_text_badge_avatar.dart';
 
 class SpeciesTile extends ConsumerWidget {
@@ -24,6 +25,7 @@ class SpeciesTile extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
+      useSafeArea: true,
       builder: (ctx) => SafeArea(
         child: Wrap(
           children: [
@@ -44,6 +46,20 @@ class SpeciesTile extends ConsumerWidget {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: const Text(AppStrings.editSpeciesTitle),
+              onTap: () {
+                Navigator.pop(ctx);
+                SpeciesFormModal.show(
+                  context,
+                  initialSpecies: species,
+                  onSpeciesSaved: (_) {
+                    ref.invalidate(catalogListProvider);
+                  },
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
               title: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
               onTap: () async {
@@ -55,9 +71,10 @@ class SpeciesTile extends ConsumerWidget {
                     content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
                     actions: [
                       TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
-                      TextButton(
+                      ElevatedButton(
                         onPressed: () => Navigator.pop(c, true),
-                        child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                        child: const Text(AppStrings.delete),
                       ),
                     ],
                   ),
@@ -131,7 +148,14 @@ class SpeciesTile extends ConsumerWidget {
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        Text(species.type, style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11)),
+                        Flexible(
+                          child: Text(
+                            species.type,
+                            style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         if (species.isUnique) ...[
                           const Text(' • ', style: TextStyle(fontSize: 11)),
                           const Text(AppStrings.isUniqueLabel, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),

@@ -18,6 +18,7 @@ class AddRelationSheet extends ConsumerStatefulWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+      useSafeArea: true,
       builder: (_) => AddRelationSheet(sourceEntity: sourceEntity),
     );
   }
@@ -86,6 +87,11 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
       subspeciesList: subspeciesList,
     );
 
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom > 0
+        ? mediaQuery.viewInsets.bottom + 20
+        : mediaQuery.padding.bottom + 20;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -95,7 +101,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
         left: 24,
         right: 24,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: bottomPadding,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

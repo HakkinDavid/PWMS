@@ -371,7 +371,14 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
           children: [
             Icon(Icons.style_outlined, color: Colors.amber),
             SizedBox(width: 8),
-            Text('Centro de Control & Salud de Datos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Flexible(
+              child: Text(
+                'Centro de Control & Salud de Datos',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
           ],
         ),
         actions: [

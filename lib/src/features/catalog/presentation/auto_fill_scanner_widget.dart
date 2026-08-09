@@ -106,7 +106,13 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
                 children: [
                   Icon(Icons.warning_amber_rounded, color: Colors.amber),
                   SizedBox(width: 8),
-                  Text(AppStrings.invalidOrNotFoundCodeTitle),
+                  Expanded(
+                    child: Text(
+                      AppStrings.invalidOrNotFoundCodeTitle,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
                 ],
               ),
               content: Text('${AppStrings.invalidOrNotFoundCodeMessagePrefix}$rawBarcode${AppStrings.invalidOrNotFoundCodeMessageSuffix}'),

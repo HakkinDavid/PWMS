@@ -24,17 +24,22 @@ class NumismaticQuickFillSheet extends StatefulWidget {
     return showModalBottomSheet<NumismaticScanResult>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: NumismaticQuickFillSheet(
-          obversePhoto: obversePhoto,
-          reversePhoto: reversePhoto,
-          isCoin: isCoin,
-        ),
-      ),
+      builder: (context) {
+        final mediaQuery = MediaQuery.of(context);
+        final bottomPadding = mediaQuery.viewInsets.bottom > 0
+            ? mediaQuery.viewInsets.bottom
+            : mediaQuery.padding.bottom + 16;
+        return Padding(
+          padding: EdgeInsets.only(bottom: bottomPadding),
+          child: NumismaticQuickFillSheet(
+            obversePhoto: obversePhoto,
+            reversePhoto: reversePhoto,
+            isCoin: isCoin,
+          ),
+        );
+      },
     );
   }
 
@@ -214,10 +219,14 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
               children: [
                 Icon(widget.isCoin ? Icons.circle_outlined : Icons.crop_landscape, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
-                Text(
-                  'Datos Numismáticos - $speciesLabel',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    'Datos Numismáticos - $speciesLabel',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -227,12 +236,13 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
             // Country Dropdown (Default México)
             DropdownButtonFormField<String>(
               initialValue: _country,
+              isExpanded: true,
               decoration: InputDecoration(
                 labelText: 'País / Emisor',
                 prefixIcon: const Icon(Icons.flag),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
               ),
-              items: _countries.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+              items: _countries.map((c) => DropdownMenuItem(value: c, child: Text(c, overflow: TextOverflow.ellipsis))).toList(),
               onChanged: (val) => setState(() => _country = val!),
             ),
             const SizedBox(height: 12),
@@ -243,12 +253,13 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     initialValue: _denomination,
+                    isExpanded: true,
                     decoration: InputDecoration(
                       labelText: 'Denominación',
                       prefixIcon: const Icon(Icons.numbers),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    items: _denominations.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
+                    items: _denominations.map((d) => DropdownMenuItem(value: d, child: Text(d, overflow: TextOverflow.ellipsis))).toList(),
                     onChanged: (val) => setState(() => _denomination = val!),
                   ),
                 ),
@@ -256,13 +267,14 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     initialValue: _currencyCode,
+                    isExpanded: true,
                     decoration: InputDecoration(
                       labelText: 'Divisa',
                       prefixIcon: const Icon(Icons.monetization_on),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                     items: _currencyMap.entries
-                        .map((e) => DropdownMenuItem(value: e.key, child: Text('${e.key} (${e.value})')))
+                        .map((e) => DropdownMenuItem(value: e.key, child: Text('${e.key} (${e.value})', overflow: TextOverflow.ellipsis)))
                         .toList(),
                     onChanged: (val) => setState(() => _currencyCode = val!),
                   ),

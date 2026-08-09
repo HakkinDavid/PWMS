@@ -86,9 +86,13 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              '${AppStrings.subspeciesOrBrands} (${_subspeciesList.length})',
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                '${AppStrings.subspeciesOrBrands} (${_subspeciesList.length})',
+                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
             if (widget.isEditing)
               TextButton.icon(

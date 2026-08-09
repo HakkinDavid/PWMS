@@ -413,36 +413,39 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           ),
 
         // Shutter Button Row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: _isProcessing ? null : _capturePhoto,
-              child: Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: theme.colorScheme.primary, width: 3),
-                  color: Colors.transparent,
-                ),
-                padding: const EdgeInsets.all(4),
+        SafeArea(
+          bottom: true,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: _isProcessing ? null : _capturePhoto,
                 child: Container(
+                  width: 64,
+                  height: 64,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _isProcessing ? Colors.grey : theme.colorScheme.primary,
+                    border: Border.all(color: theme.colorScheme.primary, width: 3),
+                    color: Colors.transparent,
                   ),
-                  child: _isProcessing
-                      ? const Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3))
-                      : Icon(
-                          _isCoinMode ? Icons.camera_alt : Icons.crop_free,
-                          color: Colors.white,
-                          size: 28,
-                        ),
+                  padding: const EdgeInsets.all(4),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _isProcessing ? Colors.grey : theme.colorScheme.primary,
+                    ),
+                    child: _isProcessing
+                        ? const Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3))
+                        : Icon(
+                            _isCoinMode ? Icons.camera_alt : Icons.crop_free,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
 
         const SizedBox(height: 12),

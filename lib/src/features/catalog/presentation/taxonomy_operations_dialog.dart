@@ -27,6 +27,7 @@ class TaxonomyOperationsDialog {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
+              scrollable: true,
               title: const Text('Unir Especie'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -39,12 +40,13 @@ class TaxonomyOperationsDialog {
                   const SizedBox(height: 16),
                   DropdownButtonFormField<CatalogItem>(
                     value: selectedTarget,
+                    isExpanded: true,
                     decoration: const InputDecoration(
                       labelText: 'Especie Destino',
                       border: OutlineInputBorder(),
                     ),
                     items: targetOptions.map((c) {
-                      return DropdownMenuItem(value: c, child: Text(c.name));
+                      return DropdownMenuItem(value: c, child: Text(c.name, overflow: TextOverflow.ellipsis));
                     }).toList(),
                     onChanged: (val) => setState(() => selectedTarget = val),
                   ),
@@ -87,6 +89,7 @@ class TaxonomyOperationsDialog {
       context: context,
       builder: (ctx) {
         return AlertDialog(
+          scrollable: true,
           title: const Text('Separar en Nueva Especie'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -151,6 +154,7 @@ class TaxonomyOperationsDialog {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
+              scrollable: true,
               title: Text(AppStrings.moveSubspeciesTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -163,12 +167,13 @@ class TaxonomyOperationsDialog {
                   const SizedBox(height: 16),
                   DropdownButtonFormField<CatalogItem>(
                     value: selectedTarget,
-                    decoration: InputDecoration(
+                    isExpanded: true,
+                    decoration: const InputDecoration(
                       labelText: AppStrings.targetSpeciesLabel,
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(),
                     ),
                     items: targetOptions.map((c) {
-                      return DropdownMenuItem(value: c, child: Text(c.name));
+                      return DropdownMenuItem(value: c, child: Text(c.name, overflow: TextOverflow.ellipsis));
                     }).toList(),
                     onChanged: (val) => setState(() => selectedTarget = val),
                   ),
