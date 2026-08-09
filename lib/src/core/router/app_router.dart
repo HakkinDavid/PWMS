@@ -65,15 +65,12 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/notifications',
-              builder: (context, state) => const NotificationsScreen(),
-            ),
-          ],
-        ),
       ],
+    ),
+
+    GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationsScreen(),
     ),
 
     GoRoute(

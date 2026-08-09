@@ -35,6 +35,14 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
     _loadSubspecies();
   }
 
+  @override
+  void didUpdateWidget(covariant SubspeciesSectionWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.speciesId != widget.speciesId) {
+      _loadSubspecies();
+    }
+  }
+
   Future<void> _loadSubspecies() async {
     setState(() => _isLoading = true);
     try {

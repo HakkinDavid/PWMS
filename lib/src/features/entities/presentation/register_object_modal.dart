@@ -94,28 +94,23 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 segments: const [
                   ButtonSegment(
                     value: RegisterModalMode.selectFromCatalog,
-                    label: Text(AppStrings.instantiateTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.public, size: 14),
+                    icon: Icon(Icons.public, size: 16),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.createNewSpecies,
-                    label: Text(AppStrings.createSpeciesTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.add, size: 14),
+                    icon: Icon(Icons.add, size: 16),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.addSubspeciesToExisting,
-                    label: Text(AppStrings.addSubspeciesTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.branding_watermark, size: 14),
+                    icon: Icon(Icons.branding_watermark, size: 16),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.autoFillScanner,
-                    label: Text(AppStrings.autoFillTab, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.qr_code_scanner, size: 14),
+                    icon: Icon(Icons.qr_code_scanner, size: 16),
                   ),
                   ButtonSegment(
                     value: RegisterModalMode.numismaticScanner,
-                    label: Text(AppStrings.numismaticsCategory, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    icon: Icon(Icons.monetization_on, size: 14),
+                    icon: Icon(Icons.monetization_on, size: 16),
                   ),
                 ],
                 selected: {_currentMode},
@@ -147,6 +142,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         return _buildBrowseCatalogView(context, catalogState);
       case RegisterModalMode.createNewSpecies:
         return SpeciesFormModal(
+          isEmbedded: true,
           scannedResult: _activeScannedResult,
           onSpeciesSaved: (createdSpecies) {
             Navigator.pop(context);
@@ -431,6 +427,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
           const SizedBox(height: 16),
           if (_selectedSpeciesIdForSubspecies != null)
             SubspeciesSectionWidget(
+              key: ValueKey(_selectedSpeciesIdForSubspecies),
               speciesId: _selectedSpeciesIdForSubspecies!,
               isEditing: true,
             ),

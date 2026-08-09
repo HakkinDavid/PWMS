@@ -265,203 +265,203 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       );
     }
 
-    return Column(
-      children: [
-        // Mode Selector: Moneda vs Billete
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FilterChip(
-                label: const Text(AppStrings.coinCircularLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                selected: _isCoinMode,
-                onSelected: (val) {
-                  setState(() => _isCoinMode = val);
-                },
-                avatar: const Icon(Icons.circle_outlined, size: 16),
-              ),
-              const SizedBox(width: 12),
-              FilterChip(
-                label: const Text(AppStrings.banknoteRectangleLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                selected: !_isCoinMode,
-                onSelected: (val) {
-                  setState(() => _isCoinMode = !val);
-                },
-                avatar: const Icon(Icons.crop_landscape, size: 16),
-              ),
-            ],
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          // Mode Selector: Moneda vs Billete
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FilterChip(
+                  label: const Text(AppStrings.coinCircularLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  selected: _isCoinMode,
+                  onSelected: (val) {
+                    setState(() => _isCoinMode = val);
+                  },
+                  avatar: const Icon(Icons.circle_outlined, size: 16),
+                ),
+                const SizedBox(width: 12),
+                FilterChip(
+                  label: const Text(AppStrings.banknoteRectangleLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  selected: !_isCoinMode,
+                  onSelected: (val) {
+                    setState(() => _isCoinMode = !val);
+                  },
+                  avatar: const Icon(Icons.crop_landscape, size: 16),
+                ),
+              ],
+            ),
           ),
-        ),
 
-        // Live Camera Preview with Custom Overlays
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            AspectRatio(
-              aspectRatio: 1.0,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: 1080,
-                    height: 1080 * _cameraController!.value.aspectRatio,
-                    child: CameraPreview(_cameraController!),
+          // Live Camera Preview with Custom Overlays
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              AspectRatio(
+                aspectRatio: 1.0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: 1080,
+                      height: 1080 * _cameraController!.value.aspectRatio,
+                      child: CameraPreview(_cameraController!),
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            // Frame overlay
-            AspectRatio(
-              aspectRatio: 1.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: theme.colorScheme.primary.withAlpha(120), width: 2),
+              // Frame overlay
+              AspectRatio(
+                aspectRatio: 1.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: theme.colorScheme.primary.withAlpha(120), width: 2),
+                  ),
                 ),
               ),
-            ),
 
-            // Target Overlay
-            Positioned.fill(
-              child: _buildTargetOverlay(theme),
-            ),
-
-            // Steps Indicator Banner
-            Positioned(
-              top: 16,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      _currentStep == 1 ? Icons.looks_one : Icons.looks_two,
-                      color: Colors.amber,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _currentStep == 1
-                          ? 'PASO 1: ENCUADRA EL ANVERSO'
-                          : 'PASO 2: ENCUADRA EL REVERSO',
-                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 0.5),
-                    ),
-                  ],
-                ),
+              // Target Overlay
+              Positioned.fill(
+                child: _buildTargetOverlay(theme),
               ),
-            ),
 
-            // Focus Lock / Center indicator
-            const Icon(Icons.center_focus_weak, color: Colors.white54, size: 40),
-
-            // Zoom Controller Slider Overlay
-            Positioned(
-              bottom: 16,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.zoom_out, color: Colors.white, size: 16),
-                    Expanded(
-                      child: Slider(
-                        value: _currentZoom,
-                        min: _minZoom,
-                        max: _maxZoom,
-                        onChanged: _adjustZoom,
-                        activeColor: Colors.amber,
-                        inactiveColor: Colors.white24,
+              // Steps Indicator Banner
+              Positioned(
+                top: 12,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _currentStep == 1 ? Icons.looks_one : Icons.looks_two,
+                        color: Colors.amber,
+                        size: 18,
                       ),
-                    ),
-                    const Icon(Icons.zoom_in, color: Colors.white, size: 16),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${_currentZoom.toStringAsFixed(1)}x',
-                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                      const SizedBox(width: 6),
+                      Text(
+                        _currentStep == 1
+                            ? 'PASO 1: ENCUADRA EL ANVERSO'
+                            : 'PASO 2: ENCUADRA EL REVERSO',
+                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
 
-        const SizedBox(height: 12),
+              // Focus Lock / Center indicator
+              const Icon(Icons.center_focus_weak, color: Colors.white54, size: 36),
 
-        // Preview Thumbnails of Captured Photos (Anverso & Reverso)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Anverso Thumbnail
-            _buildThumbnailCard(
-              title: 'Anverso',
-              file: _obverseFile,
-              isSelected: _currentStep == 1,
-              onTapSelect: () => setState(() => _currentStep = 1),
-              onDelete: () => setState(() {
-                _obverseFile = null;
-                _currentStep = 1;
-              }),
-              theme: theme,
-            ),
-            const SizedBox(width: 16),
-            // Reverso Thumbnail
-            _buildThumbnailCard(
-              title: 'Reverso',
-              file: _reverseFile,
-              isSelected: _currentStep == 2,
-              onTapSelect: () => setState(() => _currentStep = 2),
-              onDelete: () => setState(() {
-                _reverseFile = null;
-                _currentStep = 2;
-              }),
-              theme: theme,
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 12),
-
-        // Status or guidance messages
-        if (_statusMessage != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              _statusMessage!,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12),
-            ),
+              // Zoom Controller Slider Overlay
+              Positioned(
+                bottom: 12,
+                left: 16,
+                right: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.zoom_out, color: Colors.white, size: 14),
+                      Expanded(
+                        child: Slider(
+                          value: _currentZoom,
+                          min: _minZoom,
+                          max: _maxZoom,
+                          onChanged: _adjustZoom,
+                          activeColor: Colors.amber,
+                          inactiveColor: Colors.white24,
+                        ),
+                      ),
+                      const Icon(Icons.zoom_in, color: Colors.white, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${_currentZoom.toStringAsFixed(1)}x',
+                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
 
-        // Shutter Button Row
-        SafeArea(
-          bottom: true,
-          child: Row(
+          const SizedBox(height: 10),
+
+          // Preview Thumbnails of Captured Photos (Anverso & Reverso)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Anverso Thumbnail
+              _buildThumbnailCard(
+                title: 'Anverso',
+                file: _obverseFile,
+                isSelected: _currentStep == 1,
+                onTapSelect: () => setState(() => _currentStep = 1),
+                onDelete: () => setState(() {
+                  _obverseFile = null;
+                  _currentStep = 1;
+                }),
+                theme: theme,
+              ),
+              const SizedBox(width: 12),
+              // Reverso Thumbnail
+              _buildThumbnailCard(
+                title: 'Reverso',
+                file: _reverseFile,
+                isSelected: _currentStep == 2,
+                onTapSelect: () => setState(() => _currentStep = 2),
+                onDelete: () => setState(() {
+                  _reverseFile = null;
+                  _currentStep = 2;
+                }),
+                theme: theme,
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          // Status or guidance messages
+          if (_statusMessage != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                _statusMessage!,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+            ),
+
+          // Shutter Button Row
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
                 onTap: _isProcessing ? null : _capturePhoto,
                 child: Container(
-                  width: 64,
-                  height: 64,
+                  width: 56,
+                  height: 56,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: theme.colorScheme.primary, width: 3),
                     color: Colors.transparent,
                   ),
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(3),
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -472,38 +472,39 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                         : Icon(
                             _isCoinMode ? Icons.camera_alt : Icons.crop_free,
                             color: Colors.white,
-                            size: 28,
+                            size: 24,
                           ),
                   ),
                 ),
               ),
             ],
           ),
-        ),
 
-        const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
-        // Send to API Button
-        SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: ElevatedButton.icon(
-            onPressed: (_obverseFile != null && !_isProcessing) ? _processRecognition : null,
-            icon: _isProcessing
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
-                : const Icon(Icons.arrow_forward_rounded),
-            label: const Text(
-              'Continuar a Datos Numismáticos',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          // Send to API Button
+          SizedBox(
+            width: double.infinity,
+            height: 46,
+            child: ElevatedButton.icon(
+              onPressed: (_obverseFile != null && !_isProcessing) ? _processRecognition : null,
+              icon: _isProcessing
+                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
+                  : const Icon(Icons.arrow_forward_rounded, size: 20),
+              label: const Text(
+                'Continuar a Datos Numismáticos',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 
@@ -521,10 +522,10 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       onTap: onTapSelect,
       borderRadius: BorderRadius.circular(14),
       child: Container(
-        width: 100,
-        height: 100,
+        width: 76,
+        height: 76,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? theme.colorScheme.primary : (hasFile ? Colors.grey.shade400 : Colors.grey.shade300),
             width: isSelected ? 2.5 : 1,
@@ -536,11 +537,11 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           children: [
             if (hasFile)
               ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
                 child: Image.file(
                   file,
-                  width: 100,
-                  height: 100,
+                  width: 76,
+                  height: 76,
                   fit: BoxFit.cover,
                 ),
               )

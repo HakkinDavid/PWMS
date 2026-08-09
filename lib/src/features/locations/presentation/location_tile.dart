@@ -38,15 +38,15 @@ class LocationTile extends StatelessWidget {
       onLongPress: onLongPress,
       borderRadius: BorderRadius.circular(18),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: theme.cardColor,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: theme.dividerColor.withAlpha(80)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(8),
-              blurRadius: 6,
+              blurRadius: 4,
               offset: const Offset(0, 2),
             ),
           ],
@@ -54,18 +54,18 @@ class LocationTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: theme.colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 iconData,
                 color: theme.colorScheme.onSecondaryContainer,
-                size: 22,
+                size: 18,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,19 +73,18 @@ class LocationTile extends StatelessWidget {
                 children: [
                   Text(
                     node.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
                   Text(
                     '$itemCount ${AppStrings.objectsLabel}',
-                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, size: 20, color: Colors.grey),
           ],
         ),
       ),

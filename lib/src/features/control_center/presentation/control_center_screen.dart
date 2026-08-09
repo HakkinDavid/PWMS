@@ -472,116 +472,73 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                   _advanceCard();
                 },
                 background: _buildSwipeBackground(
-                  color: Colors.green.shade700,
+                  color: Colors.blue.shade700,
                   icon: Icons.check_circle_outline,
-                  label: 'CONFIRMAR / CORRECTO',
+                  label: 'CORRECTO',
                   alignment: Alignment.centerLeft,
                 ),
                 secondaryBackground: _buildSwipeBackground(
-                  color: Colors.orange.shade800,
+                  color: Colors.red.shade800,
                   icon: Icons.build_circle_outlined,
-                  label: 'CORREGIR / ACCIÓN',
+                  label: 'CORREGIR',
                   alignment: Alignment.centerRight,
                 ),
                 child: Card(
-                  elevation: 8,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   child: Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: card.themeColor.withAlpha(100), width: 2),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Header Icon and Audit Title
-                        Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: card.themeColor.withAlpha(30),
-                                shape: BoxShape.circle,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Header Icon and Audit Title
+                          Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: card.themeColor.withAlpha(30),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(card.icon, size: 28, color: card.themeColor),
                               ),
-                              child: Icon(card.icon, size: 36, color: card.themeColor),
+                              const SizedBox(height: 6),
+                              Text(
+                                card.title,
+                                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 15),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+
+                          // Reusable Tile Widget (InstancePreviewCard, SubspeciesTile, or SpeciesTile)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                            child: card.tile,
+                          ),
+
+                          // Card Question Box
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: theme.cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: theme.dividerColor),
                             ),
-                            const SizedBox(height: 10),
-                            Text(
-                              card.title,
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            child: Text(
+                              card.question,
+                              style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600, fontSize: 12),
                               textAlign: TextAlign.center,
                             ),
-                          ],
-                        ),
-
-                        // Reusable Tile Widget (InstancePreviewCard, SubspeciesTile, or SpeciesTile)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: card.tile,
-                        ),
-
-                        // Card Question Box
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: theme.cardColor,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: theme.dividerColor),
                           ),
-                          child: Text(
-                            card.question,
-                            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-
-                        // Action Buttons with Icons (No emojis)
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () async {
-                                  await card.onConfirm(context, ref);
-                                  ref.invalidate(entityListProvider);
-                                  ref.invalidate(catalogListProvider);
-                                  ref.invalidate(subspeciesListProvider);
-                                  _advanceCard();
-                                },
-                                icon: const Icon(Icons.check_circle),
-                                label: const Text('Correcto'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green.shade700,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () async {
-                                  await card.onFix(context, ref);
-                                  ref.invalidate(entityListProvider);
-                                  ref.invalidate(catalogListProvider);
-                                  ref.invalidate(subspeciesListProvider);
-                                  _advanceCard();
-                                },
-                                icon: const Icon(Icons.build_circle),
-                                label: const Text('Corregir'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.orange.shade800,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

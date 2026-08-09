@@ -38,9 +38,11 @@ class InstancePreviewCard extends ConsumerWidget {
     final catalogItems = catalogState.asData?.value ?? [];
     final locationNodes = locationsState.asData?.value ?? [];
 
-    final targetEntity = entity ?? group!.primaryEntity;
-    final speciesId = entity?.speciesId ?? group!.speciesId;
-    final effectiveLocId = entity?.locationId ?? group!.effectiveLocationId;
+    final targetEntity = entity ?? group?.primaryEntity;
+    if (targetEntity == null) return const SizedBox.shrink();
+
+    final speciesId = entity?.speciesId ?? group?.speciesId;
+    final effectiveLocId = entity?.locationId ?? group?.effectiveLocationId;
     final subspeciesId = targetEntity.subspeciesId;
 
     final species = catalogItems.where((c) => c.id == speciesId).firstOrNull;

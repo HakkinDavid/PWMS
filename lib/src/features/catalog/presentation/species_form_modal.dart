@@ -25,12 +25,14 @@ class SpeciesFormModal extends ConsumerStatefulWidget {
   final CatalogItem? initialSpecies; // Null for Create mode, Non-null for Edit mode
   final Function(CatalogItem savedSpecies)? onSpeciesSaved;
   final dynamic scannedResult;
+  final bool isEmbedded;
 
   const SpeciesFormModal({
     super.key,
     this.initialSpecies,
     this.onSpeciesSaved,
     this.scannedResult,
+    this.isEmbedded = false,
   });
 
   static Future<CatalogItem?> show(
@@ -421,42 +423,29 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         ? mediaQuery.viewInsets.bottom + 16
         : mediaQuery.padding.bottom + 16;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 14,
-        bottom: bottomPadding,
-      ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: mediaQuery.size.height * 0.85,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withAlpha(100),
-                  borderRadius: BorderRadius.circular(2),
-                ),
+    final formContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!widget.isEmbedded) ...[
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withAlpha(100),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              _isEditMode ? AppStrings.editSpeciesTitle : AppStrings.createSpeciesTitle,
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            _isEditMode ? AppStrings.editSpeciesTitle : AppStrings.createSpeciesTitle,
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+        ],
 
-            Expanded(
+        Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -834,7 +823,28 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
               ),
             ),
           ],
+        );
+
+    if (widget.isEmbedded) {
+      return formContent;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 14,
+        bottom: bottomPadding,
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: mediaQuery.size.height * 0.85,
         ),
+        child: formContent,
       ),
     );
   }

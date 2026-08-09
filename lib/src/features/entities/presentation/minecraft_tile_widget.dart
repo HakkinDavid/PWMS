@@ -86,11 +86,17 @@ class MinecraftTileWidget extends ConsumerWidget {
             children: [
               // Center Icon / Image
               Center(
-                child: resolvedPhotoPath != null && resolvedPhotoPath.isNotEmpty && File(resolvedPhotoPath).existsSync()
-                    ? ClipRRect(
+                child: FutureBuilder<String>(
+                  future: (resolvedPhotoPath != null && resolvedPhotoPath.isNotEmpty)
+                      ? ref.read(fileStorageServiceProvider).getAbsolutePath(resolvedPhotoPath)
+                      : Future.value(''),
+                  builder: (context, absSnapshot) {
+                    final absPath = absSnapshot.data ?? '';
+                    if (absPath.isNotEmpty && File(absPath).existsSync()) {
+                      return ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.file(
-                          File(resolvedPhotoPath),
+                          File(absPath),
                           width: 54,
                           height: 54,
                           fit: BoxFit.cover,
@@ -100,12 +106,15 @@ class MinecraftTileWidget extends ConsumerWidget {
                             color: isExpired ? Colors.redAccent : theme.colorScheme.primary,
                           ),
                         ),
-                      )
-                    : Icon(
-                        icon,
-                        size: 40,
-                        color: isExpired ? Colors.redAccent : theme.colorScheme.primary,
-                      ),
+                      );
+                    }
+                    return Icon(
+                      icon,
+                      size: 40,
+                      color: isExpired ? Colors.redAccent : theme.colorScheme.primary,
+                    );
+                  },
+                ),
               ),
 
               // Top Left Status Badge (if expired)

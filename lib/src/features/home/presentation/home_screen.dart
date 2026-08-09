@@ -133,10 +133,6 @@ class HomeScreen extends ConsumerWidget {
                           tooltip: 'Configuración de App y Respaldos',
                           onPressed: () => context.push('/settings'),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.search, size: 28),
-                          onPressed: () => context.push('/search'),
-                        ),
                         Consumer(
                           builder: (context, ref, child) {
                             final notificationsAsync = ref.watch(notificationListProvider);
