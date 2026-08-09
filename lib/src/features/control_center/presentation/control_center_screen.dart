@@ -13,7 +13,7 @@ import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/instance_preview_card.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
-import '../../locations/presentation/location_tree_picker.dart';
+import '../../locations/presentation/location_or_container_correction_sheet.dart';
 
 enum AuditCardType {
   uninstantiatedSubspecies,
@@ -36,8 +36,8 @@ class AuditCardData {
   final CatalogItem? species;
   final Subspecies? subspecies;
   final WorldEntity? entity;
-  final Future<void> Function(BuildContext context, WidgetRef ref) onConfirm;
-  final Future<void> Function(BuildContext context, WidgetRef ref) onFix;
+  final Future<bool> Function(BuildContext context, WidgetRef ref) onConfirm;
+  final Future<bool> Function(BuildContext context, WidgetRef ref) onFix;
 
   AuditCardData({
     required this.id,
@@ -108,48 +108,66 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             themeColor: Colors.amber,
             subspecies: sub,
             species: parentSpecies,
-            tile: SubspeciesTile(
-              subspecies: sub,
-              speciesName: parentSpecies?.name,
-            ),
             onConfirm: (context, ref) async {
-              final delete = await showDialog<bool>(
+              final choice = await showDialog<String>(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('Confirmar Subespecie'),
-                  content: Text('¿Deseas eliminar la subespecie "$subNameStr" de tu catálogo o mantenerla?'),
+                  content: Text('¿Deseas mantener la subespecie "$subNameStr" en tu catálogo o eliminarla?'),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Mantener')),
+                    TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
+                    TextButton(onPressed: () => Navigator.pop(ctx, 'keep'), child: const Text('Mantener')),
                     TextButton(
-                      onPressed: () => Navigator.pop(ctx, true),
+                      onPressed: () => Navigator.pop(ctx, 'delete'),
                       child: const Text('Eliminar Subespecie', style: TextStyle(color: Colors.redAccent)),
                     ),
                   ],
                 ),
               );
 
-              if (delete == true) {
+              if (choice == 'keep') {
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Subespecie mantenida.');
+                }
+                return true;
+              } else if (choice == 'delete') {
                 try {
                   await catalogRepo.deleteSubspecies(sub.id);
                   if (context.mounted) {
                     AppToast.showSuccess(context, 'Subespecie eliminada.');
                   }
+                  return true;
                 } catch (e) {
                   if (context.mounted) {
                     AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
                   }
+                  return false;
                 }
               }
+              return false;
             },
             onFix: (context, ref) async {
               if (parentSpecies != null) {
+                final countBefore = (await entityRepo.getAllEntities())
+                    .where((e) => e.subspeciesId == sub.id).length;
+
                 await InstantiateSpeciesSheet.show(
                   context,
                   species: parentSpecies,
                   initialSubspecies: sub,
                 );
+
+                final countAfter = (await entityRepo.getAllEntities())
+                    .where((e) => e.subspeciesId == sub.id).length;
+
+                return countAfter > countBefore;
               }
+              return false;
             },
+            tile: SubspeciesTile(
+              subspecies: sub,
+              speciesName: parentSpecies?.name,
+            ),
           ));
         }
       }
@@ -179,7 +197,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
           type: AuditCardType.orphanEntity,
           title: 'Instancia sin Ubicación',
           subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
-          question: 'La instancia "$displayName" no tiene ubicación física asignada. ¿Asignarle una ubicación efectiva ahora?',
+          question: 'La instancia "$displayName" no tiene ubicación física asignada. ¿Asignarle una ubicación o contenedor ahora?',
           icon: Icons.wrong_location_outlined,
           themeColor: Colors.orangeAccent,
           entity: entity,
@@ -189,16 +207,10 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             if (context.mounted) {
               AppToast.showSuccess(context, 'Ubicación mantenida como no asignada.');
             }
+            return true;
           },
           onFix: (context, ref) async {
-            final result = await LocationTreePicker.show(context);
-            if (result != null) {
-              final updated = entity.copyWith(locationId: result.locationId);
-              await entityRepo.saveEntity(updated);
-              if (context.mounted) {
-                AppToast.showSuccess(context, 'Ubicación asignada correctamente.');
-              }
-            }
+            return await LocationOrContainerCorrectionSheet.show(context, entity: entity);
           },
         ));
       }
@@ -238,29 +250,63 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             if (context.mounted) {
               AppToast.showSuccess(context, 'Instancia confirmada en inventario.');
             }
+            return true;
           },
           onFix: (context, ref) async {
-            final confirm = await showDialog<bool>(
+            // Requisito 2: Al elegir corregir cuando se pregunta si se conserva un elemento,
+            // permitir elegir entre corregir ubicación o eliminar.
+            final choice = await showDialog<String>(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: const Text('Dar de Baja Instancia'),
-                content: Text('¿Confirmas que deseas eliminar del inventario esta instancia de "$displayName"?'),
+                title: const Text('Corregir Instancia'),
+                content: Text('¿Qué acción deseas realizar sobre la instancia "$displayName"?'),
                 actions: [
-                  TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
                   TextButton(
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: const Text('Eliminar Instancia', style: TextStyle(color: Colors.redAccent)),
+                    onPressed: () => Navigator.pop(ctx, 'cancel'),
+                    child: const Text('Cancelar'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () => Navigator.pop(ctx, 'location'),
+                    icon: const Icon(Icons.edit_location_alt_outlined),
+                    label: const Text('Corregir Ubicación / Contenedor'),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => Navigator.pop(ctx, 'delete'),
+                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                    label: const Text('Eliminar de Inventario', style: TextStyle(color: Colors.redAccent)),
                   ),
                 ],
               ),
             );
 
-            if (confirm == true) {
-              await entityRepo.deleteEntity(entity.id);
-              if (context.mounted) {
-                AppToast.showSuccess(context, 'Instancia dada de baja.');
+            if (choice == 'location') {
+              return await LocationOrContainerCorrectionSheet.show(context, entity: entity);
+            } else if (choice == 'delete') {
+              final confirmDelete = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Dar de Baja Instancia'),
+                  content: Text('¿Confirmas que deseas eliminar del inventario esta instancia de "$displayName"?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Eliminar Instancia', style: TextStyle(color: Colors.redAccent)),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmDelete == true) {
+                await entityRepo.deleteEntity(entity.id);
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Instancia dada de baja.');
+                }
+                return true;
               }
             }
+
+            return false;
           },
         ));
       }
@@ -300,16 +346,10 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             if (context.mounted) {
               AppToast.showSuccess(context, 'Ubicación confirmada.');
             }
+            return true;
           },
           onFix: (context, ref) async {
-            final result = await LocationTreePicker.show(context, initialSelectedId: entity.locationId);
-            if (result != null) {
-              final updated = entity.copyWith(locationId: result.locationId);
-              await entityRepo.saveEntity(updated);
-              if (context.mounted) {
-                AppToast.showSuccess(context, 'Ubicación actualizada.');
-              }
-            }
+            return await LocationOrContainerCorrectionSheet.show(context, entity: entity);
           },
         ));
       }
@@ -331,9 +371,11 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             if (context.mounted) {
               AppToast.showSuccess(context, 'Información omitida por el momento.');
             }
+            return true;
           },
           onFix: (context, ref) async {
-            await SpeciesFormModal.show(context, initialSpecies: sp);
+            final result = await SpeciesFormModal.show(context, initialSpecies: sp);
+            return result != null;
           },
         ));
       }
@@ -460,15 +502,18 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
               child: Dismissible(
                 key: Key(card.id),
                 direction: DismissDirection.horizontal,
-                onDismissed: (direction) async {
+                confirmDismiss: (direction) async {
                   if (direction == DismissDirection.endToStart) {
-                    await card.onFix(context, ref);
+                    return await card.onFix(context, ref);
                   } else {
-                    await card.onConfirm(context, ref);
+                    return await card.onConfirm(context, ref);
                   }
+                },
+                onDismissed: (direction) {
                   ref.invalidate(entityListProvider);
                   ref.invalidate(catalogListProvider);
                   ref.invalidate(subspeciesListProvider);
+                  ref.invalidate(relationListProvider);
                   _advanceCard();
                 },
                 background: _buildSwipeBackground(
@@ -537,6 +582,55 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                               textAlign: TextAlign.center,
                             ),
                           ),
+                          const SizedBox(height: 12),
+
+                          // Action buttons for explicit tapping
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: () async {
+                                    final ok = await card.onConfirm(context, ref);
+                                    if (ok) {
+                                      ref.invalidate(entityListProvider);
+                                      ref.invalidate(catalogListProvider);
+                                      ref.invalidate(subspeciesListProvider);
+                                      ref.invalidate(relationListProvider);
+                                      _advanceCard();
+                                    }
+                                  },
+                                  icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 18),
+                                  label: const Text('CORRECTO', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: Colors.green),
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    final ok = await card.onFix(context, ref);
+                                    if (ok) {
+                                      ref.invalidate(entityListProvider);
+                                      ref.invalidate(catalogListProvider);
+                                      ref.invalidate(subspeciesListProvider);
+                                      ref.invalidate(relationListProvider);
+                                      _advanceCard();
+                                    }
+                                  },
+                                  icon: const Icon(Icons.build_circle_outlined, size: 18),
+                                  label: const Text('CORREGIR', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: card.themeColor,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -574,3 +668,4 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
     );
   }
 }
+

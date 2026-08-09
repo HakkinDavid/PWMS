@@ -7,6 +7,7 @@ import '../../features/home/presentation/settings_screen.dart';
 
 import '../../features/entities/presentation/entity_detail_screen.dart';
 import '../../features/entities/presentation/grouped_instance_detail_screen.dart';
+import '../../features/entities/presentation/register_object_modal.dart';
 import '../../features/search/presentation/search_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
@@ -85,12 +86,17 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/search',
-      builder: (context, state) => const SearchScreen(),
-    ),
-    GoRoute(
-      path: '/notifications',
-      builder: (context, state) => const NotificationsScreen(),
+      path: '/register',
+      builder: (context, state) {
+        final initialLocId = state.uri.queryParameters['initialLocationId'];
+        final startInCreate = state.uri.queryParameters['startInCreateSpecies'] == 'true';
+        final scannedResult = state.extra;
+        return RegisterObjectModal(
+          initialLocationId: initialLocId,
+          startInCreateSpecies: startInCreate,
+          scannedResult: scannedResult,
+        );
+      },
     ),
     GoRoute(
       path: '/control-center',

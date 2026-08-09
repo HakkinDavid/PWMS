@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
@@ -35,15 +37,15 @@ class RegisterObjectModal extends ConsumerStatefulWidget {
     bool startInCreateSpecies = false,
     dynamic scannedResult,
   }) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => RegisterObjectModal(
-          initialLocationId: initialLocationId,
-          startInCreateSpecies: startInCreateSpecies,
-          scannedResult: scannedResult,
-        ),
-      ),
-    );
+    final queryParams = <String, String>{};
+    if (initialLocationId != null && initialLocationId.isNotEmpty) {
+      queryParams['initialLocationId'] = initialLocationId;
+    }
+    if (startInCreateSpecies) {
+      queryParams['startInCreateSpecies'] = 'true';
+    }
+    final uri = Uri(path: '/register', queryParameters: queryParams.isNotEmpty ? queryParams : null);
+    return context.push(uri.toString(), extra: scannedResult);
   }
 
   @override

@@ -396,10 +396,15 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       }
 
       if (mounted) {
+        final navCtx = Navigator.of(context).context;
         Navigator.pop(context, savedItem);
 
         if (!_isEditMode) {
-          InstantiateSpeciesSheet.show(context, species: savedItem);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (navCtx.mounted) {
+              InstantiateSpeciesSheet.show(navCtx, species: savedItem);
+            }
+          });
         }
       }
     } catch (e) {
