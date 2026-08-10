@@ -109,6 +109,17 @@ class CatalogRepository {
   Future<CatalogItem> saveCatalogItem(CatalogItem item) async {
     final all = await getAllCatalogItems();
 
+    final existingItem = all.where((c) => c.id == item.id).firstOrNull;
+    if (existingItem != null && existingItem.mainPhotoPath != null && existingItem.mainPhotoPath!.isNotEmpty && existingItem.mainPhotoPath != item.mainPhotoPath) {
+      final oldPhoto = existingItem.mainPhotoPath!;
+      final allSubs = await getAllSubspecies();
+      final isUsedElsewhere = all.any((c) => c.id != item.id && c.mainPhotoPath == oldPhoto) ||
+          allSubs.any((s) => s.photoPath == oldPhoto);
+      if (!isUsedElsewhere) {
+        await _fileStorageService.deleteFile(oldPhoto);
+      }
+    }
+
     final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
     final isNewSpecies = !all.any((c) => c.id == item.id);
 
@@ -200,6 +211,40 @@ class CatalogRepository {
 
     final updated = item.copyWith(name: clean);
     await saveCatalogItem(updated);
+  }
+
+  Future<void> removeSpeciesMainPhoto(String speciesId) async {
+    final item = await getCatalogItemById(speciesId);
+    if (item == null || item.mainPhotoPath == null || item.mainPhotoPath!.isEmpty) return;
+
+    final oldPhoto = item.mainPhotoPath!;
+    await (_db.update(_db.catalogTable)..where((t) => t.id.equals(speciesId)))
+        .write(const CatalogTableCompanion(mainPhotoPath: Value(null)));
+
+    final allItems = await getAllCatalogItems();
+    final allSubs = await getAllSubspecies();
+    final isUsedElsewhere = allItems.any((c) => c.mainPhotoPath == oldPhoto) ||
+        allSubs.any((s) => s.photoPath == oldPhoto);
+    if (!isUsedElsewhere) {
+      await _fileStorageService.deleteFile(oldPhoto);
+    }
+  }
+
+  Future<void> removeSubspeciesPhoto(String subspeciesId) async {
+    final sub = await getSubspeciesById(subspeciesId);
+    if (sub == null || sub.photoPath == null || sub.photoPath!.isEmpty) return;
+
+    final oldPhoto = sub.photoPath!;
+    await (_db.update(_db.subspeciesTable)..where((t) => t.id.equals(subspeciesId)))
+        .write(const SubspeciesTableCompanion(photoPath: Value(null)));
+
+    final allItems = await getAllCatalogItems();
+    final allSubs = await getAllSubspecies();
+    final isUsedElsewhere = allItems.any((c) => c.mainPhotoPath == oldPhoto) ||
+        allSubs.any((s) => s.id != subspeciesId && s.photoPath == oldPhoto);
+    if (!isUsedElsewhere) {
+      await _fileStorageService.deleteFile(oldPhoto);
+    }
   }
 
   Future<void> ensureDefaultSubspecies(String speciesId) async {
@@ -379,6 +424,18 @@ class CatalogRepository {
   }
 
   Future<void> saveSubspecies(Subspecies subspecies) async {
+    final existingSub = await getSubspeciesById(subspecies.id);
+    if (existingSub != null && existingSub.photoPath != null && existingSub.photoPath!.isNotEmpty && existingSub.photoPath != subspecies.photoPath) {
+      final oldPhoto = existingSub.photoPath!;
+      final allItems = await getAllCatalogItems();
+      final allSubs = await getAllSubspecies();
+      final isUsedElsewhere = allItems.any((c) => c.mainPhotoPath == oldPhoto) ||
+          allSubs.any((s) => s.id != subspecies.id && s.photoPath == oldPhoto);
+      if (!isUsedElsewhere) {
+        await _fileStorageService.deleteFile(oldPhoto);
+      }
+    }
+
     String? finalBrand = subspecies.brand?.trim();
     String? finalBarcode = subspecies.barcode?.trim();
 

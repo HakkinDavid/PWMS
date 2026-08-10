@@ -82,6 +82,11 @@ class AppStrings {
   static const registerAction = 'Registrar en el mundo';
   static const saveChangesAction = 'Guardar cambios';
   static const changePhotoAction = 'Cambiar fotografía';
+  static const deletePhotoAction = 'Borrar imagen';
+  static const deleteMainPhotoAction = 'Borrar imagen principal';
+  static const confirmDeletePhotoTitle = 'Eliminar imagen';
+  static const confirmDeletePhotoMessage = '¿Estás seguro de que deseas eliminar la imagen principal? Se borrará el archivo asociado.';
+  static const photoDeletedSuccess = 'Imagen eliminada con éxito.';
   static const selectFromCatalogChoice = 'Elegir del catálogo';
   static const createNewSpeciesChoice = 'Crear nueva especie';
   static const instantiateTab = 'Instanciar';

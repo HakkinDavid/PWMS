@@ -72,6 +72,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   bool _isNonPerishable = true;
   XFile? _selectedImage;
   String? _speciesPhotoPath;
+  bool _photoDeleted = false;
   bool _isSaving = false;
 
   // Multiplicity of Units & Magnitudes
@@ -343,6 +344,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       String? photoPath = _speciesPhotoPath;
       if (_selectedImage != null) {
         photoPath = await storage.saveFile(_selectedImage!.path);
+      } else if (_photoDeleted || photoPath == null) {
+        photoPath = null;
+        if (widget.initialSpecies?.mainPhotoPath != null && widget.initialSpecies!.mainPhotoPath!.isNotEmpty) {
+          await storage.deleteFile(widget.initialSpecies!.mainPhotoPath!);
+        }
       }
 
       final speciesId = widget.initialSpecies?.id ?? const Uuid().v4();
@@ -471,50 +477,77 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                           ),
                         );
                       },
-                      child: Container(
-                        height: 85,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: theme.cardColor,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: theme.dividerColor),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: _selectedImage != null
-                              ? Image.file(File(_selectedImage!.path), fit: BoxFit.contain)
-                              : (_speciesPhotoPath != null && _speciesPhotoPath!.isNotEmpty)
-                                  ? (_speciesPhotoPath!.startsWith('http')
-                                      ? Image.network(
-                                          _speciesPhotoPath!,
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
-                                        )
-                                      : FutureBuilder<String>(
-                                          future: ref.read(fileStorageServiceProvider).getAbsolutePath(_speciesPhotoPath!),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                              return Image.file(
-                                                File(snapshot.data!),
-                                                fit: BoxFit.contain,
-                                                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
-                                              );
-                                            }
-                                            return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-                                          },
-                                        ))
-                                  : Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.add_a_photo_outlined, size: 22, color: theme.colorScheme.primary),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          AppStrings.photoLabel,
-                                          style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 85,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: theme.cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: theme.dividerColor),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: _selectedImage != null
+                                  ? Image.file(File(_selectedImage!.path), fit: BoxFit.contain)
+                                  : (_speciesPhotoPath != null && _speciesPhotoPath!.isNotEmpty)
+                                      ? (_speciesPhotoPath!.startsWith('http')
+                                          ? Image.network(
+                                              _speciesPhotoPath!,
+                                              fit: BoxFit.contain,
+                                              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                                            )
+                                          : FutureBuilder<String>(
+                                              future: ref.read(fileStorageServiceProvider).getAbsolutePath(_speciesPhotoPath!),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                                                  return Image.file(
+                                                    File(snapshot.data!),
+                                                    fit: BoxFit.contain,
+                                                    errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                                                  );
+                                                }
+                                                return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                                              },
+                                            ))
+                                      : Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.add_a_photo_outlined, size: 22, color: theme.colorScheme.primary),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              AppStrings.photoLabel,
+                                              style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                        ),
+                            ),
+                          ),
+                          if (_selectedImage != null || (_speciesPhotoPath != null && _speciesPhotoPath!.isNotEmpty))
+                            Positioned(
+                              top: 4,
+                              right: 4,
+                              child: Material(
+                                color: Colors.redAccent.withAlpha(220),
+                                shape: const CircleBorder(),
+                                clipBehavior: Clip.antiAlias,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedImage = null;
+                                      _speciesPhotoPath = null;
+                                      _photoDeleted = true;
+                                    });
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(6.0),
+                                    child: Icon(Icons.delete_outline, color: Colors.white, size: 18),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 10),

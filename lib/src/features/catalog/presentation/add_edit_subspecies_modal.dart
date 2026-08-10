@@ -82,6 +82,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
   }
 
   bool _isSaving = false;
+  bool _photoDeleted = false;
 
   Future<void> _handleSave() async {
     final name = _nameController.text.trim();
@@ -95,6 +96,12 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       if (_newPickedImage != null) {
         final storage = ref.read(fileStorageServiceProvider);
         finalPhotoPath = await storage.saveFile(_newPickedImage!.path);
+      } else if (_photoDeleted || finalPhotoPath == null) {
+        finalPhotoPath = null;
+        if (widget.initialSubspecies?.photoPath != null && widget.initialSubspecies!.photoPath!.isNotEmpty) {
+          final storage = ref.read(fileStorageServiceProvider);
+          await storage.deleteFile(widget.initialSubspecies!.photoPath!);
+        }
       }
 
       final targetSpeciesId = widget.species?.id ?? widget.initialSubspecies?.speciesId ?? _selectedSpeciesId ?? '';
@@ -199,41 +206,68 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                   setState(() => _newPickedImage = img);
                 }
               },
-              child: Container(
-                height: 80,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: theme.dividerColor),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: _newPickedImage != null
-                      ? Image.file(File(_newPickedImage!.path), fit: BoxFit.cover)
-                      : (_photoPath != null && _photoPath!.isNotEmpty)
-                          ? FutureBuilder<String>(
-                              future: ref.read(fileStorageServiceProvider).getAbsolutePath(_photoPath!),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                  return Image.file(
-                                    File(snapshot.data!),
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
-                                  );
-                                }
-                                return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-                              },
-                            )
-                          : const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.add_a_photo_outlined, size: 22),
-                                SizedBox(height: 4),
-                                Text(AppStrings.subspeciesPhotoLabel, style: TextStyle(fontSize: 11)),
-                              ],
-                            ),
-                ),
+              child: Stack(
+                children: [
+                  Container(
+                    height: 80,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: theme.cardColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: theme.dividerColor),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: _newPickedImage != null
+                          ? Image.file(File(_newPickedImage!.path), fit: BoxFit.cover)
+                          : (_photoPath != null && _photoPath!.isNotEmpty)
+                              ? FutureBuilder<String>(
+                                  future: ref.read(fileStorageServiceProvider).getAbsolutePath(_photoPath!),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                                      return Image.file(
+                                        File(snapshot.data!),
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                                      );
+                                    }
+                                    return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                                  },
+                                )
+                              : const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.add_a_photo_outlined, size: 22),
+                                    SizedBox(height: 4),
+                                    Text(AppStrings.subspeciesPhotoLabel, style: TextStyle(fontSize: 11)),
+                                  ],
+                                ),
+                    ),
+                  ),
+                  if (_newPickedImage != null || (_photoPath != null && _photoPath!.isNotEmpty))
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Material(
+                        color: Colors.redAccent.withAlpha(220),
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _newPickedImage = null;
+                              _photoPath = null;
+                              _photoDeleted = true;
+                            });
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(6.0),
+                            child: Icon(Icons.delete_outline, color: Colors.white, size: 18),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(height: 6),
