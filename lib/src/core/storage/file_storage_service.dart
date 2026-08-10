@@ -41,12 +41,23 @@ class FileStorageService {
     return p.join(targetDir.path, relativePath);
   }
 
-  /// Deletes a file given its relative path.
-  Future<void> deleteFile(String relativePath) async {
-    final absPath = await getAbsolutePath(relativePath);
+  /// Checks if a file exists given its relative or absolute path.
+  Future<bool> fileExists(String relativeOrAbsolutePath) async {
+    if (relativeOrAbsolutePath.trim().isEmpty) return false;
+    final absPath = await getAbsolutePath(relativeOrAbsolutePath);
+    return File(absPath).existsSync();
+  }
+
+  /// Deletes a file given its relative or absolute path.
+  Future<void> deleteFile(String relativeOrAbsolutePath) async {
+    if (relativeOrAbsolutePath.trim().isEmpty) return;
+    final absPath = await getAbsolutePath(relativeOrAbsolutePath);
     final file = File(absPath);
     if (await file.exists()) {
-      await file.delete();
+      try {
+        await file.delete();
+      } catch (_) {}
     }
   }
 }
+

@@ -236,10 +236,13 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         final catalogRepo = ref.read(catalogRepositoryProvider);
         await catalogRepo.addAttachment(
           speciesId: species.id,
+          instanceId: result.id,
           filePath: widget.secondaryPhotoPath!,
           fileName: 'Reverso_${species.name}.jpg',
           fileType: 'image',
         );
+        ref.invalidate(instanceAttachmentsProvider(result.id));
+        ref.invalidate(speciesAttachmentsProvider(species.id));
       }
 
       if (_expirationDate != null) {

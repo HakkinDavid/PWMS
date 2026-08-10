@@ -383,6 +383,8 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             if (!mounted) return;
             ref.invalidate(entityListProvider);
             ref.invalidate(catalogListProvider);
+            ref.invalidate(speciesAttachmentsProvider(freshSpecies.id));
+            ref.invalidate(instanceAttachmentsProvider(createdInstance.id));
 
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(

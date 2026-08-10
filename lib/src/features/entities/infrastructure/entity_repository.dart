@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../locations/domain/location_resolver.dart';
 import '../../relations/domain/entity_relation.dart';
@@ -11,10 +10,14 @@ import '../domain/i_entity_repository.dart';
 import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 
+import '../../../core/storage/file_storage_service.dart';
+
 class EntityRepository implements IEntityRepository {
   final AppDatabase _db;
+  final FileStorageService _fileStorageService;
 
-  EntityRepository(this._db);
+  EntityRepository(this._db, [FileStorageService? fileStorageService])
+      : _fileStorageService = fileStorageService ?? FileStorageService();
 
   Future<WorldEntity> _mapToDomain(
     EntitiesTableData row, {
@@ -377,12 +380,6 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> addAttachment(Attachment attachment) async {
-    final existing = await getAttachmentsForSpecies(attachment.speciesId);
-    final isDuplicate = existing.any((a) => a.filePath == attachment.filePath || a.fileName.toLowerCase() == attachment.fileName.toLowerCase());
-    if (isDuplicate) {
-      throw Exception(AppStrings.duplicateAttachmentError);
-    }
-
     final companion = AttachmentsTableCompanion(
       id: Value(attachment.id),
       speciesId: Value(attachment.speciesId),
@@ -397,7 +394,12 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> deleteAttachment(String attachmentId) async {
-    await (_db.delete(_db.attachmentsTable)..where((t) => t.id.equals(attachmentId))).go();
+    final query = _db.select(_db.attachmentsTable)..where((t) => t.id.equals(attachmentId));
+    final row = await query.getSingleOrNull();
+    if (row != null) {
+      await (_db.delete(_db.attachmentsTable)..where((t) => t.id.equals(attachmentId))).go();
+      await _fileStorageService.deleteFile(row.filePath);
+    }
   }
 
   @override

@@ -8,10 +8,14 @@ import '../domain/species_magnitude.dart';
 import '../domain/species_requirement.dart';
 import '../domain/subspecies.dart';
 
+import '../../../core/storage/file_storage_service.dart';
+
 class CatalogRepository {
   final AppDatabase _db;
+  final FileStorageService _fileStorageService;
 
-  CatalogRepository(this._db);
+  CatalogRepository(this._db, [FileStorageService? fileStorageService])
+      : _fileStorageService = fileStorageService ?? FileStorageService();
 
   Future<CatalogItem> _mapToDomain(CatalogTableData row) async {
     Map<String, dynamic> customAttrs = {};
@@ -457,11 +461,20 @@ class CatalogRepository {
     required String fileName,
     required String fileType,
   }) async {
+    String storedPath = filePath;
+    try {
+      if (await _fileStorageService.fileExists(filePath)) {
+        storedPath = await _fileStorageService.saveFile(filePath);
+      }
+    } catch (_) {
+      // Fallback if saveFile fails or path is already stored
+    }
+
     final companion = AttachmentsTableCompanion(
       id: Value(const Uuid().v4()),
       speciesId: Value(speciesId),
       instanceId: Value(instanceId),
-      filePath: Value(filePath),
+      filePath: Value(storedPath),
       fileName: Value(fileName),
       fileType: Value(fileType),
       createdAt: Value(DateTime.now()),

@@ -219,6 +219,12 @@ final speciesAttachmentsProvider = FutureProvider.family<List<Attachment>, Strin
   return repo.getAttachmentsForSpecies(speciesId);
 });
 
+// Instance Attachments Provider
+final instanceAttachmentsProvider = FutureProvider.family<List<Attachment>, String>((ref, instanceId) async {
+  final repo = ref.watch(entityRepositoryProvider);
+  return repo.getAttachmentsForInstance(instanceId);
+});
+
 // Entity Relations Provider
 final entityRelationsProvider = FutureProvider.family<List<EntityRelation>, String>((ref, entityId) async {
   final repo = ref.watch(relationRepositoryProvider);
