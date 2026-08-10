@@ -98,43 +98,44 @@ void main() {
       expect(instanceAttachments.any((a) => a.fileName == reverseFileName && a.instanceId == instance.id), isTrue);
     });
 
-    test('resolveEffectiveEntityPhotoPath falls back to instance first image attachment when species/subspecies photos are null', () async {
-      final species = await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto', mainPhotoPath: null);
+    test('resolveEffectiveEntityPhotoPath takes precedence: 1. Instance attachment, 2. Subspecies, 3. Species', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto', mainPhotoPath: '/storage/photos/species_photo.jpg');
       final subspecies = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
         subspeciesName: '100 Pesos Sor Juana',
-        photoPath: null,
+        photoPath: '/storage/photos/subspecies_photo.jpg',
         createdAt: DateTime.now(),
       );
       await catalogRepo.saveSubspecies(subspecies);
 
       final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: subspecies.id);
 
-      final initialResolved = await resolveEffectiveEntityPhotoPathWithRepo(
+      // Without instance attachment, subspecies photo takes precedence over species
+      final resolvedSubspecies = await resolveEffectiveEntityPhotoPathWithRepo(
         entityRepo,
         subspecies: subspecies,
         species: species,
         instanceId: instance.id,
       );
-      expect(initialResolved, isNull);
+      expect(resolvedSubspecies, equals('/storage/photos/subspecies_photo.jpg'));
 
+      // With instance attachment, instance attachment takes precedence over both subspecies and species
       await catalogRepo.addAttachment(
         speciesId: species.id,
         instanceId: instance.id,
-        filePath: '/storage/photos/sor_juana_anverso.jpg',
-        fileName: '100 Pesos Sor Juana (${instance.id}) (anverso).jpg',
+        filePath: '/storage/photos/instance_photo.jpg',
+        fileName: 'instance_photo.jpg',
         fileType: 'image',
       );
 
-      final resolvedWithAttachment = await resolveEffectiveEntityPhotoPathWithRepo(
+      final resolvedInstance = await resolveEffectiveEntityPhotoPathWithRepo(
         entityRepo,
         subspecies: subspecies,
         species: species,
         instanceId: instance.id,
       );
-
-      expect(resolvedWithAttachment, equals('/storage/photos/sor_juana_anverso.jpg'));
+      expect(resolvedInstance, equals('/storage/photos/instance_photo.jpg'));
     });
   });
 }

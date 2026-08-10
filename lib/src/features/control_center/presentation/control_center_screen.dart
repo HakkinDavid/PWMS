@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +15,9 @@ import '../../entities/presentation/instance_preview_card.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_or_container_correction_sheet.dart';
+import '../../catalog/domain/numismatic_data_helper.dart';
+import '../../entities/domain/instance_magnitude.dart';
+import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 enum AuditCardType {
@@ -23,6 +27,10 @@ enum AuditCardType {
   expirationAudit,
   orphanEntity,
   incompleteSpeciesInfo,
+  numismaticSubspeciesIncongruity,
+  numismaticDuplicateSubspecies,
+  numismaticAttachmentIncongruity,
+  numismaticMissingMagnitudes,
 }
 
 class AuditCardData {
@@ -379,6 +387,264 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             return result != null;
           },
         ));
+      }
+
+      // 6. Auditoría Numismática: Subespecies duplicadas
+      final duplicateSubGroups = NumismaticDataHelper.findDuplicateSubspeciesGroups(subspeciesList);
+      for (final entry in duplicateSubGroups.entries) {
+        final canonicalSub = entry.value.first;
+        final parentSpecies = speciesList.where((c) => c.id == canonicalSub.speciesId).firstOrNull;
+        if (parentSpecies != null && NumismaticDataHelper.isNumismaticSpecies(parentSpecies)) {
+          final dupCount = entry.value.length;
+          cards.add(AuditCardData(
+            id: 'numis_dup_${canonicalSub.id}',
+            type: AuditCardType.numismaticDuplicateSubspecies,
+            title: 'Subespecies Numismáticas Duplicadas',
+            subtitle: '${canonicalSub.subspeciesName} • $dupCount subespecies idénticas en ${parentSpecies.name}',
+            question: 'Existen $dupCount subespecies registradas para "${canonicalSub.subspeciesName}". ¿Deseas fusionarlas y reasignar sus piezas a una sola subespecie canónica?',
+            icon: Icons.filter_none,
+            themeColor: Colors.deepOrange,
+            subspecies: canonicalSub,
+            species: parentSpecies,
+            tile: SubspeciesTile(subspecies: canonicalSub, speciesName: parentSpecies.name),
+            onConfirm: (context, ref) async {
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Subespecies duplicadas conservadas sin cambios.');
+              }
+              return true;
+            },
+            onFix: (context, ref) async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Fusionar Subespecies Duplicadas'),
+                  content: Text('¿Deseas consolidar las $dupCount subespecies de "${canonicalSub.subspeciesName}" en una sola subespecie y reasignar todas las instancias existentes?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Fusionar y Reasignar', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                await NumismaticDataHelper.mergeDuplicateSubspecies(
+                  catalogRepo: catalogRepo,
+                  entityRepo: entityRepo,
+                  canonicalSubspecies: canonicalSub,
+                  duplicateSubspeciesList: entry.value,
+                );
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Subespecies duplicadas fusionadas con éxito.');
+                }
+                return true;
+              }
+              return false;
+            },
+          ));
+        }
+      }
+
+      // 7. Auditoría Numismática: Incongruencias entre Subespecie e Instancias, Nombres de Adjuntos y Magnitudes Incompletas
+      for (final entity in entitiesList) {
+        final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
+        if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
+          final sub = subspeciesList.where((s) => s.id == entity.subspeciesId).firstOrNull;
+          if (sub != null) {
+            final displayName = EntityDisplayHelper.getDisplayName(
+              entity: entity,
+              catalogItems: speciesList,
+              subspeciesList: subspeciesList,
+            );
+
+            // A) Check Incongruence (subspecies title/notes vs instance magnitudes)
+            final issueMsg = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
+              subspecies: sub,
+              instance: entity,
+            );
+
+            if (issueMsg != null) {
+              cards.add(AuditCardData(
+                id: 'numis_inc_${entity.id}',
+                type: AuditCardType.numismaticSubspeciesIncongruity,
+                title: 'Incongruencia en Datos Numismáticos',
+                subtitle: '$displayName • Subespecie: ${sub.subspeciesName}',
+                question: '$issueMsg ¿Deseas actualizar la subespecie con los valores reales de la instancia?',
+                icon: Icons.currency_exchange,
+                themeColor: Colors.purple,
+                entity: entity,
+                subspecies: sub,
+                species: species,
+                tile: InstancePreviewCard(entity: entity),
+                onConfirm: (context, ref) async {
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Incongruencia omitida.');
+                  }
+                  return true;
+                },
+                onFix: (context, ref) async {
+                  final action = await showDialog<String>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Corregir Incongruencia Numismática'),
+                      content: Text('Sincronizar información para "$displayName":\n\n$issueMsg'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
+                        OutlinedButton(
+                          onPressed: () => Navigator.pop(ctx, 'subspecies'),
+                          child: const Text('Actualizar Subespecie según la Instancia'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (action == 'subspecies') {
+                    final updatedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
+                      catalogRepo: catalogRepo,
+                      subspecies: sub,
+                      instance: entity,
+                    );
+                    await NumismaticDataHelper.repairAttachmentFileNames(
+                      catalogRepo: catalogRepo,
+                      entityRepo: entityRepo,
+                      subspecies: updatedSub,
+                      instance: entity,
+                    );
+                    if (context.mounted) {
+                      AppToast.showSuccess(context, 'Subespecie y adjuntos sincronizados con éxito.');
+                    }
+                    return true;
+                  }
+                  return false;
+                },
+              ));
+            }
+
+            // B) Check Attachments Filename Congruence
+            final instanceAttachments = await entityRepo.getAttachmentsForInstance(entity.id);
+            for (final att in instanceAttachments) {
+              final isObverse = att.fileName.toLowerCase().contains('(anverso)') || att.fileName.toLowerCase().contains('anverso');
+              final side = isObverse ? 'anverso' : 'reverso';
+              final file = File(att.filePath);
+              final ext = file.path.contains('.') ? file.path.split('.').last : 'jpg';
+
+              final expectedName = NumismaticDataHelper.buildAttachmentFileName(
+                subspeciesName: sub.subspeciesName,
+                instanceId: entity.id,
+                side: side,
+                extension: ext,
+              );
+
+              if (att.fileName != expectedName) {
+                cards.add(AuditCardData(
+                  id: 'numis_att_${att.id}',
+                  type: AuditCardType.numismaticAttachmentIncongruity,
+                  title: 'Nombre de Adjunto Desincronizado',
+                  subtitle: '$displayName • Actual: ${att.fileName}',
+                  question: 'El adjunto "${att.fileName}" no coincide con el título actual de la subespecie "${sub.subspeciesName}". ¿Renombrar archivo a "$expectedName"?',
+                  icon: Icons.attachment,
+                  themeColor: Colors.indigo,
+                  entity: entity,
+                  subspecies: sub,
+                  species: species,
+                  tile: InstancePreviewCard(entity: entity),
+                  onConfirm: (context, ref) async {
+                    if (context.mounted) {
+                      AppToast.showSuccess(context, 'Nombre de adjunto mantenido.');
+                    }
+                    return true;
+                  },
+                  onFix: (context, ref) async {
+                    await NumismaticDataHelper.repairAttachmentFileNames(
+                      catalogRepo: catalogRepo,
+                      entityRepo: entityRepo,
+                      subspecies: sub,
+                      instance: entity,
+                    );
+                    if (context.mounted) {
+                      AppToast.showSuccess(context, 'Archivo adjunto renombrado correctamente.');
+                    }
+                    return true;
+                  },
+                ));
+              }
+            }
+
+            // C) Check Missing Required Magnitudes
+            final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+            final missingMags = <String>[];
+            if (instAttrs.faceValueNumber == null) missingMags.add('Valor nominal');
+            if (instAttrs.year == null) missingMags.add('Acuñación');
+            if (instAttrs.currencyName == null) missingMags.add('Divisa');
+
+            if (missingMags.isNotEmpty) {
+              cards.add(AuditCardData(
+                id: 'numis_mag_${entity.id}',
+                type: AuditCardType.numismaticMissingMagnitudes,
+                title: 'Magnitudes Numismáticas Incompletas',
+                subtitle: '$displayName • Faltan: ${missingMags.join(", ")}',
+                question: 'La instancia "$displayName" no tiene registradas las magnitudes (${missingMags.join(", ")}). ¿Deseas autocompletarlas desde el título de la subespecie?',
+                icon: Icons.fact_check_outlined,
+                themeColor: Colors.blueGrey,
+                entity: entity,
+                subspecies: sub,
+                species: species,
+                tile: InstancePreviewCard(entity: entity),
+                onConfirm: (context, ref) async {
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Magnitudes mantenidas sin cambios.');
+                  }
+                  return true;
+                },
+                onFix: (context, ref) async {
+                  final parsedSub = NumismaticDataHelper.parseSubspeciesName(sub.subspeciesName);
+                  final List<InstanceMagnitude> currentMags = List.from(entity.magnitudes);
+
+                  if (parsedSub.faceValueNumber != null && instAttrs.faceValueNumber == null) {
+                    currentMags.add(InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: 'Valor nominal',
+                      dataType: 'real',
+                      magnitudeValue: parsedSub.faceValueNumber!,
+                    ));
+                  }
+
+                  if (parsedSub.year != null && instAttrs.year == null && double.tryParse(parsedSub.year!) != null) {
+                    currentMags.add(InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: 'Acuñación',
+                      dataType: 'integer',
+                      magnitudeValue: double.parse(parsedSub.year!),
+                      unitSymbol: 'año',
+                    ));
+                  }
+
+                  if (parsedSub.currencyName != null && instAttrs.currencyName == null) {
+                    currentMags.add(InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: 'Divisa',
+                      dataType: 'string',
+                      stringValue: parsedSub.currencyName,
+                    ));
+                  }
+
+                  final updatedEntity = entity.copyWith(magnitudes: currentMags);
+                  await entityRepo.saveEntity(updatedEntity);
+
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Magnitudes numismáticas autocompletadas.');
+                  }
+                  return true;
+                },
+              ));
+            }
+          }
+        }
       }
 
       if (mounted) {

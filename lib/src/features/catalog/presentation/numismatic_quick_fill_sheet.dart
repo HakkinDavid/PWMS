@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../domain/numismatic_recognition_models.dart';
+import '../domain/numismatic_data_helper.dart';
 
 class NumismaticQuickFillSheet extends StatefulWidget {
   final File obversePhoto;
@@ -370,9 +371,12 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
     final yearStr = _yearController.text.trim();
     final speciesType = widget.isCoin ? 'Moneda' : 'Billete';
 
-    final titleParts = <String>['$_denomination $currName', _country!];
-    if (yearStr.isNotEmpty) titleParts.add('($yearStr)');
-    final title = titleParts.join(' - ');
+    final title = NumismaticDataHelper.buildSubspeciesName(
+      faceValueStr: _denomination,
+      currencyName: currName,
+      country: _country,
+      year: yearStr.isNotEmpty ? yearStr : null,
+    );
 
     final result = NumismaticScanResult(
       speciesType: speciesType,

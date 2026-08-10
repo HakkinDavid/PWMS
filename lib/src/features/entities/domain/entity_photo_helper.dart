@@ -6,10 +6,10 @@ import 'i_entity_repository.dart';
 
 /// Helper to resolve the effective display photo path for an entity instance or group.
 /// Resolution priority:
-/// 1. Subspecies photo (`subspecies.photoPath`) if present.
-/// 2. Species main photo (`species.mainPhotoPath`) if present.
-/// 3. First attached image of the specific instance (`instanceId`), if present.
-/// 4. Returns null if no image is found.
+/// 1. First attached image of the specific instance (`instanceId`), if present.
+/// 2. Subspecies photo (`subspecies.photoPath`) if present.
+/// 3. Species main photo (`species.mainPhotoPath`) if present.
+/// 4. Returns null if no image is found (fallback to default icon).
 Future<String?> resolveEffectiveEntityPhotoPath(
   WidgetRef ref, {
   Subspecies? subspecies,
@@ -30,12 +30,6 @@ Future<String?> resolveEffectiveEntityPhotoPathWithRepo(
   CatalogItem? species,
   String? instanceId,
 }) async {
-  if (subspecies?.photoPath != null && subspecies!.photoPath!.trim().isNotEmpty) {
-    return subspecies.photoPath;
-  }
-  if (species?.mainPhotoPath != null && species!.mainPhotoPath!.trim().isNotEmpty) {
-    return species.mainPhotoPath;
-  }
   if (instanceId != null && instanceId.isNotEmpty) {
     final attachments = await entityRepo.getAttachmentsForInstance(instanceId);
     final imageAttachment = attachments.where((a) {
@@ -51,6 +45,13 @@ Future<String?> resolveEffectiveEntityPhotoPathWithRepo(
     if (imageAttachment != null) {
       return imageAttachment.filePath;
     }
+  }
+
+  if (subspecies?.photoPath != null && subspecies!.photoPath!.trim().isNotEmpty) {
+    return subspecies.photoPath;
+  }
+  if (species?.mainPhotoPath != null && species!.mainPhotoPath!.trim().isNotEmpty) {
+    return species.mainPhotoPath;
   }
   return null;
 }

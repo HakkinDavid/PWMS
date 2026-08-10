@@ -7,6 +7,7 @@ import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
 import '../domain/species_requirement.dart';
 import '../domain/subspecies.dart';
+import '../../entities/domain/attachment.dart';
 
 import '../../../core/storage/file_storage_service.dart';
 
@@ -478,6 +479,19 @@ class CatalogRepository {
       fileName: Value(fileName),
       fileType: Value(fileType),
       createdAt: Value(DateTime.now()),
+    );
+    await _db.into(_db.attachmentsTable).insertOnConflictUpdate(companion);
+  }
+
+  Future<void> updateAttachment(Attachment attachment) async {
+    final companion = AttachmentsTableCompanion(
+      id: Value(attachment.id),
+      speciesId: Value(attachment.speciesId),
+      instanceId: Value(attachment.instanceId),
+      filePath: Value(attachment.filePath),
+      fileName: Value(attachment.fileName),
+      fileType: Value(attachment.fileType),
+      createdAt: Value(attachment.createdAt),
     );
     await _db.into(_db.attachmentsTable).insertOnConflictUpdate(companion);
   }

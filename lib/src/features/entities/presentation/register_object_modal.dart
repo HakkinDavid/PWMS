@@ -8,6 +8,7 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
+import '../../catalog/domain/numismatic_data_helper.dart';
 import '../../catalog/presentation/add_edit_subspecies_modal.dart';
 import '../../catalog/presentation/auto_fill_scanner_widget.dart';
 import '../../catalog/presentation/guided_dual_scan_widget.dart';
@@ -261,18 +262,18 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             }
 
             if (targetSubspecies == null) {
-              final currencyStr = result.currencyName ?? result.currencyCode ?? '';
-              final notesParts = <String>[];
-              if (currencyStr.isNotEmpty) notesParts.add('${AppStrings.currencyNotePrefix}$currencyStr');
-              if (result.year != null) notesParts.add('${AppStrings.yearNotePrefix}${result.year}');
-              if (result.composition != null) notesParts.add('${AppStrings.materialNotePrefix}${result.composition}');
+              final notesStr = NumismaticDataHelper.buildSubspeciesNotes(
+                currencyName: result.currencyName ?? result.currencyCode,
+                year: result.year,
+                composition: result.composition,
+              );
 
               targetSubspecies = Subspecies(
                 id: const Uuid().v4(),
                 speciesId: freshSpecies.id,
                 subspeciesName: result.subspeciesName,
                 photoPath: null,
-                notes: notesParts.isNotEmpty ? notesParts.join(' | ') : null,
+                notes: notesStr.isNotEmpty ? notesStr : null,
                 createdAt: DateTime.now(),
               );
 
@@ -349,12 +350,15 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             }
 
             // 5. Adjuntos de Anverso y Reverso por instancia (sin stitching)
-            final sanitizedSubname = targetSubspecies.subspeciesName.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
-
             final obverseFile = File(result.obversePhotoPath);
             if (await obverseFile.exists()) {
               final ext = obverseFile.path.contains('.') ? obverseFile.path.split('.').last : 'jpg';
-              final obverseFileName = '$sanitizedSubname (${createdInstance.id}) (anverso).$ext';
+              final obverseFileName = NumismaticDataHelper.buildAttachmentFileName(
+                subspeciesName: targetSubspecies.subspeciesName,
+                instanceId: createdInstance.id,
+                side: 'anverso',
+                extension: ext,
+              );
               await catalogRepo.addAttachment(
                 speciesId: freshSpecies.id,
                 instanceId: createdInstance.id,
@@ -368,7 +372,12 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               final reverseFile = File(result.reversePhotoPath!);
               if (await reverseFile.exists()) {
                 final ext = reverseFile.path.contains('.') ? reverseFile.path.split('.').last : 'jpg';
-                final reverseFileName = '$sanitizedSubname (${createdInstance.id}) (reverso).$ext';
+                final reverseFileName = NumismaticDataHelper.buildAttachmentFileName(
+                  subspeciesName: targetSubspecies.subspeciesName,
+                  instanceId: createdInstance.id,
+                  side: 'reverso',
+                  extension: ext,
+                );
                 await catalogRepo.addAttachment(
                   speciesId: freshSpecies.id,
                   instanceId: createdInstance.id,

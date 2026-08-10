@@ -69,21 +69,14 @@ When registering or editing a subspecies via `AddEditSubspeciesModal`:
 
 ## 5. Main Photo Resolution & Fallback Logic
 
-Subspecies can have their own primary image. When rendering any instance or tile:
+When rendering any instance or tile, image resolution follows this strict hierarchy of precedence:
 
-1. If `subspecies.photoPath` exists and is non-empty, use `subspecies.photoPath`.
-2. Otherwise, fall back to `species.mainPhotoPath`.
+1. **First attached image of the instance**: If the specific instance has image attachments, the first attached image (`fileType == 'image'` or image extension) takes highest priority.
+2. **Subspecies photo**: If no instance image attachment exists, use `subspecies.photoPath` if present.
+3. **Species main photo**: If `subspecies.photoPath` is null, fall back to `species.mainPhotoPath`.
+4. **Default icon**: If no image is found, returns `null` and the UI renders the default species badge/avatar icon (`SpeciesTextBadgeAvatar`).
 
-Implemented in `Subspecies.resolvePhotoPath`:
-
-```dart
-String? resolvePhotoPath(String? speciesMainPhotoPath) {
-  if (photoPath != null && photoPath!.trim().isNotEmpty) {
-    return photoPath;
-  }
-  return speciesMainPhotoPath;
-}
-```
+Implemented in `resolveEffectiveEntityPhotoPathWithRepo` ([`entity_photo_helper.dart`](file:///Users/hakkindavid/Documents/GitHub/PlatinumWorldManagementSystem/lib/src/features/entities/domain/entity_photo_helper.dart)).
 
 ---
 
