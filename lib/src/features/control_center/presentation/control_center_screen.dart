@@ -18,7 +18,6 @@ import '../../locations/presentation/location_or_container_correction_sheet.dart
 import '../../catalog/domain/numismatic_data_helper.dart';
 import '../../entities/domain/instance_magnitude.dart';
 import 'package:uuid/uuid.dart';
-import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 enum AuditCardType {
   uninstantiatedSubspecies,

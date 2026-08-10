@@ -6,7 +6,7 @@ import 'package:platinum_world_management_system/src/features/entities/domain/wo
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_recognition_models.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
-import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/i_entity_repository.dart';
 
 class NumismaticAttributes {
   final double? faceValueNumber;
@@ -788,7 +788,7 @@ class NumismaticDataHelper {
   /// Repairs subspecies title, notes, instance magnitudes & attachment file names to strict canonical standards.
   static Future<Subspecies> repairSubspeciesFromInstance({
     required CatalogRepository catalogRepo,
-    required EntityRepository entityRepo,
+    required IEntityRepository entityRepo,
     required Subspecies subspecies,
     required WorldEntity instance,
   }) async {
@@ -846,7 +846,7 @@ class NumismaticDataHelper {
   /// Merges duplicate subspecies into a canonical subspecies. Reassigns entities and deletes duplicates.
   static Future<void> mergeDuplicateSubspecies({
     required CatalogRepository catalogRepo,
-    required EntityRepository entityRepo,
+    required IEntityRepository entityRepo,
     required Subspecies canonicalSubspecies,
     required List<Subspecies> duplicateSubspeciesList,
   }) async {
@@ -870,7 +870,7 @@ class NumismaticDataHelper {
   /// Renames attachment files and updates database records to match current canonical subspecies name.
   static Future<void> repairAttachmentFileNames({
     required CatalogRepository catalogRepo,
-    required EntityRepository entityRepo,
+    required IEntityRepository entityRepo,
     required Subspecies subspecies,
     required WorldEntity instance,
   }) async {

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/native.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/services.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
@@ -11,6 +12,11 @@ void main() {
   late CatalogRepository repository;
 
   setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      const MethodChannel('plugins.flutter.io/path_provider'),
+      (MethodCall methodCall) async => '.',
+    );
     db = AppDatabase(NativeDatabase.memory());
     repository = CatalogRepository(db);
   });

@@ -84,7 +84,7 @@ void main() {
     final currencyDropdown = find.byType(DropdownButtonFormField<String?>).at(2);
     await tester.tap(currencyDropdown);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('MXN (Peso Mexicano)').last);
+    await tester.tap(find.text('MXN (Pesos Mexicanos)').last);
     await tester.pumpAndSettle();
 
     // 4. Enter Year (1982)
@@ -96,7 +96,7 @@ void main() {
     final gradeDropdown = find.byType(DropdownButtonFormField<String?>).at(3);
     await tester.tap(gradeDropdown);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('MBC / VF (Muy Buena)').last);
+    await tester.tap(find.text('Muy buena').last);
     await tester.pumpAndSettle();
 
     // 6. Select Material (Cuproníquel)
@@ -115,11 +115,11 @@ void main() {
     expect(submittedResult, isNotNull);
     expect(submittedResult!.country, equals('México'));
     expect(submittedResult!.currencyCode, equals('MXN'));
-    expect(submittedResult!.currencyName, equals('Peso Mexicano'));
+    expect(submittedResult!.currencyName, equals('Pesos Mexicanos'));
     expect(submittedResult!.faceValueNumber, equals(5.0));
     expect(submittedResult!.year, equals('1982'));
-    expect(submittedResult!.grade, equals('MBC / VF (Muy Buena)'));
+    expect(submittedResult!.grade, equals('Muy buena'));
     expect(submittedResult!.composition, equals('Cuproníquel'));
-    expect(submittedResult!.subspeciesName, equals('5 Peso Mexicano - México - (1982)'));
+    expect(submittedResult!.subspeciesName, equals('5 Pesos Mexicanos - México (1982)'));
   });
 }

@@ -187,12 +187,11 @@ class SpeciesDetailView extends ConsumerWidget {
         final repo = ref.read(catalogRepositoryProvider);
         if (subspecies != null && subspecies!.photoPath != null && subspecies!.photoPath!.isNotEmpty) {
           await repo.removeSubspeciesPhoto(subspecies!.id);
-          ref.invalidate(subspeciesListProvider(species.id));
+          ref.invalidate(subspeciesListProvider);
         } else if (species.mainPhotoPath != null && species.mainPhotoPath!.isNotEmpty) {
           await repo.removeSpeciesMainPhoto(species.id);
         }
         ref.invalidate(catalogListProvider);
-        ref.invalidate(catalogItemProvider(species.id));
 
         if (context.mounted) {
           AppToast.showSuccess(context, AppStrings.photoDeletedSuccess);

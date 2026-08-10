@@ -153,8 +153,8 @@ void main() {
     });
 
     test('resolveGrade, resolveMaterial, and resolveSpecialEditionReason map to canonical lists', () {
-      expect(NumismaticDataHelper.resolveGrade('UNC'), equals('FDC / UNC (Sin Circular)'));
-      expect(NumismaticDataHelper.resolveGrade('VF'), equals('MBC / VF (Muy Buena)'));
+      expect(NumismaticDataHelper.resolveGrade('UNC'), equals('Sin circular'));
+      expect(NumismaticDataHelper.resolveGrade('VF'), equals('Muy buena'));
 
       expect(NumismaticDataHelper.resolveMaterial('cu-ni'), equals('Cuproníquel'));
       expect(NumismaticDataHelper.resolveMaterial('silver'), equals('Plata'));
