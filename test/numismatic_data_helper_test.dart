@@ -118,6 +118,38 @@ void main() {
       expect(issue, contains('Año'));
     });
 
+    test('areCurrenciesEquivalent matches codes, full names, and plurals robustly', () {
+      expect(NumismaticDataHelper.areCurrenciesEquivalent('MXN', 'Peso Mexicano'), isTrue);
+      expect(NumismaticDataHelper.areCurrenciesEquivalent('Pesos Mexicanos', 'Peso Mexicano'), isTrue);
+      expect(NumismaticDataHelper.areCurrenciesEquivalent('USD', 'Dólar Estadounidense'), isTrue);
+      expect(NumismaticDataHelper.areCurrenciesEquivalent('Dólares Estadounidenses', 'Dólar Estadounidense'), isTrue);
+      expect(NumismaticDataHelper.areCurrenciesEquivalent('MXN', 'USD'), isFalse);
+    });
+
+    test('checkInstanceSubspeciesCongruence considers ISO code vs full currency name as congruent', () {
+      final sub = Subspecies(
+        id: 'sub-1',
+        speciesId: 'sp-1',
+        subspeciesName: '5 Pesos Mexicanos - México (2022)',
+        createdAt: DateTime.now(),
+      );
+
+      final instanceWithCode = WorldEntity(
+        id: 'inst-1',
+        speciesId: 'sp-1',
+        subspeciesId: 'sub-1',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-1', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 5.0),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-1', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2022.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-1', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+        ],
+      );
+
+      expect(NumismaticDataHelper.checkInstanceSubspeciesCongruence(subspecies: sub, instance: instanceWithCode), isNull);
+    });
+
     test('findDuplicateSubspeciesGroups finds duplicate subspecies titles', () {
       final list = [
         Subspecies(id: 's1', speciesId: 'sp1', subspeciesName: '5 Pesos Mexicanos - México (2022)', createdAt: DateTime.now()),

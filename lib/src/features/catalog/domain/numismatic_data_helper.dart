@@ -51,6 +51,292 @@ class NumismaticCongruenceIssue {
 class NumismaticDataHelper {
   static const List<String> numismaticSpeciesNames = ['Moneda', 'Billete'];
 
+  /// Map of ISO currency codes to full Spanish currency names.
+  static const Map<String, String> currencyMap = {
+    // 1. México
+    'MXN': 'Peso Mexicano',
+    'MXP': 'Peso Mexicano Antiguo',
+    // 2. Norteamérica
+    'USD': 'Dólar Estadounidense',
+    'CAD': 'Dólar Canadiense',
+    // 3. Centroamérica y Caribe
+    'GTQ': 'Quetzal Guatemalteco',
+    'BZD': 'Dólar Beliceño',
+    'SVC': 'Colón Salvadoreño',
+    'HNL': 'Lempira Hondureño',
+    'NIO': 'Córdoba Nicaragüense',
+    'CRC': 'Colón Costarricense',
+    'PAB': 'Balboa Panameño',
+    'CUP': 'Peso Cubano',
+    'CUC': 'Peso Cubano Convertible',
+    'DOP': 'Peso Dominicano',
+    'HTG': 'Gourde Haitiano',
+    'JMD': 'Dólar Jamaicano',
+    'BSD': 'Dólar Bahameño',
+    'AWG': 'Florín Arubeño',
+    'ANG': 'Florín Antillano Holandés',
+    'XCD': 'Dólar del Caribe Oriental',
+    'KYD': 'Dólar de las Islas Caimán',
+    'BBD': 'Dólar de Barbados',
+    'TTD': 'Dólar de Trinidad y Tobago',
+    // 4. Sudamérica
+    'COP': 'Peso Colombiano',
+    'VES': 'Bolívar Soberano Venezolano',
+    'VED': 'Bolívar Soberano Digital Venezolano',
+    'PEN': 'Sol Peruano',
+    'BRL': 'Real Brasileño',
+    'BOB': 'Boliviano',
+    'CLP': 'Peso Chileno',
+    'ARS': 'Peso Argentino',
+    'UYU': 'Peso Uruguayo',
+    'PYG': 'Guaraní Paraguayo',
+    'GYD': 'Dólar Guyanés',
+    'SRD': 'Dólar Surinamés',
+    'FKP': 'Libra de las Islas Malvinas',
+    // 5. Europa
+    'ESP': 'Peseta Española (Histórica)',
+    'EUR': 'Euro',
+    'GBP': 'Libra Esterlina',
+    'CHF': 'Franco Suizo',
+    'SEK': 'Corona Sueca',
+    'NOK': 'Corona Noruega',
+    'DKK': 'Corona Danesa',
+    'PLN': 'Zloty Polaco',
+    'CZK': 'Corona Checa',
+    'HUF': 'Forinto Húngaro',
+    'RON': 'Leu Rumano',
+    'BGN': 'Lev Búlgaro',
+    'RSD': 'Dinar Serbio',
+    'HRK': 'Kuna Croata',
+    'BAM': 'Marco Convertible de Bosnia-Herzegovina',
+    'ALL': 'Lek Albanés',
+    'MKD': 'Denar Macedonio',
+    'RUB': 'Rublo Ruso',
+    'UAH': 'Grivna Ucraniana',
+    'BYN': 'Rublo Bielorruso',
+    'MDL': 'Leu Moldavo',
+    'TRY': 'Lira Turca',
+    'GIP': 'Libra de Gibraltar',
+    'ISK': 'Corona Islandesa',
+    // 6. Asia / Medio Oriente / Pacífico
+    'JPY': 'Yen Japonés',
+    'CNY': 'Yuan Chino',
+    'KRW': 'Won Surcoreano',
+    'KPW': 'Won Norte-Coreano',
+    'TWD': 'Nuevo Dólar Taiwanés',
+    'HKD': 'Dólar de Hong Kong',
+    'MOP': 'Pataca Macanesa',
+    'INR': 'Rupia India',
+    'IDR': 'Rupia Indonesia',
+    'PHP': 'Peso Filipino',
+    'SGD': 'Dólar de Singapur',
+    'MYR': 'Ringgit Malayo',
+    'THB': 'Baht Tailandés',
+    'VND': 'Dong Vietnamita',
+    'PKR': 'Rupia Pakistaní',
+    'BDT': 'Taka Bangladesí',
+    'LKR': 'Rupia de Sri Lanka',
+    'NPR': 'Rupia Nepalí',
+    'ILS': 'Nuevo Séquel Israelí',
+    'AED': 'Dírham de los Emiratos Árabes Unidos',
+    'SAR': 'Riyal Saudí',
+    'QAR': 'Riyal Catarí',
+    'KWD': 'Dinar Kuwaití',
+    'BHD': 'Dinar Baréiní',
+    'OMR': 'Rial Omaní',
+    'JOD': 'Dinar Jordano',
+    'LBP': 'Libra Libanesa',
+    'SYP': 'Libra Siria',
+    'IQD': 'Dinar Iraquí',
+    'IRR': 'Rial Iraní',
+    'KZT': 'Tenge Kazakh',
+    'UZS': 'Som Uzbeko',
+    'AFN': 'Afgani Afgano',
+    'AMD': 'Dram Armenio',
+    'AZN': 'Manat Azerbaiyano',
+    'GEL': 'Lari Georgiano',
+    'KHR': 'Riel Camboyano',
+    'LAK': 'Kip Laosiano',
+    'MMK': 'Kyat de Myanmar',
+    'MNT': 'Tugrik Mongol',
+    'MVR': 'Rufiyaa Maldiva',
+    'BTN': 'Ngultrum Butanés',
+    'TJS': 'Somoni Tayiko',
+    'TMT': 'Manat Turkmenio',
+    'YER': 'Rial Yemení',
+    // 7. Oceanía
+    'AUD': 'Dólar Australiano',
+    'NZD': 'Dólar Neozelandés',
+    'FJD': 'Dólar Fiyiano',
+    'PGK': 'Kina de Papúa Nueva Guinea',
+    'SBD': 'Dólar de las Islas Salomón',
+    'TOP': 'Paʻanga Tongano',
+    'VUV': 'Vatu Vanuatuense',
+    'WST': 'Tala Samoano',
+    'XPF': 'Franco CFP',
+    // 8. África
+    'EGP': 'Libra Egipcia',
+    'MAD': 'Dírham Marroquí',
+    'DZD': 'Dinar Argelino',
+    'TND': 'Dinar Tunecino',
+    'LYD': 'Dinar Libio',
+    'ZAR': 'Rand Sudafricano',
+    'NGN': 'Naira Nigeriana',
+    'KES': 'Chelín Keniano',
+    'ETB': 'Birr Etíope',
+    'GHS': 'Cedi Ghanés',
+    'XAF': 'Franco CFA de África Central',
+    'XOF': 'Franco CFA de África Occidental',
+    'AOA': 'Kwanza Angoleño',
+    'BWP': 'Pula Botsuano',
+    'BIF': 'Franco Burundés',
+    'CVE': 'Escudo Caboverdiano',
+    'CDF': 'Franco Congoleño',
+    'DJF': 'Franco Yibutiano',
+    'ERN': 'Nakfa Eritreo',
+    'GMD': 'Dalasi Gambiano',
+    'GNF': 'Franco Guineano',
+    'KMF': 'Franco Comorense',
+    'LRD': 'Dólar Liberiano',
+    'LSL': 'Loti Lesothense',
+    'MGA': 'Ariary Malgache',
+    'MWK': 'Kwacha Malauí',
+    'MRU': 'Ouguiya Mauritana',
+    'MUR': 'Rupia de Mauricio',
+    'MZN': 'Metical Mozambanqueño',
+    'NAD': 'Dólar Namibio',
+    'RWF': 'Franco Ruandés',
+    'SHP': 'Libra de Santa Elena',
+    'STN': 'Dobra de Santo Tomé y Príncipe',
+    'SCR': 'Rupia de Seychelles',
+    'SLE': 'Leone de Sierra Leona',
+    'SLL': 'Leone Antiguo de Sierra Leona',
+    'SOS': 'Chelín Somalí',
+    'SDG': 'Libra Sudanesa',
+    'SSP': 'Libra Sudsudanesa',
+    'SZL': 'Lilangeni Esuatiní',
+    'TZS': 'Chelín Tanzano',
+    'UGX': 'Chelín Ugandés',
+    'ZMW': 'Kwacha Zambiano',
+    'ZWL': 'Dólar Zimbabuense',
+  };
+
+  /// Countries ordered by geographic, economic & cultural proximity to Mexico.
+  static const List<String> countries = [
+    // 1. México
+    'México',
+    // 2. Norteamérica
+    'Estados Unidos', 'Canadá',
+    // 3. Centroamérica y Caribe
+    'Guatemala', 'Belice', 'El Salvador', 'Honduras', 'Nicaragua', 'Costa Rica', 'Panamá',
+    'Cuba', 'Puerto Rico', 'República Dominicana', 'Haití', 'Jamaica', 'Bahamas', 'Aruba', 'Curazao',
+    'Bermudas', 'Antigua y Barbuda', 'Barbados', 'Dominica', 'Granada', 'San Cristóbal y Nieves',
+    'Santa Lucía', 'San Vicente y las Granadinas', 'Trinidad y Tobago', 'Islas Caimán',
+    // 4. Sudamérica
+    'Colombia', 'Venezuela', 'Ecuador', 'Perú', 'Brasil', 'Bolivia', 'Chile', 'Argentina',
+    'Paraguay', 'Uruguay', 'Guyana', 'Surinam', 'Islas Malvinas',
+    // 5. Europa
+    'España', 'Unión Europea', 'Reino Unido', 'Francia', 'Alemania', 'Italia', 'Portugal', 'Suiza',
+    'Bélgica', 'Países Bajos', 'Irlanda', 'Austria', 'Ciudad del Vaticano', 'San Marino', 'Andorra',
+    'Dinamarca', 'Noruega', 'Suecia', 'Finlandia', 'Islandia', 'Polonia', 'República Checa',
+    'Eslovaquia', 'Hungría', 'Rumanía', 'Bulgaria', 'Grecia', 'Chipre', 'Turquía', 'Rusia', 'Ucrania',
+    'Bielorrusia', 'Moldavia', 'Lituania', 'Letonia', 'Estonia', 'Albania', 'Bosnia y Herzegovina',
+    'Croacia', 'Eslovenia', 'Macedonia del Norte', 'Montenegro', 'Serbia', 'Gibraltar', 'Groenlandia',
+    'Islas Feroe', 'Liechtenstein', 'Luxemburgo', 'Mónaco', 'Malta',
+    // 6. Asia y Medio Oriente
+    'Japón', 'China', 'Corea del Sur', 'Corea del Norte', 'Taiwán', 'Hong Kong', 'Macao', 'Filipinas',
+    'India', 'Indonesia', 'Malasia', 'Singapur', 'Tailandia', 'Vietnam', 'Camboya', 'Laos',
+    'Birmania (Myanmar)', 'Bangladés', 'Pakistán', 'Sri Lanka', 'Nepal', 'Bután', 'Maldivas',
+    'Afganistán', 'Israel', 'Palestina', 'Jordania', 'Líbano', 'Siria', 'Irak', 'Irán', 'Arabia Saudita',
+    'Emiratos Árabes Unidos', 'Catar', 'Baréin', 'Kuwait', 'Omán', 'Yemen', 'Armenia',
+    'Azerbaiyán', 'Georgia', 'Kazajistán', 'Kirguistán', 'Tayikistán', 'Turkmenistán', 'Uzbekistán',
+    'Brunéi', 'Mongolia', 'Timor Oriental',
+    // 7. Oceanía
+    'Australia', 'Nueva Zelanda', 'Fiyi', 'Islas Cook', 'Islas Marshall', 'Islas Salomón',
+    'Micronesia', 'Nauru', 'Nueva Caledonia', 'Palaos', 'Papúa Nueva Guinea', 'Polinesia Francesa',
+    'Samoa', 'Tonga', 'Tuvalu', 'Vanuatu', 'Kiribati',
+    // 8. África
+    'Egipto', 'Marruecos', 'Argelia', 'Túnez', 'Libia', 'Sudáfrica', 'Nigeria', 'Kenia', 'Etiopía',
+    'Angola', 'Benín', 'Botsuana', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Camerún', 'Chad',
+    'Comoras', 'Costa de Marfil', 'Eritrea', 'Esuatini (Suazilandia)', 'Gabón', 'Gambia', 'Ghana',
+    'Guinea', 'Guinea Ecuatorial', 'Guinea-Bisáu', 'Lesoto', 'Liberia', 'Madagascar', 'Malaui',
+    'Malí', 'Mauricio', 'Mauritania', 'Mozambique', 'Namibia', 'Níger', 'República Centroafricana',
+    'República del Congo', 'República Democrática del Congo', 'Ruanda', 'Santo Tomé y Príncipe',
+    'Senegal', 'Seychelles', 'Sierra Leona', 'Somalia', 'Sudán', 'Sudán del Sur', 'Tanzania',
+    'Togo', 'Uganda', 'Yibuti', 'Zambia', 'Zimbabue',
+    // 9. Otro
+    'Otro',
+  ];
+
+  /// Resolves any currency string (code or full name) to a standardized full name if possible.
+  static String resolveCurrencyName(String codeOrName) {
+    final clean = codeOrName.trim();
+    if (clean.isEmpty) return clean;
+
+    final upperCode = clean.toUpperCase();
+    if (currencyMap.containsKey(upperCode)) {
+      return currencyMap[upperCode]!;
+    }
+
+    String normalize(String text) {
+      return text.toLowerCase()
+          .replaceAll('pesos', 'peso')
+          .replaceAll('dólares', 'dólar')
+          .replaceAll('dolares', 'dólar')
+          .replaceAll('soles', 'sol')
+          .replaceAll('euros', 'euro')
+          .replaceAll('libras', 'libra')
+          .replaceAll(RegExp(r'\s+mexicanos?'), ' mexicano')
+          .replaceAll(RegExp(r'\s+estadounidenses?'), ' estadounidense')
+          .replaceAll(RegExp(r'\s+canadienses?'), ' canadiense')
+          .replaceAll(RegExp(r'\s+colombianos?'), ' colombiano')
+          .replaceAll(RegExp(r'\s+chilenos?'), ' chileno')
+          .replaceAll(RegExp(r'\s+argentinos?'), ' argentino')
+          .replaceAll(RegExp(r'\s+cubanos?'), ' cubano')
+          .replaceAll(RegExp(r'\s+dominicanos?'), ' dominicano')
+          .trim();
+    }
+
+    final normClean = normalize(clean);
+    for (final entry in currencyMap.entries) {
+      if (normalize(entry.value) == normClean) {
+        return entry.value;
+      }
+    }
+
+    return clean;
+  }
+
+  /// Checks if two currency identifiers (codes, full names, or plural forms) are equivalent.
+  static bool areCurrenciesEquivalent(String? c1, String? c2) {
+    if (c1 == null || c1.trim().isEmpty) return c2 == null || c2.trim().isEmpty;
+    if (c2 == null || c2.trim().isEmpty) return false;
+
+    final s1 = c1.trim();
+    final s2 = c2.trim();
+
+    if (s1.toLowerCase() == s2.toLowerCase()) return true;
+
+    final r1 = resolveCurrencyName(s1);
+    final r2 = resolveCurrencyName(s2);
+
+    if (r1.toLowerCase() == r2.toLowerCase()) return true;
+
+    String getCode(String text) {
+      final upper = text.toUpperCase();
+      if (currencyMap.containsKey(upper)) return upper;
+      final resolved = resolveCurrencyName(text);
+      for (final entry in currencyMap.entries) {
+        if (entry.value.toLowerCase() == resolved.toLowerCase()) {
+          return entry.key;
+        }
+      }
+      return upper;
+    }
+
+    return getCode(s1) == getCode(s2);
+  }
+
   /// Checks if a catalog species is a numismatic species (Moneda or Billete).
   static bool isNumismaticSpecies(CatalogItem species) {
     final nameLower = species.name.trim().toLowerCase();
@@ -82,10 +368,10 @@ class NumismaticDataHelper {
                 : faceValueNumber.toString())
             : '');
 
-    final curr = (currencyName != null && currencyName.trim().isNotEmpty)
+    final rawCurr = (currencyName != null && currencyName.trim().isNotEmpty)
         ? currencyName.trim()
         : (currencyCode != null && currencyCode.trim().isNotEmpty
-            ? currencyCode.trim()
+            ? resolveCurrencyName(currencyCode)
             : '');
 
     final cty = (country != null && country.trim().isNotEmpty)
@@ -94,7 +380,7 @@ class NumismaticDataHelper {
 
     final yr = (year != null && year.trim().isNotEmpty) ? year.trim() : null;
 
-    final firstPart = [denom, curr].where((s) => s.isNotEmpty).join(' ');
+    final firstPart = [denom, rawCurr].where((s) => s.isNotEmpty).join(' ');
     final titleParts = <String>[];
     if (firstPart.isNotEmpty) titleParts.add(firstPart);
     if (cty.isNotEmpty) titleParts.add(cty);
@@ -118,10 +404,15 @@ class NumismaticDataHelper {
     String? year,
     String? composition,
   }) {
-    final curr = currencyName ?? currencyCode;
+    final rawCurr = (currencyName != null && currencyName.trim().isNotEmpty)
+        ? currencyName.trim()
+        : (currencyCode != null && currencyCode.trim().isNotEmpty
+            ? resolveCurrencyName(currencyCode)
+            : null);
+
     final notesParts = <String>[];
-    if (curr != null && curr.trim().isNotEmpty) {
-      notesParts.add('Moneda: ${curr.trim()}');
+    if (rawCurr != null && rawCurr.isNotEmpty) {
+      notesParts.add('Moneda: ${rawCurr.trim()}');
     }
     if (year != null && year.trim().isNotEmpty) {
       notesParts.add('Año: ${year.trim()}');
@@ -186,7 +477,6 @@ class NumismaticDataHelper {
 
   /// Parses subspecies title to extract denomination, currency, country, year.
   static NumismaticAttributes parseSubspeciesName(String name) {
-    // Pattern: "5 Pesos Mexicanos - México (2022)" or "5 Pesos Mexicanos - México"
     final yearRegex = RegExp(r'\(([^)]+)\)\s*$');
     final match = yearRegex.firstMatch(name);
     String? year;
@@ -247,7 +537,7 @@ class NumismaticDataHelper {
     );
   }
 
-  /// Checks if instance magnitudes are congruent with subspecies title & notes.
+  /// Checks if instance magnitudes are congruent with subspecies title & notes robustly.
   static String? checkInstanceSubspeciesCongruence({
     required Subspecies subspecies,
     required WorldEntity instance,
@@ -272,11 +562,10 @@ class NumismaticDataHelper {
           'Valor Nominal (Instancia: ${instAttrs.faceValueNumber} vs Subespecie: ${subAttrs.faceValueNumber})');
     }
 
-    // Check currency
+    // Check currency using robust equivalence matching
     if (instAttrs.currencyName != null &&
         subAttrs.currencyName != null &&
-        instAttrs.currencyName!.trim().toLowerCase() !=
-            subAttrs.currencyName!.trim().toLowerCase()) {
+        !areCurrenciesEquivalent(instAttrs.currencyName, subAttrs.currencyName)) {
       mismatches.add(
           'Divisa (Instancia: ${instAttrs.currencyName} vs Subespecie: ${subAttrs.currencyName})');
     }
@@ -295,7 +584,16 @@ class NumismaticDataHelper {
 
     for (final sub in subspeciesList) {
       if (sub.subspeciesName.toLowerCase() == 'genérica') continue;
-      final key = '${sub.speciesId}_${sub.subspeciesName.trim().toLowerCase()}';
+
+      final parsed = parseSubspeciesName(sub.subspeciesName);
+      final normTitle = buildSubspeciesName(
+        faceValueNumber: parsed.faceValueNumber,
+        currencyName: parsed.currencyName,
+        country: parsed.country,
+        year: parsed.year,
+      );
+
+      final key = '${sub.speciesId}_${normTitle.trim().toLowerCase()}';
       grouped.putIfAbsent(key, () => []).add(sub);
     }
 
