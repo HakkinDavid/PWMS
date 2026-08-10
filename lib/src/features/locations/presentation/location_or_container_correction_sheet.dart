@@ -8,7 +8,6 @@ import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../relations/domain/entity_relation.dart';
-import '../domain/location_path_helper.dart';
 import 'location_tree_picker.dart';
 
 enum LocationCorrectionMode { physicalNode, containerEntity }

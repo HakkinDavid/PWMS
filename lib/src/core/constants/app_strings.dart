@@ -540,6 +540,7 @@ class AppStrings {
   static const noInstancesAvailableInGroup = 'Sin instancias disponibles en este grupo.';
   static const totalPopulationPrefix = 'Población total: ';
   static const homogeneousGroupProperties = 'Grupo homogéneo';
+  static const heterogeneousGroupDescription = 'Grupo heterogéneo';
   static const deleteInstanceTitle = 'Eliminar instancia';
   static const deleteInstanceConfirmationMessage = '¿Estás seguro de que deseas eliminar esta instancia de tu mundo?';
 }

@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/constants/units_registry.dart';
 import 'package:platinum_world_management_system/src/core/domain/property_data_type.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/species_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 
 void main() {

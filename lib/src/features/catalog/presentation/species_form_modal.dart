@@ -408,8 +408,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final catalogState = ref.watch(catalogListProvider);
-    final existingItems = catalogState.asData?.value ?? [];
     final template = EntityTemplateRegistry.getTemplate(_selectedType);
 
     final mediaQuery = MediaQuery.of(context);

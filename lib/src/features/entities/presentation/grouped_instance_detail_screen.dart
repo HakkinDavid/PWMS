@@ -119,7 +119,7 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
                       Text(
                         isHomogeneous
                             ? AppStrings.homogeneousGroupProperties
-                            : 'Grupo heterogéneo (distintas subespecies o propiedades)',
+                            : AppStrings.heterogeneousGroupDescription,
                         style: theme.textTheme.bodySmall,
                       ),
                     ],

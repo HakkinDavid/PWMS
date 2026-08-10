@@ -68,7 +68,6 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final catalogState = ref.watch(catalogListProvider);
     final catalogItems = catalogState.asData?.value ?? [];
 
