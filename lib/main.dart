@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'src/core/router/app_router.dart';
 import 'src/core/theme/app_theme.dart';
 

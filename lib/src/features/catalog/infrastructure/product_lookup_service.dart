@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../domain/taxonomy/product_taxonomy_service.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 class ProductLookupResult {
   final String generalSpeciesName; // ej. "Monitor", "Libro", "Control de Videojuegos"

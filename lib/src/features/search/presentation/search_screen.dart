@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_tile.dart';
@@ -33,7 +33,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     AppStrings.tabLocations,
     AppStrings.tabCatalog,
     AppStrings.tabHistory,
-    'Consulta SQL (SELECT)',
+    AppStrings.arbitrarySqlQueryLabel,
   ];
 
   @override
@@ -52,7 +52,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     for (final kw in forbiddenKeywords) {
       if (upperQuery.contains(kw)) {
         setState(() {
-          _sqlError = 'Por seguridad, las consultas SQL están restringidas a lectura exclusivamente (SELECT). El comando "$kw" está prohibido.';
+          _sqlError = AppStrings.sqlSecurityErrorPrefix + kw + AppStrings.sqlSecurityErrorSuffix;
           _sqlColumns = [];
           _sqlRows = [];
         });
@@ -73,7 +73,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         setState(() {
           _sqlColumns = [];
           _sqlRows = [];
-          _sqlError = 'La consulta se ejecutó correctamente pero no retornó registros.';
+          _sqlError = AppStrings.sqlNoRowsReturned;
         });
       } else {
         final firstRowData = results.first.data;
@@ -92,7 +92,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
     } catch (e) {
       setState(() {
-        _sqlError = 'Error de sintaxis SQL o ejecución: $e';
+        _sqlError = AppStrings.sqlSyntaxErrorPrefix + e.toString();
         _sqlColumns = [];
         _sqlRows = [];
       });
@@ -109,7 +109,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final catalogState = ref.watch(catalogListProvider);
     final activityState = ref.watch(recentActivityProvider);
 
-    final isSqlMode = _selectedScope == 'Consulta SQL (SELECT)';
+    final isSqlMode = _selectedScope == AppStrings.arbitrarySqlQueryLabel;
 
     return Scaffold(
       appBar: AppBar(
@@ -289,7 +289,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 : _sqlColumns.isEmpty
                     ? Center(
                         child: Text(
-                          'Escribe una consulta SQL SELECT o presiona un botón rápido arriba para inspeccionar la base de datos local.',
+                          AppStrings.sqlHelpHint,
                           style: TextStyle(color: theme.hintColor),
                           textAlign: TextAlign.center,
                         ),
@@ -427,7 +427,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 Icon(Icons.search_off, size: 64, color: theme.colorScheme.primary.withAlpha(100)),
                 const SizedBox(height: 16),
                 Text(
-                  'No se encontraron coincidencias para "$query"',
+                  AppStrings.noSearchMatchesPrefix + query + AppStrings.noSearchMatchesSuffix,
                   style: theme.textTheme.titleMedium,
                 ),
               ],

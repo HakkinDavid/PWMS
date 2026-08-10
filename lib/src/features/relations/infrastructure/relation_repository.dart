@@ -3,6 +3,8 @@ import '../../../core/database/app_database.dart';
 import '../../locations/domain/location_resolver.dart';
 import '../domain/entity_relation.dart';
 import '../domain/i_relation_repository.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+
 
 class RelationRepository implements IRelationRepository {
   final AppDatabase _db;
@@ -47,7 +49,7 @@ class RelationRepository implements IRelationRepository {
         relations: allRels,
       );
       if (isCircular) {
-        throw Exception('No se puede crear un vínculo circular: el elemento ya forma parte o contiene la entidad destino.');
+        throw Exception(AppStrings.circularRelationError);
       }
 
       // 2. Single Active Container Rule (a)

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/world_entity.dart';
@@ -75,19 +75,19 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
       await ref.read(activityLoggerServiceProvider).logEntityMoved(
             widget.entity.id,
             name,
-            'Ubicación previa',
-            'Nueva ubicación en Grafo',
+            AppStrings.previousLocation,
+            AppStrings.newGraphLocation,
           );
 
       ref.read(entityListProvider.notifier).loadEntities();
 
       if (mounted) {
         Navigator.pop(context);
-        AppToast.showSuccess(context, '"$name" trasladado exitosamente en el Grafo');
+        AppToast.showSuccess(context, AppStrings.movedSuccessfullyInGraphPrefix + name + AppStrings.movedSuccessfullyInGraphSuffix);
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, 'Error al mover: $e');
+        AppToast.showError(context, AppStrings.moveErrorPrefix + e.toString());
       }
     } finally {
       if (mounted) setState(() => _isMoving = false);
@@ -131,12 +131,12 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Trasladar en el Grafo',
+            AppStrings.moveInGraph,
             style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
 
-          Text('Selecciona la nueva ubicación o contenedor:', style: theme.textTheme.labelLarge),
+          Text(AppStrings.selectNewLocationOrContainer, style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
 
           locationsState.when(
@@ -147,7 +147,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
                   prefixIcon: Icon(Icons.account_tree_outlined),
                 ),
                 items: [
-                  const DropdownMenuItem<String?>(value: null, child: Text('Mundo (Raíz)')),
+                  const DropdownMenuItem<String?>(value: null, child: Text(AppStrings.rootLocationLabel)),
                   ...nodes.map((n) => DropdownMenuItem<String?>(value: n.id, child: Text(n.name))),
                 ],
                 onChanged: (val) => setState(() => _selectedLocationId = val),
@@ -162,7 +162,7 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
             TextButton.icon(
               onPressed: () => setState(() => _creatingNewLocation = true),
               icon: const Icon(Icons.add_location_alt_outlined),
-              label: const Text('Crear nueva ubicación sobre la marcha'),
+              label: const Text(AppStrings.createLocationOnTheFly),
             )
           else ...[
             Row(

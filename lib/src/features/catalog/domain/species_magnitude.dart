@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 part 'species_magnitude.freezed.dart';
 part 'species_magnitude.g.dart';

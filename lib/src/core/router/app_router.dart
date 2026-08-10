@@ -14,6 +14,7 @@ import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 
 import '../../features/control_center/presentation/control_center_screen.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 

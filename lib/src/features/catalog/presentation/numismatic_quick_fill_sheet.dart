@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../domain/numismatic_recognition_models.dart';
 
 class NumismaticQuickFillSheet extends StatefulWidget {

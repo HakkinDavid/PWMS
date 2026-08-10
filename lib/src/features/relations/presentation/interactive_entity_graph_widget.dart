@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
@@ -58,7 +59,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                     ),
                     Chip(
                       visualDensity: VisualDensity.compact,
-                      label: Text('${relations.length} vínculos', style: const TextStyle(fontSize: 10)),
+                      label: Text('${relations.length} ${AppStrings.linksCountSuffix}', style: const TextStyle(fontSize: 10)),
                     ),
                   ],
                 ),

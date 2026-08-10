@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 part 'app_database.g.dart';
 

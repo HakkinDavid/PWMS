@@ -2,6 +2,7 @@ import 'package:uuid/uuid.dart';
 import '../domain/activity_event.dart';
 import '../domain/i_history_repository.dart';
 
+
 class ActivityLoggerService {
   final IHistoryRepository _historyRepository;
 

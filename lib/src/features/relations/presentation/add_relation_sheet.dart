@@ -7,6 +7,8 @@ import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/entity_relation.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+
 
 class AddRelationSheet extends ConsumerStatefulWidget {
   final WorldEntity sourceEntity;
@@ -36,7 +38,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
 
   Future<void> _saveRelation() async {
     if (_targetEntityId == null) {
-      AppToast.showRestriction(context, 'Selecciona el elemento a relacionar');
+      AppToast.showRestriction(context, AppStrings.selectElementToRelate);
       return;
     }
 
@@ -60,11 +62,11 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
 
       if (mounted) {
         Navigator.pop(context);
-        AppToast.showSuccess(context, 'Relación dirigida creada con éxito');
+        AppToast.showSuccess(context, AppStrings.directedRelationCreatedSuccess);
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, 'Error al guardar relación: $e');
+        AppToast.showError(context, AppStrings.saveRelationErrorPrefix + e.toString());
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -119,7 +121,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Relación Dirigida en tu Mundo',
+            AppStrings.directedRelationInWorldTitle,
             style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -127,7 +129,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
             text: TextSpan(
               style: theme.textTheme.bodyMedium,
               children: [
-                const TextSpan(text: 'Origen: '),
+                TextSpan(text: AppStrings.sourceObjectLabel),
                 TextSpan(
                   text: '"$sourceName"',
                   style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
@@ -138,7 +140,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           const SizedBox(height: 16),
 
           // Relation Type Selector
-          Text('Tipo de vínculo semántico', style: theme.textTheme.labelLarge),
+          Text(AppStrings.semanticRelationType, style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             initialValue: _relationType,
@@ -153,7 +155,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           const SizedBox(height: 16),
 
           // Target Entity Selector
-          Text('Destino del vínculo:', style: theme.textTheme.labelLarge),
+          Text(AppStrings.targetOfRelation, style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
           entitiesState.when(
             data: (entities) {
@@ -161,7 +163,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
               if (candidates.isEmpty) {
                 return const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text('No hay otros elementos disponibles para relacionar.'),
+                  child: Text(AppStrings.noOtherRelationCandidates),
                 );
               }
 
@@ -169,7 +171,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
                 initialValue: _targetEntityId,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.category_outlined),
-                  hintText: 'Selecciona elemento destino',
+                  hintText: AppStrings.selectTargetElement,
                 ),
                 items: candidates.map((e) {
                   final name = EntityDisplayHelper.getDisplayName(
@@ -202,7 +204,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
               ),
               child: _isSaving
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Establecer Vínculo Dirigido', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : Text(AppStrings.establishDirectedRelation, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

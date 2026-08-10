@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/entity_display_helper.dart';
@@ -197,7 +197,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
             ),
             const SizedBox(height: 16),
             Text(
-              'Corregir Ubicación de "$entityName"',
+              AppStrings.correctLocationTitlePrefix + entityName + AppStrings.correctLocationTitleSuffix,
               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -290,7 +290,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
                 icon: _isSaving
                     ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                     : const Icon(Icons.check),
-                label: Text(_isSaving ? 'Guardando...' : 'Aplicar Corrección', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                label: Text(_isSaving ? AppStrings.savingAction : AppStrings.applyCorrectionAction, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

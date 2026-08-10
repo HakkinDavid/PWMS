@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 class SpeciesTextBadgeAvatar extends StatelessWidget {
   final String speciesName;

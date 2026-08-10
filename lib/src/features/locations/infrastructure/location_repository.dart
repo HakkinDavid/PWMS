@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/location_node.dart';

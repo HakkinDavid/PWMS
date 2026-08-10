@@ -1,4 +1,5 @@
 import '../constants/units_registry.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 class DomainRules {
   DomainRules._();

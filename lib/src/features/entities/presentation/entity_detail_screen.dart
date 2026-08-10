@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
@@ -467,7 +467,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Propiedades y Magnitudes de la Instancia',
+                            AppStrings.instancePropertiesAndMagnitudesTitle,
                             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           if (_isEditingInPlace)

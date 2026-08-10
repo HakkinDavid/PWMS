@@ -14,6 +14,7 @@ import '../../entities/presentation/instance_preview_card.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_or_container_correction_sheet.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 enum AuditCardType {
   uninstantiatedSubspecies,

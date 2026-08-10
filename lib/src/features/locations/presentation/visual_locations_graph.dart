@@ -4,6 +4,7 @@ import '../domain/location_node.dart';
 import '../infrastructure/location_repository.dart';
 import '../../entities/domain/world_entity.dart';
 
+
 class VisualLocationsGraph extends StatefulWidget {
   final List<LocationNode> nodes;
   final List<WorldEntity> entities;

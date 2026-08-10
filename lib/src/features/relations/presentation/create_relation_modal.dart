@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
@@ -70,7 +70,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
 
       if (mounted) {
         Navigator.pop(context);
-        AppToast.showSuccess(context, 'Relación "$_selectedRelationType" creada con éxito');
+        AppToast.showSuccess(context, AppStrings.relationCreatedSuccessPrefix + _selectedRelationType + AppStrings.relationCreatedSuccessSuffix);
       }
     } catch (e) {
       if (mounted) {

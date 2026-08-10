@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/location_node.dart';
 
@@ -111,7 +111,7 @@ class _TopCurtainLocationSheetState extends ConsumerState<TopCurtainLocationShee
   }
 
   String _buildBreadcrumbPath() {
-    if (widget.selectedLocationId == null) return 'Todo';
+    if (widget.selectedLocationId == null) return AppStrings.all;
     final locMap = {for (var l in widget.allLocations) l.id: l};
 
     final path = <String>[];

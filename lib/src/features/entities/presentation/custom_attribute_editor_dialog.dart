@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 class CustomAttributeEditorDialog extends StatefulWidget {
   final Map<String, dynamic> initialAttributes;

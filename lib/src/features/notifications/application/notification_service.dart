@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../catalog/infrastructure/catalog_repository.dart';
 import '../../entities/infrastructure/entity_repository.dart';
@@ -39,7 +39,7 @@ class NotificationService {
       await _localNotifications.initialize(initSettings);
       _initialized = true;
     } catch (e) {
-      debugPrint('Local notifications initialization skipped or failed: $e');
+      debugPrint(AppStrings.notificationInitErrorPrefix + e.toString());
     }
   }
 

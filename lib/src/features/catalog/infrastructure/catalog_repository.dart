@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';

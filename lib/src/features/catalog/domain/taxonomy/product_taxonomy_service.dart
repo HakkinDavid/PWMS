@@ -2,6 +2,7 @@ import 'brand_dictionary.dart';
 import 'fast_lazy_taxonomy_registry.dart';
 import 'product_taxonomy_dictionary.dart';
 import 'spanish_singularizer.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 class TaxonomyResolution {
   final String generalSpeciesName;

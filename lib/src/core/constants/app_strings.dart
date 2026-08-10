@@ -543,4 +543,28 @@ class AppStrings {
   static const heterogeneousGroupDescription = 'Grupo heterogéneo';
   static const deleteInstanceTitle = 'Eliminar instancia';
   static const deleteInstanceConfirmationMessage = '¿Estás seguro de que deseas eliminar esta instancia de tu mundo?';
+
+  // Constantes Adicionales de Infraestructura y Formularios
+  static const instancePropertiesAndMagnitudesTitle = 'Propiedades y magnitudes de la instancia';
+  static const rootLocationLabel = 'Mundo';
+  static const sqlHelpHint = 'Escribe una consulta SQL SELECT para inspeccionar la base de datos local.';
+  static const sqlNoRowsReturned = 'La consulta se ejecutó correctamente pero no retornó registros.';
+  static const sqlSecurityErrorPrefix = 'Por seguridad, las consultas SQL están restringidas a lectura exclusivamente (SELECT). El comando "';
+  static const sqlSecurityErrorSuffix = '" está prohibido.';
+  static const sqlSyntaxErrorPrefix = 'Error de sintaxis SQL o ejecución: ';
+  static const applyCorrectionAction = 'Aplicar corrección';
+  static const savingAction = 'Guardando...';
+  static const linksCountSuffix = ' vínculos';
+  static const noSearchMatchesPrefix = 'No se encontraron coincidencias para "';
+  static const noSearchMatchesSuffix = '"';
+
+  // Constantes Adicionales de Sistema y Notificaciones
+  static const directedRelationInWorldTitle = 'Relación dirigida en tu mundo';
+  static const relationCreatedSuccessPrefix = 'Relación "';
+  static const relationCreatedSuccessSuffix = '" creada con éxito.';
+  static const movedSuccessfullyInGraphPrefix = '"';
+  static const movedSuccessfullyInGraphSuffix = '" trasladado exitosamente en el grafo.';
+  static const correctLocationTitlePrefix = 'Corregir ubicación de "';
+  static const correctLocationTitleSuffix = '"';
+  static const notificationInitErrorPrefix = 'Inicialización de notificaciones omitida o fallida: ';
 }
