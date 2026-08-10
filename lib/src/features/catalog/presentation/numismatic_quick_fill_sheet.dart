@@ -58,7 +58,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   static const Map<String, String> _currencyMap = {
     // 1. México
     'MXN': 'Peso Mexicano',
-    'MXP': 'Peso Mexicano (Antiguo - Histórico)',
+    'MXP': 'Peso Mexicano Antiguo',
     // 2. Norteamérica
     'USD': 'Dólar Estadounidense',
     'CAD': 'Dólar Canadiense',
