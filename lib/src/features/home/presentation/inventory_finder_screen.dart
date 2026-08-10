@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -33,6 +34,63 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   // Set of expanded container entity IDs for inline container stacking (Point 1)
   final Set<String> _expandedContainerEntityIds = {};
+
+  late final ScrollController _scrollController;
+  Timer? _autoScrollTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _autoScrollTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _stopAutoScroll() {
+    _autoScrollTimer?.cancel();
+    _autoScrollTimer = null;
+  }
+
+  void _handlePointerMove(PointerMoveEvent event, BuildContext scrollableContext) {
+    final RenderBox? box = scrollableContext.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize || !_scrollController.hasClients) return;
+
+    final boxOffset = box.localToGlobal(Offset.zero);
+    final topEdge = boxOffset.dy;
+    final bottomEdge = boxOffset.dy + box.size.height;
+    final pointerY = event.position.dy;
+
+    const double threshold = 80.0;
+
+    if (pointerY >= topEdge && pointerY <= topEdge + threshold) {
+      final ratio = 1.0 - ((pointerY - topEdge) / threshold).clamp(0.0, 1.0);
+      final step = -(8.0 + ratio * 18.0);
+      _startAutoScroll(step);
+    } else if (pointerY <= bottomEdge && pointerY >= bottomEdge - threshold) {
+      final ratio = 1.0 - ((bottomEdge - pointerY) / threshold).clamp(0.0, 1.0);
+      final step = (8.0 + ratio * 18.0);
+      _startAutoScroll(step);
+    } else {
+      _stopAutoScroll();
+    }
+  }
+
+  void _startAutoScroll(double step) {
+    if (_autoScrollTimer != null && _autoScrollTimer!.isActive) return;
+    _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 20), (_) {
+      if (!_scrollController.hasClients) return;
+      final target = (_scrollController.offset + step).clamp(
+        0.0,
+        _scrollController.position.maxScrollExtent,
+      );
+      _scrollController.jumpTo(target);
+    });
+  }
 
   final List<String> _filters = [
     AppStrings.all,
@@ -349,7 +407,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                         },
                       ),
                       IconButton(
-                        icon: const Icon(Icons.image_search),
+                        icon: const Icon(Icons.image_search, color: Colors.white),
                         tooltip: 'Buscar Imagen Web (Asignación Masiva)',
                         onPressed: _bulkWebImageSearch,
                       ),
@@ -377,9 +435,12 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final theme = Theme.of(context);
     final allEntitiesMap = {for (var e in allEntities) e.id: e};
 
+    Widget content;
+
     if (_viewMode == FinderViewMode.minecraftGrid) {
       // Minecraft Grid Mode
-      return GridView.builder(
+      content = GridView.builder(
+        controller: _scrollController,
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
@@ -421,12 +482,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           );
         },
       );
-    }
-
-
-    // Detailed List Mode with Container Stacking
-    return ListView.builder(
-      padding: const EdgeInsets.all(12),
+    } else {
+      // Detailed List Mode with Container Stacking
+      content = ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(12),
       itemCount: topGroups.length,
       itemBuilder: (ctx, idx) {
         final grp = topGroups[idx];
@@ -565,6 +625,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         }
 
         return selectionContent;
+      },
+    );
+    }
+
+    return Builder(
+      builder: (contentContext) {
+        return Listener(
+          onPointerMove: (event) => _handlePointerMove(event, contentContext),
+          onPointerUp: (_) => _stopAutoScroll(),
+          onPointerCancel: (_) => _stopAutoScroll(),
+          child: content,
+        );
       },
     );
   }

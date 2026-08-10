@@ -487,9 +487,9 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                     children: _selectedSpecies!.magnitudes.map((sm) {
                       final ctrl = _magnitudeControllers[sm.propertyName];
                       final type = PropertyDataType.fromCode(sm.dataType);
-                      final labelText = sm.unitSymbol != null && sm.unitSymbol!.isNotEmpty
+                      final labelText = (sm.unitSymbol != null && sm.unitSymbol!.trim().isNotEmpty)
                           ? '${sm.propertyName} (${sm.unitSymbol})'
-                          : sm.propertyName;
+                          : '${sm.propertyName} (${sm.dataType})';
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),

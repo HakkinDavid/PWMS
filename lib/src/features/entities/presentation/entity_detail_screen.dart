@@ -63,9 +63,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   : TextInputType.text,
               autofocus: true,
               decoration: InputDecoration(
-                labelText: mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
+                labelText: (mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty)
                     ? 'Valor (${mag.unitSymbol})'
-                    : 'Valor',
+                    : 'Valor (${mag.dataType})',
                 suffixText: mag.unitSymbol,
                 border: const OutlineInputBorder(),
               ),
@@ -118,7 +118,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       builder: (ctx) => SimpleDialog(
         title: const Text(AppStrings.addSpeciesPropertyTitle),
         children: availableSpeciesMags.map((sm) {
-          final unitText = sm.unitSymbol != null ? ' (${sm.unitSymbol})' : '';
+          final unitText = (sm.unitSymbol != null && sm.unitSymbol!.trim().isNotEmpty)
+              ? ' (${sm.unitSymbol})'
+              : ' (${sm.dataType})';
           return SimpleDialogOption(
             onPressed: () => Navigator.pop(ctx, sm),
             child: Padding(
@@ -498,9 +500,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
+                                      mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
                                           ? '${mag.propertyName} (${mag.unitSymbol})'
-                                          : mag.propertyName,
+                                          : '${mag.propertyName} (${mag.dataType})',
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                     ),
                                   ),

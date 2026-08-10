@@ -267,7 +267,7 @@ class SpeciesDetailView extends ConsumerWidget {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      '${mag.propertyName} (${mag.unitSymbol})',
+                                      '${mag.propertyName} (${(mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty) ? mag.unitSymbol!.trim() : mag.dataType})',
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../locations/domain/location_node.dart';
 
@@ -57,7 +56,7 @@ class ContainerContentsView extends ConsumerWidget {
 
             final firstMag = child.magnitudes.isNotEmpty ? child.magnitudes.first : null;
             final subtitleText = firstMag != null
-                ? '$type • ${AppStrings.quantityLabel}: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
+                ? '$type • ${firstMag.propertyName}: ${firstMag.displayValue}'
                 : type;
 
             return Card(

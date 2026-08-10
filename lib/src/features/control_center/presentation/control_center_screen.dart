@@ -411,7 +411,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
       appBar: AppBar(
         title: const Row(
           children: [
-            Icon(Icons.style_outlined, color: Colors.amber),
+            Icon(Icons.style_outlined, color: Colors.white),
             SizedBox(width: 8),
             Flexible(
               child: Text(

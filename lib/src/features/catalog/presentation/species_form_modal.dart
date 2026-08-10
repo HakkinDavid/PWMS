@@ -151,17 +151,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     });
   }
 
-  void _populateFromBaseTemplate(CatalogItem base) {
-    setState(() {
-      _selectedType = base.type;
-      _descController.text = base.description ?? '';
-      _isUnique = base.isUnique;
-      _magnitudes.clear();
-      _magnitudes.addAll(base.magnitudes);
-      _applySubgroupConstraints(base.type);
-    });
-  }
-
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
     final image = await picker.pickImage(source: source, imageQuality: 85);
@@ -455,36 +444,6 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Pre-populate from base template (Create Mode Only)
-                    if (!_isEditMode && existingItems.isNotEmpty) ...[
-                      InkWell(
-                        onTap: () async {
-                          final picked = await AppWheelPicker.show<CatalogItem?>(
-                            context,
-                            items: [null, ...existingItems],
-                            initialValue: null,
-                            labelBuilder: (item) => item == null ? AppStrings.noTemplate : '${item.name} (${item.type})',
-                            title: AppStrings.selectBaseSpeciesPrompt,
-                          );
-                          if (picked != null) _populateFromBaseTemplate(picked);
-                        },
-                        child: const InputDecorator(
-                          decoration: InputDecoration(
-                            labelText: AppStrings.useSpeciesAsBaseTemplate,
-                            prefixIcon: Icon(Icons.copy),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(AppStrings.selectBaseTemplateHint, style: TextStyle(color: Colors.grey)),
-                              Icon(Icons.unfold_more),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                    ],
-
                     // Photo Picker (Point 2: BoxFit.contain)
                     GestureDetector(
                       onTap: () {
@@ -568,7 +527,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                         labelText: AppStrings.nameLabel,
                         prefixIcon: const Icon(Icons.auto_awesome),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.image_search, color: Colors.amber),
+                          icon: const Icon(Icons.image_search, color: Colors.white),
                           tooltip: AppStrings.searchPhotoOnWebAction,
                           onPressed: () async {
                             final query = _nameController.text.trim();
@@ -718,9 +677,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
                                       title: Text(
-                                        mag.unitSymbol != null && mag.unitSymbol!.isNotEmpty
+                                        mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
                                             ? '${mag.propertyName} (${mag.unitSymbol})'
-                                            : '${mag.propertyName} [${mag.dataType}]',
+                                            : '${mag.propertyName} (${mag.dataType})',
                                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                       ),
                                       trailing: IconButton(

@@ -124,7 +124,7 @@ class HomeScreen extends ConsumerWidget {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.style_outlined, size: 28, color: Colors.amber),
+                          icon: const Icon(Icons.style_outlined, size: 28, color: Colors.white),
                           tooltip: 'Centro de Control y Salud de Datos',
                           onPressed: () => context.push('/control-center'),
                         ),

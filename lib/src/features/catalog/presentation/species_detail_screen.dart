@@ -85,7 +85,9 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                   final breadcrumb = LocationPathHelper.buildBreadcrumbPath(inst.locationId, locationNodes);
                   final firstMag = inst.magnitudes.isNotEmpty ? inst.magnitudes.first : null;
                   final magText = firstMag != null
-                      ? '${AppStrings.quantityLabel}: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
+                      ? ((firstMag.unitSymbol != null && firstMag.unitSymbol!.trim().isNotEmpty)
+                          ? '${AppStrings.quantityLabel}: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
+                          : '${AppStrings.quantityLabel}: ${firstMag.displayValue}')
                       : AppStrings.registeredInstance;
 
                   return Card(
@@ -132,7 +134,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
               ),
               if (_isEditing) ...[
                 IconButton(
-                  icon: const Icon(Icons.image_search),
+                  icon: const Icon(Icons.image_search, color: Colors.white),
                   tooltip: AppStrings.searchPhotoOnWebAction,
                   onPressed: () {
                     WebImagePickerDialog.show(context, searchQuery: species.name, targetSpecies: species);

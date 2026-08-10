@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/domain/location_path_helper.dart';
@@ -186,7 +185,7 @@ class InstancePreviewCard extends ConsumerWidget {
                         if (firstMag != null) ...[
                           const SizedBox(height: 2),
                           Text(
-                            '${firstMag.propertyName}: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}',
+                            '${firstMag.propertyName}: ${firstMag.displayValue}',
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                         ],
