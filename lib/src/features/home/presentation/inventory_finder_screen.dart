@@ -134,7 +134,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     });
 
     if (mounted) {
-      AppToast.showSuccess(context, 'Movido(s) correctamente.');
+      AppToast.showSuccess(context, AppStrings.itemsMovedSuccess);
     }
   }
 
@@ -162,7 +162,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     });
 
     if (mounted) {
-      AppToast.showSuccess(context, 'Elementos guardados en el contenedor.');
+      AppToast.showSuccess(context, AppStrings.itemsSavedInContainerSuccess);
     }
   }
 
@@ -172,8 +172,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Eliminar Selección'),
-        content: Text('¿Deseas eliminar ${_selectedEntityIds.length} elementos seleccionados?'),
+        title: Text(AppStrings.deleteSelectionTitle),
+        content: Text('${AppStrings.deleteSelectionConfirmationPrefix}${_selectedEntityIds.length}${AppStrings.deleteSelectionConfirmationSuffix}'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
           ElevatedButton(
@@ -196,7 +196,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       _isSelectionMode = false;
     });
 
-    if (mounted) AppToast.showSuccess(context, 'Elementos eliminados.');
+    if (mounted) AppToast.showSuccess(context, AppStrings.itemsDeletedSuccess);
   }
 
   // Bulk Web Image Search for ALL selected items (Point 4)
@@ -290,7 +290,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                   ? Icons.view_list
                   : Icons.apps,
             ),
-            tooltip: 'Cambiar Vista (Lista / Minecraft)',
+            tooltip: AppStrings.toggleViewModeTooltip,
             onPressed: () {
               setState(() {
                 if (_viewMode == FinderViewMode.detailedList) {
@@ -303,7 +303,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           ),
           IconButton(
             icon: Icon(_isSelectionMode ? Icons.check_box : Icons.select_all),
-            tooltip: _isSelectionMode ? 'Cancelar Selección' : 'Selección Múltiple',
+            tooltip: _isSelectionMode ? AppStrings.cancelSelectionTooltip : AppStrings.multipleSelectionTooltip,
             onPressed: () {
               setState(() {
                 _isSelectionMode = !_isSelectionMode;

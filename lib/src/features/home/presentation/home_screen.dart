@@ -125,12 +125,12 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.style_outlined, size: 28, color: Colors.white),
-                          tooltip: 'Centro de Control y Salud de Datos',
+                          tooltip: AppStrings.controlCenterTooltip,
                           onPressed: () => context.push('/control-center'),
                         ),
                         IconButton(
                           icon: const Icon(Icons.settings_outlined, size: 28),
-                          tooltip: 'Configuración de App y Respaldos',
+                          tooltip: AppStrings.settingsTooltip,
                           onPressed: () => context.push('/settings'),
                         ),
                         Consumer(
@@ -142,7 +142,7 @@ class HomeScreen extends ConsumerWidget {
                                 IconButton(
                                   icon: const Icon(Icons.notifications_outlined, size: 28),
                                   onPressed: () => context.push('/notifications'),
-                                  tooltip: 'Notificaciones y Recordatorios',
+                                  tooltip: AppStrings.notificationsTooltip,
                                 ),
                                 if (notifCount > 0)
                                   Positioned(

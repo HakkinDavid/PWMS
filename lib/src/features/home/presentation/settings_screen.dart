@@ -82,7 +82,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Configuración Global'),
+        title: Text(AppStrings.globalSettingsTitle),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -100,13 +100,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Gestión de Copias de Seguridad Local',
+                AppStrings.backupManagementTitle,
                 style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               const Text(
-                'Exporta o restaura la base de datos completa de PWMS de forma segura en tu almacenamiento local.',
+                AppStrings.backupManagementSubtitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),

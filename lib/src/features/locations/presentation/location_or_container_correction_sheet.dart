@@ -99,7 +99,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
         // Container mode selected
         if (_selectedContainerEntityId == null || _selectedContainerEntityId!.isEmpty) {
           if (mounted) {
-            AppToast.showRestriction(context, 'Selecciona un objeto contenedor válido.');
+            AppToast.showRestriction(context, AppStrings.selectValidContainerPrompt);
             setState(() => _isSaving = false);
           }
           return;
@@ -123,12 +123,12 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
       ref.invalidate(relationListProvider);
 
       if (mounted) {
-        AppToast.showSuccess(context, 'Ubicación corregida exitosamente.');
+        AppToast.showSuccess(context, AppStrings.locationCorrectedSuccess);
         Navigator.pop(context, true);
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, 'Error al corregir ubicación: $e');
+        AppToast.showError(context, AppStrings.locationCorrectionErrorPrefix + e.toString());
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

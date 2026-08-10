@@ -122,7 +122,7 @@ class _TopCurtainLocationSheetState extends ConsumerState<TopCurtainLocationShee
       currId = node.parentLocationId;
     }
 
-    return path.isEmpty ? 'Ubicación Desconocida' : path.join(' > ');
+    return path.isEmpty ? AppStrings.unknownLocation : path.join(' > ');
   }
 
   Widget _buildTreeItem(LocationNode node, int depth) {

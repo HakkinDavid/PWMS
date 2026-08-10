@@ -567,4 +567,33 @@ class AppStrings {
   static const correctLocationTitlePrefix = 'Corregir ubicación de "';
   static const correctLocationTitleSuffix = '"';
   static const notificationInitErrorPrefix = 'Inicialización de notificaciones omitida o fallida: ';
+
+  // Constantes de Interfaz, Pantalla Principal y Herramientas
+  static const controlCenterTooltip = 'Centro de control';
+  static const settingsTooltip = 'Configuración de app y respaldos';
+  static const notificationsTooltip = 'Notificaciones y recordatorios';
+  static const allLocationsOption = 'Todas las ubicaciones';
+  static const itemsMovedSuccess = 'Movido correctamente.';
+  static const itemsSavedInContainerSuccess = 'Elementos guardados en contenedor.';
+  static const deleteSelectionTitle = 'Eliminar selección';
+  static const deleteSelectionConfirmationPrefix = '¿Deseas eliminar ';
+  static const deleteSelectionConfirmationSuffix = ' elementos seleccionados?';
+  static const itemsDeletedSuccess = 'Elementos eliminados.';
+  static const toggleViewModeTooltip = 'Cambiar vista';
+  static const cancelSelectionTooltip = 'Cancelar selección';
+  static const multipleSelectionTooltip = 'Selección múltiple';
+  static const globalSettingsTitle = 'Configuración global';
+  static const backupManagementTitle = 'Gestión de respaldos locales';
+  static const backupManagementSubtitle = 'Exporta o restaura la base de datos completa de tu mundo.';
+  static const selectValidContainerPrompt = 'Selecciona un objeto contenedor válido.';
+  static const locationCorrectedSuccess = 'Ubicación corregida exitosamente.';
+  static const locationCorrectionErrorPrefix = 'Error al corregir ubicación: ';
+  static const unknownLocation = 'Ubicación desconocida';
+  static const activityLogRegisteredPrefix = 'Registrado en tu mundo: "';
+  static const activityLogEditedPrefix = 'Editado "';
+  static const activityLogEditedInfoPrefix = 'Editada información de "';
+  static const activityLogDeletedPrefix = 'Eliminado de tu mundo: "';
+  static const activityLogMovedPrefix = 'Trasladado "';
+  static const activityLogFromPrefix = '" de "';
+  static const activityLogToPrefix = '" a "';
 }
