@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <application
-        android:label="platinum_world_management_system"
+        android:label="PWMS"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
