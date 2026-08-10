@@ -51,174 +51,174 @@ class NumismaticCongruenceIssue {
 class NumismaticDataHelper {
   static const List<String> numismaticSpeciesNames = ['Moneda', 'Billete'];
 
-  /// Map of ISO currency codes to full Spanish currency names.
+  /// Map of ISO currency codes to standard full Spanish currency names (plural).
   static const Map<String, String> currencyMap = {
     // 1. México
-    'MXN': 'Peso Mexicano',
-    'MXP': 'Peso Mexicano Antiguo',
+    'MXN': 'Pesos Mexicanos',
+    'MXP': 'Pesos Mexicanos Antiguos',
     // 2. Norteamérica
-    'USD': 'Dólar Estadounidense',
-    'CAD': 'Dólar Canadiense',
+    'USD': 'Dólares Estadounidenses',
+    'CAD': 'Dólares Canadienses',
     // 3. Centroamérica y Caribe
-    'GTQ': 'Quetzal Guatemalteco',
-    'BZD': 'Dólar Beliceño',
-    'SVC': 'Colón Salvadoreño',
-    'HNL': 'Lempira Hondureño',
-    'NIO': 'Córdoba Nicaragüense',
-    'CRC': 'Colón Costarricense',
-    'PAB': 'Balboa Panameño',
-    'CUP': 'Peso Cubano',
-    'CUC': 'Peso Cubano Convertible',
-    'DOP': 'Peso Dominicano',
-    'HTG': 'Gourde Haitiano',
-    'JMD': 'Dólar Jamaicano',
-    'BSD': 'Dólar Bahameño',
-    'AWG': 'Florín Arubeño',
-    'ANG': 'Florín Antillano Holandés',
-    'XCD': 'Dólar del Caribe Oriental',
-    'KYD': 'Dólar de las Islas Caimán',
-    'BBD': 'Dólar de Barbados',
-    'TTD': 'Dólar de Trinidad y Tobago',
+    'GTQ': 'Quetzales Guatemaltecos',
+    'BZD': 'Dólares Beliceños',
+    'SVC': 'Colones Salvadoreños',
+    'HNL': 'Lempiras Hondureños',
+    'NIO': 'Córdobas Nicaragüenses',
+    'CRC': 'Colones Costarricenses',
+    'PAB': 'Balboas Panameños',
+    'CUP': 'Pesos Cubanos',
+    'CUC': 'Pesos Cubanos Convertibles',
+    'DOP': 'Pesos Dominicanos',
+    'HTG': 'Gourdes Haitianos',
+    'JMD': 'Dólares Jamaicanos',
+    'BSD': 'Dólares Bahameños',
+    'AWG': 'Florines Arubeños',
+    'ANG': 'Florines Antillanos Holandeses',
+    'XCD': 'Dólares del Caribe Oriental',
+    'KYD': 'Dólares de las Islas Caimán',
+    'BBD': 'Dólares de Barbados',
+    'TTD': 'Dólares de Trinidad y Tobago',
     // 4. Sudamérica
-    'COP': 'Peso Colombiano',
-    'VES': 'Bolívar Soberano Venezolano',
-    'VED': 'Bolívar Soberano Digital Venezolano',
-    'PEN': 'Sol Peruano',
-    'BRL': 'Real Brasileño',
-    'BOB': 'Boliviano',
-    'CLP': 'Peso Chileno',
-    'ARS': 'Peso Argentino',
-    'UYU': 'Peso Uruguayo',
-    'PYG': 'Guaraní Paraguayo',
-    'GYD': 'Dólar Guyanés',
-    'SRD': 'Dólar Surinamés',
-    'FKP': 'Libra de las Islas Malvinas',
+    'COP': 'Pesos Colombianos',
+    'VES': 'Bolívares Soberanos Venezolanos',
+    'VED': 'Bolívares Soberanos Digitales Venezolanos',
+    'PEN': 'Soles Peruanos',
+    'BRL': 'Reales Brasileños',
+    'BOB': 'Bolivianos',
+    'CLP': 'Pesos Chilenos',
+    'ARS': 'Pesos Argentinos',
+    'UYU': 'Pesos Uruguayos',
+    'PYG': 'Guaraníes Paraguayos',
+    'GYD': 'Dólares Guyaneses',
+    'SRD': 'Dólares Surinameses',
+    'FKP': 'Libras de las Islas Malvinas',
     // 5. Europa
-    'ESP': 'Peseta Española (Histórica)',
-    'EUR': 'Euro',
-    'GBP': 'Libra Esterlina',
-    'CHF': 'Franco Suizo',
-    'SEK': 'Corona Sueca',
-    'NOK': 'Corona Noruega',
-    'DKK': 'Corona Danesa',
-    'PLN': 'Zloty Polaco',
-    'CZK': 'Corona Checa',
-    'HUF': 'Forinto Húngaro',
-    'RON': 'Leu Rumano',
-    'BGN': 'Lev Búlgaro',
-    'RSD': 'Dinar Serbio',
-    'HRK': 'Kuna Croata',
-    'BAM': 'Marco Convertible de Bosnia-Herzegovina',
-    'ALL': 'Lek Albanés',
-    'MKD': 'Denar Macedonio',
-    'RUB': 'Rublo Ruso',
-    'UAH': 'Grivna Ucraniana',
-    'BYN': 'Rublo Bielorruso',
-    'MDL': 'Leu Moldavo',
-    'TRY': 'Lira Turca',
-    'GIP': 'Libra de Gibraltar',
-    'ISK': 'Corona Islandesa',
+    'ESP': 'Pesetas Españolas',
+    'EUR': 'Euros',
+    'GBP': 'Libras Esterlinas',
+    'CHF': 'Francos Suizos',
+    'SEK': 'Coronas Suecas',
+    'NOK': 'Coronas Noruegas',
+    'DKK': 'Coronas Danesas',
+    'PLN': 'Zlotys Polacos',
+    'CZK': 'Coronas Checas',
+    'HUF': 'Forintos Húngaros',
+    'RON': 'Leus Rumanos',
+    'BGN': 'Levs Búlgaros',
+    'RSD': 'Dinares Serbios',
+    'HRK': 'Kunas Croatas',
+    'BAM': 'Marcos Convertibles de Bosnia-Herzegovina',
+    'ALL': 'Leks Albaneses',
+    'MKD': 'Denares Macedonios',
+    'RUB': 'Rublos Rusos',
+    'UAH': 'Grivnas Ucranianas',
+    'BYN': 'Rublos Bielorrusos',
+    'MDL': 'Leus Moldavos',
+    'TRY': 'Liras Turcas',
+    'GIP': 'Libras de Gibraltar',
+    'ISK': 'Coronas Islandesas',
     // 6. Asia / Medio Oriente / Pacífico
-    'JPY': 'Yen Japonés',
-    'CNY': 'Yuan Chino',
-    'KRW': 'Won Surcoreano',
-    'KPW': 'Won Norte-Coreano',
-    'TWD': 'Nuevo Dólar Taiwanés',
-    'HKD': 'Dólar de Hong Kong',
-    'MOP': 'Pataca Macanesa',
-    'INR': 'Rupia India',
-    'IDR': 'Rupia Indonesia',
-    'PHP': 'Peso Filipino',
-    'SGD': 'Dólar de Singapur',
-    'MYR': 'Ringgit Malayo',
-    'THB': 'Baht Tailandés',
-    'VND': 'Dong Vietnamita',
-    'PKR': 'Rupia Pakistaní',
-    'BDT': 'Taka Bangladesí',
-    'LKR': 'Rupia de Sri Lanka',
-    'NPR': 'Rupia Nepalí',
-    'ILS': 'Nuevo Séquel Israelí',
-    'AED': 'Dírham de los Emiratos Árabes Unidos',
-    'SAR': 'Riyal Saudí',
-    'QAR': 'Riyal Catarí',
-    'KWD': 'Dinar Kuwaití',
-    'BHD': 'Dinar Baréiní',
-    'OMR': 'Rial Omaní',
-    'JOD': 'Dinar Jordano',
-    'LBP': 'Libra Libanesa',
-    'SYP': 'Libra Siria',
-    'IQD': 'Dinar Iraquí',
-    'IRR': 'Rial Iraní',
-    'KZT': 'Tenge Kazakh',
-    'UZS': 'Som Uzbeko',
-    'AFN': 'Afgani Afgano',
-    'AMD': 'Dram Armenio',
-    'AZN': 'Manat Azerbaiyano',
-    'GEL': 'Lari Georgiano',
-    'KHR': 'Riel Camboyano',
-    'LAK': 'Kip Laosiano',
-    'MMK': 'Kyat de Myanmar',
-    'MNT': 'Tugrik Mongol',
-    'MVR': 'Rufiyaa Maldiva',
-    'BTN': 'Ngultrum Butanés',
-    'TJS': 'Somoni Tayiko',
-    'TMT': 'Manat Turkmenio',
-    'YER': 'Rial Yemení',
+    'JPY': 'Yenes Japoneses',
+    'CNY': 'Yuanes Chinos',
+    'KRW': 'Wones Surcoreanos',
+    'KPW': 'Wones Norte-Coreanos',
+    'TWD': 'Nuevos Dólares Taiwaneses',
+    'HKD': 'Dólares de Hong Kong',
+    'MOP': 'Patacas Macanesas',
+    'INR': 'Rupias Indias',
+    'IDR': 'Rupias Indonesias',
+    'PHP': 'Pesos Filipinos',
+    'SGD': 'Dólares de Singapur',
+    'MYR': 'Ringgits Malayos',
+    'THB': 'Bahts Tailandeses',
+    'VND': 'Dongs Vietnamitas',
+    'PKR': 'Rupias Pakistaníes',
+    'BDT': 'Takas Bangladesíes',
+    'LKR': 'Rupias de Sri Lanka',
+    'NPR': 'Rupias Nepalíes',
+    'ILS': 'Nuevos Séqueis Israelíes',
+    'AED': 'Dírhams de los Emiratos Árabes Unidos',
+    'SAR': 'Riyales Saudíes',
+    'QAR': 'Riyales Cataríes',
+    'KWD': 'Dinares Kuwaitíes',
+    'BHD': 'Dinares Baréiníes',
+    'OMR': 'Riales Omaníes',
+    'JOD': 'Dinares Jordanos',
+    'LBP': 'Libras Libanesas',
+    'SYP': 'Libras Sirias',
+    'IQD': 'Dinares Iraquíes',
+    'IRR': 'Riales Iraníes',
+    'KZT': 'Tenges Kazakhs',
+    'UZS': 'Soms Uzbekos',
+    'AFN': 'Afganis Afganos',
+    'AMD': 'Drams Armenios',
+    'AZN': 'Manats Azerbaiyanos',
+    'GEL': 'Laris Georgianos',
+    'KHR': 'Rieles Camboyanos',
+    'LAK': 'Kips Laosianos',
+    'MMK': 'Kyats de Myanmar',
+    'MNT': 'Tugriks Mongoles',
+    'MVR': 'Rufiyaas Maldivas',
+    'BTN': 'Ngultrums Butaneses',
+    'TJS': 'Somonis Tayikos',
+    'TMT': 'Manats Turkmenios',
+    'YER': 'Riales Yemeníes',
     // 7. Oceanía
-    'AUD': 'Dólar Australiano',
-    'NZD': 'Dólar Neozelandés',
-    'FJD': 'Dólar Fiyiano',
-    'PGK': 'Kina de Papúa Nueva Guinea',
-    'SBD': 'Dólar de las Islas Salomón',
-    'TOP': 'Paʻanga Tongano',
-    'VUV': 'Vatu Vanuatuense',
-    'WST': 'Tala Samoano',
-    'XPF': 'Franco CFP',
+    'AUD': 'Dólares Australianos',
+    'NZD': 'Dólares Neozelandeses',
+    'FJD': 'Dólares Fiyianos',
+    'PGK': 'Kinas de Papúa Nueva Guinea',
+    'SBD': 'Dólares de las Islas Salomón',
+    'TOP': 'Paʻangas Tonganos',
+    'VUV': 'Vatus Vanuatuenses',
+    'WST': 'Talas Samoanos',
+    'XPF': 'Francos CFP',
     // 8. África
-    'EGP': 'Libra Egipcia',
-    'MAD': 'Dírham Marroquí',
-    'DZD': 'Dinar Argelino',
-    'TND': 'Dinar Tunecino',
-    'LYD': 'Dinar Libio',
-    'ZAR': 'Rand Sudafricano',
-    'NGN': 'Naira Nigeriana',
-    'KES': 'Chelín Keniano',
-    'ETB': 'Birr Etíope',
-    'GHS': 'Cedi Ghanés',
-    'XAF': 'Franco CFA de África Central',
-    'XOF': 'Franco CFA de África Occidental',
-    'AOA': 'Kwanza Angoleño',
-    'BWP': 'Pula Botsuano',
-    'BIF': 'Franco Burundés',
-    'CVE': 'Escudo Caboverdiano',
-    'CDF': 'Franco Congoleño',
-    'DJF': 'Franco Yibutiano',
-    'ERN': 'Nakfa Eritreo',
-    'GMD': 'Dalasi Gambiano',
-    'GNF': 'Franco Guineano',
-    'KMF': 'Franco Comorense',
-    'LRD': 'Dólar Liberiano',
-    'LSL': 'Loti Lesothense',
-    'MGA': 'Ariary Malgache',
-    'MWK': 'Kwacha Malauí',
-    'MRU': 'Ouguiya Mauritana',
-    'MUR': 'Rupia de Mauricio',
-    'MZN': 'Metical Mozambanqueño',
-    'NAD': 'Dólar Namibio',
-    'RWF': 'Franco Ruandés',
-    'SHP': 'Libra de Santa Elena',
-    'STN': 'Dobra de Santo Tomé y Príncipe',
-    'SCR': 'Rupia de Seychelles',
-    'SLE': 'Leone de Sierra Leona',
-    'SLL': 'Leone Antiguo de Sierra Leona',
-    'SOS': 'Chelín Somalí',
-    'SDG': 'Libra Sudanesa',
-    'SSP': 'Libra Sudsudanesa',
-    'SZL': 'Lilangeni Esuatiní',
-    'TZS': 'Chelín Tanzano',
-    'UGX': 'Chelín Ugandés',
-    'ZMW': 'Kwacha Zambiano',
-    'ZWL': 'Dólar Zimbabuense',
+    'EGP': 'Libras Egipcias',
+    'MAD': 'Dírhams Marroquíes',
+    'DZD': 'Dinares Argelinos',
+    'TND': 'Dinares Tunecinos',
+    'LYD': 'Dinares Libios',
+    'ZAR': 'Rands Sudafricanos',
+    'NGN': 'Nairas Nigerianas',
+    'KES': 'Chelines Kenianos',
+    'ETB': 'Birrs Etíopes',
+    'GHS': 'Cedis Ghaneses',
+    'XAF': 'Francos CFA de África Central',
+    'XOF': 'Francos CFA de África Occidental',
+    'AOA': 'Kwanzas Angoleños',
+    'BWP': 'Pulas Botsuanos',
+    'BIF': 'Francos Burundeses',
+    'CVE': 'Escudos Caboverdianos',
+    'CDF': 'Francos Congoleños',
+    'DJF': 'Francos Yibutianos',
+    'ERN': 'Nakfas Eritreos',
+    'GMD': 'Dalasis Gambianos',
+    'GNF': 'Francos Guineanos',
+    'KMF': 'Francos Comorenses',
+    'LRD': 'Dólares Liberianos',
+    'LSL': 'Lotis Lesothenses',
+    'MGA': 'Ariarys Malgaches',
+    'MWK': 'Kwachas Malauíes',
+    'MRU': 'Ouguiyas Mauritanas',
+    'MUR': 'Rupias de Mauricio',
+    'MZN': 'Meticales Mozambanqueños',
+    'NAD': 'Dólares Namibios',
+    'RWF': 'Francos Ruandeses',
+    'SHP': 'Libras de Santa Elena',
+    'STN': 'Dobras de Santo Tomé y Príncipe',
+    'SCR': 'Rupias de Seychelles',
+    'SLE': 'Leones de Sierra Leona',
+    'SLL': 'Leones Antiguos de Sierra Leona',
+    'SOS': 'Chelines Somalíes',
+    'SDG': 'Libras Sudanesas',
+    'SSP': 'Libras Sudsudanesas',
+    'SZL': 'Lilangeni Esuatiníes',
+    'TZS': 'Chelines Tanzanos',
+    'UGX': 'Chelines Ugandeses',
+    'ZMW': 'Kwachas Zambianos',
+    'ZWL': 'Dólares Zimbabuenses',
   };
 
   /// Countries ordered by geographic, economic & cultural proximity to Mexico.
@@ -268,14 +268,41 @@ class NumismaticDataHelper {
     'Otro',
   ];
 
-  /// Resolves any currency string (code or full name) to a standardized full name if possible.
-  static String resolveCurrencyName(String codeOrName) {
+  /// Helper to convert plural currency name to singular if count == 1.
+  static String _adjustSingularPlural(String text, double? count) {
+    if (count == 1 || count == 1.0) {
+      return text
+          .replaceAll('Pesos', 'Peso')
+          .replaceAll('Dólares', 'Dólar')
+          .replaceAll('Dolares', 'Dólar')
+          .replaceAll('Soles', 'Sol')
+          .replaceAll('Euros', 'Euro')
+          .replaceAll('Libras', 'Libra')
+          .replaceAll('Quetzales', 'Quetzal')
+          .replaceAll('Florines', 'Florín')
+          .replaceAll('Colones', 'Colón')
+          .replaceAll('Pesetas', 'Peseta')
+          .replaceAll('Mexicanos', 'Mexicano')
+          .replaceAll('Estadounidenses', 'Estadounidense')
+          .replaceAll('Canadienses', 'Canadiense')
+          .replaceAll('Colombianos', 'Colombiano')
+          .replaceAll('Chilenos', 'Chileno')
+          .replaceAll('Argentinos', 'Argentino')
+          .replaceAll('Cubanos', 'Cubano')
+          .replaceAll('Dominicanos', 'Dominicano')
+          .trim();
+    }
+    return text;
+  }
+
+  /// Resolves any currency string (code or name) to the strict canonical full Spanish name.
+  static String resolveCurrencyName(String codeOrName, {double? count}) {
     final clean = codeOrName.trim();
     if (clean.isEmpty) return clean;
 
     final upperCode = clean.toUpperCase();
     if (currencyMap.containsKey(upperCode)) {
-      return currencyMap[upperCode]!;
+      return _adjustSingularPlural(currencyMap[upperCode]!, count);
     }
 
     String normalize(String text) {
@@ -300,41 +327,22 @@ class NumismaticDataHelper {
     final normClean = normalize(clean);
     for (final entry in currencyMap.entries) {
       if (normalize(entry.value) == normClean) {
-        return entry.value;
+        return _adjustSingularPlural(entry.value, count);
       }
     }
 
-    return clean;
+    return _adjustSingularPlural(clean, count);
   }
 
-  /// Checks if two currency identifiers (codes, full names, or plural forms) are equivalent.
-  static bool areCurrenciesEquivalent(String? c1, String? c2) {
+  /// Checks if two currency identifiers match strictly after canonical resolution.
+  static bool areCurrenciesEquivalent(String? c1, String? c2, {double? count}) {
     if (c1 == null || c1.trim().isEmpty) return c2 == null || c2.trim().isEmpty;
     if (c2 == null || c2.trim().isEmpty) return false;
 
-    final s1 = c1.trim();
-    final s2 = c2.trim();
+    final r1 = resolveCurrencyName(c1, count: count);
+    final r2 = resolveCurrencyName(c2, count: count);
 
-    if (s1.toLowerCase() == s2.toLowerCase()) return true;
-
-    final r1 = resolveCurrencyName(s1);
-    final r2 = resolveCurrencyName(s2);
-
-    if (r1.toLowerCase() == r2.toLowerCase()) return true;
-
-    String getCode(String text) {
-      final upper = text.toUpperCase();
-      if (currencyMap.containsKey(upper)) return upper;
-      final resolved = resolveCurrencyName(text);
-      for (final entry in currencyMap.entries) {
-        if (entry.value.toLowerCase() == resolved.toLowerCase()) {
-          return entry.key;
-        }
-      }
-      return upper;
-    }
-
-    return getCode(s1) == getCode(s2);
+    return r1.toLowerCase() == r2.toLowerCase();
   }
 
   /// Checks if a catalog species is a numismatic species (Moneda or Billete).
@@ -351,7 +359,7 @@ class NumismaticDataHelper {
   }
 
   /// Builds a deterministic subspecies title for coins or banknotes.
-  /// Format: "[Denominación] [Divisa] - [País] ([Año])" or without year if null.
+  /// Format: "[Denominación] [Divisa Estándar] - [País] ([Año])"
   static String buildSubspeciesName({
     double? faceValueNumber,
     String? faceValueStr,
@@ -368,11 +376,15 @@ class NumismaticDataHelper {
                 : faceValueNumber.toString())
             : '');
 
+    final countVal = double.tryParse(denom) ?? faceValueNumber;
+
     final rawCurr = (currencyName != null && currencyName.trim().isNotEmpty)
         ? currencyName.trim()
         : (currencyCode != null && currencyCode.trim().isNotEmpty
-            ? resolveCurrencyName(currencyCode)
+            ? currencyCode.trim()
             : '');
+
+    final canonicalCurr = resolveCurrencyName(rawCurr, count: countVal);
 
     final cty = (country != null && country.trim().isNotEmpty)
         ? country.trim()
@@ -380,7 +392,7 @@ class NumismaticDataHelper {
 
     final yr = (year != null && year.trim().isNotEmpty) ? year.trim() : null;
 
-    final firstPart = [denom, rawCurr].where((s) => s.isNotEmpty).join(' ');
+    final firstPart = [denom, canonicalCurr].where((s) => s.isNotEmpty).join(' ');
     final titleParts = <String>[];
     if (firstPart.isNotEmpty) titleParts.add(firstPart);
     if (cty.isNotEmpty) titleParts.add(cty);
@@ -407,12 +419,14 @@ class NumismaticDataHelper {
     final rawCurr = (currencyName != null && currencyName.trim().isNotEmpty)
         ? currencyName.trim()
         : (currencyCode != null && currencyCode.trim().isNotEmpty
-            ? resolveCurrencyName(currencyCode)
+            ? currencyCode.trim()
             : null);
 
+    final canonicalCurr = rawCurr != null ? resolveCurrencyName(rawCurr) : null;
+
     final notesParts = <String>[];
-    if (rawCurr != null && rawCurr.isNotEmpty) {
-      notesParts.add('Moneda: ${rawCurr.trim()}');
+    if (canonicalCurr != null && canonicalCurr.isNotEmpty) {
+      notesParts.add('Moneda: ${canonicalCurr.trim()}');
     }
     if (year != null && year.trim().isNotEmpty) {
       notesParts.add('Año: ${year.trim()}');
@@ -531,13 +545,13 @@ class NumismaticDataHelper {
     return NumismaticAttributes(
       faceValueNumber: faceValue,
       faceValueStr: faceValStr,
-      currencyName: currency,
+      currencyName: currency != null ? resolveCurrencyName(currency, count: faceValue) : null,
       country: country,
       year: year,
     );
   }
 
-  /// Checks if instance magnitudes are congruent with subspecies title & notes robustly.
+  /// Checks if instance magnitudes and subspecies title follow the strict canonical pattern.
   static String? checkInstanceSubspeciesCongruence({
     required Subspecies subspecies,
     required WorldEntity instance,
@@ -547,14 +561,26 @@ class NumismaticDataHelper {
 
     final mismatches = <String>[];
 
-    // Check year
+    // 1. Strict subspecies title pattern check
+    final canonicalTitle = buildSubspeciesName(
+      faceValueNumber: instAttrs.faceValueNumber ?? subAttrs.faceValueNumber,
+      currencyName: instAttrs.currencyName ?? subAttrs.currencyName,
+      country: subAttrs.country,
+      year: instAttrs.year ?? subAttrs.year,
+    );
+
+    if (subspecies.subspeciesName.trim() != canonicalTitle.trim()) {
+      mismatches.add('Título no estandarizado (Actual: "${subspecies.subspeciesName}" vs Estándar: "$canonicalTitle")');
+    }
+
+    // 2. Year check
     if (instAttrs.year != null &&
         subAttrs.year != null &&
         instAttrs.year != subAttrs.year) {
       mismatches.add('Año (Instancia: ${instAttrs.year} vs Subespecie: ${subAttrs.year})');
     }
 
-    // Check face value
+    // 3. Face value check
     if (instAttrs.faceValueNumber != null &&
         subAttrs.faceValueNumber != null &&
         (instAttrs.faceValueNumber! - subAttrs.faceValueNumber!).abs() > 0.001) {
@@ -562,22 +588,23 @@ class NumismaticDataHelper {
           'Valor Nominal (Instancia: ${instAttrs.faceValueNumber} vs Subespecie: ${subAttrs.faceValueNumber})');
     }
 
-    // Check currency using robust equivalence matching
-    if (instAttrs.currencyName != null &&
-        subAttrs.currencyName != null &&
-        !areCurrenciesEquivalent(instAttrs.currencyName, subAttrs.currencyName)) {
-      mismatches.add(
-          'Divisa (Instancia: ${instAttrs.currencyName} vs Subespecie: ${subAttrs.currencyName})');
+    // 4. Instance magnitude currency standardization check
+    if (instAttrs.currencyName != null) {
+      final canonicalCurrency = resolveCurrencyName(instAttrs.currencyName!, count: instAttrs.faceValueNumber);
+      if (instAttrs.currencyName!.trim() != canonicalCurrency) {
+        mismatches.add(
+            'Divisa de instancia no estandarizada (Actual: "${instAttrs.currencyName}" vs Estándar: "$canonicalCurrency")');
+      }
     }
 
     if (mismatches.isNotEmpty) {
-      return 'Incongruencia en ${mismatches.join(", ")} entre la subespecie "${subspecies.subspeciesName}" y la instancia.';
+      return 'Incongruencia: ${mismatches.join(" | ")}';
     }
 
     return null;
   }
 
-  /// Identifies duplicate subspecies under the same species (same normalized title).
+  /// Identifies duplicate subspecies under the same species (same canonical title).
   static Map<String, List<Subspecies>> findDuplicateSubspeciesGroups(
       List<Subspecies> subspeciesList) {
     final Map<String, List<Subspecies>> grouped = {};
@@ -601,35 +628,59 @@ class NumismaticDataHelper {
     return grouped;
   }
 
-  /// Repairs subspecies title & notes from instance magnitudes deterministically.
+  /// Repairs subspecies title, notes, instance magnitudes & attachment file names to strict canonical standards.
   static Future<Subspecies> repairSubspeciesFromInstance({
     required CatalogRepository catalogRepo,
+    required EntityRepository entityRepo,
     required Subspecies subspecies,
     required WorldEntity instance,
   }) async {
     final instAttrs = extractAttributesFromInstance(instance);
     final subAttrs = parseSubspeciesName(subspecies.subspeciesName);
 
-    final newTitle = buildSubspeciesName(
+    final canonicalTitle = buildSubspeciesName(
       faceValueNumber: instAttrs.faceValueNumber ?? subAttrs.faceValueNumber,
       currencyName: instAttrs.currencyName ?? subAttrs.currencyName,
       country: subAttrs.country,
       year: instAttrs.year ?? subAttrs.year,
     );
 
-    final newNotes = buildSubspeciesNotes(
+    final canonicalNotes = buildSubspeciesNotes(
       currencyName: instAttrs.currencyName ?? subAttrs.currencyName,
       year: instAttrs.year ?? subAttrs.year,
       composition: instAttrs.material,
     );
 
-    final updated = subspecies.copyWith(
-      subspeciesName: newTitle,
-      notes: newNotes.isNotEmpty ? newNotes : subspecies.notes,
+    final updatedSub = subspecies.copyWith(
+      subspeciesName: canonicalTitle,
+      notes: canonicalNotes.isNotEmpty ? canonicalNotes : subspecies.notes,
     );
 
-    await catalogRepo.saveSubspecies(updated);
-    return updated;
+    await catalogRepo.saveSubspecies(updatedSub);
+
+    // Standardize instance magnitude 'Divisa' if present
+    if (instAttrs.currencyName != null) {
+      final stdCurrency = resolveCurrencyName(instAttrs.currencyName!, count: instAttrs.faceValueNumber);
+      final updatedMags = instance.magnitudes.map((m) {
+        if (m.propertyName == 'Divisa') {
+          return m.copyWith(stringValue: stdCurrency);
+        }
+        return m;
+      }).toList();
+
+      final updatedInstance = instance.copyWith(magnitudes: updatedMags);
+      await entityRepo.saveEntity(updatedInstance);
+    }
+
+    // Standardize attachment file names
+    await repairAttachmentFileNames(
+      catalogRepo: catalogRepo,
+      entityRepo: entityRepo,
+      subspecies: updatedSub,
+      instance: instance,
+    );
+
+    return updatedSub;
   }
 
   /// Merges duplicate subspecies into a canonical subspecies. Reassigns entities and deletes duplicates.
@@ -656,7 +707,7 @@ class NumismaticDataHelper {
     }
   }
 
-  /// Renames attachment files and updates database records to match current subspecies name.
+  /// Renames attachment files and updates database records to match current canonical subspecies name.
   static Future<void> repairAttachmentFileNames({
     required CatalogRepository catalogRepo,
     required EntityRepository entityRepo,

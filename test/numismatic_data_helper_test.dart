@@ -147,7 +147,9 @@ void main() {
         ],
       );
 
-      expect(NumismaticDataHelper.checkInstanceSubspeciesCongruence(subspecies: sub, instance: instanceWithCode), isNull);
+      final issue = NumismaticDataHelper.checkInstanceSubspeciesCongruence(subspecies: sub, instance: instanceWithCode);
+      expect(issue, isNotNull);
+      expect(issue, contains('Divisa de instancia no estandarizada'));
     });
 
     test('findDuplicateSubspeciesGroups finds duplicate subspecies titles', () {

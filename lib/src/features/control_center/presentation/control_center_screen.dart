@@ -503,6 +503,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                   if (action == 'subspecies') {
                     final updatedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
                       catalogRepo: catalogRepo,
+                      entityRepo: entityRepo,
                       subspecies: sub,
                       instance: entity,
                     );

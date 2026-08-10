@@ -90,6 +90,7 @@ void main() {
       // Perform repair
       final repairedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
         catalogRepo: catalogRepo,
+        entityRepo: entityRepo,
         subspecies: subspecies,
         instance: updatedInstance,
       );
