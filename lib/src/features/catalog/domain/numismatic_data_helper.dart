@@ -340,6 +340,45 @@ class NumismaticDataHelper {
     return text;
   }
 
+  /// Resolves any currency string (code or name) to its ISO 4217 code (e.g. 'MXN').
+  static String resolveCurrencyIsoCode(String codeOrName) {
+    final clean = codeOrName.trim();
+    if (clean.isEmpty) return clean;
+
+    final upper = clean.toUpperCase();
+    if (currencyMap.containsKey(upper)) {
+      return upper;
+    }
+
+    String normalize(String text) {
+      return text.toLowerCase()
+          .replaceAll('pesos', 'peso')
+          .replaceAll('dólares', 'dólar')
+          .replaceAll('dolares', 'dólar')
+          .replaceAll('soles', 'sol')
+          .replaceAll('euros', 'euro')
+          .replaceAll('libras', 'libra')
+          .replaceAll(RegExp(r'\s+mexicanos?'), ' mexicano')
+          .replaceAll(RegExp(r'\s+estadounidenses?'), ' estadounidense')
+          .replaceAll(RegExp(r'\s+canadienses?'), ' canadiense')
+          .replaceAll(RegExp(r'\s+colombianos?'), ' colombiano')
+          .replaceAll(RegExp(r'\s+chilenos?'), ' chileno')
+          .replaceAll(RegExp(r'\s+argentinos?'), ' argentino')
+          .replaceAll(RegExp(r'\s+cubanos?'), ' cubano')
+          .replaceAll(RegExp(r'\s+dominicanos?'), ' dominicano')
+          .trim();
+    }
+
+    final normClean = normalize(clean);
+    for (final entry in currencyMap.entries) {
+      if (normalize(entry.value) == normClean) {
+        return entry.key;
+      }
+    }
+
+    return upper;
+  }
+
   /// Resolves any currency string (code or name) to the strict canonical full Spanish name.
   static String resolveCurrencyName(String codeOrName, {double? count}) {
     final clean = codeOrName.trim();
@@ -729,12 +768,12 @@ class NumismaticDataHelper {
           'Valor Nominal (Instancia: ${instAttrs.faceValueNumber} vs Subespecie: ${subAttrs.faceValueNumber})');
     }
 
-    // 4. Instance magnitude currency standardization check
+    // 4. Instance magnitude currency standardization check (must be ISO code)
     if (instAttrs.currencyName != null) {
-      final canonicalCurrency = resolveCurrencyName(instAttrs.currencyName!, count: instAttrs.faceValueNumber);
-      if (instAttrs.currencyName!.trim() != canonicalCurrency) {
+      final isoCode = resolveCurrencyIsoCode(instAttrs.currencyName!);
+      if (instAttrs.currencyName!.trim().toUpperCase() != isoCode) {
         mismatches.add(
-            'Divisa de instancia no estandarizada (Actual: "${instAttrs.currencyName}" vs Estándar: "$canonicalCurrency")');
+            'Divisa de instancia no es código ISO (Actual: "${instAttrs.currencyName}" vs Código ISO: "$isoCode")');
       }
     }
 
@@ -818,7 +857,7 @@ class NumismaticDataHelper {
     // Standardize instance magnitudes ('Divisa', 'Grado', 'Material') if present
     final updatedMags = instance.magnitudes.map((m) {
       if (m.propertyName == 'Divisa' && m.stringValue != null) {
-        return m.copyWith(stringValue: resolveCurrencyName(m.stringValue!, count: instAttrs.faceValueNumber));
+        return m.copyWith(stringValue: resolveCurrencyIsoCode(m.stringValue!));
       }
       if (m.propertyName == 'Grado' && m.stringValue != null) {
         return m.copyWith(stringValue: resolveGrade(m.stringValue!));

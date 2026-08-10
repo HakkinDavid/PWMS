@@ -73,7 +73,7 @@ void main() {
             instanceId: instance.id,
             propertyName: 'Divisa',
             dataType: 'string',
-            stringValue: 'Pesos Mexicanos',
+            stringValue: 'MXN',
           ),
         ],
       );
