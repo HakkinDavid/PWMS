@@ -268,6 +268,51 @@ class NumismaticDataHelper {
     'Otro',
   ];
 
+  static const List<String> denominations = [
+    '1',
+    '2',
+    '5',
+    '10',
+    '20',
+    '50',
+    '100',
+    '200',
+    '500',
+    '1000',
+    '2000',
+    '5000',
+  ];
+
+  static const List<String> grades = [
+    'Sin circular',
+    'Excelente',
+    'Muy buena',
+    'Buena',
+    'Regular',
+  ];
+
+  static const List<String> coinMaterials = [
+    'Cuproníquel',
+    'Plata',
+    'Bronce',
+    'Oro',
+    'Latón',
+    'Aluminio',
+    'Bimetálica',
+    'Acero',
+    'Papel',
+  ];
+
+  static const List<String> specialEditionReasons = [
+    'Conmemorativa',
+    'Prueba de acuñación',
+    'Error de impresión',
+    'Serie limitada',
+    'Aniversario',
+    'Emisión de cambio de régimen',
+    'Otro',
+  ];
+
   /// Helper to convert plural currency name to singular if count == 1.
   static String _adjustSingularPlural(String text, double? count) {
     if (count == 1 || count == 1.0) {
@@ -332,6 +377,99 @@ class NumismaticDataHelper {
     }
 
     return _adjustSingularPlural(clean, count);
+  }
+
+  /// Resolves grade to strict canonical item in `grades`.
+  static String resolveGrade(String raw) {
+    final clean = raw.trim();
+    if (clean.isEmpty) return clean;
+    if (grades.contains(clean)) return clean;
+
+    final lower = clean.toLowerCase();
+    if (lower.contains('fdc') || lower.contains('unc') || lower.contains('sin circular')) {
+      return grades[0];
+    }
+    if (lower.contains('ebc') || lower.contains('xf') || lower.contains('excelente')) {
+      return grades[1];
+    }
+    if (lower.contains('mbc') || lower.contains('vf') || lower.contains('muy buena')) {
+      return grades[2];
+    }
+    if (lower.contains('bc') || lower.contains('buena')) {
+      return grades[3];
+    }
+    if (lower.contains('mc') || lower.contains('regular')) {
+      return grades[4];
+    }
+
+    return clean;
+  }
+
+  /// Resolves material to strict canonical item in `coinMaterials`.
+  static String resolveMaterial(String raw) {
+    final clean = raw.trim();
+    if (clean.isEmpty) return clean;
+    if (coinMaterials.contains(clean)) return clean;
+
+    final lower = clean.toLowerCase();
+    if (lower.contains('cuproníquel') || lower.contains('cuproniquel') || lower.contains('cu-ni')) {
+      return 'Cuproníquel';
+    }
+    if (lower.contains('plata') || lower.contains('silver')) {
+      return 'Plata';
+    }
+    if (lower.contains('bronce') || lower.contains('bronze')) {
+      return 'Bronce';
+    }
+    if (lower.contains('oro') || lower.contains('gold')) {
+      return 'Oro';
+    }
+    if (lower.contains('latón') || lower.contains('laton') || lower.contains('brass')) {
+      return 'Latón';
+    }
+    if (lower.contains('aluminio') || lower.contains('aluminum')) {
+      return 'Aluminio';
+    }
+    if (lower.contains('bimetálica') || lower.contains('bimetalica') || lower.contains('bimetal')) {
+      return 'Bimetálica';
+    }
+    if (lower.contains('acero') || lower.contains('steel')) {
+      return 'Acero';
+    }
+    if (lower.contains('papel') || lower.contains('paper')) {
+      return 'Papel';
+    }
+
+    return clean;
+  }
+
+  /// Resolves special edition reason to strict canonical item in `specialEditionReasons`.
+  static String resolveSpecialEditionReason(String raw) {
+    final clean = raw.trim();
+    if (clean.isEmpty) return clean;
+    if (specialEditionReasons.contains(clean)) return clean;
+
+    final lower = clean.toLowerCase();
+    if (lower.contains('conmemorativa') || lower.contains('commemorative')) {
+      return specialEditionReasons[0];
+    }
+    if (lower.contains('proof') || lower.contains('prueba')) {
+      return specialEditionReasons[1];
+    }
+    if (lower.contains('error') || lower.contains('impresión') || lower.contains('impresion')) {
+      return specialEditionReasons[2];
+    }
+    if (lower.contains('limitada') || lower.contains('numeración') || lower.contains('numeracion')) {
+      return specialEditionReasons[3];
+    }
+    if (lower.contains('aniversario') || lower.contains('histórico') || lower.contains('historico')) {
+      return specialEditionReasons[4];
+    }
+    if (lower.contains('régimen') || lower.contains('regimen') || lower.contains('cambio')) {
+      return specialEditionReasons[5];
+    }
+
+    return clean;
   }
 
   /// Checks if two currency identifiers match strictly after canonical resolution.
@@ -423,6 +561,9 @@ class NumismaticDataHelper {
             : null);
 
     final canonicalCurr = rawCurr != null ? resolveCurrencyName(rawCurr) : null;
+    final canonicalMat = composition != null && composition.trim().isNotEmpty
+        ? resolveMaterial(composition)
+        : null;
 
     final notesParts = <String>[];
     if (canonicalCurr != null && canonicalCurr.isNotEmpty) {
@@ -431,8 +572,8 @@ class NumismaticDataHelper {
     if (year != null && year.trim().isNotEmpty) {
       notesParts.add('Año: ${year.trim()}');
     }
-    if (composition != null && composition.trim().isNotEmpty) {
-      notesParts.add('Material: ${composition.trim()}');
+    if (canonicalMat != null && canonicalMat.isNotEmpty) {
+      notesParts.add('Material: ${canonicalMat.trim()}');
     }
     return notesParts.join(' | ');
   }
@@ -597,6 +738,22 @@ class NumismaticDataHelper {
       }
     }
 
+    // 5. Instance magnitude grade standardization check
+    if (instAttrs.grade != null && instAttrs.grade!.isNotEmpty) {
+      final stdGrade = resolveGrade(instAttrs.grade!);
+      if (instAttrs.grade!.trim() != stdGrade) {
+        mismatches.add('Grado de conservación no estandarizado (Actual: "${instAttrs.grade}" vs Estándar: "$stdGrade")');
+      }
+    }
+
+    // 6. Instance magnitude material standardization check
+    if (instAttrs.material != null && instAttrs.material!.isNotEmpty) {
+      final stdMat = resolveMaterial(instAttrs.material!);
+      if (instAttrs.material!.trim() != stdMat) {
+        mismatches.add('Material no estandarizado (Actual: "${instAttrs.material}" vs Estándar: "$stdMat")');
+      }
+    }
+
     if (mismatches.isNotEmpty) {
       return 'Incongruencia: ${mismatches.join(" | ")}';
     }
@@ -648,7 +805,7 @@ class NumismaticDataHelper {
     final canonicalNotes = buildSubspeciesNotes(
       currencyName: instAttrs.currencyName ?? subAttrs.currencyName,
       year: instAttrs.year ?? subAttrs.year,
-      composition: instAttrs.material,
+      composition: instAttrs.material != null ? resolveMaterial(instAttrs.material!) : null,
     );
 
     final updatedSub = subspecies.copyWith(
@@ -658,26 +815,29 @@ class NumismaticDataHelper {
 
     await catalogRepo.saveSubspecies(updatedSub);
 
-    // Standardize instance magnitude 'Divisa' if present
-    if (instAttrs.currencyName != null) {
-      final stdCurrency = resolveCurrencyName(instAttrs.currencyName!, count: instAttrs.faceValueNumber);
-      final updatedMags = instance.magnitudes.map((m) {
-        if (m.propertyName == 'Divisa') {
-          return m.copyWith(stringValue: stdCurrency);
-        }
-        return m;
-      }).toList();
+    // Standardize instance magnitudes ('Divisa', 'Grado', 'Material') if present
+    final updatedMags = instance.magnitudes.map((m) {
+      if (m.propertyName == 'Divisa' && m.stringValue != null) {
+        return m.copyWith(stringValue: resolveCurrencyName(m.stringValue!, count: instAttrs.faceValueNumber));
+      }
+      if (m.propertyName == 'Grado' && m.stringValue != null) {
+        return m.copyWith(stringValue: resolveGrade(m.stringValue!));
+      }
+      if (m.propertyName == 'Material' && m.stringValue != null) {
+        return m.copyWith(stringValue: resolveMaterial(m.stringValue!));
+      }
+      return m;
+    }).toList();
 
-      final updatedInstance = instance.copyWith(magnitudes: updatedMags);
-      await entityRepo.saveEntity(updatedInstance);
-    }
+    final updatedInstance = instance.copyWith(magnitudes: updatedMags);
+    await entityRepo.saveEntity(updatedInstance);
 
     // Standardize attachment file names
     await repairAttachmentFileNames(
       catalogRepo: catalogRepo,
       entityRepo: entityRepo,
       subspecies: updatedSub,
-      instance: instance,
+      instance: updatedInstance,
     );
 
     return updatedSub;

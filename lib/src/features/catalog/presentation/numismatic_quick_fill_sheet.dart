@@ -54,54 +54,13 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   final _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
 
-  // Centralized currency map and countries list from NumismaticDataHelper
+  // Centralized lists and currency map from NumismaticDataHelper
   static Map<String, String> get _currencyMap => NumismaticDataHelper.currencyMap;
   static List<String> get _countries => NumismaticDataHelper.countries;
-
-  static const List<String> _denominations = [
-    '1',
-    '2',
-    '5',
-    '10',
-    '20',
-    '50',
-    '100',
-    '200',
-    '500',
-    '1000',
-    '2000',
-    '5000',
-  ];
-
-  static const List<String> _grades = [
-    'FDC / UNC (Sin Circular)',
-    'EBC / XF (Excelente)',
-    'MBC / VF (Muy Buena)',
-    'BC / F (Buena)',
-    'MC / G (Regular)',
-  ];
-
-  static const List<String> _coinMaterials = [
-    'Cuproníquel',
-    'Plata',
-    'Bronce',
-    'Oro',
-    'Latón',
-    'Aluminio',
-    'Bimetálica',
-    'Acero',
-    'Papel',
-  ];
-
-  static const List<String> _specialEditionReasons = [
-    'Conmemorativa',
-    'Prueba de acuñación (Proof)',
-    'Error de acuñación / Impresión',
-    'Serie limitada / Numeración especial',
-    'Aniversario / Evento histórico',
-    'Emisión de cambio de régimen',
-    'Otro (especificar)',
-  ];
+  static List<String> get _denominations => NumismaticDataHelper.denominations;
+  static List<String> get _grades => NumismaticDataHelper.grades;
+  static List<String> get _coinMaterials => NumismaticDataHelper.coinMaterials;
+  static List<String> get _specialEditionReasons => NumismaticDataHelper.specialEditionReasons;
 
   // Default values set to empty / unselected (null)
   String? _country;

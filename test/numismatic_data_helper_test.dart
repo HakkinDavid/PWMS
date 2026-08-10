@@ -152,6 +152,44 @@ void main() {
       expect(issue, contains('Divisa de instancia no estandarizada'));
     });
 
+    test('resolveGrade, resolveMaterial, and resolveSpecialEditionReason map to canonical lists', () {
+      expect(NumismaticDataHelper.resolveGrade('UNC'), equals('FDC / UNC (Sin Circular)'));
+      expect(NumismaticDataHelper.resolveGrade('VF'), equals('MBC / VF (Muy Buena)'));
+
+      expect(NumismaticDataHelper.resolveMaterial('cu-ni'), equals('Cuproníquel'));
+      expect(NumismaticDataHelper.resolveMaterial('silver'), equals('Plata'));
+
+      expect(NumismaticDataHelper.resolveSpecialEditionReason('commemorative'), equals('Conmemorativa'));
+      expect(NumismaticDataHelper.resolveSpecialEditionReason('proof'), equals('Prueba de acuñación (Proof)'));
+    });
+
+    test('checkInstanceSubspeciesCongruence detects non-standard grade or material', () {
+      final sub = Subspecies(
+        id: 'sub-1',
+        speciesId: 'sp-1',
+        subspeciesName: '5 Pesos Mexicanos - México (2022)',
+        createdAt: DateTime.now(),
+      );
+
+      final instanceNonStandardGrade = WorldEntity(
+        id: 'inst-1',
+        speciesId: 'sp-1',
+        subspeciesId: 'sub-1',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-1', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 5.0),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-1', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2022.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-1', propertyName: 'Divisa', dataType: 'string', stringValue: 'Pesos Mexicanos'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-1', propertyName: 'Grado', dataType: 'string', stringValue: 'VF'),
+        ],
+      );
+
+      final issue = NumismaticDataHelper.checkInstanceSubspeciesCongruence(subspecies: sub, instance: instanceNonStandardGrade);
+      expect(issue, isNotNull);
+      expect(issue, contains('Grado de conservación no estandarizado'));
+    });
+
     test('findDuplicateSubspeciesGroups finds duplicate subspecies titles', () {
       final list = [
         Subspecies(id: 's1', speciesId: 'sp1', subspeciesName: '5 Pesos Mexicanos - México (2022)', createdAt: DateTime.now()),
