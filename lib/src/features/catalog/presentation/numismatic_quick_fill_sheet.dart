@@ -50,32 +50,202 @@ class NumismaticQuickFillSheet extends StatefulWidget {
 }
 
 class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
-  // Preset lists for instant selection with Mexico defaults first
+  // ISO 4217 Registered Currencies & Key Numismatic Currencies
   static const Map<String, String> _currencyMap = {
-    'MXN': 'Pesos Mexicanos',
-    'MXP': 'Pesos Mexicanos (Antiguos)',
-    'EUR': 'Euros',
-    'USD': 'Dólares US',
-    'ESP': 'Pesetas',
-    'GBP': 'Libras Esterlinas',
-    'CAD': 'Dólares Canadienses',
-    'CLP': 'Pesos Chilenos',
-    'ARS': 'Pesos Argentinos',
-    'COP': 'Pesos Colombianos',
-    'PEN': 'Soles Peruanos',
+    'AED': 'Dírham de los Emiratos Árabes Unidos',
+    'AFN': 'Afgani Afgano',
+    'ALL': 'Lek Albanés',
+    'AMD': 'Dram Armenio',
+    'ANG': 'Florín Antillano Holandés',
+    'AOA': 'Kwanza Angoleño',
+    'ARS': 'Peso Argentino',
+    'AUD': 'Dólar Australiano',
+    'AWG': 'Florín Arubeño',
+    'AZN': 'Manat Azerbaiyano',
+    'BAM': 'Marco Convertible de Bosnia-Herzegovina',
+    'BBD': 'Dólar de Barbados',
+    'BDT': 'Taka Bangladesí',
+    'BGN': 'Lev Búlgaro',
+    'BHD': 'Dinar Baréiní',
+    'BIF': 'Franco Burundés',
+    'BMD': 'Dólar de Bermudas',
+    'BND': 'Dólar de Brunéi',
+    'BOB': 'Boliviano',
+    'BRL': 'Real Brasileño',
+    'BSD': 'Dólar Bahameño',
+    'BTN': 'Ngultrum Butanés',
+    'BWP': 'Pula Botsuano',
+    'BYN': 'Rublo Bielorruso',
+    'BZD': 'Dólar Beliceño',
+    'CAD': 'Dólar Canadiense',
+    'CDF': 'Franco Congoleño',
+    'CHF': 'Franco Suizo',
+    'CLP': 'Peso Chileno',
+    'CNY': 'Yuan Chino',
+    'COP': 'Peso Colombiano',
+    'CRC': 'Colón Costarricense',
+    'CUC': 'Peso Cubano Convertible',
+    'CUP': 'Peso Cubano',
+    'CVE': 'Escudo Caboverdiano',
+    'CZK': 'Corona Checa',
+    'DJF': 'Franco Yibutiano',
+    'DKK': 'Corona Danesa',
+    'DOP': 'Peso Dominicano',
+    'DZD': 'Dinar Argelino',
+    'EGP': 'Libra Egipcia',
+    'ERN': 'Nakfa Eritreo',
+    'ESP': 'Peseta Española (Histórica)',
+    'ETB': 'Birr Etíope',
+    'EUR': 'Euro',
+    'FJD': 'Dólar Fiyiano',
+    'FKP': 'Libra de las Islas Malvinas',
+    'GBP': 'Libra Esterlina',
+    'GEL': 'Lari Georgiano',
+    'GHS': 'Cedi Ghanés',
+    'GIP': 'Libra de Gibraltar',
+    'GMD': 'Dalasi Gambiano',
+    'GNF': 'Franco Guineano',
+    'GTQ': 'Quetzal Guatemalteco',
+    'GYD': 'Dólar Guyanés',
+    'HKD': 'Dólar de Hong Kong',
+    'HNL': 'Lempira Hondureño',
+    'HRK': 'Kuna Croata',
+    'HTG': 'Gourde Haitiano',
+    'HUF': 'Forinto Húngaro',
+    'IDR': 'Rupia Indonesia',
+    'ILS': 'Nuevo Séquel Israelí',
+    'INR': 'Rupia India',
+    'IQD': 'Dinar Iraquí',
+    'IRR': 'Rial Iraní',
+    'ISK': 'Corona Islandesa',
+    'JMD': 'Dólar Jamaicano',
+    'JOD': 'Dinar Jordano',
+    'JPY': 'Yen Japonés',
+    'KES': 'Chelín Keniano',
+    'KGS': 'Som Kirguís',
+    'KHR': 'Riel Camboyano',
+    'KMF': 'Franco Comorense',
+    'KPW': 'Won Norte-Coreano',
+    'KRW': 'Won Surcoreano',
+    'KWD': 'Dinar Kuwaití',
+    'KYD': 'Dólar de las Islas Caimán',
+    'KZT': 'Tenge Kazakh',
+    'LAK': 'Kip Laosiano',
+    'LBP': 'Libra Libanesa',
+    'LKR': 'Rupia de Sri Lanka',
+    'LRD': 'Dólar Liberiano',
+    'LSL': 'Loti Lesothense',
+    'LYD': 'Dinar Libio',
+    'MAD': 'Dírham Marroquí',
+    'MDL': 'Leu Moldavo',
+    'MGA': 'Ariary Malgache',
+    'MKD': 'Denar Macedonio',
+    'MMK': 'Kyat de Myanmar',
+    'MNT': 'Tugrik Mongol',
+    'MOP': 'Pataca Macanesa',
+    'MRU': 'Ouguiya Mauritana',
+    'MUR': 'Rupia de Mauricio',
+    'MVR': 'Rufiyaa Maldiva',
+    'MWK': 'Kwacha Malauí',
+    'MXN': 'Peso Mexicano',
+    'MXP': 'Peso Mexicano (Antiguo - Histórico)',
+    'MYR': 'Ringgit Malayo',
+    'MZN': 'Metical Mozambanqueño',
+    'NAD': 'Dólar Namibio',
+    'NGN': 'Naira Nigeriana',
+    'NIO': 'Córdoba Nicaragüense',
+    'NOK': 'Corona Noruega',
+    'NPR': 'Rupia Nepalí',
+    'NZD': 'Dólar Neozelandés',
+    'OMR': 'Rial Omaní',
+    'PAB': 'Balboa Panameño',
+    'PEN': 'Sol Peruano',
+    'PGK': 'Kina de Papúa Nueva Guinea',
+    'PHP': 'Peso Filipino',
+    'PKR': 'Rupia Pakistaní',
+    'PLN': 'Zloty Polaco',
+    'PYG': 'Guaraní Paraguayo',
+    'QAR': 'Riyal Catarí',
+    'RON': 'Leu Rumano',
+    'RSD': 'Dinar Serbio',
+    'RUB': 'Rublo Ruso',
+    'RWF': 'Franco Ruandés',
+    'SAR': 'Riyal Saudí',
+    'SBD': 'Dólar de las Islas Salomón',
+    'SCR': 'Rupia de Seychelles',
+    'SDG': 'Libra Sudanesa',
+    'SEK': 'Corona Sueca',
+    'SGD': 'Dólar de Singapur',
+    'SHP': 'Libra de Santa Elena',
+    'SLE': 'Leone de Sierra Leona',
+    'SLL': 'Leone Antiguo de Sierra Leona',
+    'SOS': 'Chelín Somalí',
+    'SRD': 'Dólar Surinamés',
+    'SSP': 'Libra Sudsudanesa',
+    'STN': 'Dobra de Santo Tomé y Príncipe',
+    'SVC': 'Colón Salvadoreño',
+    'SYP': 'Libra Siria',
+    'SZL': 'Lilangeni Esuatiní',
+    'THB': 'Baht Tailandés',
+    'TJS': 'Somoni Tayiko',
+    'TMT': 'Manat Turkmenio',
+    'TND': 'Dinar Tunecino',
+    'TOP': 'Paʻanga Tongano',
+    'TRY': 'Lira Turca',
+    'TTD': 'Dólar de Trinidad y Tobago',
+    'TWD': 'Nuevo Dólar Taiwanés',
+    'TZS': 'Chelín Tanzano',
+    'UAH': 'Grivna Ucraniana',
+    'UGX': 'Chelín Ugandés',
+    'USD': 'Dólar Estadounidense',
+    'UYU': 'Peso Uruguayo',
+    'UZS': 'Som Uzbeko',
+    'VED': 'Bolívar Soberano Digital Venezolano',
+    'VES': 'Bolívar Soberano Venezolano',
+    'VND': 'Dong Vietnamita',
+    'VUV': 'Vatu Vanuatuense',
+    'WST': 'Tala Samoano',
+    'XAF': 'Franco CFA de África Central',
+    'XCD': 'Dólar del Caribe Oriental',
+    'XOF': 'Franco CFA de África Occidental',
+    'XPF': 'Franco CFP',
+    'YER': 'Rial Yemení',
+    'ZAR': 'Rand Sudafricano',
+    'ZMW': 'Kwacha Zambiano',
+    'ZWL': 'Dólar Zimbabuense',
   };
 
+  // World Countries and Numismatic Issuers
   static const List<String> _countries = [
-    'México',
-    'España',
-    'Estados Unidos',
-    'Unión Europea',
-    'Reino Unido',
-    'Argentina',
-    'Chile',
-    'Colombia',
-    'Perú',
-    'Otro',
+    'Afganistán', 'Albania', 'Alemania', 'Andorra', 'Angola', 'Antigua y Barbuda', 'Arabia Saudita',
+    'Argelia', 'Argentina', 'Armenia', 'Aruba', 'Australia', 'Austria', 'Azerbaiyán', 'Bahamas',
+    'Bangladés', 'Barbados', 'Baréin', 'Bélgica', 'Belice', 'Benín', 'Bermudas', 'Bielorrusia',
+    'Birmania (Myanmar)', 'Bolivia', 'Bosnia y Herzegovina', 'Botsuana', 'Brasil', 'Brunéi',
+    'Bulgaria', 'Burkina Faso', 'Burundi', 'Bután', 'Cabo Verde', 'Camboya', 'Camerún', 'Canadá',
+    'Catar', 'Chad', 'Chile', 'China', 'Chipre', 'Ciudad del Vaticano', 'Colombia', 'Comoras',
+    'Corea del Norte', 'Corea del Sur', 'Costa de Marfil', 'Costa Rica', 'Croacia', 'Cuba',
+    'Curazao', 'Dinamarca', 'Dominica', 'Ecuador', 'Egipto', 'El Salvador', 'Emiratos Árabes Unidos',
+    'Eritrea', 'Eslovaquia', 'Eslovenia', 'España', 'Estados Unidos', 'Estonia', 'Esuatini (Suazilandia)',
+    'Etiopía', 'Filipinas', 'Finlandia', 'Fiyi', 'Francia', 'Gabón', 'Gambia', 'Georgia', 'Ghana',
+    'Gibraltar', 'Granada', 'Grecia', 'Groenlandia', 'Guatemala', 'Guinea', 'Guinea Ecuatorial',
+    'Guinea-Bisáu', 'Guyana', 'Haití', 'Honduras', 'Hong Kong', 'Hungría', 'India', 'Indonesia',
+    'Irak', 'Irán', 'Irlanda', 'Islandia', 'Islas Caimán', 'Islas Cook', 'Islas Feroe', 'Islas Malvinas',
+    'Islas Marshall', 'Islas Salomón', 'Israel', 'Italia', 'Jamaica', 'Japón', 'Jordania', 'Kazajistán',
+    'Kenia', 'Kirguistán', 'Kiribati', 'Kuwait', 'Laos', 'Lesoto', 'Letonia', 'Líbano', 'Liberia',
+    'Libia', 'Liechtenstein', 'Lituania', 'Luxemburgo', 'Macao', 'Macedonia del Norte', 'Madagascar',
+    'Malasia', 'Malaui', 'Maldivas', 'Malí', 'Malta', 'Marruecos', 'Mauricio', 'Mauritania', 'México',
+    'Micronesia', 'Moldavia', 'Mónaco', 'Mongolia', 'Montenegro', 'Mozambique', 'Namibia', 'Nauru',
+    'Nepal', 'Nicaragua', 'Níger', 'Nigeria', 'Noruega', 'Nueva Caledonia', 'Nueva Zelanda', 'Omán',
+    'Países Bajos', 'Pakistán', 'Palaos', 'Palestina', 'Panamá', 'Papúa Nueva Guinea', 'Paraguay',
+    'Perú', 'Polinesia Francesa', 'Polonia', 'Portugal', 'Puerto Rico', 'Reino Unido',
+    'República Centroafricana', 'República Checa', 'República del Congo', 'República Democrática del Congo',
+    'República Dominicana', 'Ruanda', 'Rumanía', 'Rusia', 'Samoa', 'San Cristóbal y Nieves',
+    'San Marino', 'San Vicente y las Granadinas', 'Santa Lucía', 'Santo Tomé y Príncipe', 'Senegal',
+    'Serbia', 'Seychelles', 'Sierra Leona', 'Singapur', 'Siria', 'Somalia', 'Sri Lanka', 'Sudáfrica',
+    'Sudán', 'Sudán del Sur', 'Suecia', 'Suiza', 'Surinam', 'Tailandia', 'Taiwán', 'Tanzania',
+    'Tayikistán', 'Timor Oriental', 'Togo', 'Tonga', 'Trinidad y Tobago', 'Túnez', 'Turkmenistán',
+    'Turquía', 'Tuvalu', 'Ucrania', 'Uganda', 'Unión Europea', 'Uruguay', 'Uzbekistán', 'Vanuatu',
+    'Venezuela', 'Vietnam', 'Yemen', 'Yibuti', 'Zambia', 'Zimbabue', 'Otro',
   ];
 
   static const List<String> _denominations = [
@@ -110,6 +280,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
     'Aluminio',
     'Bimetálica',
     'Acero',
+    'Papel',
   ];
 
   static const List<String> _specialEditionReasons = [
@@ -122,28 +293,30 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
     'Otro (especificar)',
   ];
 
-  late String _country;
-  late String _currencyCode;
-  late String _denomination;
-  late String _grade;
-  late String _composition;
+  // Default values set to empty / unselected (null)
+  String? _country;
+  String? _currencyCode;
+  String? _denomination;
+  String? _grade;
+  String? _composition;
 
   // Empty year text field by default
   final TextEditingController _yearController = TextEditingController(text: '');
 
   // Special Edition Controls
   bool _isSpecialEdition = false;
-  String _specialReason = _specialEditionReasons.first;
+  String? _specialReason;
   final TextEditingController _specialNotesController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _country = 'México';
-    _currencyCode = 'MXN';
-    _denomination = '5';
-    _grade = _grades[2]; // MBC / VF
-    _composition = widget.isCoin ? _coinMaterials.first : 'Papel';
+    _country = null;
+    _currencyCode = null;
+    _denomination = null;
+    _grade = null;
+    _composition = null;
+    _specialReason = null;
   }
 
   @override
@@ -154,14 +327,30 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   }
 
   void _submit() {
-    final faceVal = double.tryParse(_denomination);
-    final currName = _currencyMap[_currencyCode] ?? _currencyCode;
+    final faceVal = _denomination != null ? double.tryParse(_denomination!) : null;
+    final currName = _currencyCode != null ? (_currencyMap[_currencyCode!] ?? _currencyCode) : null;
     final yearStr = _yearController.text.trim();
     final speciesType = widget.isCoin ? 'Moneda' : 'Billete';
 
-    final titleParts = <String>['$_denomination $currName', _country];
-    if (yearStr.isNotEmpty) titleParts.add('($yearStr)');
-    final title = titleParts.join(' - ');
+    final titleParts = <String>[];
+    if (_denomination != null && _denomination!.isNotEmpty) {
+      if (currName != null && currName.isNotEmpty) {
+        titleParts.add('$_denomination $currName');
+      } else {
+        titleParts.add(_denomination!);
+      }
+    } else if (currName != null && currName.isNotEmpty) {
+      titleParts.add(currName!);
+    }
+
+    if (_country != null && _country!.isNotEmpty) {
+      titleParts.add(_country!);
+    }
+    if (yearStr.isNotEmpty) {
+      titleParts.add('($yearStr)');
+    }
+
+    final title = titleParts.isNotEmpty ? titleParts.join(' - ') : speciesType;
 
     final result = NumismaticScanResult(
       speciesType: speciesType,
@@ -172,7 +361,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
       faceValueNumber: faceVal,
       currencyCode: _currencyCode,
       currencyName: currName,
-      composition: widget.isCoin ? _composition : 'Papel',
+      composition: _composition,
       grade: _grade,
       isSpecialEdition: _isSpecialEdition,
       specialEditionReason: _isSpecialEdition ? _specialReason : null,
@@ -195,6 +384,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final speciesLabel = widget.isCoin ? 'Moneda (Circular)' : 'Billete (Rectangular)';
+    final unselectedStyle = TextStyle(color: theme.disabledColor, fontStyle: FontStyle.italic);
 
     return Container(
       decoration: BoxDecoration(
@@ -239,17 +429,27 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
             ),
             const SizedBox(height: 16),
 
-            // Country Dropdown (Default México)
-            DropdownButtonFormField<String>(
-              initialValue: _country,
+            // Country Dropdown (Default null / Sin selección)
+            DropdownButtonFormField<String?>(
+              value: _country,
               isExpanded: true,
               decoration: InputDecoration(
                 labelText: 'País / Emisor',
+                hintText: 'Sin selección',
                 prefixIcon: const Icon(Icons.flag),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
               ),
-              items: _countries.map((c) => DropdownMenuItem(value: c, child: Text(c, overflow: TextOverflow.ellipsis))).toList(),
-              onChanged: (val) => setState(() => _country = val!),
+              items: [
+                DropdownMenuItem<String?>(
+                  value: null,
+                  child: Text('Sin selección', style: unselectedStyle),
+                ),
+                ..._countries.map((c) => DropdownMenuItem<String?>(
+                  value: c,
+                  child: Text(c, overflow: TextOverflow.ellipsis),
+                )),
+              ],
+              onChanged: (val) => setState(() => _country = val),
             ),
             const SizedBox(height: 12),
 
@@ -257,32 +457,50 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
             Row(
               children: [
                 Expanded(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _denomination,
+                  child: DropdownButtonFormField<String?>(
+                    value: _denomination,
                     isExpanded: true,
                     decoration: InputDecoration(
                       labelText: 'Denominación',
+                      hintText: 'Sin selección',
                       prefixIcon: const Icon(Icons.numbers),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    items: _denominations.map((d) => DropdownMenuItem(value: d, child: Text(d, overflow: TextOverflow.ellipsis))).toList(),
-                    onChanged: (val) => setState(() => _denomination = val!),
+                    items: [
+                      DropdownMenuItem<String?>(
+                        value: null,
+                        child: Text('Sin selección', style: unselectedStyle),
+                      ),
+                      ..._denominations.map((d) => DropdownMenuItem<String?>(
+                        value: d,
+                        child: Text(d, overflow: TextOverflow.ellipsis),
+                      )),
+                    ],
+                    onChanged: (val) => setState(() => _denomination = val),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _currencyCode,
+                  child: DropdownButtonFormField<String?>(
+                    value: _currencyCode,
                     isExpanded: true,
                     decoration: InputDecoration(
                       labelText: 'Divisa',
+                      hintText: 'Sin selección',
                       prefixIcon: const Icon(Icons.monetization_on),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    items: _currencyMap.entries
-                        .map((e) => DropdownMenuItem(value: e.key, child: Text('${e.key} (${e.value})', overflow: TextOverflow.ellipsis)))
-                        .toList(),
-                    onChanged: (val) => setState(() => _currencyCode = val!),
+                    items: [
+                      DropdownMenuItem<String?>(
+                        value: null,
+                        child: Text('Sin selección', style: unselectedStyle),
+                      ),
+                      ..._currencyMap.entries.map((e) => DropdownMenuItem<String?>(
+                        value: e.key,
+                        child: Text('${e.key} (${e.value})', overflow: TextOverflow.ellipsis),
+                      )),
+                    ],
+                    onChanged: (val) => setState(() => _currencyCode = val),
                   ),
                 ),
               ],
@@ -299,6 +517,7 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Año (opcional)',
+                      hintText: 'Ej: 1982',
                       prefixIcon: const Icon(Icons.calendar_today),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
@@ -307,34 +526,54 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                 const SizedBox(width: 12),
                 Expanded(
                   flex: 2,
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _grade,
+                  child: DropdownButtonFormField<String?>(
+                    value: _grade,
+                    isExpanded: true,
                     decoration: InputDecoration(
                       labelText: 'Conservación',
+                      hintText: 'Sin selección',
                       prefixIcon: const Icon(Icons.grade),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    items: _grades.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
-                    onChanged: (val) => setState(() => _grade = val!),
+                    items: [
+                      DropdownMenuItem<String?>(
+                        value: null,
+                        child: Text('Sin selección', style: unselectedStyle),
+                      ),
+                      ..._grades.map((g) => DropdownMenuItem<String?>(
+                        value: g,
+                        child: Text(g, overflow: TextOverflow.ellipsis),
+                      )),
+                    ],
+                    onChanged: (val) => setState(() => _grade = val),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
 
-            // Composition Chips Section (Only shown for Coins, automatically Papel for Banknotes)
+            // Composition Chips Section (Only shown for Coins)
             if (widget.isCoin) ...[
-              DropdownButtonFormField<String>(
-                initialValue: _coinMaterials.contains(_composition) ? _composition : _coinMaterials.first,
+              DropdownButtonFormField<String?>(
+                value: _composition,
+                isExpanded: true,
                 decoration: InputDecoration(
                   labelText: 'Material / Composición',
+                  hintText: 'Sin selección',
                   prefixIcon: const Icon(Icons.token),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                items: _coinMaterials.map((mat) => DropdownMenuItem(value: mat, child: Text(mat))).toList(),
-                onChanged: (val) {
-                  if (val != null) setState(() => _composition = val);
-                },
+                items: [
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text('Sin selección', style: unselectedStyle),
+                  ),
+                  ..._coinMaterials.map((mat) => DropdownMenuItem<String?>(
+                    value: mat,
+                    child: Text(mat, overflow: TextOverflow.ellipsis),
+                  )),
+                ],
+                onChanged: (val) => setState(() => _composition = val),
               ),
               const SizedBox(height: 12),
             ],
@@ -357,20 +596,34 @@ class _NumismaticQuickFillSheetState extends State<NumismaticQuickFillSheet> {
                     value: _isSpecialEdition,
                     activeColor: theme.colorScheme.primary,
                     contentPadding: EdgeInsets.zero,
-                    onChanged: (val) => setState(() => _isSpecialEdition = val ?? false),
+                    onChanged: (val) => setState(() {
+                      _isSpecialEdition = val ?? false;
+                      if (!_isSpecialEdition) _specialReason = null;
+                    }),
                   ),
                   if (_isSpecialEdition) ...[
                     const Divider(),
                     const SizedBox(height: 4),
-                    DropdownButtonFormField<String>(
-                      initialValue: _specialReason,
+                    DropdownButtonFormField<String?>(
+                      value: _specialReason,
+                      isExpanded: true,
                       decoration: InputDecoration(
                         labelText: AppStrings.specialEditionReasonLabel,
+                        hintText: 'Sin selección',
                         prefixIcon: const Icon(Icons.star),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                       ),
-                      items: _specialEditionReasons.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
-                      onChanged: (val) => setState(() => _specialReason = val!),
+                      items: [
+                        DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text('Sin selección', style: unselectedStyle),
+                        ),
+                        ..._specialEditionReasons.map((r) => DropdownMenuItem<String?>(
+                          value: r,
+                          child: Text(r, overflow: TextOverflow.ellipsis),
+                        )),
+                      ],
+                      onChanged: (val) => setState(() => _specialReason = val),
                     ),
                     if (_specialReason == 'Otro (especificar)') ...[
                       const SizedBox(height: 12),
