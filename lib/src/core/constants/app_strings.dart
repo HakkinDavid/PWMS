@@ -601,4 +601,25 @@ class AppStrings {
   static const activityLogMovedPrefix = 'Trasladado "';
   static const activityLogFromPrefix = '" de "';
   static const activityLogToPrefix = '" a "';
+
+  // Servicio de Actualizaciones
+  static const softwareUpdatesTitle = 'Actualizaciones de la aplicación';
+  static const softwareUpdatesSubtitle = 'Comprueba si existen nuevas versiones de PWMS publicadas.';
+  static const checkForUpdatesTitle = 'Buscar actualizaciones';
+  static const checkForUpdatesSubtitle = 'Verifica si hay nuevas versiones disponibles en GitHub.';
+  static const updateAvailableTitle = 'Actualización disponible';
+  static const updateAvailablePrompt = 'Se encontró una nueva versión de la aplicación. ¿Deseas descargarla e instalarla ahora?';
+  static const currentVersionLabel = 'Versión actual';
+  static const latestVersionLabel = 'Nueva versión';
+  static const changelogLabel = 'Notas de la versión';
+  static const updateNowAction = 'Actualizar ahora';
+  static const laterAction = 'Más tarde';
+  static const updatingAction = 'Iniciando...';
+  static const appUpToDate = 'La aplicación está actualizada.';
+  static const updateChecking = 'Buscando actualizaciones...';
+  static const updateError = 'Error al verificar actualizaciones: ';
+  static const appVersionLabel = 'Versión instalada';
+  static const updateStarting = 'Iniciando la descarga del instalador...';
+  static const unsupportedPlatformUpdate = 'Las actualizaciones automáticas solo están disponibles en Android.';
 }
+

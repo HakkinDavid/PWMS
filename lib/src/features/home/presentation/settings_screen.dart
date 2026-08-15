@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/updater/presentation/update_prompt_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -15,6 +16,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isProcessing = false;
+  bool _isCheckingUpdate = false;
 
   Future<void> _exportBackup() async {
     setState(() => _isProcessing = true);
@@ -76,47 +78,143 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _checkForUpdates() async {
+    if (_isCheckingUpdate) return;
+    setState(() => _isCheckingUpdate = true);
+
+    try {
+      final updateService = ref.read(appUpdateServiceProvider);
+      final updateInfo = await updateService.checkForUpdate();
+
+      if (!mounted) return;
+
+      if (updateInfo.isAvailable) {
+        await UpdatePromptDialog.show(
+          context,
+          updateInfo: updateInfo,
+          onConfirmUpdate: () => updateService.triggerUpdate(),
+        );
+      } else {
+        AppToast.showSuccess(context, AppStrings.appUpToDate);
+      }
+    } catch (e) {
+      if (mounted) {
+        AppToast.showError(context, '${AppStrings.updateError}$e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isCheckingUpdate = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final appVersionAsync = ref.watch(currentAppVersionProvider);
+    final appVersion = appVersionAsync.asData?.value ?? '1.0.0';
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.globalSettingsTitle),
+        title: const Text(AppStrings.globalSettingsTitle),
       ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  shape: BoxShape.circle,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Icon Header
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.settings_suggest_rounded, size: 56, color: theme.colorScheme.onPrimaryContainer),
                 ),
-                child: Icon(Icons.storage, size: 64, color: theme.colorScheme.onPrimaryContainer),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                AppStrings.backupManagementTitle,
-                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                AppStrings.backupManagementSubtitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              const SizedBox(height: 32),
-              if (_isProcessing)
-                const CircularProgressIndicator()
-              else
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 450),
-                  child: Column(
+                const SizedBox(height: 20),
+                Text(
+                  AppStrings.globalSettingsTitle,
+                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${AppStrings.appName} • ${AppStrings.appVersionLabel}: v$appVersion',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                const SizedBox(height: 32),
+
+                // Sección 1: Actualizaciones de Software
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8),
+                    child: Text(
+                      AppStrings.softwareUpdatesTitle,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: theme.colorScheme.outlineVariant.withAlpha(120)),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withAlpha(30),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.system_update_alt_rounded, color: theme.colorScheme.primary),
+                    ),
+                    title: const Text(AppStrings.checkForUpdatesTitle, style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: const Text(AppStrings.checkForUpdatesSubtitle),
+                    trailing: _isCheckingUpdate
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.chevron_right),
+                    onTap: _isCheckingUpdate ? null : _checkForUpdates,
+                  ),
+                ),
+
+                const SizedBox(height: 28),
+
+                // Sección 2: Gestión de Respaldos
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8),
+                    child: Text(
+                      AppStrings.backupManagementTitle,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                if (_isProcessing)
+                  const Padding(
+                    padding: EdgeInsets.all(24.0),
+                    child: CircularProgressIndicator(),
+                  )
+                else
+                  Column(
                     children: [
                       Card(
                         elevation: 0,
@@ -125,7 +223,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           side: BorderSide(color: theme.colorScheme.outlineVariant.withAlpha(120)),
                         ),
                         child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           leading: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -140,7 +238,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           onTap: _exportBackup,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       Card(
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -148,7 +246,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           side: BorderSide(color: theme.colorScheme.outlineVariant.withAlpha(120)),
                         ),
                         child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           leading: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -165,8 +263,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ],
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

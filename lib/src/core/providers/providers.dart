@@ -25,6 +25,9 @@ import '../../features/notifications/domain/app_notification.dart';
 import '../../features/notifications/infrastructure/notification_repository.dart';
 import '../../features/notifications/application/notification_service.dart';
 
+import '../updater/infrastructure/app_update_service.dart';
+import '../updater/domain/app_update_info.dart';
+
 // Singletons / Core Services
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -38,6 +41,15 @@ final fileStorageServiceProvider = Provider<FileStorageService>((ref) {
 
 final databaseBackupServiceProvider = Provider<DatabaseBackupService>((ref) {
   return DatabaseBackupService(ref.watch(databaseProvider));
+});
+
+final appUpdateServiceProvider = Provider<AppUpdateService>((ref) {
+  return AppUpdateService();
+});
+
+final currentAppVersionProvider = FutureProvider<String>((ref) async {
+  final service = ref.watch(appUpdateServiceProvider);
+  return service.getCurrentAppVersion();
 });
 
 // Repositories

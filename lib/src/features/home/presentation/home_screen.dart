@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/updater/presentation/update_prompt_dialog.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../entities/domain/entity_photo_helper.dart';
@@ -11,10 +12,46 @@ import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/infrastructure/location_repository.dart';
 import '../../locations/presentation/location_tile.dart';
-class HomeScreen extends ConsumerWidget {
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-  void _showFullHistoryModal(BuildContext context, WidgetRef ref) {
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  static bool _hasCheckedForUpdateThisSession = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!_hasCheckedForUpdateThisSession) {
+      _hasCheckedForUpdateThisSession = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkUpdateSilently();
+      });
+    }
+  }
+
+  Future<void> _checkUpdateSilently() async {
+    try {
+      final updateService = ref.read(appUpdateServiceProvider);
+      final updateInfo = await updateService.checkForUpdate();
+      if (!mounted) return;
+      if (updateInfo.isAvailable) {
+        await UpdatePromptDialog.show(
+          context,
+          updateInfo: updateInfo,
+          onConfirmUpdate: () => updateService.triggerUpdate(),
+        );
+      }
+    } catch (_) {
+      // Ignorar silenciosamente errores en verificación al inicio
+    }
+  }
+
+  void _showFullHistoryModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -95,7 +132,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final recentEntitiesAsync = ref.watch(recentEntitiesProvider);
     final locationsAsync = ref.watch(locationNodeListProvider);
@@ -455,7 +492,7 @@ class HomeScreen extends ConsumerWidget {
                           style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         TextButton(
-                          onPressed: () => _showFullHistoryModal(context, ref),
+                          onPressed: () => _showFullHistoryModal(context),
                           child: const Text(AppStrings.viewAllAction),
                         ),
                       ],
