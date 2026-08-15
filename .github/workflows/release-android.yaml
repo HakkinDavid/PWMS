@@ -145,31 +145,6 @@ jobs:
               apk_url: $apk_url
             }' > release/metadata.json
 
-      - name: 🧾 Get commit message
-        id: commit
-        run: |
-          TAG="v$(date +'%y.%m.%d')"
-          echo "🧾 Recolectando commits del día ${TAG#v}..."
-          MSG=$(git log --pretty=format:"- %s" --since="$(date +'%Y-%m-%d 00:00:00')" --until="$(date +'%Y-%m-%d 23:59:59')" | tr -d '\r')
-          if [ -z "$MSG" ]; then
-            MSG=$(git log -1 --pretty=format:"- %s")
-          fi
-          {
-            echo 'message<<EOF'
-            echo "$MSG"
-            echo 'EOF'
-          } >> $GITHUB_OUTPUT
-
-      - name: 🏷️ Calculate version
-        id: vars
-        run: |
-          TAG="v$(date +'%y.%m.%d')"
-          VERSION="${TAG#v}"
-          NAME="PWMS ${TAG}"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "name=$NAME" >> $GITHUB_OUTPUT
-
       - name: 🚀 Create or update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
