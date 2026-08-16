@@ -7,13 +7,25 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'app_database.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
 
 class DatabaseBackupService {
   final AppDatabase _db;
 
   DatabaseBackupService(this._db);
 
-  /// Genera un JSON serializado con todos los registros de las 13 tablas de la base de datos
+  /// Sanitiza rutas de archivos para evitar almacenar rutas absolutas locales del SO (ej. Android)
+  /// Si es una URL externa (http/https), la preserva intacta.
+  static String _sanitizeMediaPath(String? rawPath) {
+    if (rawPath == null || rawPath.trim().isEmpty) return '';
+    final trimmed = rawPath.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    return p.basename(trimmed);
+  }
+
+  /// Genera un JSON serializado con todos los registros de las 14 tablas de la base de datos
   Future<Map<String, dynamic>> exportDatabaseToJsonMap() async {
     final locations = await _db.select(_db.locationsTable).get();
     final catalog = await _db.select(_db.catalogTable).get();
@@ -28,6 +40,7 @@ class DatabaseBackupService {
     final customTemplates = await _db.select(_db.customTemplatesTable).get();
     final speciesRequirements = await _db.select(_db.speciesRequirementsTable).get();
     final notifications = await _db.select(_db.notificationsTable).get();
+    final appSettings = await _db.select(_db.appSettingsTable).get();
 
     return {
       'version': _db.schemaVersion,
@@ -46,7 +59,7 @@ class DatabaseBackupService {
           'name': r.name,
           'type': r.type,
           'description': r.description,
-          'mainPhotoPath': r.mainPhotoPath,
+          'mainPhotoPath': r.mainPhotoPath != null ? _sanitizeMediaPath(r.mainPhotoPath) : null,
           'customAttributes': r.customAttributes,
           'isUnique': r.isUnique,
           'isNonPerishable': r.isNonPerishable,
@@ -60,7 +73,7 @@ class DatabaseBackupService {
           'subspeciesName': r.subspeciesName,
           'brand': r.brand,
           'barcode': r.barcode,
-          'photoPath': r.photoPath,
+          'photoPath': r.photoPath != null ? _sanitizeMediaPath(r.photoPath) : null,
           'notes': r.notes,
           'createdAt': r.createdAt.toIso8601String(),
         }).toList(),
@@ -68,6 +81,7 @@ class DatabaseBackupService {
           'id': r.id,
           'speciesId': r.speciesId,
           'propertyName': r.propertyName,
+          'dataType': r.dataType,
           'unitSymbol': r.unitSymbol,
           'createdAt': r.createdAt.toIso8601String(),
         }).toList(),
@@ -85,7 +99,9 @@ class DatabaseBackupService {
           'id': r.id,
           'instanceId': r.instanceId,
           'propertyName': r.propertyName,
+          'dataType': r.dataType,
           'magnitudeValue': r.magnitudeValue,
+          'stringValue': r.stringValue,
           'unitSymbol': r.unitSymbol,
         }).toList(),
         'instanceLocations': instanceLocations.map((r) => {
@@ -104,7 +120,7 @@ class DatabaseBackupService {
           'id': r.id,
           'speciesId': r.speciesId,
           'instanceId': r.instanceId,
-          'filePath': r.filePath,
+          'filePath': _sanitizeMediaPath(r.filePath),
           'fileName': r.fileName,
           'fileType': r.fileType,
           'createdAt': r.createdAt.toIso8601String(),
@@ -145,19 +161,25 @@ class DatabaseBackupService {
           'createdAt': r.createdAt.toIso8601String(),
           'updatedAt': r.updatedAt.toIso8601String(),
         }).toList(),
+        'appSettings': appSettings.map((r) => {
+          'key': r.key,
+          'value': r.value,
+        }).toList(),
       },
     };
   }
 
   /// Resuelve la ruta física local de un archivo de media referenciado en BD.
   Future<File?> _resolvePhysicalFile(String pathStr) async {
-    if (pathStr.isEmpty) return null;
+    if (pathStr.trim().isEmpty) return null;
+    final trimmed = pathStr.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return null;
 
-    final fDirect = File(pathStr);
+    final fDirect = File(trimmed);
     if (await fDirect.exists()) return fDirect;
 
     final docsDir = await getApplicationDocumentsDirectory();
-    final filename = p.basename(pathStr);
+    final filename = p.basename(trimmed);
 
     final fMedia = File(p.join(docsDir.path, 'pwms_media', filename));
     if (await fMedia.exists()) return fMedia;
@@ -298,7 +320,7 @@ class DatabaseBackupService {
   }
 
   /// Realiza la migración secuencial paso a paso de los datos JSON importados
-  /// según la versión de origen (e.g. 1.0, 2.0 -> N)
+  /// según la versión de origen (e.g. 1.0, 2.0 -> N) y aplica autorreparación retroactiva
   Map<String, dynamic> migrateImportedData(Map<String, dynamic> data, {required int targetVersion}) {
     final rawVersion = data['version'] ?? data['schemaVersion'] ?? data['versionCheck'] ?? 1;
     int importedVersion = 1;
@@ -321,6 +343,9 @@ class DatabaseBackupService {
     for (int v = importedVersion; v < targetVersion; v++) {
       currentData = _migrateJsonStep(currentData, fromVersion: v, toVersion: v + 1);
     }
+
+    // Aplicar autorreparación y estandarización retroactiva de magnitudes, tipos y rutas
+    currentData = _repairAndStandardizeImportedData(currentData);
 
     currentData['version'] = targetVersion;
     return currentData;
@@ -414,6 +439,181 @@ class DatabaseBackupService {
     return data;
   }
 
+  /// Realiza la autorreparación retroactiva de datos numismáticos y sanitización de rutas
+  /// para respaldos creados en versiones previas donde dataType/stringValue no fueron exportados.
+  Map<String, dynamic> _repairAndStandardizeImportedData(Map<String, dynamic> data) {
+    final tables = Map<String, dynamic>.from(data['tables'] as Map<String, dynamic>? ?? {});
+
+    // Asegurar tabla appSettings
+    tables.putIfAbsent('appSettings', () => <Map<String, dynamic>>[]);
+
+    // 1. Construir mapas de búsqueda rápida
+    final catalogList = (tables['catalog'] as List? ?? []);
+    final speciesMap = <String, Map<String, dynamic>>{};
+    final List<Map<String, dynamic>> sanitizedCatalog = [];
+    for (final c in catalogList) {
+      if (c is Map) {
+        final m = Map<String, dynamic>.from(c);
+        if (m['mainPhotoPath'] != null) {
+          m['mainPhotoPath'] = _sanitizeMediaPath(m['mainPhotoPath'].toString());
+        }
+        speciesMap[m['id'].toString()] = m;
+        sanitizedCatalog.add(m);
+      }
+    }
+    tables['catalog'] = sanitizedCatalog;
+
+    final subspeciesList = (tables['subspecies'] as List? ?? []);
+    final subspeciesMap = <String, Map<String, dynamic>>{};
+    final List<Map<String, dynamic>> sanitizedSubspecies = [];
+    for (final s in subspeciesList) {
+      if (s is Map) {
+        final m = Map<String, dynamic>.from(s);
+        if (m['photoPath'] != null) {
+          m['photoPath'] = _sanitizeMediaPath(m['photoPath'].toString());
+        }
+        subspeciesMap[m['id'].toString()] = m;
+        sanitizedSubspecies.add(m);
+      }
+    }
+    tables['subspecies'] = sanitizedSubspecies;
+
+    final attachmentsList = (tables['attachments'] as List? ?? []);
+    final List<Map<String, dynamic>> sanitizedAttachments = [];
+    for (final a in attachmentsList) {
+      if (a is Map) {
+        final m = Map<String, dynamic>.from(a);
+        if (m['filePath'] != null) {
+          m['filePath'] = _sanitizeMediaPath(m['filePath'].toString());
+        }
+        sanitizedAttachments.add(m);
+      }
+    }
+    tables['attachments'] = sanitizedAttachments;
+
+    final entitiesList = (tables['entities'] as List? ?? []);
+    final entityMap = <String, Map<String, dynamic>>{};
+    for (final e in entitiesList) {
+      if (e is Map) {
+        final m = Map<String, dynamic>.from(e);
+        entityMap[m['id'].toString()] = m;
+      }
+    }
+
+    // 2. Reparar y estandarizar speciesMagnitudes
+    final speciesMagnitudes = (tables['speciesMagnitudes'] as List? ?? []);
+    final List<Map<String, dynamic>> updatedSM = [];
+    for (final item in speciesMagnitudes) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        final propName = (m['propertyName'] ?? '').toString().trim();
+        var dt = m['dataType']?.toString();
+
+        if (dt == null || dt.isEmpty || dt == 'real') {
+          if (propName == 'Divisa' || propName == 'Material' || propName == 'Grado') {
+            dt = 'string';
+          } else if (propName == 'Acuñación' || propName == 'Año') {
+            dt = 'integer';
+          } else {
+            dt ??= 'real';
+          }
+        }
+        m['dataType'] = dt;
+        updatedSM.add(m);
+      }
+    }
+    tables['speciesMagnitudes'] = updatedSM;
+
+    // 3. Reparar y estandarizar instanceMagnitudes
+    final instanceMagnitudes = (tables['instanceMagnitudes'] as List? ?? []);
+    final List<Map<String, dynamic>> updatedIM = [];
+    for (final item in instanceMagnitudes) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        final propName = (m['propertyName'] ?? '').toString().trim();
+        final instId = m['instanceId']?.toString();
+        var dt = m['dataType']?.toString();
+        var strVal = m['stringValue']?.toString();
+        var numVal = (m['magnitudeValue'] as num?)?.toDouble() ?? 0.0;
+        var unit = m['unitSymbol']?.toString();
+
+        final entity = instId != null ? entityMap[instId] : null;
+        final speciesId = entity?['speciesId']?.toString();
+        final species = speciesId != null ? speciesMap[speciesId] : null;
+        final subspeciesId = entity?['subspeciesId']?.toString();
+        final subspecies = subspeciesId != null ? subspeciesMap[subspeciesId] : null;
+
+        if (propName == 'Divisa') {
+          dt = 'string';
+          unit = null;
+          if (strVal == null || strVal.trim().isEmpty) {
+            if (subspecies != null) {
+              final subNotes = subspecies['notes']?.toString() ?? '';
+              final subName = subspecies['subspeciesName']?.toString() ?? '';
+
+              final notesMatch = RegExp(r'Moneda:\s*([^|]+)').firstMatch(subNotes);
+              if (notesMatch != null) {
+                strVal = notesMatch.group(1)?.trim();
+              } else if (subName.isNotEmpty && subName != 'Genérica') {
+                final parsed = NumismaticDataHelper.parseSubspeciesName(subName);
+                strVal = parsed.currencyName;
+              }
+            }
+          }
+        } else if (propName == 'Material') {
+          dt = 'string';
+          unit = null;
+          if (strVal == null || strVal.trim().isEmpty) {
+            if (subspecies != null) {
+              final subNotes = subspecies['notes']?.toString() ?? '';
+              final matMatch = RegExp(r'Material:\s*([^|]+)').firstMatch(subNotes);
+              final metalMatch = RegExp(r'Metal:\s*([^|]+)').firstMatch(subNotes);
+              if (matMatch != null) {
+                strVal = matMatch.group(1)?.trim();
+              } else if (metalMatch != null) {
+                strVal = metalMatch.group(1)?.trim();
+              } else if (species?['name'] == 'Billete') {
+                strVal = 'Papel';
+              }
+            } else if (species?['name'] == 'Billete') {
+              strVal = 'Papel';
+            }
+          }
+        } else if (propName == 'Grado') {
+          dt = 'string';
+          unit = null;
+          if (strVal == null && entity?['notes'] != null) {
+            final entNotes = entity!['notes'].toString();
+            final gradeMatch = RegExp(r'Grado:\s*([^|\n]+)').firstMatch(entNotes);
+            if (gradeMatch != null) {
+              final g = gradeMatch.group(1)?.trim();
+              if (g != null && g != 'No especificado' && g.isNotEmpty) {
+                strVal = g;
+              }
+            }
+          }
+        } else if (propName == 'Acuñación' || propName == 'Año') {
+          dt = 'integer';
+          unit ??= 'año';
+        } else if (propName == 'Valor nominal') {
+          dt = 'real';
+        } else {
+          dt ??= 'real';
+        }
+
+        m['dataType'] = dt;
+        m['stringValue'] = strVal;
+        m['magnitudeValue'] = numVal;
+        m['unitSymbol'] = unit;
+        updatedIM.add(m);
+      }
+    }
+    tables['instanceMagnitudes'] = updatedIM;
+
+    data['tables'] = tables;
+    return data;
+  }
+
   /// Importa la base de datos a partir de una cadena JSON
   Future<void> importDatabaseFromJsonString(String jsonString) async {
     final Map<String, dynamic> rawData = jsonDecode(jsonString);
@@ -426,6 +626,7 @@ class DatabaseBackupService {
 
     await _db.transaction(() async {
       // Limpiar datos existentes en orden inverso de clave foránea
+      await _db.delete(_db.appSettingsTable).go();
       await _db.delete(_db.notificationsTable).go();
       await _db.delete(_db.speciesRequirementsTable).go();
       await _db.delete(_db.customTemplatesTable).go();
@@ -618,6 +819,17 @@ class DatabaseBackupService {
           createdAt: DateTime.parse(r['createdAt']),
           updatedAt: DateTime.parse(r['updatedAt']),
         ));
+      }
+
+      // Restaurar Configuraciones de la App
+      final appSettings = (tables['appSettings'] as List? ?? []);
+      for (final r in appSettings) {
+        if (r is Map && r['key'] != null && r['value'] != null) {
+          await _db.into(_db.appSettingsTable).insert(AppSettingsTableCompanion.insert(
+            key: r['key'].toString(),
+            value: r['value'].toString(),
+          ));
+        }
       }
     });
   }

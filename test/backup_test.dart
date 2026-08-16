@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
@@ -49,7 +50,9 @@ void main() {
   });
 
   group('DatabaseBackupService ZIP Snapshot Tests', () {
-    test('exportDatabaseToJsonMap generates valid structure with 13 tables', () async {
+    test('exportDatabaseToJsonMap generates valid structure with 14 tables including appSettings and data types', () async {
+      await db.setSetting('app_theme', 'dark');
+
       final jsonMap = await backupService.exportDatabaseToJsonMap();
 
       expect(jsonMap.containsKey('version'), isTrue);
@@ -57,17 +60,21 @@ void main() {
       expect(jsonMap.containsKey('tables'), isTrue);
 
       final tables = jsonMap['tables'] as Map<String, dynamic>;
-      expect(tables.length, equals(13));
+      expect(tables.length, equals(14));
       expect(tables.containsKey('catalog'), isTrue);
       expect(tables.containsKey('subspecies'), isTrue);
       expect(tables.containsKey('entities'), isTrue);
       expect(tables.containsKey('locations'), isTrue);
+      expect(tables.containsKey('appSettings'), isTrue);
+
+      final settings = tables['appSettings'] as List;
+      expect(settings.any((s) => s['key'] == 'app_theme' && s['value'] == 'dark'), isTrue);
     });
 
-    test('importDatabaseFromFile imports ZIP archive and restores tables and media files', () async {
+    test('importDatabaseFromFile imports ZIP archive and restores tables, settings and media files', () async {
       // 1. Create dummy JSON
       final dummyMap = {
-        'version': 1,
+        'version': 3,
         'exportedAt': DateTime.now().toIso8601String(),
         'tables': {
           'locations': [
@@ -86,7 +93,7 @@ void main() {
               'name': 'Especie de Prueba',
               'type': 'Objeto',
               'description': null,
-              'mainPhotoPath': 'sample_photo.jpg',
+              'mainPhotoPath': '/data/user/0/com.example/sample_photo.jpg',
               'customAttributes': null,
               'isUnique': false,
               'isNonPerishable': true,
@@ -106,6 +113,9 @@ void main() {
           'customTemplates': [],
           'speciesRequirements': [],
           'notifications': [],
+          'appSettings': [
+            {'key': 'currency', 'value': 'MXN'}
+          ],
         }
       };
 
@@ -128,7 +138,7 @@ void main() {
       // 4. Import ZIP into database
       await backupService.importDatabaseFromFile(zipFile);
 
-      // 5. Verify database content restored
+      // 5. Verify database content restored and path sanitized
       final catalogItems = await db.select(db.catalogTable).get();
       expect(catalogItems.length, equals(1));
       expect(catalogItems.first.name, equals('Especie de Prueba'));
@@ -137,6 +147,9 @@ void main() {
       final locations = await db.select(db.locationsTable).get();
       expect(locations.length, equals(1));
       expect(locations.first.name, equals('Ubicación de Prueba'));
+
+      final settingVal = await db.getSetting('currency');
+      expect(settingVal, equals('MXN'));
 
       // 6. Verify physical file restored in media dir
       final restoredFile = File(p.join(tempDir.path, 'docs', 'pwms_media', 'sample_photo.jpg'));
@@ -182,16 +195,16 @@ void main() {
       await expectLater(backupService.importDatabaseFromFile(zipFile), completes);
     });
 
-    test('migrateImportedData executes sequential step migrations for v1.0 to v3', () async {
+    test('migrateImportedData executes sequential step migrations and retroactively repairs legacy data', () async {
       final v1Map = {
         'version': '1.0',
         'exportedAt': DateTime.now().toIso8601String(),
         'tables': {
           'catalog': [
-            {'id': 'c1', 'name': 'Objeto Antiguo'}
+            {'id': 'c1', 'name': 'Objeto Antiguo', 'mainPhotoPath': '/data/user/0/app/pic.jpg'}
           ],
           'attachments': [
-            {'id': 'a1', 'speciesId': 'c1', 'filePath': 'doc.pdf', 'fileName': 'doc.pdf', 'fileType': 'doc', 'createdAt': DateTime.now().toIso8601String()}
+            {'id': 'a1', 'speciesId': 'c1', 'filePath': '/storage/emulated/0/doc.pdf', 'fileName': 'doc.pdf', 'fileType': 'doc', 'createdAt': DateTime.now().toIso8601String()}
           ]
         }
       };
@@ -205,11 +218,13 @@ void main() {
       final catalogItem = (tables['catalog'] as List).first as Map<String, dynamic>;
       expect(catalogItem['type'], equals('Objeto'));
       expect(catalogItem['isNonPerishable'], equals(true));
+      expect(catalogItem['mainPhotoPath'], equals('pic.jpg'));
 
       // Verify v2 -> v3 defaults
       final attachmentItem = (tables['attachments'] as List).first as Map<String, dynamic>;
       expect(attachmentItem.containsKey('instanceId'), isTrue);
       expect(attachmentItem['instanceId'], isNull);
+      expect(attachmentItem['filePath'], equals('doc.pdf'));
     });
   });
 }
