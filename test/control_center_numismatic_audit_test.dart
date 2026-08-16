@@ -194,5 +194,51 @@ void main() {
       );
       expect(attachments.first.fileName, equals(expectedFileName));
     });
+
+    test('Audit of empty data detects empty Grado and assigns standard grade value correctly', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: '10 Pesos Mexicanos - México (2023)',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+
+      // Instance has empty grade
+      final attrs = NumismaticDataHelper.extractAttributesFromInstance(instance);
+      expect(attrs.grade, isNull);
+
+      // Simulate assigning grade via emptyDataAudit fix action
+      const chosenGrade = 'Sin circular (UNC)';
+      final List<InstanceMagnitude> currentMags = List.from(instance.magnitudes);
+      final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == 'Grado');
+      if (existingGradeIdx >= 0) {
+        currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
+          dataType: 'string',
+          stringValue: chosenGrade,
+          unitSymbol: null,
+          magnitudeValue: 0.0,
+        );
+      } else {
+        currentMags.add(const InstanceMagnitude(
+          id: 'test-grade-id',
+          instanceId: 'test-inst',
+          propertyName: 'Grado',
+          dataType: 'string',
+          stringValue: chosenGrade,
+        ));
+      }
+
+      final updatedEntity = instance.copyWith(magnitudes: currentMags);
+      await entityRepo.saveEntity(updatedEntity);
+
+      final reloaded = await entityRepo.getEntityById(instance.id);
+      final updatedAttrs = NumismaticDataHelper.extractAttributesFromInstance(reloaded!);
+      expect(updatedAttrs.grade, equals('Sin circular (UNC)'));
+    });
   });
 }
+

@@ -30,6 +30,7 @@ enum AuditCardType {
   numismaticDuplicateSubspecies,
   numismaticAttachmentIncongruity,
   numismaticMissingMagnitudes,
+  emptyDataAudit,
 }
 
 class AuditCardData {
@@ -640,6 +641,111 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                     AppToast.showSuccess(context, 'Magnitudes numismáticas autocompletadas.');
                   }
                   return true;
+                },
+              ));
+            }
+
+            // D) Check Empty Optional Data / Attributes (such as Grado)
+            if (instAttrs.grade == null || instAttrs.grade!.trim().isEmpty) {
+              cards.add(AuditCardData(
+                id: 'numis_empty_grade_${entity.id}',
+                type: AuditCardType.emptyDataAudit,
+                title: 'Dato Numismático Vacío: Grado',
+                subtitle: '$displayName • Grado de conservación sin asignar',
+                question: 'La pieza "$displayName" no tiene especificado su estado o grado de conservación. ¿Deseas asignarle un grado ahora?',
+                icon: Icons.star_outline,
+                themeColor: Colors.amber.shade800,
+                entity: entity,
+                subspecies: sub,
+                species: species,
+                tile: InstancePreviewCard(entity: entity),
+                onConfirm: (context, ref) async {
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Grado de conservación mantenido vacío.');
+                  }
+                  return true;
+                },
+                onFix: (context, ref) async {
+                  final chosenGrade = await showDialog<String>(
+                    context: context,
+                    builder: (ctx) {
+                      String? currentVal = NumismaticDataHelper.grades.first;
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return AlertDialog(
+                            title: const Text('Asignar Grado de Conservación'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Selecciona el estado de conservación para "$displayName":',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField<String>(
+                                  value: currentVal,
+                                  isExpanded: true,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Grado de Conservación',
+                                    prefixIcon: Icon(Icons.grade),
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  items: NumismaticDataHelper.grades.map((g) => DropdownMenuItem(
+                                    value: g,
+                                    child: Text(g, overflow: TextOverflow.ellipsis),
+                                  )).toList(),
+                                  onChanged: (val) {
+                                    if (val != null) setState(() => currentVal = val);
+                                  },
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, null),
+                                child: const Text('Cancelar'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(ctx, currentVal),
+                                child: const Text('Guardar Grado'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
+
+                  if (chosenGrade != null && chosenGrade.isNotEmpty) {
+                    final List<InstanceMagnitude> currentMags = List.from(entity.magnitudes);
+                    final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == 'Grado');
+                    if (existingGradeIdx >= 0) {
+                      currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
+                        dataType: 'string',
+                        stringValue: chosenGrade,
+                        unitSymbol: null,
+                        magnitudeValue: 0.0,
+                      );
+                    } else {
+                      currentMags.add(InstanceMagnitude(
+                        id: const Uuid().v4(),
+                        instanceId: entity.id,
+                        propertyName: 'Grado',
+                        dataType: 'string',
+                        stringValue: chosenGrade,
+                      ));
+                    }
+
+                    final updatedEntity = entity.copyWith(magnitudes: currentMags);
+                    await entityRepo.saveEntity(updatedEntity);
+
+                    if (context.mounted) {
+                      AppToast.showSuccess(context, 'Grado de conservación actualizado a "$chosenGrade".');
+                    }
+                    return true;
+                  }
+                  return false;
                 },
               ));
             }
