@@ -9,13 +9,38 @@ import 'package:platinum_world_management_system/src/features/catalog/infrastruc
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 
+import 'package:path/path.dart' as p;
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+
+class FakePathProviderPlatform extends PathProviderPlatform
+    with MockPlatformInterfaceMixin {
+  final String tempPath;
+  final String docsPath;
+
+  FakePathProviderPlatform({required this.tempPath, required this.docsPath});
+
+  @override
+  Future<String?> getTemporaryPath() async => tempPath;
+
+  @override
+  Future<String?> getApplicationDocumentsPath() async => docsPath;
+}
+
 void main() {
   late AppDatabase db;
   late CatalogRepository catalogRepo;
   late EntityRepository entityRepo;
+  late Directory tempDir;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
+    tempDir = Directory.systemTemp.createTempSync('cc_audit_test_');
+    PathProviderPlatform.instance = FakePathProviderPlatform(
+      tempPath: p.join(tempDir.path, 'temp'),
+      docsPath: p.join(tempDir.path, 'docs'),
+    );
+
     db = AppDatabase(NativeDatabase.memory());
     catalogRepo = CatalogRepository(db);
     entityRepo = EntityRepository(db);
@@ -23,6 +48,9 @@ void main() {
 
   tearDown(() async {
     await db.close();
+    if (tempDir.existsSync()) {
+      tempDir.deleteSync(recursive: true);
+    }
   });
 
   group('Control Center Numismatic Audit Integration Tests', () {
@@ -239,6 +267,30 @@ void main() {
       final updatedAttrs = NumismaticDataHelper.extractAttributesFromInstance(reloaded!);
       expect(updatedAttrs.grade, equals('Sin circular (UNC)'));
     });
+
+    test('Audit of remote images detects HTTP/HTTPS URLs on species and updates to local storage path', () async {
+      // 1. Create species with remote image URL (mimicking Peluche / Refrigerador)
+      final species = await catalogRepo.getOrCreateSpecies(
+        'Refrigerador',
+        type: 'Objeto',
+        mainPhotoPath: 'http://c.shld.net/rpx/i/s/pi/mp/10139565/5357427829',
+      );
+
+      // Verify remote image is detected
+      final isRemote = species.mainPhotoPath != null &&
+          (species.mainPhotoPath!.startsWith('http://') || species.mainPhotoPath!.startsWith('https://'));
+      expect(isRemote, isTrue);
+
+      // Simulate fixing by saving local relative file
+      const localRelativeFileName = 'refrigerador_downloaded_guid.jpg';
+      final updatedSpecies = species.copyWith(mainPhotoPath: localRelativeFileName);
+      await catalogRepo.saveCatalogItem(updatedSpecies);
+
+      final reloadedSpecies = await catalogRepo.getCatalogItemById(species.id);
+      expect(reloadedSpecies!.mainPhotoPath, equals(localRelativeFileName));
+      expect(reloadedSpecies.mainPhotoPath!.startsWith('http'), isFalse);
+    });
   });
 }
+
 

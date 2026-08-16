@@ -16,6 +16,7 @@ import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_or_container_correction_sheet.dart';
 import '../../catalog/domain/numismatic_data_helper.dart';
+import '../../catalog/presentation/web_image_picker_dialog.dart';
 import '../../entities/domain/instance_magnitude.dart';
 import 'package:uuid/uuid.dart';
 
@@ -26,6 +27,7 @@ enum AuditCardType {
   expirationAudit,
   orphanEntity,
   incompleteSpeciesInfo,
+  remoteImageAudit,
   numismaticSubspeciesIncongruity,
   numismaticDuplicateSubspecies,
   numismaticAttachmentIncongruity,
@@ -385,6 +387,110 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
           onFix: (context, ref) async {
             final result = await SpeciesFormModal.show(context, initialSpecies: sp);
             return result != null;
+          },
+        ));
+      }
+
+      // 5.1 Especies con Imágenes Remotas (HTTP / HTTPS)
+      final remoteImageSpecies = speciesList.where((c) =>
+        c.mainPhotoPath != null &&
+        (c.mainPhotoPath!.startsWith('http://') || c.mainPhotoPath!.startsWith('https://'))
+      );
+      for (final sp in remoteImageSpecies) {
+        cards.add(AuditCardData(
+          id: 'spec_remote_${sp.id}',
+          type: AuditCardType.remoteImageAudit,
+          title: 'Imagen de Especie No Local (URL Remota)',
+          subtitle: '${sp.name} (${sp.type}) • Imagen en Internet',
+          question: 'La especie "${sp.name}" tiene una imagen referenciada desde una URL remota de Internet. ¿Deseas descargarla y guardarla localmente en el dispositivo para tenerla offline y respaldable?',
+          icon: Icons.cloud_download_outlined,
+          themeColor: Colors.indigoAccent,
+          species: sp,
+          tile: SpeciesTile(species: sp),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Imagen remota conservada sin descargar.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            final lookupService = ref.read(productLookupServiceProvider);
+            final fileStorage = ref.read(fileStorageServiceProvider);
+            final localTempPath = await lookupService.downloadAndSaveImage(sp.mainPhotoPath!);
+            if (localTempPath != null) {
+              final relPath = await fileStorage.saveFile(localTempPath);
+              final updatedSp = sp.copyWith(mainPhotoPath: relPath);
+              await catalogRepo.saveCatalogItem(updatedSp);
+              ref.read(catalogListProvider.notifier).loadCatalog();
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Imagen descargada y guardada localmente con éxito.');
+              }
+              return true;
+            } else {
+              if (context.mounted) {
+                AppToast.showError(context, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla en la web.');
+                final picked = await WebImagePickerDialog.show(
+                  context,
+                  searchQuery: sp.name,
+                  targetSpecies: sp,
+                );
+                return picked != null;
+              }
+            }
+            return false;
+          },
+        ));
+      }
+
+      // 5.2 Subespecies con Imágenes Remotas (HTTP / HTTPS)
+      final remoteImageSubspecies = subspeciesList.where((s) =>
+        s.photoPath != null &&
+        (s.photoPath!.startsWith('http://') || s.photoPath!.startsWith('https://'))
+      );
+      for (final sub in remoteImageSubspecies) {
+        final parentSpecies = speciesList.where((c) => c.id == sub.speciesId).firstOrNull;
+        cards.add(AuditCardData(
+          id: 'sub_remote_${sub.id}',
+          type: AuditCardType.remoteImageAudit,
+          title: 'Imagen de Subespecie No Local (URL Remota)',
+          subtitle: '${sub.subspeciesName} • ${parentSpecies?.name ?? ""}',
+          question: 'La subespecie "${sub.subspeciesName}" tiene una imagen referenciada desde una URL remota de Internet. ¿Deseas descargarla y guardarla localmente en el dispositivo?',
+          icon: Icons.cloud_download_outlined,
+          themeColor: Colors.indigo,
+          subspecies: sub,
+          species: parentSpecies,
+          tile: SubspeciesTile(subspecies: sub, speciesName: parentSpecies?.name ?? ''),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Imagen remota conservada sin descargar.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            final lookupService = ref.read(productLookupServiceProvider);
+            final fileStorage = ref.read(fileStorageServiceProvider);
+            final localTempPath = await lookupService.downloadAndSaveImage(sub.photoPath!);
+            if (localTempPath != null) {
+              final relPath = await fileStorage.saveFile(localTempPath);
+              final updatedSub = sub.copyWith(photoPath: relPath);
+              await catalogRepo.saveSubspecies(updatedSub);
+              ref.invalidate(subspeciesListProvider);
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Imagen descargada y guardada localmente con éxito.');
+              }
+              return true;
+            } else {
+              if (context.mounted) {
+                AppToast.showError(context, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla en la web.');
+                final picked = await WebImagePickerDialog.show(
+                  context,
+                  searchQuery: sub.subspeciesName,
+                  targetSubspecies: sub,
+                );
+                return picked != null;
+              }
+            }
+            return false;
           },
         ));
       }
