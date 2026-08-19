@@ -360,7 +360,15 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     child: Text(c, overflow: TextOverflow.ellipsis),
                   )),
                 ],
-                onChanged: (val) => setState(() => _country = val),
+                onChanged: (val) {
+                  setState(() {
+                    _country = val;
+                    final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(_country);
+                    if (_currencyCode != null && !availableCurrencies.contains(_currencyCode)) {
+                      _currencyCode = null;
+                    }
+                  });
+                },
               ),
               const SizedBox(height: 14),
 
@@ -417,28 +425,33 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               ],
               const SizedBox(height: 14),
 
-              // 3. Divisa Dropdown (1 campo por fila)
-              DropdownButtonFormField<String?>(
-                value: _currencyCode,
-                isExpanded: true,
-                decoration: InputDecoration(
-                  labelText: 'Divisa',
-                  hintText: 'Sin selección',
-                  prefixIcon: const Icon(Icons.monetization_on),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-                validator: (val) => val == null ? 'Selecciona una divisa' : null,
-                items: [
-                  DropdownMenuItem<String?>(
-                    value: null,
-                    child: Text('Sin selección', style: unselectedStyle),
-                  ),
-                  ..._currencyMap.entries.map((e) => DropdownMenuItem<String?>(
-                    value: e.key,
-                    child: Text('${e.key} (${e.value})', overflow: TextOverflow.ellipsis),
-                  )),
-                ],
-                onChanged: (val) => setState(() => _currencyCode = val),
+              // 3. Divisa Dropdown (1 campo por fila) - Filtrado por País seleccionado
+              Builder(
+                builder: (context) {
+                  final availableCurrencies = NumismaticDataHelper.getCurrencyMapForCountry(_country);
+                  return DropdownButtonFormField<String?>(
+                    value: _currencyCode,
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      labelText: 'Divisa',
+                      hintText: 'Sin selección',
+                      prefixIcon: const Icon(Icons.monetization_on),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    validator: (val) => val == null ? 'Selecciona una divisa' : null,
+                    items: [
+                      DropdownMenuItem<String?>(
+                        value: null,
+                        child: Text('Sin selección', style: unselectedStyle),
+                      ),
+                      ...availableCurrencies.entries.map((e) => DropdownMenuItem<String?>(
+                        value: e.key,
+                        child: Text('${e.key} (${e.value})', overflow: TextOverflow.ellipsis),
+                      )),
+                    ],
+                    onChanged: (val) => setState(() => _currencyCode = val),
+                  );
+                },
               ),
               const SizedBox(height: 14),
 

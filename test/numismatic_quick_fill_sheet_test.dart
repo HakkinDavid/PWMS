@@ -327,4 +327,59 @@ void main() {
     expect(submittedResult!.specialEditionReason, equals('Otro'));
     expect(submittedResult!.specialEditionNotes, equals('Bicentenario de la Independencia'));
   });
+
+  testWidgets('NumismaticQuickFillSheet filters currencies based on selected country and resets currency if not valid', (WidgetTester tester) async {
+    final dummyObverse = File('/tmp/obverse.jpg');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: NumismaticQuickFillSheet(
+                obversePhoto: dummyObverse,
+                isCoin: true,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // 1. Select Country 'Estados Unidos'
+    final countryDropdown = find.byType(DropdownButtonFormField<String?>).at(0);
+    await tester.tap(countryDropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Estados Unidos').last);
+    await tester.pumpAndSettle();
+
+    // 2. Open Currency Dropdown -> Should only show 'Sin selección' and 'USD (Dólares Estadounidenses)'
+    final currencyDropdown = find.byType(DropdownButtonFormField<String?>).at(2);
+    await tester.tap(currencyDropdown);
+    await tester.pumpAndSettle();
+
+    expect(find.text('USD (Dólares Estadounidenses)'), findsWidgets);
+    expect(find.text('MXN (Pesos Mexicanos)'), findsNothing);
+
+    // Select USD
+    await tester.tap(find.text('USD (Dólares Estadounidenses)').last);
+    await tester.pumpAndSettle();
+
+    // 3. Change Country to 'México'
+    await tester.tap(countryDropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('México').last);
+    await tester.pumpAndSettle();
+
+    // USD is not a currency for Mexico, so currency dropdown should reset to null ('Sin selección')
+    // Open Currency Dropdown -> Should show MXN and MXP, but not USD
+    await tester.tap(currencyDropdown);
+    await tester.pumpAndSettle();
+
+    expect(find.text('MXN (Pesos Mexicanos)'), findsWidgets);
+    expect(find.text('MXP (Pesos Mexicanos Antiguos)'), findsWidgets);
+    expect(find.text('USD (Dólares Estadounidenses)'), findsNothing);
+  });
 }

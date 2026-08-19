@@ -211,10 +211,38 @@ void main() {
         Subspecies(id: 's2', speciesId: 'sp1', subspeciesName: '5 Pesos Mexicanos - México (2022)', createdAt: DateTime.now()),
         Subspecies(id: 's3', speciesId: 'sp1', subspeciesName: '10 Pesos Mexicanos - México (2020)', createdAt: DateTime.now()),
       ];
-
       final dups = NumismaticDataHelper.findDuplicateSubspeciesGroups(list);
       expect(dups.length, equals(1));
       expect(dups.values.first.length, equals(2));
+    });
+
+    test('getCurrenciesForCountry filters currencies by country correctly', () {
+      final mexicoCurrencies = NumismaticDataHelper.getCurrenciesForCountry('México');
+      expect(mexicoCurrencies, containsAll(['MXN', 'MXP']));
+      expect(mexicoCurrencies.length, equals(2));
+
+      final usaCurrencies = NumismaticDataHelper.getCurrenciesForCountry('Estados Unidos');
+      expect(usaCurrencies, equals(['USD']));
+
+      final spainCurrencies = NumismaticDataHelper.getCurrenciesForCountry('España');
+      expect(spainCurrencies, containsAll(['EUR', 'ESP']));
+
+      // Null, empty, or 'Otro' should return all currencies
+      final allCurrencies = NumismaticDataHelper.currencyMap.keys.toList();
+      expect(NumismaticDataHelper.getCurrenciesForCountry(null), equals(allCurrencies));
+      expect(NumismaticDataHelper.getCurrenciesForCountry(''), equals(allCurrencies));
+      expect(NumismaticDataHelper.getCurrenciesForCountry('Otro'), equals(allCurrencies));
+    });
+
+    test('getCurrencyMapForCountry returns mapped dictionary for country', () {
+      final mexicoMap = NumismaticDataHelper.getCurrencyMapForCountry('México');
+      expect(mexicoMap.keys, containsAll(['MXN', 'MXP']));
+      expect(mexicoMap['MXN'], equals('Pesos Mexicanos'));
+      expect(mexicoMap['MXP'], equals('Pesos Mexicanos Antiguos'));
+
+      final usaMap = NumismaticDataHelper.getCurrencyMapForCountry('Estados Unidos');
+      expect(usaMap.keys, equals(['USD']));
+      expect(usaMap['USD'], equals('Dólares Estadounidenses'));
     });
   });
 }
