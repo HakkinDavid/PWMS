@@ -33,6 +33,15 @@ enum AuditCardType {
   numismaticAttachmentIncongruity,
   numismaticMissingMagnitudes,
   emptyDataAudit,
+  locationConflict,
+  cyclicContainment,
+  uniquenessViolation,
+  perishableMissingExpiration,
+  nonPerishableWithExpiration,
+  subgroupRuleViolation,
+  missingMandatoryMagnitudes,
+  uninstantiatedSpecies,
+  anomalousMagnitude,
 }
 
 class AuditCardData {
@@ -183,8 +192,11 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         }
       }
 
-      // 2. Anomalía: Instancia huérfana (sin ubicación asignada)
-      final orphanEntities = entitiesList.where((e) => e.locationId == null).take(10);
+      // 2. Anomalía: Instancia huérfana (sin ubicación directa ni contenedor)
+      final orphanEntities = entitiesList.where((e) =>
+        e.locationId == null &&
+        !relationsList.any((r) => r.sourceEntityId == e.id && r.relationType == 'GUARDADO_EN')
+      ).take(10);
       for (final entity in orphanEntities) {
         final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
         final displayName = EntityDisplayHelper.getDisplayName(
@@ -206,9 +218,9 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         cards.add(AuditCardData(
           id: 'orphan_${entity.id}',
           type: AuditCardType.orphanEntity,
-          title: 'Instancia sin Ubicación',
+          title: 'Instancia sin Ubicación ni Contenedor',
           subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
-          question: 'La instancia "$displayName" no tiene ubicación física asignada. ¿Asignarle una ubicación o contenedor ahora?',
+          question: 'La instancia "$displayName" no tiene ubicación física ni contenedor asignado. ¿Asignarle una ubicación o contenedor ahora?',
           icon: Icons.wrong_location_outlined,
           themeColor: Colors.orangeAccent,
           entity: entity,
@@ -224,6 +236,569 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             return await LocationOrContainerCorrectionSheet.show(context, entity: entity);
           },
         ));
+      }
+
+      // 2.1 Conflicto de Ubicación (Guardado en contenedor pero con ubicación directa)
+      final conflictEntities = entitiesList.where((e) {
+        if (e.locationId == null) return false;
+        return relationsList.any((r) => r.sourceEntityId == e.id && r.relationType == 'GUARDADO_EN');
+      }).take(8);
+
+      for (final entity in conflictEntities) {
+        final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
+        final containerRel = relationsList.where((r) => r.sourceEntityId == entity.id && r.relationType == 'GUARDADO_EN').first;
+        final containerEntity = entitiesList.where((e) => e.id == containerRel.targetEntityId).firstOrNull;
+        final containerSpecies = speciesList.where((c) => c.id == containerEntity?.speciesId).firstOrNull;
+        final containerName = containerSpecies?.name ?? 'Contenedor';
+        final directLoc = locationNodes.where((l) => l.id == entity.locationId).firstOrNull;
+        final directLocName = directLoc?.name ?? 'Ubicación directa';
+
+        final displayName = EntityDisplayHelper.getDisplayName(
+          entity: entity,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
+
+        cards.add(AuditCardData(
+          id: 'conflict_${entity.id}',
+          type: AuditCardType.locationConflict,
+          title: 'Conflicto de Ubicación en Contenedor',
+          subtitle: '$displayName • En: $containerName & $directLocName',
+          question: 'La instancia "$displayName" está guardada en "$containerName" pero también tiene asignada la ubicación directa "$directLocName". ¿Cómo deseas resolver la redundancia?',
+          icon: Icons.alt_route,
+          themeColor: Colors.purpleAccent,
+          entity: entity,
+          species: species,
+          tile: InstancePreviewCard(entity: entity),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Conflicto de ubicación omitido.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            final choice = await showDialog<String>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Resolver Conflicto de Ubicación'),
+                content: Text(
+                  'El elemento "$displayName" tiene doble asignación:\n\n'
+                  '• Contenedor: $containerName\n'
+                  '• Ubicación directa: $directLocName\n\n'
+                  '¿Cómo deseas resolverlo?'
+                ),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(ctx, 'keep_container'),
+                    child: const Text('Solo en Contenedor'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(ctx, 'keep_direct'),
+                    child: const Text('Solo Ubicación Directa'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(ctx, 'reassign'),
+                    child: const Text('Reasignar'),
+                  ),
+                ],
+              ),
+            );
+
+            if (choice == 'keep_container') {
+              await entityRepo.saveEntity(entity.copyWith(locationId: null));
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Ubicación directa removida. Conservado en contenedor.');
+              }
+              return true;
+            } else if (choice == 'keep_direct') {
+              await relationRepo.deleteRelation(containerRel.id);
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Elemento retirado del contenedor.');
+              }
+              return true;
+            } else if (choice == 'reassign') {
+              return await LocationOrContainerCorrectionSheet.show(context, entity: entity);
+            }
+            return false;
+          },
+        ));
+      }
+
+      // 2.2 Relaciones Circulares o Auto-Referencias
+      final circularRels = relationsList.where((r) {
+        if (r.sourceEntityId == r.targetEntityId) return true;
+        if (r.relationType == 'GUARDADO_EN') {
+          return relationsList.any((r2) =>
+              r2.sourceEntityId == r.targetEntityId &&
+              r2.targetEntityId == r.sourceEntityId &&
+              r2.relationType == 'GUARDADO_EN');
+        }
+        return false;
+      }).toList();
+
+      for (final rel in circularRels) {
+        final sourceEnt = entitiesList.where((e) => e.id == rel.sourceEntityId).firstOrNull;
+        final targetEnt = entitiesList.where((e) => e.id == rel.targetEntityId).firstOrNull;
+        final sourceSp = speciesList.where((c) => c.id == sourceEnt?.speciesId).firstOrNull;
+        final targetSp = speciesList.where((c) => c.id == targetEnt?.speciesId).firstOrNull;
+
+        cards.add(AuditCardData(
+          id: 'circ_${rel.id}',
+          type: AuditCardType.cyclicContainment,
+          title: 'Relación Circular o Auto-Referencia',
+          subtitle: '${sourceSp?.name ?? "Origen"} ➔ ${targetSp?.name ?? "Destino"} (${rel.relationType})',
+          question: 'Se detectó una relación circular o auto-referencia inválida entre "${sourceSp?.name}" y "${targetSp?.name}". ¿Deseas eliminar la relación conflictiva?',
+          icon: Icons.loop,
+          themeColor: Colors.redAccent,
+          entity: sourceEnt,
+          species: sourceSp,
+          tile: sourceEnt != null ? InstancePreviewCard(entity: sourceEnt) : const SizedBox.shrink(),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Relación circular conservada.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            final confirm = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Eliminar Relación Inválida'),
+                content: const Text('¿Confirmas que deseas eliminar esta relación conflictiva?'),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text('Eliminar Relación', style: TextStyle(color: Colors.redAccent)),
+                  ),
+                ],
+              ),
+            );
+
+            if (confirm == true) {
+              await relationRepo.deleteRelation(rel.id);
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Relación conflictiva eliminada.');
+              }
+              return true;
+            }
+            return false;
+          },
+        ));
+      }
+
+      // 2.3 Violación de Regla de Especie Única
+      for (final sp in speciesList.where((c) => c.isUnique)) {
+        final matchingInstances = entitiesList.where((e) => e.speciesId == sp.id).toList();
+        if (matchingInstances.length > 1) {
+          cards.add(AuditCardData(
+            id: 'uniq_viol_${sp.id}',
+            type: AuditCardType.uniquenessViolation,
+            title: 'Violación de Regla de Especie Única',
+            subtitle: '${sp.name} • ${matchingInstances.length} instancias registradas',
+            question: 'La especie "${sp.name}" está marcada como ÚNICA, pero existen ${matchingInstances.length} instancias en tu mundo. ¿Cómo deseas proceder?',
+            icon: Icons.content_copy,
+            themeColor: Colors.deepOrangeAccent,
+            species: sp,
+            tile: SpeciesTile(species: sp),
+            onConfirm: (context, ref) async {
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Violación de unicidad omitida.');
+              }
+              return true;
+            },
+            onFix: (context, ref) async {
+              final choice = await showDialog<String>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Resolver Unicidad'),
+                  content: Text(
+                    'La especie "${sp.name}" tiene ${matchingInstances.length} instancias.\n\n'
+                    '¿Deseas permitir múltiples instancias convirtiéndola en No Única o eliminar los duplicados?'
+                  ),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
+                    OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, 'make_not_unique'),
+                      child: const Text('Convertir a No Única'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, 'delete_duplicates'),
+                      child: const Text('Eliminar Duplicados', style: TextStyle(color: Colors.redAccent)),
+                    ),
+                  ],
+                ),
+              );
+
+              if (choice == 'make_not_unique') {
+                await catalogRepo.saveCatalogItem(sp.copyWith(isUnique: false));
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Especie configurada como No Única.');
+                }
+                return true;
+              } else if (choice == 'delete_duplicates') {
+                for (int i = 1; i < matchingInstances.length; i++) {
+                  await entityRepo.deleteEntity(matchingInstances[i].id);
+                }
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Instancias duplicadas eliminadas. Se conservó 1 instancia.');
+                }
+                return true;
+              }
+              return false;
+            },
+          ));
+        }
+      }
+
+      // 2.4 Perecederos sin Fecha de Caducidad
+      final perishableMissingExp = entitiesList.where((e) {
+        final sp = speciesList.where((c) => c.id == e.speciesId).firstOrNull;
+        return (sp != null && !sp.isNonPerishable && e.expirationDate == null);
+      }).take(8);
+
+      for (final entity in perishableMissingExp) {
+        final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
+        final displayName = EntityDisplayHelper.getDisplayName(
+          entity: entity,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
+
+        cards.add(AuditCardData(
+          id: 'no_exp_${entity.id}',
+          type: AuditCardType.perishableMissingExpiration,
+          title: 'Perecedero sin Caducidad',
+          subtitle: '$displayName • Especie: ${species?.name ?? ""}',
+          question: 'La especie "${species?.name}" es perecedera pero la instancia "$displayName" no tiene fecha de caducidad. ¿Deseas asignársela?',
+          icon: Icons.event_busy,
+          themeColor: Colors.amber.shade700,
+          entity: entity,
+          species: species,
+          tile: InstancePreviewCard(entity: entity),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Fecha de caducidad omitida.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            final defaultDays = species?.defaultShelfLifeDays ?? 30;
+            final suggestedDate = DateTime.now().add(Duration(days: defaultDays));
+
+            final picked = await showDatePicker(
+              context: context,
+              initialDate: suggestedDate,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+              helpText: 'Selecciona Fecha de Caducidad',
+            );
+
+            if (picked != null) {
+              await entityRepo.saveEntity(entity.copyWith(expirationDate: picked));
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Fecha de caducidad actualizada.');
+              }
+              return true;
+            }
+            return false;
+          },
+        ));
+      }
+
+      // 2.5 No Perecederos con Fecha de Caducidad
+      final nonPerishableWithExp = entitiesList.where((e) {
+        final sp = speciesList.where((c) => c.id == e.speciesId).firstOrNull;
+        return (sp != null && sp.isNonPerishable && e.expirationDate != null);
+      }).take(8);
+
+      for (final entity in nonPerishableWithExp) {
+        final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
+        final displayName = EntityDisplayHelper.getDisplayName(
+          entity: entity,
+          catalogItems: speciesList,
+          subspeciesList: subspeciesList,
+        );
+
+        cards.add(AuditCardData(
+          id: 'unneeded_exp_${entity.id}',
+          type: AuditCardType.nonPerishableWithExpiration,
+          title: 'No Perecedero con Caducidad',
+          subtitle: '$displayName • Caducidad asignada: ${entity.expirationDate.toString().substring(0, 10)}',
+          question: 'La especie "${species?.name}" está marcada como NO perecedera pero "$displayName" tiene caducidad registrada. ¿Deseas remover la fecha?',
+          icon: Icons.event_repeat,
+          themeColor: Colors.blueGrey,
+          entity: entity,
+          species: species,
+          tile: InstancePreviewCard(entity: entity),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Caducidad conservada.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            await entityRepo.saveEntity(entity.copyWith(expirationDate: null));
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Fecha de caducidad eliminada.');
+            }
+            return true;
+          },
+        ));
+      }
+
+      // 2.6 Infracción de Reglas de Subgrupo (Marca/Código en no-Objetos)
+      final invalidSubspecies = subspeciesList.where((sub) {
+        final sp = speciesList.where((c) => c.id == sub.speciesId).firstOrNull;
+        return sp != null && sp.type != 'Objeto' && ((sub.brand != null && sub.brand!.isNotEmpty) || (sub.barcode != null && sub.barcode!.isNotEmpty));
+      }).take(8);
+
+      for (final sub in invalidSubspecies) {
+        final sp = speciesList.where((c) => c.id == sub.speciesId).firstOrNull;
+
+        cards.add(AuditCardData(
+          id: 'subgroup_viol_${sub.id}',
+          type: AuditCardType.subgroupRuleViolation,
+          title: 'Infracción de Regla de Subgrupo',
+          subtitle: '${sub.subspeciesName} • Tipo: ${sp?.type ?? ""}',
+          question: 'El subgrupo "${sp?.type}" no permite marca ni código de barras. ¿Deseas limpiar estos atributos?',
+          icon: Icons.rule_folder_outlined,
+          themeColor: Colors.deepPurpleAccent,
+          subspecies: sub,
+          species: sp,
+          tile: SubspeciesTile(subspecies: sub, speciesName: sp?.name ?? ''),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Atributos omitidos.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            final updatedSub = sub.copyWith(brand: null, barcode: null);
+            await catalogRepo.saveSubspecies(updatedSub);
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Marca y código de barras removidos.');
+            }
+            return true;
+          },
+        ));
+      }
+
+      // 2.7 Especies en Catálogo sin Instancias
+      final uninstantiatedSpecies = speciesList.where((sp) {
+        return !entitiesList.any((e) => e.speciesId == sp.id);
+      }).take(8);
+
+      for (final sp in uninstantiatedSpecies) {
+        cards.add(AuditCardData(
+          id: 'uninst_sp_${sp.id}',
+          type: AuditCardType.uninstantiatedSpecies,
+          title: 'Especie sin Instancias en el Mundo',
+          subtitle: '${sp.name} (${sp.type})',
+          question: 'La especie "${sp.name}" no tiene ninguna instancia física registrada. ¿Deseas crear una instancia o eliminar la especie?',
+          icon: Icons.category_outlined,
+          themeColor: Colors.brown,
+          species: sp,
+          tile: SpeciesTile(species: sp),
+          onConfirm: (context, ref) async {
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Especie conservada en catálogo.');
+            }
+            return true;
+          },
+          onFix: (context, ref) async {
+            final choice = await showDialog<String>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text('Gestionar "${sp.name}"'),
+                content: const Text('¿Qué acción deseas realizar con esta especie?'),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
+                  ElevatedButton.icon(
+                    onPressed: () => Navigator.pop(ctx, 'instantiate'),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Crear Instancia'),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => Navigator.pop(ctx, 'delete'),
+                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                    label: const Text('Eliminar Especie', style: TextStyle(color: Colors.redAccent)),
+                  ),
+                ],
+              ),
+            );
+
+            if (choice == 'instantiate') {
+              await InstantiateSpeciesSheet.show(context, species: sp);
+              final afterCount = (await entityRepo.getAllEntities()).where((e) => e.speciesId == sp.id).length;
+              return afterCount > 0;
+            } else if (choice == 'delete') {
+              try {
+                await catalogRepo.deleteCatalogItem(sp.id);
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Especie eliminada del catálogo.');
+                }
+                return true;
+              } catch (e) {
+                if (context.mounted) {
+                  AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                }
+              }
+            }
+            return false;
+          },
+        ));
+      }
+
+      // 2.8 Magnitudes de Especie Faltantes en Instancia
+      for (final entity in entitiesList.take(20)) {
+        final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
+        if (species != null && species.magnitudes.isNotEmpty) {
+          final missingMags = species.magnitudes.where((sm) =>
+              !entity.magnitudes.any((im) => im.propertyName.toLowerCase() == sm.propertyName.toLowerCase())).toList();
+
+          if (missingMags.isNotEmpty) {
+            final missingProp = missingMags.first;
+            final displayName = EntityDisplayHelper.getDisplayName(
+              entity: entity,
+              catalogItems: speciesList,
+              subspeciesList: subspeciesList,
+            );
+
+            cards.add(AuditCardData(
+              id: 'miss_mag_${entity.id}_${missingProp.propertyName}',
+              type: AuditCardType.missingMandatoryMagnitudes,
+              title: 'Magnitud Faltante: ${missingProp.propertyName}',
+              subtitle: '$displayName • Especie requiere: ${missingProp.propertyName} (${missingProp.unitSymbol ?? ""})',
+              question: 'La instancia "$displayName" no tiene registrada la propiedad "${missingProp.propertyName}". ¿Deseas asignarle un valor?',
+              icon: Icons.straighten,
+              themeColor: Colors.teal,
+              entity: entity,
+              species: species,
+              tile: InstancePreviewCard(entity: entity),
+              onConfirm: (context, ref) async {
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Magnitud omitida.');
+                }
+                return true;
+              },
+              onFix: (context, ref) async {
+                final controller = TextEditingController();
+                final enteredValue = await showDialog<String>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text('Asignar ${missingProp.propertyName}'),
+                    content: TextField(
+                      controller: controller,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                        labelText: missingProp.propertyName,
+                        suffixText: missingProp.unitSymbol,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(ctx, null), child: const Text('Cancelar')),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+                        child: const Text('Guardar'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (enteredValue != null && enteredValue.isNotEmpty) {
+                  final numVal = double.tryParse(enteredValue) ?? 0.0;
+                  final newMag = InstanceMagnitude(
+                    id: const Uuid().v4(),
+                    instanceId: entity.id,
+                    propertyName: missingProp.propertyName,
+                    dataType: missingProp.dataType,
+                    magnitudeValue: numVal,
+                    unitSymbol: missingProp.unitSymbol,
+                  );
+                  final updatedMags = List<InstanceMagnitude>.from(entity.magnitudes)..add(newMag);
+                  await entityRepo.saveEntity(entity.copyWith(magnitudes: updatedMags));
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Propiedad "${missingProp.propertyName}" registrada.');
+                  }
+                  return true;
+                }
+                return false;
+              },
+            ));
+          }
+        }
+      }
+
+      // 2.9 Magnitud con Valor No Positivo
+      for (final entity in entitiesList.take(20)) {
+        final anomalousMags = entity.magnitudes.where((m) => m.magnitudeValue <= 0 && m.dataType == 'real').toList();
+        for (final mag in anomalousMags) {
+          final species = speciesList.where((c) => c.id == entity.speciesId).firstOrNull;
+          final displayName = EntityDisplayHelper.getDisplayName(
+            entity: entity,
+            catalogItems: speciesList,
+            subspeciesList: subspeciesList,
+          );
+
+          cards.add(AuditCardData(
+            id: 'anom_mag_${mag.id}',
+            type: AuditCardType.anomalousMagnitude,
+            title: 'Magnitud con Valor No Positivo',
+            subtitle: '$displayName • ${mag.propertyName}: ${mag.magnitudeValue} ${mag.unitSymbol ?? ""}',
+            question: 'La magnitud "${mag.propertyName}" tiene un valor de ${mag.magnitudeValue}. ¿Deseas corregir este valor?',
+            icon: Icons.exposure_zero,
+            themeColor: Colors.orange,
+            entity: entity,
+            species: species,
+            tile: InstancePreviewCard(entity: entity),
+            onConfirm: (context, ref) async {
+              if (context.mounted) {
+                AppToast.showSuccess(context, 'Valor conservado.');
+              }
+              return true;
+            },
+            onFix: (context, ref) async {
+              final controller = TextEditingController(text: mag.magnitudeValue.toString());
+              final enteredValue = await showDialog<String>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text('Corregir ${mag.propertyName}'),
+                  content: TextField(
+                    controller: controller,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: mag.propertyName,
+                      suffixText: mag.unitSymbol,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, null), child: const Text('Cancelar')),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+                      child: const Text('Guardar'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (enteredValue != null && enteredValue.isNotEmpty) {
+                final numVal = double.tryParse(enteredValue) ?? 0.0;
+                final updatedMags = entity.magnitudes.map((m) =>
+                    m.id == mag.id ? m.copyWith(magnitudeValue: numVal) : m).toList();
+                await entityRepo.saveEntity(entity.copyWith(magnitudes: updatedMags));
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Valor de "${mag.propertyName}" actualizado a $numVal.');
+                }
+                return true;
+              }
+              return false;
+            },
+          ));
+        }
       }
 
       // 3. Auditoría de Posesión y Conservación
