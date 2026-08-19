@@ -828,7 +828,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         cards.add(AuditCardData(
           id: 'own_${entity.id}',
           type: AuditCardType.ownershipCheck,
-          title: 'Verificación de Inventario',
+          title: '¿Conservas este objeto?',
           subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
           question: '¿Aún conservas la instancia "$displayName" en su ubicación efectiva "${breadcrumb.fullPath}"?',
           icon: Icons.inventory_outlined,
