@@ -40,6 +40,8 @@ class AppStrings {
   static const universeCatalogTitle = 'Catálogo de especies';
   static const locationsTitle = 'Grafo de ubicaciones';
   static const noRecentObjects = 'Sin objetos recientes.';
+  static const deletePropertyFromInstanceTooltip = 'Eliminar propiedad de esta instancia.';
+  static const yearUnitSymbol = 'año';
   static const mainLocations = 'Ubicaciones principales';
   static const objectsCountSuffix = 'objetos';
   static const latestCatalogSpecies = 'Últimas especies en catálogo';

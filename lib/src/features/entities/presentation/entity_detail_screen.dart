@@ -527,7 +527,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                         const SizedBox(width: 4),
                                         IconButton(
                                           icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
-                                          tooltip: 'Eliminar propiedad de esta instancia',
+                                          tooltip: AppStrings.deletePropertyFromInstanceTooltip,
                                           onPressed: () {
                                             setState(() => _workingMagnitudes.removeAt(idx));
                                           },

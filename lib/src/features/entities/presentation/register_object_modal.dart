@@ -243,7 +243,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 : 'MXN';
 
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.nominalValuePropertyName, dataType: 'real');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.mintagePropertyName, dataType: 'integer', unitSymbol: 'año');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.mintagePropertyName, dataType: 'integer', unitSymbol: AppStrings.yearUnitSymbol);
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.currencyPropertyName, dataType: 'string');
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.materialPropertyName, dataType: 'string');
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.gradePropertyName, dataType: 'string');
@@ -336,21 +336,21 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 String? strVal;
                 String? unit = sm.unitSymbol;
 
-                if (sm.propertyName == 'Valor nominal') {
+                if (sm.propertyName == AppStrings.nominalValuePropertyName) {
                   val = result.faceValueNumber ?? 1.0;
                   unit = null;
-                } else if (sm.propertyName == 'Acuñación') {
+                } else if (sm.propertyName == AppStrings.mintagePropertyName) {
                   if (result.year != null && double.tryParse(result.year!) != null) {
                     val = double.parse(result.year!);
                   }
-                  unit = 'año';
-                } else if (sm.propertyName == 'Divisa') {
+                  unit = AppStrings.yearUnitSymbol;
+                } else if (sm.propertyName == AppStrings.currencyPropertyName) {
                   strVal = currencyUnit;
                   unit = null;
-                } else if (sm.propertyName == 'Material') {
+                } else if (sm.propertyName == AppStrings.materialPropertyName) {
                   strVal = result.composition;
                   unit = null;
-                } else if (sm.propertyName == 'Grado') {
+                } else if (sm.propertyName == AppStrings.gradePropertyName) {
                   strVal = result.grade;
                   unit = null;
                 }
