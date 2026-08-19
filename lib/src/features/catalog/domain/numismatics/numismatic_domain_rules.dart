@@ -156,8 +156,7 @@ class NumismaticDomainRules {
     final updatedMags = instance.magnitudes.map((m) {
       if (m.propertyName == 'Divisa' && m.stringValue != null) {
         final iso = NumismaticParser.resolveCurrencyIsoCode(m.stringValue!);
-        final canonicalName = NumismaticParser.resolveCurrencyName(iso, count: 5);
-        return m.copyWith(stringValue: canonicalName);
+        return m.copyWith(stringValue: iso);
       }
       if (m.propertyName == 'Grado' && m.stringValue != null) {
         return m.copyWith(stringValue: NumismaticParser.resolveGrade(m.stringValue!));
