@@ -132,7 +132,7 @@ class SqlPreset {
       id: 'audit_uniqueness_violation',
       title: AppStrings.sqlPresetUniquenessViolation,
       category: SqlPresetCategory.audit,
-      query: 'SELECT c.id AS species_id, c.name, COUNT(e.id) AS instance_count FROM catalog_table c JOIN entities_table e ON c.id = e.species_id WHERE c.is_unique = 1 GROUP BY c.id, c.name HAVING COUNT(e.id) > 1;',
+      query: 'SELECT c.id AS species_id, c.name AS species_name, s.id AS subspecies_id, s.subspecies_name, COUNT(e.id) AS instance_count FROM catalog_table c JOIN subspecies_table s ON c.id = s.species_id JOIN entities_table e ON e.species_id = c.id AND e.subspecies_id = s.id WHERE c.is_unique = 1 GROUP BY c.id, c.name, s.id, s.subspecies_name HAVING COUNT(e.id) > 1;',
     ),
     SqlPreset(
       id: 'audit_uninstantiated_species',

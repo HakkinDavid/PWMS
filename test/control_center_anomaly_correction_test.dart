@@ -65,10 +65,10 @@ void main() {
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
-            CatalogTableCompanion.insert(id: 'sp_box', name: 'Caja Fuerte', createdAt: now),
+            CatalogTableCompanion.insert(id: 'sp_box', name: 'Caja Fuerte', mainPhotoPath: const Value('local/box.jpg'), createdAt: now),
           );
       await db.into(db.catalogTable).insert(
-            CatalogTableCompanion.insert(id: 'sp_doc', name: 'Documento Secreto', createdAt: now),
+            CatalogTableCompanion.insert(id: 'sp_doc', name: 'Documento Secreto', mainPhotoPath: const Value('local/doc.jpg'), createdAt: now),
           );
       await db.into(db.locationsTable).insert(
             LocationsTableCompanion.insert(id: 'loc_office', name: 'Oficina', createdAt: now),
@@ -107,7 +107,7 @@ void main() {
       expect(find.text('Conflicto de Ubicación en Contenedor'), findsOneWidget);
     });
 
-    testWidgets('Unique species violation card is generated and renders properly', (WidgetTester tester) async {
+    testWidgets('Unique species violation card is generated and renders properly per subspecies', (WidgetTester tester) async {
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
@@ -119,6 +119,14 @@ void main() {
               createdAt: now,
             ),
           );
+      await db.into(db.subspeciesTable).insert(
+            SubspeciesTableCompanion.insert(
+              id: 'sub_passport',
+              speciesId: 'sp_passport',
+              subspeciesName: 'Pasaporte Mexicano - David',
+              createdAt: now,
+            ),
+          );
       await db.into(db.locationsTable).insert(
             LocationsTableCompanion.insert(id: 'loc_home', name: 'Casa', createdAt: now),
           );
@@ -126,6 +134,7 @@ void main() {
             EntitiesTableCompanion.insert(
               id: 'e_pass1',
               speciesId: 'sp_passport',
+              subspeciesId: const Value('sub_passport'),
               locationId: const Value('loc_home'),
               createdAt: now,
               updatedAt: now,
@@ -135,6 +144,7 @@ void main() {
             EntitiesTableCompanion.insert(
               id: 'e_pass2',
               speciesId: 'sp_passport',
+              subspeciesId: const Value('sub_passport'),
               locationId: const Value('loc_home'),
               createdAt: now,
               updatedAt: now,
@@ -154,8 +164,8 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Should show uniqueness violation card
-      expect(find.text('Violación de Regla de Especie Única'), findsOneWidget);
+      // Should show uniqueness violation card evaluated per subspecies
+      expect(find.text('Subespecie Única Duplicada'), findsOneWidget);
     });
 
     testWidgets('Perishable missing expiration card is generated and renders properly', (WidgetTester tester) async {
@@ -257,10 +267,10 @@ void main() {
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
-            CatalogTableCompanion.insert(id: 'sp_box', name: 'Caja Fuerte', createdAt: now),
+            CatalogTableCompanion.insert(id: 'sp_box', name: 'Caja Fuerte', mainPhotoPath: const Value('local/box.jpg'), createdAt: now),
           );
       await db.into(db.catalogTable).insert(
-            CatalogTableCompanion.insert(id: 'sp_doc', name: 'Documento Secreto', createdAt: now),
+            CatalogTableCompanion.insert(id: 'sp_doc', name: 'Documento Secreto', mainPhotoPath: const Value('local/doc.jpg'), createdAt: now),
           );
       await db.into(db.locationsTable).insert(
             LocationsTableCompanion.insert(id: 'loc_office', name: 'Oficina', createdAt: now),
@@ -327,6 +337,14 @@ void main() {
               createdAt: now,
             ),
           );
+      await db.into(db.subspeciesTable).insert(
+            SubspeciesTableCompanion.insert(
+              id: 'sub_passport',
+              speciesId: 'sp_passport',
+              subspeciesName: 'Pasaporte Mexicano - David',
+              createdAt: now,
+            ),
+          );
       await db.into(db.locationsTable).insert(
             LocationsTableCompanion.insert(id: 'loc_home', name: 'Casa', createdAt: now),
           );
@@ -334,6 +352,7 @@ void main() {
             EntitiesTableCompanion.insert(
               id: 'e_pass1',
               speciesId: 'sp_passport',
+              subspeciesId: const Value('sub_passport'),
               locationId: const Value('loc_home'),
               createdAt: now,
               updatedAt: now,
@@ -343,6 +362,7 @@ void main() {
             EntitiesTableCompanion.insert(
               id: 'e_pass2',
               speciesId: 'sp_passport',
+              subspeciesId: const Value('sub_passport'),
               locationId: const Value('loc_home'),
               createdAt: now,
               updatedAt: now,

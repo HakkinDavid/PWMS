@@ -121,7 +121,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
           cards.add(AuditCardData(
             id: 'sub_${sub.id}',
             type: AuditCardType.uninstantiatedSubspecies,
-            title: 'Subespecie sin Instancia',
+            title: 'Subespecie sin instancias',
             subtitle: '$subNameStr • Especie: ${parentSpecies?.name ?? "Desconocida"}',
             question: 'No existe ninguna instancia registrada para la subespecie "$subNameStr". ¿Deseas mantenerla o eliminarla?',
             icon: Icons.unarchive_outlined,
@@ -132,7 +132,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
               final choice = await showDialog<String>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('Confirmar Subespecie'),
+                  title: const Text('Confirmar subespecie'),
                   content: Text('¿Deseas mantener la subespecie "$subNameStr" en tu catálogo o eliminarla?'),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
@@ -218,7 +218,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         cards.add(AuditCardData(
           id: 'orphan_${entity.id}',
           type: AuditCardType.orphanEntity,
-          title: 'Instancia sin Ubicación ni Contenedor',
+          title: 'Instancia sin ubicación ni contenedor',
           subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
           question: 'La instancia "$displayName" no tiene ubicación física ni contenedor asignado. ¿Asignarle una ubicación o contenedor ahora?',
           icon: Icons.wrong_location_outlined,
@@ -280,7 +280,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             final choice = await showDialog<String>(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: const Text('Resolver Conflicto de Ubicación'),
+                title: const Text('Resolver ubicación'),
                 content: Text(
                   'El elemento "$displayName" tiene doble asignación:\n\n'
                   '• Contenedor: $containerName\n'
@@ -346,7 +346,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         cards.add(AuditCardData(
           id: 'circ_${rel.id}',
           type: AuditCardType.cyclicContainment,
-          title: 'Relación Circular o Auto-Referencia',
+          title: 'Relación circular',
           subtitle: '${sourceSp?.name ?? "Origen"} ➔ ${targetSp?.name ?? "Destino"} (${rel.relationType})',
           question: 'Se detectó una relación circular o auto-referencia inválida entre "${sourceSp?.name}" y "${targetSp?.name}". ¿Deseas eliminar la relación conflictiva?',
           icon: Icons.loop,
@@ -364,7 +364,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             final confirm = await showDialog<bool>(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: const Text('Eliminar Relación Inválida'),
+                title: const Text('Eliminar relación inválida'),
                 content: const Text('¿Confirmas que deseas eliminar esta relación conflictiva?'),
                 actions: [
                   TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
@@ -388,67 +388,71 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         ));
       }
 
-      // 2.3 Violación de Regla de Especie Única
+      // 2.3 Violación de Regla de Especie Única (evaluada por subespecie)
       for (final sp in speciesList.where((c) => c.isUnique)) {
-        final matchingInstances = entitiesList.where((e) => e.speciesId == sp.id).toList();
-        if (matchingInstances.length > 1) {
-          cards.add(AuditCardData(
-            id: 'uniq_viol_${sp.id}',
-            type: AuditCardType.uniquenessViolation,
-            title: 'Violación de Regla de Especie Única',
-            subtitle: '${sp.name} • ${matchingInstances.length} instancias registradas',
-            question: 'La especie "${sp.name}" está marcada como ÚNICA, pero existen ${matchingInstances.length} instancias en tu mundo. ¿Cómo deseas proceder?',
-            icon: Icons.content_copy,
-            themeColor: Colors.deepOrangeAccent,
-            species: sp,
-            tile: SpeciesTile(species: sp),
-            onConfirm: (context, ref) async {
-              if (context.mounted) {
-                AppToast.showSuccess(context, 'Violación de unicidad omitida.');
-              }
-              return true;
-            },
-            onFix: (context, ref) async {
-              final choice = await showDialog<String>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('Resolver Unicidad'),
-                  content: Text(
-                    'La especie "${sp.name}" tiene ${matchingInstances.length} instancias.\n\n'
-                    '¿Deseas permitir múltiples instancias convirtiéndola en No Única o eliminar los duplicados?'
+        final spSubspecies = subspeciesList.where((s) => s.speciesId == sp.id).toList();
+        for (final sub in spSubspecies) {
+          final matchingInstances = entitiesList.where((e) => e.speciesId == sp.id && e.subspeciesId == sub.id).toList();
+          if (matchingInstances.length > 1) {
+            cards.add(AuditCardData(
+              id: 'uniq_viol_${sub.id}',
+              type: AuditCardType.uniquenessViolation,
+              title: 'Subespecie única duplicada',
+              subtitle: '${sub.subspeciesName} • ${sp.name} (${matchingInstances.length} instancias)',
+              question: 'La subespecie "${sub.subspeciesName}" de la especie única "${sp.name}" tiene ${matchingInstances.length} instancias físicas duplicadas. ¿Cómo deseas proceder?',
+              icon: Icons.content_copy,
+              themeColor: Colors.deepOrangeAccent,
+              species: sp,
+              subspecies: sub,
+              tile: SubspeciesTile(subspecies: sub, speciesName: sp.name),
+              onConfirm: (context, ref) async {
+                if (context.mounted) {
+                  AppToast.showSuccess(context, 'Duplicidad de subespecie omitida.');
+                }
+                return true;
+              },
+              onFix: (context, ref) async {
+                final choice = await showDialog<String>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Resolver unicidad'),
+                    content: Text(
+                      'La subespecie "${sub.subspeciesName}" de la especie única "${sp.name}" tiene ${matchingInstances.length} instancias.\n\n'
+                      '¿Deseas permitir múltiples instancias convirtiendo la especie en No Única o eliminar los duplicados de esta subespecie?'
+                    ),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
+                      OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx, 'make_not_unique'),
+                        child: const Text('Convertir a No Única'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, 'delete_duplicates'),
+                        child: const Text('Eliminar Duplicados', style: TextStyle(color: Colors.redAccent)),
+                      ),
+                    ],
                   ),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
-                    OutlinedButton(
-                      onPressed: () => Navigator.pop(ctx, 'make_not_unique'),
-                      child: const Text('Convertir a No Única'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, 'delete_duplicates'),
-                      child: const Text('Eliminar Duplicados', style: TextStyle(color: Colors.redAccent)),
-                    ),
-                  ],
-                ),
-              );
+                );
 
-              if (choice == 'make_not_unique') {
-                await catalogRepo.saveCatalogItem(sp.copyWith(isUnique: false));
-                if (context.mounted) {
-                  AppToast.showSuccess(context, 'Especie configurada como No Única.');
+                if (choice == 'make_not_unique') {
+                  await catalogRepo.saveCatalogItem(sp.copyWith(isUnique: false));
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Especie configurada como No Única.');
+                  }
+                  return true;
+                } else if (choice == 'delete_duplicates') {
+                  for (int i = 1; i < matchingInstances.length; i++) {
+                    await entityRepo.deleteEntity(matchingInstances[i].id);
+                  }
+                  if (context.mounted) {
+                    AppToast.showSuccess(context, 'Instancias duplicadas eliminadas. Se conservó 1 instancia.');
+                  }
+                  return true;
                 }
-                return true;
-              } else if (choice == 'delete_duplicates') {
-                for (int i = 1; i < matchingInstances.length; i++) {
-                  await entityRepo.deleteEntity(matchingInstances[i].id);
-                }
-                if (context.mounted) {
-                  AppToast.showSuccess(context, 'Instancias duplicadas eliminadas. Se conservó 1 instancia.');
-                }
-                return true;
-              }
-              return false;
-            },
-          ));
+                return false;
+              },
+            ));
+          }
         }
       }
 
@@ -920,7 +924,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         cards.add(AuditCardData(
           id: 'loc_verif_${entity.id}',
           type: AuditCardType.locationVerification,
-          title: 'Confirmación de Ubicación',
+          title: '¿Has movido este objeto?',
           subtitle: '$displayName • Ubicación registrada: ${breadcrumb.fullPath}',
           question: '¿La ubicación efectiva actual de "$displayName" sigue siendo exactamente "${breadcrumb.fullPath}"?',
           icon: Icons.edit_location_alt_outlined,

@@ -139,17 +139,38 @@ void main() {
               createdAt: now,
             ),
           );
-      await db.into(db.entitiesTable).insert(
-            EntitiesTableCompanion.insert(id: 'e_u1', speciesId: 'sp_unique', createdAt: now, updatedAt: now),
+      await db.into(db.subspeciesTable).insert(
+            SubspeciesTableCompanion.insert(
+              id: 'sub_unique',
+              speciesId: 'sp_unique',
+              subspeciesName: 'Pieza Exclusiva #1',
+              createdAt: now,
+            ),
           );
       await db.into(db.entitiesTable).insert(
-            EntitiesTableCompanion.insert(id: 'e_u2', speciesId: 'sp_unique', createdAt: now, updatedAt: now),
+            EntitiesTableCompanion.insert(
+              id: 'e_u1',
+              speciesId: 'sp_unique',
+              subspeciesId: const Value('sub_unique'),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(
+              id: 'e_u2',
+              speciesId: 'sp_unique',
+              subspeciesId: const Value('sub_unique'),
+              createdAt: now,
+              updatedAt: now,
+            ),
           );
 
       final uniquePreset = SqlPreset.defaultPresets.firstWhere((p) => p.id == 'audit_uniqueness_violation');
       final uniqueResults = await db.customSelect(uniquePreset.query).get();
       expect(uniqueResults.length, equals(1));
       expect(uniqueResults.first.data['species_id'], equals('sp_unique'));
+      expect(uniqueResults.first.data['subspecies_id'], equals('sub_unique'));
       expect(uniqueResults.first.data['instance_count'], equals(2));
 
       // 3. Mutual containment anomaly
