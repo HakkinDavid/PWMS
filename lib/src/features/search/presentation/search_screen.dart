@@ -10,7 +10,13 @@ import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../../history/domain/activity_event.dart';
 import '../../locations/domain/location_node.dart';
+import '../../locations/presentation/location_tile.dart';
 import '../domain/sql_preset.dart';
+
+enum SqlResultViewMode {
+  table,
+  tiles,
+}
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -22,6 +28,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   String _selectedScope = AppStrings.all;
   SqlPresetCategory _selectedSqlCategory = SqlPresetCategory.all;
+  SqlResultViewMode _viewMode = SqlResultViewMode.table;
   final TextEditingController _sqlController = TextEditingController(text: 'SELECT * FROM catalog_table LIMIT 20;');
 
   bool _isExecutingSql = false;
@@ -32,6 +39,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final List<String> _scopes = [
     AppStrings.all,
     AppStrings.objectsLabel,
+    AppStrings.tabContainers,
     AppStrings.tabLocations,
     AppStrings.tabCatalog,
     AppStrings.tabHistory,
@@ -282,7 +290,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             const SizedBox(height: 12),
           ],
 
-          // SQL DataGrid Results View
+          // SQL Results View
           Expanded(
             child: _isExecutingSql
                 ? const Center(child: CircularProgressIndicator())
@@ -297,44 +305,209 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${AppStrings.rowsRetrievedPrefix}${_sqlRows.length}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                          const SizedBox(height: 6),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: DataTable(
-                                  border: TableBorder.all(color: theme.dividerColor, width: 0.5),
-                                  columnSpacing: 16,
-                                  headingRowColor: MaterialStateProperty.all(theme.colorScheme.primary.withAlpha(20)),
-                                  columns: _sqlColumns.map((col) {
-                                    return DataColumn(
-                                      label: Text(
-                                        col,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  rows: _sqlRows.map((row) {
-                                    return DataRow(
-                                      cells: row.map((cell) {
-                                        final cellStr = cell != null ? cell.toString() : 'NULL';
-                                        return DataCell(
-                                          Text(cellStr, style: const TextStyle(fontSize: 12)),
-                                        );
-                                      }).toList(),
-                                    );
-                                  }).toList(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${AppStrings.rowsRetrievedPrefix}${_sqlRows.length}',
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                              SegmentedButton<SqlResultViewMode>(
+                                segments: const [
+                                  ButtonSegment(
+                                    value: SqlResultViewMode.table,
+                                    icon: Icon(Icons.table_chart_outlined, size: 14),
+                                    label: Text(AppStrings.viewModeTable, style: TextStyle(fontSize: 11)),
+                                  ),
+                                  ButtonSegment(
+                                    value: SqlResultViewMode.tiles,
+                                    icon: Icon(Icons.view_agenda_outlined, size: 14),
+                                    label: Text(AppStrings.viewModeTiles, style: TextStyle(fontSize: 11)),
+                                  ),
+                                ],
+                                selected: {_viewMode},
+                                onSelectionChanged: (newSelection) {
+                                  setState(() => _viewMode = newSelection.first);
+                                },
+                                style: SegmentedButton.styleFrom(
+                                  visualDensity: VisualDensity.compact,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
                               ),
-                            ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: _viewMode == SqlResultViewMode.table
+                                ? _buildSqlTableResults(theme)
+                                : _buildSqlTilesResults(context),
                           ),
                         ],
                       ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSqlTableResults(ThemeData theme) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          border: TableBorder.all(color: theme.dividerColor, width: 0.5),
+          columnSpacing: 16,
+          headingRowColor: MaterialStateProperty.all(theme.colorScheme.primary.withAlpha(20)),
+          columns: _sqlColumns.map((col) {
+            return DataColumn(
+              label: Text(
+                col,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+            );
+          }).toList(),
+          rows: _sqlRows.map((row) {
+            return DataRow(
+              cells: row.map((cell) {
+                final cellStr = cell != null ? cell.toString() : 'NULL';
+                return DataCell(
+                  Text(cellStr, style: const TextStyle(fontSize: 12)),
+                );
+              }).toList(),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSqlTilesResults(BuildContext context) {
+    final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
+    final allCatalog = ref.watch(catalogListProvider).asData?.value ?? [];
+    final allLocations = ref.watch(locationNodeListProvider).asData?.value ?? [];
+
+    // 1. Try to find entity IDs
+    final entityIdColIndex = _sqlColumns.indexWhere((c) =>
+        ['id', 'instance_id', 'entity_id', 'source_entity_id', 'target_entity_id', 'entity_a', 'entity_b']
+            .contains(c.toLowerCase()));
+
+    if (entityIdColIndex != -1) {
+      final matchingEntities = <WorldEntity>[];
+      final seenIds = <String>{};
+
+      for (final row in _sqlRows) {
+        final idVal = row[entityIdColIndex]?.toString();
+        if (idVal != null && !seenIds.contains(idVal)) {
+          final ent = allEntities.where((e) => e.id == idVal).firstOrNull;
+          if (ent != null) {
+            matchingEntities.add(ent);
+            seenIds.add(idVal);
+          }
+        }
+      }
+
+      if (matchingEntities.isNotEmpty) {
+        return ListView.builder(
+          itemCount: matchingEntities.length,
+          itemBuilder: (ctx, idx) => EntityTile(entity: matchingEntities[idx]),
+        );
+      }
+    }
+
+    // 2. Try to find species IDs
+    final speciesIdColIndex = _sqlColumns.indexWhere((c) =>
+        ['id', 'species_id'].contains(c.toLowerCase()));
+
+    if (speciesIdColIndex != -1) {
+      final matchingSpecies = <CatalogItem>[];
+      final seenSpecies = <String>{};
+
+      for (final row in _sqlRows) {
+        final spId = row[speciesIdColIndex]?.toString();
+        if (spId != null && !seenSpecies.contains(spId)) {
+          final sp = allCatalog.where((c) => c.id == spId).firstOrNull;
+          if (sp != null) {
+            matchingSpecies.add(sp);
+            seenSpecies.add(spId);
+          }
+        }
+      }
+
+      if (matchingSpecies.isNotEmpty) {
+        return ListView.builder(
+          itemCount: matchingSpecies.length,
+          itemBuilder: (ctx, idx) => SpeciesTile(species: matchingSpecies[idx]),
+        );
+      }
+    }
+
+    // 3. Try to find location IDs
+    final locIdColIndex = _sqlColumns.indexWhere((c) =>
+        ['id', 'location_id', 'parent_location_id'].contains(c.toLowerCase()));
+
+    if (locIdColIndex != -1) {
+      final matchingLocations = <LocationNode>[];
+      final seenLocs = <String>{};
+
+      for (final row in _sqlRows) {
+        final locId = row[locIdColIndex]?.toString();
+        if (locId != null && !seenLocs.contains(locId)) {
+          final loc = allLocations.where((l) => l.id == locId).firstOrNull;
+          if (loc != null) {
+            matchingLocations.add(loc);
+            seenLocs.add(locId);
+          }
+        }
+      }
+
+      if (matchingLocations.isNotEmpty) {
+        return ListView.builder(
+          itemCount: matchingLocations.length,
+          itemBuilder: (ctx, idx) => LocationTile(
+            node: matchingLocations[idx],
+            onTap: () => context.go('/locations'),
+          ),
+        );
+      }
+    }
+
+    // 4. Generic structured Tile Cards for other queries
+    return ListView.builder(
+      itemCount: _sqlRows.length,
+      itemBuilder: (ctx, idx) {
+        final row = _sqlRows[idx];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (int i = 0; i < _sqlColumns.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${_sqlColumns[i]}: ',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        Expanded(
+                          child: Text(
+                            row[i] != null ? row[i].toString() : 'NULL',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -349,6 +522,39 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   ) {
     final theme = Theme.of(context);
     final cleanQuery = query.toLowerCase().trim();
+
+    // 0. Contenedores (Entities that are target of GUARDADO_EN relations)
+    if (_selectedScope == AppStrings.tabContainers) {
+      final relations = ref.watch(relationListProvider).asData?.value ?? [];
+      final entities = ref.watch(entityListProvider).asData?.value ?? [];
+      final catalogItems = catalogState.asData?.value ?? [];
+
+      final containerEntityIds = relations
+          .where((r) => r.relationType == 'GUARDADO_EN')
+          .map((r) => r.targetEntityId)
+          .toSet();
+
+      final containerEntities = entities.where((e) {
+        if (!containerEntityIds.contains(e.id)) return false;
+        if (cleanQuery.isEmpty) return true;
+        final species = catalogItems.where((c) => c.id == e.speciesId).firstOrNull;
+        return (species?.name.toLowerCase().contains(cleanQuery) ?? false) ||
+            e.id.toLowerCase().contains(cleanQuery) ||
+            (e.notes?.toLowerCase().contains(cleanQuery) ?? false);
+      }).toList();
+
+      if (containerEntities.isEmpty) {
+        return const Center(child: Text(AppStrings.emptyContainersSearch));
+      }
+
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: containerEntities.length,
+        itemBuilder: (ctx, idx) {
+          return EntityTile(entity: containerEntities[idx]);
+        },
+      );
+    }
 
     // 1. Ubicaciones (Strictly typed LocationNode)
     if (_selectedScope == AppStrings.tabLocations) {

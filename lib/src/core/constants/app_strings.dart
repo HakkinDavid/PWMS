@@ -512,6 +512,18 @@ class AppStrings {
   static const sqlCategoryAudit = 'Auditoría';
   static const sqlCategoryExpirationMagnitudes = 'Caducidad y Magnitudes';
 
+  // Modos de Vista y Badges de Tiles
+  static const viewModeTable = 'Tabla';
+  static const viewModeTiles = 'Tarjetas';
+  static const tabContainers = 'Contenedores';
+  static const badgeContainer = 'Contenedor';
+  static const badgeOrphan = 'Sin ubicación';
+  static const badgeLocationConflict = 'Conflicto de ubicación';
+  static const badgeMissingExpiration = 'Sin caducidad';
+  static const emptyContainersSearch = 'No se encontraron objetos contenedores en el mundo.';
+  static const containedItemsCountSuffix = ' elementos';
+  static const containedItemCountSingle = '1 elemento';
+
   // Consultas SQL Predefinidas
   static const sqlPresetInstances = 'Instancias';
   static const sqlPresetContainedItems = 'Elementos guardados';

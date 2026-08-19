@@ -189,87 +189,180 @@ class InstancePreviewCard extends ConsumerWidget {
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                         ],
-                        // Expiration Badges for Entity or Group (Only if species can expire)
+                        // Expiration, Container & Anomaly Badges for Entity or Group
                         Builder(
                           builder: (context) {
                             final canExpire = species?.canExpire ?? false;
-                            if (!canExpire) return const SizedBox.shrink();
-
                             final warningDays = species?.warningDaysBeforeExpiration ?? 7;
                             final now = DateTime.now();
 
-                            if (entity != null) {
-                              if (entity!.isExpired(canExpire: canExpire, now: now)) {
-                                return Container(
-                                  margin: const EdgeInsets.only(top: 4),
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.shade900.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(color: Colors.red.shade400, width: 0.8),
-                                  ),
-                                  child: const Text(
-                                    AppStrings.statusExpired,
-                                    style: TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
-                                  ),
-                                );
-                              } else if (entity!.isExpiringSoon(warningDays: warningDays, canExpire: canExpire, now: now)) {
-                                return Container(
-                                  margin: const EdgeInsets.only(top: 4),
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.orange.shade900.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(color: Colors.orange.shade400, width: 0.8),
-                                  ),
-                                  child: const Text(
-                                    AppStrings.statusWarning,
-                                    style: TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
-                                  ),
-                                );
-                              }
-                            } else if (group != null) {
-                              final expiredCnt = group!.expiredCount(canExpire: canExpire, now: now);
-                              final warningCnt = group!.expiringSoonCount(warningDays: warningDays, canExpire: canExpire, now: now);
+                            final containedCount = allRelations.where((r) => r.targetEntityId == targetEntity.id && r.relationType == 'GUARDADO_EN').length;
+                            final isContained = allRelations.any((r) => r.sourceEntityId == targetEntity.id && r.relationType == 'GUARDADO_EN');
+                            final isOrphan = entity != null && targetEntity.locationId == null && !isContained;
+                            final hasLocationConflict = isContained && targetEntity.locationId != null;
+                            final isMissingExpiration = entity != null && (species?.isNonPerishable == false) && targetEntity.expirationDate == null;
 
-                              if (expiredCnt > 0 || warningCnt > 0) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Wrap(
-                                    spacing: 4,
-                                    children: [
-                                      if (expiredCnt > 0)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red.shade900.withOpacity(0.3),
-                                            borderRadius: BorderRadius.circular(6),
-                                            border: Border.all(color: Colors.red.shade400, width: 0.8),
-                                          ),
-                                          child: Text(
-                                            '$expiredCnt ${AppStrings.statusExpired}',
-                                            style: const TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
-                                          ),
+                            return Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
+                              children: [
+                                if (containedCount > 0)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primaryContainer.withAlpha(120),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: theme.colorScheme.primary.withAlpha(160), width: 0.8),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.inventory_2_outlined, size: 10, color: theme.colorScheme.primary),
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          '${AppStrings.badgeContainer} ($containedCount)',
+                                          style: TextStyle(fontSize: 10, color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
                                         ),
-                                      if (warningCnt > 0)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.orange.shade900.withOpacity(0.3),
-                                            borderRadius: BorderRadius.circular(6),
-                                            border: Border.all(color: Colors.orange.shade400, width: 0.8),
-                                          ),
-                                          child: Text(
-                                            '$warningCnt ${AppStrings.statusWarning}',
-                                            style: const TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                );
-                              }
-                            }
-                            return const SizedBox.shrink();
+                                if (isOrphan)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.amber.shade900.withAlpha(40),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: Colors.amber.shade700, width: 0.8),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.warning_amber_rounded, size: 10, color: Colors.amber),
+                                        SizedBox(width: 3),
+                                        Text(
+                                          AppStrings.badgeOrphan,
+                                          style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (hasLocationConflict)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.purple.shade900.withAlpha(40),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: Colors.purple.shade300, width: 0.8),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.alt_route, size: 10, color: Colors.purpleAccent),
+                                        SizedBox(width: 3),
+                                        Text(
+                                          AppStrings.badgeLocationConflict,
+                                          style: TextStyle(fontSize: 10, color: Colors.purpleAccent, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (isMissingExpiration)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blueGrey.shade900.withAlpha(40),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: Colors.blueGrey.shade300, width: 0.8),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.event_busy, size: 10, color: Colors.blueGrey),
+                                        SizedBox(width: 3),
+                                        Text(
+                                          AppStrings.badgeMissingExpiration,
+                                          style: TextStyle(fontSize: 10, color: Colors.blueGrey, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (canExpire && entity != null) ...[
+                                  if (entity!.isExpired(canExpire: canExpire, now: now))
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 4),
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.shade900.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(color: Colors.red.shade400, width: 0.8),
+                                      ),
+                                      child: const Text(
+                                        AppStrings.statusExpired,
+                                        style: TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  else if (entity!.isExpiringSoon(warningDays: warningDays, canExpire: canExpire, now: now))
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 4),
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange.shade900.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(color: Colors.orange.shade400, width: 0.8),
+                                      ),
+                                      child: const Text(
+                                        AppStrings.statusWarning,
+                                        style: TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                ],
+                                if (canExpire && group != null) ...[
+                                  Builder(
+                                    builder: (context) {
+                                      final expiredCnt = group!.expiredCount(canExpire: canExpire, now: now);
+                                      final warningCnt = group!.expiringSoonCount(warningDays: warningDays, canExpire: canExpire, now: now);
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          if (expiredCnt > 0)
+                                            Container(
+                                              margin: const EdgeInsets.only(top: 4, right: 4),
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: Colors.red.shade900.withOpacity(0.3),
+                                                borderRadius: BorderRadius.circular(6),
+                                                border: Border.all(color: Colors.red.shade400, width: 0.8),
+                                              ),
+                                              child: Text(
+                                                '$expiredCnt ${AppStrings.statusExpired}',
+                                                style: const TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                          if (warningCnt > 0)
+                                            Container(
+                                              margin: const EdgeInsets.only(top: 4),
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: Colors.orange.shade900.withOpacity(0.3),
+                                                borderRadius: BorderRadius.circular(6),
+                                                border: Border.all(color: Colors.orange.shade400, width: 0.8),
+                                              ),
+                                              child: Text(
+                                                '$warningCnt ${AppStrings.statusWarning}',
+                                                style: const TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ],
+                            );
                           },
                         ),
                       ],
