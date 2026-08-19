@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
@@ -96,6 +97,9 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   // Empty year text field by default
   final TextEditingController _yearController = TextEditingController(text: '');
 
+  // Custom denomination text field (when 'Otro' is selected)
+  final TextEditingController _customDenominationController = TextEditingController();
+
   // Special Edition Controls
   bool _isSpecialEdition = false;
   String? _specialReason;
@@ -156,6 +160,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   @override
   void dispose() {
     _yearController.dispose();
+    _customDenominationController.dispose();
     _specialNotesController.dispose();
     super.dispose();
   }
@@ -214,17 +219,25 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       }
     } catch (_) {}
 
-    final faceVal = double.tryParse(_denomination!);
+    final isCustomDenom = _denomination == 'Otro';
+    final effectiveDenom = isCustomDenom
+        ? _customDenominationController.text.trim()
+        : _denomination!;
+    final faceVal = double.tryParse(effectiveDenom);
     final currName = _currencyMap[_currencyCode!] ?? _currencyCode;
     final yearStr = _yearController.text.trim();
     final speciesType = widget.isCoin ? 'Moneda' : 'Billete';
 
     final title = NumismaticDataHelper.buildSubspeciesName(
-      faceValueStr: _denomination,
+      faceValueStr: effectiveDenom,
+      faceValueNumber: faceVal,
       currencyName: currName,
       country: _country,
       year: yearStr.isNotEmpty ? yearStr : null,
     );
+
+    final isSpecialNotesApplicable = _isSpecialEdition &&
+        (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)');
 
     final result = NumismaticScanResult(
       speciesType: speciesType,
@@ -239,7 +252,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       grade: _grade,
       isSpecialEdition: _isSpecialEdition,
       specialEditionReason: _isSpecialEdition ? _specialReason : null,
-      specialEditionNotes: (_isSpecialEdition && _specialReason == 'Otro (especificar)')
+      specialEditionNotes: isSpecialNotesApplicable
           ? _specialNotesController.text.trim()
           : null,
       obversePhotoPath: widget.obversePhoto.path,
@@ -374,6 +387,34 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 ],
                 onChanged: (val) => setState(() => _denomination = val),
               ),
+              if (_denomination == 'Otro') ...[
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _customDenominationController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                  ],
+                  decoration: InputDecoration(
+                    labelText: 'Número de denominación',
+                    hintText: 'Ej: 0.50',
+                    prefixIcon: const Icon(Icons.pin),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  validator: (val) {
+                    if (_denomination == 'Otro') {
+                      if (val == null || val.trim().isEmpty) {
+                        return 'Ingresa el número de denominación';
+                      }
+                      final parsed = double.tryParse(val.trim());
+                      if (parsed == null || parsed <= 0) {
+                        return 'Ingresa un valor numérico válido (ej. 0.50)';
+                      }
+                    }
+                    return null;
+                  },
+                ),
+              ],
               const SizedBox(height: 14),
 
               // 3. Divisa Dropdown (1 campo por fila)
@@ -610,7 +651,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                         ],
                         onChanged: (val) => setState(() => _specialReason = val),
                       ),
-                      if (_specialReason == 'Otro (especificar)') ...[
+                      if (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)') ...[
                         const SizedBox(height: 12),
                         TextFormField(
                           controller: _specialNotesController,
@@ -620,7 +661,9 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                           ),
                           validator: (val) {
-                            if (_isSpecialEdition && _specialReason == 'Otro (especificar)' && (val == null || val.trim().isEmpty)) {
+                            if (_isSpecialEdition &&
+                                (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)') &&
+                                (val == null || val.trim().isEmpty)) {
                               return 'Especifica el motivo de la edición especial';
                             }
                             return null;

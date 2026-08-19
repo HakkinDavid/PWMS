@@ -281,6 +281,7 @@ class NumismaticDataHelper {
     '1000',
     '2000',
     '5000',
+    'Otro',
   ];
 
   static const List<String> grades = [
