@@ -38,7 +38,6 @@ class InstanceMagnitude with _$InstanceMagnitude {
         final u = unitSymbol?.trim() ?? '';
         return u.isNotEmpty ? '$formattedInt $u' : formattedInt;
       case PropertyDataType.real:
-      default:
         final formattedVal = DomainRules.formatMagnitude(magnitudeValue, unitSymbol);
         final u = unitSymbol?.trim() ?? '';
         return u.isNotEmpty ? '$formattedVal $u' : formattedVal;

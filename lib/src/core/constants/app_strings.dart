@@ -661,5 +661,62 @@ class AppStrings {
   static const appVersionLabel = 'Versión instalada';
   static const updateStarting = 'Iniciando la descarga del instalador...';
   static const unsupportedPlatformUpdate = 'Las actualizaciones automáticas solo están disponibles en Android.';
-}
 
+  // Centro de Control y Auditorías de Inventario
+  static const controlCenterTitle = 'Centro de Control y Salud de Datos';
+  static const regenerateAuditsTooltip = 'Regenerar revisiones';
+  static const dataHealthVerifiedTitle = 'Salud de datos 100% verificada';
+  static const dataHealthVerifiedSubtitle = 'No se detectaron anomalías ni inconsistencias en tu inventario. Tu mundo PWMS está perfectamente estructurado.';
+  static const runNewAuditAction = 'Realizar nueva auditoría';
+  static const correctAction = 'CORRECTO';
+  static const fixAction = 'CORREGIR';
+  static const attachmentNameRetainedSuccess = 'Nombre de adjunto mantenido.';
+  static const attachmentRenamedSuccess = 'Archivo adjunto renombrado correctamente.';
+  static const incompleteNumismaticMagnitudesTitle = 'Magnitudes numismáticas incompletas';
+  static const magnitudesRetainedSuccess = 'Magnitudes mantenidas sin cambios.';
+  static const numismaticMagnitudesAutoFilledSuccess = 'Magnitudes numismáticas autocompletadas.';
+  static const emptyGradeDataTitle = 'Dato numismático vacío: grado';
+  static const gradeRetainedEmptySuccess = 'Grado de conservación mantenido vacío.';
+  static const assignGradeTitle = 'Asignar grado de conservación';
+  static const controlCenterLoadErrorPrefix = 'Error al cargar tarjetas de control: ';
+  static const uninstantiatedSubspeciesAuditTitle = 'Subespecie no instanciada en el mundo';
+  static const uninstantiatedSpeciesAuditTitle = 'Especie no instanciada en el mundo';
+  static const locationVerificationAuditTitle = 'Verificación de ubicación de instancia';
+  static const ownershipCheckAuditTitle = 'Control de pertenencia y contenedor';
+  static const expirationAuditTitle = 'Auditoría de fecha de caducidad';
+  static const orphanEntityAuditTitle = 'Instancia huérfana sin ubicación asignada';
+  static const incompleteSpeciesInfoAuditTitle = 'Información de especie incompleta';
+  static const remoteImageAuditTitle = 'Imágenes remotas sin descargar';
+  static const numismaticSubspeciesIncongruityTitle = 'Incongruencia en subespecie numismática';
+  static const numismaticDuplicateSubspeciesTitle = 'Subespecie numismática duplicada';
+  static const numismaticAttachmentIncongruityTitle = 'Incongruencia en archivo adjunto numismático';
+  static const numismaticMissingMagnitudesTitle = 'Magnitudes numismáticas faltantes';
+  static const emptyDataAuditTitle = 'Auditoría de datos vacíos';
+  static const locationConflictAuditTitle = 'Conflicto de ubicación';
+  static const cyclicContainmentAuditTitle = 'Contención cíclica detectada';
+  static const uniquenessViolationAuditTitle = 'Violación de unicidad de especie';
+  static const perishableMissingExpirationAuditTitle = 'Producto perecedero sin fecha de caducidad';
+  static const nonPerishableWithExpirationAuditTitle = 'Producto no perecedero con fecha de caducidad';
+  static const subgroupRuleViolationAuditTitle = 'Violación de regla de subgrupo';
+  static const missingMandatoryMagnitudesAuditTitle = 'Magnitudes obligatorias faltantes';
+  static const anomalousMagnitudeAuditTitle = 'Magnitud anómala detectada';
+
+  // Constantes de Formularios Numismáticos
+  static const noSelectionPrompt = 'Sin selección';
+  static const countryIssuerLabel = 'Emisor';
+  static const selectCountryPrompt = 'Selecciona un emisor.';
+  static const denominationLabel = 'Denominación';
+  static const selectDenominationPrompt = 'Selecciona una denominación.';
+  static const denominationNumberLabel = 'Número de denominación';
+  static const enterDenominationNumberPrompt = 'Ingresa el número de denominación.';
+  static const enterValidNumericValuePrompt = 'Ingresa un valor numérico válido.';
+  static const mintageYearLabel = 'Año de emisión';
+  static const enterMintageYearPrompt = 'Ingresa el año de emisión.';
+  static const enterValidMintageYearPrompt = 'Ingresa un año válido.';
+  static const selectGradePrompt = 'Selecciona el estado de conservación.';
+  static const selectMaterialPrompt = 'Selecciona el material o composición.';
+  static const selectSpecialEditionReasonPrompt = 'Selecciona la razón de edición especial.';
+  static const specifySpecialEditionNotesPrompt = 'Especifica el motivo de la edición especial.';
+  static const numismaticDataTitlePrefix = 'Datos numismáticos: ';
+  static const selectCurrencyPrompt = 'Selecciona una divisa.';
+}

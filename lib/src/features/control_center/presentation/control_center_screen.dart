@@ -21,6 +21,7 @@ import '../../catalog/presentation/web_image_picker_dialog.dart';
 import '../../entities/domain/instance_magnitude.dart';
 import '../../entities/domain/entity_template.dart';
 import 'package:uuid/uuid.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 enum AuditCardType {
   uninstantiatedSubspecies,
@@ -1246,7 +1247,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                   tile: InstancePreviewCard(entity: entity),
                   onConfirm: (context, ref) async {
                     if (context.mounted) {
-                      AppToast.showSuccess(context, 'Nombre de adjunto mantenido.');
+                      AppToast.showSuccess(context, AppStrings.attachmentNameRetainedSuccess);
                     }
                     return true;
                   },
@@ -1258,7 +1259,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                       instance: entity,
                     );
                     if (context.mounted) {
-                      AppToast.showSuccess(context, 'Archivo adjunto renombrado correctamente.');
+                      AppToast.showSuccess(context, AppStrings.attachmentRenamedSuccess);
                     }
                     return true;
                   },
@@ -1269,15 +1270,15 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             // C) Check Missing Required Magnitudes
             final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
             final missingMags = <String>[];
-            if (instAttrs.faceValueNumber == null) missingMags.add('Valor nominal');
-            if (instAttrs.year == null) missingMags.add('Acuñación');
-            if (instAttrs.currencyName == null) missingMags.add('Divisa');
+            if (instAttrs.faceValueNumber == null) missingMags.add(AppStrings.nominalValuePropertyName);
+            if (instAttrs.year == null) missingMags.add(AppStrings.mintagePropertyName);
+            if (instAttrs.currencyName == null) missingMags.add(AppStrings.currencyPropertyName);
 
             if (missingMags.isNotEmpty) {
               cards.add(AuditCardData(
                 id: 'numis_mag_${entity.id}',
                 type: AuditCardType.numismaticMissingMagnitudes,
-                title: 'Magnitudes Numismáticas Incompletas',
+                title: AppStrings.incompleteNumismaticMagnitudesTitle,
                 subtitle: '$displayName • Faltan: ${missingMags.join(", ")}',
                 question: 'La instancia "$displayName" no tiene registradas las magnitudes (${missingMags.join(", ")}). ¿Deseas autocompletarlas desde el título de la subespecie?',
                 icon: Icons.fact_check_outlined,
@@ -1288,7 +1289,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                 tile: InstancePreviewCard(entity: entity),
                 onConfirm: (context, ref) async {
                   if (context.mounted) {
-                    AppToast.showSuccess(context, 'Magnitudes mantenidas sin cambios.');
+                    AppToast.showSuccess(context, AppStrings.magnitudesRetainedSuccess);
                   }
                   return true;
                 },
@@ -1300,7 +1301,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                     currentMags.add(InstanceMagnitude(
                       id: const Uuid().v4(),
                       instanceId: entity.id,
-                      propertyName: 'Valor nominal',
+                      propertyName: AppStrings.nominalValuePropertyName,
                       dataType: 'real',
                       magnitudeValue: parsedSub.faceValueNumber!,
                     ));
@@ -1310,7 +1311,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                     currentMags.add(InstanceMagnitude(
                       id: const Uuid().v4(),
                       instanceId: entity.id,
-                      propertyName: 'Acuñación',
+                      propertyName: AppStrings.mintagePropertyName,
                       dataType: 'integer',
                       magnitudeValue: double.parse(parsedSub.year!),
                       unitSymbol: 'año',
@@ -1321,7 +1322,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                     currentMags.add(InstanceMagnitude(
                       id: const Uuid().v4(),
                       instanceId: entity.id,
-                      propertyName: 'Divisa',
+                      propertyName: AppStrings.currencyPropertyName,
                       dataType: 'string',
                       stringValue: parsedSub.currencyName,
                     ));
@@ -1331,7 +1332,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                   await entityRepo.saveEntity(updatedEntity);
 
                   if (context.mounted) {
-                    AppToast.showSuccess(context, 'Magnitudes numismáticas autocompletadas.');
+                    AppToast.showSuccess(context, AppStrings.numismaticMagnitudesAutoFilledSuccess);
                   }
                   return true;
                 },
@@ -1343,7 +1344,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
               cards.add(AuditCardData(
                 id: 'numis_empty_grade_${entity.id}',
                 type: AuditCardType.emptyDataAudit,
-                title: 'Dato Numismático Vacío: Grado',
+                title: AppStrings.emptyGradeDataTitle,
                 subtitle: '$displayName • Grado de conservación sin asignar',
                 question: 'La pieza "$displayName" no tiene especificado su estado o grado de conservación. ¿Deseas asignarle un grado ahora?',
                 icon: Icons.star_outline,
@@ -1354,7 +1355,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                 tile: InstancePreviewCard(entity: entity),
                 onConfirm: (context, ref) async {
                   if (context.mounted) {
-                    AppToast.showSuccess(context, 'Grado de conservación mantenido vacío.');
+                    AppToast.showSuccess(context, AppStrings.gradeRetainedEmptySuccess);
                   }
                   return true;
                 },
@@ -1364,12 +1365,12 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                     items: NumismaticDataHelper.grades,
                     initialValue: NumismaticDataHelper.grades.first,
                     labelBuilder: (g) => g,
-                    title: 'Asignar Grado de Conservación',
+                    title: AppStrings.assignGradeTitle,
                   );
 
                   if (chosenGrade != null && chosenGrade.isNotEmpty) {
                     final List<InstanceMagnitude> currentMags = List.from(entity.magnitudes);
-                    final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == 'Grado');
+                    final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == AppStrings.gradePropertyName);
                     if (existingGradeIdx >= 0) {
                       currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
                         dataType: 'string',
@@ -1381,7 +1382,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                       currentMags.add(InstanceMagnitude(
                         id: const Uuid().v4(),
                         instanceId: entity.id,
-                        propertyName: 'Grado',
+                        propertyName: AppStrings.gradePropertyName,
                         dataType: 'string',
                         stringValue: chosenGrade,
                       ));
@@ -1413,7 +1414,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        AppToast.showError(context, 'Error al cargar tarjetas de control: $e');
+        AppToast.showError(context, AppStrings.controlCenterLoadErrorPrefix + e.toString());
       }
     }
   }
@@ -1438,7 +1439,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             SizedBox(width: 8),
             Flexible(
               child: Text(
-                'Centro de Control y Salud de Datos',
+                AppStrings.controlCenterTitle,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -1449,7 +1450,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Regenerar Revisiones',
+            tooltip: AppStrings.regenerateAuditsTooltip,
             onPressed: _generateAuditCards,
           ),
         ],
@@ -1472,13 +1473,13 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             const Icon(Icons.verified_outlined, size: 80, color: Colors.green),
             const SizedBox(height: 20),
             Text(
-              '¡Salud de datos 100% verificada!',
+              AppStrings.dataHealthVerifiedTitle,
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
             const Text(
-              'No se detectaron anomalías ni inconsistencias en tu inventario. Tu mundo PWMS está perfectamente estructurado.',
+              AppStrings.dataHealthVerifiedSubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey),
             ),
@@ -1486,7 +1487,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             ElevatedButton.icon(
               onPressed: _generateAuditCards,
               icon: const Icon(Icons.autorenew),
-              label: const Text('Realizar Nueva Auditoría'),
+              label: Text(AppStrings.runNewAuditAction),
             ),
           ],
         ),
@@ -1542,13 +1543,13 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                 background: _buildSwipeBackground(
                   color: Colors.blue.shade700,
                   icon: Icons.check_circle_outline,
-                  label: 'CORRECTO',
+                  label: AppStrings.correctAction,
                   alignment: Alignment.centerLeft,
                 ),
                 secondaryBackground: _buildSwipeBackground(
                   color: Colors.red.shade800,
                   icon: Icons.build_circle_outlined,
-                  label: 'CORREGIR',
+                  label: AppStrings.fixAction,
                   alignment: Alignment.centerRight,
                 ),
                 child: Card(
@@ -1623,7 +1624,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                     }
                                   },
                                   icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 18),
-                                  label: const Text('CORRECTO', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                                  label: Text(AppStrings.correctAction, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
                                   style: OutlinedButton.styleFrom(
                                     side: const BorderSide(color: Colors.green),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -1644,7 +1645,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                     }
                                   },
                                   icon: const Icon(Icons.build_circle_outlined, size: 18),
-                                  label: const Text('CORREGIR', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                  label: Text(AppStrings.fixAction, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: card.themeColor,
                                     foregroundColor: Colors.white,

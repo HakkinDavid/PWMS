@@ -62,6 +62,13 @@ class NumismaticQuickFillSheet extends ConsumerStatefulWidget {
     );
   }
 
+  @visibleForTesting
+  static void resetStaticCache() {
+    _NumismaticQuickFillSheetState._lastUsedLocationMode = null;
+    _NumismaticQuickFillSheetState._lastUsedLocationId = null;
+    _NumismaticQuickFillSheetState._lastUsedContainerEntityId = null;
+  }
+
   @override
   ConsumerState<NumismaticQuickFillSheet> createState() => _NumismaticQuickFillSheetState();
 }
@@ -82,6 +89,13 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   static InstantiationLocationMode? _lastUsedLocationMode;
   static String? _lastUsedLocationId;
   static String? _lastUsedContainerEntityId;
+
+  @visibleForTesting
+  static void resetStaticCache() {
+    _lastUsedLocationMode = null;
+    _lastUsedLocationId = null;
+    _lastUsedContainerEntityId = null;
+  }
 
   // Location / Container selection
   InstantiationLocationMode _locationMode = InstantiationLocationMode.physicalNode;
@@ -132,29 +146,27 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
 
   Future<void> _loadLastUsedLocation() async {
     try {
+      if (!mounted) return;
       final settingsRepo = ref.read(appSettingsRepositoryProvider);
       final savedModeStr = await settingsRepo.getLastNumismaticLocationMode();
+      if (!mounted) return;
       final savedLocId = await settingsRepo.getLastNumismaticLocationId();
+      if (!mounted) return;
       final savedContainerId = await settingsRepo.getLastNumismaticContainerEntityId();
+      if (!mounted) return;
 
-      if (mounted) {
-        setState(() {
-          if (savedModeStr != null) {
-            _locationMode = savedModeStr == InstantiationLocationMode.containerEntity.name
-                ? InstantiationLocationMode.containerEntity
-                : InstantiationLocationMode.physicalNode;
-            _lastUsedLocationMode = _locationMode;
-          }
-          if (savedLocId != null && savedLocId.isNotEmpty) {
-            _selectedLocationId = savedLocId;
-            _lastUsedLocationId = savedLocId;
-          }
-          if (savedContainerId != null && savedContainerId.isNotEmpty) {
-            _selectedContainerEntityId = savedContainerId;
-            _lastUsedContainerEntityId = savedContainerId;
-          }
-        });
-      }
+      setState(() {
+        if (savedModeStr != null) {
+          _locationMode = savedModeStr == InstantiationLocationMode.containerEntity.name
+              ? InstantiationLocationMode.containerEntity
+              : InstantiationLocationMode.physicalNode;
+          _lastUsedLocationMode = _locationMode;
+        }
+        _selectedLocationId = savedLocId;
+        _lastUsedLocationId = savedLocId;
+        _selectedContainerEntityId = savedContainerId;
+        _lastUsedContainerEntityId = savedContainerId;
+      });
     } catch (_) {}
   }
 
@@ -211,12 +223,12 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
 
     try {
       final settingsRepo = ref.read(appSettingsRepositoryProvider);
-      settingsRepo.setLastNumismaticLocationMode(_locationMode.name);
+      settingsRepo.setLastNumismaticLocationMode(_locationMode.name).catchError((_) {});
       if (_selectedLocationId != null) {
-        settingsRepo.setLastNumismaticLocationId(_selectedLocationId!);
+        settingsRepo.setLastNumismaticLocationId(_selectedLocationId!).catchError((_) {});
       }
       if (_selectedContainerEntityId != null) {
-        settingsRepo.setLastNumismaticContainerEntityId(_selectedContainerEntityId!);
+        settingsRepo.setLastNumismaticContainerEntityId(_selectedContainerEntityId!).catchError((_) {});
       }
     } catch (_) {}
 
@@ -266,7 +278,8 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
 
     if (widget.onResultSubmitted != null) {
       widget.onResultSubmitted!(result);
-    } else {
+    }
+    if (mounted && Navigator.canPop(context)) {
       Navigator.pop(context, result);
     }
   }
@@ -327,7 +340,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Datos Numismáticos - $speciesLabel',
+                      AppStrings.numismaticDataTitlePrefix + speciesLabel,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -343,15 +356,15 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               AppWheelPickerField<String?>(
                 value: _country,
                 items: [null, ..._countries],
-                labelBuilder: (c) => c ?? 'Sin selección',
-                title: 'País / Emisor',
+                labelBuilder: (c) => c ?? AppStrings.noSelectionPrompt,
+                title: AppStrings.countryIssuerLabel,
                 decoration: InputDecoration(
-                  labelText: 'País / Emisor',
-                  hintText: 'Sin selección',
+                  labelText: AppStrings.countryIssuerLabel,
+                  hintText: AppStrings.noSelectionPrompt,
                   prefixIcon: const Icon(Icons.flag),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                validator: (val) => val == null ? 'Selecciona un país o emisor' : null,
+                validator: (val) => val == null ? AppStrings.selectCountryPrompt : null,
                 onChanged: (val) {
                   setState(() {
                     _country = val;
@@ -368,15 +381,15 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               AppWheelPickerField<String?>(
                 value: _denomination,
                 items: [null, ..._denominations],
-                labelBuilder: (d) => d ?? 'Sin selección',
-                title: 'Denominación',
+                labelBuilder: (d) => d ?? AppStrings.noSelectionPrompt,
+                title: AppStrings.denominationLabel,
                 decoration: InputDecoration(
-                  labelText: 'Denominación',
-                  hintText: 'Sin selección',
+                  labelText: AppStrings.denominationLabel,
+                  hintText: AppStrings.noSelectionPrompt,
                   prefixIcon: const Icon(Icons.numbers),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                validator: (val) => val == null ? 'Selecciona una denominación' : null,
+                validator: (val) => val == null ? AppStrings.selectDenominationPrompt : null,
                 onChanged: (val) => setState(() => _denomination = val),
               ),
               if (_denomination == 'Otro') ...[
@@ -388,7 +401,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Número de denominación',
+                    labelText: AppStrings.denominationNumberLabel,
                     hintText: 'Ej: 0.50',
                     prefixIcon: const Icon(Icons.pin),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
@@ -396,11 +409,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   validator: (val) {
                     if (_denomination == 'Otro') {
                       if (val == null || val.trim().isEmpty) {
-                        return 'Ingresa el número de denominación';
+                        return AppStrings.enterDenominationNumberPrompt;
                       }
                       final parsed = double.tryParse(val.trim());
                       if (parsed == null || parsed <= 0) {
-                        return 'Ingresa un valor numérico válido (ej. 0.50)';
+                        return AppStrings.enterValidNumericValuePrompt;
                       }
                     }
                     return null;
@@ -417,18 +430,18 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     value: _currencyCode,
                     items: [null, ...availableCurrencies.keys],
                     labelBuilder: (code) {
-                      if (code == null) return 'Sin selección';
+                      if (code == null) return AppStrings.noSelectionPrompt;
                       final name = availableCurrencies[code] ?? code;
                       return '$code ($name)';
                     },
                     title: 'Divisa',
                     decoration: InputDecoration(
                       labelText: 'Divisa',
-                      hintText: 'Sin selección',
+                      hintText: AppStrings.noSelectionPrompt,
                       prefixIcon: const Icon(Icons.monetization_on),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    validator: (val) => val == null ? 'Selecciona una divisa' : null,
+                    validator: (val) => val == null ? AppStrings.selectCurrencyPrompt : null,
                     onChanged: (val) => setState(() => _currencyCode = val),
                   );
                 },
@@ -440,18 +453,18 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 controller: _yearController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Año de emisión',
+                  labelText: AppStrings.mintageYearLabel,
                   hintText: 'Ej: 1982',
                   prefixIcon: const Icon(Icons.calendar_today),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
-                    return 'Ingresa el año de emisión';
+                    return AppStrings.enterMintageYearPrompt;
                   }
                   final yearNum = int.tryParse(val.trim());
                   if (yearNum == null || yearNum < 500 || yearNum > 2100) {
-                    return 'Ingresa un año válido (ej. 1982)';
+                    return AppStrings.enterValidMintageYearPrompt;
                   }
                   return null;
                 },
@@ -462,15 +475,15 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               AppWheelPickerField<String?>(
                 value: _grade,
                 items: [null, ..._grades],
-                labelBuilder: (g) => g ?? 'Sin selección',
-                title: 'Conservación',
+                labelBuilder: (g) => g ?? AppStrings.noSelectionPrompt,
+                title: AppStrings.gradePropertyName,
                 decoration: InputDecoration(
-                  labelText: 'Conservación',
-                  hintText: 'Sin selección',
+                  labelText: AppStrings.gradePropertyName,
+                  hintText: AppStrings.noSelectionPrompt,
                   prefixIcon: const Icon(Icons.grade),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                validator: (val) => val == null ? 'Selecciona el estado de conservación' : null,
+                validator: (val) => val == null ? AppStrings.selectGradePrompt : null,
                 onChanged: (val) => setState(() => _grade = val),
               ),
               const SizedBox(height: 14),
@@ -480,15 +493,15 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 AppWheelPickerField<String?>(
                   value: _composition,
                   items: [null, ..._coinMaterials],
-                  labelBuilder: (mat) => mat ?? 'Sin selección',
-                  title: 'Material / Composición',
+                  labelBuilder: (mat) => mat ?? AppStrings.noSelectionPrompt,
+                  title: AppStrings.materialPropertyName,
                   decoration: InputDecoration(
-                    labelText: 'Material / Composición',
-                    hintText: 'Sin selección',
+                    labelText: AppStrings.materialPropertyName,
+                    hintText: AppStrings.noSelectionPrompt,
                     prefixIcon: const Icon(Icons.token),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  validator: (val) => val == null ? 'Selecciona el material o composición' : null,
+                  validator: (val) => val == null ? AppStrings.selectMaterialPrompt : null,
                   onChanged: (val) => setState(() => _composition = val),
                 ),
                 const SizedBox(height: 14),
@@ -606,17 +619,17 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       AppWheelPickerField<String?>(
                         value: _specialReason,
                         items: [null, ..._specialEditionReasons],
-                        labelBuilder: (r) => r ?? 'Sin selección',
+                        labelBuilder: (r) => r ?? AppStrings.noSelectionPrompt,
                         title: AppStrings.specialEditionReasonLabel,
                         decoration: InputDecoration(
                           labelText: AppStrings.specialEditionReasonLabel,
-                          hintText: 'Sin selección',
+                          hintText: AppStrings.noSelectionPrompt,
                           prefixIcon: const Icon(Icons.star),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                         ),
                         validator: (val) {
                           if (_isSpecialEdition && val == null) {
-                            return 'Selecciona la razón de edición especial';
+                            return AppStrings.selectSpecialEditionReasonPrompt;
                           }
                           return null;
                         },
@@ -635,7 +648,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                             if (_isSpecialEdition &&
                                 (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)') &&
                                 (val == null || val.trim().isEmpty)) {
-                              return 'Especifica el motivo de la edición especial';
+                              return AppStrings.specifySpecialEditionNotesPrompt;
                             }
                             return null;
                           },

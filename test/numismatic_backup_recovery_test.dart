@@ -7,7 +7,6 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/core/database/database_backup_service.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform

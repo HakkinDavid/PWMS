@@ -9,12 +9,7 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
-import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/control_center/presentation/control_center_screen.dart';
-import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
-import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
-import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
-import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform
     with MockPlatformInterfaceMixin {
@@ -32,10 +27,6 @@ class FakePathProviderPlatform extends PathProviderPlatform
 
 void main() {
   late AppDatabase db;
-  late CatalogRepository catalogRepo;
-  late EntityRepository entityRepo;
-  late LocationRepository locationRepo;
-  late RelationRepository relationRepo;
   late Directory tempDir;
 
   setUp(() {
@@ -47,10 +38,6 @@ void main() {
     );
 
     db = AppDatabase(NativeDatabase.memory());
-    catalogRepo = CatalogRepository(db);
-    entityRepo = EntityRepository(db);
-    locationRepo = LocationRepository(db);
-    relationRepo = RelationRepository(db);
   });
 
   tearDown(() async {
