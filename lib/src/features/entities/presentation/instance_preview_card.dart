@@ -199,7 +199,6 @@ class InstancePreviewCard extends ConsumerWidget {
                             final containedCount = allRelations.where((r) => r.targetEntityId == targetEntity.id && r.relationType == 'GUARDADO_EN').length;
                             final isContained = allRelations.any((r) => r.sourceEntityId == targetEntity.id && r.relationType == 'GUARDADO_EN');
                             final isOrphan = entity != null && targetEntity.locationId == null && !isContained;
-                            final hasLocationConflict = isContained && targetEntity.locationId != null;
                             final isMissingExpiration = entity != null && (species?.isNonPerishable == false) && targetEntity.expirationDate == null;
 
                             return Wrap(
@@ -244,27 +243,6 @@ class InstancePreviewCard extends ConsumerWidget {
                                         Text(
                                           AppStrings.badgeOrphan,
                                           style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                if (hasLocationConflict)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 4),
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: Colors.purple.shade900.withAlpha(40),
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(color: Colors.purple.shade300, width: 0.8),
-                                    ),
-                                    child: const Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(Icons.alt_route, size: 10, color: Colors.purpleAccent),
-                                        SizedBox(width: 3),
-                                        Text(
-                                          AppStrings.badgeLocationConflict,
-                                          style: TextStyle(fontSize: 10, color: Colors.purpleAccent, fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),

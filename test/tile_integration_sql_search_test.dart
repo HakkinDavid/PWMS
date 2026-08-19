@@ -156,9 +156,6 @@ void main() {
       // Verify Container Badge: "Contenedor (1)"
       expect(find.text('${AppStrings.badgeContainer} (1)'), findsOneWidget);
 
-      // Verify Location Conflict Badge: "Conflicto de ubicación"
-      expect(find.text(AppStrings.badgeLocationConflict), findsOneWidget);
-
       // Verify Expired Status Badge: "Caducado"
       expect(find.text(AppStrings.statusExpired), findsOneWidget);
 

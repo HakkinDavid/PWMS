@@ -80,6 +80,9 @@ void main() {
       await db.into(db.entitiesTable).insert(
             EntitiesTableCompanion.insert(id: 'e_doc', speciesId: 'sp_doc', locationId: const Value('loc_office'), createdAt: now, updatedAt: now),
           );
+      await db.into(db.instanceLocationsTable).insert(
+            InstanceLocationsTableCompanion.insert(instanceId: 'e_doc', locationId: 'loc_office', createdAt: now),
+          );
       await db.into(db.relationsTable).insert(
             RelationsTableCompanion.insert(
               id: 'rel_conflict',
@@ -281,6 +284,9 @@ void main() {
           );
       await db.into(db.entitiesTable).insert(
             EntitiesTableCompanion.insert(id: 'e_doc', speciesId: 'sp_doc', locationId: const Value('loc_office'), createdAt: now, updatedAt: now),
+          );
+      await db.into(db.instanceLocationsTable).insert(
+            InstanceLocationsTableCompanion.insert(instanceId: 'e_doc', locationId: 'loc_office', createdAt: now),
           );
       await db.into(db.relationsTable).insert(
             RelationsTableCompanion.insert(

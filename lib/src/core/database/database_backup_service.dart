@@ -435,6 +435,50 @@ class DatabaseBackupService {
       tables['attachments'] = updatedAtt;
     }
 
+    if (fromVersion == 3 && toVersion >= 4) {
+      // Migración 3 -> 4:
+      // Enforce que entidades contenidas no tengan ubicación directa en el respaldo
+      final relations = (tables['relations'] as List? ?? []);
+      final containedIds = <String>{};
+      for (final r in relations) {
+        if (r is Map) {
+          final relType = r['relationType']?.toString();
+          if (relType == 'GUARDADO_EN' || relType == 'PARTE_DE') {
+            final srcId = r['sourceEntityId']?.toString();
+            if (srcId != null) containedIds.add(srcId);
+          }
+        }
+      }
+
+      // 1. Limpiar ubicaciones directas en instanceLocations
+      final instanceLocations = (tables['instanceLocations'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedInstLocs = [];
+      for (final il in instanceLocations) {
+        if (il is Map) {
+          final instId = il['instanceId']?.toString();
+          if (!containedIds.contains(instId)) {
+            updatedInstLocs.add(Map<String, dynamic>.from(il));
+          }
+        }
+      }
+      tables['instanceLocations'] = updatedInstLocs;
+
+      // 2. Limpiar locationId en entities
+      final entities = (tables['entities'] as List? ?? []);
+      final List<Map<String, dynamic>> updatedEntities = [];
+      for (final e in entities) {
+        if (e is Map) {
+          final m = Map<String, dynamic>.from(e);
+          final eId = m['id']?.toString();
+          if (containedIds.contains(eId)) {
+            m['locationId'] = null;
+          }
+          updatedEntities.add(m);
+        }
+      }
+      tables['entities'] = updatedEntities;
+    }
+
     data['tables'] = tables;
     return data;
   }

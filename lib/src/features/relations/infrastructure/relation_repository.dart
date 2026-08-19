@@ -63,8 +63,10 @@ class RelationRepository implements IRelationRepository {
         await (_db.delete(_db.relationsTable)..where((t) => t.id.equals(oldRel.id))).go();
       }
 
-      // 3. Remove direct location from InstanceLocationsTable as location is now derived
+      // 3. Remove direct location from InstanceLocationsTable and EntitiesTable as location is now derived
       await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.equals(relation.sourceEntityId))).go();
+      await (_db.update(_db.entitiesTable)..where((t) => t.id.equals(relation.sourceEntityId)))
+          .write(const EntitiesTableCompanion(locationId: Value(null)));
     }
 
     final companion = RelationsTableCompanion(

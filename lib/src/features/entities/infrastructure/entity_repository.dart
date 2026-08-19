@@ -207,11 +207,19 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> saveEntity(WorldEntity entity) async {
+    // Ensure that if the entity is contained in a container (GUARDADO_EN / PARTE_DE),
+    // direct physical location in DB is null (as location is inherited from container).
+    final isContained = (await (_db.select(_db.relationsTable)
+      ..where((t) => t.sourceEntityId.equals(entity.id) & t.relationType.isIn(LocationResolver.locationInheritingTypes.toList()))
+    ).get()).isNotEmpty;
+
+    final String? directLocId = isContained ? null : entity.locationId;
+
     final companion = EntitiesTableCompanion(
       id: Value(entity.id),
       speciesId: Value(entity.speciesId),
       subspeciesId: Value(entity.subspeciesId),
-      locationId: Value(entity.locationId),
+      locationId: Value(directLocId),
       expirationDate: Value(entity.expirationDate),
       notes: Value(entity.notes),
       createdAt: Value(entity.createdAt),
@@ -221,11 +229,11 @@ class EntityRepository implements IEntityRepository {
     await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
 
     // Manage 4NF InstanceLocationsTable (Direct Physical Location)
-    if (entity.locationId != null) {
+    if (directLocId != null) {
       await _db.into(_db.instanceLocationsTable).insertOnConflictUpdate(
         InstanceLocationsTableCompanion(
           instanceId: Value(entity.id),
-          locationId: Value(entity.locationId!),
+          locationId: Value(directLocId),
           createdAt: Value(DateTime.now()),
         ),
       );

@@ -103,6 +103,9 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
       final locationRepo = ref.read(locationRepositoryProvider);
       final relationRepo = ref.read(relationRepositoryProvider);
 
+      final locRows = await ref.read(databaseProvider).select(ref.read(databaseProvider).instanceLocationsTable).get();
+      final directLocMap = {for (var r in locRows) r.instanceId: r.locationId};
+
       final speciesList = await catalogRepo.getAllCatalogItems();
       final subspeciesList = await catalogRepo.getAllSubspecies();
       final entitiesList = await entityRepo.getAllEntities();
@@ -121,7 +124,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
           cards.add(AuditCardData(
             id: 'sub_${sub.id}',
             type: AuditCardType.uninstantiatedSubspecies,
-            title: 'Subespecie sin instancias',
+            title: 'Subespecie sin Instancia',
             subtitle: '$subNameStr • Especie: ${parentSpecies?.name ?? "Desconocida"}',
             question: 'No existe ninguna instancia registrada para la subespecie "$subNameStr". ¿Deseas mantenerla o eliminarla?',
             icon: Icons.unarchive_outlined,
@@ -132,7 +135,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
               final choice = await showDialog<String>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('Confirmar subespecie'),
+                  title: const Text('Confirmar Subespecie'),
                   content: Text('¿Deseas mantener la subespecie "$subNameStr" en tu catálogo o eliminarla?'),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(ctx, 'cancel'), child: const Text('Cancelar')),
@@ -218,7 +221,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         cards.add(AuditCardData(
           id: 'orphan_${entity.id}',
           type: AuditCardType.orphanEntity,
-          title: 'Instancia sin ubicación ni contenedor',
+          title: 'Instancia sin Ubicación ni Contenedor',
           subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
           question: 'La instancia "$displayName" no tiene ubicación física ni contenedor asignado. ¿Asignarle una ubicación o contenedor ahora?',
           icon: Icons.wrong_location_outlined,
@@ -238,9 +241,9 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         ));
       }
 
-      // 2.1 Conflicto de Ubicación (Guardado en contenedor pero con ubicación directa)
+      // 2.1 Conflicto de Ubicación (Guardado en contenedor pero con registro directo en instance_locations_table)
       final conflictEntities = entitiesList.where((e) {
-        if (e.locationId == null) return false;
+        if (!directLocMap.containsKey(e.id)) return false;
         return relationsList.any((r) => r.sourceEntityId == e.id && r.relationType == 'GUARDADO_EN');
       }).take(8);
 
@@ -250,7 +253,8 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         final containerEntity = entitiesList.where((e) => e.id == containerRel.targetEntityId).firstOrNull;
         final containerSpecies = speciesList.where((c) => c.id == containerEntity?.speciesId).firstOrNull;
         final containerName = containerSpecies?.name ?? 'Contenedor';
-        final directLoc = locationNodes.where((l) => l.id == entity.locationId).firstOrNull;
+        final directLocId = directLocMap[entity.id];
+        final directLoc = locationNodes.where((l) => l.id == directLocId).firstOrNull;
         final directLocName = directLoc?.name ?? 'Ubicación directa';
 
         final displayName = EntityDisplayHelper.getDisplayName(
@@ -397,7 +401,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             cards.add(AuditCardData(
               id: 'uniq_viol_${sub.id}',
               type: AuditCardType.uniquenessViolation,
-              title: 'Subespecie única duplicada',
+              title: 'Subespecie Única Duplicada',
               subtitle: '${sub.subspeciesName} • ${sp.name} (${matchingInstances.length} instancias)',
               question: 'La subespecie "${sub.subspeciesName}" de la especie única "${sp.name}" tiene ${matchingInstances.length} instancias físicas duplicadas. ¿Cómo deseas proceder?',
               icon: Icons.content_copy,

@@ -208,7 +208,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -222,6 +222,26 @@ class AppDatabase extends _$AppDatabase {
             }
             if (v == 2) {
               await m.addColumn(attachmentsTable, attachmentsTable.instanceId);
+            }
+            if (v == 3) {
+              // Migración 3 -> 4:
+              // Limpieza y forzado de invariante: entidades contenidas (GUARDADO_EN / PARTE_DE)
+              // deben tener location_id NULL en entities_table y eliminarse de instance_locations_table.
+              await customStatement('''
+                DELETE FROM instance_locations_table
+                WHERE instance_id IN (
+                  SELECT source_entity_id FROM relations_table
+                  WHERE relation_type IN ('GUARDADO_EN', 'PARTE_DE')
+                );
+              ''');
+              await customStatement('''
+                UPDATE entities_table
+                SET location_id = NULL
+                WHERE id IN (
+                  SELECT source_entity_id FROM relations_table
+                  WHERE relation_type IN ('GUARDADO_EN', 'PARTE_DE')
+                );
+              ''');
             }
           }
         },
