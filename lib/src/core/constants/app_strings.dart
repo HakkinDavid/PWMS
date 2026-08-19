@@ -501,6 +501,7 @@ class AppStrings {
   static const selectSqlHint = 'SELECT * FROM ...';
   static const subspeciesCategory = 'Subespecies';
   static const instanceMagnitudesCategory = 'Magnitudes de instancia';
+  static const containersCategory = 'Contenedores';
   static const executeAction = 'Ejecutar';
   static const rowsRetrievedPrefix = 'Filas obtenidas: ';
 

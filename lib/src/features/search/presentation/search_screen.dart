@@ -229,6 +229,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     _executeSqlQuery();
                   },
                 ),
+                const SizedBox(width: 6),
+                ActionChip(
+                  label: const Text(AppStrings.containersCategory, style: TextStyle(fontSize: 11)),
+                  onPressed: () {
+                    _sqlController.text = "SELECT DISTINCT e.id, c.name, e.location_id FROM entities_table e JOIN relations_table r ON e.id = r.target_entity_id JOIN catalog_table c ON e.species_id = c.id WHERE r.relation_type = 'GUARDADO_EN';";
+                    _executeSqlQuery();
+                  },
+                ),
               ],
             ),
           ),
