@@ -9,10 +9,12 @@ import '../domain/numismatic_recognition_models.dart';
 import 'numismatic_quick_fill_sheet.dart';
 
 class GuidedDualScanWidget extends ConsumerStatefulWidget {
+  final String? initialLocationId;
   final Function(NumismaticScanResult result)? onScannedResult;
 
   const GuidedDualScanWidget({
     super.key,
+    this.initialLocationId,
     this.onScannedResult,
   });
 
@@ -231,6 +233,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
         obversePhoto: primaryPhoto,
         reversePhoto: _obverseFile != null ? _reverseFile : null,
         isCoin: _isCoinMode,
+        initialLocationId: widget.initialLocationId,
         onResultSubmitted: (result) async {
           if (result != null && mounted) {
             widget.onScannedResult?.call(result);

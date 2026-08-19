@@ -15,6 +15,9 @@ class NumismaticScanResult {
   final String obversePhotoPath;
   final String? reversePhotoPath;
   final String sourceEngine;
+  final String? locationId;
+  final String? containerEntityId;
+  final bool isContainer;
 
   NumismaticScanResult({
     required this.speciesType,
@@ -33,6 +36,9 @@ class NumismaticScanResult {
     required this.obversePhotoPath,
     this.reversePhotoPath,
     required this.sourceEngine,
+    this.locationId,
+    this.containerEntityId,
+    this.isContainer = false,
   });
 
   Map<String, double> toMagnitudeValues() {

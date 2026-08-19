@@ -15,6 +15,7 @@ import '../../catalog/presentation/guided_dual_scan_widget.dart';
 import '../../catalog/presentation/species_form_modal.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../catalog/presentation/subspecies_section_widget.dart';
+import '../../relations/domain/entity_relation.dart';
 import '../domain/instance_magnitude.dart';
 import 'instantiate_species_sheet.dart';
 
@@ -215,6 +216,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         );
       case RegisterModalMode.numismaticScanner:
         return GuidedDualScanWidget(
+          initialLocationId: widget.initialLocationId,
           onScannedResult: (result) async {
             if (!mounted) return;
             final catalogRepo = ref.read(catalogRepositoryProvider);
@@ -296,16 +298,34 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               }
             }
 
-            // 3. Instanciar directamente en inventario (Sin desplegar InstantiateSpeciesSheet)
+            // 3. Instanciar directamente en inventario (con soporte para ubicación física o contenedor)
             if (!mounted) return;
             final entityRepo = ref.read(entityRepositoryProvider);
+            final relationRepo = ref.read(relationRepositoryProvider);
+
+            final targetPhysicalLoc = result.isContainer
+                ? null
+                : (result.locationId ?? widget.initialLocationId);
+
             final createdInstance = await entityRepo.instantiateOrMerge(
               freshSpecies.id,
-              widget.initialLocationId,
+              targetPhysicalLoc,
               1.0,
               subspeciesId: targetSubspecies.id,
               notes: instanceNotes,
             );
+
+            // Si se seleccionó modo contenedor, crear relación GUARDADO_EN
+            if (result.isContainer && result.containerEntityId != null && result.containerEntityId!.isNotEmpty) {
+              final rel = EntityRelation(
+                id: const Uuid().v4(),
+                sourceEntityId: createdInstance.id,
+                targetEntityId: result.containerEntityId!,
+                relationType: 'GUARDADO_EN',
+                createdAt: DateTime.now(),
+              );
+              await relationRepo.addRelation(rel);
+            }
 
             // 4. Guardar magnitudes 4NF relacionales en la instancia
             if (freshSpecies.magnitudes.isNotEmpty) {
@@ -390,6 +410,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
             if (!mounted) return;
             ref.invalidate(entityListProvider);
+            ref.invalidate(relationListProvider);
             ref.invalidate(catalogListProvider);
             ref.invalidate(speciesAttachmentsProvider(freshSpecies.id));
             ref.invalidate(instanceAttachmentsProvider(createdInstance.id));

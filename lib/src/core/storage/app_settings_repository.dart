@@ -25,6 +25,34 @@ class AppSettingsRepository {
   Future<void> setNumistaApiKey(String value) async {
     await _db.setSetting(keyNumistaApiKey, value.trim());
   }
+
+  static const String keyLastNumismaticLocationMode = 'last_numismatic_location_mode';
+  static const String keyLastNumismaticLocationId = 'last_numismatic_location_id';
+  static const String keyLastNumismaticContainerEntityId = 'last_numismatic_container_entity_id';
+
+  Future<String?> getLastNumismaticLocationMode() async {
+    return await _db.getSetting(keyLastNumismaticLocationMode);
+  }
+
+  Future<void> setLastNumismaticLocationMode(String value) async {
+    await _db.setSetting(keyLastNumismaticLocationMode, value.trim());
+  }
+
+  Future<String?> getLastNumismaticLocationId() async {
+    return await _db.getSetting(keyLastNumismaticLocationId);
+  }
+
+  Future<void> setLastNumismaticLocationId(String value) async {
+    await _db.setSetting(keyLastNumismaticLocationId, value.trim());
+  }
+
+  Future<String?> getLastNumismaticContainerEntityId() async {
+    return await _db.getSetting(keyLastNumismaticContainerEntityId);
+  }
+
+  Future<void> setLastNumismaticContainerEntityId(String value) async {
+    await _db.setSetting(keyLastNumismaticContainerEntityId, value.trim());
+  }
 }
 
 final appSettingsRepositoryProvider = Provider<AppSettingsRepository>((ref) {
