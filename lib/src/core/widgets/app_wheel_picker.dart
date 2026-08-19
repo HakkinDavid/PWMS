@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_strings.dart';
 
+class WheelPickerResult<T> {
+  final T value;
+  const WheelPickerResult(this.value);
+}
+
 class AppWheelPicker<T> extends StatefulWidget {
   final List<T> items;
   final T? initialValue;
@@ -16,7 +21,7 @@ class AppWheelPicker<T> extends StatefulWidget {
     this.title = AppStrings.selectOptionPrompt,
   });
 
-  static Future<T?> show<T>(
+  static Future<WheelPickerResult<T>?> showPicker<T>(
     BuildContext context, {
     required List<T> items,
     T? initialValue,
@@ -24,11 +29,12 @@ class AppWheelPicker<T> extends StatefulWidget {
     String title = AppStrings.selectOptionPrompt,
   }) {
     if (items.isEmpty) return Future.value(null);
-    return showModalBottomSheet<T>(
+    return showModalBottomSheet<WheelPickerResult<T>>(
       context: context,
       useRootNavigator: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (_) => AppWheelPicker<T>(
         items: items,
         initialValue: initialValue,
@@ -36,6 +42,23 @@ class AppWheelPicker<T> extends StatefulWidget {
         title: title,
       ),
     );
+  }
+
+  static Future<T?> show<T>(
+    BuildContext context, {
+    required List<T> items,
+    T? initialValue,
+    required String Function(T item) labelBuilder,
+    String title = AppStrings.selectOptionPrompt,
+  }) async {
+    final res = await showPicker<T>(
+      context,
+      items: items,
+      initialValue: initialValue,
+      labelBuilder: labelBuilder,
+      title: title,
+    );
+    return res?.value;
   }
 
   @override
@@ -111,22 +134,34 @@ class _AppWheelPickerState<T> extends State<AppWheelPicker<T>> {
                 onSelectedItemChanged: (index) {
                   setState(() => _selectedIndex = index);
                 },
-                children: widget.items.map((item) {
-                  final isSelected = widget.items.indexOf(item) == _selectedIndex;
+                children: List.generate(widget.items.length, (index) {
+                  final item = widget.items[index];
+                  final isSelected = index == _selectedIndex;
                   final label = widget.labelBuilder(item);
-                  return Center(
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        color: isSelected ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      _scrollController.animateToItem(
+                        index,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOut,
+                      );
+                      setState(() => _selectedIndex = index);
+                    },
+                    child: Center(
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          color: isSelected ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   );
-                }).toList(),
+                }),
               ),
             ),
 
@@ -138,7 +173,7 @@ class _AppWheelPickerState<T> extends State<AppWheelPicker<T>> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_selectedIndex >= 0 && _selectedIndex < widget.items.length) {
-                      Navigator.pop(context, widget.items[_selectedIndex]);
+                      Navigator.pop(context, WheelPickerResult<T>(widget.items[_selectedIndex]));
                     } else {
                       Navigator.pop(context, null);
                     }
@@ -156,5 +191,104 @@ class _AppWheelPickerState<T> extends State<AppWheelPicker<T>> {
         ),
       ),
     );
+  }
+}
+
+/// A DropdownFormField replacement that uses Cupertino [AppWheelPicker] bottom sheet.
+class AppWheelPickerField<T> extends FormField<T> {
+  final T? value;
+  final ValueChanged<T?>? onChanged;
+
+  AppWheelPickerField({
+    super.key,
+    this.value,
+    required List<T> items,
+    required String Function(T item) labelBuilder,
+    this.onChanged,
+    String? title,
+    InputDecoration decoration = const InputDecoration(),
+    super.validator,
+    super.autovalidateMode,
+    bool enabled = true,
+    String? placeholder,
+  }) : super(
+          initialValue: value,
+          enabled: enabled,
+          builder: (FormFieldState<T> field) {
+            final _AppWheelPickerFieldState<T> state = field as _AppWheelPickerFieldState<T>;
+            final context = state.context;
+            final currentValue = state.value;
+            final hasValue = currentValue != null;
+
+            return InkWell(
+              onTap: enabled && items.isNotEmpty
+                  ? () async {
+                      final result = await AppWheelPicker.showPicker<T>(
+                        context,
+                        items: items,
+                        initialValue: currentValue,
+                        labelBuilder: labelBuilder,
+                        title: title ?? decoration.labelText ?? AppStrings.selectOptionPrompt,
+                      );
+
+                      if (result != null) {
+                        state.didChange(result.value);
+                        onChanged?.call(result.value);
+                      }
+                    }
+                  : null,
+              borderRadius: BorderRadius.circular(14),
+              child: InputDecorator(
+                decoration: decoration.copyWith(
+                  errorText: state.errorText,
+                  enabled: enabled,
+                  hintText: placeholder ?? decoration.hintText,
+                ),
+                isEmpty: !hasValue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: hasValue
+                          ? Text(
+                              labelBuilder(currentValue),
+                              style: const TextStyle(fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    Icon(
+                      Icons.unfold_more,
+                      size: 20,
+                      color: enabled ? null : Theme.of(context).disabledColor,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+
+  @override
+  FormFieldState<T> createState() => _AppWheelPickerFieldState<T>();
+}
+
+class _AppWheelPickerFieldState<T> extends FormFieldState<T> {
+  @override
+  AppWheelPickerField<T> get widget => super.widget as AppWheelPickerField<T>;
+
+  @override
+  void didUpdateWidget(AppWheelPickerField<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != oldWidget.value) {
+      setValue(widget.value);
+    }
+  }
+
+  @override
+  void reset() {
+    super.reset();
+    setValue(widget.value);
   }
 }

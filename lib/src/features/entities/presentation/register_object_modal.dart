@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/domain/numismatic_data_helper.dart';
@@ -441,19 +442,18 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         children: [
           Text(AppStrings.catalogSpeciesLabel, style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 6),
-          DropdownButtonFormField<String>(
-            initialValue: _selectedSpeciesIdForSubspecies,
-            isExpanded: true,
+          AppWheelPickerField<String>(
+            value: _selectedSpeciesIdForSubspecies,
+            items: catalogItems.map((c) => c.id).toList(),
+            labelBuilder: (id) {
+              final c = catalogItems.where((c) => c.id == id).firstOrNull;
+              return c != null ? '${c.name} (${c.type})' : id;
+            },
+            title: AppStrings.catalogSpeciesLabel,
             decoration: const InputDecoration(
               prefixIcon: Icon(Icons.public),
               hintText: AppStrings.selectSpeciesPrompt,
             ),
-            items: catalogItems.map((c) {
-              return DropdownMenuItem(
-                value: c.id,
-                child: Text('${c.name} (${c.type})', overflow: TextOverflow.ellipsis),
-              );
-            }).toList(),
             onChanged: (val) {
               if (val != null) setState(() => _selectedSpeciesIdForSubspecies = val);
             },

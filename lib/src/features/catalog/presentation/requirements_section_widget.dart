@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../domain/species_requirement.dart';
 
 class RequirementsSectionWidget extends ConsumerStatefulWidget {
@@ -70,11 +71,12 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
               children: [
                 const Text(AppStrings.selectRequiredSpeciesPrompt),
                 const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  initialValue: selectedSpeciesId,
-                  isExpanded: true,
+                AppWheelPickerField<String>(
+                  value: selectedSpeciesId,
+                  items: catalogItems.map((c) => c.id).toList(),
+                  labelBuilder: (id) => catalogItems.where((c) => c.id == id).firstOrNull?.name ?? id,
+                  title: AppStrings.requiredSpeciesLabel,
                   decoration: const InputDecoration(labelText: AppStrings.requiredSpeciesLabel),
-                  items: catalogItems.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name, overflow: TextOverflow.ellipsis))).toList(),
                   onChanged: (val) => setState(() => selectedSpeciesId = val),
                 ),
                 const SizedBox(height: 12),

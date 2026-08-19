@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/storage/app_settings_repository.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/presentation/location_tree_picker.dart';
@@ -274,7 +275,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final speciesLabel = widget.isCoin ? 'Moneda (Circular)' : 'Billete (Rectangular)';
-    final unselectedStyle = TextStyle(color: theme.disabledColor, fontStyle: FontStyle.italic);
 
     final locationsState = ref.watch(locationNodeListProvider);
     final catalogState = ref.watch(catalogListProvider);
@@ -340,9 +340,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               const SizedBox(height: 16),
 
               // 1. País / Emisor Dropdown (1 campo por fila)
-              DropdownButtonFormField<String?>(
+              AppWheelPickerField<String?>(
                 value: _country,
-                isExpanded: true,
+                items: [null, ..._countries],
+                labelBuilder: (c) => c ?? 'Sin selección',
+                title: 'País / Emisor',
                 decoration: InputDecoration(
                   labelText: 'País / Emisor',
                   hintText: 'Sin selección',
@@ -350,16 +352,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 validator: (val) => val == null ? 'Selecciona un país o emisor' : null,
-                items: [
-                  DropdownMenuItem<String?>(
-                    value: null,
-                    child: Text('Sin selección', style: unselectedStyle),
-                  ),
-                  ..._countries.map((c) => DropdownMenuItem<String?>(
-                    value: c,
-                    child: Text(c, overflow: TextOverflow.ellipsis),
-                  )),
-                ],
                 onChanged: (val) {
                   setState(() {
                     _country = val;
@@ -373,9 +365,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               const SizedBox(height: 14),
 
               // 2. Denominación Dropdown (1 campo por fila)
-              DropdownButtonFormField<String?>(
+              AppWheelPickerField<String?>(
                 value: _denomination,
-                isExpanded: true,
+                items: [null, ..._denominations],
+                labelBuilder: (d) => d ?? 'Sin selección',
+                title: 'Denominación',
                 decoration: InputDecoration(
                   labelText: 'Denominación',
                   hintText: 'Sin selección',
@@ -383,16 +377,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 validator: (val) => val == null ? 'Selecciona una denominación' : null,
-                items: [
-                  DropdownMenuItem<String?>(
-                    value: null,
-                    child: Text('Sin selección', style: unselectedStyle),
-                  ),
-                  ..._denominations.map((d) => DropdownMenuItem<String?>(
-                    value: d,
-                    child: Text(d, overflow: TextOverflow.ellipsis),
-                  )),
-                ],
                 onChanged: (val) => setState(() => _denomination = val),
               ),
               if (_denomination == 'Otro') ...[
@@ -429,9 +413,15 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               Builder(
                 builder: (context) {
                   final availableCurrencies = NumismaticDataHelper.getCurrencyMapForCountry(_country);
-                  return DropdownButtonFormField<String?>(
+                  return AppWheelPickerField<String?>(
                     value: _currencyCode,
-                    isExpanded: true,
+                    items: [null, ...availableCurrencies.keys],
+                    labelBuilder: (code) {
+                      if (code == null) return 'Sin selección';
+                      final name = availableCurrencies[code] ?? code;
+                      return '$code ($name)';
+                    },
+                    title: 'Divisa',
                     decoration: InputDecoration(
                       labelText: 'Divisa',
                       hintText: 'Sin selección',
@@ -439,16 +429,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                     validator: (val) => val == null ? 'Selecciona una divisa' : null,
-                    items: [
-                      DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text('Sin selección', style: unselectedStyle),
-                      ),
-                      ...availableCurrencies.entries.map((e) => DropdownMenuItem<String?>(
-                        value: e.key,
-                        child: Text('${e.key} (${e.value})', overflow: TextOverflow.ellipsis),
-                      )),
-                    ],
                     onChanged: (val) => setState(() => _currencyCode = val),
                   );
                 },
@@ -479,9 +459,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               const SizedBox(height: 14),
 
               // 5. Conservación Dropdown (1 campo por fila)
-              DropdownButtonFormField<String?>(
+              AppWheelPickerField<String?>(
                 value: _grade,
-                isExpanded: true,
+                items: [null, ..._grades],
+                labelBuilder: (g) => g ?? 'Sin selección',
+                title: 'Conservación',
                 decoration: InputDecoration(
                   labelText: 'Conservación',
                   hintText: 'Sin selección',
@@ -489,25 +471,17 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 validator: (val) => val == null ? 'Selecciona el estado de conservación' : null,
-                items: [
-                  DropdownMenuItem<String?>(
-                    value: null,
-                    child: Text('Sin selección', style: unselectedStyle),
-                  ),
-                  ..._grades.map((g) => DropdownMenuItem<String?>(
-                    value: g,
-                    child: Text(g, overflow: TextOverflow.ellipsis),
-                  )),
-                ],
                 onChanged: (val) => setState(() => _grade = val),
               ),
               const SizedBox(height: 14),
 
               // 6. Material / Composición Dropdown (1 campo por fila, sólo para monedas)
               if (widget.isCoin) ...[
-                DropdownButtonFormField<String?>(
+                AppWheelPickerField<String?>(
                   value: _composition,
-                  isExpanded: true,
+                  items: [null, ..._coinMaterials],
+                  labelBuilder: (mat) => mat ?? 'Sin selección',
+                  title: 'Material / Composición',
                   decoration: InputDecoration(
                     labelText: 'Material / Composición',
                     hintText: 'Sin selección',
@@ -515,16 +489,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   validator: (val) => val == null ? 'Selecciona el material o composición' : null,
-                  items: [
-                    DropdownMenuItem<String?>(
-                      value: null,
-                      child: Text('Sin selección', style: unselectedStyle),
-                    ),
-                    ..._coinMaterials.map((mat) => DropdownMenuItem<String?>(
-                      value: mat,
-                      child: Text(mat, overflow: TextOverflow.ellipsis),
-                    )),
-                  ],
                   onChanged: (val) => setState(() => _composition = val),
                 ),
                 const SizedBox(height: 14),
@@ -584,9 +548,19 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 if (entities.isEmpty)
                   const Text(AppStrings.noContainerObjectsAvailable)
                 else
-                  DropdownButtonFormField<String>(
+                  AppWheelPickerField<String>(
                     value: _selectedContainerEntityId,
-                    isExpanded: true,
+                    items: entities.map((e) => e.id).toList(),
+                    labelBuilder: (id) {
+                      final e = entities.where((e) => e.id == id).firstOrNull;
+                      if (e == null) return id;
+                      return EntityDisplayHelper.getDisplayName(
+                        entity: e,
+                        catalogItems: catalogItems,
+                        subspeciesList: subspeciesList,
+                      );
+                    },
+                    title: AppStrings.selectContainerObject,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.inventory_2_outlined),
                       hintText: AppStrings.selectContainerObject,
@@ -598,14 +572,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       }
                       return null;
                     },
-                    items: entities.map((e) {
-                      final name = EntityDisplayHelper.getDisplayName(
-                        entity: e,
-                        catalogItems: catalogItems,
-                        subspeciesList: subspeciesList,
-                      );
-                      return DropdownMenuItem(value: e.id, child: Text(name, overflow: TextOverflow.ellipsis));
-                    }).toList(),
                     onChanged: (val) => setState(() => _selectedContainerEntityId = val),
                   ),
               ],
@@ -637,9 +603,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     if (_isSpecialEdition) ...[
                       const Divider(),
                       const SizedBox(height: 4),
-                      DropdownButtonFormField<String?>(
+                      AppWheelPickerField<String?>(
                         value: _specialReason,
-                        isExpanded: true,
+                        items: [null, ..._specialEditionReasons],
+                        labelBuilder: (r) => r ?? 'Sin selección',
+                        title: AppStrings.specialEditionReasonLabel,
                         decoration: InputDecoration(
                           labelText: AppStrings.specialEditionReasonLabel,
                           hintText: 'Sin selección',
@@ -652,16 +620,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                           }
                           return null;
                         },
-                        items: [
-                          DropdownMenuItem<String?>(
-                            value: null,
-                            child: Text('Sin selección', style: unselectedStyle),
-                          ),
-                          ..._specialEditionReasons.map((r) => DropdownMenuItem<String?>(
-                            value: r,
-                            child: Text(r, overflow: TextOverflow.ellipsis),
-                          )),
-                        ],
                         onChanged: (val) => setState(() => _specialReason = val),
                       ),
                       if (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)') ...[

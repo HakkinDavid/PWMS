@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_form_modal.dart';
@@ -1358,55 +1359,12 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                   return true;
                 },
                 onFix: (context, ref) async {
-                  final chosenGrade = await showDialog<String>(
-                    context: context,
-                    builder: (ctx) {
-                      String? currentVal = NumismaticDataHelper.grades.first;
-                      return StatefulBuilder(
-                        builder: (context, setState) {
-                          return AlertDialog(
-                            title: const Text('Asignar Grado de Conservación'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Selecciona el estado de conservación para "$displayName":',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                const SizedBox(height: 16),
-                                DropdownButtonFormField<String>(
-                                  value: currentVal,
-                                  isExpanded: true,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Grado de Conservación',
-                                    prefixIcon: Icon(Icons.grade),
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  items: NumismaticDataHelper.grades.map((g) => DropdownMenuItem(
-                                    value: g,
-                                    child: Text(g, overflow: TextOverflow.ellipsis),
-                                  )).toList(),
-                                  onChanged: (val) {
-                                    if (val != null) setState(() => currentVal = val);
-                                  },
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(ctx, null),
-                                child: const Text('Cancelar'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(ctx, currentVal),
-                                child: const Text('Guardar Grado'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                  final chosenGrade = await AppWheelPicker.show<String>(
+                    context,
+                    items: NumismaticDataHelper.grades,
+                    initialValue: NumismaticDataHelper.grades.first,
+                    labelBuilder: (g) => g,
+                    title: 'Asignar Grado de Conservación',
                   );
 
                   if (chosenGrade != null && chosenGrade.isNotEmpty) {

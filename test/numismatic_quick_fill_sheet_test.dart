@@ -1,12 +1,44 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/widgets/app_wheel_picker.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_recognition_models.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/numismatic_quick_fill_sheet.dart';
 
 void main() {
+  Future<void> selectWheelOption(WidgetTester tester, Finder fieldFinder, String optionText) async {
+    await tester.scrollUntilVisible(fieldFinder, 100, scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
+    await tester.tap(fieldFinder);
+    await tester.pumpAndSettle();
+
+    final optionFinder = find.text(optionText);
+    if (optionFinder.evaluate().isNotEmpty) {
+      await tester.tap(optionFinder.last, warnIfMissed: false);
+      await tester.pumpAndSettle();
+    } else {
+      final picker = find.byType(CupertinoPicker);
+      if (picker.evaluate().isNotEmpty) {
+        for (int i = 0; i < 20; i++) {
+          await tester.drag(picker, const Offset(0, -44));
+          await tester.pumpAndSettle();
+          if (find.text(optionText).evaluate().isNotEmpty) {
+            await tester.tap(find.text(optionText).last, warnIfMissed: false);
+            await tester.pumpAndSettle();
+            break;
+          }
+        }
+      }
+    }
+
+    final confirmButton = find.widgetWithText(ElevatedButton, AppStrings.confirm);
+    await tester.tap(confirmButton);
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('NumismaticQuickFillSheet blocks submit if fields are null/empty', (WidgetTester tester) async {
     NumismaticScanResult? submittedResult;
 
@@ -15,6 +47,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
+          key: UniqueKey(),
           home: Scaffold(
             body: SingleChildScrollView(
               child: NumismaticQuickFillSheet(
@@ -32,7 +65,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // Verify all dropdown fields display 'Sin selección' as default value
+    // Verify all wheel picker fields display 'Sin selección' as default value
     expect(find.text('Sin selección'), findsNWidgets(5)); // País, Denominación, Divisa, Conservación, Material
 
     // Tap submit button with null fields
@@ -54,6 +87,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
+          key: UniqueKey(),
           home: Scaffold(
             body: SingleChildScrollView(
               child: NumismaticQuickFillSheet(
@@ -72,25 +106,16 @@ void main() {
     await tester.pumpAndSettle();
 
     // 1. Select Country (México)
-    final countryDropdown = find.byType(DropdownButtonFormField<String?>).at(0);
-    await tester.tap(countryDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('México').last);
-    await tester.pumpAndSettle();
+    final countryField = find.byType(AppWheelPickerField<String?>).at(0);
+    await selectWheelOption(tester, countryField, 'México');
 
     // 2. Select Denomination (5)
-    final denomDropdown = find.byType(DropdownButtonFormField<String?>).at(1);
-    await tester.tap(denomDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('5').last);
-    await tester.pumpAndSettle();
+    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
+    await selectWheelOption(tester, denomField, '5');
 
     // 3. Select Currency (MXN)
-    final currencyDropdown = find.byType(DropdownButtonFormField<String?>).at(2);
-    await tester.tap(currencyDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('MXN (Pesos Mexicanos)').last);
-    await tester.pumpAndSettle();
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, currencyField, 'MXN (Pesos Mexicanos)');
 
     // 4. Enter Year (1982)
     final yearField = find.byType(TextFormField);
@@ -98,18 +123,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // 5. Select Grade (MBC / VF (Muy Buena))
-    final gradeDropdown = find.byType(DropdownButtonFormField<String?>).at(3);
-    await tester.tap(gradeDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Muy buena').last);
-    await tester.pumpAndSettle();
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
+    await selectWheelOption(tester, gradeField, 'Muy buena');
 
     // 6. Select Material (Cuproníquel)
-    final matDropdown = find.byType(DropdownButtonFormField<String?>).at(4);
-    await tester.tap(matDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Cuproníquel').last);
-    await tester.pumpAndSettle();
+    final matField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, matField, 'Cuproníquel');
 
     // Submit
     final submitText = find.text(AppStrings.confirmAndRegisterPieceAction);
@@ -136,6 +155,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
+          key: UniqueKey(),
           home: Scaffold(
             body: SingleChildScrollView(
               child: NumismaticQuickFillSheet(
@@ -154,30 +174,19 @@ void main() {
     await tester.pumpAndSettle();
 
     // 1. Select Country (México)
-    final countryDropdown = find.byType(DropdownButtonFormField<String?>).at(0);
-    await tester.tap(countryDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('México').last);
-    await tester.pumpAndSettle();
+    final countryField = find.byType(AppWheelPickerField<String?>).at(0);
+    await selectWheelOption(tester, countryField, 'México');
 
     // 2. Select Denomination ("Otro")
-    final denomDropdown = find.byType(DropdownButtonFormField<String?>).at(1);
-    await tester.tap(denomDropdown);
-    await tester.pumpAndSettle();
-    await tester.drag(find.byType(Scrollable).last, const Offset(0, -300));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Otro').last);
-    await tester.pumpAndSettle();
+    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
+    await selectWheelOption(tester, denomField, 'Otro');
 
     // Verify the custom denomination text field is summoned
     expect(find.text('Número de denominación'), findsOneWidget);
 
     // 3. Select Currency (MXN)
-    final currencyDropdown = find.byType(DropdownButtonFormField<String?>).at(2);
-    await tester.tap(currencyDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('MXN (Pesos Mexicanos)').last);
-    await tester.pumpAndSettle();
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, currencyField, 'MXN (Pesos Mexicanos)');
 
     // 4. Enter Year (1975)
     final yearField = find.widgetWithText(TextFormField, 'Año de emisión');
@@ -185,18 +194,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // 5. Select Grade (Sin circular)
-    final gradeDropdown = find.byType(DropdownButtonFormField<String?>).at(3);
-    await tester.tap(gradeDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Sin circular').last);
-    await tester.pumpAndSettle();
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
+    await selectWheelOption(tester, gradeField, 'Sin circular');
 
     // 6. Select Material (Plata)
-    final matDropdown = find.byType(DropdownButtonFormField<String?>).at(4);
-    await tester.tap(matDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Plata').last);
-    await tester.pumpAndSettle();
+    final matField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, matField, 'Plata');
 
     // Try to submit with empty custom denomination -> should fail
     final submitButton = find.text(AppStrings.confirmAndRegisterPieceAction);
@@ -236,6 +239,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
+          key: UniqueKey(),
           home: Scaffold(
             body: SingleChildScrollView(
               child: NumismaticQuickFillSheet(
@@ -254,25 +258,16 @@ void main() {
     await tester.pumpAndSettle();
 
     // 1. Select Country (México)
-    final countryDropdown = find.byType(DropdownButtonFormField<String?>).at(0);
-    await tester.tap(countryDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('México').last);
-    await tester.pumpAndSettle();
+    final countryField = find.byType(AppWheelPickerField<String?>).at(0);
+    await selectWheelOption(tester, countryField, 'México');
 
     // 2. Select Denomination (20)
-    final denomDropdown = find.byType(DropdownButtonFormField<String?>).at(1);
-    await tester.tap(denomDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('20').last);
-    await tester.pumpAndSettle();
+    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
+    await selectWheelOption(tester, denomField, '20');
 
     // 3. Select Currency (MXN)
-    final currencyDropdown = find.byType(DropdownButtonFormField<String?>).at(2);
-    await tester.tap(currencyDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('MXN (Pesos Mexicanos)').last);
-    await tester.pumpAndSettle();
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, currencyField, 'MXN (Pesos Mexicanos)');
 
     // 4. Enter Year (2021)
     final yearField = find.widgetWithText(TextFormField, 'Año de emisión');
@@ -280,18 +275,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // 5. Select Grade (Sin circular)
-    final gradeDropdown = find.byType(DropdownButtonFormField<String?>).at(3);
-    await tester.tap(gradeDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Sin circular').last);
-    await tester.pumpAndSettle();
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
+    await selectWheelOption(tester, gradeField, 'Sin circular');
 
     // 6. Select Material (Bimetálica)
-    final matDropdown = find.byType(DropdownButtonFormField<String?>).at(4);
-    await tester.tap(matDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Bimetálica').last);
-    await tester.pumpAndSettle();
+    final matField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, matField, 'Bimetálica');
 
     // 7. Check Special Edition
     final checkbox = find.byType(CheckboxListTile);
@@ -300,12 +289,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // 8. Select Special Edition Reason ('Otro')
-    final reasonDropdown = find.byType(DropdownButtonFormField<String?>).last;
-    await tester.ensureVisible(reasonDropdown);
-    await tester.tap(reasonDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Otro').last);
-    await tester.pumpAndSettle();
+    final reasonField = find.byType(AppWheelPickerField<String?>).last;
+    await selectWheelOption(tester, reasonField, 'Otro');
 
     // Verify notes field is summoned
     expect(find.text(AppStrings.specialEditionNotesLabel), findsOneWidget);
@@ -334,6 +319,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
+          key: UniqueKey(),
           home: Scaffold(
             body: SingleChildScrollView(
               child: NumismaticQuickFillSheet(
@@ -349,15 +335,13 @@ void main() {
     await tester.pumpAndSettle();
 
     // 1. Select Country 'Estados Unidos'
-    final countryDropdown = find.byType(DropdownButtonFormField<String?>).at(0);
-    await tester.tap(countryDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Estados Unidos').last);
-    await tester.pumpAndSettle();
+    final countryField = find.byType(AppWheelPickerField<String?>).at(0);
+    await selectWheelOption(tester, countryField, 'Estados Unidos');
 
-    // 2. Open Currency Dropdown -> Should only show 'Sin selección' and 'USD (Dólares Estadounidenses)'
-    final currencyDropdown = find.byType(DropdownButtonFormField<String?>).at(2);
-    await tester.tap(currencyDropdown);
+    // 2. Open Currency Picker -> Should only show 'Sin selección' and 'USD (Dólares Estadounidenses)'
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
+    await tester.ensureVisible(currencyField);
+    await tester.tap(currencyField);
     await tester.pumpAndSettle();
 
     expect(find.text('USD (Dólares Estadounidenses)'), findsWidgets);
@@ -366,20 +350,25 @@ void main() {
     // Select USD
     await tester.tap(find.text('USD (Dólares Estadounidenses)').last);
     await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, AppStrings.confirm));
+    await tester.pumpAndSettle();
 
     // 3. Change Country to 'México'
-    await tester.tap(countryDropdown);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('México').last);
-    await tester.pumpAndSettle();
+    await selectWheelOption(tester, countryField, 'México');
 
     // USD is not a currency for Mexico, so currency dropdown should reset to null ('Sin selección')
-    // Open Currency Dropdown -> Should show MXN and MXP, but not USD
-    await tester.tap(currencyDropdown);
+    // Open Currency Picker -> Should show MXN and MXP, but not USD
+    await tester.ensureVisible(currencyField);
+    await tester.tap(currencyField);
     await tester.pumpAndSettle();
 
     expect(find.text('MXN (Pesos Mexicanos)'), findsWidgets);
     expect(find.text('MXP (Pesos Mexicanos Antiguos)'), findsWidgets);
     expect(find.text('USD (Dólares Estadounidenses)'), findsNothing);
+
+    // Dismiss bottom sheet
+    await tester.tap(find.widgetWithText(ElevatedButton, AppStrings.confirm));
+    await tester.pumpAndSettle();
   });
 }
+

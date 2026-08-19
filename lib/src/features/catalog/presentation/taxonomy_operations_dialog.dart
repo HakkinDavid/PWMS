@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
 
@@ -38,16 +39,15 @@ class TaxonomyOperationsDialog {
                     style: const TextStyle(fontSize: 13),
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<CatalogItem>(
+                  AppWheelPickerField<CatalogItem>(
                     value: selectedTarget,
-                    isExpanded: true,
+                    items: targetOptions,
+                    labelBuilder: (c) => c.name,
+                    title: 'Especie Destino',
                     decoration: const InputDecoration(
                       labelText: 'Especie Destino',
                       border: OutlineInputBorder(),
                     ),
-                    items: targetOptions.map((c) {
-                      return DropdownMenuItem(value: c, child: Text(c.name, overflow: TextOverflow.ellipsis));
-                    }).toList(),
                     onChanged: (val) => setState(() => selectedTarget = val),
                   ),
                 ],
@@ -165,16 +165,15 @@ class TaxonomyOperationsDialog {
                     style: const TextStyle(fontSize: 13),
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<CatalogItem>(
+                  AppWheelPickerField<CatalogItem>(
                     value: selectedTarget,
-                    isExpanded: true,
+                    items: targetOptions,
+                    labelBuilder: (c) => c.name,
+                    title: AppStrings.targetSpeciesLabel,
                     decoration: const InputDecoration(
                       labelText: AppStrings.targetSpeciesLabel,
                       border: OutlineInputBorder(),
                     ),
-                    items: targetOptions.map((c) {
-                      return DropdownMenuItem(value: c, child: Text(c.name, overflow: TextOverflow.ellipsis));
-                    }).toList(),
                     onChanged: (val) => setState(() => selectedTarget = val),
                   ),
                 ],

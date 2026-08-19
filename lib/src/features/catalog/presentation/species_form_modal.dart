@@ -215,15 +215,12 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                 const SizedBox(height: 12),
                 const Text(AppStrings.primitiveDataTypeLabel, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
-                DropdownButtonFormField<PropertyDataType>(
+                AppWheelPickerField<PropertyDataType>(
                   value: chosenType,
+                  items: PropertyDataType.values,
+                  labelBuilder: (t) => t.label,
+                  title: AppStrings.primitiveDataTypeLabel,
                   decoration: const InputDecoration(border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8)),
-                  items: PropertyDataType.values.map((t) {
-                    return DropdownMenuItem(
-                      value: t,
-                      child: Text(t.label, style: const TextStyle(fontSize: 13)),
-                    );
-                  }).toList(),
                   onChanged: (val) {
                     if (val != null) {
                       setStateDialog(() {

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
@@ -129,7 +130,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
             text: TextSpan(
               style: theme.textTheme.bodyMedium,
               children: [
-                TextSpan(text: AppStrings.sourceObjectLabel),
+                const TextSpan(text: AppStrings.sourceObjectLabel),
                 TextSpan(
                   text: '"$sourceName"',
                   style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
@@ -142,12 +143,12 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
           // Relation Type Selector
           Text(AppStrings.semanticRelationType, style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            initialValue: _relationType,
+          AppWheelPickerField<String>(
+            value: _relationType,
+            items: _directedRelationTypes,
+            labelBuilder: (t) => t,
+            title: AppStrings.semanticRelationType,
             decoration: const InputDecoration(prefixIcon: Icon(Icons.compare_arrows)),
-            items: _directedRelationTypes
-                .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                .toList(),
             onChanged: (val) {
               if (val != null) setState(() => _relationType = val);
             },
@@ -167,23 +168,23 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
                 );
               }
 
-              return DropdownButtonFormField<String>(
-                initialValue: _targetEntityId,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.category_outlined),
-                  hintText: AppStrings.selectTargetElement,
-                ),
-                items: candidates.map((e) {
-                  final name = EntityDisplayHelper.getDisplayName(
+              return AppWheelPickerField<String>(
+                value: _targetEntityId,
+                items: candidates.map((e) => e.id).toList(),
+                labelBuilder: (id) {
+                  final e = candidates.where((e) => e.id == id).firstOrNull;
+                  if (e == null) return id;
+                  return EntityDisplayHelper.getDisplayName(
                     entity: e,
                     catalogItems: catalogItems,
                     subspeciesList: subspeciesList,
                   );
-                  return DropdownMenuItem(
-                    value: e.id,
-                    child: Text(name),
-                  );
-                }).toList(),
+                },
+                title: AppStrings.targetOfRelation,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.category_outlined),
+                  hintText: AppStrings.selectTargetElement,
+                ),
                 onChanged: (val) => setState(() => _targetEntityId = val),
               );
             },
@@ -204,7 +205,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
               ),
               child: _isSaving
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : Text(AppStrings.establishDirectedRelation, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text(AppStrings.establishDirectedRelation, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

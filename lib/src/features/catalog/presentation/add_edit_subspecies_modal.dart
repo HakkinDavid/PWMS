@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
 import '../../entities/domain/entity_template.dart';
@@ -178,19 +179,18 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
             if (widget.isFromAutoFill && catalogItems.isNotEmpty) ...[
               const Text(AppStrings.associatedSpeciesLabel, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
               const SizedBox(height: 4),
-              DropdownButtonFormField<String>(
-                initialValue: catalogItems.any((c) => c.id == _selectedSpeciesId) ? _selectedSpeciesId : catalogItems.first.id,
-                isExpanded: true,
+              AppWheelPickerField<String>(
+                value: catalogItems.any((c) => c.id == _selectedSpeciesId) ? _selectedSpeciesId : catalogItems.first.id,
+                items: catalogItems.map((c) => c.id).toList(),
+                labelBuilder: (id) {
+                  final found = catalogItems.where((c) => c.id == id).firstOrNull;
+                  return found != null ? '${found.name} (${found.type})' : id;
+                },
+                title: AppStrings.associatedSpeciesLabel,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.public),
                   isDense: true,
                 ),
-                items: catalogItems.map((c) {
-                  return DropdownMenuItem(
-                    value: c.id,
-                    child: Text('${c.name} (${c.type})', overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
-                  );
-                }).toList(),
                 onChanged: (val) {
                   if (val != null) setState(() => _selectedSpeciesId = val);
                 },

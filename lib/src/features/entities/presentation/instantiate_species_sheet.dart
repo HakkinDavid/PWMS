@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
@@ -344,19 +345,18 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             // 1. Selector de Especie del Catálogo Maestro
             Text(AppStrings.catalogSpeciesLabel, style: theme.textTheme.labelLarge),
             const SizedBox(height: 6),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedSpecies?.id,
-              isExpanded: true,
+            AppWheelPickerField<String>(
+              value: _selectedSpecies?.id,
+              items: catalogItems.map((c) => c.id).toList(),
+              labelBuilder: (id) {
+                final c = catalogItems.where((c) => c.id == id).firstOrNull;
+                return c != null ? '${c.name} (${c.type})' : id;
+              },
+              title: AppStrings.catalogSpeciesLabel,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.public),
                 hintText: AppStrings.selectSpeciesPrompt,
               ),
-              items: catalogItems.map((c) {
-                return DropdownMenuItem(
-                  value: c.id,
-                  child: Text('${c.name} (${c.type})', overflow: TextOverflow.ellipsis),
-                );
-              }).toList(),
               onChanged: (val) {
                 if (val != null) {
                   final found = catalogItems.where((c) => c.id == val).firstOrNull;
@@ -372,20 +372,20 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             if (_availableSubspecies.isNotEmpty) ...[
               Text(AppStrings.subspeciesOrBrandCommercialLabel, style: theme.textTheme.labelLarge),
               const SizedBox(height: 6),
-              DropdownButtonFormField<String>(
-                initialValue: _selectedSubspecies?.id,
-                isExpanded: true,
+              AppWheelPickerField<String>(
+                value: _selectedSubspecies?.id,
+                items: _availableSubspecies.map((s) => s.id).toList(),
+                labelBuilder: (id) {
+                  final sub = _availableSubspecies.where((s) => s.id == id).firstOrNull;
+                  if (sub == null) return id;
+                  final brandText = sub.brand != null ? ' (${sub.brand})' : '';
+                  return '${sub.subspeciesName}$brandText';
+                },
+                title: AppStrings.subspeciesOrBrandCommercialLabel,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.branding_watermark),
                   hintText: AppStrings.selectSubspeciesOrBrandPrompt,
                 ),
-                items: _availableSubspecies.map((sub) {
-                  final brandText = sub.brand != null ? ' (${sub.brand})' : '';
-                  return DropdownMenuItem(
-                    value: sub.id,
-                    child: Text('${sub.subspeciesName}$brandText', overflow: TextOverflow.ellipsis),
-                  );
-                }).toList(),
                 onChanged: (val) {
                   setState(() {
                     _selectedSubspecies = _availableSubspecies.where((s) => s.id == val).firstOrNull;
@@ -456,21 +456,23 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                   if (entities.isEmpty) {
                     return const Text(AppStrings.noContainerObjectsAvailable);
                   }
-                  return DropdownButtonFormField<String>(
-                    initialValue: _selectedContainerEntityId,
-                    isExpanded: true,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.inventory_2_outlined),
-                      hintText: AppStrings.selectContainerObject,
-                    ),
-                    items: entities.map((e) {
-                      final name = EntityDisplayHelper.getDisplayName(
+                  return AppWheelPickerField<String>(
+                    value: _selectedContainerEntityId,
+                    items: entities.map((e) => e.id).toList(),
+                    labelBuilder: (id) {
+                      final e = entities.where((e) => e.id == id).firstOrNull;
+                      if (e == null) return id;
+                      return EntityDisplayHelper.getDisplayName(
                         entity: e,
                         catalogItems: catalogItems,
                         subspeciesList: subspeciesList,
                       );
-                      return DropdownMenuItem(value: e.id, child: Text(name, overflow: TextOverflow.ellipsis));
-                    }).toList(),
+                    },
+                    title: AppStrings.selectContainerObject,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.inventory_2_outlined),
+                      hintText: AppStrings.selectContainerObject,
+                    ),
                     onChanged: (val) => setState(() => _selectedContainerEntityId = val),
                   );
                 },

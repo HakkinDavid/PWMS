@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../locations/domain/location_node.dart';
 
@@ -141,15 +142,14 @@ class _MoveEntitySheetState extends ConsumerState<MoveEntitySheet> {
 
           locationsState.when(
             data: (nodes) {
-              return DropdownButtonFormField<String?>(
-                initialValue: _selectedLocationId,
+              return AppWheelPickerField<String?>(
+                value: _selectedLocationId,
+                items: [null, ...nodes.map((n) => n.id)],
+                labelBuilder: (id) => id == null ? AppStrings.rootLocationLabel : (nodes.where((n) => n.id == id).firstOrNull?.name ?? id),
+                title: AppStrings.selectNewLocationOrContainer,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.account_tree_outlined),
                 ),
-                items: [
-                  const DropdownMenuItem<String?>(value: null, child: Text(AppStrings.rootLocationLabel)),
-                  ...nodes.map((n) => DropdownMenuItem<String?>(value: n.id, child: Text(n.name))),
-                ],
                 onChanged: (val) => setState(() => _selectedLocationId = val),
               );
             },

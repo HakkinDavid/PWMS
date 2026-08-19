@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../relations/domain/entity_relation.dart';
@@ -256,21 +257,23 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
               if (candidateContainers.isEmpty)
                 const Text(AppStrings.noContainerObjectsAvailable)
               else
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedContainerEntityId,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.inventory_2_outlined),
-                    hintText: AppStrings.selectContainerObject,
-                  ),
-                  items: candidateContainers.map((e) {
-                    final name = EntityDisplayHelper.getDisplayName(
+                AppWheelPickerField<String>(
+                  value: _selectedContainerEntityId,
+                  items: candidateContainers.map((e) => e.id).toList(),
+                  labelBuilder: (id) {
+                    final e = candidateContainers.where((e) => e.id == id).firstOrNull;
+                    if (e == null) return id;
+                    return EntityDisplayHelper.getDisplayName(
                       entity: e,
                       catalogItems: catalogItems,
                       subspeciesList: subspeciesList,
                     );
-                    return DropdownMenuItem(value: e.id, child: Text(name, overflow: TextOverflow.ellipsis));
-                  }).toList(),
+                  },
+                  title: AppStrings.selectContainerObject,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.inventory_2_outlined),
+                    hintText: AppStrings.selectContainerObject,
+                  ),
                   onChanged: (val) => setState(() => _selectedContainerEntityId = val),
                 ),
             ],
