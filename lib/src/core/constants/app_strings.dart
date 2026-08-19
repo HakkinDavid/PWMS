@@ -505,6 +505,33 @@ class AppStrings {
   static const executeAction = 'Ejecutar';
   static const rowsRetrievedPrefix = 'Filas obtenidas: ';
 
+  // Categorías de Consultas SQL Predefinidas
+  static const sqlCategoryAll = 'Todas';
+  static const sqlCategoryTables = 'Tablas';
+  static const sqlCategoryContainers = 'Contenedores';
+  static const sqlCategoryAudit = 'Auditoría';
+  static const sqlCategoryExpirationMagnitudes = 'Caducidad y Magnitudes';
+
+  // Consultas SQL Predefinidas
+  static const sqlPresetInstances = 'Instancias';
+  static const sqlPresetContainedItems = 'Elementos guardados';
+  static const sqlPresetNonContainedItems = 'Elementos no guardados';
+  static const sqlPresetNonContainedWithContainedSpecies = 'No guardados (especie en contenedor)';
+  static const sqlPresetContainedWithNonContainedSpecies = 'Guardados (especie fuera de contenedor)';
+  static const sqlPresetOrphanEntities = 'Huérfanos sin ubicación';
+  static const sqlPresetLocationConflict = 'Conflicto de ubicación';
+  static const sqlPresetSelfReferencingRelations = 'Auto-referencias';
+  static const sqlPresetMutualContainment = 'Contención mutua';
+  static const sqlPresetUniquenessViolation = 'Violación de unicidad';
+  static const sqlPresetUninstantiatedSpecies = 'Especies sin instancias';
+  static const sqlPresetUninstantiatedSubspecies = 'Subespecies sin instancias';
+  static const sqlPresetSubgroupRuleViolation = 'No-Objetos con marca/código';
+  static const sqlPresetExpiredEntities = 'Instancias caducadas';
+  static const sqlPresetPerishableMissingExpiration = 'Perecederos sin caducidad';
+  static const sqlPresetNonPerishableWithExpiration = 'No perecederos con caducidad';
+  static const sqlPresetAnomalousMagnitudes = 'Magnitudes <= 0';
+  static const sqlPresetMissingMandatoryMagnitudes = 'Magnitudes faltantes';
+
   // Propiedades de Entidades
   static const editPropertyTitlePrefix = 'Editar propiedad "';
   static const instanceHasAllPropertiesMessage = 'Esta instancia ya posee todas las propiedades definidas por la especie.';

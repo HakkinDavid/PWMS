@@ -10,6 +10,7 @@ import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../../history/domain/activity_event.dart';
 import '../../locations/domain/location_node.dart';
+import '../domain/sql_preset.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -20,6 +21,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   String _selectedScope = AppStrings.all;
+  SqlPresetCategory _selectedSqlCategory = SqlPresetCategory.all;
   final TextEditingController _sqlController = TextEditingController(text: 'SELECT * FROM catalog_table LIMIT 20;');
 
   bool _isExecutingSql = false;
@@ -47,10 +49,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     if (queryStr.isEmpty) return;
 
     final forbiddenKeywords = ['INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'CREATE', 'REPLACE', 'TRUNCATE'];
-    final upperQuery = queryStr.toUpperCase();
 
     for (final kw in forbiddenKeywords) {
-      if (upperQuery.contains(kw)) {
+      if (RegExp(r'\b' + kw + r'\b', caseSensitive: false).hasMatch(queryStr)) {
         setState(() {
           _sqlError = AppStrings.sqlSecurityErrorPrefix + kw + AppStrings.sqlSecurityErrorSuffix;
           _sqlColumns = [];
@@ -185,59 +186,50 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Category filter row for SQL Presets
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: SqlPresetCategory.values.map((category) {
+                final isSelected = _selectedSqlCategory == category;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: ChoiceChip(
+                    label: Text(
+                      category.displayName,
+                      style: const TextStyle(fontSize: 11),
+                    ),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() => _selectedSqlCategory = category);
+                      }
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 6),
+
           // Preset SQL Samples
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: [
-                ActionChip(
-                  label: const Text(AppStrings.tabCatalog, style: TextStyle(fontSize: 11)),
-                  onPressed: () {
-                    _sqlController.text = 'SELECT id, name, type, is_unique FROM catalog_table;';
-                    _executeSqlQuery();
-                  },
-                ),
-                const SizedBox(width: 6),
-                ActionChip(
-                  label: const Text(AppStrings.subspeciesCategory, style: TextStyle(fontSize: 11)),
-                  onPressed: () {
-                    _sqlController.text = 'SELECT id, species_id, subspecies_name, brand, barcode FROM subspecies_table;';
-                    _executeSqlQuery();
-                  },
-                ),
-                const SizedBox(width: 6),
-                ActionChip(
-                  label: const Text(AppStrings.tabEntities, style: TextStyle(fontSize: 11)),
-                  onPressed: () {
-                    _sqlController.text = 'SELECT id, species_id, subspecies_id, location_id, notes FROM entities_table;';
-                    _executeSqlQuery();
-                  },
-                ),
-                const SizedBox(width: 6),
-                ActionChip(
-                  label: const Text(AppStrings.tabLocations, style: TextStyle(fontSize: 11)),
-                  onPressed: () {
-                    _sqlController.text = 'SELECT id, name, parent_location_id, description FROM locations_table;';
-                    _executeSqlQuery();
-                  },
-                ),
-                const SizedBox(width: 6),
-                ActionChip(
-                  label: const Text(AppStrings.instanceMagnitudesCategory, style: TextStyle(fontSize: 11)),
-                  onPressed: () {
-                    _sqlController.text = 'SELECT instance_id, property_name, data_type, magnitude_value, unit_symbol FROM instance_magnitudes_table;';
-                    _executeSqlQuery();
-                  },
-                ),
-                const SizedBox(width: 6),
-                ActionChip(
-                  label: const Text(AppStrings.containersCategory, style: TextStyle(fontSize: 11)),
-                  onPressed: () {
-                    _sqlController.text = "SELECT DISTINCT e.id, c.name, e.location_id FROM entities_table e JOIN relations_table r ON e.id = r.target_entity_id JOIN catalog_table c ON e.species_id = c.id WHERE r.relation_type = 'GUARDADO_EN';";
-                    _executeSqlQuery();
-                  },
-                ),
-              ],
+              children: SqlPreset.defaultPresets
+                  .where((p) => _selectedSqlCategory == SqlPresetCategory.all || p.category == _selectedSqlCategory)
+                  .map((preset) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: ActionChip(
+                    label: Text(preset.title, style: const TextStyle(fontSize: 11)),
+                    onPressed: () {
+                      _sqlController.text = preset.query;
+                      _executeSqlQuery();
+                    },
+                  ),
+                );
+              }).toList(),
             ),
           ),
           const SizedBox(height: 10),
