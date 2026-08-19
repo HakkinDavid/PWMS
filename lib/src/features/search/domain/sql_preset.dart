@@ -150,7 +150,7 @@ class SqlPreset {
       id: 'audit_subgroup_rule_violation',
       title: AppStrings.sqlPresetSubgroupRuleViolation,
       category: SqlPresetCategory.audit,
-      query: "SELECT s.id, c.name, c.type, s.brand, s.barcode FROM subspecies_table s JOIN catalog_table c ON s.species_id = c.id WHERE c.type != 'Objeto' AND (s.brand IS NOT NULL OR s.barcode IS NOT NULL);",
+      query: "SELECT s.id, c.name, c.type, s.brand, s.barcode FROM subspecies_table s JOIN catalog_table c ON s.species_id = c.id WHERE c.type NOT IN ('Objeto', 'Documento') AND (s.brand IS NOT NULL OR s.barcode IS NOT NULL);",
     ),
 
     // 4. Caducidad y Magnitudes

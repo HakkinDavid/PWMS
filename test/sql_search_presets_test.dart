@@ -211,6 +211,21 @@ void main() {
             ),
           );
 
+      // Also insert Document with brand & barcode (legal, should not be flagged)
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_doc', name: 'Contrato', type: const Value('Documento'), createdAt: now),
+          );
+      await db.into(db.subspeciesTable).insert(
+            SubspeciesTableCompanion.insert(
+              id: 'sub_doc',
+              speciesId: 'sp_doc',
+              subspeciesName: 'Copia Firmada',
+              brand: const Value('Notaría 1'),
+              barcode: const Value('123456789'),
+              createdAt: now,
+            ),
+          );
+
       final subgroupPreset = SqlPreset.defaultPresets.firstWhere((p) => p.id == 'audit_subgroup_rule_violation');
       final subgroupResults = await db.customSelect(subgroupPreset.query).get();
       expect(subgroupResults.length, equals(1));

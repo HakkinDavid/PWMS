@@ -493,5 +493,40 @@ void main() {
       final speciesSubspecies = await catalogRepo.getSubspeciesForSpecies(species.id);
       expect(speciesSubspecies.any((s) => s.id == inst.subspeciesId), isTrue);
     });
+
+    test('13. Document Subgroup Allows Brand and Barcode on Subspecies', () async {
+      final docSpecies = await catalogRepo.getOrCreateSpecies('Manual de Usuario', type: 'Documento', isUnique: true);
+      final docSub = Subspecies(
+        id: 'sub-doc-manual-1',
+        speciesId: docSpecies.id,
+        subspeciesName: 'Versión 2026',
+        brand: 'Editorial Tech',
+        barcode: '9780123456789',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(docSub);
+
+      final savedDocSub = await catalogRepo.getSubspeciesById(docSub.id);
+      expect(savedDocSub, isNotNull);
+      expect(savedDocSub?.brand, equals('Editorial Tech'));
+      expect(savedDocSub?.barcode, equals('9780123456789'));
+
+      // Verify that non-supported subgroups (e.g. Proyecto) still have brand/barcode stripped
+      final projectSpecies = await catalogRepo.getOrCreateSpecies('Plan Maestro', type: 'Proyecto', isUnique: true);
+      final projectSub = Subspecies(
+        id: 'sub-proj-1',
+        speciesId: projectSpecies.id,
+        subspeciesName: 'Fase 1',
+        brand: 'ProhibitedBrand',
+        barcode: '999999',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(projectSub);
+
+      final savedProjectSub = await catalogRepo.getSubspeciesById(projectSub.id);
+      expect(savedProjectSub, isNotNull);
+      expect(savedProjectSub?.brand, isNull);
+      expect(savedProjectSub?.barcode, isNull);
+    });
   });
 }

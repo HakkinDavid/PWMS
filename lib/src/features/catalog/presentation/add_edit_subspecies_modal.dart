@@ -8,6 +8,7 @@ import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
+import '../../entities/domain/entity_template.dart';
 import 'web_image_picker_dialog.dart';
 
 class AddEditSubspeciesModal extends ConsumerStatefulWidget {
@@ -161,7 +162,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
 
     final isObjectMode = widget.species == null
         ? widget.isObject
-        : widget.species!.type == AppStrings.typeObject;
+        : EntityTemplateRegistry.hasBarcodeAndBrand(widget.species!.type);
 
     return AlertDialog(
       title: Text(

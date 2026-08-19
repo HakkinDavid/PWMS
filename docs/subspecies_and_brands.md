@@ -33,8 +33,8 @@ Subspecies are normalized in a dedicated 1:N relational table:
 | `id` | `Text` | Primary Key | Unique UUID string |
 | `speciesId` | `Text` | FK -> `CatalogTable.id` | Foreign key referencing species |
 | `subspeciesName` | `Text` | NOT NULL | Subspecies or variant name |
-| `brand` | `Text` | Nullable | Brand name (Only allowed for `Objeto`) |
-| `barcode` | `Text` | Nullable | Barcode / QR string (Only allowed for `Objeto`) |
+| `brand` | `Text` | Nullable | Brand name (Allowed for `Objeto` and `Documento`) |
+| `barcode` | `Text` | Nullable | Barcode / QR string (Allowed for `Objeto` and `Documento`) |
 | `photoPath` | `Text` | Nullable | Relative path to subspecies main photo |
 | `notes` | `Text` | Nullable | Specific variant notes (e.g., "Edición especial") |
 | `createdAt` | `DateTime` | NOT NULL | Creation timestamp |
@@ -49,11 +49,11 @@ Brand and Barcode attributes are strictly constrained by entity subgroup type:
 | :--- | :---: | :---: | :---: |
 | **Objeto** | ✅ Yes | ✅ Yes | Optional |
 | **Ser Vivo** | ❌ Stripped automatically | ✅ Yes | Optional |
-| **Documento** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
+| **Documento** | ✅ Yes | ❌ No | ✅ Always Unique |
 | **Proyecto** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
 | **Recuerdo** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
 
-*When saving a subspecies for any subgroup other than `Objeto`, `saveSubspecies` automatically strips `brand` and `barcode` to `null`.*
+*When saving a subspecies for subgroups that do not support brand and barcode (`Ser Vivo`, `Proyecto`, `Recuerdo`), `saveSubspecies` automatically strips `brand` and `barcode` to `null`.*
 
 ---
 

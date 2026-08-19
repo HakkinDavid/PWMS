@@ -8,6 +8,7 @@ import '../domain/species_magnitude.dart';
 import '../domain/species_requirement.dart';
 import '../domain/subspecies.dart';
 import '../../entities/domain/attachment.dart';
+import '../../entities/domain/entity_template.dart';
 
 import '../../../core/storage/file_storage_service.dart';
 
@@ -441,7 +442,7 @@ class CatalogRepository {
 
     if (subspecies.speciesId.isNotEmpty) {
       final species = await getCatalogItemById(subspecies.speciesId);
-      if (species != null && species.type != AppStrings.typeObject) {
+      if (species != null && !EntityTemplateRegistry.hasBarcodeAndBrand(species.type)) {
         finalBrand = null;
         finalBarcode = null;
       }

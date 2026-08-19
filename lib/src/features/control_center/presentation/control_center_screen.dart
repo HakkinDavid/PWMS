@@ -18,6 +18,7 @@ import '../../locations/presentation/location_or_container_correction_sheet.dart
 import '../../catalog/domain/numismatic_data_helper.dart';
 import '../../catalog/presentation/web_image_picker_dialog.dart';
 import '../../entities/domain/instance_magnitude.dart';
+import '../../entities/domain/entity_template.dart';
 import 'package:uuid/uuid.dart';
 
 enum AuditCardType {
@@ -556,10 +557,12 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         ));
       }
 
-      // 2.6 Infracción de Reglas de Subgrupo (Marca/Código en no-Objetos)
+      // 2.6 Infracción de Reglas de Subgrupo (Marca/Código en subgrupos no permitidos)
       final invalidSubspecies = subspeciesList.where((sub) {
         final sp = speciesList.where((c) => c.id == sub.speciesId).firstOrNull;
-        return sp != null && sp.type != 'Objeto' && ((sub.brand != null && sub.brand!.isNotEmpty) || (sub.barcode != null && sub.barcode!.isNotEmpty));
+        return sp != null &&
+            !EntityTemplateRegistry.hasBarcodeAndBrand(sp.type) &&
+            ((sub.brand != null && sub.brand!.isNotEmpty) || (sub.barcode != null && sub.barcode!.isNotEmpty));
       }).take(8);
 
       for (final sub in invalidSubspecies) {

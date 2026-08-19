@@ -312,7 +312,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       context,
       initialSubspecies: initial,
       defaultSpeciesName: _nameController.text.trim(),
-      isObject: _selectedType == AppStrings.typeObject,
+      isObject: EntityTemplateRegistry.hasBarcodeAndBrand(_selectedType),
     );
 
     if (resultSub != null) {

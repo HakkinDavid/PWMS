@@ -106,7 +106,7 @@ El sistema registra automáticamente el historial en `HistoryEventsTable` y noti
 | :--- | :---: | :---: | :---: | :---: |
 | **Objeto** | ✅ Sí | ✅ Sí | ✅ Sí (Opcional) | Opcional |
 | **Ser Vivo** | ❌ Descartado automáticamente | ✅ Sí | ✅ Sí (Opcional) | Opcional |
-| **Documento** | ❌ Descartado automáticamente | ❌ No | ❌ No perecedero | ✅ Siempre Único |
+| **Documento** | ✅ Sí | ❌ No | ❌ No perecedero | ✅ Siempre Único |
 | **Proyecto** | ❌ Descartado automáticamente | ❌ No | ❌ No perecedero | ✅ Siempre Único |
 | **Recuerdo** | ❌ Descartado automáticamente | ❌ No | ❌ No perecedero | ✅ Siempre Único |
 

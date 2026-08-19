@@ -39,7 +39,7 @@ Different entity subgroup types have strict structural constraints enforced acro
 | :--- | :---: | :---: | :---: | :---: |
 | **Objeto** | ✅ Yes | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
 | **Ser Vivo** | ❌ Stripped automatically | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
-| **Documento** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
+| **Documento** | ✅ Yes | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
 | **Proyecto** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
 | **Recuerdo** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
 

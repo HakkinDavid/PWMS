@@ -75,7 +75,7 @@ class EntityTemplateRegistry {
       typeName: AppStrings.typeDocument,
       icon: Icons.description,
       hasQuantity: false,
-      hasBarcodeAndBrand: false,
+      hasBarcodeAndBrand: true,
       isAlwaysUnique: true,
       primaryView: TemplateViewKind.documents,
       allowedActions: [
@@ -143,5 +143,9 @@ class EntityTemplateRegistry {
 
   static bool isAlwaysUnique(String typeName) {
     return getTemplate(typeName).isAlwaysUnique;
+  }
+
+  static bool hasBarcodeAndBrand(String typeName) {
+    return getTemplate(typeName).hasBarcodeAndBrand;
   }
 }

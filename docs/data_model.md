@@ -80,8 +80,8 @@ Subspecies, brands, and product model variants linked to a species.
 | `id` | `Text` | Primary Key | Unique UUID string |
 | `speciesId` | `Text` | FK -> `CatalogTable.id` | Species foreign key |
 | `subspeciesName` | `Text` | NOT NULL | Subspecies or variant name |
-| `brand` | `Text` | Nullable | Brand name (Allowed only for `Objeto`) |
-| `barcode` | `Text` | Nullable | Barcode / QR string (Allowed only for `Objeto`) |
+| `brand` | `Text` | Nullable | Brand name (Allowed for `Objeto` and `Documento`) |
+| `barcode` | `Text` | Nullable | Barcode / QR string (Allowed for `Objeto` and `Documento`) |
 | `photoPath` | `Text` | Nullable | Relative path to subspecies photo |
 | `notes` | `Text` | Nullable | Specific variant notes |
 | `createdAt` | `DateTime` | NOT NULL | Creation timestamp |
