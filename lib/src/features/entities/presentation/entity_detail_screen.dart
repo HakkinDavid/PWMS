@@ -15,6 +15,7 @@ import '../../catalog/presentation/requirements_section_widget.dart';
 import 'package:uuid/uuid.dart';
 import '../../catalog/domain/species_magnitude.dart';
 import '../domain/instance_magnitude.dart';
+import '../domain/world_entity.dart';
 
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
@@ -33,6 +34,24 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   String? _selectedLocationId;
   DateTime? _selectedExpirationDate;
   List<InstanceMagnitude> _workingMagnitudes = [];
+  WorldEntity? _lastInitializedEntity;
+
+  void _syncWorkingStateWithEntity(WorldEntity entity, {bool force = false}) {
+    if (!force && _lastInitializedEntity?.id == entity.id && _lastInitializedEntity == entity) {
+      return;
+    }
+    _lastInitializedEntity = entity;
+    final primaryMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : null;
+    final primaryVal = primaryMag?.magnitudeValue ?? 1.0;
+    final primaryUnit = primaryMag?.unitSymbol ?? '';
+    final hasMagnitudes = entity.magnitudes.isNotEmpty;
+
+    _qtyController.text = hasMagnitudes ? DomainRules.formatMagnitude(primaryVal, primaryUnit) : '';
+    _notesController.text = entity.notes ?? '';
+    _selectedLocationId = entity.locationId;
+    _selectedExpirationDate = entity.expirationDate;
+    _workingMagnitudes = List.from(entity.magnitudes);
+  }
 
   @override
   void dispose() {
@@ -194,17 +213,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             return const Center(child: Text(AppStrings.appName));
           }
 
-          final primaryMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : null;
-          final primaryVal = primaryMag?.magnitudeValue ?? 1.0;
-          final primaryUnit = primaryMag?.unitSymbol ?? '';
-          final hasMagnitudes = entity.magnitudes.isNotEmpty;
-
           if (!_isEditingInPlace) {
-            _qtyController.text = hasMagnitudes ? DomainRules.formatMagnitude(primaryVal, primaryUnit) : '';
-            _notesController.text = entity.notes ?? '';
-            _selectedLocationId = entity.locationId;
-            _selectedExpirationDate = entity.expirationDate;
-            _workingMagnitudes = List.from(entity.magnitudes);
+            _syncWorkingStateWithEntity(entity);
           }
 
           final catalogItems = catalogState.asData?.value ?? [];

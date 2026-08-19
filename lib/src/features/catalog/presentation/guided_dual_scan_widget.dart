@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -113,60 +115,14 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
 
   Future<File> _cropImageCenter(File originalFile) async {
     final bytes = await originalFile.readAsBytes();
-    final image = img.decodeImage(bytes);
-    if (image == null) return originalFile;
+    final result = await Isolate.run(() => _processCropImageIsolate(_CropParams(
+      bytes: bytes,
+      isCoinMode: _isCoinMode,
+      originalPath: originalFile.path,
+    )));
 
-    int size;
-    int x;
-    int y;
-    img.Image cropped;
-
-    if (_isCoinMode) {
-      size = (image.width < image.height ? image.width : image.height) * 3 ~/ 4;
-      x = (image.width - size) ~/ 2;
-      y = (image.height - size) ~/ 2;
-      cropped = img.copyCrop(image, x: x, y: y, width: size, height: size);
-
-      // Recorte circular con transparencia (Canal Alfa PNG)
-      cropped = cropped.convert(numChannels: 4);
-      final radius = cropped.width / 2.0;
-      final centerX = radius;
-      final centerY = radius;
-
-      for (int yPixel = 0; yPixel < cropped.height; yPixel++) {
-        for (int xPixel = 0; xPixel < cropped.width; xPixel++) {
-          final dx = xPixel - centerX;
-          final dy = yPixel - centerY;
-          if ((dx * dx + dy * dy) > (radius * radius)) {
-            cropped.setPixelRgba(xPixel, yPixel, 0, 0, 0, 0);
-          }
-        }
-      }
-    } else {
-      final width = (image.width * 0.85).toInt();
-      final height = (width * 0.55).toInt();
-      x = (image.width - width) ~/ 2;
-      y = (image.height - height) ~/ 2;
-      cropped = img.copyCrop(image, x: x, y: y, width: width, height: height);
-    }
-
-    if (cropped.width > 1080 || cropped.height > 1080) {
-      if (_isCoinMode) {
-        cropped = img.copyResize(cropped, width: 1080, height: 1080);
-      } else {
-        final double ratio = cropped.width / cropped.height;
-        cropped = img.copyResize(cropped, width: 1080, height: (1080 / ratio).toInt());
-      }
-    }
-
-    final ext = _isCoinMode ? '_cropped.png' : '_cropped.jpg';
-    final newPath = originalFile.path.replaceAll(RegExp(r'\.(jpg|jpeg|png)$'), ext);
-    final croppedFile = File(newPath);
-    if (_isCoinMode) {
-      await croppedFile.writeAsBytes(img.encodePng(cropped));
-    } else {
-      await croppedFile.writeAsBytes(img.encodeJpg(cropped, quality: 90));
-    }
+    final croppedFile = File(result.outputPath);
+    await croppedFile.writeAsBytes(result.croppedBytes);
     return croppedFile;
   }
 
@@ -714,3 +670,84 @@ class _OverlayShadingPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
+
+class _CropParams {
+  final Uint8List bytes;
+  final bool isCoinMode;
+  final String originalPath;
+
+  const _CropParams({
+    required this.bytes,
+    required this.isCoinMode,
+    required this.originalPath,
+  });
+}
+
+class _CropResult {
+  final Uint8List croppedBytes;
+  final String outputPath;
+
+  const _CropResult({
+    required this.croppedBytes,
+    required this.outputPath,
+  });
+}
+
+_CropResult _processCropImageIsolate(_CropParams params) {
+  final image = img.decodeImage(params.bytes);
+  if (image == null) {
+    return _CropResult(croppedBytes: params.bytes, outputPath: params.originalPath);
+  }
+
+  int size;
+  int x;
+  int y;
+  img.Image cropped;
+
+  if (params.isCoinMode) {
+    size = (image.width < image.height ? image.width : image.height) * 3 ~/ 4;
+    x = (image.width - size) ~/ 2;
+    y = (image.height - size) ~/ 2;
+    cropped = img.copyCrop(image, x: x, y: y, width: size, height: size);
+
+    // Recorte circular con transparencia (Canal Alfa PNG)
+    cropped = cropped.convert(numChannels: 4);
+    final radius = cropped.width / 2.0;
+    final centerX = radius;
+    final centerY = radius;
+
+    for (int yPixel = 0; yPixel < cropped.height; yPixel++) {
+      for (int xPixel = 0; xPixel < cropped.width; xPixel++) {
+        final dx = xPixel - centerX;
+        final dy = yPixel - centerY;
+        if ((dx * dx + dy * dy) > (radius * radius)) {
+          cropped.setPixelRgba(xPixel, yPixel, 0, 0, 0, 0);
+        }
+      }
+    }
+  } else {
+    final width = (image.width * 0.85).toInt();
+    final height = (width * 0.55).toInt();
+    x = (image.width - width) ~/ 2;
+    y = (image.height - height) ~/ 2;
+    cropped = img.copyCrop(image, x: x, y: y, width: width, height: height);
+  }
+
+  if (cropped.width > 1080 || cropped.height > 1080) {
+    if (params.isCoinMode) {
+      cropped = img.copyResize(cropped, width: 1080, height: 1080);
+    } else {
+      final double ratio = cropped.width / cropped.height;
+      cropped = img.copyResize(cropped, width: 1080, height: (1080 / ratio).toInt());
+    }
+  }
+
+  final ext = params.isCoinMode ? '_cropped.png' : '_cropped.jpg';
+  final newPath = params.originalPath.replaceAll(RegExp(r'\.(jpg|jpeg|png)$'), ext);
+  final Uint8List encodedBytes = params.isCoinMode
+      ? Uint8List.fromList(img.encodePng(cropped))
+      : Uint8List.fromList(img.encodeJpg(cropped, quality: 90));
+
+  return _CropResult(croppedBytes: encodedBytes, outputPath: newPath);
+}
+

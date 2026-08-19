@@ -19,21 +19,31 @@ class EntityRepository implements IEntityRepository {
   EntityRepository(this._db, [FileStorageService? fileStorageService])
       : _fileStorageService = fileStorageService ?? FileStorageService();
 
-  Future<WorldEntity> _mapToDomain(
+  Future<Map<String, List<InstanceMagnitude>>> _fetchMagnitudesForEntities(List<String> entityIds) async {
+    if (entityIds.isEmpty) return {};
+    final magRows = await (_db.select(_db.instanceMagnitudesTable)
+      ..where((t) => t.instanceId.isIn(entityIds))).get();
+
+    final Map<String, List<InstanceMagnitude>> magMap = {};
+    for (final m in magRows) {
+      magMap.putIfAbsent(m.instanceId, () => []).add(InstanceMagnitude(
+        id: m.id,
+        instanceId: m.instanceId,
+        propertyName: m.propertyName,
+        dataType: m.dataType,
+        magnitudeValue: m.magnitudeValue,
+        stringValue: m.stringValue,
+        unitSymbol: m.unitSymbol,
+      ));
+    }
+    return magMap;
+  }
+
+  WorldEntity _mapToDomainSync(
     EntitiesTableData row, {
     Map<String, String?>? resolvedLocations,
-  }) async {
-    final magRows = await (_db.select(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(row.id))).get();
-    final magnitudes = magRows.map((m) => InstanceMagnitude(
-      id: m.id,
-      instanceId: m.instanceId,
-      propertyName: m.propertyName,
-      dataType: m.dataType,
-      magnitudeValue: m.magnitudeValue,
-      stringValue: m.stringValue,
-      unitSymbol: m.unitSymbol,
-    )).toList();
-
+    List<InstanceMagnitude> magnitudes = const [],
+  }) {
     final effectiveLocation = resolvedLocations != null && resolvedLocations.containsKey(row.id)
         ? resolvedLocations[row.id]
         : row.locationId;
@@ -48,6 +58,18 @@ class EntityRepository implements IEntityRepository {
       notes: row.notes,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+    );
+  }
+
+  Future<WorldEntity> _mapToDomain(
+    EntitiesTableData row, {
+    Map<String, String?>? resolvedLocations,
+  }) async {
+    final magMap = await _fetchMagnitudesForEntities([row.id]);
+    return _mapToDomainSync(
+      row,
+      resolvedLocations: resolvedLocations,
+      magnitudes: magMap[row.id] ?? const [],
     );
   }
 
@@ -104,12 +126,14 @@ class EntityRepository implements IEntityRepository {
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
     final rows = await query.get();
     final effectiveLocs = await _getEffectiveLocationMap(rows);
+    final entityIds = rows.map((r) => r.id).toList();
+    final magMap = await _fetchMagnitudesForEntities(entityIds);
 
-    final List<WorldEntity> results = [];
-    for (final row in rows) {
-      results.add(await _mapToDomain(row, resolvedLocations: effectiveLocs));
-    }
-    return results;
+    return rows.map((row) => _mapToDomainSync(
+      row,
+      resolvedLocations: effectiveLocs,
+      magnitudes: magMap[row.id] ?? const [],
+    )).toList();
   }
 
   @override
@@ -130,12 +154,14 @@ class EntityRepository implements IEntityRepository {
       ..limit(limit);
     final rows = await query.get();
     final effectiveLocs = await _getEffectiveLocationMap(rows);
+    final entityIds = rows.map((r) => r.id).toList();
+    final magMap = await _fetchMagnitudesForEntities(entityIds);
 
-    final List<WorldEntity> results = [];
-    for (final row in rows) {
-      results.add(await _mapToDomain(row, resolvedLocations: effectiveLocs));
-    }
-    return results;
+    return rows.map((row) => _mapToDomainSync(
+      row,
+      resolvedLocations: effectiveLocs,
+      magnitudes: magMap[row.id] ?? const [],
+    )).toList();
   }
 
   @override
@@ -158,8 +184,12 @@ class EntityRepository implements IEntityRepository {
     final locationRows = await _db.select(_db.locationsTable).get();
     final allEntities = await getAllEntities();
 
+    final catalogMap = {for (var c in catalogRows) c.id: c};
+    final subspeciesMap = {for (var s in subspeciesRows) s.id: s};
+    final locationMap = {for (var l in locationRows) l.id: l};
+
     return allEntities.where((e) {
-      final species = catalogRows.where((c) => c.id == e.speciesId).firstOrNull;
+      final species = catalogMap[e.speciesId];
       if (species != null) {
         if (species.name.toLowerCase().contains(cleanQuery) ||
             species.type.toLowerCase().contains(cleanQuery) ||
@@ -169,7 +199,7 @@ class EntityRepository implements IEntityRepository {
       }
 
       if (e.subspeciesId != null) {
-        final sub = subspeciesRows.where((s) => s.id == e.subspeciesId).firstOrNull;
+        final sub = subspeciesMap[e.subspeciesId];
         if (sub != null) {
           if (sub.subspeciesName.toLowerCase().contains(cleanQuery) ||
               (sub.brand?.toLowerCase().contains(cleanQuery) ?? false) ||
@@ -181,7 +211,7 @@ class EntityRepository implements IEntityRepository {
       }
 
       if (e.locationId != null) {
-        final loc = locationRows.where((l) => l.id == e.locationId).firstOrNull;
+        final loc = locationMap[e.locationId];
         if (loc != null) {
           if (loc.name.toLowerCase().contains(cleanQuery) ||
               (loc.description?.toLowerCase().contains(cleanQuery) ?? false)) {
@@ -207,53 +237,55 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> saveEntity(WorldEntity entity) async {
-    // Ensure that if the entity is contained in a container (GUARDADO_EN / PARTE_DE),
-    // direct physical location in DB is null (as location is inherited from container).
-    final isContained = (await (_db.select(_db.relationsTable)
-      ..where((t) => t.sourceEntityId.equals(entity.id) & t.relationType.isIn(LocationResolver.locationInheritingTypes.toList()))
-    ).get()).isNotEmpty;
+    await _db.transaction(() async {
+      // Ensure that if the entity is contained in a container (GUARDADO_EN / PARTE_DE),
+      // direct physical location in DB is null (as location is inherited from container).
+      final isContained = (await (_db.select(_db.relationsTable)
+        ..where((t) => t.sourceEntityId.equals(entity.id) & t.relationType.isIn(LocationResolver.locationInheritingTypes.toList()))
+      ).get()).isNotEmpty;
 
-    final String? directLocId = isContained ? null : entity.locationId;
+      final String? directLocId = isContained ? null : entity.locationId;
 
-    final companion = EntitiesTableCompanion(
-      id: Value(entity.id),
-      speciesId: Value(entity.speciesId),
-      subspeciesId: Value(entity.subspeciesId),
-      locationId: Value(directLocId),
-      expirationDate: Value(entity.expirationDate),
-      notes: Value(entity.notes),
-      createdAt: Value(entity.createdAt),
-      updatedAt: Value(entity.updatedAt),
-    );
-
-    await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
-
-    // Manage 4NF InstanceLocationsTable (Direct Physical Location)
-    if (directLocId != null) {
-      await _db.into(_db.instanceLocationsTable).insertOnConflictUpdate(
-        InstanceLocationsTableCompanion(
-          instanceId: Value(entity.id),
-          locationId: Value(directLocId),
-          createdAt: Value(DateTime.now()),
-        ),
+      final companion = EntitiesTableCompanion(
+        id: Value(entity.id),
+        speciesId: Value(entity.speciesId),
+        subspeciesId: Value(entity.subspeciesId),
+        locationId: Value(directLocId),
+        expirationDate: Value(entity.expirationDate),
+        notes: Value(entity.notes),
+        createdAt: Value(entity.createdAt),
+        updatedAt: Value(entity.updatedAt),
       );
-    } else {
-      await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.equals(entity.id))).go();
-    }
 
-    // Persist 4NF Instance Magnitudes (1:N)
-    await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(entity.id))).go();
-    for (final mag in entity.magnitudes) {
-      await _db.into(_db.instanceMagnitudesTable).insert(InstanceMagnitudesTableCompanion(
-        id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
-        instanceId: Value(entity.id),
-        propertyName: Value(mag.propertyName),
-        dataType: Value(mag.dataType),
-        magnitudeValue: Value(mag.magnitudeValue),
-        stringValue: Value(mag.stringValue),
-        unitSymbol: Value(mag.unitSymbol),
-      ));
-    }
+      await _db.into(_db.entitiesTable).insertOnConflictUpdate(companion);
+
+      // Manage 4NF InstanceLocationsTable (Direct Physical Location)
+      if (directLocId != null) {
+        await _db.into(_db.instanceLocationsTable).insertOnConflictUpdate(
+          InstanceLocationsTableCompanion(
+            instanceId: Value(entity.id),
+            locationId: Value(directLocId),
+            createdAt: Value(DateTime.now()),
+          ),
+        );
+      } else {
+        await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.equals(entity.id))).go();
+      }
+
+      // Persist 4NF Instance Magnitudes (1:N)
+      await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(entity.id))).go();
+      for (final mag in entity.magnitudes) {
+        await _db.into(_db.instanceMagnitudesTable).insert(InstanceMagnitudesTableCompanion(
+          id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
+          instanceId: Value(entity.id),
+          propertyName: Value(mag.propertyName),
+          dataType: Value(mag.dataType),
+          magnitudeValue: Value(mag.magnitudeValue),
+          stringValue: Value(mag.stringValue),
+          unitSymbol: Value(mag.unitSymbol),
+        ));
+      }
+    });
   }
 
   @override
@@ -325,9 +357,7 @@ class EntityRepository implements IEntityRepository {
       );
 
       await saveEntity(newEntity);
-      if (primaryEntity == null) {
-        primaryEntity = newEntity;
-      }
+      primaryEntity ??= newEntity;
     }
 
     return primaryEntity!;

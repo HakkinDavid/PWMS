@@ -16,13 +16,21 @@ class PerishabilityInferenceEngine {
   const PerishabilityInferenceEngine._();
 
   /// Parse GS1 Barcode Application Identifiers (AI 17 = Expiration Date, AI 15 = Best Before Date)
-  /// Format: (17)YYMMDD or 17YYMMDD, (15)YYMMDD or 15YYMMDD
+  /// Valid formats: (17)YYMMDD, (15)YYMMDD, ^17YYMMDD, ^15YYMMDD, or after GTIN-14 ^01\d{14}(17|15)YYMMDD
   static DateTime? parseGS1ExpirationDate(String barcode) {
-    final clean = barcode.replaceAll(RegExp(r'[\s\(\)\-]'), '');
+    final raw = barcode.trim();
+    if (raw.isEmpty) return null;
 
-    // Check for AI 17 (Expiration) or AI 15 (Best Before) pattern
-    final RegExp gs1Regex = RegExp(r'(?:17|15)(\d{2})(\d{2})(\d{2})');
-    final match = gs1Regex.firstMatch(clean);
+    // 1. Check for explicit parenthesis notation: (17)YYMMDD or (15)YYMMDD
+    final parenRegex = RegExp(r'\((?:17|15)\)(\d{2})(\d{2})(\d{2})');
+    var match = parenRegex.firstMatch(raw);
+
+    // 2. If no parenthesis, only match structured GS1 formats (starts with 17/15 or follows GTIN-14)
+    if (match == null) {
+      final clean = raw.replaceAll(RegExp(r'[\s\-]'), '');
+      final structuredGs1Regex = RegExp(r'^(?:01\d{14})?(?:17|15)(\d{2})(\d{2})(\d{2})');
+      match = structuredGs1Regex.firstMatch(clean);
+    }
 
     if (match != null) {
       try {

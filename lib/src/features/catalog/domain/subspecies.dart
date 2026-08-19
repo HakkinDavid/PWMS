@@ -28,15 +28,19 @@ class Subspecies {
     String? photoPath,
     String? notes,
     DateTime? createdAt,
+    bool clearBrand = false,
+    bool clearBarcode = false,
+    bool clearPhotoPath = false,
+    bool clearNotes = false,
   }) {
     return Subspecies(
       id: id ?? this.id,
       speciesId: speciesId ?? this.speciesId,
       subspeciesName: subspeciesName ?? this.subspeciesName,
-      brand: brand ?? this.brand,
-      barcode: barcode ?? this.barcode,
-      photoPath: photoPath ?? this.photoPath,
-      notes: notes ?? this.notes,
+      brand: clearBrand ? null : (brand ?? this.brand),
+      barcode: clearBarcode ? null : (barcode ?? this.barcode),
+      photoPath: clearPhotoPath ? null : (photoPath ?? this.photoPath),
+      notes: clearNotes ? null : (notes ?? this.notes),
       createdAt: createdAt ?? this.createdAt,
     );
   }

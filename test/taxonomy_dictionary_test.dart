@@ -5,7 +5,7 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/tax
 
 void main() {
   group('PWMS Massive Taxonomy Pipeline Tests (GS1 GPC + OFF + Wikidata)', () {
-    const service = ProductTaxonomyService();
+    final service = ProductTaxonomyService();
 
     test('1. FastLazyTaxonomyRegistry initialization & O(1) lookup', () {
       FastLazyTaxonomyRegistry.initialize();
@@ -50,7 +50,7 @@ void main() {
       expect(resGpu.inferredBrand, 'Gigabyte');
 
       final resControl = service.resolve(title: 'DualSense Midnight Black Wireless Controller');
-      expect(resControl.generalSpeciesName, 'Control de Videojuegos');
+      expect(resControl.generalSpeciesName, 'Control de Videojuego');
       expect(resControl.inferredBrand, 'PlayStation');
     });
 

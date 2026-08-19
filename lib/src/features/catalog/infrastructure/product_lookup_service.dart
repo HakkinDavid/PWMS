@@ -5,7 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../domain/taxonomy/product_taxonomy_service.dart';
-import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import '../../../core/storage/file_storage_service.dart';
 
 class ProductLookupResult {
   final String generalSpeciesName; // ej. "Monitor", "Libro", "Control de Videojuegos"
@@ -60,12 +60,15 @@ class ProductLookupResult {
 class ProductLookupService {
   final http.Client _client;
   final ProductTaxonomyService _taxonomyService;
+  final FileStorageService _fileStorage;
 
   ProductLookupService({
     http.Client? client,
     ProductTaxonomyService? taxonomyService,
+    FileStorageService? fileStorage,
   })  : _client = client ?? http.Client(),
-        _taxonomyService = taxonomyService ?? const ProductTaxonomyService();
+        _taxonomyService = taxonomyService ?? ProductTaxonomyService(),
+        _fileStorage = fileStorage ?? FileStorageService();
 
   /// Consultar producto por código de barras o ISBN con arquitectura multinivel
   Future<ProductLookupResult?> lookupByBarcode(String rawBarcode) async {
@@ -409,18 +412,10 @@ class ProductLookupService {
     try {
       final response = await _client.get(Uri.parse(imageUrl)).timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
-        final appDir = await getApplicationDocumentsDirectory();
-        final imagesDir = Directory(p.join(appDir.path, 'product_images'));
-        if (!await imagesDir.exists()) {
-          await imagesDir.create(recursive: true);
-        }
-
         final ext = p.extension(imageUrl).split('?').first;
         final validExt = (ext.isNotEmpty && ext.length <= 5) ? ext : '.jpg';
-        final fileName = '${const Uuid().v4()}$validExt';
-        final file = File(p.join(imagesDir.path, fileName));
-        await file.writeAsBytes(response.bodyBytes);
-        return file.path;
+        final filename = await _fileStorage.saveBytes(response.bodyBytes, extension: validExt);
+        return await _fileStorage.getAbsolutePath(filename);
       }
     } catch (_) {}
     return null;

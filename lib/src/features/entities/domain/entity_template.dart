@@ -50,8 +50,8 @@ class EntityTemplateRegistry {
     'USA',
   ];
 
-  static Map<String, EntityTemplate> get _templates => {
-    AppStrings.typeObject: const EntityTemplate(
+  static const Map<String, EntityTemplate> _templates = {
+    AppStrings.typeObject: EntityTemplate(
       typeName: AppStrings.typeObject,
       icon: Icons.category,
       hasQuantity: true,
@@ -61,7 +61,7 @@ class EntityTemplateRegistry {
       allowedActions: EntityActionType.values,
       validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
     ),
-    AppStrings.typeLivingBeing: const EntityTemplate(
+    AppStrings.typeLivingBeing: EntityTemplate(
       typeName: AppStrings.typeLivingBeing,
       icon: Icons.pets,
       hasQuantity: true,
@@ -71,7 +71,7 @@ class EntityTemplateRegistry {
       allowedActions: EntityActionType.values,
       validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
     ),
-    AppStrings.typeDocument: const EntityTemplate(
+    AppStrings.typeDocument: EntityTemplate(
       typeName: AppStrings.typeDocument,
       icon: Icons.description,
       hasQuantity: false,
@@ -88,7 +88,7 @@ class EntityTemplateRegistry {
       ],
       validRelationTypes: ['DOCUMENTA', 'GUARDADO_EN', 'PERTENECE_A'],
     ),
-    AppStrings.typeProject: const EntityTemplate(
+    AppStrings.typeProject: EntityTemplate(
       typeName: AppStrings.typeProject,
       icon: Icons.lightbulb,
       hasQuantity: false,
@@ -104,7 +104,7 @@ class EntityTemplateRegistry {
       ],
       validRelationTypes: ['PARTE_DE', 'DOCUMENTA', 'USA'],
     ),
-    AppStrings.typeMemory: const EntityTemplate(
+    AppStrings.typeMemory: EntityTemplate(
       typeName: AppStrings.typeMemory,
       icon: Icons.star,
       hasQuantity: false,
@@ -124,7 +124,7 @@ class EntityTemplateRegistry {
   };
 
   static EntityTemplate getTemplate(String typeName) {
-    final map = _templates;
+    const map = _templates;
     if (map.containsKey(typeName)) {
       return map[typeName]!;
     }

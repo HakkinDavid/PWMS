@@ -19,23 +19,32 @@ class CatalogRepository {
   CatalogRepository(this._db, [FileStorageService? fileStorageService])
       : _fileStorageService = fileStorageService ?? FileStorageService();
 
-  Future<CatalogItem> _mapToDomain(CatalogTableData row) async {
+  Future<Map<String, List<SpeciesMagnitude>>> _fetchMagnitudesForSpecies(List<String> speciesIds) async {
+    if (speciesIds.isEmpty) return {};
+    final magRows = await (_db.select(_db.speciesMagnitudesTable)
+      ..where((t) => t.speciesId.isIn(speciesIds))).get();
+
+    final Map<String, List<SpeciesMagnitude>> magMap = {};
+    for (final m in magRows) {
+      magMap.putIfAbsent(m.speciesId, () => []).add(SpeciesMagnitude(
+        id: m.id,
+        speciesId: m.speciesId,
+        propertyName: m.propertyName,
+        dataType: m.dataType,
+        unitSymbol: m.unitSymbol,
+        createdAt: m.createdAt,
+      ));
+    }
+    return magMap;
+  }
+
+  CatalogItem _mapToDomainSync(CatalogTableData row, {List<SpeciesMagnitude> magnitudes = const []}) {
     Map<String, dynamic> customAttrs = {};
     if (row.customAttributes.isNotEmpty) {
       try {
         customAttrs = Map<String, dynamic>.from(jsonDecode(row.customAttributes));
       } catch (_) {}
     }
-
-    final magRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(row.id))).get();
-    final magnitudes = magRows.map((m) => SpeciesMagnitude(
-      id: m.id,
-      speciesId: m.speciesId,
-      propertyName: m.propertyName,
-      dataType: m.dataType,
-      unitSymbol: m.unitSymbol,
-      createdAt: m.createdAt,
-    )).toList();
 
     return CatalogItem(
       id: row.id,
@@ -53,14 +62,18 @@ class CatalogRepository {
     );
   }
 
+  Future<CatalogItem> _mapToDomain(CatalogTableData row) async {
+    final magMap = await _fetchMagnitudesForSpecies([row.id]);
+    return _mapToDomainSync(row, magnitudes: magMap[row.id] ?? const []);
+  }
+
   Future<List<CatalogItem>> getAllCatalogItems() async {
     final query = _db.select(_db.catalogTable)..orderBy([(t) => OrderingTerm.asc(t.name)]);
     final rows = await query.get();
-    final List<CatalogItem> results = [];
-    for (final row in rows) {
-      results.add(await _mapToDomain(row));
-    }
-    return results;
+    final speciesIds = rows.map((r) => r.id).toList();
+    final magMap = await _fetchMagnitudesForSpecies(speciesIds);
+
+    return rows.map((row) => _mapToDomainSync(row, magnitudes: magMap[row.id] ?? const [])).toList();
   }
 
   Future<CatalogItem?> getCatalogItemById(String id) async {
@@ -185,21 +198,24 @@ class CatalogRepository {
       warningDaysBeforeExpiration: Value(finalType == 'Objeto' && !item.isNonPerishable ? item.warningDaysBeforeExpiration : null),
       createdAt: Value(item.createdAt),
     );
-    await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);
+    await _db.transaction(() async {
+      await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);
 
-    await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(item.id))).go();
-    for (final mag in item.magnitudes) {
-      await _db.into(_db.speciesMagnitudesTable).insert(SpeciesMagnitudesTableCompanion(
-        id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
-        speciesId: Value(item.id),
-        propertyName: Value(mag.propertyName),
-        dataType: Value(mag.dataType),
-        unitSymbol: Value(mag.unitSymbol),
-        createdAt: Value(mag.createdAt),
-      ));
-    }
+      await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(item.id))).go();
+      for (final mag in item.magnitudes) {
+        await _db.into(_db.speciesMagnitudesTable).insert(SpeciesMagnitudesTableCompanion(
+          id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
+          speciesId: Value(item.id),
+          propertyName: Value(mag.propertyName),
+          dataType: Value(mag.dataType),
+          unitSymbol: Value(mag.unitSymbol),
+          createdAt: Value(mag.createdAt),
+        ));
+      }
 
-    await ensureDefaultSubspecies(item.id);
+      await ensureDefaultSubspecies(item.id);
+    });
+
     final saved = await getCatalogItemById(item.id);
     return saved ?? item;
   }

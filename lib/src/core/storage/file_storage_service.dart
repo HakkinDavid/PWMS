@@ -35,18 +35,41 @@ class FileStorageService {
     return filename; // Relative path stored in DB
   }
 
-  /// Resolves the absolute path from a relative path stored in DB.
-  Future<String> getAbsolutePath(String relativePath) async {
-    if (p.isAbsolute(relativePath)) return relativePath;
+  /// Saves raw bytes to the local PWMS media directory and returns the relative filename.
+  Future<String> saveBytes(List<int> bytes, {String extension = '.jpg'}) async {
+    final ext = extension.startsWith('.') ? extension : '.$extension';
+    final filename = '${const Uuid().v4()}$ext';
     final targetDir = await _storageDir;
-    return p.join(targetDir.path, relativePath);
+    final targetPath = p.join(targetDir.path, filename);
+
+    final file = File(targetPath);
+    await file.writeAsBytes(bytes);
+    return filename;
+  }
+
+  /// Resolves the absolute path from a relative path stored in DB,
+  /// with backward-compatible fallback for legacy 'product_images' directory.
+  Future<String> getAbsolutePath(String relativePath) async {
+    if (p.isAbsolute(relativePath)) {
+      if (await File(relativePath).exists()) return relativePath;
+    }
+    final targetDir = await _storageDir;
+    final primaryPath = p.join(targetDir.path, relativePath);
+    if (await File(primaryPath).exists()) return primaryPath;
+
+    // Fallback: check legacy product_images directory
+    final docsDir = await getApplicationDocumentsDirectory();
+    final legacyPath = p.join(docsDir.path, 'product_images', relativePath);
+    if (await File(legacyPath).exists()) return legacyPath;
+
+    return primaryPath;
   }
 
   /// Checks if a file exists given its relative or absolute path.
   Future<bool> fileExists(String relativeOrAbsolutePath) async {
     if (relativeOrAbsolutePath.trim().isEmpty) return false;
     final absPath = await getAbsolutePath(relativeOrAbsolutePath);
-    return File(absPath).existsSync();
+    return await File(absPath).exists();
   }
 
   /// Deletes a file given its relative or absolute path.

@@ -6,13 +6,17 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'app_database.dart';
+import 'data_migration_post_processor.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_backup_post_processor.dart';
 
 class DatabaseBackupService {
   final AppDatabase _db;
+  final List<IDataMigrationPostProcessor> _postProcessors;
 
-  DatabaseBackupService(this._db);
+  DatabaseBackupService(this._db, [List<IDataMigrationPostProcessor>? postProcessors])
+      : _postProcessors = postProcessors ?? const [NumismaticBackupPostProcessor()];
 
   /// Sanitiza rutas de archivos para evitar almacenar rutas absolutas locales del SO (ej. Android)
   /// Si es una URL externa (http/https), la preserva intacta.
@@ -876,5 +880,10 @@ class DatabaseBackupService {
         }
       }
     });
+
+    // Execute decoupled migration post-processors (e.g. Numismatic standardization)
+    for (final processor in _postProcessors) {
+      await processor.processAfterImport(_db);
+    }
   }
 }
