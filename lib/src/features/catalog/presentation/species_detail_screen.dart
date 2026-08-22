@@ -32,6 +32,8 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
     final theme = Theme.of(context);
 
     return catalogState.when(
+      skipLoadingOnRefresh: true,
+      skipLoadingOnReload: true,
       data: (items) {
         final species = items.where((c) => c.id == widget.speciesId).firstOrNull;
         if (species == null) {

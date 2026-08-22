@@ -162,7 +162,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
       case RegisterModalMode.autoFillScanner:
         return AutoFillScannerWidget(
           initialLocationId: widget.initialLocationId,
-          onScannedResult: (result) {
+          onScannedResult: (result) async {
             final catalog = catalogItems;
             final genName = result.generalSpeciesName.trim().toLowerCase();
             final matchingSpecies = catalog.where((c) => c.name.trim().toLowerCase() == genName && genName.isNotEmpty).firstOrNull;
@@ -176,7 +176,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               final subName = result.subspeciesName.trim();
               final finalSubName = subName.isNotEmpty ? subName : matchingSpecies.name;
 
-              AddEditSubspeciesModal.show(
+              final newSub = await AddEditSubspeciesModal.show(
                 context,
                 species: matchingSpecies,
                 initialSubspecies: Subspecies(
@@ -190,23 +190,23 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   createdAt: DateTime.now(),
                 ),
                 isFromAutoFill: true,
-              ).then((newSub) async {
-                if (newSub != null && mounted) {
-                  await ref.read(catalogRepositoryProvider).saveSubspecies(newSub);
+              );
+              if (newSub != null && mounted) {
+                final catalogRepo = ref.read(catalogRepositoryProvider);
+                await catalogRepo.saveSubspecies(newSub);
+                if (mounted) {
                   ref.invalidate(catalogListProvider);
                   ref.invalidate(subspeciesListProvider);
                   ref.invalidate(entityListProvider);
-                  if (mounted) {
-                    Navigator.pop(context);
-                    InstantiateSpeciesSheet.show(
-                      context,
-                      species: matchingSpecies,
-                      initialSubspecies: newSub,
-                      initialLocationId: widget.initialLocationId,
-                    );
-                  }
+                  Navigator.pop(context);
+                  InstantiateSpeciesSheet.show(
+                    context,
+                    species: matchingSpecies,
+                    initialSubspecies: newSub,
+                    initialLocationId: widget.initialLocationId,
+                  );
                 }
-              });
+              }
             } else {
               setState(() {
                 _activeScannedResult = result;

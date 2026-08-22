@@ -44,9 +44,11 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
   }
 
   Future<void> _loadSubspecies() async {
+    if (!mounted) return;
     setState(() => _isLoading = true);
     try {
-      final list = await ref.read(catalogRepositoryProvider).getSubspeciesForSpecies(widget.speciesId);
+      final catalogRepo = ref.read(catalogRepositoryProvider);
+      final list = await catalogRepo.getSubspeciesForSpecies(widget.speciesId);
       if (mounted) setState(() => _subspeciesList = list);
     } catch (_) {
     } finally {
@@ -55,7 +57,8 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
   }
 
   Future<void> _addOrEditSubspeciesModal({Subspecies? initial}) async {
-    final species = await ref.read(catalogRepositoryProvider).getCatalogItemById(widget.speciesId);
+    final catalogRepo = ref.read(catalogRepositoryProvider);
+    final species = await catalogRepo.getCatalogItemById(widget.speciesId);
     if (!mounted) return;
 
     final resultSubspecies = await AddEditSubspeciesModal.show(
@@ -65,17 +68,19 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
     );
 
     if (resultSubspecies != null) {
-      await ref.read(catalogRepositoryProvider).saveSubspecies(resultSubspecies);
-      _loadSubspecies();
-      ref.invalidate(catalogListProvider);
-      ref.invalidate(entityListProvider);
+      await catalogRepo.saveSubspecies(resultSubspecies);
+      if (mounted) {
+        _loadSubspecies();
+        ref.invalidate(catalogListProvider);
+        ref.invalidate(entityListProvider);
 
-      if (initial == null && mounted) {
-        InstantiateSpeciesSheet.show(
-          context,
-          species: species,
-          initialSubspecies: resultSubspecies,
-        );
+        if (initial == null) {
+          InstantiateSpeciesSheet.show(
+            context,
+            species: species,
+            initialSubspecies: resultSubspecies,
+          );
+        }
       }
     }
   }
@@ -141,17 +146,18 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                               searchQuery: '${sub.subspeciesName} ${sub.brand ?? ""}',
                               targetSubspecies: sub,
                             );
-                            _loadSubspecies();
+                            if (mounted) _loadSubspecies();
                           } else if (val == 'separate') {
                             await TaxonomyOperationsDialog.showSeparateSubspeciesDialog(context, ref, sub);
-                            _loadSubspecies();
+                            if (mounted) _loadSubspecies();
                           } else if (val == 'move') {
                             await TaxonomyOperationsDialog.showMoveSubspeciesDialog(context, ref, sub);
-                            _loadSubspecies();
+                            if (mounted) _loadSubspecies();
                           } else if (val == 'delete' && canDelete) {
                             try {
-                              await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
-                              _loadSubspecies();
+                              final catalogRepo = ref.read(catalogRepositoryProvider);
+                              await catalogRepo.deleteSubspecies(sub.id);
+                              if (mounted) _loadSubspecies();
                             } catch (e) {
                               if (context.mounted) AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
                             }
