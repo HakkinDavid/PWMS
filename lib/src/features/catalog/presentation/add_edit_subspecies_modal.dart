@@ -61,6 +61,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
   String? _selectedSpeciesId;
   String? _photoPath;
   XFile? _newPickedImage;
+  Future<String>? _resolvedPhotoPathFuture;
 
   @override
   void initState() {
@@ -72,6 +73,9 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     _barcodeController = TextEditingController(text: initial?.barcode ?? '');
     _notesController = TextEditingController(text: initial?.notes ?? '');
     _photoPath = initial?.photoPath;
+    if (_photoPath != null && _photoPath!.isNotEmpty) {
+      _resolvedPhotoPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(_photoPath!);
+    }
   }
 
   @override
@@ -146,6 +150,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     if (relPath != null && relPath.isNotEmpty && mounted) {
       setState(() {
         _photoPath = relPath;
+        _resolvedPhotoPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(relPath);
         _newPickedImage = null;
         _photoDeleted = false;
       });
@@ -224,14 +229,17 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                           ? Image.file(File(_newPickedImage!.path), fit: BoxFit.cover)
                           : (_photoPath != null && _photoPath!.isNotEmpty)
                               ? FutureBuilder<String>(
-                                  future: ref.read(fileStorageServiceProvider).getAbsolutePath(_photoPath!),
+                                  future: _resolvedPhotoPathFuture,
                                   builder: (context, snapshot) {
-                                    if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                      return Image.file(
-                                        File(snapshot.data!),
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
-                                      );
+                                    if (snapshot.connectionState == ConnectionState.done) {
+                                      if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                                        return Image.file(
+                                          File(snapshot.data!),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                                        );
+                                      }
+                                      return const Icon(Icons.broken_image_outlined, size: 28);
                                     }
                                     return const Center(child: CircularProgressIndicator(strokeWidth: 2));
                                   },
@@ -259,6 +267,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                             setState(() {
                               _newPickedImage = null;
                               _photoPath = null;
+                              _resolvedPhotoPathFuture = null;
                               _photoDeleted = true;
                             });
                           },

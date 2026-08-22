@@ -1,22 +1,48 @@
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
+import 'package:platinum_world_management_system/src/core/storage/file_storage_service.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/add_edit_subspecies_modal.dart';
 
+class MockFileStorageService implements FileStorageService {
+  @override
+  Future<String> getAbsolutePath(String relativePath) async => relativePath;
+
+  @override
+  Future<String> saveFile(String sourcePath) async => sourcePath;
+
+  @override
+  Future<String> saveBytes(List<int> bytes, {String extension = '.jpg'}) async => 'saved_file$extension';
+
+  @override
+  Future<bool> fileExists(String relativeOrAbsolutePath) async => false;
+
+  @override
+  Future<void> deleteFile(String relativeOrAbsolutePath) async {}
+}
+
 void main() {
   late AppDatabase db;
   late CatalogRepository catalogRepo;
+  late MockFileStorageService fileStorageService;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      const MethodChannel('plugins.flutter.io/path_provider'),
+      (MethodCall methodCall) async => '.',
+    );
     db = AppDatabase(NativeDatabase.memory());
     catalogRepo = CatalogRepository(db);
+    fileStorageService = MockFileStorageService();
   });
 
   tearDown(() async {
@@ -49,6 +75,7 @@ void main() {
         ProviderScope(
           overrides: [
             catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
           ],
           child: MaterialApp(
             home: Scaffold(
@@ -73,7 +100,7 @@ void main() {
       await tester.tap(find.text('Open Modal'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Editar Subespecie'), findsOneWidget);
+      expect(find.text(AppStrings.editSubspecies), findsOneWidget);
       expect(find.text('Modelo Antiguo'), findsOneWidget);
       expect(find.text('Sony'), findsOneWidget);
 
@@ -118,6 +145,7 @@ void main() {
         ProviderScope(
           overrides: [
             catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
           ],
           child: MaterialApp(
             home: Scaffold(
@@ -147,6 +175,7 @@ void main() {
 
       // Click Guardar
       await tester.tap(find.widgetWithText(ElevatedButton, 'Guardar'));
+      await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
 
       // Modal should still be open and savedResult remains null
