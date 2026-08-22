@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -115,11 +115,13 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
 
   Future<File> _cropImageCenter(File originalFile) async {
     final bytes = await originalFile.readAsBytes();
-    final result = await Isolate.run(() => _processCropImageIsolate(_CropParams(
+    final isCoin = _isCoinMode;
+    final originalPath = originalFile.path;
+    final result = await compute(_processCropImageIsolate, _CropParams(
       bytes: bytes,
-      isCoinMode: _isCoinMode,
-      originalPath: originalFile.path,
-    )));
+      isCoinMode: isCoin,
+      originalPath: originalPath,
+    ));
 
     final croppedFile = File(result.outputPath);
     await croppedFile.writeAsBytes(result.croppedBytes);

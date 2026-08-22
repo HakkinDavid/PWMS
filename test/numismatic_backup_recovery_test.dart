@@ -197,7 +197,7 @@ void main() {
 
       final coinDivisa = coinMags.firstWhere((m) => m.propertyName == 'Divisa');
       expect(coinDivisa.dataType, equals('string'));
-      expect(coinDivisa.stringValue, equals('Pesos Mexicanos'));
+      expect(coinDivisa.stringValue, equals('MXN'));
 
       final coinGrado = coinMags.firstWhere((m) => m.propertyName == 'Grado');
       expect(coinGrado.dataType, equals('string'));
@@ -241,7 +241,7 @@ void main() {
 
       final billDivisa = billMags.firstWhere((m) => m.propertyName == 'Divisa');
       expect(billDivisa.dataType, equals('string'));
-      expect(billDivisa.stringValue, equals('Pesos Mexicanos'));
+      expect(billDivisa.stringValue, equals('MXN'));
 
       final billAcunacion = billMags.firstWhere((m) => m.propertyName == 'Acuñación');
       expect(billAcunacion.dataType, equals('integer'));

@@ -392,5 +392,106 @@ void main() {
     expect(submittedResult!.specialEditionReason, equals('Otro'));
     expect(submittedResult!.specialEditionNotes, equals('Bicentenario de la Independencia'));
   });
+
+  testWidgets('NumismaticQuickFillSheet does not pop navigator when onResultSubmitted is provided', (WidgetTester tester) async {
+    NumismaticScanResult? submittedResult;
+    final dummyObverse = File('/tmp/obverse.jpg');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (sheetContext) => NumismaticQuickFillSheet(
+                      obversePhoto: dummyObverse,
+                      isCoin: true,
+                      onResultSubmitted: (result) {
+                        submittedResult = result;
+                      },
+                    ),
+                  );
+                },
+                child: const Text('Open Sheet'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Open Sheet'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(NumismaticQuickFillSheet), findsOneWidget);
+
+    // Populate required fields
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(0), 'México');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(1), '5');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(2), 'MXN (Pesos Mexicanos)');
+    await tester.enterText(find.byType(TextFormField), '1982');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(3), 'Muy buena');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(4), 'Cuproníquel');
+
+    final submitText = find.text(AppStrings.confirmAndRegisterPieceAction);
+    await tester.ensureVisible(submitText);
+    await tester.tap(submitText);
+    await tester.pumpAndSettle();
+
+    expect(submittedResult, isNotNull);
+    // Sheet must still be mounted (not popped directly by sheet, giving parent control)
+    expect(find.byType(NumismaticQuickFillSheet), findsOneWidget);
+  });
+
+  testWidgets('NumismaticQuickFillSheet close button triggers onResultSubmitted with null', (WidgetTester tester) async {
+    bool onResultCalled = false;
+    NumismaticScanResult? submittedResult = NumismaticScanResult(
+      speciesType: 'Dummy',
+      generalSpeciesName: 'Dummy',
+      subspeciesName: 'Dummy',
+      obversePhotoPath: '/tmp/dummy.jpg',
+      sourceEngine: 'Dummy',
+    );
+    final dummyObverse = File('/tmp/obverse.jpg');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: NumismaticQuickFillSheet(
+                obversePhoto: dummyObverse,
+                isCoin: true,
+                onResultSubmitted: (result) {
+                  onResultCalled = true;
+                  submittedResult = result;
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final closeButton = find.byIcon(Icons.close);
+    expect(closeButton, findsOneWidget);
+    await tester.tap(closeButton);
+    await tester.pumpAndSettle();
+
+    expect(onResultCalled, isTrue);
+    expect(submittedResult, isNull);
+  });
 }
 

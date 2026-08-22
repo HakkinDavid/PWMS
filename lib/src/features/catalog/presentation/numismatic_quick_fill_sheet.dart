@@ -278,8 +278,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
 
     if (widget.onResultSubmitted != null) {
       widget.onResultSubmitted!(result);
-    }
-    if (mounted && Navigator.canPop(context)) {
+    } else if (mounted && Navigator.canPop(context)) {
       Navigator.pop(context, result);
     }
   }
@@ -347,6 +346,17 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: AppStrings.cancel,
+                    onPressed: () {
+                      if (widget.onResultSubmitted != null) {
+                        widget.onResultSubmitted!(null);
+                      } else if (mounted && Navigator.canPop(context)) {
+                        Navigator.pop(context, null);
+                      }
+                    },
                   ),
                 ],
               ),
