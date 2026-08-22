@@ -102,6 +102,11 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
         final relPath = await fileStorage.saveFile(localPath);
         final catalogRepo = ref.read(catalogRepositoryProvider);
 
+        final hasDirectDbMutation = widget.targetSubspecies != null ||
+            widget.targetSpecies != null ||
+            widget.bulkSpecies != null ||
+            widget.bulkSubspecies != null;
+
         // Single subspecies
         if (widget.targetSubspecies != null) {
           final updatedSub = widget.targetSubspecies!.copyWith(photoPath: relPath);
@@ -130,12 +135,16 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
           }
         }
 
-        ref.read(catalogListProvider.notifier).loadCatalog();
-        ref.invalidate(subspeciesListProvider);
+        if (hasDirectDbMutation) {
+          ref.read(catalogListProvider.notifier).loadCatalog();
+          ref.invalidate(subspeciesListProvider);
+        }
 
         if (mounted) {
           Navigator.pop(context, relPath);
-          AppToast.showSuccess(context, AppStrings.webImageAssignedSuccess);
+          if (hasDirectDbMutation) {
+            AppToast.showSuccess(context, AppStrings.webImageAssignedSuccess);
+          }
         }
       }
     } catch (e) {

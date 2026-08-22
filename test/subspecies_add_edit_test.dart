@@ -11,6 +11,7 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/cat
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/add_edit_subspecies_modal.dart';
+import 'package:platinum_world_management_system/src/features/catalog/presentation/subspecies_section_widget.dart';
 
 class MockFileStorageService implements FileStorageService {
   @override
@@ -230,6 +231,48 @@ void main() {
       expect(finalSubs.any((s) => s.subspeciesName == 'WH-1000XM5' && s.brand == 'Sony'), isTrue);
       expect(finalSubs.any((s) => s.subspeciesName == 'AirPods Max' && s.brand == 'Apple'), isTrue);
       expect(finalSubs.any((s) => s.subspeciesName == 'Genérica'), isFalse);
+    });
+
+    testWidgets('4. SubspeciesSectionWidget renders list and updates reactively', (tester) async {
+      final species = CatalogItem(
+        id: 'sp-watch',
+        name: 'Reloj',
+        type: 'Objeto',
+        createdAt: DateTime.now(),
+      );
+
+      await catalogRepo.saveCatalogItem(species);
+
+      final sub1 = Subspecies(
+        id: 'sub-watch-1',
+        speciesId: species.id,
+        subspeciesName: 'G-Shock GA-2100',
+        brand: 'Casio',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub1);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: SubspeciesSectionWidget(
+                speciesId: species.id,
+                isEditing: true,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('G-Shock GA-2100'), findsOneWidget);
+      expect(find.text(AppStrings.addSubspeciesTab), findsOneWidget);
     });
   });
 }

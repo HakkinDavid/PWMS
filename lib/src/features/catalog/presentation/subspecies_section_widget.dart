@@ -69,12 +69,13 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
 
     if (resultSubspecies != null) {
       await catalogRepo.saveSubspecies(resultSubspecies);
-      if (mounted) {
-        _loadSubspecies();
-        ref.invalidate(catalogListProvider);
-        ref.invalidate(entityListProvider);
+      ref.invalidate(subspeciesListProvider);
+      ref.invalidate(catalogListProvider);
+      ref.invalidate(entityListProvider);
 
-        if (initial == null) {
+      if (mounted) {
+        await _loadSubspecies();
+        if (initial == null && mounted) {
           InstantiateSpeciesSheet.show(
             context,
             species: species,
