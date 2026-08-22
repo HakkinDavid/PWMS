@@ -39,15 +39,31 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/inventory',
-              builder: (context, state) => const InventoryFinderScreen(),
+              builder: (context, state) {
+                final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
+                return InventoryFinderScreen(
+                  initialLocationId: locId,
+                );
+              },
             ),
             GoRoute(
               path: '/entities',
-              builder: (context, state) => const InventoryFinderScreen(),
+              builder: (context, state) {
+                final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
+                return InventoryFinderScreen(
+                  initialLocationId: locId,
+                );
+              },
             ),
             GoRoute(
               path: '/locations',
-              builder: (context, state) => const InventoryFinderScreen(),
+              builder: (context, state) {
+                final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
+                return InventoryFinderScreen(
+                  initialLocationId: locId,
+                  startWithCurtainOpen: locId == null,
+                );
+              },
             ),
           ],
         ),

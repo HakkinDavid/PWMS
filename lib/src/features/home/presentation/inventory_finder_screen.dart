@@ -16,10 +16,19 @@ import '../../locations/presentation/location_tree_picker.dart';
 import '../../locations/presentation/top_curtain_location_sheet.dart';
 import '../../relations/domain/entity_relation.dart';
 
+import '../../locations/infrastructure/location_repository.dart';
+
 enum FinderViewMode { detailedList, minecraftGrid }
 
 class InventoryFinderScreen extends ConsumerStatefulWidget {
-  const InventoryFinderScreen({super.key});
+  final String? initialLocationId;
+  final bool startWithCurtainOpen;
+
+  const InventoryFinderScreen({
+    super.key,
+    this.initialLocationId,
+    this.startWithCurtainOpen = false,
+  });
 
   @override
   ConsumerState<InventoryFinderScreen> createState() => _InventoryFinderScreenState();
@@ -41,7 +50,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   @override
   void initState() {
     super.initState();
+    _selectedLocationId = widget.initialLocationId;
     _scrollController = ScrollController();
+  }
+
+  @override
+  void didUpdateWidget(InventoryFinderScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialLocationId != oldWidget.initialLocationId) {
+      setState(() {
+        _selectedLocationId = widget.initialLocationId;
+      });
+    }
   }
 
   @override
@@ -256,7 +276,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       if (_selectedLocationId == '__UNASSIGNED__') {
         filteredEntities = filteredEntities.where((e) => e.locationId == null).toList();
       } else {
-        filteredEntities = filteredEntities.where((e) => e.locationId == _selectedLocationId).toList();
+        final descendantLocIds = LocationRepository(ref.read(databaseProvider)).getDescendantIds(_selectedLocationId!, locationNodes);
+        final targetLocIds = {_selectedLocationId!, ...descendantLocIds};
+        filteredEntities = filteredEntities.where((e) => e.locationId != null && targetLocIds.contains(e.locationId)).toList();
       }
     }
 
@@ -331,6 +353,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           TopCurtainLocationSheet(
             allLocations: locationNodes,
             selectedLocationId: _selectedLocationId,
+            initiallyExpanded: widget.startWithCurtainOpen,
             onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
             onDropOnLocation: (payload, targetLocId) {
               if (payload is List<String>) {

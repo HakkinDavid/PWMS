@@ -10,6 +10,7 @@ class TopCurtainLocationSheet extends ConsumerStatefulWidget {
   final String? selectedLocationId;
   final ValueChanged<String?> onLocationSelected;
   final Function(Object payload, String targetLocationId) onDropOnLocation;
+  final bool initiallyExpanded;
 
   const TopCurtainLocationSheet({
     super.key,
@@ -17,6 +18,7 @@ class TopCurtainLocationSheet extends ConsumerStatefulWidget {
     required this.selectedLocationId,
     required this.onLocationSelected,
     required this.onDropOnLocation,
+    this.initiallyExpanded = false,
   });
 
   @override
@@ -31,14 +33,24 @@ class _TopCurtainLocationSheetState extends ConsumerState<TopCurtainLocationShee
   @override
   void initState() {
     super.initState();
+    _isExpanded = widget.initiallyExpanded;
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
+      value: widget.initiallyExpanded ? 1.0 : 0.0,
     );
     _expandAnimation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
     );
+  }
+
+  @override
+  void didUpdateWidget(TopCurtainLocationSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initiallyExpanded != oldWidget.initiallyExpanded && widget.initiallyExpanded && !_isExpanded) {
+      _toggleExpand();
+    }
   }
 
   @override

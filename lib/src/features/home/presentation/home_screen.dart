@@ -367,9 +367,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      AppStrings.topLocationsTitle,
-                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppStrings.topLocationsTitle,
+                          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () => context.go('/locations'),
+                          child: const Text('Ver todas'),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 14),
                     locationsAsync.when(
@@ -406,7 +415,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             return LocationTile(
                               node: node,
                               itemCount: count,
-                              onTap: () => context.push('/locations'),
+                              onTap: () => context.go('/inventory?focusNodeId=${node.id}'),
                             );
                           },
                         );

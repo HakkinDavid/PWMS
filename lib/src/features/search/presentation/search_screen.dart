@@ -466,7 +466,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           itemCount: matchingLocations.length,
           itemBuilder: (ctx, idx) => LocationTile(
             node: matchingLocations[idx],
-            onTap: () => context.go('/locations'),
+            onTap: () => context.go('/inventory?focusNodeId=${matchingLocations[idx].id}'),
           ),
         );
       }
@@ -575,7 +575,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               leading: const Icon(Icons.location_on, color: Colors.amber),
               title: Text(n.name, style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text(n.description ?? AppStrings.locationGraphNode),
-              onTap: () => context.go('/locations'),
+              onTap: () => context.go('/inventory?focusNodeId=${n.id}'),
             ),
           );
         },

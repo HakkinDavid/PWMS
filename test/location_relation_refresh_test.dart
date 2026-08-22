@@ -13,6 +13,7 @@ import 'package:platinum_world_management_system/src/core/providers/providers.da
 import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/entity_template.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
+import 'package:platinum_world_management_system/src/features/home/presentation/inventory_finder_screen.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_path_helper.dart';
 import 'package:platinum_world_management_system/src/features/locations/presentation/location_or_container_correction_sheet.dart';
@@ -238,6 +239,75 @@ void main() {
       expect(find.text(AppStrings.correctLocationTitlePrefix + 'Cartera' + AppStrings.correctLocationTitleSuffix), findsOneWidget);
       expect(find.text(AppStrings.physicalLocation), findsOneWidget);
       expect(find.text(AppStrings.savedInContainer), findsOneWidget);
+    });
+
+    testWidgets('InventoryFinderScreen with initialLocationId filters to that location and displays breadcrumb', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_lamp', name: 'Lámpara', createdAt: now),
+          );
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_bed', name: 'Cama', createdAt: now),
+          );
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_house', name: 'Casa', createdAt: now),
+          );
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_bedroom', name: 'Habitación', parentLocationId: const Value('loc_house'), createdAt: now),
+          );
+
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_lamp', speciesId: 'sp_lamp', locationId: const Value('loc_bedroom'), createdAt: now, updatedAt: now),
+          );
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_bed', speciesId: 'sp_bed', locationId: const Value('loc_house'), createdAt: now, updatedAt: now),
+          );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(initialLocationId: 'loc_bedroom'),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Breadcrumb should show Casa > Habitación
+      expect(find.text('Casa > Habitación'), findsOneWidget);
+
+      // Should find Lámpara (which is in loc_bedroom, found in tile title and avatar fallback)
+      expect(find.text('Lámpara'), findsNWidgets(2));
+      // Should NOT find Cama in loc_bedroom list (since Cama is directly in loc_house, not loc_bedroom)
+      expect(find.text('Cama'), findsNothing);
+    });
+
+    testWidgets('InventoryFinderScreen with startWithCurtainOpen opens the location curtain', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_root1', name: 'Oficina Central', createdAt: now),
+          );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(startWithCurtainOpen: true),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Because curtain started open, the root location 'Oficina Central' in the curtain list should be visible
+      expect(find.text('Oficina Central'), findsOneWidget);
     });
   });
 }
