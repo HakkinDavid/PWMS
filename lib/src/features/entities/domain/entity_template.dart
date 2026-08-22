@@ -43,7 +43,6 @@ class EntityTemplateRegistry {
   EntityTemplateRegistry._();
 
   static const List<String> directedRelationTypes = [
-    'GUARDADO_EN',
     'PERTENECE_A',
     'PARTE_DE',
     'DOCUMENTA',
@@ -59,7 +58,7 @@ class EntityTemplateRegistry {
       isAlwaysUnique: false,
       primaryView: TemplateViewKind.details,
       allowedActions: EntityActionType.values,
-      validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
+      validRelationTypes: ['PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
     ),
     AppStrings.typeLivingBeing: EntityTemplate(
       typeName: AppStrings.typeLivingBeing,
@@ -69,7 +68,7 @@ class EntityTemplateRegistry {
       isAlwaysUnique: false,
       primaryView: TemplateViewKind.details,
       allowedActions: EntityActionType.values,
-      validRelationTypes: ['GUARDADO_EN', 'PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
+      validRelationTypes: ['PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
     ),
     AppStrings.typeDocument: EntityTemplate(
       typeName: AppStrings.typeDocument,
@@ -86,7 +85,7 @@ class EntityTemplateRegistry {
         EntityActionType.addFile,
         EntityActionType.delete,
       ],
-      validRelationTypes: ['DOCUMENTA', 'GUARDADO_EN', 'PERTENECE_A'],
+      validRelationTypes: ['DOCUMENTA', 'PERTENECE_A'],
     ),
     AppStrings.typeProject: EntityTemplate(
       typeName: AppStrings.typeProject,
@@ -119,7 +118,7 @@ class EntityTemplateRegistry {
         EntityActionType.addFile,
         EntityActionType.delete,
       ],
-      validRelationTypes: ['PERTENECE_A', 'GUARDADO_EN'],
+      validRelationTypes: ['PERTENECE_A'],
     ),
   };
 

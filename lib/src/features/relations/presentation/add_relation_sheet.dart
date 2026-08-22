@@ -32,7 +32,7 @@ class AddRelationSheet extends ConsumerStatefulWidget {
 
 class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
   String? _targetEntityId;
-  String _relationType = 'GUARDADO_EN';
+  String _relationType = 'PERTENECE_A';
   bool _isSaving = false;
 
   final List<String> _directedRelationTypes = EntityTemplateRegistry.directedRelationTypes;
@@ -59,6 +59,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
 
       ref.invalidate(entityRelationsProvider(widget.sourceEntity.id));
       ref.invalidate(entityRelationsProvider(_targetEntityId!));
+      ref.invalidate(relationListProvider);
       ref.read(entityListProvider.notifier).loadEntities();
 
       if (mounted) {

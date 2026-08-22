@@ -37,6 +37,10 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
 
     return relationsAsync.when(
       data: (relations) {
+        final visibleRelations = relations.where((r) =>
+          !(r.sourceEntityId == currentEntity.id && r.relationType == 'GUARDADO_EN')
+        ).toList();
+
         return Card(
           margin: EdgeInsets.zero,
           child: Padding(
@@ -59,13 +63,13 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                     ),
                     Chip(
                       visualDensity: VisualDensity.compact,
-                      label: Text('${relations.length} ${AppStrings.linksCountSuffix}', style: const TextStyle(fontSize: 10)),
+                      label: Text('${visibleRelations.length}${AppStrings.linksCountSuffix}', style: const TextStyle(fontSize: 10)),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
 
-                if (relations.isEmpty)
+                if (visibleRelations.isEmpty)
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -100,10 +104,10 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                       ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: relations.length,
+                        itemCount: visibleRelations.length,
                         separatorBuilder: (ctx, idx) => const SizedBox(height: 8),
                         itemBuilder: (ctx, idx) {
-                          final rel = relations[idx];
+                          final rel = visibleRelations[idx];
                           final isOutgoing = rel.sourceEntityId == currentEntity.id;
                           final otherEntityId = isOutgoing ? rel.targetEntityId : rel.sourceEntityId;
                           final otherEntity = allEntities.where((e) => e.id == otherEntityId).firstOrNull;
@@ -197,6 +201,9 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                                     onPressed: () async {
                                       await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
                                       ref.invalidate(entityRelationsProvider(currentEntity.id));
+                                      ref.invalidate(entityRelationsProvider(otherEntityId));
+                                      ref.invalidate(relationListProvider);
+                                      ref.invalidate(entityListProvider);
                                     },
                                   ),
                                 ],

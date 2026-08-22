@@ -67,6 +67,8 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
       await relationRepo.addRelation(newRelation);
       ref.invalidate(entityRelationsProvider(widget.sourceEntity.id));
       ref.invalidate(entityRelationsProvider(_selectedTargetEntity!.id));
+      ref.invalidate(relationListProvider);
+      ref.invalidate(entityListProvider);
 
       if (mounted) {
         Navigator.pop(context);

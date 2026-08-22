@@ -8,6 +8,8 @@ import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_detail_view.dart';
 import '../../locations/domain/location_path_helper.dart';
+import '../../locations/domain/location_resolver.dart';
+import '../../locations/presentation/location_or_container_correction_sheet.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
@@ -323,15 +325,35 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               // Location Card
               InkWell(
                 onTap: () async {
-                  if (!_isEditingInPlace && _selectedLocationId != null) {
-                    context.go('/locations?focusNodeId=$_selectedLocationId');
-                  } else if (_isEditingInPlace) {
-                    final pickerResult = await LocationTreePicker.show(
+                  if (_isEditingInPlace) {
+                    final changed = await LocationOrContainerCorrectionSheet.show(
                       context,
-                      initialSelectedId: _selectedLocationId,
+                      entity: entity,
                     );
-                    if (pickerResult != null) {
-                      setState(() => _selectedLocationId = pickerResult.locationId);
+                    if (changed == true && mounted) {
+                      ref.invalidate(entityDetailProvider(widget.entityId));
+                      ref.invalidate(entityRelationsProvider(widget.entityId));
+                      ref.invalidate(relationListProvider);
+                      ref.invalidate(entityListProvider);
+                      final refreshedEntity = await ref.read(entityRepositoryProvider).getEntityById(widget.entityId);
+                      if (refreshedEntity != null && mounted) {
+                        setState(() {
+                          _selectedLocationId = refreshedEntity.locationId;
+                        });
+                      }
+                    }
+                  } else {
+                    final containerRel = allRelations.where((r) =>
+                      r.sourceEntityId == entity.id &&
+                      LocationResolver.locationInheritingTypes.contains(r.relationType)
+                    ).firstOrNull;
+
+                    if (containerRel != null) {
+                      context.push('/entity/${containerRel.targetEntityId}');
+                    } else if (_selectedLocationId != null) {
+                      context.go('/locations?focusNodeId=$_selectedLocationId');
+                    } else {
+                      context.go('/locations');
                     }
                   }
                 },
@@ -598,6 +620,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
                             await ref.read(entityListProvider.notifier).saveEntity(updated);
                             ref.invalidate(entityDetailProvider(widget.entityId));
+                            ref.invalidate(entityRelationsProvider(widget.entityId));
+                            ref.invalidate(relationListProvider);
                             setState(() => _isEditingInPlace = false);
                           },
                           icon: const Icon(Icons.check),

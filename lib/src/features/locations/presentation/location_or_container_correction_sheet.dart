@@ -122,6 +122,11 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
 
       ref.invalidate(entityListProvider);
       ref.invalidate(relationListProvider);
+      ref.invalidate(entityDetailProvider(widget.entity.id));
+      ref.invalidate(entityRelationsProvider(widget.entity.id));
+      if (_selectedContainerEntityId != null) {
+        ref.invalidate(entityRelationsProvider(_selectedContainerEntityId!));
+      }
 
       if (mounted) {
         AppToast.showSuccess(context, AppStrings.locationCorrectedSuccess);

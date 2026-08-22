@@ -104,7 +104,13 @@ class LocationPathHelper {
       currentId = targetId;
     }
 
-    final physicalBreadcrumb = buildBreadcrumbPath(effectiveLocationId, allNodes);
+    String? resolvedPhysicalLocId = effectiveLocationId;
+    if (resolvedPhysicalLocId == null && currentId != entityId) {
+      final outermostEntity = allEntities.where((e) => e.id == currentId).firstOrNull;
+      resolvedPhysicalLocId = outermostEntity?.locationId;
+    }
+
+    final physicalBreadcrumb = buildBreadcrumbPath(resolvedPhysicalLocId, allNodes);
 
     if (containerNames.isEmpty) {
       return physicalBreadcrumb;
