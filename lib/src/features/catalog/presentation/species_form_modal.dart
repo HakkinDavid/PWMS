@@ -373,15 +373,21 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
       final catalogRepo = ref.read(catalogRepositoryProvider);
 
-      // Save all draft subspecies BEFORE saving catalog item so default generic subspecies is omitted!
+      await ref.read(catalogListProvider.notifier).saveCatalogItem(savedItem);
+
+      // Save all draft subspecies AFTER saving catalog item to respect foreign keys
       if (_draftSubspecies.isNotEmpty) {
         for (final draft in _draftSubspecies) {
           final sub = draft.copyWith(speciesId: speciesId);
           await catalogRepo.saveSubspecies(sub);
         }
+        // Remove auto-generated "Genérica" if custom draft subspecies were provided
+        final allSubs = await catalogRepo.getSubspeciesForSpecies(speciesId);
+        final genericSub = allSubs.where((s) => s.subspeciesName == AppStrings.genericSubspeciesName && s.brand == null && s.barcode == null && s.photoPath == null).firstOrNull;
+        if (genericSub != null && allSubs.length > 1) {
+          await catalogRepo.deleteSubspecies(genericSub.id);
+        }
       }
-
-      await ref.read(catalogListProvider.notifier).saveCatalogItem(savedItem);
 
       if (widget.onSpeciesSaved != null) {
         widget.onSpeciesSaved!(savedItem);

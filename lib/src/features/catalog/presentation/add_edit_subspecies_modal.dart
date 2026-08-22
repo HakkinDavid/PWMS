@@ -88,7 +88,10 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
 
   Future<void> _handleSave() async {
     final name = _nameController.text.trim();
-    if (name.isEmpty) return;
+    if (name.isEmpty) {
+      AppToast.showRestriction(context, AppStrings.subspeciesNameLabel);
+      return;
+    }
 
     setState(() => _isSaving = true);
 
@@ -98,12 +101,8 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       if (_newPickedImage != null) {
         final storage = ref.read(fileStorageServiceProvider);
         finalPhotoPath = await storage.saveFile(_newPickedImage!.path);
-      } else if (_photoDeleted || finalPhotoPath == null) {
+      } else if (_photoDeleted) {
         finalPhotoPath = null;
-        if (widget.initialSubspecies?.photoPath != null && widget.initialSubspecies!.photoPath!.isNotEmpty) {
-          final storage = ref.read(fileStorageServiceProvider);
-          await storage.deleteFile(widget.initialSubspecies!.photoPath!);
-        }
       }
 
       final targetSpeciesId = widget.species?.id ?? widget.initialSubspecies?.speciesId ?? _selectedSpeciesId ?? '';
@@ -143,12 +142,12 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     final relPath = await WebImagePickerDialog.show(
       context,
       searchQuery: finalQuery,
-      targetSubspecies: widget.initialSubspecies,
     );
     if (relPath != null && relPath.isNotEmpty && mounted) {
       setState(() {
         _photoPath = relPath;
         _newPickedImage = null;
+        _photoDeleted = false;
       });
     }
   }
@@ -159,7 +158,9 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     final isEditing = widget.initialSubspecies != null;
     final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
     
-    _selectedSpeciesId ??= catalogItems.firstOrNull?.id;
+    if (widget.isFromAutoFill) {
+      _selectedSpeciesId ??= catalogItems.firstOrNull?.id;
+    }
 
     final isObjectMode = widget.species == null
         ? widget.isObject
