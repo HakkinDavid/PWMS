@@ -53,6 +53,50 @@ class AppSettingsRepository {
   Future<void> setLastNumismaticContainerEntityId(String value) async {
     await _db.setSetting(keyLastNumismaticContainerEntityId, value.trim());
   }
+
+  // Numismatic Camera Settings & Preferences
+  static const String keyNumismaticAutoCapture = 'numismatic_auto_capture';
+  static const String keyNumismaticTorchEnabled = 'numismatic_torch_enabled';
+  static const String keyNumismaticExposureOffset = 'numismatic_exposure_offset';
+  static const String keyNumismaticDefaultMode = 'numismatic_default_mode';
+
+  Future<bool> getNumismaticAutoCapture({bool defaultValue = false}) async {
+    final val = await _db.getSetting(keyNumismaticAutoCapture);
+    if (val == null) return defaultValue;
+    return val.toLowerCase() == 'true';
+  }
+
+  Future<void> setNumismaticAutoCapture(bool value) async {
+    await _db.setSetting(keyNumismaticAutoCapture, value.toString());
+  }
+
+  Future<bool> getNumismaticTorchEnabled({bool defaultValue = false}) async {
+    final val = await _db.getSetting(keyNumismaticTorchEnabled);
+    if (val == null) return defaultValue;
+    return val.toLowerCase() == 'true';
+  }
+
+  Future<void> setNumismaticTorchEnabled(bool value) async {
+    await _db.setSetting(keyNumismaticTorchEnabled, value.toString());
+  }
+
+  Future<double> getNumismaticExposureOffset({double defaultValue = -1.5}) async {
+    final val = await _db.getSetting(keyNumismaticExposureOffset);
+    if (val == null) return defaultValue;
+    return double.tryParse(val) ?? defaultValue;
+  }
+
+  Future<void> setNumismaticExposureOffset(double value) async {
+    await _db.setSetting(keyNumismaticExposureOffset, value.toString());
+  }
+
+  Future<String?> getNumismaticDefaultMode() async {
+    return await _db.getSetting(keyNumismaticDefaultMode);
+  }
+
+  Future<void> setNumismaticDefaultMode(String mode) async {
+    await _db.setSetting(keyNumismaticDefaultMode, mode.trim());
+  }
 }
 
 final appSettingsRepositoryProvider = Provider<AppSettingsRepository>((ref) {
