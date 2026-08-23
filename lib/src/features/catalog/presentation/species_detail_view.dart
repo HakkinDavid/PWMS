@@ -561,8 +561,8 @@ class SpeciesDetailView extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Display ALL 4NF Multiple Magnitude Property Schemas
-              if (species.magnitudes.isNotEmpty) ...[
+              // Display ALL 4NF Multiple Magnitude Property Schemas (only in species view, not in instance view)
+              if (species.magnitudes.isNotEmpty && (instanceId == null || instanceId!.isEmpty)) ...[
                 Card(
                   margin: EdgeInsets.zero,
                   child: Padding(
