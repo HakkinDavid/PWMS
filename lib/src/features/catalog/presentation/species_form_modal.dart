@@ -153,40 +153,42 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     });
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: source, imageQuality: 85);
-    if (image != null) {
-      setState(() => _selectedImage = image);
-    }
-  }
-
   Future<void> _pickAndAddDocument(String speciesId) async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null && result.files.single.path != null) {
-      final file = result.files.single;
-      final storage = ref.read(fileStorageServiceProvider);
-      final savedRelativePath = await storage.saveFile(file.path!);
+    final result = await StandardMediaPickerSheet.show(
+      context,
+      title: 'Adjuntar a Especie',
+      webSearchQuery: _nameController.text.trim(),
+    );
+    if (result == null) return;
+
+    final storage = ref.read(fileStorageServiceProvider);
+    try {
+      final savedRelativePath = result.file != null
+          ? await storage.saveFile(result.file!.path)
+          : result.relativeStoredPath;
+      if (savedRelativePath == null) return;
 
       final attachment = Attachment(
         id: const Uuid().v4(),
         speciesId: speciesId,
         filePath: savedRelativePath,
-        fileName: file.name,
-        fileType: file.extension ?? 'doc',
+        fileName: result.fileName,
+        fileType: result.fileType,
         createdAt: DateTime.now(),
       );
 
-      try {
-        await ref.read(entityRepositoryProvider).addAttachment(attachment);
-        ref.invalidate(speciesAttachmentsProvider(speciesId));
-        if (mounted) {
-          AppToast.showSuccess(context, '${AppStrings.fileAttachedToSpeciesPrefix}${file.name}${AppStrings.fileAttachedToSpeciesSuffix}');
-        }
-      } catch (e) {
-        if (mounted) {
-          AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
-        }
+      await ref.read(entityRepositoryProvider).addAttachment(attachment);
+      ref.invalidate(speciesAttachmentsProvider(speciesId));
+      ref.invalidate(catalogListProvider);
+      ref.invalidate(entityListProvider);
+      ref.invalidate(recentEntitiesProvider);
+
+      if (mounted) {
+        AppToast.showSuccess(context, '${AppStrings.fileAttachedToSpeciesPrefix}${result.fileName}${AppStrings.fileAttachedToSpeciesSuffix}');
+      }
+    } catch (e) {
+      if (mounted) {
+        AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
       }
     }
   }
@@ -488,7 +490,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: _selectedImage != null
-                                  ? Image.file(File(_selectedImage!.path), fit: BoxFit.contain)
+                                  ? Image.file(
+                                      File(_selectedImage!.path),
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                                    )
                                   : (_speciesPhotoPath != null && _speciesPhotoPath!.isNotEmpty)
                                       ? (_speciesPhotoPath!.startsWith('http')
                                           ? Image.network(
@@ -552,28 +558,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
                     TextField(
                       controller: _nameController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: AppStrings.nameLabel,
-                        prefixIcon: const Icon(Icons.auto_awesome),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.image_search, color: Colors.white),
-                          tooltip: AppStrings.searchPhotoOnWebAction,
-                          onPressed: () async {
-                            final query = _nameController.text.trim();
-                            if (query.isEmpty) {
-                              AppToast.showRestriction(context, AppStrings.enterNameForImageSearchError);
-                              return;
-                            }
-                            final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
-                            if (relPath != null && relPath.isNotEmpty && mounted) {
-                              setState(() {
-                                _speciesPhotoPath = relPath;
-                                _selectedImage = null;
-                              });
-                            }
-                          },
-                        ),
-                        helperText: null,
+                        prefixIcon: Icon(Icons.auto_awesome),
                       ),
                     ),
                     const SizedBox(height: 10),

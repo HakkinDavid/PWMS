@@ -7,7 +7,6 @@ import '../domain/subspecies.dart';
 import 'taxonomy_operations_dialog.dart';
 import 'add_edit_subspecies_modal.dart';
 import 'subspecies_tile.dart';
-import 'web_image_picker_dialog.dart';
 
 import '../../entities/presentation/instantiate_species_sheet.dart';
 
@@ -141,13 +140,6 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                         onSelected: (val) async {
                           if (val == 'edit') {
                             _addOrEditSubspeciesModal(initial: sub);
-                          } else if (val == 'web_image') {
-                            await WebImagePickerDialog.show(
-                              context,
-                              searchQuery: '${sub.subspeciesName} ${sub.brand ?? ""}',
-                              targetSubspecies: sub,
-                            );
-                            if (mounted) _loadSubspecies();
                           } else if (val == 'separate') {
                             await TaxonomyOperationsDialog.showSeparateSubspeciesDialog(context, ref, sub);
                             if (mounted) _loadSubspecies();
@@ -166,7 +158,6 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                         },
                         itemBuilder: (ctx) => [
                           const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Text(AppStrings.edit)])),
-                          const PopupMenuItem(value: 'web_image', child: Row(children: [Icon(Icons.image_search, size: 16), SizedBox(width: 8), Text(AppStrings.searchPhotoOnWebAction)])),
                           const PopupMenuItem(value: 'separate', child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Text(AppStrings.separateInNewSpeciesTitle)])),
                           const PopupMenuItem(value: 'move', child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Text(AppStrings.moveSubspeciesTitle)])),
                           if (canDelete)

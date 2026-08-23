@@ -752,6 +752,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                   width: 76,
                   height: 76,
                   fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
                 ),
               )
             else

@@ -627,6 +627,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
                     width: 80,
                     height: 80,
                     fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
                   ),
                 )
               else

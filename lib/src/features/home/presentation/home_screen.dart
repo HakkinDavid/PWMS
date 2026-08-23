@@ -311,6 +311,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                             File(snapshot.data!),
                                                             width: double.infinity,
                                                             fit: BoxFit.cover,
+                                                            errorBuilder: (_, __, ___) => Container(
+                                                              color: theme.colorScheme.primary.withAlpha(30),
+                                                              child: Center(
+                                                                child: Icon(Icons.category, color: theme.colorScheme.primary),
+                                                              ),
+                                                            ),
                                                           );
                                                         }
                                                         return Container(

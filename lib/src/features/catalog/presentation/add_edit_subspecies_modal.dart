@@ -135,29 +135,6 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     }
   }
 
-  // Web Image Search strictly for Subspecies data (Point 4)
-  Future<void> _searchSubspeciesWebImage() async {
-    final name = _nameController.text.trim();
-    final brand = _brandController.text.trim();
-
-    // Query exclusively uses Subspecies name and brand (Point 4)
-    final query = [if (name.isNotEmpty) name, if (brand.isNotEmpty) brand].join(' ');
-    final finalQuery = query.isNotEmpty ? query : (widget.species?.name ?? widget.defaultSpeciesName ?? '');
-
-    final relPath = await WebImagePickerDialog.show(
-      context,
-      searchQuery: finalQuery,
-    );
-    if (relPath != null && relPath.isNotEmpty && mounted) {
-      setState(() {
-        _photoPath = relPath;
-        _resolvedPhotoPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(relPath);
-        _newPickedImage = null;
-        _photoDeleted = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -249,7 +226,11 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: _newPickedImage != null
-                          ? Image.file(File(_newPickedImage!.path), fit: BoxFit.cover)
+                          ? Image.file(
+                              File(_newPickedImage!.path),
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
+                            )
                           : (_photoPath != null && _photoPath!.isNotEmpty)
                               ? FutureBuilder<String>(
                                   future: _resolvedPhotoPathFuture,
@@ -302,16 +283,6 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                       ),
                     ),
                 ],
-              ),
-            ),
-            const SizedBox(height: 6),
-
-            // Web Image Search Button strictly for Subspecies (Point 4)
-            Center(
-              child: TextButton.icon(
-                onPressed: _searchSubspeciesWebImage,
-                icon: const Icon(Icons.image_search, size: 16),
-                label: const Text(AppStrings.searchPhotoOnWebAction),
               ),
             ),
             const SizedBox(height: 8),

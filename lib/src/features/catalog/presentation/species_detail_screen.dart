@@ -10,7 +10,6 @@ import '../../locations/domain/location_path_helper.dart';
 import 'species_detail_view.dart';
 import 'species_form_modal.dart';
 import 'subspecies_section_widget.dart';
-import 'web_image_picker_dialog.dart';
 
 class SpeciesDetailScreen extends ConsumerStatefulWidget {
   final String speciesId;
@@ -136,13 +135,6 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                 },
               ),
               if (_isEditing) ...[
-                IconButton(
-                  icon: const Icon(Icons.image_search, color: Colors.white),
-                  tooltip: AppStrings.searchPhotoOnWebAction,
-                  onPressed: () {
-                    WebImagePickerDialog.show(context, searchQuery: species.name, targetSpecies: species);
-                  },
-                ),
                 IconButton(
                   icon: const Icon(Icons.settings_outlined),
                   tooltip: AppStrings.editSpeciesTitle,

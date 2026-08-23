@@ -50,6 +50,7 @@ class PhotoViewerDialog extends StatelessWidget {
                 ? Image.file(
                     File(imagePath),
                     fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Center(child: Text(AppStrings.photoNotAvailable, style: TextStyle(color: Colors.white))),
                   )
                 : const Center(child: Text(AppStrings.photoNotAvailable, style: TextStyle(color: Colors.white))),
           ),

@@ -3,8 +3,8 @@ import 'package:platinum_world_management_system/src/core/providers/providers.da
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import '../../../catalog/presentation/species_form_modal.dart';
 import '../../../catalog/presentation/species_tile.dart';
+import '../../../catalog/presentation/standard_media_picker_sheet.dart';
 import '../../../catalog/presentation/subspecies_tile.dart';
-import '../../../catalog/presentation/web_image_picker_dialog.dart';
 import '../../../entities/domain/entity_template.dart';
 import '../../../entities/presentation/instantiate_species_sheet.dart';
 import '../audit_rule_strategy.dart';
@@ -418,13 +418,25 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
             return true;
           } else {
             if (ctx.mounted) {
-              AppToast.showError(ctx, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla en la web.');
-              final picked = await WebImagePickerDialog.show(
+              AppToast.showError(ctx, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla mediante el selector de medios.');
+              final picked = await StandardMediaPickerSheet.show(
                 ctx,
-                searchQuery: sp.name,
-                targetSpecies: sp,
+                title: 'Foto de ${sp.name}',
+                webSearchQuery: sp.name,
+                allowDocuments: false,
               );
-              return picked != null;
+              if (picked != null) {
+                final relPath = picked.file != null
+                    ? await fileStorage.saveFile(picked.file!.path)
+                    : picked.relativeStoredPath;
+                if (relPath != null) {
+                  final updatedSp = sp.copyWith(mainPhotoPath: relPath);
+                  await ref.read(catalogRepositoryProvider).saveCatalogItem(updatedSp);
+                  ref.invalidate(catalogListProvider);
+                  return true;
+                }
+              }
+              return false;
             }
           }
           return false;
@@ -471,13 +483,25 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
             return true;
           } else {
             if (ctx.mounted) {
-              AppToast.showError(ctx, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla en la web.');
-              final picked = await WebImagePickerDialog.show(
+              AppToast.showError(ctx, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla mediante el selector de medios.');
+              final picked = await StandardMediaPickerSheet.show(
                 ctx,
-                searchQuery: sub.subspeciesName,
-                targetSubspecies: sub,
+                title: 'Foto de ${sub.subspeciesName}',
+                webSearchQuery: sub.subspeciesName,
+                allowDocuments: false,
               );
-              return picked != null;
+              if (picked != null) {
+                final relPath = picked.file != null
+                    ? await fileStorage.saveFile(picked.file!.path)
+                    : picked.relativeStoredPath;
+                if (relPath != null) {
+                  final updatedSub = sub.copyWith(photoPath: relPath);
+                  await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
+                  ref.invalidate(subspeciesListProvider);
+                  return true;
+                }
+              }
+              return false;
             }
           }
           return false;

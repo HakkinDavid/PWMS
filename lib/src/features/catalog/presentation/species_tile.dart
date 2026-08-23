@@ -124,6 +124,10 @@ class SpeciesTile extends ConsumerWidget {
                         return Image.file(
                           File(snapshot.data!),
                           fit: BoxFit.contain, // Transparent PNG support
+                          errorBuilder: (_, __, ___) => SpeciesTextBadgeAvatar(
+                            speciesName: species.name,
+                            size: 44,
+                          ),
                         );
                       }
                       return SpeciesTextBadgeAvatar(

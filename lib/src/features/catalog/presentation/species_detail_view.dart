@@ -35,6 +35,18 @@ class SpeciesDetailView extends ConsumerWidget {
     this.showAttachmentAction = false,
   });
 
+  void _invalidateAllRelatedProviders(WidgetRef ref, String speciesId, String? instanceId) {
+    ref.invalidate(speciesAttachmentsProvider(speciesId));
+    if (instanceId != null && instanceId.isNotEmpty) {
+      ref.invalidate(instanceAttachmentsProvider(instanceId));
+    }
+    ref.invalidate(entityListProvider);
+    ref.invalidate(catalogListProvider);
+    ref.invalidate(recentEntitiesProvider);
+    ref.invalidate(subspeciesListProvider);
+    ref.invalidate(searchResultsProvider);
+  }
+
   Future<void> _handleAddAttachment(
     BuildContext context,
     WidgetRef ref,
@@ -51,7 +63,7 @@ class SpeciesDetailView extends ConsumerWidget {
       final hasObverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('anverso'));
       final hasReverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('reverso'));
 
-      String missingSide;
+      String? missingSide;
       if (!hasObverse && !hasReverse) {
         missingSide = 'ambos';
       } else if (!hasObverse) {
@@ -59,7 +71,8 @@ class SpeciesDetailView extends ConsumerWidget {
       } else if (!hasReverse) {
         missingSide = 'reverso';
       } else {
-        missingSide = 'ambos';
+        missingSide = null;
+        return;
       }
 
       numismaticOption = NumismaticScanOption(
@@ -120,10 +133,7 @@ class SpeciesDetailView extends ConsumerWidget {
       );
 
       await ref.read(entityRepositoryProvider).addAttachment(attachment);
-      ref.invalidate(speciesAttachmentsProvider(speciesId));
-      if (instanceId != null && instanceId.isNotEmpty) {
-        ref.invalidate(instanceAttachmentsProvider(instanceId));
-      }
+      _invalidateAllRelatedProviders(ref, speciesId, instanceId);
 
       if (context.mounted) {
         AppToast.showSuccess(context, 'Adjunto agregado correctamente.');
@@ -166,10 +176,7 @@ class SpeciesDetailView extends ConsumerWidget {
                 newFileType: 'image',
               );
 
-          ref.invalidate(speciesAttachmentsProvider(att.speciesId));
-          if (att.instanceId != null && att.instanceId!.isNotEmpty) {
-            ref.invalidate(instanceAttachmentsProvider(att.instanceId!));
-          }
+          _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
 
           if (context.mounted) {
             AppToast.showSuccess(context, 'Adjunto numismático actualizado correctamente.');
@@ -204,10 +211,7 @@ class SpeciesDetailView extends ConsumerWidget {
             );
       }
 
-      ref.invalidate(speciesAttachmentsProvider(att.speciesId));
-      if (att.instanceId != null && att.instanceId!.isNotEmpty) {
-        ref.invalidate(instanceAttachmentsProvider(att.instanceId!));
-      }
+      _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
 
       if (context.mounted) {
         AppToast.showSuccess(context, 'Adjunto reemplazado correctamente.');
@@ -260,10 +264,7 @@ class SpeciesDetailView extends ConsumerWidget {
       try {
         final updated = att.copyWith(fileName: newName);
         await ref.read(entityRepositoryProvider).updateAttachment(updated);
-        ref.invalidate(speciesAttachmentsProvider(att.speciesId));
-        if (att.instanceId != null && att.instanceId!.isNotEmpty) {
-          ref.invalidate(instanceAttachmentsProvider(att.instanceId!));
-        }
+        _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
         if (context.mounted) {
           AppToast.showSuccess(context, 'Nombre actualizado correctamente.');
         }
@@ -302,7 +303,13 @@ class SpeciesDetailView extends ConsumerWidget {
               fit: StackFit.expand,
               children: [
                 InteractiveViewer(
-                  child: Image.file(file, fit: BoxFit.contain),
+                  child: Image.file(
+                    file,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Center(
+                      child: Icon(Icons.broken_image_outlined, color: Colors.white70, size: 48),
+                    ),
+                  ),
                 ),
                 Positioned(
                   top: 40,
@@ -345,58 +352,13 @@ class SpeciesDetailView extends ConsumerWidget {
     if (confirmed == true) {
       try {
         await ref.read(entityRepositoryProvider).deleteAttachment(att.id);
-        ref.invalidate(speciesAttachmentsProvider(att.speciesId));
-        if (att.instanceId != null && att.instanceId!.isNotEmpty) {
-          ref.invalidate(instanceAttachmentsProvider(att.instanceId!));
-        }
+        _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
         if (context.mounted) {
           AppToast.showSuccess(context, 'Adjunto eliminado correctamente');
         }
       } catch (e) {
         if (context.mounted) {
           AppToast.showError(context, 'Error al eliminar adjunto: $e');
-        }
-      }
-    }
-  }
-
-  Future<void> _confirmAndDeletePhoto(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(AppStrings.confirmDeletePhotoTitle),
-        content: const Text(AppStrings.confirmDeletePhotoMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(AppStrings.cancel),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(AppStrings.delete),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        final repo = ref.read(catalogRepositoryProvider);
-        if (subspecies != null && subspecies!.photoPath != null && subspecies!.photoPath!.isNotEmpty) {
-          await repo.removeSubspeciesPhoto(subspecies!.id);
-          ref.invalidate(subspeciesListProvider);
-        } else if (species.mainPhotoPath != null && species.mainPhotoPath!.isNotEmpty) {
-          await repo.removeSpeciesMainPhoto(species.id);
-        }
-        ref.invalidate(catalogListProvider);
-
-        if (context.mounted) {
-          AppToast.showSuccess(context, AppStrings.photoDeletedSuccess);
-        }
-      } catch (e) {
-        if (context.mounted) {
-          AppToast.showError(context, 'Error al eliminar imagen: $e');
         }
       }
     }
@@ -417,9 +379,6 @@ class SpeciesDetailView extends ConsumerWidget {
         ? '${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}'
         : species.name;
 
-    final hasDirectPhoto = (subspecies != null && subspecies!.photoPath != null && subspecies!.photoPath!.isNotEmpty) ||
-        (species.mainPhotoPath != null && species.mainPhotoPath!.isNotEmpty);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -436,47 +395,43 @@ class SpeciesDetailView extends ConsumerWidget {
             children: [
               // Photo Box Preview Card with Subspecies Fallback to Species Photo / Instance Attachment
               Center(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 140,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        color: theme.cardColor,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: theme.dividerColor, width: 1.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(20),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                child: Container(
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: theme.dividerColor, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(20),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: FutureBuilder<String?>(
-                          future: resolveEffectiveEntityPhotoPath(
-                            ref,
-                            subspecies: subspecies,
-                            species: species,
-                            instanceId: instanceId,
-                          ),
-                          builder: (context, photoPathSnapshot) {
-                            final effectivePhotoPath = photoPathSnapshot.data;
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: FutureBuilder<String?>(
+                      future: resolveEffectiveEntityPhotoPath(
+                        ref,
+                        subspecies: subspecies,
+                        species: species,
+                        instanceId: instanceId,
+                      ),
+                      builder: (context, photoPathSnapshot) {
+                        final effectivePhotoPath = photoPathSnapshot.data;
 
-                            return FutureBuilder<String>(
-                              future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
-                                  ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
-                                  : Future.value(''),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                  return Image.file(
-                                    File(snapshot.data!),
-                                    fit: BoxFit.contain,
-                                  );
-                                }
-                                return Container(
+                        return FutureBuilder<String>(
+                          future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
+                              ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
+                              : Future.value(''),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
+                              return Image.file(
+                                File(snapshot.data!),
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => Container(
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
@@ -494,25 +449,33 @@ class SpeciesDetailView extends ConsumerWidget {
                                       color: Colors.white,
                                     ),
                                   ),
-                                );
-                              },
+                                ),
+                              );
+                            }
+                            return Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    theme.colorScheme.primary.withAlpha(180),
+                                    theme.colorScheme.secondary.withAlpha(180),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  template.icon,
+                                  size: 54,
+                                  color: Colors.white,
+                                ),
+                              ),
                             );
                           },
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                    if (hasDirectPhoto) ...[
-                      const SizedBox(height: 6),
-                      TextButton.icon(
-                        onPressed: () => _confirmAndDeletePhoto(context, ref),
-                        icon: const Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
-                        label: const Text(
-                          AppStrings.deleteMainPhotoAction,
-                          style: TextStyle(fontSize: 12, color: Colors.redAccent),
-                        ),
-                      ),
-                    ],
-                  ],
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

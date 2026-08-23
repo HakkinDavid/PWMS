@@ -6,7 +6,6 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../catalog/domain/catalog_item.dart';
-import '../../catalog/presentation/web_image_picker_dialog.dart';
 import '../../entities/domain/effective_entity_group.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/effective_group_tile.dart';
@@ -219,32 +218,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (mounted) AppToast.showSuccess(context, AppStrings.itemsDeletedSuccess);
   }
 
-  // Bulk Web Image Search for ALL selected items (Point 4)
-  Future<void> _bulkWebImageSearch() async {
-    if (_selectedEntityIds.isEmpty) return;
-    final allEntities = ref.read(entityListProvider).asData?.value ?? [];
-    final catalog = ref.read(catalogListProvider).asData?.value ?? [];
-    final allSubspecies = ref.read(subspeciesListProvider).asData?.value ?? [];
-
-    final selectedEntities = allEntities.where((e) => _selectedEntityIds.contains(e.id)).toList();
-    final selectedSpeciesIds = selectedEntities.map((e) => e.speciesId).toSet();
-    final selectedSubspeciesIds = selectedEntities.map((e) => e.subspeciesId).whereType<String>().toSet();
-
-    final targetSpeciesList = catalog.where((c) => selectedSpeciesIds.contains(c.id)).toList();
-    final targetSubspeciesList = allSubspecies.where((s) => selectedSubspeciesIds.contains(s.id)).toList();
-
-    if (targetSpeciesList.isEmpty && targetSubspeciesList.isEmpty) return;
-
-    final queryName = targetSpeciesList.isNotEmpty ? targetSpeciesList.first.name : 'Producto';
-
-    await WebImagePickerDialog.show(
-      context,
-      searchQuery: queryName,
-      bulkSpecies: targetSpeciesList.isNotEmpty ? targetSpeciesList : null,
-      bulkSubspecies: targetSubspeciesList.isNotEmpty ? targetSubspeciesList : null,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -428,11 +401,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                             await _moveEntitiesToLocation(_selectedEntityIds.toList(), res.locationId);
                           }
                         },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.image_search, color: Colors.white),
-                        tooltip: 'Buscar Imagen Web (Asignación Masiva)',
-                        onPressed: _bulkWebImageSearch,
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
