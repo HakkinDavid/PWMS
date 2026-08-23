@@ -97,5 +97,5 @@ To provide maximum clarity to the user, **subspecies information is presented as
 
 1. **Subspecies with Active Instances**: A subspecies cannot be deleted if any `WorldEntity` references `subspeciesId == sub.id`.
 2. **Single Subspecies Rule**: The last remaining subspecies of a species cannot be deleted. Every species MUST maintain at least 1 valid subspecies.
-3. **Creation Fallback**: If a species is created without adding draft subspecies, the system automatically creates a default `"Genérica"` subspecies.
+3. **Creation Fallback**: If a species is created without adding draft subspecies, the creation dialog asks for confirmation to include the default `"Genérica"` subspecies in the creation payload (never generated as a database trigger).
 

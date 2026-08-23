@@ -114,7 +114,7 @@ El sistema registra automáticamente el historial en `HistoryEventsTable` y noti
 
 # 6. Jerarquía de Subespecies e Inversión Visual
 
-- Cada especie del catálogo posee 1 o más subespecies. Si no se agregan subespecies al crear la especie, se genera automáticamente una subespecie `"Genérica"`.
+- Cada especie del catálogo posee 1 o más subespecies. Si no se agregan subespecies al crear la especie, el formulario muestra un diálogo de confirmación para crear la subespecie `"Genérica"` dentro del payload de guardado.
 - Las pantallas de detalle y tiles destacan el nombre de la subespecie como título principal (`Bravia 4K 55`), y presentan la especie como contexto secundario (`Especie: Televisor (Objeto)`).
 
 ---

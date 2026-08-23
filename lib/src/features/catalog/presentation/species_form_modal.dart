@@ -336,6 +336,41 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     final template = EntityTemplateRegistry.getTemplate(_selectedType);
     final effectiveUnique = template.isAlwaysUnique || _isUnique;
 
+    final List<Subspecies> subspeciesToSave = List.of(_draftSubspecies);
+
+    if (!_isEditMode && subspeciesToSave.isEmpty) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text(AppStrings.noSubspeciesWarningTitle),
+          content: const Text(AppStrings.noSubspeciesWarningMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text(AppStrings.cancel),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text(AppStrings.confirm),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) {
+        return;
+      }
+
+      subspeciesToSave.add(
+        Subspecies(
+          id: const Uuid().v4(),
+          speciesId: '',
+          subspeciesName: AppStrings.genericSubspeciesName,
+          createdAt: DateTime.now(),
+        ),
+      );
+    }
+
     setState(() => _isSaving = true);
 
     try {
@@ -378,17 +413,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
       await ref.read(catalogListProvider.notifier).saveCatalogItem(savedItem);
 
-      // Save all draft subspecies AFTER saving catalog item to respect foreign keys
-      if (_draftSubspecies.isNotEmpty) {
-        for (final draft in _draftSubspecies) {
+      // Save all draft subspecies (including Genérica if confirmed) AFTER saving catalog item to respect foreign keys
+      if (subspeciesToSave.isNotEmpty) {
+        for (final draft in subspeciesToSave) {
           final sub = draft.copyWith(speciesId: speciesId);
           await catalogRepo.saveSubspecies(sub);
-        }
-        // Remove auto-generated "Genérica" if custom draft subspecies were provided
-        final allSubs = await catalogRepo.getSubspeciesForSpecies(speciesId);
-        final genericSub = allSubs.where((s) => s.subspeciesName == AppStrings.genericSubspeciesName && s.brand == null && s.barcode == null && s.photoPath == null).firstOrNull;
-        if (genericSub != null && allSubs.length > 1) {
-          await catalogRepo.deleteSubspecies(genericSub.id);
         }
       }
 
@@ -724,9 +753,13 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '${AppStrings.subspeciesOrBrands} (${_draftSubspecies.length})',
-                                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                  Expanded(
+                                    child: Text(
+                                      '${AppStrings.subspeciesOrBrands} (${_draftSubspecies.length})',
+                                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
                                   ),
                                   TextButton.icon(
                                     onPressed: () => _addOrEditDraftSubspeciesModal(),

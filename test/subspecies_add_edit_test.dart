@@ -12,6 +12,7 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/cat
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/add_edit_subspecies_modal.dart';
+import 'package:platinum_world_management_system/src/features/catalog/presentation/species_form_modal.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/subspecies_section_widget.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 
@@ -187,7 +188,7 @@ void main() {
       expect(savedResult, isNull);
     });
 
-    test('3. Species creation with draft subspecies preserves foreign key integrity and cleans default generic', () async {
+    test('3. Species creation with draft subspecies preserves foreign key integrity without default generic', () async {
       final species = CatalogItem(
         id: 'sp-new-audio',
         name: 'Audífonos Bluetooth',
@@ -197,6 +198,10 @@ void main() {
 
       // First persist species
       await catalogRepo.saveCatalogItem(species);
+
+      // Verify no generic subspecies was automatically created
+      final initialSubs = await catalogRepo.getSubspeciesForSpecies(species.id);
+      expect(initialSubs.isEmpty, isTrue);
 
       // Save custom draft subspecies
       final draftSub1 = Subspecies(
@@ -221,13 +226,6 @@ void main() {
 
       await catalogRepo.saveSubspecies(draftSub1);
       await catalogRepo.saveSubspecies(draftSub2);
-
-      // Remove auto-generated "Genérica" if present
-      final allSubs = await catalogRepo.getSubspeciesForSpecies(species.id);
-      final genericSub = allSubs.where((s) => s.subspeciesName == 'Genérica' && s.brand == null && s.barcode == null).firstOrNull;
-      if (genericSub != null && allSubs.length > 1) {
-        await catalogRepo.deleteSubspecies(genericSub.id);
-      }
 
       final finalSubs = await catalogRepo.getSubspeciesForSpecies(species.id);
       expect(finalSubs.length, equals(2));
@@ -284,5 +282,165 @@ void main() {
       expect(find.textContaining('G-Shock GA-2100'), findsOneWidget);
       expect(find.text(AppStrings.addSubspeciesTab), findsOneWidget);
     });
+
+    testWidgets('5. SpeciesFormModal prompts warning dialog when saving without subspecies, aborts if cancelled', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            entityRepositoryProvider.overrideWithValue(EntityRepository(db)),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: SpeciesFormModal(),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Enter species name
+      final nameField = find.widgetWithText(TextField, AppStrings.nameLabel);
+      await tester.enterText(nameField, 'Cafetera');
+
+      // Click Guardar button
+      final saveBtn = find.widgetWithText(ElevatedButton, AppStrings.saveSpeciesAction);
+      await tester.ensureVisible(saveBtn);
+      await tester.tap(saveBtn);
+      await tester.pumpAndSettle();
+
+      // Warning dialog should appear
+      expect(find.text(AppStrings.noSubspeciesWarningTitle), findsOneWidget);
+      expect(find.text(AppStrings.noSubspeciesWarningMessage), findsOneWidget);
+
+      // Tap Cancelar on the dialog
+      await tester.tap(find.widgetWithText(TextButton, AppStrings.cancel));
+      await tester.pumpAndSettle();
+
+      // Verify no species or subspecies were saved
+      final allSpecies = await catalogRepo.getAllCatalogItems();
+      expect(allSpecies.isEmpty, isTrue);
+      final allSubs = await catalogRepo.getAllSubspecies();
+      expect(allSubs.isEmpty, isTrue);
+
+      // Form is still open
+      expect(find.byType(SpeciesFormModal), findsOneWidget);
+    });
+
+    testWidgets('6. SpeciesFormModal prompts warning dialog and creates Genérica in payload when confirmed', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            entityRepositoryProvider.overrideWithValue(EntityRepository(db)),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: SpeciesFormModal(),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Enter species name
+      final nameField = find.widgetWithText(TextField, AppStrings.nameLabel);
+      await tester.enterText(nameField, 'Cafetera Expresso');
+
+      // Click Guardar button
+      final saveBtn = find.widgetWithText(ElevatedButton, AppStrings.saveSpeciesAction);
+      await tester.ensureVisible(saveBtn);
+      await tester.tap(saveBtn);
+      await tester.pumpAndSettle();
+
+      // Warning dialog appears
+      expect(find.text(AppStrings.noSubspeciesWarningTitle), findsOneWidget);
+      expect(find.text(AppStrings.noSubspeciesWarningMessage), findsOneWidget);
+
+      // Tap Confirmar on the dialog
+      await tester.tap(find.widgetWithText(ElevatedButton, AppStrings.confirm));
+      await tester.pumpAndSettle();
+
+      // Verify species and Genérica subspecies were saved
+      final allSpecies = await catalogRepo.getAllCatalogItems();
+      expect(allSpecies.length, equals(1));
+      expect(allSpecies.first.name, equals('Cafetera Expresso'));
+
+      final allSubs = await catalogRepo.getSubspeciesForSpecies(allSpecies.first.id);
+      expect(allSubs.length, equals(1));
+      expect(allSubs.first.subspeciesName, equals('Genérica'));
+    });
+
+    testWidgets('7. SpeciesFormModal saves directly with draft subspecies without showing warning dialog', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            entityRepositoryProvider.overrideWithValue(EntityRepository(db)),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: SpeciesFormModal(),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Enter species name
+      final nameField = find.widgetWithText(TextField, AppStrings.nameLabel);
+      await tester.enterText(nameField, 'Monitor Gamer');
+
+      // Scroll to and tap Añadir subespecie
+      final addSubFinder = find.text(AppStrings.addBrandAction);
+      await tester.scrollUntilVisible(addSubFinder, 100, scrollable: find.byType(Scrollable).first);
+      await tester.tap(addSubFinder);
+      await tester.pumpAndSettle();
+
+      // Enter subspecies details in modal
+      final subNameField = find.widgetWithText(TextField, AppStrings.subspeciesNameLabel);
+      await tester.enterText(subNameField, 'Odyssey G9');
+
+      await tester.tap(find.widgetWithText(ElevatedButton, AppStrings.save));
+      await tester.pumpAndSettle();
+
+      // Click Guardar button on species form
+      final saveBtnFinder = find.widgetWithText(ElevatedButton, AppStrings.saveSpeciesAction);
+      await tester.scrollUntilVisible(saveBtnFinder, 100, scrollable: find.byType(Scrollable).first);
+      await tester.tap(saveBtnFinder);
+      await tester.pumpAndSettle();
+
+      // Dialog should NOT have appeared
+      expect(find.text(AppStrings.noSubspeciesWarningTitle), findsNothing);
+
+      // Verify species and only custom subspecies were saved
+      final allSpecies = await catalogRepo.getAllCatalogItems();
+      expect(allSpecies.length, equals(1));
+      expect(allSpecies.first.name, equals('Monitor Gamer'));
+
+      final allSubs = await catalogRepo.getSubspeciesForSpecies(allSpecies.first.id);
+      expect(allSubs.length, equals(1));
+      expect(allSubs.first.subspeciesName, equals('Odyssey G9'));
+      expect(allSubs.any((s) => s.subspeciesName == 'Genérica'), isFalse);
+    });
   });
 }
+

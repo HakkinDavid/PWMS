@@ -454,6 +454,8 @@ class AppStrings {
   static const speciesNotFoundError = 'Especie no encontrada.';
   static const separatedFromSpeciesPrefix = 'Separada de ';
   static const cannotDeleteSubspeciesWithInstancesError = 'No se puede eliminar una subespecie que tiene instancias registradas en tu mundo.';
+  static const noSubspeciesWarningTitle = 'Sin subespecies';
+  static const noSubspeciesWarningMessage = 'No se agregaron subespecies a la especie. Se creará automáticamente la subespecie "Genérica". ¿Deseas continuar?';
 
   // Notificaciones y Canales
   static const defaultItemName = 'Elemento';

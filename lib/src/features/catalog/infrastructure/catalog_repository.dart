@@ -212,8 +212,6 @@ class CatalogRepository {
           createdAt: Value(mag.createdAt),
         ));
       }
-
-      await ensureDefaultSubspecies(item.id);
     });
 
     final saved = await getCatalogItemById(item.id);
@@ -261,23 +259,6 @@ class CatalogRepository {
         allSubs.any((s) => s.id != subspeciesId && s.photoPath == oldPhoto);
     if (!isUsedElsewhere) {
       await _fileStorageService.deleteFile(oldPhoto);
-    }
-  }
-
-  Future<void> ensureDefaultSubspecies(String speciesId) async {
-    final query = _db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId));
-    final rows = await query.get();
-    if (rows.isEmpty) {
-      await saveSubspecies(Subspecies(
-        id: const Uuid().v4(),
-        speciesId: speciesId,
-        subspeciesName: AppStrings.genericSubspeciesName,
-        brand: null,
-        barcode: null,
-        photoPath: null,
-        notes: null,
-        createdAt: DateTime.now(),
-      ));
     }
   }
 

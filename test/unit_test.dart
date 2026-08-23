@@ -247,7 +247,7 @@ void main() {
       await catalogRepo.saveSubspecies(duracellSub);
 
       final fetchedSubs = await catalogRepo.getSubspeciesForSpecies(fridgeSpecies.id);
-      expect(fetchedSubs.length, equals(2)); // Default "Genérica" + "Inverter Dual Door"
+      expect(fetchedSubs.length, equals(1)); // "Inverter Dual Door" (no automatic "Genérica")
       expect(fetchedSubs.any((s) => s.brand == 'LG'), isTrue);
 
       // 2. NECESITA Requirement: Refrigerador NECESITA 6 Huevo (even with 0 egg instances!)
@@ -371,7 +371,14 @@ void main() {
         barcode: '123456',
         createdAt: DateTime.now(),
       );
+      final sub2 = Subspecies(
+        id: 'sub-plant-2',
+        speciesId: plantSpecies.id,
+        subspeciesName: 'Rosa',
+        createdAt: DateTime.now(),
+      );
       await catalogRepo.saveSubspecies(sub1);
+      await catalogRepo.saveSubspecies(sub2);
 
       // Verify Brand and Barcode were stripped for Ser Vivo
       final savedSub1 = await catalogRepo.getSubspeciesById(sub1.id);
@@ -380,7 +387,7 @@ void main() {
 
       // Verify deletion protection for single subspecies
       final plantSubspecies = await catalogRepo.getSubspeciesForSpecies(plantSpecies.id);
-      expect(plantSubspecies.length, equals(2)); // "Genérica" + sub1
+      expect(plantSubspecies.length, equals(2)); // sub1 + sub2
 
       // Delete sub1 (allowed because length > 1)
       await catalogRepo.deleteSubspecies(sub1.id);
@@ -433,6 +440,12 @@ void main() {
 
     test('11. EntityDisplayHelper Specific Subspecies Resolution Test', () async {
       final species = await catalogRepo.getOrCreateSpecies('Caja', type: 'Objeto');
+      final subGeneric = Subspecies(
+        id: 'sub-caja-gen',
+        speciesId: species.id,
+        subspeciesName: 'Genérica',
+        createdAt: DateTime.now(),
+      );
       final subSpecific = Subspecies(
         id: 'sub-caja-metal',
         speciesId: species.id,
@@ -440,14 +453,8 @@ void main() {
         brand: 'Stanley',
         createdAt: DateTime.now(),
       );
-      final subGeneric = Subspecies(
-        id: 'sub-caja-gen',
-        speciesId: species.id,
-        subspeciesName: 'Genérica',
-        createdAt: DateTime.now(),
-      );
-      await catalogRepo.saveSubspecies(subSpecific);
       await catalogRepo.saveSubspecies(subGeneric);
+      await catalogRepo.saveSubspecies(subSpecific);
 
       final specificEntity = await entityRepo.instantiateOrMerge(species.id, null, 1, subspeciesId: subSpecific.id);
       final genericEntity = await entityRepo.instantiateOrMerge(species.id, null, 1, subspeciesId: subGeneric.id);

@@ -37,7 +37,7 @@ graph TD
 
 1. **Catálogo Maestro y Sistema de Subespecies**:
    - Clasificación por 5 subgrupos principales: `Objeto`, `Ser Vivo`, `Documento`, `Proyecto`, `Recuerdo`.
-   - Gestión jerárquica de **Subespecies y Marcas**: Cada especie posee una o más subespecies (creación implícita de subespecie `Genérica` si no se agregan borradores).
+   - Gestión jerárquica de **Subespecies y Marcas**: Cada especie posee una o más subespecies (confirmación mediante diálogo en el formulario de creación si no se agregan borradores para incluir "Genérica" en el payload).
    - Inversión visual: Las pantallas de detalle y listas destacan el nombre de la subespecie como título principal (`Bravia 4K`), presentando la especie general como contexto secundario (`Especie: Televisor (Objeto)`).
 2. **Propiedades Físicas Relacionales 4NF**:
    - Registro de magnitudes físicas (Masa, Volumen, Longitud, Superficie, Tiempo, Electricidad, Almacenamiento, Precio, etc.) sin campos nulos en tablas principales.

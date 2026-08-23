@@ -51,7 +51,7 @@ graph TD
    - No primary `quantity` or `unit` columns exist on `CatalogTable` or `EntitiesTable`.
    - SQLite database utilizes 13 normalized Drift tables, including `NotificationsTable` for reactive alerts.
 2. **Subspecies & Brand Hierarchy**:
-   - Every catalog species has 1 or more subspecies. If no draft subspecies are added upon species creation, a default `"Genérica"` subspecies is created.
+   - Every catalog species has 1 or more subspecies. If no draft subspecies are added upon species creation, a confirmation dialog in the creation modal prompts to create a default `"Genérica"` subspecies in the creation payload.
    - UI visual hierarchy is inverted: Subspecies name is the primary title (`Bravia 4K`), while general species name is presented as secondary context (`Especie: Televisor (Objeto)`).
 3. **Active Instance Deletion Protection**:
    - Neither species nor subspecies can be deleted if active world instances exist in `EntitiesTable`. Both database operations (`deleteCatalogItem`, `deleteSubspecies`) and UI action buttons strictly enforce this restriction.
