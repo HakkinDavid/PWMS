@@ -10,6 +10,7 @@ import '../../../core/widgets/app_wheel_picker.dart';
 import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
 import '../../entities/domain/entity_template.dart';
+import 'standard_media_picker_sheet.dart';
 import 'web_image_picker_dialog.dart';
 
 class AddEditSubspeciesModal extends ConsumerStatefulWidget {
@@ -207,10 +208,32 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
             // Photo Picker Box
             GestureDetector(
               onTap: () async {
-                final picker = ImagePicker();
-                final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-                if (img != null && mounted) {
-                  setState(() => _newPickedImage = img);
+                final name = _nameController.text.trim();
+                final brand = _brandController.text.trim();
+                final query = [if (name.isNotEmpty) name, if (brand.isNotEmpty) brand].join(' ');
+                final finalQuery = query.isNotEmpty ? query : (widget.species?.name ?? widget.defaultSpeciesName ?? '');
+
+                final result = await StandardMediaPickerSheet.show(
+                  context,
+                  title: 'Foto de la Subespecie / Variante',
+                  webSearchQuery: finalQuery,
+                  allowDocuments: false,
+                );
+                if (result != null && mounted) {
+                  if (result.file != null) {
+                    setState(() {
+                      _newPickedImage = XFile(result.file!.path);
+                      _photoPath = null;
+                      _photoDeleted = false;
+                    });
+                  } else if (result.relativeStoredPath != null) {
+                    setState(() {
+                      _photoPath = result.relativeStoredPath;
+                      _resolvedPhotoPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(result.relativeStoredPath!);
+                      _newPickedImage = null;
+                      _photoDeleted = false;
+                    });
+                  }
                 }
               },
               child: Stack(

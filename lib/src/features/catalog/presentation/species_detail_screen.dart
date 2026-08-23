@@ -125,6 +125,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
         return Scaffold(
           body: SpeciesDetailView(
             species: species,
+            showAttachmentAction: _isEditing,
             instanceSpecificsHeader: locationsSummaryHeader,
             actions: [
               IconButton(

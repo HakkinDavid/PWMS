@@ -28,6 +28,13 @@ abstract class IEntityRepository {
   Future<List<Attachment>> getAttachmentsForSpecies(String speciesId);
   Future<List<Attachment>> getAttachmentsForInstance(String instanceId);
   Future<void> addAttachment(Attachment attachment);
+  Future<void> updateAttachment(Attachment attachment);
+  Future<void> replaceAttachmentFile(
+    String attachmentId,
+    String newSourcePath, {
+    String? newFileName,
+    String? newFileType,
+  });
   Future<void> deleteAttachment(String attachmentId);
 
   // Custom Templates

@@ -239,7 +239,14 @@ class NumismaticParser {
   /// Checks if a catalog species is a numismatic species (Moneda or Billete).
   static bool isNumismaticSpecies(CatalogItem species) {
     final nameLower = species.name.trim().toLowerCase();
-    if (NumismaticDictionary.numismaticSpeciesNames.any((n) => n.toLowerCase() == nameLower)) {
+    final typeLower = species.type.trim().toLowerCase();
+    if (NumismaticDictionary.numismaticSpeciesNames.any((n) {
+      final nLower = n.toLowerCase();
+      return nameLower == nLower ||
+          nameLower.startsWith('$nLower ') ||
+          typeLower == nLower ||
+          typeLower.startsWith('$nLower ');
+    })) {
       return true;
     }
     if (species.description != null &&
@@ -247,6 +254,13 @@ class NumismaticParser {
       return true;
     }
     return false;
+  }
+
+  /// Checks if a numismatic species is a coin (circular) vs banknote (rectangular).
+  static bool isCoinSpecies(CatalogItem species) {
+    final nameLower = species.name.trim().toLowerCase();
+    final typeLower = species.type.trim().toLowerCase();
+    return !nameLower.contains('billete') && !typeLower.contains('billete');
   }
 
   /// Builds a deterministic subspecies title for coins or banknotes.

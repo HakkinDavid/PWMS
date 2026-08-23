@@ -641,7 +641,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   species: species,
                   subspecies: subSnapshot.data,
                   instanceId: entity.id,
-                  showAttachmentAction: false,
+                  showAttachmentAction: _isEditingInPlace,
                   instanceSpecificsHeader: instanceHeader,
                   instanceSpecificsFooter: instanceFooter,
                   actions: [
@@ -671,7 +671,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           return SpeciesDetailView(
             species: species,
             instanceId: entity.id,
-            showAttachmentAction: false,
+            showAttachmentAction: _isEditingInPlace,
             instanceSpecificsHeader: instanceHeader,
             instanceSpecificsFooter: instanceFooter,
             actions: [

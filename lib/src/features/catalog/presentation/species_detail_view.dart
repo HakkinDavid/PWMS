@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
@@ -11,7 +10,10 @@ import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_photo_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../domain/catalog_item.dart';
+import '../domain/numismatic_data_helper.dart';
 import '../domain/subspecies.dart';
+import 'numismatic_camera_capture_view.dart';
+import 'standard_media_picker_sheet.dart';
 
 class SpeciesDetailView extends ConsumerWidget {
   final CatalogItem species;
@@ -33,45 +35,241 @@ class SpeciesDetailView extends ConsumerWidget {
     this.showAttachmentAction = false,
   });
 
-  Future<void> _pickAndAddDocument(
+  Future<void> _handleAddAttachment(
     BuildContext context,
     WidgetRef ref,
     String speciesId, {
     String? instanceId,
+    List<Attachment>? currentAttachments,
   }) async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null && result.files.single.path != null) {
-      final file = result.files.single;
-      final storage = ref.read(fileStorageServiceProvider);
+    final isNumismatic = NumismaticDataHelper.isNumismaticSpecies(species);
+    NumismaticScanOption? numismaticOption;
 
-      try {
-        final savedRelativePath = await storage.saveFile(file.path!);
+    if (isNumismatic) {
+      final isCoin = NumismaticDataHelper.isCoin(species);
+      final targetAttachments = currentAttachments ?? [];
+      final hasObverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('anverso'));
+      final hasReverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('reverso'));
 
-        final attachment = Attachment(
-          id: const Uuid().v4(),
-          speciesId: speciesId,
-          instanceId: instanceId,
-          filePath: savedRelativePath,
-          fileName: file.name,
-          fileType: file.extension ?? 'doc',
-          createdAt: DateTime.now(),
+      String missingSide;
+      if (!hasObverse && !hasReverse) {
+        missingSide = 'ambos';
+      } else if (!hasObverse) {
+        missingSide = 'anverso';
+      } else if (!hasReverse) {
+        missingSide = 'reverso';
+      } else {
+        missingSide = 'ambos';
+      }
+
+      numismaticOption = NumismaticScanOption(
+        isCoin: isCoin,
+        missingSide: missingSide,
+      );
+    }
+
+    final result = await StandardMediaPickerSheet.show(
+      context,
+      title: instanceId != null ? 'Adjuntar a esta Instancia' : 'Adjuntar a Especie',
+      webSearchQuery: subspecies?.subspeciesName ?? species.name,
+      numismaticOption: numismaticOption,
+    );
+
+    if (result == null) return;
+
+    final storage = ref.read(fileStorageServiceProvider);
+
+    try {
+      String savedRelativePath;
+      String finalFileName = result.fileName;
+
+      if (result.file != null) {
+        savedRelativePath = await storage.saveFile(result.file!.path);
+
+        if (isNumismatic && result.source == 'numismatic') {
+          final side = (numismaticOption?.missingSide == 'reverso') ? 'reverso' : 'anverso';
+          final ext = result.file!.path.contains('.') ? result.file!.path.split('.').last : 'jpg';
+
+          if (subspecies != null && instanceId != null) {
+            finalFileName = NumismaticDataHelper.buildAttachmentFileName(
+              subspeciesName: subspecies!.subspeciesName,
+              instanceId: instanceId,
+              side: side,
+              extension: ext,
+            );
+          } else {
+            final subName = subspecies?.subspeciesName ?? species.name;
+            final instPart = instanceId != null ? ' ($instanceId)' : '';
+            finalFileName = '${NumismaticDataHelper.sanitizeFileName(subName)}$instPart ($side).$ext';
+          }
+        }
+      } else if (result.relativeStoredPath != null) {
+        savedRelativePath = result.relativeStoredPath!;
+      } else {
+        return;
+      }
+
+      final attachment = Attachment(
+        id: const Uuid().v4(),
+        speciesId: speciesId,
+        instanceId: instanceId,
+        filePath: savedRelativePath,
+        fileName: finalFileName,
+        fileType: result.fileType,
+        createdAt: DateTime.now(),
+      );
+
+      await ref.read(entityRepositoryProvider).addAttachment(attachment);
+      ref.invalidate(speciesAttachmentsProvider(speciesId));
+      if (instanceId != null && instanceId.isNotEmpty) {
+        ref.invalidate(instanceAttachmentsProvider(instanceId));
+      }
+
+      if (context.mounted) {
+        AppToast.showSuccess(context, 'Adjunto agregado correctamente.');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        AppToast.showError(
+          context,
+          e.toString().replaceAll('Exception: ', ''),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleReplaceAttachment(
+    BuildContext context,
+    WidgetRef ref,
+    Attachment att,
+  ) async {
+    final isNumismatic = NumismaticDataHelper.isNumismaticSpecies(species);
+    final fileNameLower = att.fileName.toLowerCase();
+    final isNumismaticSide = isNumismatic && (fileNameLower.contains('anverso') || fileNameLower.contains('reverso'));
+
+    try {
+      if (isNumismaticSide) {
+        // Direct jump to numismatic camera with side preselected
+        final side = fileNameLower.contains('reverso') ? 'reverso' : 'anverso';
+        final isCoin = NumismaticDataHelper.isCoin(species);
+
+        final capturedFile = await NumismaticCameraCaptureView.show(
+          context,
+          isCoin: isCoin,
+          targetSide: side,
         );
 
-        await ref.read(entityRepositoryProvider).addAttachment(attachment);
-        ref.invalidate(speciesAttachmentsProvider(speciesId));
-        if (instanceId != null && instanceId.isNotEmpty) {
-          ref.invalidate(instanceAttachmentsProvider(instanceId));
-        }
+        if (capturedFile != null) {
+          await ref.read(entityRepositoryProvider).replaceAttachmentFile(
+                att.id,
+                capturedFile.path,
+                newFileType: 'image',
+              );
 
+          ref.invalidate(speciesAttachmentsProvider(att.speciesId));
+          if (att.instanceId != null && att.instanceId!.isNotEmpty) {
+            ref.invalidate(instanceAttachmentsProvider(att.instanceId!));
+          }
+
+          if (context.mounted) {
+            AppToast.showSuccess(context, 'Adjunto numismático actualizado correctamente.');
+          }
+        }
+        return;
+      }
+
+      // Standard media picker for non-numismatic or general attachments
+      final result = await StandardMediaPickerSheet.show(
+        context,
+        title: 'Reemplazar Adjunto ("${att.fileName}")',
+        webSearchQuery: subspecies?.subspeciesName ?? species.name,
+      );
+
+      if (result == null) return;
+
+      if (result.file != null) {
+        await ref.read(entityRepositoryProvider).replaceAttachmentFile(
+              att.id,
+              result.file!.path,
+              newFileName: result.fileName,
+              newFileType: result.fileType,
+            );
+      } else if (result.relativeStoredPath != null) {
+        final absPath = await ref.read(fileStorageServiceProvider).getAbsolutePath(result.relativeStoredPath!);
+        await ref.read(entityRepositoryProvider).replaceAttachmentFile(
+              att.id,
+              absPath,
+              newFileName: result.fileName,
+              newFileType: result.fileType,
+            );
+      }
+
+      ref.invalidate(speciesAttachmentsProvider(att.speciesId));
+      if (att.instanceId != null && att.instanceId!.isNotEmpty) {
+        ref.invalidate(instanceAttachmentsProvider(att.instanceId!));
+      }
+
+      if (context.mounted) {
+        AppToast.showSuccess(context, 'Adjunto reemplazado correctamente.');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        AppToast.showError(context, 'Error al reemplazar adjunto: $e');
+      }
+    }
+  }
+
+  Future<void> _handleRenameAttachment(
+    BuildContext context,
+    WidgetRef ref,
+    Attachment att,
+  ) async {
+    final controller = TextEditingController(text: att.fileName);
+
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Renombrar adjunto'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Nombre del archivo',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(AppStrings.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final val = controller.text.trim();
+              if (val.isNotEmpty) {
+                Navigator.pop(ctx, val);
+              }
+            },
+            child: const Text(AppStrings.save),
+          ),
+        ],
+      ),
+    );
+
+    if (newName != null && newName.isNotEmpty && newName != att.fileName) {
+      try {
+        final updated = att.copyWith(fileName: newName);
+        await ref.read(entityRepositoryProvider).updateAttachment(updated);
+        ref.invalidate(speciesAttachmentsProvider(att.speciesId));
+        if (att.instanceId != null && att.instanceId!.isNotEmpty) {
+          ref.invalidate(instanceAttachmentsProvider(att.instanceId!));
+        }
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto agregado correctamente.');
+          AppToast.showSuccess(context, 'Nombre actualizado correctamente.');
         }
       } catch (e) {
         if (context.mounted) {
-          AppToast.showError(
-            context,
-            e.toString().replaceAll('Exception: ', ''),
-          );
+          AppToast.showError(context, 'Error al renombrar: $e');
         }
       }
     }
@@ -458,50 +656,33 @@ class SpeciesDetailView extends ConsumerWidget {
                 const SizedBox(height: 14),
               ],
 
-              // Attach File Action Button (Only shown if showAttachmentAction == true, i.e. in Edit mode!)
-              if (showAttachmentAction) ...[
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => _pickAndAddDocument(
-                          context,
-                          ref,
-                          species.id,
-                          instanceId: instanceId,
-                        ),
-                        icon: const Icon(Icons.attach_file, size: 16),
-                        label: Text(instanceId != null ? 'Adjuntar a esta Instancia' : AppStrings.attachFile),
-                        style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 10)),
-                      ),
-                    ),
-                  ],
+              // UNIFIED ATTACHMENTS SECTION
+              if (instanceId != null && instanceId!.isNotEmpty) ...[
+                // Unified card for Instance View (Showing Species + Instance attachments together)
+                _buildUnifiedInstanceAttachments(
+                  context,
+                  ref,
+                  speciesAttachmentsAsync: speciesAttachmentsAsync,
+                  instanceAttachmentsAsync: instanceAttachmentsAsync!,
                 ),
-                const SizedBox(height: 16),
-              ],
-
-              // Section 1: Species Attachments
-              speciesAttachmentsAsync.when(
-                data: (attachments) => _AttachmentGroupWidget(
-                  title: AppStrings.attachmentsTitle,
-                  attachments: attachments,
-                  isEditing: showAttachmentAction,
-                  onOpen: (att) => _openAttachment(context, ref, att),
-                  onDelete: (att) => _confirmAndDeleteAttachment(context, ref, att),
-                ),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
-              ),
-
-              // Section 2: Instance Attachments (if viewing a specific instance)
-              if (instanceAttachmentsAsync != null) ...[
-                const SizedBox(height: 12),
-                instanceAttachmentsAsync.when(
-                  data: (attachments) => _AttachmentGroupWidget(
-                    title: 'Adjuntos de esta Instancia',
+              ] else ...[
+                // Species View Attachments
+                speciesAttachmentsAsync.when(
+                  data: (attachments) => _UnifiedAttachmentGroupWidget(
+                    title: AppStrings.attachmentsTitle,
                     attachments: attachments,
                     isEditing: showAttachmentAction,
+                    isInstanceView: false,
+                    onAdd: () => _handleAddAttachment(
+                      context,
+                      ref,
+                      species.id,
+                      instanceId: null,
+                      currentAttachments: attachments,
+                    ),
                     onOpen: (att) => _openAttachment(context, ref, att),
+                    onReplace: (att) => _handleReplaceAttachment(context, ref, att),
+                    onRename: (att) => _handleRenameAttachment(context, ref, att),
                     onDelete: (att) => _confirmAndDeleteAttachment(context, ref, att),
                   ),
                   loading: () => const Center(child: CircularProgressIndicator()),
@@ -514,20 +695,61 @@ class SpeciesDetailView extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _buildUnifiedInstanceAttachments(
+    BuildContext context,
+    WidgetRef ref, {
+    required AsyncValue<List<Attachment>> speciesAttachmentsAsync,
+    required AsyncValue<List<Attachment>> instanceAttachmentsAsync,
+  }) {
+    if (speciesAttachmentsAsync.isLoading || instanceAttachmentsAsync.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final speciesAtts = speciesAttachmentsAsync.asData?.value ?? [];
+    final instanceAtts = instanceAttachmentsAsync.asData?.value ?? [];
+    final unifiedList = <Attachment>[...instanceAtts, ...speciesAtts];
+
+    return _UnifiedAttachmentGroupWidget(
+      title: AppStrings.attachmentsTitle,
+      attachments: unifiedList,
+      isEditing: showAttachmentAction,
+      isInstanceView: true,
+      onAdd: () => _handleAddAttachment(
+        context,
+        ref,
+        species.id,
+        instanceId: instanceId,
+        currentAttachments: instanceAtts,
+      ),
+      onOpen: (att) => _openAttachment(context, ref, att),
+      onReplace: (att) => _handleReplaceAttachment(context, ref, att),
+      onRename: (att) => _handleRenameAttachment(context, ref, att),
+      onDelete: (att) => _confirmAndDeleteAttachment(context, ref, att),
+    );
+  }
 }
 
-class _AttachmentGroupWidget extends StatelessWidget {
+class _UnifiedAttachmentGroupWidget extends StatelessWidget {
   final String title;
   final List<Attachment> attachments;
   final bool isEditing;
+  final bool isInstanceView;
+  final VoidCallback onAdd;
   final Function(Attachment) onOpen;
+  final Function(Attachment) onReplace;
+  final Function(Attachment) onRename;
   final Function(Attachment) onDelete;
 
-  const _AttachmentGroupWidget({
+  const _UnifiedAttachmentGroupWidget({
     required this.title,
     required this.attachments,
     required this.isEditing,
+    required this.isInstanceView,
+    required this.onAdd,
     required this.onOpen,
+    required this.onReplace,
+    required this.onRename,
     required this.onDelete,
   });
 
@@ -542,10 +764,11 @@ class _AttachmentGroupWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header Row
             Row(
               children: [
                 Icon(
-                  title.contains('Instancia') ? Icons.inventory_2 : Icons.folder_open,
+                  Icons.folder_open,
                   size: 18,
                   color: theme.colorScheme.primary,
                 ),
@@ -573,6 +796,28 @@ class _AttachmentGroupWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
+
+            // Add button if in editing mode
+            if (isEditing) ...[
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: onAdd,
+                  icon: const Icon(Icons.add_photo_alternate_outlined, size: 16),
+                  label: Text(
+                    isInstanceView ? 'Agregar adjunto a esta instancia' : AppStrings.attachFile,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+
+            // Empty state or list
             if (attachments.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -589,6 +834,9 @@ class _AttachmentGroupWidget extends StatelessWidget {
                 separatorBuilder: (_, __) => const Divider(height: 1),
                 itemBuilder: (context, idx) {
                   final att = attachments[idx];
+                  final isSpeciesLevel = att.instanceId == null || att.instanceId!.isEmpty;
+                  final isEditable = isEditing && (!isInstanceView || !isSpeciesLevel);
+
                   final isImage = att.fileType == 'image' ||
                       ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.bmp']
                           .any((ext) => att.filePath.toLowerCase().endsWith(ext));
@@ -605,8 +853,8 @@ class _AttachmentGroupWidget extends StatelessWidget {
                             dense: true,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                             leading: Container(
-                              width: 36,
-                              height: 36,
+                              width: 38,
+                              height: 38,
                               decoration: BoxDecoration(
                                 color: fileExists
                                     ? (isImage ? Colors.blue.withAlpha(20) : Colors.amber.withAlpha(20))
@@ -622,23 +870,54 @@ class _AttachmentGroupWidget extends StatelessWidget {
                                             child: Image.file(
                                               File(absPath),
                                               fit: BoxFit.cover,
-                                              width: 36,
-                                              height: 36,
+                                              width: 38,
+                                              height: 38,
                                               errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 20, color: Colors.blue),
                                             ),
                                           )
                                         : const Icon(Icons.picture_as_pdf, color: Colors.amber, size: 20)),
                               ),
                             ),
-                            title: Text(
-                              att.fileName,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: fileExists ? null : Colors.red.shade700,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    att.fileName,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: fileExists ? null : Colors.red.shade700,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (isInstanceView) ...[
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                                    decoration: BoxDecoration(
+                                      color: isSpeciesLevel
+                                          ? theme.colorScheme.primary.withAlpha(25)
+                                          : Colors.teal.withAlpha(25),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: isSpeciesLevel
+                                            ? theme.colorScheme.primary.withAlpha(90)
+                                            : Colors.teal.withAlpha(90),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      isSpeciesLevel ? 'Especie' : 'Instancia',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.bold,
+                                        color: isSpeciesLevel ? theme.colorScheme.primary : Colors.teal.shade800,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                             subtitle: fileExists
                                 ? Text(
@@ -658,12 +937,57 @@ class _AttachmentGroupWidget extends StatelessWidget {
                                   tooltip: 'Abrir adjunto',
                                   onPressed: () => onOpen(att),
                                 ),
-                                if (isEditing)
-                                  IconButton(
-                                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
-                                    tooltip: AppStrings.delete,
-                                    onPressed: () => onDelete(att),
+                                if (isEditable) ...[
+                                  PopupMenuButton<String>(
+                                    icon: const Icon(Icons.more_vert, size: 18),
+                                    tooltip: 'Opciones de adjunto',
+                                    onSelected: (value) {
+                                      switch (value) {
+                                        case 'replace':
+                                          onReplace(att);
+                                          break;
+                                        case 'rename':
+                                          onRename(att);
+                                          break;
+                                        case 'delete':
+                                          onDelete(att);
+                                          break;
+                                      }
+                                    },
+                                    itemBuilder: (ctx) => [
+                                      const PopupMenuItem(
+                                        value: 'replace',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.sync, size: 16, color: Colors.blue),
+                                            SizedBox(width: 8),
+                                            Text('Reemplazar archivo', style: TextStyle(fontSize: 12)),
+                                          ],
+                                        ),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'rename',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.edit_outlined, size: 16, color: Colors.amber),
+                                            SizedBox(width: 8),
+                                            Text('Renombrar', style: TextStyle(fontSize: 12)),
+                                          ],
+                                        ),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'delete',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
+                                            SizedBox(width: 8),
+                                            Text('Eliminar', style: TextStyle(fontSize: 12, color: Colors.redAccent)),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                ],
                               ],
                             ),
                           );

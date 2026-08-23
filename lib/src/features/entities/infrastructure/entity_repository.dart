@@ -431,6 +431,54 @@ class EntityRepository implements IEntityRepository {
   }
 
   @override
+  Future<void> updateAttachment(Attachment attachment) async {
+    final companion = AttachmentsTableCompanion(
+      id: Value(attachment.id),
+      speciesId: Value(attachment.speciesId),
+      instanceId: Value(attachment.instanceId),
+      filePath: Value(attachment.filePath),
+      fileName: Value(attachment.fileName),
+      fileType: Value(attachment.fileType),
+      createdAt: Value(attachment.createdAt),
+    );
+    await _db.into(_db.attachmentsTable).insertOnConflictUpdate(companion);
+  }
+
+  @override
+  Future<void> replaceAttachmentFile(
+    String attachmentId,
+    String newSourcePath, {
+    String? newFileName,
+    String? newFileType,
+  }) async {
+    final query = _db.select(_db.attachmentsTable)..where((t) => t.id.equals(attachmentId));
+    final current = await query.getSingleOrNull();
+    if (current == null) return;
+
+    final oldRelativePath = current.filePath;
+    final savedRelativePath = await _fileStorageService.saveFile(newSourcePath);
+
+    final finalFileName = newFileName ?? current.fileName;
+    final finalFileType = newFileType ?? current.fileType;
+
+    final companion = AttachmentsTableCompanion(
+      id: Value(current.id),
+      speciesId: Value(current.speciesId),
+      instanceId: Value(current.instanceId),
+      filePath: Value(savedRelativePath),
+      fileName: Value(finalFileName),
+      fileType: Value(finalFileType),
+      createdAt: Value(current.createdAt),
+    );
+
+    await _db.into(_db.attachmentsTable).insertOnConflictUpdate(companion);
+
+    if (oldRelativePath != savedRelativePath) {
+      await _fileStorageService.deleteFile(oldRelativePath);
+    }
+  }
+
+  @override
   Future<void> deleteAttachment(String attachmentId) async {
     final query = _db.select(_db.attachmentsTable)..where((t) => t.id.equals(attachmentId));
     final row = await query.getSingleOrNull();

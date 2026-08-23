@@ -19,6 +19,7 @@ import '../domain/subspecies.dart';
 import 'subspecies_section_widget.dart';
 import 'web_image_picker_dialog.dart';
 import 'add_edit_subspecies_modal.dart';
+import 'standard_media_picker_sheet.dart';
 import 'subspecies_tile.dart';
 
 class SpeciesFormModal extends ConsumerStatefulWidget {
@@ -453,32 +454,26 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                   children: [
                     // Photo Picker (Point 2: BoxFit.contain)
                     GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (_) => SafeArea(
-                            child: Wrap(
-                              children: [
-                                ListTile(
-                                  leading: const Icon(Icons.camera_alt),
-                                  title: const Text(AppStrings.takePhoto),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    _pickImage(ImageSource.camera);
-                                  },
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.photo_library),
-                                  title: const Text(AppStrings.chooseGallery),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    _pickImage(ImageSource.gallery);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
+                      onTap: () async {
+                        final result = await StandardMediaPickerSheet.show(
+                          context,
+                          title: 'Foto de la Especie',
+                          webSearchQuery: _nameController.text.trim(),
+                          allowDocuments: false,
                         );
+                        if (result != null && mounted) {
+                          if (result.file != null) {
+                            setState(() {
+                              _selectedImage = XFile(result.file!.path);
+                              _speciesPhotoPath = null;
+                            });
+                          } else if (result.relativeStoredPath != null) {
+                            setState(() {
+                              _speciesPhotoPath = result.relativeStoredPath;
+                              _selectedImage = null;
+                            });
+                          }
+                        }
                       },
                       child: Stack(
                         children: [

@@ -51,6 +51,9 @@ class NumismaticDataHelper {
   static bool isNumismaticSpecies(CatalogItem species) =>
       NumismaticParser.isNumismaticSpecies(species);
 
+  static bool isCoin(CatalogItem species) =>
+      NumismaticParser.isCoinSpecies(species);
+
   static String buildSubspeciesName({
     double? faceValueNumber,
     String? faceValueStr,
