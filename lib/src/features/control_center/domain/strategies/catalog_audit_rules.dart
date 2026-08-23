@@ -166,7 +166,8 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
               );
 
               if (choice == 'make_not_unique') {
-                await ref.read(catalogRepositoryProvider).saveCatalogItem(sp.copyWith(isUnique: false));
+                final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
+                await ref.read(catalogRepositoryProvider).saveCatalogItem(freshSp.copyWith(isUnique: false));
                 if (ctx.mounted) {
                   AppToast.showSuccess(ctx, 'Especie configurada como No Única.');
                 }
@@ -231,7 +232,8 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
           return true;
         },
         onFix: (ctx, ref) async {
-          final updatedSub = sub.copyWith(clearBrand: true, clearBarcode: true);
+          final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
+          final updatedSub = freshSub.copyWith(clearBrand: true, clearBarcode: true);
           await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
           if (ctx.mounted) {
             AppToast.showSuccess(ctx, 'Marca y código de barras removidos.');
@@ -358,7 +360,8 @@ class IncompleteSpeciesInfoStrategy implements IAuditRuleStrategy {
           return true;
         },
         onFix: (ctx, ref) async {
-          final result = await SpeciesFormModal.show(ctx, initialSpecies: sp);
+          final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
+          final result = await SpeciesFormModal.show(ctx, initialSpecies: freshSp);
           return result != null;
         },
       ));
@@ -409,7 +412,8 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
           final localTempPath = await lookupService.downloadAndSaveImage(sp.mainPhotoPath!);
           if (localTempPath != null) {
             final relPath = await fileStorage.saveFile(localTempPath);
-            final updatedSp = sp.copyWith(mainPhotoPath: relPath);
+            final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
+            final updatedSp = freshSp.copyWith(mainPhotoPath: relPath);
             await ref.read(catalogRepositoryProvider).saveCatalogItem(updatedSp);
             ref.read(catalogListProvider.notifier).loadCatalog();
             if (ctx.mounted) {
@@ -430,7 +434,8 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
                     ? await fileStorage.saveFile(picked.file!.path)
                     : picked.relativeStoredPath;
                 if (relPath != null) {
-                  final updatedSp = sp.copyWith(mainPhotoPath: relPath);
+                  final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
+                  final updatedSp = freshSp.copyWith(mainPhotoPath: relPath);
                   await ref.read(catalogRepositoryProvider).saveCatalogItem(updatedSp);
                   ref.invalidate(catalogListProvider);
                   return true;
@@ -474,7 +479,8 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
           final localTempPath = await lookupService.downloadAndSaveImage(sub.photoPath!);
           if (localTempPath != null) {
             final relPath = await fileStorage.saveFile(localTempPath);
-            final updatedSub = sub.copyWith(photoPath: relPath);
+            final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
+            final updatedSub = freshSub.copyWith(photoPath: relPath);
             await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
             ref.invalidate(subspeciesListProvider);
             if (ctx.mounted) {
@@ -495,7 +501,8 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
                     ? await fileStorage.saveFile(picked.file!.path)
                     : picked.relativeStoredPath;
                 if (relPath != null) {
-                  final updatedSub = sub.copyWith(photoPath: relPath);
+                  final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
+                  final updatedSub = freshSub.copyWith(photoPath: relPath);
                   await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
                   ref.invalidate(subspeciesListProvider);
                   return true;

@@ -92,9 +92,11 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
         }
       }
 
+      final freshEntity = await eRepo.getEntityById(widget.entity.id) ?? widget.entity;
+
       if (_mode == LocationCorrectionMode.physicalNode) {
         // Save physical location node
-        final updatedEntity = widget.entity.copyWith(locationId: _selectedLocationId);
+        final updatedEntity = freshEntity.copyWith(locationId: _selectedLocationId);
         await eRepo.saveEntity(updatedEntity);
       } else {
         // Container mode selected
@@ -107,7 +109,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
         }
 
         // Clear physical location and save GUARDADO_EN relation
-        final updatedEntity = widget.entity.copyWith(locationId: null);
+        final updatedEntity = freshEntity.copyWith(locationId: null);
         await eRepo.saveEntity(updatedEntity);
 
         final newRelation = EntityRelation(

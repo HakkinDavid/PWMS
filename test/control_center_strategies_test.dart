@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/species_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_registry.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
@@ -187,6 +188,70 @@ void main() {
       final cards = await strategy.evaluate(context);
       expect(cards.length, 1);
       expect(cards.first.type, AuditCardType.uniquenessViolation);
+    });
+
+    test('MissingMandatoryMagnitudesStrategy detects all missing species magnitudes on an instance', () async {
+      const strategy = MissingMandatoryMagnitudesStrategy();
+
+      final species = CatalogItem(
+        id: 'sp_cereal',
+        name: 'Cereal de Avena',
+        type: 'Objeto',
+        magnitudes: [
+          SpeciesMagnitude(
+            id: 'sm1',
+            speciesId: 'sp_cereal',
+            propertyName: 'Masa Neta',
+            dataType: 'real',
+            unitSymbol: 'g',
+            createdAt: DateTime.now(),
+          ),
+          SpeciesMagnitude(
+            id: 'sm2',
+            speciesId: 'sp_cereal',
+            propertyName: 'Sabor',
+            dataType: 'string',
+            createdAt: DateTime.now(),
+          ),
+          SpeciesMagnitude(
+            id: 'sm3',
+            speciesId: 'sp_cereal',
+            propertyName: 'Orgánico',
+            dataType: 'boolean',
+            createdAt: DateTime.now(),
+          ),
+        ],
+        createdAt: DateTime.now(),
+      );
+
+      final instance = WorldEntity(
+        id: 'e_cereal',
+        speciesId: 'sp_cereal',
+        magnitudes: const [], // Has none of the 3
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: [instance],
+        allCatalog: [species],
+        allSubspecies: const [],
+        allRelations: const [],
+        allLocations: const [],
+        allSpeciesMagnitudes: species.magnitudes,
+        allInstanceMagnitudes: const [],
+        allRequirements: const [],
+        effectiveLocationMap: const {},
+      );
+
+      final cards = await strategy.evaluate(context);
+      expect(cards.length, 3);
+      expect(cards.map((c) => c.title), containsAll([
+        'Magnitud Faltante: Masa Neta',
+        'Magnitud Faltante: Sabor',
+        'Magnitud Faltante: Orgánico',
+      ]));
     });
   });
 }

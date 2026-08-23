@@ -61,7 +61,8 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
           return true;
         },
         onFix: (ctx, ref) async {
-          return await LocationOrContainerCorrectionSheet.show(ctx, entity: entity);
+          final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+          return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
         },
       ));
     }
@@ -150,7 +151,8 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
           );
 
           if (choice == 'keep_container') {
-            await ref.read(entityRepositoryProvider).saveEntity(entity.copyWith(locationId: null));
+            final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+            await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(locationId: null));
             if (ctx.mounted) {
               AppToast.showSuccess(ctx, 'Ubicación directa removida. Conservado en contenedor.');
             }
@@ -162,7 +164,8 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
             }
             return true;
           } else if (choice == 'reassign') {
-            return await LocationOrContainerCorrectionSheet.show(ctx, entity: entity);
+            final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+            return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
           }
           return false;
         },
@@ -326,7 +329,8 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
           );
 
           if (choice == 'location') {
-            return await LocationOrContainerCorrectionSheet.show(ctx, entity: entity);
+            final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+            return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
           } else if (choice == 'delete') {
             final confirmDelete = await showDialog<bool>(
               context: ctx,
@@ -410,7 +414,8 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
           return true;
         },
         onFix: (ctx, ref) async {
-          return await LocationOrContainerCorrectionSheet.show(ctx, entity: entity);
+          final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+          return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
         },
       ));
     }

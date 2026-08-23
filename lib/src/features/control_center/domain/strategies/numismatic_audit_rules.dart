@@ -155,17 +155,19 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
                 );
 
                 if (action == 'subspecies') {
+                  final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                  final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
                   final updatedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
                     catalogRepo: ref.read(catalogRepositoryProvider),
                     entityRepo: ref.read(entityRepositoryProvider),
-                    subspecies: sub,
-                    instance: entity,
+                    subspecies: freshSub,
+                    instance: freshEntity,
                   );
                   await NumismaticDataHelper.repairAttachmentFileNames(
                     catalogRepo: ref.read(catalogRepositoryProvider),
                     entityRepo: ref.read(entityRepositoryProvider),
                     subspecies: updatedSub,
-                    instance: entity,
+                    instance: freshEntity,
                   );
                   if (ctx.mounted) {
                     AppToast.showSuccess(ctx, 'Subespecie y adjuntos sincronizados con éxito.');
@@ -244,11 +246,13 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
                   return true;
                 },
                 onFix: (ctx, ref) async {
+                  final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                  final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
                   await NumismaticDataHelper.repairAttachmentFileNames(
                     catalogRepo: ref.read(catalogRepositoryProvider),
                     entityRepo: ref.read(entityRepositoryProvider),
-                    subspecies: sub,
-                    instance: entity,
+                    subspecies: freshSub,
+                    instance: freshEntity,
                   );
                   if (ctx.mounted) {
                     AppToast.showSuccess(ctx, AppStrings.attachmentRenamedSuccess);
@@ -317,22 +321,24 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
               },
               onFix: (ctx, ref) async {
                 final parsedSub = NumismaticDataHelper.parseSubspeciesName(sub.subspeciesName);
-                final List<InstanceMagnitude> currentMags = List.from(entity.magnitudes);
+                final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                final freshInstAttrs = NumismaticDataHelper.extractAttributesFromInstance(freshEntity);
+                final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
 
-                if (parsedSub.faceValueNumber != null && instAttrs.faceValueNumber == null) {
+                if (parsedSub.faceValueNumber != null && freshInstAttrs.faceValueNumber == null) {
                   currentMags.add(InstanceMagnitude(
                     id: const Uuid().v4(),
-                    instanceId: entity.id,
+                    instanceId: freshEntity.id,
                     propertyName: AppStrings.nominalValuePropertyName,
                     dataType: 'real',
                     magnitudeValue: parsedSub.faceValueNumber!,
                   ));
                 }
 
-                if (parsedSub.year != null && instAttrs.year == null && double.tryParse(parsedSub.year!) != null) {
+                if (parsedSub.year != null && freshInstAttrs.year == null && double.tryParse(parsedSub.year!) != null) {
                   currentMags.add(InstanceMagnitude(
                     id: const Uuid().v4(),
-                    instanceId: entity.id,
+                    instanceId: freshEntity.id,
                     propertyName: AppStrings.mintagePropertyName,
                     dataType: 'integer',
                     magnitudeValue: double.parse(parsedSub.year!),
@@ -340,17 +346,17 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
                   ));
                 }
 
-                if (parsedSub.currencyName != null && instAttrs.currencyName == null) {
+                if (parsedSub.currencyName != null && freshInstAttrs.currencyName == null) {
                   currentMags.add(InstanceMagnitude(
                     id: const Uuid().v4(),
-                    instanceId: entity.id,
+                    instanceId: freshEntity.id,
                     propertyName: AppStrings.currencyPropertyName,
                     dataType: 'string',
                     stringValue: parsedSub.currencyName,
                   ));
                 }
 
-                final updatedEntity = entity.copyWith(magnitudes: currentMags);
+                final updatedEntity = freshEntity.copyWith(magnitudes: currentMags);
                 await ref.read(entityRepositoryProvider).saveEntity(updatedEntity);
 
                 if (ctx.mounted) {
@@ -422,7 +428,8 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
                 );
 
                 if (chosenGrade != null && chosenGrade.isNotEmpty) {
-                  final List<InstanceMagnitude> currentMags = List.from(entity.magnitudes);
+                  final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                  final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
                   final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == AppStrings.gradePropertyName);
                   if (existingGradeIdx >= 0) {
                     currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
@@ -434,14 +441,14 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
                   } else {
                     currentMags.add(InstanceMagnitude(
                       id: const Uuid().v4(),
-                      instanceId: entity.id,
+                      instanceId: freshEntity.id,
                       propertyName: AppStrings.gradePropertyName,
                       dataType: 'string',
                       stringValue: chosenGrade,
                     ));
                   }
 
-                  final updatedEntity = entity.copyWith(magnitudes: currentMags);
+                  final updatedEntity = freshEntity.copyWith(magnitudes: currentMags);
                   await ref.read(entityRepositoryProvider).saveEntity(updatedEntity);
 
                   if (ctx.mounted) {

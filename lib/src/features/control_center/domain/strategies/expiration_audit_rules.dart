@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:platinum_world_management_system/src/core/domain/property_data_type.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import 'package:uuid/uuid.dart';
@@ -63,7 +64,8 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
           );
 
           if (picked != null) {
-            await ref.read(entityRepositoryProvider).saveEntity(entity.copyWith(expirationDate: picked));
+            final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+            await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(expirationDate: picked));
             if (ctx.mounted) {
               AppToast.showSuccess(ctx, 'Fecha de caducidad actualizada.');
             }
@@ -121,7 +123,8 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
           return true;
         },
         onFix: (ctx, ref) async {
-          await ref.read(entityRepositoryProvider).saveEntity(entity.copyWith(expirationDate: null));
+          final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+          await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(expirationDate: null));
           if (ctx.mounted) {
             AppToast.showSuccess(ctx, 'Fecha de caducidad eliminada.');
           }
@@ -147,26 +150,29 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
-    for (final entity in context.allEntities.take(20)) {
+    for (final entity in context.allEntities) {
       final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
       if (species != null && species.magnitudes.isNotEmpty) {
         final missingMags = species.magnitudes.where((sm) =>
-            !entity.magnitudes.any((im) => im.propertyName.toLowerCase() == sm.propertyName.toLowerCase())).toList();
+            !entity.magnitudes.any((im) => im.propertyName.trim().toLowerCase() == sm.propertyName.trim().toLowerCase())).toList();
 
-        if (missingMags.isNotEmpty) {
-          final missingProp = missingMags.first;
+        for (final missingProp in missingMags) {
           final displayName = EntityDisplayHelper.getDisplayName(
             entity: entity,
             catalogItems: context.allCatalog,
             subspeciesList: context.allSubspecies,
           );
 
+          final unitSuffix = (missingProp.unitSymbol != null && missingProp.unitSymbol!.isNotEmpty)
+              ? ' (${missingProp.unitSymbol})'
+              : '';
+
           cards.add(AuditCardData(
             id: 'miss_mag_${entity.id}_${missingProp.propertyName}',
             type: AuditCardType.missingMandatoryMagnitudes,
             title: 'Magnitud Faltante: ${missingProp.propertyName}',
-            subtitle: '$displayName • Especie requiere: ${missingProp.propertyName} (${missingProp.unitSymbol ?? ""})',
-            question: 'La instancia "$displayName" no tiene registrada la propiedad "${missingProp.propertyName}". ¿Deseas asignarle un valor?',
+            subtitle: '$displayName • Especie define: ${missingProp.propertyName}$unitSuffix',
+            question: 'La instancia "$displayName" no tiene registrada la magnitud "${missingProp.propertyName}" definida en su especie "${species.name}". ¿Deseas asignarle un valor?',
             icon: Icons.straighten,
             themeColor: Colors.teal,
             entity: entity,
@@ -179,42 +185,117 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
               return true;
             },
             onFix: (ctx, ref) async {
-              final controller = TextEditingController();
-              final enteredValue = await showDialog<String>(
-                context: ctx,
-                builder: (dialogCtx) => AlertDialog(
-                  title: Text('Asignar ${missingProp.propertyName}'),
-                  content: TextField(
-                    controller: controller,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    decoration: InputDecoration(
-                      labelText: missingProp.propertyName,
-                      suffixText: missingProp.unitSymbol,
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(dialogCtx, null), child: const Text('Cancelar')),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
-                      child: const Text('Guardar'),
-                    ),
-                  ],
-                ),
-              );
+              final propType = PropertyDataType.fromCode(missingProp.dataType);
+              InstanceMagnitude? newMag;
 
-              if (enteredValue != null && enteredValue.isNotEmpty) {
-                final numVal = double.tryParse(enteredValue) ?? 0.0;
-                final newMag = InstanceMagnitude(
-                  id: const Uuid().v4(),
-                  instanceId: entity.id,
-                  propertyName: missingProp.propertyName,
-                  dataType: missingProp.dataType,
-                  magnitudeValue: numVal,
-                  unitSymbol: missingProp.unitSymbol,
+              if (propType == PropertyDataType.boolean) {
+                final boolVal = await showDialog<bool>(
+                  context: ctx,
+                  builder: (dialogCtx) => AlertDialog(
+                    title: Text('Asignar ${missingProp.propertyName}'),
+                    content: Text('Selecciona el valor booleano para "${missingProp.propertyName}":'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(dialogCtx, null), child: const Text('Cancelar')),
+                      OutlinedButton(
+                        onPressed: () => Navigator.pop(dialogCtx, false),
+                        child: const Text('No (Falso)'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(dialogCtx, true),
+                        child: const Text('Sí (Verdadero)'),
+                      ),
+                    ],
+                  ),
                 );
-                final updatedMags = List<InstanceMagnitude>.from(entity.magnitudes)..add(newMag);
-                await ref.read(entityRepositoryProvider).saveEntity(entity.copyWith(magnitudes: updatedMags));
+
+                if (boolVal != null) {
+                  newMag = InstanceMagnitude(
+                    id: const Uuid().v4(),
+                    instanceId: entity.id,
+                    propertyName: missingProp.propertyName,
+                    dataType: 'boolean',
+                    stringValue: boolVal ? 'true' : 'false',
+                    magnitudeValue: boolVal ? 1.0 : 0.0,
+                  );
+                }
+              } else {
+                final controller = TextEditingController();
+                final enteredValue = await showDialog<String>(
+                  context: ctx,
+                  builder: (dialogCtx) => AlertDialog(
+                    title: Text('Asignar ${missingProp.propertyName}'),
+                    content: TextField(
+                      controller: controller,
+                      autofocus: true,
+                      keyboardType: propType == PropertyDataType.integer
+                          ? TextInputType.number
+                          : propType == PropertyDataType.string
+                              ? TextInputType.text
+                              : const TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                        labelText: missingProp.propertyName,
+                        suffixText: missingProp.unitSymbol,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(dialogCtx, null), child: const Text('Cancelar')),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
+                        child: const Text('Guardar'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (enteredValue != null && enteredValue.isNotEmpty) {
+                  if (propType == PropertyDataType.string) {
+                    newMag = InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: missingProp.propertyName,
+                      dataType: 'string',
+                      stringValue: enteredValue,
+                      magnitudeValue: 0.0,
+                    );
+                  } else if (propType == PropertyDataType.integer) {
+                    final intVal = int.tryParse(enteredValue) ?? 0;
+                    newMag = InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: missingProp.propertyName,
+                      dataType: 'integer',
+                      magnitudeValue: intVal.toDouble(),
+                      unitSymbol: missingProp.unitSymbol,
+                    );
+                  } else {
+                    final numVal = double.tryParse(enteredValue) ?? 0.0;
+                    newMag = InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: missingProp.propertyName,
+                      dataType: 'real',
+                      magnitudeValue: numVal,
+                      unitSymbol: missingProp.unitSymbol,
+                    );
+                  }
+                }
+              }
+
+              if (newMag != null) {
+                final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
+                final existingIdx = currentMags.indexWhere(
+                  (m) => m.propertyName.trim().toLowerCase() == missingProp.propertyName.trim().toLowerCase(),
+                );
+
+                if (existingIdx >= 0) {
+                  currentMags[existingIdx] = newMag;
+                } else {
+                  currentMags.add(newMag);
+                }
+
+                await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(magnitudes: currentMags));
                 if (ctx.mounted) {
                   AppToast.showSuccess(ctx, 'Propiedad "${missingProp.propertyName}" registrada.');
                 }
@@ -298,9 +379,12 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
 
             if (enteredValue != null && enteredValue.isNotEmpty) {
               final numVal = double.tryParse(enteredValue) ?? 0.0;
-              final updatedMags = entity.magnitudes.map((m) =>
-                  m.id == mag.id ? m.copyWith(magnitudeValue: numVal) : m).toList();
-              await ref.read(entityRepositoryProvider).saveEntity(entity.copyWith(magnitudes: updatedMags));
+              final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+              final updatedMags = freshEntity.magnitudes.map((m) =>
+                  (m.id == mag.id || m.propertyName.trim().toLowerCase() == mag.propertyName.trim().toLowerCase())
+                      ? m.copyWith(magnitudeValue: numVal)
+                      : m).toList();
+              await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(magnitudes: updatedMags));
               if (ctx.mounted) {
                 AppToast.showSuccess(ctx, 'Valor de "${mag.propertyName}" actualizado a $numVal.');
               }

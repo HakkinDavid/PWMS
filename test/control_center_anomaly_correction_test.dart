@@ -456,5 +456,173 @@ void main() {
       expect(updatedSub.brand, isNull);
       await tester.pump(const Duration(seconds: 4));
     });
+
+    testWidgets('Missing species magnitude card is generated and onFix saves magnitude to DB', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(
+              id: 'sp_sugar',
+              name: 'Azúcar Morena',
+              mainPhotoPath: const Value('local/sugar.jpg'),
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.speciesMagnitudesTable).insert(
+            SpeciesMagnitudesTableCompanion.insert(
+              id: 'sm_peso',
+              speciesId: 'sp_sugar',
+              propertyName: 'Peso Neto',
+              dataType: const Value('real'),
+              unitSymbol: const Value('kg'),
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_pantry', name: 'Alacena', createdAt: now),
+          );
+
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(
+              id: 'e_sugar',
+              speciesId: 'sp_sugar',
+              locationId: const Value('loc_pantry'),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: ControlCenterScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Magnitud Faltante: Peso Neto'), findsOneWidget);
+
+      final fixButton = find.text('CORREGIR');
+      expect(fixButton, findsOneWidget);
+      await tester.tap(fixButton);
+      await tester.pumpAndSettle();
+
+      // Enter value in the dialog
+      final textField = find.byType(TextField);
+      expect(textField, findsOneWidget);
+      await tester.enterText(textField, '2.5');
+      await tester.pumpAndSettle();
+
+      final saveButton = find.text('Guardar');
+      expect(saveButton, findsOneWidget);
+      await tester.tap(saveButton);
+      await tester.pumpAndSettle();
+
+      // Verify in DB that instance magnitude was inserted
+      final mags = await (db.select(db.instanceMagnitudesTable)..where((tbl) => tbl.instanceId.equals('e_sugar'))).get();
+      expect(mags.length, 1);
+      expect(mags.first.propertyName, 'Peso Neto');
+      expect(mags.first.magnitudeValue, 2.5);
+      expect(mags.first.unitSymbol, 'kg');
+      await tester.pump(const Duration(seconds: 4));
+    });
+
+    testWidgets('Multiple cards on the same entity do not overwrite stale snapshots', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(
+              id: 'sp_yogurt',
+              name: 'Yogurt Griego',
+              isNonPerishable: const Value(false),
+              mainPhotoPath: const Value('local/yogurt.jpg'),
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.speciesMagnitudesTable).insert(
+            SpeciesMagnitudesTableCompanion.insert(
+              id: 'sm_grasa',
+              speciesId: 'sp_yogurt',
+              propertyName: 'Grasa',
+              dataType: const Value('real'),
+              unitSymbol: const Value('g'),
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_fridge2', name: 'Refri', createdAt: now),
+          );
+
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(
+              id: 'e_yogurt_mult',
+              speciesId: 'sp_yogurt',
+              locationId: const Value('loc_fridge2'),
+              expirationDate: const Value(null),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: ControlCenterScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Card 1: Perecedero sin Caducidad
+      expect(find.text('Perecedero sin Caducidad'), findsOneWidget);
+      final fixBtn1 = find.text('CORREGIR');
+      await tester.tap(fixBtn1);
+      await tester.pumpAndSettle();
+
+      // Pick date in date picker dialog
+      final okBtn = find.text('OK');
+      expect(okBtn, findsOneWidget);
+      await tester.tap(okBtn);
+      await tester.pumpAndSettle();
+
+      // Card 2: Magnitud Faltante: Grasa
+      expect(find.text('Magnitud Faltante: Grasa'), findsOneWidget);
+      final fixBtn2 = find.text('CORREGIR');
+      await tester.tap(fixBtn2);
+      await tester.pumpAndSettle();
+
+      // Enter 5.0 for Grasa
+      final textField = find.byType(TextField);
+      expect(textField, findsOneWidget);
+      await tester.enterText(textField, '5.0');
+      await tester.pumpAndSettle();
+
+      final saveBtn = find.text('Guardar');
+      await tester.tap(saveBtn);
+      await tester.pumpAndSettle();
+
+      // Check final DB state for e_yogurt_mult: BOTH expirationDate AND magnitude must exist!
+      final entity = await (db.select(db.entitiesTable)..where((tbl) => tbl.id.equals('e_yogurt_mult'))).getSingle();
+      expect(entity.expirationDate, isNotNull);
+
+      final mags = await (db.select(db.instanceMagnitudesTable)..where((tbl) => tbl.instanceId.equals('e_yogurt_mult'))).get();
+      expect(mags.length, 1);
+      expect(mags.first.propertyName, 'Grasa');
+      expect(mags.first.magnitudeValue, 5.0);
+      await tester.pump(const Duration(seconds: 4));
+    });
   });
 }
