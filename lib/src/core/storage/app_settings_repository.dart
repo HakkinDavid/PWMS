@@ -58,6 +58,7 @@ class AppSettingsRepository {
   static const String keyNumismaticTorchEnabled = 'numismatic_torch_enabled';
   static const String keyNumismaticExposureOffset = 'numismatic_exposure_offset';
   static const String keyNumismaticDefaultMode = 'numismatic_default_mode';
+  static const String keyNumismaticZoomLevel = 'numismatic_zoom_level';
 
   Future<bool> getNumismaticTorchEnabled({bool defaultValue = false}) async {
     final val = await _db.getSetting(keyNumismaticTorchEnabled);
@@ -85,6 +86,16 @@ class AppSettingsRepository {
 
   Future<void> setNumismaticDefaultMode(String mode) async {
     await _db.setSetting(keyNumismaticDefaultMode, mode.trim());
+  }
+
+  Future<double> getNumismaticZoomLevel({double defaultValue = 1.0}) async {
+    final val = await _db.getSetting(keyNumismaticZoomLevel);
+    if (val == null) return defaultValue;
+    return double.tryParse(val) ?? defaultValue;
+  }
+
+  Future<void> setNumismaticZoomLevel(double value) async {
+    await _db.setSetting(keyNumismaticZoomLevel, value.toString());
   }
 }
 

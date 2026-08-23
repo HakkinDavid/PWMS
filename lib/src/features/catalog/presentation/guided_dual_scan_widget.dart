@@ -63,12 +63,19 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       final settings = ref.read(appSettingsRepositoryProvider);
       final torch = await settings.getNumismaticTorchEnabled(defaultValue: false);
       final ev = await settings.getNumismaticExposureOffset(defaultValue: -1.5);
+      final zoom = await settings.getNumismaticZoomLevel(defaultValue: 1.0);
+      final defaultMode = await settings.getNumismaticDefaultMode();
 
       if (mounted && !_isDisposed) {
         setState(() {
-          _isCoinMode = true; // El modo inicial siempre es moneda
           _isTorchOn = torch;
           _exposureOffset = ev;
+          _currentZoom = zoom;
+          if (defaultMode != null) {
+            _isCoinMode = defaultMode == 'coin';
+          } else {
+            _isCoinMode = true; // Por defecto moneda
+          }
         });
       }
     } catch (_) {}
@@ -131,7 +138,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
         _maxZoom = await _cameraController!.getMaxZoomLevel().catchError((_) => 4.0);
         _minZoom = await _cameraController!.getMinZoomLevel().catchError((_) => 1.0);
 
-        // Configuración de 3A, Spot Metering y Compensación EV (-1.5 EV)
+        // Configuración de 3A, Spot Metering, Compensación EV (-1.5 EV), Zoom y Linterna cacheados
         try {
           await _cameraController!.setFocusMode(FocusMode.auto);
           await _cameraController!.setExposureMode(ExposureMode.auto);
@@ -142,6 +149,11 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           final maxEv = await _cameraController!.getMaxExposureOffset().catchError((_) => 2.0);
           final targetEv = _exposureOffset.clamp(minEv, maxEv);
           await _cameraController!.setExposureOffset(targetEv).catchError((_) {});
+
+          if (_currentZoom > 1.0) {
+            final targetZoom = _currentZoom.clamp(_minZoom, _maxZoom);
+            await _cameraController!.setZoomLevel(targetZoom).catchError((_) {});
+          }
 
           if (_isTorchOn) {
             await _cameraController!.setFlashMode(FlashMode.torch).catchError((_) {});
@@ -243,6 +255,8 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           _currentZoom = zoom;
         });
       }
+      final settings = ref.read(appSettingsRepositoryProvider);
+      settings.setNumismaticZoomLevel(zoom).catchError((_) {});
     } catch (_) {}
   }
 
