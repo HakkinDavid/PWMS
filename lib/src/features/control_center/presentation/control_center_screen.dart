@@ -111,11 +111,14 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _cards.isEmpty
-              ? _buildEmptyState(theme)
-              : _buildCardStack(theme),
+      body: SafeArea(
+        top: false,
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _cards.isEmpty
+                ? _buildEmptyState(theme)
+                : _buildCardStack(theme),
+      ),
     );
   }
 

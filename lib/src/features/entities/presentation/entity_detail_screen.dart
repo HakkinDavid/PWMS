@@ -209,12 +209,14 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: entityAsync.when(
-        data: (entity) {
-          if (entity == null) {
-            return const Center(child: Text(AppStrings.appName));
-          }
+    return entityAsync.when(
+      data: (entity) {
+        if (entity == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text(AppStrings.appName)),
+            body: const Center(child: Text(AppStrings.appName)),
+          );
+        }
 
           if (!_isEditingInPlace) {
             _syncWorkingStateWithEntity(entity);
@@ -696,9 +698,14 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             ],
           );
         },
-        loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-        error: (err, _) => Scaffold(body: Center(child: Text('${AppStrings.errorPrefix}$err'))),
-      ),
-    );
+        loading: () => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.appName)),
+          body: const Center(child: CircularProgressIndicator()),
+        ),
+        error: (err, _) => Scaffold(
+          appBar: AppBar(title: const Text(AppStrings.appName)),
+          body: Center(child: Text('${AppStrings.errorPrefix}$err')),
+        ),
+      );
   }
 }

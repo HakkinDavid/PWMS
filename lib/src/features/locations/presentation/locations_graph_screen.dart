@@ -36,9 +36,15 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         final theme = Theme.of(ctx);
+        final mediaQuery = MediaQuery.of(ctx);
+        final bottomPadding = mediaQuery.viewInsets.bottom > 0
+            ? mediaQuery.viewInsets.bottom + 20
+            : mediaQuery.padding.bottom + 20;
+
         return Container(
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
@@ -48,7 +54,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
             left: 24,
             right: 24,
             top: 16,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+            bottom: bottomPadding,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -332,7 +338,12 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
 
           final rootNodes = nodes.where((n) => n.parentLocationId == null).toList();
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: MediaQuery.paddingOf(context).bottom + 84,
+            ),
             itemCount: rootNodes.length,
             itemBuilder: (context, index) {
               return _buildTreeTile(context, rootNodes[index], nodes, 0);

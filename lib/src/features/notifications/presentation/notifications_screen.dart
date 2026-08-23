@@ -54,7 +54,12 @@ class NotificationsScreen extends ConsumerWidget {
               await ref.read(notificationListProvider.notifier).evaluateAndLoad();
             },
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: MediaQuery.paddingOf(context).bottom + 24,
+              ),
               itemCount: notifications.length,
               separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {

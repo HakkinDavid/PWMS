@@ -231,9 +231,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget _buildSqlRunnerView(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Category filter row for SQL Presets
@@ -389,7 +391,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 
   Widget _buildSqlTableResults(ThemeData theme) {
@@ -565,6 +568,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final theme = Theme.of(context);
     final cleanQuery = query.toLowerCase().trim();
 
+    final bottomPadding = MediaQuery.paddingOf(context).bottom + 24.0;
+
     // 0. Contenedores (Entities that are target of GUARDADO_EN relations)
     if (_selectedScope == AppStrings.tabContainers) {
       final relations = ref.watch(relationListProvider).asData?.value ?? [];
@@ -590,7 +595,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
 
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: bottomPadding),
         itemCount: containerEntities.length,
         itemBuilder: (ctx, idx) {
           return EntityTile(entity: containerEntities[idx]);
@@ -608,7 +613,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       if (filtered.isEmpty) return const Center(child: Text(AppStrings.emptyLocation));
 
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: bottomPadding),
         itemCount: filtered.length,
         itemBuilder: (ctx, idx) {
           final n = filtered[idx];
@@ -636,7 +641,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       if (filtered.isEmpty) return const Center(child: Text(AppStrings.emptyCatalog));
 
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: bottomPadding),
         itemCount: filtered.length,
         itemBuilder: (ctx, idx) {
           return SpeciesTile(species: filtered[idx]);
@@ -651,7 +656,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       if (filtered.isEmpty) return const Center(child: Text(AppStrings.noHistoryResults));
 
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: bottomPadding),
         itemCount: filtered.length,
         itemBuilder: (ctx, idx) {
           final evt = filtered[idx];
@@ -684,7 +689,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: bottomPadding),
           itemCount: entities.length,
           itemBuilder: (context, index) {
             return EntityTile(entity: entities[index]);

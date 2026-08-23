@@ -61,6 +61,7 @@ class StandardMediaPickerSheet extends StatelessWidget {
     return showModalBottomSheet<SelectedMediaResult?>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => StandardMediaPickerSheet(
         title: title,

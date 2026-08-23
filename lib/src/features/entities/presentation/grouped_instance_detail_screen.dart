@@ -36,7 +36,9 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
     if (matchingEntities.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: Text(speciesName)),
-        body: const Center(child: Text(AppStrings.noInstancesAvailableInGroup)),
+        body: const SafeArea(
+          child: Center(child: Text(AppStrings.noInstancesAvailableInGroup)),
+        ),
       );
     }
 
@@ -134,7 +136,12 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
           // Lista de Instancias Individuales
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: MediaQuery.paddingOf(context).bottom + 24,
+              ),
               itemCount: group.entities.length,
               itemBuilder: (ctx, idx) {
                 final entity = group.entities[idx];

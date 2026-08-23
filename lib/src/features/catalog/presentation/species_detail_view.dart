@@ -22,6 +22,7 @@ class SpeciesDetailView extends ConsumerWidget {
   final Widget? instanceSpecificsHeader;
   final Widget? instanceSpecificsFooter;
   final List<Widget>? actions;
+  final Widget? floatingActionButton;
   final bool showAttachmentAction;
 
   const SpeciesDetailView({
@@ -32,6 +33,7 @@ class SpeciesDetailView extends ConsumerWidget {
     this.instanceSpecificsHeader,
     this.instanceSpecificsFooter,
     this.actions,
+    this.floatingActionButton,
     this.showAttachmentAction = false,
   });
 
@@ -299,27 +301,29 @@ class SpeciesDetailView extends ConsumerWidget {
           builder: (ctx) => Dialog(
             backgroundColor: Colors.black,
             insetPadding: EdgeInsets.zero,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                InteractiveViewer(
-                  child: Image.file(
-                    file,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Center(
-                      child: Icon(Icons.broken_image_outlined, color: Colors.white70, size: 48),
+            child: SafeArea(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  InteractiveViewer(
+                    child: Image.file(
+                      file,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Center(
+                        child: Icon(Icons.broken_image_outlined, color: Colors.white70, size: 48),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 40,
-                  left: 20,
-                  child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white, size: 28),
-                    onPressed: () => Navigator.pop(ctx),
+                  Positioned(
+                    top: 16,
+                    left: 16,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -379,6 +383,8 @@ class SpeciesDetailView extends ConsumerWidget {
         ? '${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}'
         : species.name;
 
+    final bottomPadding = MediaQuery.paddingOf(context).bottom + (floatingActionButton != null ? 88.0 : 28.0);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -387,9 +393,10 @@ class SpeciesDetailView extends ConsumerWidget {
         ),
         actions: actions,
       ),
+      floatingActionButton: floatingActionButton,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: bottomPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

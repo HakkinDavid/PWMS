@@ -37,8 +37,9 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
       data: (items) {
         final species = items.where((c) => c.id == widget.speciesId).firstOrNull;
         if (species == null) {
-          return const Scaffold(
-            body: Center(child: Text(AppStrings.emptyCatalog)),
+          return Scaffold(
+            appBar: AppBar(title: const Text(AppStrings.appName)),
+            body: const Center(child: Text(AppStrings.emptyCatalog)),
           );
         }
 
@@ -122,86 +123,90 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
           ],
         );
 
-        return Scaffold(
-          body: SpeciesDetailView(
-            species: species,
-            showAttachmentAction: _isEditing,
-            instanceSpecificsHeader: locationsSummaryHeader,
-            actions: [
-              IconButton(
-                icon: Icon(_isEditing ? Icons.check : Icons.edit_outlined),
-                tooltip: _isEditing ? AppStrings.saveChangesAction : AppStrings.edit,
+        final fab = (species.isUnique && hasExistingInstance)
+            ? null
+            : FloatingActionButton(
+                heroTag: null,
                 onPressed: () {
-                  setState(() => _isEditing = !_isEditing);
+                  InstantiateSpeciesSheet.show(context, species: species);
+                },
+                tooltip: AppStrings.instantiateAction,
+                child: const Icon(Icons.add),
+              );
+
+        return SpeciesDetailView(
+          species: species,
+          showAttachmentAction: _isEditing,
+          instanceSpecificsHeader: locationsSummaryHeader,
+          floatingActionButton: fab,
+          actions: [
+            IconButton(
+              icon: Icon(_isEditing ? Icons.check : Icons.edit_outlined),
+              tooltip: _isEditing ? AppStrings.saveChangesAction : AppStrings.edit,
+              onPressed: () {
+                setState(() => _isEditing = !_isEditing);
+              },
+            ),
+            if (_isEditing) ...[
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                tooltip: AppStrings.editSpeciesTitle,
+                onPressed: () {
+                  SpeciesFormModal.show(context, initialSpecies: species);
                 },
               ),
-              if (_isEditing) ...[
-                IconButton(
-                  icon: const Icon(Icons.settings_outlined),
-                  tooltip: AppStrings.editSpeciesTitle,
-                  onPressed: () {
-                    SpeciesFormModal.show(context, initialSpecies: species);
-                  },
+              IconButton(
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: hasExistingInstance ? Colors.grey.shade400 : Colors.redAccent,
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.delete_outline,
-                    color: hasExistingInstance ? Colors.grey.shade400 : Colors.redAccent,
-                  ),
-                  tooltip: hasExistingInstance
-                      ? AppStrings.cannotDeleteSpeciesWithInstancesError
-                      : AppStrings.delete,
-                  onPressed: hasExistingInstance
-                      ? () {
-                          AppToast.showRestriction(context, AppStrings.cannotDeleteSpeciesWithInstancesError);
-                        }
-                      : () async {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (c) => AlertDialog(
-                              title: const Text(AppStrings.deleteConfirmationTitle),
-                              content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
-                              actions: [
-                                TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(c, true),
-                                  child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-                                ),
-                              ],
-                            ),
-                          );
+                tooltip: hasExistingInstance
+                    ? AppStrings.cannotDeleteSpeciesWithInstancesError
+                    : AppStrings.delete,
+                onPressed: hasExistingInstance
+                    ? () {
+                        AppToast.showRestriction(context, AppStrings.cannotDeleteSpeciesWithInstancesError);
+                      }
+                    : () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (c) => AlertDialog(
+                            title: const Text(AppStrings.deleteConfirmationTitle),
+                            content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
+                              TextButton(
+                                onPressed: () => Navigator.pop(c, true),
+                                child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
+                              ),
+                            ],
+                          ),
+                        );
 
-                          if (confirm == true) {
-                            try {
-                              await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
-                              if (context.mounted) context.pop();
-                            } catch (e) {
-                              if (context.mounted) {
-                                AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
-                              }
+                        if (confirm == true) {
+                          try {
+                            await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
+                            if (context.mounted) context.pop();
+                          } catch (e) {
+                            if (context.mounted) {
+                              AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
                             }
                           }
-                        },
-                ),
-              ],
+                        }
+                      },
+              ),
             ],
-          ),
-
-          // Hide Instanciar button if species is unique and already has an instance
-          floatingActionButton: (species.isUnique && hasExistingInstance)
-              ? null
-              : FloatingActionButton(
-                  heroTag: null,
-                  onPressed: () {
-                    InstantiateSpeciesSheet.show(context, species: species);
-                  },
-                  tooltip: AppStrings.instantiateAction,
-                  child: const Icon(Icons.add),
-                ),
+          ],
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (err, _) => Scaffold(body: Center(child: Text('${AppStrings.errorPrefix}$err'))),
+      loading: () => Scaffold(
+        appBar: AppBar(title: const Text(AppStrings.appName)),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (err, _) => Scaffold(
+        appBar: AppBar(title: const Text(AppStrings.appName)),
+        body: Center(child: Text('${AppStrings.errorPrefix}$err')),
+      ),
     );
   }
 }

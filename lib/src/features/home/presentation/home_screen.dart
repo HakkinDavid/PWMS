@@ -56,10 +56,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         final theme = Theme.of(ctx);
         final activityAsync = ref.watch(recentActivityProvider);
+        final mediaQuery = MediaQuery.of(ctx);
+        final bottomPadding = mediaQuery.viewInsets.bottom > 0
+            ? mediaQuery.viewInsets.bottom + 20
+            : mediaQuery.padding.bottom + 20;
 
         return Container(
           decoration: BoxDecoration(
@@ -70,10 +75,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             left: 24,
             right: 24,
             top: 16,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+            bottom: bottomPadding,
           ),
           child: SizedBox(
-            height: MediaQuery.of(ctx).size.height * 0.7,
+            height: mediaQuery.size.height * 0.7,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

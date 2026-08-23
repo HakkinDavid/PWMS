@@ -4,8 +4,20 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'src/core/router/app_router.dart';
 import 'src/core/theme/app_theme.dart';
 
+import 'package:flutter/services.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+      systemNavigationBarColor: AppTheme.darkBackground,
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ),
+  );
   runApp(
     const ProviderScope(
       child: PWMSApp(),

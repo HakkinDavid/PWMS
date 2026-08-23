@@ -380,36 +380,39 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
           // Floating Bulk Actions Bar
           if (_isSelectionMode && _selectedEntityIds.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              color: theme.colorScheme.primaryContainer,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${_selectedEntityIds.length} seleccionado(s)',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.drive_file_move_outlined),
-                        tooltip: 'Mover Selección',
-                        onPressed: () async {
-                          final res = await LocationTreePicker.show(context);
-                          if (res != null) {
-                            await _moveEntitiesToLocation(_selectedEntityIds.toList(), res.locationId);
-                          }
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                        tooltip: 'Eliminar Selección',
-                        onPressed: _deleteSelectedEntities,
-                      ),
-                    ],
-                  ),
-                ],
+            SafeArea(
+              top: false,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                color: theme.colorScheme.primaryContainer,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${_selectedEntityIds.length} seleccionado(s)',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.drive_file_move_outlined),
+                          tooltip: 'Mover Selección',
+                          onPressed: () async {
+                            final res = await LocationTreePicker.show(context);
+                            if (res != null) {
+                              await _moveEntitiesToLocation(_selectedEntityIds.toList(), res.locationId);
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                          tooltip: 'Eliminar Selección',
+                          onPressed: _deleteSelectedEntities,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
         ],
@@ -428,11 +431,13 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
     Widget content;
 
+    final bottomClearance = MediaQuery.paddingOf(context).bottom + 84.0;
+
     if (_viewMode == FinderViewMode.minecraftGrid) {
       // Minecraft Grid Mode
       content = GridView.builder(
         controller: _scrollController,
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: bottomClearance),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
           crossAxisSpacing: 12,
@@ -477,7 +482,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       // Detailed List Mode with Container Stacking
       content = ListView.builder(
         controller: _scrollController,
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.only(left: 12, right: 12, top: 12, bottom: bottomClearance),
       itemCount: topGroups.length,
       itemBuilder: (ctx, idx) {
         final grp = topGroups[idx];

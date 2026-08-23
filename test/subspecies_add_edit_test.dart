@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/sub
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/add_edit_subspecies_modal.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/subspecies_section_widget.dart';
+import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 
 class MockFileStorageService implements FileStorageService {
   @override
@@ -36,6 +38,7 @@ void main() {
   late MockFileStorageService fileStorageService;
 
   setUp(() {
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
     TestWidgetsFlutterBinding.ensureInitialized();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       const MethodChannel('plugins.flutter.io/path_provider'),
@@ -234,6 +237,9 @@ void main() {
     });
 
     testWidgets('4. SubspeciesSectionWidget renders list and updates reactively', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
       final species = CatalogItem(
         id: 'sp-watch',
         name: 'Reloj',
@@ -255,14 +261,18 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            databaseProvider.overrideWithValue(db),
+            entityRepositoryProvider.overrideWithValue(EntityRepository(db)),
             catalogRepositoryProvider.overrideWithValue(catalogRepo),
             fileStorageServiceProvider.overrideWithValue(fileStorageService),
           ],
           child: MaterialApp(
             home: Scaffold(
-              body: SubspeciesSectionWidget(
-                speciesId: species.id,
-                isEditing: true,
+              body: SingleChildScrollView(
+                child: SubspeciesSectionWidget(
+                  speciesId: species.id,
+                  isEditing: true,
+                ),
               ),
             ),
           ),
