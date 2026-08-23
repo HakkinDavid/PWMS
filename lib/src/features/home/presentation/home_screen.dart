@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/updater/presentation/update_prompt_dialog.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
@@ -163,12 +163,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         IconButton(
                           icon: const Icon(Icons.style_outlined, size: 28, color: Colors.white),
                           tooltip: AppStrings.controlCenterTooltip,
-                          onPressed: () => context.push('/control-center'),
+                          onPressed: () => context.pushControlCenter(),
                         ),
                         IconButton(
                           icon: const Icon(Icons.settings_outlined, size: 28),
                           tooltip: AppStrings.settingsTooltip,
-                          onPressed: () => context.push('/settings'),
+                          onPressed: () => context.pushSettings(),
                         ),
                         Consumer(
                           builder: (context, ref, child) {
@@ -178,7 +178,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.notifications_outlined, size: 28),
-                                  onPressed: () => context.push('/notifications'),
+                                  onPressed: () => context.pushNotifications(),
                                   tooltip: AppStrings.notificationsTooltip,
                                 ),
                                 if (notifCount > 0)
@@ -258,7 +258,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           itemBuilder: (context, index) {
                             final entity = entities[index];
                             return InkWell(
-                              onTap: () => context.push('/entity/${entity.id}'),
+                              onTap: () => context.pushEntityDetail(entity.id),
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
                                 width: 140,
@@ -381,7 +381,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         TextButton(
-                          onPressed: () => context.go('/locations'),
+                          onPressed: () => context.goToLocations(),
                           child: const Text('Ver todas'),
                         ),
                       ],
@@ -421,7 +421,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             return LocationTile(
                               node: node,
                               itemCount: count,
-                              onTap: () => context.go('/inventory?focusNodeId=${node.id}'),
+                              onTap: () => context.goToInventory(focusNodeId: node.id),
                             );
                           },
                         );
@@ -453,7 +453,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () => context.push('/catalog'),
+                          onPressed: () => context.goToCatalog(),
                           child: const Text(AppStrings.viewCatalogAction),
                         ),
                       ],

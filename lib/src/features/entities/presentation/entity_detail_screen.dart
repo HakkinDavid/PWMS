@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_detail_view.dart';
@@ -349,11 +350,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                     ).firstOrNull;
 
                     if (containerRel != null) {
-                      context.push('/entity/${containerRel.targetEntityId}');
+                      context.pushEntityDetail(containerRel.targetEntityId);
                     } else if (_selectedLocationId != null) {
-                      context.go('/locations?focusNodeId=$_selectedLocationId');
+                      context.goToLocations(focusNodeId: _selectedLocationId);
                     } else {
-                      context.go('/locations');
+                      context.goToLocations();
                     }
                   }
                 },
@@ -648,7 +649,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                     IconButton(
                       icon: const Icon(Icons.public),
                       tooltip: AppStrings.viewCatalogSpecies,
-                      onPressed: () => context.push('/catalog/${species.id}'),
+                      onPressed: () => context.pushSpeciesDetail(species.id),
                     ),
                     IconButton(
                       icon: Icon(_isEditingInPlace ? Icons.close : Icons.edit_outlined),
@@ -678,7 +679,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               IconButton(
                 icon: const Icon(Icons.public),
                 tooltip: AppStrings.viewCatalogSpecies,
-                onPressed: () => context.push('/catalog/${species.id}'),
+                onPressed: () => context.pushSpeciesDetail(species.id),
               ),
               IconButton(
                 icon: Icon(_isEditingInPlace ? Icons.close : Icons.edit_outlined),

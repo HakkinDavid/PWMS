@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import 'species_form_modal.dart';
@@ -34,7 +35,7 @@ class SpeciesTile extends ConsumerWidget {
               title: const Text(AppStrings.viewSpeciesDetail),
               onTap: () {
                 Navigator.pop(ctx);
-                context.push('/catalog/${species.id}');
+                context.pushSpeciesDetail(species.id);
               },
             ),
             ListTile(
@@ -104,7 +105,7 @@ class SpeciesTile extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 6),
       child: InkWell(
         onLongPress: () => _showQuickActionsMenu(context, ref),
-        onTap: onTap ?? () => context.push('/catalog/${species.id}'),
+        onTap: onTap ?? () => context.pushSpeciesDetail(species.id),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

@@ -15,6 +15,7 @@ import '../../features/notifications/presentation/notifications_screen.dart';
 
 import '../../features/control_center/presentation/control_center_screen.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+export 'app_navigation_extension.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -71,7 +72,14 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/catalog',
-              builder: (context, state) => const CatalogScreen(),
+              builder: (context, state) {
+                final speciesId = state.uri.queryParameters['speciesId'];
+                final filter = state.uri.queryParameters['filter'];
+                return CatalogScreen(
+                  initialSpeciesId: speciesId,
+                  initialFilter: filter,
+                );
+              },
             ),
           ],
         ),
@@ -79,7 +87,14 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/search',
-              builder: (context, state) => const SearchScreen(),
+              builder: (context, state) {
+                final q = state.uri.queryParameters['q'];
+                final scope = state.uri.queryParameters['scope'];
+                return SearchScreen(
+                  initialQuery: q,
+                  initialScope: scope,
+                );
+              },
             ),
           ],
         ),

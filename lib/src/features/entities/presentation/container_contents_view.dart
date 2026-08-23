@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../locations/domain/location_node.dart';
 
 class ContainerContentsView extends ConsumerWidget {
@@ -66,7 +67,7 @@ class ContainerContentsView extends ConsumerWidget {
                 subtitle: Text(subtitleText),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  context.push('/entity/${child.id}');
+                  context.pushEntityDetail(child.id);
                 },
               ),
             );

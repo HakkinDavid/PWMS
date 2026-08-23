@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../domain/effective_entity_group.dart';
 import 'instance_preview_card.dart';
 import 'quantity_adjustment_sheet.dart';
@@ -29,9 +30,9 @@ class EffectiveGroupTile extends ConsumerWidget {
       group: group,
       onTap: onTap ?? () {
         if (group.population == 1) {
-          context.push('/entity/${group.primaryEntity.id}');
+          context.pushEntityDetail(group.primaryEntity.id);
         } else {
-          context.push('/grouped-instance-detail?speciesId=${group.speciesId}&locId=${group.effectiveLocationId ?? ""}');
+          context.pushGroupedInstanceDetail(group.speciesId, effectiveLocationId: group.effectiveLocationId);
         }
       },
       trailing: GestureDetector(
@@ -40,7 +41,7 @@ class EffectiveGroupTile extends ConsumerWidget {
           if (isHomogeneous && !isUnique) {
             QuantityAdjustmentSheet.show(context, group);
           } else {
-            context.push('/grouped-instance-detail?speciesId=${group.speciesId}&locId=${group.effectiveLocationId ?? ""}');
+            context.pushGroupedInstanceDetail(group.speciesId, effectiveLocationId: group.effectiveLocationId);
           }
         },
         child: Container(

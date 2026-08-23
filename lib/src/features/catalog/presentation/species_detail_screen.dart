@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
@@ -109,7 +110,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                       ),
                       trailing: const Icon(Icons.chevron_right, size: 16),
                       onTap: () {
-                        context.push('/entity/${inst.id}');
+                        context.pushEntityDetail(inst.id);
                       },
                     ),
                   );

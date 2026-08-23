@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../domain/world_entity.dart';
 import 'instance_preview_card.dart';
 
@@ -16,7 +17,7 @@ class EntityTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InstancePreviewCard(
       entity: entity,
-      onTap: () => context.push('/entity/${entity.id}'),
+      onTap: () => context.pushEntityDetail(entity.id),
       trailing: const Icon(Icons.chevron_right, size: 18),
     );
   }

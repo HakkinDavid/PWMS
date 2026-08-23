@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../domain/app_notification.dart';
 
 class NotificationsScreen extends ConsumerWidget {
@@ -106,9 +106,9 @@ class _NotificationTile extends ConsumerWidget {
 
   void _onTap(BuildContext context) {
     if (notification.targetType == 'species') {
-      context.push('/catalog/${notification.targetId}');
+      context.pushSpeciesDetail(notification.targetId);
     } else if (notification.targetType == 'entity') {
-      context.push('/entities/${notification.targetId}');
+      context.pushEntityDetail(notification.targetId);
     }
   }
 

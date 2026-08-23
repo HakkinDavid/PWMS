@@ -9,14 +9,21 @@ import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../entities/presentation/register_object_modal.dart';
 
 class CatalogScreen extends ConsumerStatefulWidget {
-  const CatalogScreen({super.key});
+  final String? initialSpeciesId;
+  final String? initialFilter;
+
+  const CatalogScreen({
+    super.key,
+    this.initialSpeciesId,
+    this.initialFilter,
+  });
 
   @override
   ConsumerState<CatalogScreen> createState() => _CatalogScreenState();
 }
 
 class _CatalogScreenState extends ConsumerState<CatalogScreen> {
-  String _selectedTypeFilter = AppStrings.all;
+  late String _selectedTypeFilter;
 
   final List<String> _filters = [
     AppStrings.all,
@@ -25,6 +32,26 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
     AppStrings.typeProject,
     AppStrings.typeMemory,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTypeFilter = (widget.initialFilter != null && _filters.contains(widget.initialFilter))
+        ? widget.initialFilter!
+        : AppStrings.all;
+  }
+
+  @override
+  void didUpdateWidget(CatalogScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialFilter != null && widget.initialFilter != oldWidget.initialFilter) {
+      if (_filters.contains(widget.initialFilter)) {
+        setState(() {
+          _selectedTypeFilter = widget.initialFilter!;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../entities/domain/effective_entity_group.dart';
@@ -457,9 +457,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               if (_isSelectionMode) {
                 _toggleSelection(primary.id);
               } else if (grp.population == 1) {
-                context.push('/entity/${primary.id}');
+                context.pushEntityDetail(primary.id);
               } else {
-                context.push('/grouped-instance-detail?speciesId=${grp.speciesId}&locId=${grp.effectiveLocationId ?? ""}');
+                context.pushGroupedInstanceDetail(grp.speciesId, effectiveLocationId: grp.effectiveLocationId);
               }
             },
             onLongPress: () {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../entities/domain/world_entity.dart';
@@ -19,14 +19,21 @@ enum SqlResultViewMode {
 }
 
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key});
+  final String? initialQuery;
+  final String? initialScope;
+
+  const SearchScreen({
+    super.key,
+    this.initialQuery,
+    this.initialScope,
+  });
 
   @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
-  String _selectedScope = AppStrings.all;
+  late String _selectedScope;
   SqlPresetCategory _selectedSqlCategory = SqlPresetCategory.all;
   SqlResultViewMode _viewMode = SqlResultViewMode.table;
   final TextEditingController _sqlController = TextEditingController(text: 'SELECT * FROM catalog_table LIMIT 20;');
@@ -45,6 +52,41 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     AppStrings.tabHistory,
     AppStrings.arbitrarySqlQueryLabel,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedScope = (widget.initialScope != null && _scopes.contains(widget.initialScope))
+        ? widget.initialScope!
+        : AppStrings.all;
+
+    if (widget.initialQuery != null && widget.initialQuery!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref.read(searchQueryProvider.notifier).state = widget.initialQuery!;
+        }
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(SearchScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialScope != null && widget.initialScope != oldWidget.initialScope) {
+      if (_scopes.contains(widget.initialScope)) {
+        setState(() {
+          _selectedScope = widget.initialScope!;
+        });
+      }
+    }
+    if (widget.initialQuery != null && widget.initialQuery != oldWidget.initialQuery) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref.read(searchQueryProvider.notifier).state = widget.initialQuery!;
+        }
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -466,7 +508,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           itemCount: matchingLocations.length,
           itemBuilder: (ctx, idx) => LocationTile(
             node: matchingLocations[idx],
-            onTap: () => context.go('/inventory?focusNodeId=${matchingLocations[idx].id}'),
+            onTap: () => context.goToInventory(focusNodeId: matchingLocations[idx].id),
           ),
         );
       }
@@ -575,7 +617,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               leading: const Icon(Icons.location_on, color: Colors.amber),
               title: Text(n.name, style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text(n.description ?? AppStrings.locationGraphNode),
-              onTap: () => context.go('/inventory?focusNodeId=${n.id}'),
+              onTap: () => context.goToInventory(focusNodeId: n.id),
             ),
           );
         },

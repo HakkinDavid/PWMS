@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
-
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
 
@@ -162,7 +161,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
-                                      context.push('/entity/$otherEntityId');
+                                      context.pushEntityDetail(otherEntityId);
                                     },
                                     borderRadius: BorderRadius.circular(8),
                                     child: Row(

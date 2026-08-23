@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../domain/effective_entity_group.dart';
 import 'instance_preview_card.dart';
 
@@ -171,7 +172,7 @@ class GroupedInstanceDetailScreen extends ConsumerWidget {
                   child: InstancePreviewCard(
                     entity: entity,
                     onTap: () {
-                      context.push('/entity/${entity.id}');
+                      context.pushEntityDetail(entity.id);
                     },
                   ),
                 );
