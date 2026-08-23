@@ -135,37 +135,29 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
 
         _cameraController = controller;
 
-        _maxZoom = await _cameraController!.getMaxZoomLevel().catchError((_) => 4.0);
-        _minZoom = await _cameraController!.getMinZoomLevel().catchError((_) => 1.0);
-
-        // Configuración de 3A, Spot Metering, Compensación EV (-1.5 EV), Zoom y Linterna cacheados
-        try {
-          await _cameraController!.setFocusMode(FocusMode.auto);
-          await _cameraController!.setExposureMode(ExposureMode.auto);
-          await _cameraController!.setFocusPoint(const Offset(0.5, 0.5));
-          await _cameraController!.setExposurePoint(const Offset(0.5, 0.5));
-
-          final minEv = await _cameraController!.getMinExposureOffset().catchError((_) => -2.0);
-          final maxEv = await _cameraController!.getMaxExposureOffset().catchError((_) => 2.0);
-          final targetEv = _exposureOffset.clamp(minEv, maxEv);
-          await _cameraController!.setExposureOffset(targetEv).catchError((_) {});
-
-          if (_currentZoom > 1.0) {
-            final targetZoom = _currentZoom.clamp(_minZoom, _maxZoom);
-            await _cameraController!.setZoomLevel(targetZoom).catchError((_) {});
-          }
-
-          if (_isTorchOn) {
-            await _cameraController!.setFlashMode(FlashMode.torch).catchError((_) {});
-          }
-        } catch (_) {}
-
         if (mounted && !_isDisposed) {
           setState(() {
             _isCameraInitialized = true;
             _statusMessage = null;
           });
         }
+
+        // Configuración en paralelo de 3A, Spot Metering (-1.5 EV), Zoom y Linterna en segundo plano
+        Future.wait([
+          _cameraController!.getMaxZoomLevel().then((v) {
+            if (mounted && !_isDisposed) setState(() => _maxZoom = v);
+          }).catchError((_) => 4.0),
+          _cameraController!.getMinZoomLevel().then((v) {
+            if (mounted && !_isDisposed) setState(() => _minZoom = v);
+          }).catchError((_) => 1.0),
+          _cameraController!.setFocusMode(FocusMode.auto).catchError((_) {}),
+          _cameraController!.setExposureMode(ExposureMode.auto).catchError((_) {}),
+          _cameraController!.setFocusPoint(const Offset(0.5, 0.5)).catchError((_) {}),
+          _cameraController!.setExposurePoint(const Offset(0.5, 0.5)).catchError((_) {}),
+          _cameraController!.setExposureOffset(_exposureOffset).catchError((_) {}),
+          if (_currentZoom > 1.0) _cameraController!.setZoomLevel(_currentZoom).catchError((_) {}),
+          if (_isTorchOn) _cameraController!.setFlashMode(FlashMode.torch).catchError((_) {}),
+        ]).catchError((_) {});
       }
     } catch (e) {
       if (mounted && !_isDisposed) {
@@ -369,25 +361,6 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       );
     }
 
-    if (!_isCameraInitialized) {
-      return SizedBox(
-        height: 400,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 16),
-              Text(
-                _statusMessage ?? 'Iniciando cámara trasera en máxima resolución...',
-                style: const TextStyle(color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     final isBothCaptured = _obverseFile != null && _reverseFile != null;
     final activeGuideColor = isBothCaptured ? Colors.greenAccent.shade400 : Colors.amber;
 
@@ -418,7 +391,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
             ),
           ),
 
-          // Live Camera Preview with Custom Overlays
+          // Live Camera Preview with Custom Overlays (Diseño fijado desde Frame 0)
           Stack(
             alignment: Alignment.center,
             children: [
@@ -426,20 +399,38 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                 aspectRatio: 1.0,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return GestureDetector(
-                        onTapDown: (details) => _handleTapToFocus(details, constraints),
-                        child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: SizedBox(
-                            width: 1080,
-                            height: 1080 * _cameraController!.value.aspectRatio,
-                            child: CameraPreview(_cameraController!),
+                  child: Container(
+                    color: Colors.black,
+                    child: _isCameraInitialized && _cameraController != null
+                        ? LayoutBuilder(
+                            builder: (context, constraints) {
+                              return GestureDetector(
+                                onTapDown: (details) => _handleTapToFocus(details, constraints),
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: SizedBox(
+                                    width: 1080,
+                                    height: 1080 * _cameraController!.value.aspectRatio,
+                                    child: CameraPreview(_cameraController!),
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.photo_camera, color: Colors.white38, size: 40),
+                                SizedBox(height: 10),
+                                SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.amber),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
                   ),
                 ),
               ),
