@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/storage/app_settings_repository.dart';
@@ -26,25 +24,20 @@ class GuidedDualScanWidget extends ConsumerStatefulWidget {
   ConsumerState<GuidedDualScanWidget> createState() => _GuidedDualScanWidgetState();
 }
 
-class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> with SingleTickerProviderStateMixin {
+class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   static List<CameraDescription>? _cachedCameras;
   CameraController? _cameraController;
   List<CameraDescription> _cameras = [];
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
   bool _showQuickFillForm = false;
+  bool _isDisposed = false;
   String? _statusMessage;
 
   // Cached Settings & Preferences
   bool _isTorchOn = false;
-  bool _isAutoCaptureEnabled = false;
   double _exposureOffset = -1.5; // -1.5 EV por defecto para evitar quemados en metal
   bool _isCoinMode = true; // True for Coin (Circle), False for Banknote (Rectangle)
-
-  // Auto-detection & Locking State
-  bool _isTargetLocked = false;
-  int _stableFrameCount = 0;
-  DateTime _lastFrameAnalysisTime = DateTime.now();
 
   // Tap-to-focus coordinates
   Offset? _tapFocusPoint;
@@ -68,19 +61,14 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
   Future<void> _loadCachedSettingsAndInitCamera() async {
     try {
       final settings = ref.read(appSettingsRepositoryProvider);
-      final autoCap = await settings.getNumismaticAutoCapture(defaultValue: false);
       final torch = await settings.getNumismaticTorchEnabled(defaultValue: false);
       final ev = await settings.getNumismaticExposureOffset(defaultValue: -1.5);
-      final defaultMode = await settings.getNumismaticDefaultMode();
 
-      if (mounted) {
+      if (mounted && !_isDisposed) {
         setState(() {
-          _isAutoCaptureEnabled = autoCap;
+          _isCoinMode = true; // El modo inicial siempre es moneda
           _isTorchOn = torch;
           _exposureOffset = ev;
-          if (defaultMode != null) {
-            _isCoinMode = defaultMode == 'coin';
-          }
         });
       }
     } catch (_) {}
@@ -89,7 +77,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
   }
 
   Future<void> _initializeCamera() async {
-    if (!mounted) return;
+    if (!mounted || _isDisposed) return;
     try {
       _cameras = _cachedCameras ?? await availableCameras();
       _cachedCameras = _cameras;
@@ -100,6 +88,8 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
           orElse: () => _cameras.first,
         );
 
+        if (_isDisposed || !mounted) return;
+
         // Previsualización fluida en 1080p con arranque instantáneo y captura en alta definición
         final presetsToTry = [
           ResolutionPreset.veryHigh,
@@ -109,6 +99,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
 
         CameraController? controller;
         for (final preset in presetsToTry) {
+          if (_isDisposed || !mounted) break;
           try {
             final c = CameraController(
               backCam,
@@ -117,9 +108,18 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
               imageFormatGroup: ImageFormatGroup.jpeg,
             );
             await c.initialize();
+            if (_isDisposed || !mounted) {
+              c.dispose().catchError((_) {});
+              return;
+            }
             controller = c;
             break;
           } catch (_) {}
+        }
+
+        if (_isDisposed || !mounted) {
+          controller?.dispose().catchError((_) {});
+          return;
         }
 
         if (controller == null) {
@@ -127,38 +127,36 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
         }
 
         _cameraController = controller;
-        if (!mounted) return;
 
-        _maxZoom = await _cameraController!.getMaxZoomLevel();
-        _minZoom = await _cameraController!.getMinZoomLevel();
+        _maxZoom = await _cameraController!.getMaxZoomLevel().catchError((_) => 4.0);
+        _minZoom = await _cameraController!.getMinZoomLevel().catchError((_) => 1.0);
 
-        // Configuración paralela de 3A, Spot Metering y Compensación EV
+        // Configuración de 3A, Spot Metering y Compensación EV (-1.5 EV)
         try {
           await _cameraController!.setFocusMode(FocusMode.auto);
           await _cameraController!.setExposureMode(ExposureMode.auto);
           await _cameraController!.setFocusPoint(const Offset(0.5, 0.5));
           await _cameraController!.setExposurePoint(const Offset(0.5, 0.5));
 
-          final minEv = await _cameraController!.getMinExposureOffset();
-          final maxEv = await _cameraController!.getMaxExposureOffset();
+          final minEv = await _cameraController!.getMinExposureOffset().catchError((_) => -2.0);
+          final maxEv = await _cameraController!.getMaxExposureOffset().catchError((_) => 2.0);
           final targetEv = _exposureOffset.clamp(minEv, maxEv);
-          await _cameraController!.setExposureOffset(targetEv);
+          await _cameraController!.setExposureOffset(targetEv).catchError((_) {});
 
           if (_isTorchOn) {
-            await _cameraController!.setFlashMode(FlashMode.torch);
+            await _cameraController!.setFlashMode(FlashMode.torch).catchError((_) {});
           }
         } catch (_) {}
 
-        if (mounted) {
+        if (mounted && !_isDisposed) {
           setState(() {
             _isCameraInitialized = true;
             _statusMessage = null;
           });
-          _syncImageStream();
         }
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && !_isDisposed) {
         setState(() {
           _statusMessage = 'Error al inicializar cámara: $e';
         });
@@ -168,182 +166,31 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
 
   @override
   void dispose() {
-    _stopImageStreamSafe();
-    if (_isTorchOn && _cameraController != null && _cameraController!.value.isInitialized) {
-      _cameraController?.setFlashMode(FlashMode.off).catchError((_) {});
+    _isDisposed = true;
+    final controller = _cameraController;
+    _cameraController = null;
+    _isCameraInitialized = false;
+
+    if (controller != null) {
+      () async {
+        try {
+          if (controller.value.isInitialized && _isTorchOn) {
+            await controller.setFlashMode(FlashMode.off).catchError((_) {});
+          }
+          await controller.dispose().catchError((_) {});
+        } catch (_) {}
+      }();
     }
-    _cameraController?.dispose();
+
     super.dispose();
   }
 
-  Future<void> _stopImageStreamSafe() async {
-    try {
-      if (_cameraController != null &&
-          _cameraController!.value.isInitialized &&
-          _cameraController!.value.isStreamingImages) {
-        await _cameraController!.stopImageStream();
-      }
-    } catch (_) {}
-  }
-
-  Future<void> _syncImageStream() async {
-    if (!_isCameraInitialized || _cameraController == null || _isProcessing || _showQuickFillForm) {
-      await _stopImageStreamSafe();
-      return;
-    }
-
-    if (_isAutoCaptureEnabled) {
-      if (!_cameraController!.value.isStreamingImages) {
-        try {
-          await _cameraController!.startImageStream(_handleCameraFrame);
-        } catch (_) {}
-      }
-    } else {
-      await _stopImageStreamSafe();
-      if (mounted && _isTargetLocked) {
-        setState(() => _isTargetLocked = false);
-      }
-    }
-  }
-
-  void _handleCameraFrame(CameraImage image) {
-    if (!_isAutoCaptureEnabled || _isProcessing || !mounted) return;
-
-    final now = DateTime.now();
-    if (now.difference(_lastFrameAnalysisTime).inMilliseconds < 120) {
-      return;
-    }
-    _lastFrameAnalysisTime = now;
-
-    final isCandidate = _analyzeFrameCandidate(image);
-
-    if (isCandidate) {
-      _stableFrameCount++;
-      if (_stableFrameCount >= 3) {
-        if (!_isTargetLocked && mounted) {
-          setState(() => _isTargetLocked = true);
-        }
-        if (_stableFrameCount >= 4) {
-          _stableFrameCount = 0;
-          _triggerAutoCapture();
-        }
-      }
-    } else {
-      if (_stableFrameCount > 0) {
-        _stableFrameCount = 0;
-      }
-      if (_isTargetLocked && mounted) {
-        setState(() => _isTargetLocked = false);
-      }
-    }
-  }
-
-  bool _analyzeFrameCandidate(CameraImage image) {
-    try {
-      if (image.planes.isEmpty) return false;
-      final plane = image.planes[0];
-      final bytes = plane.bytes;
-      if (bytes.isEmpty) return false;
-
-      final w = image.width;
-      final h = image.height;
-      final rowStride = plane.bytesPerRow;
-
-      int getLum(double nx, double ny) {
-        final px = (nx * (w - 1)).clamp(0, w - 1).toInt();
-        final py = (ny * (h - 1)).clamp(0, h - 1).toInt();
-        final idx = py * rowStride + px;
-        return (idx >= 0 && idx < bytes.length) ? bytes[idx] : 128;
-      }
-
-      if (_isCoinMode) {
-        // Flujo Moneda: Detección de contraste radial perimetral
-        const int numAngles = 12;
-        const double innerR = 0.28;
-        const double outerR = 0.42;
-
-        int edgeTransitions = 0;
-        int totalDelta = 0;
-
-        for (int i = 0; i < numAngles; i++) {
-          final angle = (2 * math.pi * i) / numAngles;
-          final inX = 0.5 + innerR * math.cos(angle);
-          final inY = 0.5 + innerR * math.sin(angle);
-          final outX = 0.5 + outerR * math.cos(angle);
-          final outY = 0.5 + outerR * math.sin(angle);
-
-          final delta = (getLum(inX, inY) - getLum(outX, outY)).abs();
-          totalDelta += delta;
-          if (delta > 14) {
-            edgeTransitions++;
-          }
-        }
-
-        final avgDelta = totalDelta / numAngles;
-        return avgDelta >= 15 && edgeTransitions >= 7;
-      } else {
-        // Flujo Billete: Detección de contraste en 4 bordes rectangulares
-        const double hw = 0.38;
-        const double hh = 0.25;
-
-        int borderHits = 0;
-        // Top & Bottom edges
-        for (double fx = 0.25; fx <= 0.75; fx += 0.25) {
-          final topIn = getLum(fx, 0.5 - hh * 0.85);
-          final topOut = getLum(fx, 0.5 - hh * 1.15);
-          if ((topIn - topOut).abs() > 14) borderHits++;
-
-          final botIn = getLum(fx, 0.5 + hh * 0.85);
-          final botOut = getLum(fx, 0.5 + hh * 1.15);
-          if ((botIn - botOut).abs() > 14) borderHits++;
-        }
-        // Left & Right edges
-        for (double fy = 0.35; fy <= 0.65; fy += 0.3) {
-          final leftIn = getLum(0.5 - hw * 0.85, fy);
-          final leftOut = getLum(0.5 - hw * 1.15, fy);
-          if ((leftIn - leftOut).abs() > 14) borderHits++;
-
-          final rightIn = getLum(0.5 + hw * 0.85, fy);
-          final rightOut = getLum(0.5 + hw * 1.15, fy);
-          if ((rightIn - rightOut).abs() > 14) borderHits++;
-        }
-
-        return borderHits >= 5;
-      }
-    } catch (_) {
-      return false;
-    }
-  }
-
-  Future<void> _triggerAutoCapture() async {
-    if (_isProcessing || !_isCameraInitialized) return;
-    HapticFeedback.mediumImpact();
-    await _stopImageStreamSafe();
-    await _capturePhoto();
-    if (_isAutoCaptureEnabled && mounted && !_showQuickFillForm) {
-      _syncImageStream();
-    }
-  }
-
-  Future<void> _toggleAutoCapture(bool val) async {
-    setState(() {
-      _isAutoCaptureEnabled = val;
-      _isTargetLocked = false;
-      _stableFrameCount = 0;
-    });
-    try {
-      final settings = ref.read(appSettingsRepositoryProvider);
-      settings.setNumismaticAutoCapture(val).catchError((_) {});
-    } catch (_) {}
-    await _syncImageStream();
-  }
-
   Future<void> _toggleTorch() async {
-    if (_cameraController == null || !_isCameraInitialized) return;
+    if (_cameraController == null || !_isCameraInitialized || _isDisposed) return;
     try {
       final newTorch = !_isTorchOn;
       await _cameraController!.setFlashMode(newTorch ? FlashMode.torch : FlashMode.off);
-      if (mounted) {
+      if (mounted && !_isDisposed) {
         setState(() {
           _isTorchOn = newTorch;
         });
@@ -356,8 +203,6 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
   Future<void> _switchMode(bool isCoin) async {
     setState(() {
       _isCoinMode = isCoin;
-      _isTargetLocked = false;
-      _stableFrameCount = 0;
     });
     try {
       final settings = ref.read(appSettingsRepositoryProvider);
@@ -366,7 +211,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
   }
 
   Future<void> _handleTapToFocus(TapDownDetails details, BoxConstraints constraints) async {
-    if (_cameraController == null || !_isCameraInitialized) return;
+    if (_cameraController == null || !_isCameraInitialized || _isDisposed) return;
     final double dx = details.localPosition.dx / constraints.maxWidth;
     final double dy = details.localPosition.dy / constraints.maxHeight;
     final offset = Offset(dx.clamp(0.0, 1.0), dy.clamp(0.0, 1.0));
@@ -380,7 +225,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
     } catch (_) {}
 
     Future.delayed(const Duration(milliseconds: 1400), () {
-      if (mounted) {
+      if (mounted && !_isDisposed) {
         setState(() {
           _tapFocusPoint = null;
         });
@@ -389,11 +234,11 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
   }
 
   Future<void> _adjustZoom(double value) async {
-    if (_cameraController == null || !_isCameraInitialized || !mounted) return;
+    if (_cameraController == null || !_isCameraInitialized || !mounted || _isDisposed) return;
     try {
       final zoom = value.clamp(_minZoom, _maxZoom);
       await _cameraController!.setZoomLevel(zoom);
-      if (mounted) {
+      if (mounted && !_isDisposed) {
         setState(() {
           _currentZoom = zoom;
         });
@@ -417,7 +262,14 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
   }
 
   Future<void> _capturePhoto() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized || _isProcessing) return;
+    final isBothCaptured = _obverseFile != null && _reverseFile != null;
+    if (_cameraController == null ||
+        !_cameraController!.value.isInitialized ||
+        _isProcessing ||
+        _isDisposed ||
+        isBothCaptured) {
+      return;
+    }
 
     setState(() {
       _isProcessing = true;
@@ -425,7 +277,6 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
     });
 
     try {
-      await _stopImageStreamSafe();
       final XFile photo = await _cameraController!.takePicture();
       final File rawFile = File(photo.path);
 
@@ -433,31 +284,28 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
 
       if (_currentStep == 1) {
         _obverseFile = croppedFile;
-        setState(() {
-          _currentStep = 2;
-          _isProcessing = false;
-          _statusMessage = null;
-          _isTargetLocked = false;
-        });
+        if (mounted && !_isDisposed) {
+          setState(() {
+            _currentStep = 2;
+            _isProcessing = false;
+            _statusMessage = null;
+          });
+        }
       } else {
         _reverseFile = croppedFile;
-        setState(() {
-          _isProcessing = false;
-          _statusMessage = null;
-          _isTargetLocked = false;
-        });
+        if (mounted && !_isDisposed) {
+          setState(() {
+            _isProcessing = false;
+            _statusMessage = null;
+          });
+        }
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && !_isDisposed) {
         setState(() {
           _isProcessing = false;
           _statusMessage = 'Error en captura: $e';
-          _isTargetLocked = false;
         });
-      }
-    } finally {
-      if (_isAutoCaptureEnabled && mounted && !_showQuickFillForm) {
-        _syncImageStream();
       }
     }
   }
@@ -466,12 +314,13 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
     final primaryPhoto = _obverseFile ?? _reverseFile;
     if (primaryPhoto == null) return;
 
-    await _stopImageStreamSafe();
     try {
-      await _cameraController?.pausePreview();
+      if (_cameraController != null && _cameraController!.value.isInitialized) {
+        await _cameraController?.pausePreview();
+      }
     } catch (_) {}
 
-    if (mounted) {
+    if (mounted && !_isDisposed) {
       setState(() {
         _showQuickFillForm = true;
       });
@@ -492,14 +341,15 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
         onResultSubmitted: (result) async {
           if (result != null && mounted) {
             widget.onScannedResult?.call(result);
-          } else if (mounted) {
+          } else if (mounted && !_isDisposed) {
             setState(() {
               _showQuickFillForm = false;
             });
             try {
-              await _cameraController?.resumePreview();
+              if (_cameraController != null && _cameraController!.value.isInitialized) {
+                await _cameraController?.resumePreview();
+              }
             } catch (_) {}
-            _syncImageStream();
           }
         },
       );
@@ -524,13 +374,14 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
       );
     }
 
-    final activeGuideColor = _isTargetLocked ? Colors.greenAccent.shade400 : Colors.amber;
+    final isBothCaptured = _obverseFile != null && _reverseFile != null;
+    final activeGuideColor = isBothCaptured ? Colors.greenAccent.shade400 : Colors.amber;
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
-          // Mode Selector & AutoCapture Switch Row
+          // Mode Selector: Moneda vs Billete
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Row(
@@ -542,31 +393,12 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                   onSelected: (val) => _switchMode(true),
                   avatar: const Icon(Icons.circle_outlined, size: 16),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
                 FilterChip(
                   label: const Text(AppStrings.banknoteRectangleLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                   selected: !_isCoinMode,
                   onSelected: (val) => _switchMode(false),
                   avatar: const Icon(Icons.crop_landscape, size: 16),
-                ),
-                const SizedBox(width: 8),
-                FilterChip(
-                  label: Text(
-                    _isAutoCaptureEnabled ? 'Autodisparo' : 'Manual',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: _isAutoCaptureEnabled ? Colors.green.shade800 : null,
-                    ),
-                  ),
-                  selected: _isAutoCaptureEnabled,
-                  selectedColor: Colors.green.withAlpha(45),
-                  onSelected: _toggleAutoCapture,
-                  avatar: Icon(
-                    _isAutoCaptureEnabled ? Icons.auto_awesome : Icons.motion_photos_off,
-                    size: 16,
-                    color: _isAutoCaptureEnabled ? Colors.green.shade700 : Colors.grey,
-                  ),
                 ),
               ],
             ),
@@ -602,22 +434,21 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
               AspectRatio(
                 aspectRatio: 1.0,
                 child: IgnorePointer(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
+                  child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: _isTargetLocked
+                        color: isBothCaptured
                             ? Colors.greenAccent.withAlpha(200)
                             : theme.colorScheme.primary.withAlpha(120),
-                        width: _isTargetLocked ? 3 : 2,
+                        width: isBothCaptured ? 3 : 2,
                       ),
                     ),
                   ),
                 ),
               ),
 
-              // Target Overlay
+              // Target Overlay (Circle for Coin, Rectangle for Banknote)
               Positioned.fill(
                 child: IgnorePointer(
                   child: _buildTargetOverlay(theme, activeGuideColor),
@@ -631,22 +462,24 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.black87,
+                    color: isBothCaptured ? Colors.green.shade900.withAlpha(220) : Colors.black87,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        _currentStep == 1 ? Icons.looks_one : Icons.looks_two,
-                        color: Colors.amber,
+                        isBothCaptured
+                            ? Icons.check_circle
+                            : (_currentStep == 1 ? Icons.looks_one : Icons.looks_two),
+                        color: isBothCaptured ? Colors.greenAccent : Colors.amber,
                         size: 18,
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        _currentStep == 1
-                            ? 'PASO 1: ANVERSO'
-                            : 'PASO 2: REVERSO',
+                        isBothCaptured
+                            ? 'CAPTURA COMPLETA (2/2)'
+                            : (_currentStep == 1 ? 'PASO 1: ANVERSO' : 'PASO 2: REVERSO'),
                         style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                       ),
                     ],
@@ -659,51 +492,19 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                 top: 10,
                 right: 12,
                 child: Material(
-                  color: Colors.black54,
+                  color: _isTorchOn ? Colors.amber.shade700 : Colors.black54,
                   shape: const CircleBorder(),
                   child: IconButton(
                     iconSize: 20,
                     tooltip: _isTorchOn ? 'Desactivar linterna' : 'Activar linterna (evita barrido)',
                     icon: Icon(
                       _isTorchOn ? Icons.flash_on : Icons.flash_off,
-                      color: _isTorchOn ? Colors.amber : Colors.white70,
+                      color: _isTorchOn ? Colors.white : Colors.white70,
                     ),
                     onPressed: _toggleTorch,
                   ),
                 ),
               ),
-
-              // Lock Status Badge
-              if (_isAutoCaptureEnabled)
-                Positioned(
-                  top: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _isTargetLocked ? Colors.green.shade900.withAlpha(220) : Colors.black54,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _isTargetLocked ? Icons.check_circle : Icons.center_focus_weak,
-                          color: _isTargetLocked ? Colors.greenAccent : Colors.white70,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          _isTargetLocked ? '¡CENTRADA! DISPARANDO...' : 'ENCUADRA EN LA GUÍA',
-                          style: TextStyle(
-                            color: _isTargetLocked ? Colors.greenAccent : Colors.white70,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
 
               // Tap to Focus Reticle Animation
               if (_tapFocusPoint != null)
@@ -724,7 +525,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                     ),
                   ),
                 )
-              else if (!_isAutoCaptureEnabled)
+              else if (!isBothCaptured)
                 // Center focus reference
                 const IgnorePointer(
                   child: Icon(Icons.center_focus_weak, color: Colors.white54, size: 36),
@@ -779,10 +580,12 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                 file: _obverseFile,
                 isSelected: _currentStep == 1,
                 onTapSelect: () => setState(() => _currentStep = 1),
-                onDelete: () => setState(() {
-                  _obverseFile = null;
-                  _currentStep = 1;
-                }),
+                onDelete: () {
+                  setState(() {
+                    _obverseFile = null;
+                    _currentStep = 1;
+                  });
+                },
                 theme: theme,
               ),
               const SizedBox(width: 12),
@@ -792,10 +595,12 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                 file: _reverseFile,
                 isSelected: _currentStep == 2,
                 onTapSelect: () => setState(() => _currentStep = 2),
-                onDelete: () => setState(() {
-                  _reverseFile = null;
-                  _currentStep = 2;
-                }),
+                onDelete: () {
+                  setState(() {
+                    _reverseFile = null;
+                    _currentStep = 2;
+                  });
+                },
                 theme: theme,
               ),
             ],
@@ -807,13 +612,21 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lightbulb_outline, size: 14, color: Colors.amber.shade700),
+              Icon(
+                isBothCaptured ? Icons.check_circle : Icons.lightbulb_outline,
+                size: 14,
+                color: isBothCaptured ? Colors.green : Colors.amber.shade700,
+              ),
               const SizedBox(width: 4),
               Text(
-                _isAutoCaptureEnabled
-                    ? 'Autocaptura activa: mantén quieto el teléfono sobre el objeto.'
-                    : 'Tip: Activa la linterna y Spot Metering para resaltar relieves sin quemar.',
-                style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurfaceVariant),
+                isBothCaptured
+                    ? '¡Ambos lados listos! Pulsa "Continuar a Datos Numismáticos".'
+                    : 'Tip: Activa la linterna y ajusta el zoom para encuadrar la pieza.',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: isBothCaptured ? Colors.green.shade800 : theme.colorScheme.onSurfaceVariant,
+                  fontWeight: isBothCaptured ? FontWeight.bold : FontWeight.normal,
+                ),
               ),
             ],
           ),
@@ -836,14 +649,14 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: _isProcessing ? null : _capturePhoto,
+                onTap: (_isProcessing || isBothCaptured) ? null : _capturePhoto,
                 child: Container(
                   width: 58,
                   height: 58,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: _isTargetLocked ? Colors.greenAccent : theme.colorScheme.primary,
+                      color: isBothCaptured ? Colors.grey.shade400 : theme.colorScheme.primary,
                       width: 3,
                     ),
                     color: Colors.transparent,
@@ -854,12 +667,14 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                       shape: BoxShape.circle,
                       color: _isProcessing
                           ? Colors.grey
-                          : (_isTargetLocked ? Colors.green : theme.colorScheme.primary),
+                          : (isBothCaptured ? Colors.grey.shade400 : theme.colorScheme.primary),
                     ),
                     child: _isProcessing
                         ? const Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3))
                         : Icon(
-                            _isCoinMode ? Icons.camera_alt : Icons.crop_free,
+                            isBothCaptured
+                                ? Icons.check
+                                : (_isCoinMode ? Icons.camera_alt : Icons.crop_free),
                             color: Colors.white,
                             size: 26,
                           ),
@@ -1003,9 +818,10 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
         final double height = constraints.maxHeight;
 
         if (_isCoinMode) {
-          // Circle targeting frame
+          // Marco circular para monedas
           final double radius = width * 0.35;
           return Stack(
+            key: const ValueKey('coin_targeting_stack'),
             children: [
               CustomPaint(
                 size: Size(width, height),
@@ -1016,26 +832,24 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                 ),
               ),
               Center(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                child: Container(
+                  key: const ValueKey('coin_reticle_container'),
                   width: radius * 2,
                   height: radius * 2,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: guideColor, width: _isTargetLocked ? 3.5 : 2.5),
-                    boxShadow: _isTargetLocked
-                        ? [BoxShadow(color: Colors.greenAccent.withAlpha(100), blurRadius: 12, spreadRadius: 2)]
-                        : null,
+                    border: Border.all(color: guideColor, width: 2.5),
                   ),
                 ),
               ),
             ],
           );
         } else {
-          // Rectangular targeting frame
+          // Marco rectangular para billetes
           final double rectWidth = width * 0.8;
           final double rectHeight = rectWidth * 0.55;
           return Stack(
+            key: const ValueKey('banknote_targeting_stack'),
             children: [
               CustomPaint(
                 size: Size(width, height),
@@ -1047,16 +861,13 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> wit
                 ),
               ),
               Center(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                child: Container(
+                  key: const ValueKey('banknote_reticle_container'),
                   width: rectWidth,
                   height: rectHeight,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: guideColor, width: _isTargetLocked ? 3.5 : 2.5),
-                    boxShadow: _isTargetLocked
-                        ? [BoxShadow(color: Colors.greenAccent.withAlpha(100), blurRadius: 12, spreadRadius: 2)]
-                        : null,
+                    border: Border.all(color: guideColor, width: 2.5),
                   ),
                 ),
               ),

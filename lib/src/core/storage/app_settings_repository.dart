@@ -55,20 +55,9 @@ class AppSettingsRepository {
   }
 
   // Numismatic Camera Settings & Preferences
-  static const String keyNumismaticAutoCapture = 'numismatic_auto_capture';
   static const String keyNumismaticTorchEnabled = 'numismatic_torch_enabled';
   static const String keyNumismaticExposureOffset = 'numismatic_exposure_offset';
   static const String keyNumismaticDefaultMode = 'numismatic_default_mode';
-
-  Future<bool> getNumismaticAutoCapture({bool defaultValue = false}) async {
-    final val = await _db.getSetting(keyNumismaticAutoCapture);
-    if (val == null) return defaultValue;
-    return val.toLowerCase() == 'true';
-  }
-
-  Future<void> setNumismaticAutoCapture(bool value) async {
-    await _db.setSetting(keyNumismaticAutoCapture, value.toString());
-  }
 
   Future<bool> getNumismaticTorchEnabled({bool defaultValue = false}) async {
     final val = await _db.getSetting(keyNumismaticTorchEnabled);
