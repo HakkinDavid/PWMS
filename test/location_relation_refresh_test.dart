@@ -308,7 +308,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Because curtain started open, the root location 'Oficina Central' in the curtain list should be visible
-      expect(find.text('Oficina Central'), findsOneWidget);
+      expect(find.descendant(
+        of: find.byType(SizeTransition),
+        matching: find.text('Oficina Central'),
+      ), findsOneWidget);
     });
   });
 }

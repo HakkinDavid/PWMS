@@ -1001,7 +1001,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap on Casa in the curtain
-      await tester.tap(find.text('Casa'));
+      await tester.tap(find.descendant(
+        of: find.byType(SizeTransition),
+        matching: find.text('Casa'),
+      ));
       await tester.pumpAndSettle();
 
       // Back button should now be visible in AppBar
@@ -1017,7 +1020,10 @@ void main() {
       );
       await tester.tap(treeChevron.first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Habitación'));
+      await tester.tap(find.descendant(
+        of: find.byType(SizeTransition),
+        matching: find.text('Habitación'),
+      ));
       await tester.pumpAndSettle();
 
       // Back button still present
@@ -1076,17 +1082,20 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Initially neither sub-location is visible (collapsed)
-      expect(find.text('Pasillo 1'), findsNothing);
-      expect(find.text('Escritorio'), findsNothing);
+      // Initially neither sub-location is visible (collapsed in tree)
+      expect(find.descendant(of: find.byType(SizeTransition), matching: find.text('Pasillo 1')), findsNothing);
+      expect(find.descendant(of: find.byType(SizeTransition), matching: find.text('Escritorio')), findsNothing);
 
       // Start drag on Paquete
       final itemTile = find.byType(EffectiveGroupTile);
       final gesture = await tester.startGesture(tester.getCenter(itemTile));
       await tester.pump(const Duration(milliseconds: 600));
 
-      // Move drag over 'Almacén'
-      final warehouseNode = find.text('Almacén');
+      // Move drag over 'Almacén' in the tree
+      final warehouseNode = find.descendant(
+        of: find.byType(SizeTransition),
+        matching: find.text('Almacén'),
+      );
       await gesture.moveTo(tester.getCenter(warehouseNode));
       await tester.pump();
 
@@ -1094,9 +1103,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 650));
       await tester.pumpAndSettle();
 
-      // 'Pasillo 1' is now expanded, but 'Escritorio' is STILL COLLAPSED
-      expect(find.text('Pasillo 1'), findsOneWidget);
-      expect(find.text('Escritorio'), findsNothing);
+      // 'Pasillo 1' is now expanded in tree, but 'Escritorio' is STILL COLLAPSED
+      expect(find.descendant(of: find.byType(SizeTransition), matching: find.text('Pasillo 1')), findsOneWidget);
+      expect(find.descendant(of: find.byType(SizeTransition), matching: find.text('Escritorio')), findsNothing);
 
       await gesture.up();
       await tester.pump(const Duration(seconds: 4));
@@ -1238,6 +1247,71 @@ void main() {
       // In 'Casa Principal', ONLY 'Sofá' is shown. 'Cama' (in child 'Habitación') is NOT shown!
       expect(find.byType(EffectiveGroupTile), findsOneWidget);
       expect(find.text('Cama'), findsNothing);
+
+      // Child sub-location 'Habitación Suite' IS shown as a location tile at the end!
+      expect(find.text('Habitación Suite'), findsOneWidget);
+    });
+
+    testWidgets('19. Child location tiles in parent location: tap drills down, drop moves item, immutable in selection mode', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final locGarage = LocationNode(id: 'loc_gar', name: 'Garaje', createdAt: now);
+      final locToolbox = LocationNode(id: 'loc_tool', name: 'Caja de Herramientas', parentLocationId: locGarage.id, createdAt: now);
+      await locationRepo.saveNode(locGarage);
+      await locationRepo.saveNode(locToolbox);
+
+      final wrenchSpecies = CatalogItem(id: 'sp-wrench', name: 'Llave Inglesa', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(wrenchSpecies);
+      final wrenchEntity = WorldEntity(id: 'ent-wrench', speciesId: wrenchSpecies.id, locationId: locGarage.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(wrenchEntity);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(initialLocationId: 'loc_gar'),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify 'Llave Inglesa' entity tile and 'Caja de Herramientas' sub-location tile appear
+      expect(find.text('Llave Inglesa'), findsWidgets);
+      expect(find.text('Caja de Herramientas'), findsOneWidget);
+
+      // Drag 'Llave Inglesa' and drop onto 'Caja de Herramientas' tile
+      final itemTile = find.byType(EffectiveGroupTile);
+      final locTile = find.text('Caja de Herramientas');
+
+      final gesture = await tester.startGesture(tester.getCenter(itemTile));
+      await tester.pump(const Duration(milliseconds: 600));
+      await gesture.moveTo(tester.getCenter(locTile));
+      await tester.pump();
+      await gesture.up();
+      await tester.pump(const Duration(seconds: 4));
+      await tester.pumpAndSettle();
+
+      // Entity has moved to 'loc_tool'
+      final checkWrench = await entityRepo.getEntityById('ent-wrench');
+      expect(checkWrench?.locationId, equals('loc_tool'));
+
+      // Tap on 'Caja de Herramientas' tile drills down into it
+      await tester.tap(find.text('Caja de Herramientas'));
+      await tester.pumpAndSettle();
+
+      // Now inside 'Caja de Herramientas', 'Llave Inglesa' is shown directly here
+      expect(find.text('Llave Inglesa'), findsWidgets);
     });
   });
 }

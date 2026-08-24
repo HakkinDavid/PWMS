@@ -12,6 +12,7 @@ import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/effective_group_tile.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
 import '../../entities/presentation/register_object_modal.dart';
+import '../../locations/presentation/location_tile.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import 'inventory_breadcrumb_bar.dart';
 import 'inventory_item_interaction_wrapper.dart';
@@ -406,6 +407,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       );
     }
 
+    // Child sub-locations of current view (always displayed at the end when outside containers)
+    final List<LocationNode> childLocations;
+    if (_containerPath.isEmpty && _selectedTypeFilter == AppStrings.all) {
+      if (_selectedLocationId == null) {
+        childLocations = locationNodes.where((l) => l.parentLocationId == null).toList();
+      } else {
+        childLocations = locationNodes.where((l) => l.parentLocationId == _selectedLocationId).toList();
+      }
+    } else {
+      childLocations = [];
+    }
+
     final bool canGoBack = _containerPath.isNotEmpty || _selectedLocationId != null || _locationHistory.isNotEmpty;
 
     return PopScope(
@@ -594,7 +607,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
                       return Container(
                         color: isHovered ? theme.colorScheme.primary.withAlpha(15) : Colors.transparent,
-                        child: currentGroups.isEmpty
+                        child: (currentGroups.isEmpty && childLocations.isEmpty)
                             ? Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -611,7 +624,14 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                                   ],
                                 ),
                               )
-                            : _buildInventoryContent(currentGroups, catalogMap, containerChildrenMap, allEntities),
+                            : _buildInventoryContent(
+                                currentGroups,
+                                childLocations,
+                                catalogMap,
+                                containerChildrenMap,
+                                allEntities,
+                                containedEntityIds,
+                              ),
                       );
                     },
                   );
@@ -702,11 +722,22 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   Widget _buildInventoryContent(
     List<EffectiveEntityGroup> currentGroups,
+    List<LocationNode> childLocations,
     Map<String, CatalogItem> catalogMap,
     Map<String, List<String>> containerChildrenMap,
     List<WorldEntity> allEntities,
+    Set<String> containedEntityIds,
   ) {
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84.0;
+    final totalCount = currentGroups.length + childLocations.length;
+
+    // Direct items count map for child locations
+    final directItemCountMap = <String, int>{};
+    for (final loc in childLocations) {
+      directItemCountMap[loc.id] = allEntities
+          .where((e) => e.locationId == loc.id && !containedEntityIds.contains(e.id))
+          .length;
+    }
 
     if (_viewMode == FinderViewMode.minecraftGrid) {
       // Minecraft Grid Mode
@@ -719,46 +750,64 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           mainAxisSpacing: 12,
           childAspectRatio: 1.0,
         ),
-        itemCount: currentGroups.length,
+        itemCount: totalCount,
         itemBuilder: (ctx, idx) {
-          final grp = currentGroups[idx];
-          final primary = grp.primaryEntity;
-          final species = catalogMap[grp.speciesId];
-          final isSelected = _selectedEntityIds.contains(primary.id);
-          final isExpired = grp.expiredCount(now: DateTime.now()) > 0;
-          final containedIds = grp.entities
-              .expand((e) => containerChildrenMap[e.id] ?? <String>[])
-              .toSet()
-              .toList();
-          final isContainer = containedIds.isNotEmpty;
+          if (idx < currentGroups.length) {
+            final grp = currentGroups[idx];
+            final primary = grp.primaryEntity;
+            final species = catalogMap[grp.speciesId];
+            final isSelected = _selectedEntityIds.contains(primary.id);
+            final isExpired = grp.expiredCount(now: DateTime.now()) > 0;
+            final containedIds = grp.entities
+                .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+                .toSet()
+                .toList();
+            final isContainer = containedIds.isNotEmpty;
 
-          return InventoryItemInteractionWrapper(
-            group: grp,
-            isSelected: isSelected,
-            isSelectionMode: _isSelectionMode,
-            selectedEntityIds: _selectedEntityIds,
-            isContainer: isContainer,
-            onTap: () => _handleItemTap(grp, isContainer),
-            onDropIntoContainer: _handleDropIntoContainer,
-            onDragStarted: _handleDragStarted,
-            onDragEnd: _handleDragEnd,
-            onHoverSpringLoaded: (targetContainerId) {
-              if (!_containerPath.contains(targetContainerId)) {
-                if (_isDragging) _dragHasNavigated = true;
-                setState(() => _containerPath.add(targetContainerId));
-              }
-            },
-            child: MinecraftTileWidget(
+            return InventoryItemInteractionWrapper(
               group: grp,
-              title: species?.name ?? AppStrings.typeObject,
               isSelected: isSelected,
               isSelectionMode: _isSelectionMode,
+              selectedEntityIds: _selectedEntityIds,
               isContainer: isContainer,
-              containedCount: containedIds.length,
-              isExpired: isExpired,
               onTap: () => _handleItemTap(grp, isContainer),
-            ),
-          );
+              onDropIntoContainer: _handleDropIntoContainer,
+              onDragStarted: _handleDragStarted,
+              onDragEnd: _handleDragEnd,
+              onHoverSpringLoaded: (targetContainerId) {
+                if (!_containerPath.contains(targetContainerId)) {
+                  if (_isDragging) _dragHasNavigated = true;
+                  setState(() => _containerPath.add(targetContainerId));
+                }
+              },
+              child: MinecraftTileWidget(
+                group: grp,
+                title: species?.name ?? AppStrings.typeObject,
+                isSelected: isSelected,
+                isSelectionMode: _isSelectionMode,
+                isContainer: isContainer,
+                containedCount: containedIds.length,
+                isExpired: isExpired,
+                onTap: () => _handleItemTap(grp, isContainer),
+              ),
+            );
+          } else {
+            final locNode = childLocations[idx - currentGroups.length];
+            return _LocationItemInteractionTile(
+              key: ValueKey('loc_tile_${locNode.id}'),
+              node: locNode,
+              directItemCount: directItemCountMap[locNode.id] ?? 0,
+              viewMode: FinderViewMode.minecraftGrid,
+              onTap: () => _handleLocationSelected(locNode.id),
+              onDrop: (payload, locId) {
+                final ids = _extractPayloadIds(payload);
+                if (ids.isNotEmpty) {
+                  _moveEntitiesToLocation(ids, locId);
+                }
+              },
+              onSpringLoad: (locId) => _handleLocationSelected(locId),
+            );
+          }
         },
       );
     } else {
@@ -766,45 +815,284 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       return ListView.builder(
         controller: _scrollController,
         padding: EdgeInsets.only(left: 12, right: 12, top: 12, bottom: bottomClearance),
-        itemCount: currentGroups.length,
+        itemCount: totalCount,
         itemBuilder: (ctx, idx) {
-          final grp = currentGroups[idx];
-          final primary = grp.primaryEntity;
-          final primaryId = primary.id;
-          final isSelected = _selectedEntityIds.contains(primaryId);
+          if (idx < currentGroups.length) {
+            final grp = currentGroups[idx];
+            final primary = grp.primaryEntity;
+            final primaryId = primary.id;
+            final isSelected = _selectedEntityIds.contains(primaryId);
 
-          final containedIds = grp.entities
-              .expand((e) => containerChildrenMap[e.id] ?? <String>[])
-              .toSet()
-              .toList();
-          final isContainer = containedIds.isNotEmpty;
+            final containedIds = grp.entities
+                .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+                .toSet()
+                .toList();
+            final isContainer = containedIds.isNotEmpty;
 
-          return InventoryItemInteractionWrapper(
-            group: grp,
-            isSelected: isSelected,
-            isSelectionMode: _isSelectionMode,
-            selectedEntityIds: _selectedEntityIds,
-            isContainer: isContainer,
-            onTap: () => _handleItemTap(grp, isContainer),
-            onDropIntoContainer: _handleDropIntoContainer,
-            onDragStarted: _handleDragStarted,
-            onDragEnd: _handleDragEnd,
-            onHoverSpringLoaded: (targetContainerId) {
-              if (!_containerPath.contains(targetContainerId)) {
-                if (_isDragging) _dragHasNavigated = true;
-                setState(() => _containerPath.add(targetContainerId));
-              }
-            },
-            child: EffectiveGroupTile(
+            return InventoryItemInteractionWrapper(
               group: grp,
               isSelected: isSelected,
               isSelectionMode: _isSelectionMode,
+              selectedEntityIds: _selectedEntityIds,
               isContainer: isContainer,
               onTap: () => _handleItemTap(grp, isContainer),
-            ),
-          );
+              onDropIntoContainer: _handleDropIntoContainer,
+              onDragStarted: _handleDragStarted,
+              onDragEnd: _handleDragEnd,
+              onHoverSpringLoaded: (targetContainerId) {
+                if (!_containerPath.contains(targetContainerId)) {
+                  if (_isDragging) _dragHasNavigated = true;
+                  setState(() => _containerPath.add(targetContainerId));
+                }
+              },
+              child: EffectiveGroupTile(
+                group: grp,
+                isSelected: isSelected,
+                isSelectionMode: _isSelectionMode,
+                isContainer: isContainer,
+                onTap: () => _handleItemTap(grp, isContainer),
+              ),
+            );
+          } else {
+            final locNode = childLocations[idx - currentGroups.length];
+            return _LocationItemInteractionTile(
+              key: ValueKey('loc_tile_${locNode.id}'),
+              node: locNode,
+              directItemCount: directItemCountMap[locNode.id] ?? 0,
+              viewMode: FinderViewMode.detailedList,
+              onTap: () => _handleLocationSelected(locNode.id),
+              onDrop: (payload, locId) {
+                final ids = _extractPayloadIds(payload);
+                if (ids.isNotEmpty) {
+                  _moveEntitiesToLocation(ids, locId);
+                }
+              },
+              onSpringLoad: (locId) => _handleLocationSelected(locId),
+            );
+          }
         },
       );
     }
+  }
+}
+
+/// Standard immutable location tile placed at the end of the inventory list/grid.
+/// Functions as a container target (DragTarget, spring-load hover navigation, tap to drill down).
+class _LocationItemInteractionTile extends StatefulWidget {
+  final LocationNode node;
+  final int directItemCount;
+  final FinderViewMode viewMode;
+  final VoidCallback onTap;
+  final Function(Object payload, String targetLocationId) onDrop;
+  final ValueChanged<String> onSpringLoad;
+
+  const _LocationItemInteractionTile({
+    super.key,
+    required this.node,
+    required this.directItemCount,
+    required this.viewMode,
+    required this.onTap,
+    required this.onDrop,
+    required this.onSpringLoad,
+  });
+
+  @override
+  State<_LocationItemInteractionTile> createState() => _LocationItemInteractionTileState();
+}
+
+class _LocationItemInteractionTileState extends State<_LocationItemInteractionTile> {
+  Timer? _hoverTimer;
+
+  @override
+  void dispose() {
+    _hoverTimer?.cancel();
+    super.dispose();
+  }
+
+  void _cancelTimer() {
+    _hoverTimer?.cancel();
+    _hoverTimer = null;
+  }
+
+  void _startTimer() {
+    if (_hoverTimer != null) return;
+    _hoverTimer = Timer(const Duration(milliseconds: 600), () {
+      _hoverTimer = null;
+      if (mounted) {
+        widget.onSpringLoad(widget.node.id);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final iconData = LocationTile.resolveLocationIcon(widget.node.icon);
+
+    return DragTarget<Object>(
+      onWillAcceptWithDetails: (_) => true,
+      onMove: (_) => _startTimer(),
+      onLeave: (_) => _cancelTimer(),
+      onAcceptWithDetails: (details) {
+        _cancelTimer();
+        widget.onDrop(details.data, widget.node.id);
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovered = candidateData.isNotEmpty;
+
+        if (widget.viewMode == FinderViewMode.minecraftGrid) {
+          // Grid Tile
+          return InkWell(
+            onTap: widget.onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              decoration: BoxDecoration(
+                color: isHovered
+                    ? theme.colorScheme.primaryContainer
+                    : theme.colorScheme.surfaceContainerHighest.withAlpha(90),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isHovered
+                      ? theme.colorScheme.primary
+                      : theme.dividerColor.withAlpha(60),
+                  width: isHovered ? 2.0 : 1.0,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        iconData,
+                        size: 32,
+                        color: theme.colorScheme.primary,
+                      ),
+                      const SizedBox(height: 6),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Text(
+                          widget.node.name,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (widget.directItemCount > 0)
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${widget.directItemCount}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // List Tile
+        return Container(
+          margin: const EdgeInsets.only(bottom: 6.0),
+          child: InkWell(
+            onTap: widget.onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: isHovered
+                    ? theme.colorScheme.primaryContainer
+                    : theme.cardColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isHovered
+                      ? theme.colorScheme.primary
+                      : theme.dividerColor.withAlpha(50),
+                  width: isHovered ? 2.0 : 1.0,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(6),
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      iconData,
+                      color: theme.colorScheme.onSecondaryContainer,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.node.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.node.description != null && widget.node.description!.isNotEmpty
+                              ? widget.node.description!
+                              : '${widget.directItemCount} ${AppStrings.objectsLabel}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
