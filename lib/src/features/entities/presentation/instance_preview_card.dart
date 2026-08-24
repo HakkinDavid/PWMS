@@ -81,19 +81,22 @@ class InstancePreviewCard extends ConsumerWidget {
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
 
-        return Card(
+        final isDimmed = isSelectionMode && !isSelected;
+        final highlightColor = theme.colorScheme.secondary;
+
+        Widget cardWidget = Card(
           margin: const EdgeInsets.only(bottom: 8),
-          elevation: isSelected ? 3.0 : 1.5,
+          elevation: isSelected ? 3.0 : (isDimmed ? 0.5 : 1.5),
           color: isSelected
-              ? theme.colorScheme.primaryContainer.withAlpha(120)
-              : theme.cardColor,
+              ? highlightColor.withAlpha(35)
+              : (isDimmed ? theme.cardColor.withAlpha(160) : theme.cardColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: BorderSide(
               color: isSelected
-                  ? theme.colorScheme.primary
-                  : theme.dividerColor.withAlpha(40),
-              width: isSelected ? 2.0 : 1.0,
+                  ? highlightColor
+                  : theme.dividerColor.withAlpha(isDimmed ? 20 : 40),
+              width: isSelected ? 2.5 : 1.0,
             ),
           ),
           child: InkWell(
@@ -103,16 +106,6 @@ class InstancePreviewCard extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
-                  // Selection Checkbox if in Selection Mode
-                  if (isSelectionMode) ...[
-                    Checkbox(
-                      value: isSelected,
-                      onChanged: (_) => onTap?.call(),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    const SizedBox(width: 4),
-                  ],
-
                   // Photo Thumbnail via EntityPhotoThumbnail
                   EntityPhotoThumbnail(
                     species: species,
@@ -126,8 +119,8 @@ class InstancePreviewCard extends ConsumerWidget {
                   const SizedBox(width: 12),
 
                   // Info Column (Subspecies as main title, Species as secondary context)
-                      Expanded(
-                        child: Column(
+                  Expanded(
+                    child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                         Text(
@@ -200,27 +193,6 @@ class InstancePreviewCard extends ConsumerWidget {
                               spacing: 4,
                               runSpacing: 4,
                               children: [
-                                if (containedCount > 0)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 4),
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.primaryContainer.withAlpha(120),
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(color: theme.colorScheme.primary.withAlpha(160), width: 0.8),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(Icons.inventory_2_outlined, size: 10, color: theme.colorScheme.primary),
-                                        const SizedBox(width: 3),
-                                        Text(
-                                          '${AppStrings.badgeContainer} ($containedCount)',
-                                          style: TextStyle(fontSize: 10, color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 if (isOrphan)
                                   Container(
                                     margin: const EdgeInsets.only(top: 4),
@@ -351,7 +323,26 @@ class InstancePreviewCard extends ConsumerWidget {
             ),
           ),
         );
+
+        if (isDimmed) {
+          cardWidget = ColorFiltered(
+            colorFilter: const ColorFilter.matrix(kGrayscaleColorMatrix),
+            child: Opacity(
+              opacity: 0.65,
+              child: cardWidget,
+            ),
+          );
+        }
+
+        return cardWidget;
       },
     );
   }
 }
+
+const List<double> kGrayscaleColorMatrix = <double>[
+  0.2126, 0.7152, 0.0722, 0, 0,
+  0.2126, 0.7152, 0.0722, 0, 0,
+  0.2126, 0.7152, 0.0722, 0, 0,
+  0,      0,      0,      1, 0,
+];

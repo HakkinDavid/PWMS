@@ -153,9 +153,6 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Verify Container Badge: "Contenedor (1)"
-      expect(find.text('${AppStrings.badgeContainer} (1)'), findsOneWidget);
-
       // Verify Expired Status Badge: "Caducado"
       expect(find.text(AppStrings.statusExpired), findsOneWidget);
 
@@ -218,7 +215,6 @@ void main() {
       // Verify container entity e_vault is rendered in an EntityTile
       expect(find.byType(EntityTile), findsOneWidget);
       expect(find.text('Caja Fuerte'), findsWidgets);
-      expect(find.text('${AppStrings.badgeContainer} (1)'), findsOneWidget);
     });
 
     testWidgets('SQL Console View Mode switch toggles between Table and Tiles',

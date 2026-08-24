@@ -50,7 +50,10 @@ class MinecraftTileWidget extends ConsumerWidget {
     final species = speciesId != null ? catalogItems.where((c) => c.id == speciesId).firstOrNull : null;
     final subspecies = subspeciesId != null ? subspeciesList.where((s) => s.id == subspeciesId).firstOrNull : null;
 
-    return Material(
+    final isDimmed = isSelectionMode && !isSelected;
+    final highlightColor = theme.colorScheme.secondary;
+
+    Widget tileContent = Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -60,22 +63,35 @@ class MinecraftTileWidget extends ConsumerWidget {
           duration: const Duration(milliseconds: 180),
           decoration: BoxDecoration(
             color: isSelected
-                ? theme.colorScheme.primary.withAlpha(50)
-                : theme.colorScheme.surfaceContainerHighest.withAlpha(120),
+                ? highlightColor.withAlpha(50)
+                : (isDimmed
+                    ? theme.colorScheme.surfaceContainerHighest.withAlpha(60)
+                    : theme.colorScheme.surfaceContainerHighest.withAlpha(120)),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isSelected
-                  ? theme.colorScheme.primary
-                  : (isExpired ? Colors.redAccent.withAlpha(180) : theme.dividerColor.withAlpha(50)),
-              width: isSelected ? 2.5 : 1.0,
+                  ? highlightColor
+                  : (isExpired
+                      ? Colors.redAccent.withAlpha(180)
+                      : theme.dividerColor.withAlpha(isDimmed ? 20 : 50)),
+              width: isSelected ? 3.0 : 1.0,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(15),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: highlightColor.withAlpha(80),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(isDimmed ? 5 : 15),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
           ),
           child: Stack(
             children: [
@@ -117,58 +133,6 @@ class MinecraftTileWidget extends ConsumerWidget {
                   ),
                 ),
 
-              // Top Left Container Badge (if container and not expired, or next to it)
-              if (isContainer && containedCount > 0)
-                Positioned(
-                  top: 6,
-                  left: isExpired ? 26 : 6,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: theme.colorScheme.primary.withAlpha(120), width: 0.8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.inventory_2_outlined, size: 9, color: theme.colorScheme.primary),
-                        const SizedBox(width: 2),
-                        Text(
-                          '$containedCount',
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-              // Top Right Selection Indicator
-              if (isSelectionMode)
-                Positioned(
-                  top: 6,
-                  right: 6,
-                  child: Container(
-                    width: 22,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface.withAlpha(200),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isSelected ? theme.colorScheme.primary : Colors.grey,
-                        width: 1.5,
-                      ),
-                    ),
-                    child: isSelected
-                        ? const Icon(Icons.check, size: 14, color: Colors.white)
-                        : null,
-                  ),
-                ),
-
               // Bottom Right Population Badge Overlay
               if (population > 1)
                 Positioned(
@@ -196,5 +160,24 @@ class MinecraftTileWidget extends ConsumerWidget {
         ),
       ),
     );
+
+    if (isDimmed) {
+      tileContent = ColorFiltered(
+        colorFilter: const ColorFilter.matrix(kGrayscaleColorMatrix),
+        child: Opacity(
+          opacity: 0.65,
+          child: tileContent,
+        ),
+      );
+    }
+
+    return tileContent;
   }
 }
+
+const List<double> kGrayscaleColorMatrix = <double>[
+  0.2126, 0.7152, 0.0722, 0, 0,
+  0.2126, 0.7152, 0.0722, 0, 0,
+  0.2126, 0.7152, 0.0722, 0, 0,
+  0,      0,      0,      1, 0,
+];

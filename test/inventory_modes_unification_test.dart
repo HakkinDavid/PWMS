@@ -215,15 +215,72 @@ void main() {
       // Population badge "2" is shown
       expect(find.text('2'), findsOneWidget);
 
-      // Contained count badge "3" is shown
-      expect(find.text('3'), findsOneWidget);
+      // Contained count badge is NOT shown (container badges removed)
+      expect(find.text('3'), findsNothing);
 
-      // Selection checkmark icon is shown
-      expect(find.byIcon(Icons.check), findsOneWidget);
+      // Selection checkmark icon is NOT shown (selection uses highlight/grayscale without icons or checkboxes)
+      expect(find.byIcon(Icons.check), findsNothing);
 
       // Tapping invokes onTap
       await tester.tap(find.byType(MinecraftTileWidget));
       expect(tapped, isTrue);
+    });
+
+    testWidgets('3b. MinecraftTileWidget applies grayscale ColorFiltered when unselected in selection mode', (tester) async {
+      final species = CatalogItem(
+        id: 'sp-apple-2',
+        name: 'Manzana Fuji',
+        type: 'Objeto',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveCatalogItem(species);
+
+      final entity1 = WorldEntity(
+        id: 'ent-apple-3',
+        speciesId: species.id,
+        magnitudes: const [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      final group = EffectiveEntityGroup(
+        key: 'grp_apple_2',
+        speciesId: species.id,
+        effectiveLocationId: null,
+        entities: [entity1],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 90,
+                  height: 90,
+                  child: MinecraftTileWidget(
+                    group: group,
+                    title: species.name,
+                    isSelected: false,
+                    isSelectionMode: true,
+                    onTap: () {},
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Unselected item in selection mode is wrapped with ColorFiltered for grayscale
+      expect(find.byType(ColorFiltered), findsOneWidget);
     });
 
     testWidgets('4. InventoryFinderScreen toggles view mode between detailedList and minecraftGrid seamlessly', (tester) async {
