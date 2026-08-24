@@ -7,6 +7,7 @@ import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../entities/domain/attachment.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/domain/location_path_helper.dart';
 import 'species_detail_view.dart';
@@ -25,6 +26,21 @@ class SpeciesDetailScreen extends ConsumerStatefulWidget {
 class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
   bool _isEditing = false;
   bool _forceClose = false;
+  List<Attachment> _workingAttachments = [];
+  List<Attachment>? _originalAttachments;
+
+  bool _hasUnsavedChanges() {
+    if (!_isEditing) return false;
+    if (_originalAttachments != null) {
+      if (_workingAttachments.length != _originalAttachments!.length) return true;
+      for (final wa in _workingAttachments) {
+        final oa = _originalAttachments!.where((a) => a.id == wa.id).firstOrNull;
+        if (oa == null) return true;
+        if (wa.fileName != oa.fileName || wa.filePath != oa.filePath || wa.fileType != oa.fileType) return true;
+      }
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +65,13 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
         final locationNodes = locationsState.asData?.value ?? [];
         final instances = allEntities.where((e) => e.speciesId == species.id).toList();
         final hasExistingInstance = instances.isNotEmpty;
+
+        final speciesAttachmentsAsync = ref.watch(speciesAttachmentsProvider(widget.speciesId));
+        if (!_isEditing) {
+          final atts = speciesAttachmentsAsync.asData?.value ?? [];
+          _originalAttachments = List.from(atts);
+          _workingAttachments = List.from(atts);
+        }
 
         // World Instance Locations Summary Card for this Species
         final locationsSummaryHeader = Column(
@@ -140,6 +163,11 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
           canPop: !_isEditing || _forceClose,
           onPopInvokedWithResult: (didPop, result) async {
             if (didPop) return;
+            if (_hasUnsavedChanges()) {
+              final shouldDiscard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+              if (!shouldDiscard || !mounted) return;
+            }
+            _workingAttachments = List.from(_originalAttachments ?? []);
             _forceClose = true;
             if (mounted) {
               setState(() => _isEditing = false);
@@ -149,6 +177,10 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
           child: SpeciesDetailView(
             species: species,
             showAttachmentAction: _isEditing,
+            workingSpeciesAttachments: _isEditing ? _workingAttachments : null,
+            onSpeciesAttachmentsChanged: _isEditing
+                ? (updatedList) => setState(() => _workingAttachments = updatedList)
+                : null,
             instanceSpecificsHeader: locationsSummaryHeader,
             floatingActionButton: fab,
             actions: !_isEditing
@@ -194,9 +226,42 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                     IconButton(
                       icon: const Icon(Icons.check, color: Colors.green),
                       tooltip: AppStrings.saveChangesAction,
-                      onPressed: () {
-                        setState(() => _isEditing = false);
-                        AppToast.showSuccess(context, AppStrings.instanceUpdatedSuccess);
+                      onPressed: () async {
+                        if (_originalAttachments != null) {
+                          final entityRepo = ref.read(entityRepositoryProvider);
+                          final fileStorage = ref.read(fileStorageServiceProvider);
+                          final deletedAttachments = _originalAttachments!.where((orig) => !_workingAttachments.any((w) => w.id == orig.id)).toList();
+                          final addedAttachments = _workingAttachments.where((w) => !_originalAttachments!.any((orig) => orig.id == w.id)).toList();
+                          final existingAttachments = _workingAttachments.where((w) => _originalAttachments!.any((orig) => orig.id == w.id)).toList();
+
+                          for (final att in deletedAttachments) {
+                            await entityRepo.deleteAttachment(att.id);
+                          }
+                          for (final att in addedAttachments) {
+                            await entityRepo.addAttachment(att);
+                          }
+                          for (final att in existingAttachments) {
+                            final orig = _originalAttachments!.firstWhere((o) => o.id == att.id);
+                            if (att.filePath != orig.filePath) {
+                              final absPath = await fileStorage.getAbsolutePath(att.filePath);
+                              await entityRepo.replaceAttachmentFile(
+                                att.id,
+                                absPath,
+                                newFileName: att.fileName,
+                                newFileType: att.fileType,
+                              );
+                            } else if (att.fileName != orig.fileName) {
+                              await entityRepo.updateAttachment(att);
+                            }
+                          }
+                          ref.invalidate(speciesAttachmentsProvider(widget.speciesId));
+                          _originalAttachments = List.from(_workingAttachments);
+                        }
+
+                        if (mounted) {
+                          setState(() => _isEditing = false);
+                          AppToast.showSuccess(context, AppStrings.instanceUpdatedSuccess);
+                        }
                       },
                     ),
                     IconButton(
@@ -209,7 +274,16 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                     IconButton(
                       icon: const Icon(Icons.close),
                       tooltip: AppStrings.cancel,
-                      onPressed: () => setState(() => _isEditing = false),
+                      onPressed: () async {
+                        if (_hasUnsavedChanges()) {
+                          final shouldDiscard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+                          if (!shouldDiscard || !mounted) return;
+                        }
+                        setState(() {
+                          _workingAttachments = List.from(_originalAttachments ?? []);
+                          _isEditing = false;
+                        });
+                      },
                     ),
                   ],
           ),

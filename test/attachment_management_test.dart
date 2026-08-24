@@ -217,5 +217,128 @@ void main() {
       );
       expect(fileName, '5 Pesos - México (2020) (inst_99) (anverso).jpg');
     });
+
+    test('Numismatic missing side condition logic at instance level', () {
+      final obverseAtt = Attachment(
+        id: 'att_obv',
+        speciesId: 'coin_1',
+        instanceId: 'inst_1',
+        filePath: 'path/anverso.jpg',
+        fileName: 'Moneda (anverso).jpg',
+        fileType: 'image',
+        createdAt: DateTime.now(),
+      );
+
+      final reverseAtt = Attachment(
+        id: 'att_rev',
+        speciesId: 'coin_1',
+        instanceId: 'inst_1',
+        filePath: 'path/reverso.jpg',
+        fileName: 'Moneda (reverso).jpg',
+        fileType: 'image',
+        createdAt: DateTime.now(),
+      );
+
+      // Case 1: Neither exists (both missing)
+      List<Attachment> listEmpty = [];
+      bool hasObverse = listEmpty.any((a) => a.fileName.toLowerCase().contains('anverso'));
+      bool hasReverse = listEmpty.any((a) => a.fileName.toLowerCase().contains('reverso'));
+      expect(hasObverse, isFalse);
+      expect(hasReverse, isFalse);
+      expect(!hasObverse, isTrue); // showObverseScan: true
+      expect(!hasReverse, isTrue); // showReverseScan: true
+
+      // Case 2: Only obverse exists (reverse missing)
+      List<Attachment> listObv = [obverseAtt];
+      hasObverse = listObv.any((a) => a.fileName.toLowerCase().contains('anverso'));
+      hasReverse = listObv.any((a) => a.fileName.toLowerCase().contains('reverso'));
+      expect(hasObverse, isTrue);
+      expect(hasReverse, isFalse);
+      expect(!hasObverse, isFalse); // showObverseScan: false
+      expect(!hasReverse, isTrue);  // showReverseScan: true
+
+      // Case 3: Only reverse exists (obverse missing)
+      List<Attachment> listRev = [reverseAtt];
+      hasObverse = listRev.any((a) => a.fileName.toLowerCase().contains('anverso'));
+      hasReverse = listRev.any((a) => a.fileName.toLowerCase().contains('reverso'));
+      expect(hasObverse, isFalse);
+      expect(hasReverse, isTrue);
+      expect(!hasObverse, isTrue);  // showObverseScan: true
+      expect(!hasReverse, isFalse); // showReverseScan: false
+
+      // Case 4: Both exist (general attachments allowed, no HD buttons)
+      List<Attachment> listBoth = [obverseAtt, reverseAtt];
+      hasObverse = listBoth.any((a) => a.fileName.toLowerCase().contains('anverso'));
+      hasReverse = listBoth.any((a) => a.fileName.toLowerCase().contains('reverso'));
+      expect(hasObverse, isTrue);
+      expect(hasReverse, isTrue);
+      expect(!hasObverse, isFalse); // showObverseScan: false
+      expect(!hasReverse, isFalse); // showReverseScan: false
+    });
+
+    test('In-memory transactional attachment delta sync on save', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Prueba Transaccional', type: 'Objeto');
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0);
+
+      final att1 = Attachment(
+        id: 'att_orig_1',
+        speciesId: species.id,
+        instanceId: instance.id,
+        filePath: 'mock/file1.png',
+        fileName: 'archivo1.png',
+        fileType: 'image',
+        createdAt: DateTime.now(),
+      );
+      await entityRepo.addAttachment(att1);
+
+      // Original state from DB
+      final originalList = await entityRepo.getAttachmentsForInstance(instance.id);
+      expect(originalList.length, 1);
+
+      // Simulate edit mode: add 1, rename 1, delete 0 in working memory
+      List<Attachment> workingList = List.from(originalList);
+      final renamedAtt1 = att1.copyWith(fileName: 'archivo1_renombrado.png');
+      workingList = workingList.map((a) => a.id == att1.id ? renamedAtt1 : a).toList();
+
+      final att2 = Attachment(
+        id: 'att_added_2',
+        speciesId: species.id,
+        instanceId: instance.id,
+        filePath: 'mock/file2.png',
+        fileName: 'archivo2.png',
+        fileType: 'image',
+        createdAt: DateTime.now(),
+      );
+      workingList.add(att2);
+
+      // Verify DB hasn't changed before explicit save
+      var dbList = await entityRepo.getAttachmentsForInstance(instance.id);
+      expect(dbList.length, 1);
+      expect(dbList.first.fileName, 'archivo1.png');
+
+      // Now simulate committing the delta on save
+      final deleted = originalList.where((orig) => !workingList.any((w) => w.id == orig.id)).toList();
+      final added = workingList.where((w) => !originalList.any((orig) => orig.id == w.id)).toList();
+      final existing = workingList.where((w) => originalList.any((orig) => orig.id == w.id)).toList();
+
+      for (final a in deleted) {
+        await entityRepo.deleteAttachment(a.id);
+      }
+      for (final a in added) {
+        await entityRepo.addAttachment(a);
+      }
+      for (final a in existing) {
+        final orig = originalList.firstWhere((o) => o.id == a.id);
+        if (a.fileName != orig.fileName) {
+          await entityRepo.updateAttachment(a);
+        }
+      }
+
+      // Verify DB is now updated
+      dbList = await entityRepo.getAttachmentsForInstance(instance.id);
+      expect(dbList.length, 2);
+      expect(dbList.any((a) => a.fileName == 'archivo1_renombrado.png'), isTrue);
+      expect(dbList.any((a) => a.fileName == 'archivo2.png'), isTrue);
+    });
   });
 }

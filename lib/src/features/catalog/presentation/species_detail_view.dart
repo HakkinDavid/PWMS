@@ -26,6 +26,10 @@ class SpeciesDetailView extends ConsumerWidget {
   final List<Widget>? actions;
   final Widget? floatingActionButton;
   final bool showAttachmentAction;
+  final List<Attachment>? workingInstanceAttachments;
+  final ValueChanged<List<Attachment>>? onInstanceAttachmentsChanged;
+  final List<Attachment>? workingSpeciesAttachments;
+  final ValueChanged<List<Attachment>>? onSpeciesAttachmentsChanged;
 
   const SpeciesDetailView({
     super.key,
@@ -37,6 +41,10 @@ class SpeciesDetailView extends ConsumerWidget {
     this.actions,
     this.floatingActionButton,
     this.showAttachmentAction = false,
+    this.workingInstanceAttachments,
+    this.onInstanceAttachmentsChanged,
+    this.workingSpeciesAttachments,
+    this.onSpeciesAttachmentsChanged,
   });
 
   void _invalidateAllRelatedProviders(WidgetRef ref, String speciesId, String? instanceId) {
@@ -59,37 +67,31 @@ class SpeciesDetailView extends ConsumerWidget {
     List<Attachment>? currentAttachments,
   }) async {
     final isNumismatic = NumismaticDataHelper.isNumismaticSpecies(species);
-    NumismaticScanOption? numismaticOption;
+    final isInstanceLevel = instanceId != null && instanceId.isNotEmpty;
 
-    if (isNumismatic) {
-      final isCoin = NumismaticDataHelper.isCoin(species);
+    bool showObverseScan = false;
+    bool showReverseScan = false;
+    bool isCoin = true;
+
+    // Punto 37: No debe de haber opciones numismáticas de adjuntos a nivel especie
+    // Punto 36: En Instancia, deben de ser dos distintas opciones condicionales (anverso faltante y reverso faltante)
+    if (isNumismatic && isInstanceLevel) {
+      isCoin = NumismaticDataHelper.isCoin(species);
       final targetAttachments = currentAttachments ?? [];
       final hasObverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('anverso'));
       final hasReverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('reverso'));
 
-      String? missingSide;
-      if (!hasObverse && !hasReverse) {
-        missingSide = 'ambos';
-      } else if (!hasObverse) {
-        missingSide = 'anverso';
-      } else if (!hasReverse) {
-        missingSide = 'reverso';
-      } else {
-        missingSide = null;
-        return;
-      }
-
-      numismaticOption = NumismaticScanOption(
-        isCoin: isCoin,
-        missingSide: missingSide,
-      );
+      showObverseScan = !hasObverse;
+      showReverseScan = !hasReverse;
     }
 
     final result = await StandardMediaPickerSheet.show(
       context,
-      title: instanceId != null ? 'Adjuntar a esta Instancia' : 'Adjuntar a Especie',
+      title: isInstanceLevel ? 'Adjuntar a esta Instancia' : 'Adjuntar a Especie',
       webSearchQuery: subspecies?.subspeciesName ?? species.name,
-      numismaticOption: numismaticOption,
+      showNumismaticObverse: showObverseScan,
+      showNumismaticReverse: showReverseScan,
+      isCoin: isCoin,
     );
 
     if (result == null) return;
@@ -103,11 +105,13 @@ class SpeciesDetailView extends ConsumerWidget {
       if (result.file != null) {
         savedRelativePath = await storage.saveFile(result.file!.path);
 
-        if (isNumismatic && result.source == 'numismatic') {
-          final side = (numismaticOption?.missingSide == 'reverso') ? 'reverso' : 'anverso';
+        if (isNumismatic && isInstanceLevel && result.source == 'numismatic') {
+          final side = result.fileName.toLowerCase().contains('reverso') || (!showObverseScan && showReverseScan)
+              ? 'reverso'
+              : 'anverso';
           final ext = result.file!.path.contains('.') ? result.file!.path.split('.').last : 'jpg';
 
-          if (subspecies != null && instanceId != null) {
+          if (subspecies != null) {
             finalFileName = NumismaticDataHelper.buildAttachmentFileName(
               subspeciesName: subspecies!.subspeciesName,
               instanceId: instanceId,
@@ -115,8 +119,8 @@ class SpeciesDetailView extends ConsumerWidget {
               extension: ext,
             );
           } else {
-            final subName = subspecies?.subspeciesName ?? species.name;
-            final instPart = instanceId != null ? ' ($instanceId)' : '';
+            final subName = species.name;
+            final instPart = ' ($instanceId)';
             finalFileName = '${NumismaticDataHelper.sanitizeFileName(subName)}$instPart ($side).$ext';
           }
         }
@@ -136,11 +140,23 @@ class SpeciesDetailView extends ConsumerWidget {
         createdAt: DateTime.now(),
       );
 
-      await ref.read(entityRepositoryProvider).addAttachment(attachment);
-      _invalidateAllRelatedProviders(ref, speciesId, instanceId);
+      if (isInstanceLevel && onInstanceAttachmentsChanged != null && workingInstanceAttachments != null) {
+        onInstanceAttachmentsChanged!([...workingInstanceAttachments!, attachment]);
+        if (context.mounted) {
+          AppToast.showSuccess(context, 'Adjunto agregado a la edición.');
+        }
+      } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
+        onSpeciesAttachmentsChanged!([...workingSpeciesAttachments!, attachment]);
+        if (context.mounted) {
+          AppToast.showSuccess(context, 'Adjunto agregado a la edición.');
+        }
+      } else {
+        await ref.read(entityRepositoryProvider).addAttachment(attachment);
+        _invalidateAllRelatedProviders(ref, speciesId, instanceId);
 
-      if (context.mounted) {
-        AppToast.showSuccess(context, 'Adjunto agregado correctamente.');
+        if (context.mounted) {
+          AppToast.showSuccess(context, 'Adjunto agregado correctamente.');
+        }
       }
     } catch (e) {
       if (context.mounted) {
@@ -159,11 +175,12 @@ class SpeciesDetailView extends ConsumerWidget {
   ) async {
     final isNumismatic = NumismaticDataHelper.isNumismaticSpecies(species);
     final fileNameLower = att.fileName.toLowerCase();
-    final isNumismaticSide = isNumismatic && (fileNameLower.contains('anverso') || fileNameLower.contains('reverso'));
+    final isInstanceLevel = att.instanceId != null && att.instanceId!.isNotEmpty;
+    final isNumismaticSide = isNumismatic && isInstanceLevel && (fileNameLower.contains('anverso') || fileNameLower.contains('reverso'));
 
     try {
       if (isNumismaticSide) {
-        // Direct jump to numismatic camera with side preselected
+        // Direct jump to numismatic camera with side preselected and hideSideSelector: true (Punto 33)
         final side = fileNameLower.contains('reverso') ? 'reverso' : 'anverso';
         final isCoin = NumismaticDataHelper.isCoin(species);
 
@@ -171,6 +188,7 @@ class SpeciesDetailView extends ConsumerWidget {
           context,
           isCoin: isCoin,
           targetSide: side,
+          hideSideSelector: true,
         );
 
         if (capturedFile != null && context.mounted) {
@@ -184,16 +202,34 @@ class SpeciesDetailView extends ConsumerWidget {
           );
           if (!shouldReplace || !context.mounted) return;
 
-          await ref.read(entityRepositoryProvider).replaceAttachmentFile(
-                att.id,
-                capturedFile.path,
-                newFileType: 'image',
-              );
+          final storage = ref.read(fileStorageServiceProvider);
+          final savedRelativePath = await storage.saveFile(capturedFile.path);
+          final updated = att.copyWith(filePath: savedRelativePath, fileType: 'image');
 
-          _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
+          if (isInstanceLevel && onInstanceAttachmentsChanged != null && workingInstanceAttachments != null) {
+            final updatedList = workingInstanceAttachments!.map((a) => a.id == att.id ? updated : a).toList();
+            onInstanceAttachmentsChanged!(updatedList);
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Adjunto numismático modificado en la edición.');
+            }
+          } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
+            final updatedList = workingSpeciesAttachments!.map((a) => a.id == att.id ? updated : a).toList();
+            onSpeciesAttachmentsChanged!(updatedList);
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Adjunto numismático modificado en la edición.');
+            }
+          } else {
+            await ref.read(entityRepositoryProvider).replaceAttachmentFile(
+                  att.id,
+                  capturedFile.path,
+                  newFileType: 'image',
+                );
 
-          if (context.mounted) {
-            AppToast.showSuccess(context, 'Adjunto numismático actualizado correctamente.');
+            _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
+
+            if (context.mounted) {
+              AppToast.showSuccess(context, 'Adjunto numismático actualizado correctamente.');
+            }
           }
         }
         return;
@@ -208,7 +244,7 @@ class SpeciesDetailView extends ConsumerWidget {
 
       if (result == null || !context.mounted) return;
 
-      final newName = result.fileName ?? 'nuevo archivo';
+      final newName = result.fileName;
       final shouldReplace = await AppConfirmationDialog.show(
         context: context,
         title: AppStrings.confirmReplaceAttachmentTitle,
@@ -219,27 +255,49 @@ class SpeciesDetailView extends ConsumerWidget {
       );
       if (!shouldReplace || !context.mounted) return;
 
+      String? newRelativePath;
+      String? absPathToReplace;
       if (result.file != null) {
-        await ref.read(entityRepositoryProvider).replaceAttachmentFile(
-              att.id,
-              result.file!.path,
-              newFileName: result.fileName,
-              newFileType: result.fileType,
-            );
+        newRelativePath = await ref.read(fileStorageServiceProvider).saveFile(result.file!.path);
+        absPathToReplace = result.file!.path;
       } else if (result.relativeStoredPath != null) {
-        final absPath = await ref.read(fileStorageServiceProvider).getAbsolutePath(result.relativeStoredPath!);
-        await ref.read(entityRepositoryProvider).replaceAttachmentFile(
-              att.id,
-              absPath,
-              newFileName: result.fileName,
-              newFileType: result.fileType,
-            );
+        newRelativePath = result.relativeStoredPath;
+        absPathToReplace = await ref.read(fileStorageServiceProvider).getAbsolutePath(result.relativeStoredPath!);
       }
 
-      _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
+      if (newRelativePath == null) return;
 
-      if (context.mounted) {
-        AppToast.showSuccess(context, 'Adjunto reemplazado correctamente.');
+      final updated = att.copyWith(
+        filePath: newRelativePath,
+        fileName: result.fileName,
+        fileType: result.fileType,
+      );
+
+      if (isInstanceLevel && onInstanceAttachmentsChanged != null && workingInstanceAttachments != null) {
+        final updatedList = workingInstanceAttachments!.map((a) => a.id == att.id ? updated : a).toList();
+        onInstanceAttachmentsChanged!(updatedList);
+        if (context.mounted) {
+          AppToast.showSuccess(context, 'Adjunto modificado en la edición.');
+        }
+      } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
+        final updatedList = workingSpeciesAttachments!.map((a) => a.id == att.id ? updated : a).toList();
+        onSpeciesAttachmentsChanged!(updatedList);
+        if (context.mounted) {
+          AppToast.showSuccess(context, 'Adjunto modificado en la edición.');
+        }
+      } else {
+        await ref.read(entityRepositoryProvider).replaceAttachmentFile(
+              att.id,
+              absPathToReplace!,
+              newFileName: result.fileName,
+              newFileType: result.fileType,
+            );
+
+        _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
+
+        if (context.mounted) {
+          AppToast.showSuccess(context, 'Adjunto reemplazado correctamente.');
+        }
       }
     } catch (e) {
       if (context.mounted) {
@@ -288,10 +346,26 @@ class SpeciesDetailView extends ConsumerWidget {
     if (newName != null && newName.isNotEmpty && newName != att.fileName) {
       try {
         final updated = att.copyWith(fileName: newName);
-        await ref.read(entityRepositoryProvider).updateAttachment(updated);
-        _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
-        if (context.mounted) {
-          AppToast.showSuccess(context, 'Nombre actualizado correctamente.');
+        final isInstanceLevel = att.instanceId != null && att.instanceId!.isNotEmpty;
+
+        if (isInstanceLevel && onInstanceAttachmentsChanged != null && workingInstanceAttachments != null) {
+          final updatedList = workingInstanceAttachments!.map((a) => a.id == att.id ? updated : a).toList();
+          onInstanceAttachmentsChanged!(updatedList);
+          if (context.mounted) {
+            AppToast.showSuccess(context, 'Nombre actualizado en la edición.');
+          }
+        } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
+          final updatedList = workingSpeciesAttachments!.map((a) => a.id == att.id ? updated : a).toList();
+          onSpeciesAttachmentsChanged!(updatedList);
+          if (context.mounted) {
+            AppToast.showSuccess(context, 'Nombre actualizado en la edición.');
+          }
+        } else {
+          await ref.read(entityRepositoryProvider).updateAttachment(updated);
+          _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
+          if (context.mounted) {
+            AppToast.showSuccess(context, 'Nombre actualizado correctamente.');
+          }
         }
       } catch (e) {
         if (context.mounted) {
@@ -365,14 +439,30 @@ class SpeciesDetailView extends ConsumerWidget {
 
     if (confirmed == true) {
       try {
-        await ref.read(entityRepositoryProvider).deleteAttachment(att.id);
-        _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
-        if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto eliminado correctamente');
+        final isInstanceLevel = att.instanceId != null && att.instanceId!.isNotEmpty;
+
+        if (isInstanceLevel && onInstanceAttachmentsChanged != null && workingInstanceAttachments != null) {
+          final updatedList = workingInstanceAttachments!.where((a) => a.id != att.id).toList();
+          onInstanceAttachmentsChanged!(updatedList);
+          if (context.mounted) {
+            AppToast.showSuccess(context, 'Adjunto removido de la edición.');
+          }
+        } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
+          final updatedList = workingSpeciesAttachments!.where((a) => a.id != att.id).toList();
+          onSpeciesAttachmentsChanged!(updatedList);
+          if (context.mounted) {
+            AppToast.showSuccess(context, 'Adjunto removido de la edición.');
+          }
+        } else {
+          await ref.read(entityRepositoryProvider).deleteAttachment(att.id);
+          _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
+          if (context.mounted) {
+            AppToast.showSuccess(context, 'Adjunto eliminado correctamente.');
+          }
         }
       } catch (e) {
         if (context.mounted) {
-          AppToast.showError(context, 'Error al eliminar adjunto: $e');
+          AppToast.showError(context, 'Error al eliminar: $e');
         }
       }
     }
@@ -591,26 +681,22 @@ class SpeciesDetailView extends ConsumerWidget {
                 ),
               ] else ...[
                 // Species View Attachments
-                speciesAttachmentsAsync.when(
-                  data: (attachments) => _UnifiedAttachmentGroupWidget(
-                    title: AppStrings.attachmentsTitle,
-                    attachments: attachments,
-                    isEditing: showAttachmentAction,
-                    isInstanceView: false,
-                    onAdd: () => _handleAddAttachment(
-                      context,
-                      ref,
-                      species.id,
-                      instanceId: null,
-                      currentAttachments: attachments,
-                    ),
-                    onOpen: (att) => _openAttachment(context, ref, att),
-                    onReplace: (att) => _handleReplaceAttachment(context, ref, att),
-                    onRename: (att) => _handleRenameAttachment(context, ref, att),
-                    onDelete: (att) => _confirmAndDeleteAttachment(context, ref, att),
+                _UnifiedAttachmentGroupWidget(
+                  title: AppStrings.attachmentsTitle,
+                  attachments: workingSpeciesAttachments ?? speciesAttachmentsAsync.asData?.value ?? [],
+                  isEditing: showAttachmentAction,
+                  isInstanceView: false,
+                  onAdd: () => _handleAddAttachment(
+                    context,
+                    ref,
+                    species.id,
+                    instanceId: null,
+                    currentAttachments: workingSpeciesAttachments ?? speciesAttachmentsAsync.asData?.value ?? [],
                   ),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
+                  onOpen: (att) => _openAttachment(context, ref, att),
+                  onReplace: (att) => _handleReplaceAttachment(context, ref, att),
+                  onRename: (att) => _handleRenameAttachment(context, ref, att),
+                  onDelete: (att) => _confirmAndDeleteAttachment(context, ref, att),
                 ),
               ],
             ],
@@ -626,12 +712,13 @@ class SpeciesDetailView extends ConsumerWidget {
     required AsyncValue<List<Attachment>> speciesAttachmentsAsync,
     required AsyncValue<List<Attachment>> instanceAttachmentsAsync,
   }) {
-    if (speciesAttachmentsAsync.isLoading || instanceAttachmentsAsync.isLoading) {
+    final speciesAtts = speciesAttachmentsAsync.asData?.value ?? [];
+    final instanceAtts = workingInstanceAttachments ?? instanceAttachmentsAsync.asData?.value ?? [];
+
+    if (workingInstanceAttachments == null && (speciesAttachmentsAsync.isLoading || instanceAttachmentsAsync.isLoading)) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final speciesAtts = speciesAttachmentsAsync.asData?.value ?? [];
-    final instanceAtts = instanceAttachmentsAsync.asData?.value ?? [];
     final unifiedList = <Attachment>[...instanceAtts, ...speciesAtts];
 
     return _UnifiedAttachmentGroupWidget(

@@ -12,6 +12,7 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
   final String targetSide; // 'anverso' or 'reverso'
   final File? existingObverseFile;
   final File? existingReverseFile;
+  final bool hideSideSelector;
   final ValueChanged<File>? onCaptured;
 
   const NumismaticCameraCaptureView({
@@ -20,6 +21,7 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
     this.targetSide = 'anverso',
     this.existingObverseFile,
     this.existingReverseFile,
+    this.hideSideSelector = false,
     this.onCaptured,
   });
 
@@ -29,6 +31,7 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
     String targetSide = 'anverso',
     File? existingObverseFile,
     File? existingReverseFile,
+    bool hideSideSelector = false,
   }) {
     return showModalBottomSheet<File?>(
       context: context,
@@ -56,6 +59,7 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
           targetSide: targetSide,
           existingObverseFile: existingObverseFile,
           existingReverseFile: existingReverseFile,
+          hideSideSelector: hideSideSelector,
           onCaptured: (file) {
             Navigator.pop(ctx, file);
           },
@@ -271,18 +275,23 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
   }
 
   Future<File> _cropImageCenter(File originalFile) async {
-    final bytes = await originalFile.readAsBytes();
-    final isCoin = widget.isCoin;
-    final originalPath = originalFile.path;
-    final result = await compute(_numismaticCropImageIsolate, _NumismaticCropParams(
-      bytes: bytes,
-      isCoinMode: isCoin,
-      originalPath: originalPath,
-    ));
+    try {
+      final bytes = await originalFile.readAsBytes();
+      final isCoin = widget.isCoin;
+      final originalPath = originalFile.path;
+      final result = await compute(_numismaticCropImageIsolate, _NumismaticCropParams(
+        bytes: bytes,
+        isCoinMode: isCoin,
+        originalPath: originalPath,
+      )).timeout(const Duration(seconds: 4));
 
-    final croppedFile = File(result.outputPath);
-    await croppedFile.writeAsBytes(result.croppedBytes);
-    return croppedFile;
+      final croppedFile = File(result.outputPath);
+      await croppedFile.writeAsBytes(result.croppedBytes);
+      return croppedFile;
+    } catch (e) {
+      debugPrint('Numismatic crop isolate failed or timed out: $e');
+      return originalFile;
+    }
   }
 
   Future<void> _capturePhoto() async {
@@ -299,22 +308,26 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
     });
 
     try {
-      final XFile photo = await _cameraController!.takePicture();
+      final XFile photo = await _cameraController!.takePicture().timeout(const Duration(seconds: 5));
       final File rawFile = File(photo.path);
-      final File croppedFile = await _cropImageCenter(rawFile);
+      final File processedFile = await _cropImageCenter(rawFile);
 
       if (mounted && !_isDisposed) {
         setState(() {
-          _isProcessing = false;
           _statusMessage = null;
         });
-        widget.onCaptured?.call(croppedFile);
+        widget.onCaptured?.call(processedFile);
       }
     } catch (e) {
       if (mounted && !_isDisposed) {
         setState(() {
-          _isProcessing = false;
           _statusMessage = 'Error en captura: $e';
+        });
+      }
+    } finally {
+      if (mounted && !_isDisposed) {
+        setState(() {
+          _isProcessing = false;
         });
       }
     }
@@ -504,27 +517,29 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
             ],
           ),
 
-          const SizedBox(height: 12),
+          if (!widget.hideSideSelector) ...[
+            const SizedBox(height: 12),
 
-          // Side selection / Greyed-out indicator
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSideCard(
-                sideLabel: 'Anverso',
-                isActive: isObverseActive,
-                existingFile: widget.existingObverseFile,
-                onTap: isObverseActive ? null : () => setState(() => _activeSide = 'anverso'),
-              ),
-              const SizedBox(width: 14),
-              _buildSideCard(
-                sideLabel: 'Reverso',
-                isActive: !isObverseActive,
-                existingFile: widget.existingReverseFile,
-                onTap: !isObverseActive ? null : () => setState(() => _activeSide = 'reverso'),
-              ),
-            ],
-          ),
+            // Side selection / Greyed-out indicator
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildSideCard(
+                  sideLabel: 'Anverso',
+                  isActive: isObverseActive,
+                  existingFile: widget.existingObverseFile,
+                  onTap: isObverseActive ? null : () => setState(() => _activeSide = 'anverso'),
+                ),
+                const SizedBox(width: 14),
+                _buildSideCard(
+                  sideLabel: 'Reverso',
+                  isActive: !isObverseActive,
+                  existingFile: widget.existingReverseFile,
+                  onTap: !isObverseActive ? null : () => setState(() => _activeSide = 'reverso'),
+                ),
+              ],
+            ),
+          ],
 
           const SizedBox(height: 8),
 

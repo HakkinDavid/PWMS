@@ -41,6 +41,11 @@ class StandardMediaPickerSheet extends StatelessWidget {
   final String? title;
   final String? webSearchQuery;
   final bool allowDocuments;
+  final bool showNumismaticObverse;
+  final bool showNumismaticReverse;
+  final bool isCoin;
+  final File? existingObverseFile;
+  final File? existingReverseFile;
   final NumismaticScanOption? numismaticOption;
 
   const StandardMediaPickerSheet({
@@ -48,6 +53,11 @@ class StandardMediaPickerSheet extends StatelessWidget {
     this.title,
     this.webSearchQuery,
     this.allowDocuments = true,
+    this.showNumismaticObverse = false,
+    this.showNumismaticReverse = false,
+    this.isCoin = true,
+    this.existingObverseFile,
+    this.existingReverseFile,
     this.numismaticOption,
   });
 
@@ -56,8 +66,21 @@ class StandardMediaPickerSheet extends StatelessWidget {
     String? title,
     String? webSearchQuery,
     bool allowDocuments = true,
+    bool showNumismaticObverse = false,
+    bool showNumismaticReverse = false,
+    bool isCoin = true,
+    File? existingObverseFile,
+    File? existingReverseFile,
     NumismaticScanOption? numismaticOption,
   }) {
+    final bool obverse = showNumismaticObverse ||
+        (numismaticOption != null && (numismaticOption.missingSide == 'anverso' || numismaticOption.missingSide == 'ambos'));
+    final bool reverse = showNumismaticReverse ||
+        (numismaticOption != null && (numismaticOption.missingSide == 'reverso' || numismaticOption.missingSide == 'ambos'));
+    final bool coin = numismaticOption?.isCoin ?? isCoin;
+    final File? obvFile = numismaticOption?.existingObverseFile ?? existingObverseFile;
+    final File? revFile = numismaticOption?.existingReverseFile ?? existingReverseFile;
+
     return showModalBottomSheet<SelectedMediaResult?>(
       context: context,
       isScrollControlled: true,
@@ -67,7 +90,11 @@ class StandardMediaPickerSheet extends StatelessWidget {
         title: title,
         webSearchQuery: webSearchQuery,
         allowDocuments: allowDocuments,
-        numismaticOption: numismaticOption,
+        showNumismaticObverse: obverse,
+        showNumismaticReverse: reverse,
+        isCoin: coin,
+        existingObverseFile: obvFile,
+        existingReverseFile: revFile,
       ),
     );
   }
@@ -145,14 +172,14 @@ class StandardMediaPickerSheet extends StatelessWidget {
     }
   }
 
-  Future<void> _handleNumismaticScan(BuildContext context, NumismaticScanOption opt) async {
-    final side = opt.missingSide == 'ambos' ? 'anverso' : opt.missingSide;
+  Future<void> _handleNumismaticSideScan(BuildContext context, String side) async {
     final file = await NumismaticCameraCaptureView.show(
       context,
-      isCoin: opt.isCoin,
+      isCoin: isCoin,
       targetSide: side,
-      existingObverseFile: opt.existingObverseFile,
-      existingReverseFile: opt.existingReverseFile,
+      existingObverseFile: existingObverseFile,
+      existingReverseFile: existingReverseFile,
+      hideSideSelector: true,
     );
 
     if (file != null && context.mounted) {
@@ -172,7 +199,6 @@ class StandardMediaPickerSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final hasNumismaticOption = numismaticOption != null;
 
     return Container(
       decoration: BoxDecoration(
@@ -210,8 +236,8 @@ class StandardMediaPickerSheet extends StatelessWidget {
               const SizedBox(height: 8),
               const Divider(height: 1),
 
-              // Conditional Numismatic Scan Option
-              if (hasNumismaticOption) ...[
+              // Conditional Numismatic Obverse Scan Option
+              if (showNumismaticObverse) ...[
                 ListTile(
                   leading: Container(
                     padding: const EdgeInsets.all(8),
@@ -220,24 +246,48 @@ class StandardMediaPickerSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
-                      numismaticOption!.isCoin ? Icons.circle_outlined : Icons.crop_landscape,
+                      isCoin ? Icons.circle_outlined : Icons.crop_landscape,
                       color: Colors.amber.shade800,
                       size: 22,
                     ),
                   ),
-                  title: Text(
-                    numismaticOption!.missingSide == 'anverso'
-                        ? 'Escanear Anverso (Cámara Numismática HD)'
-                        : (numismaticOption!.missingSide == 'reverso'
-                            ? 'Escanear Reverso (Cámara Numismática HD)'
-                            : 'Escanear Pieza Numismática (HD)'),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  title: const Text(
+                    'Escanear anverso',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    'Retícula guiada, corrección de exposición y recorte centrado para ${numismaticOption!.isCoin ? "moneda" : "billete"}.',
+                    'Retícula guiada, corrección de exposición y recorte centrado para anverso de ${isCoin ? "moneda" : "billete"}.',
                     style: const TextStyle(fontSize: 11),
                   ),
-                  onTap: () => _handleNumismaticScan(context, numismaticOption!),
+                  onTap: () => _handleNumismaticSideScan(context, 'anverso'),
+                ),
+                const Divider(height: 1),
+              ],
+
+              // Conditional Numismatic Reverse Scan Option
+              if (showNumismaticReverse) ...[
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withAlpha(35),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      isCoin ? Icons.circle_outlined : Icons.crop_landscape,
+                      color: Colors.amber.shade800,
+                      size: 22,
+                    ),
+                  ),
+                  title: const Text(
+                    'Escanear reverso',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    'Retícula guiada, corrección de exposición y recorte centrado para reverso de ${isCoin ? "moneda" : "billete"}.',
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  onTap: () => _handleNumismaticSideScan(context, 'reverso'),
                 ),
                 const Divider(height: 1),
               ],

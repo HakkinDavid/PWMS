@@ -11,7 +11,6 @@ import '../../catalog/presentation/species_detail_view.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/domain/location_resolver.dart';
 import '../../locations/presentation/location_or_container_correction_sheet.dart';
-import '../../locations/presentation/location_tree_picker.dart';
 import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
 import '../../catalog/presentation/requirements_section_widget.dart';
@@ -21,6 +20,7 @@ import '../../../core/widgets/app_toast.dart';
 import '../../catalog/domain/species_magnitude.dart';
 import '../../catalog/domain/species_requirement.dart';
 import '../../relations/domain/entity_relation.dart';
+import '../domain/attachment.dart';
 import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 
@@ -44,14 +44,17 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   List<InstanceMagnitude> _workingMagnitudes = [];
   List<EntityRelation> _workingRelations = [];
   List<SpeciesRequirement> _workingRequirements = [];
+  List<Attachment> _workingAttachments = [];
   List<EntityRelation>? _originalRelations;
   List<SpeciesRequirement>? _originalRequirements;
+  List<Attachment>? _originalAttachments;
   WorldEntity? _lastInitializedEntity;
 
   void _syncWorkingStateWithEntity(
     WorldEntity entity, {
     List<EntityRelation>? relations,
     List<SpeciesRequirement>? requirements,
+    List<Attachment>? attachments,
     bool force = false,
   }) {
     if (!force && _lastInitializedEntity?.id == entity.id && _lastInitializedEntity == entity) {
@@ -62,6 +65,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       if (requirements != null && _originalRequirements == null) {
         _originalRequirements = List.from(requirements);
         _workingRequirements = List.from(requirements);
+      }
+      if (attachments != null && _originalAttachments == null) {
+        _originalAttachments = List.from(attachments);
+        _workingAttachments = List.from(attachments);
       }
       return;
     }
@@ -83,6 +90,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     if (requirements != null) {
       _originalRequirements = List.from(requirements);
       _workingRequirements = List.from(requirements);
+    }
+    if (attachments != null) {
+      _originalAttachments = List.from(attachments);
+      _workingAttachments = List.from(attachments);
     }
   }
 
@@ -116,6 +127,15 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       }
     }
 
+    if (_originalAttachments != null) {
+      if (_workingAttachments.length != _originalAttachments!.length) return true;
+      for (final wa in _workingAttachments) {
+        final oa = _originalAttachments!.where((a) => a.id == wa.id).firstOrNull;
+        if (oa == null) return true;
+        if (wa.fileName != oa.fileName || wa.filePath != oa.filePath || wa.fileType != oa.fileType) return true;
+      }
+    }
+
     return false;
   }
 
@@ -128,6 +148,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       entity,
       relations: _originalRelations,
       requirements: _originalRequirements,
+      attachments: _originalAttachments,
       force: true,
     );
     if (mounted) {
@@ -175,6 +196,38 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       }
     }
 
+    // 4. Sync attachments delta
+    if (_originalAttachments != null) {
+      final entityRepo = ref.read(entityRepositoryProvider);
+      final fileStorage = ref.read(fileStorageServiceProvider);
+      final deletedAttachments = _originalAttachments!.where((orig) => !_workingAttachments.any((w) => w.id == orig.id)).toList();
+      final addedAttachments = _workingAttachments.where((w) => !_originalAttachments!.any((orig) => orig.id == w.id)).toList();
+      final existingAttachments = _workingAttachments.where((w) => _originalAttachments!.any((orig) => orig.id == w.id)).toList();
+
+      for (final att in deletedAttachments) {
+        await entityRepo.deleteAttachment(att.id);
+      }
+      for (final att in addedAttachments) {
+        await entityRepo.addAttachment(att);
+      }
+      for (final att in existingAttachments) {
+        final orig = _originalAttachments!.firstWhere((o) => o.id == att.id);
+        if (att.filePath != orig.filePath) {
+          final absPath = await fileStorage.getAbsolutePath(att.filePath);
+          await entityRepo.replaceAttachmentFile(
+            att.id,
+            absPath,
+            newFileName: att.fileName,
+            newFileType: att.fileType,
+          );
+        } else if (att.fileName != orig.fileName) {
+          await entityRepo.updateAttachment(att);
+        }
+      }
+
+      ref.invalidate(instanceAttachmentsProvider(widget.entityId));
+    }
+
     ref.invalidate(entityDetailProvider(widget.entityId));
     ref.invalidate(entityRelationsProvider(widget.entityId));
     ref.invalidate(sourceRequirementsProvider(widget.entityId));
@@ -185,6 +238,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       updated,
       relations: _workingRelations,
       requirements: _workingRequirements,
+      attachments: _workingAttachments,
       force: true,
     );
 
@@ -351,12 +405,15 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
         final originalRelations = relationsAsync.asData?.value ?? [];
         final originalRequirements = requirementsAsync.asData?.value ?? [];
+        final instanceAttachmentsAsync = ref.watch(instanceAttachmentsProvider(widget.entityId));
+        final originalAttachments = instanceAttachmentsAsync.asData?.value ?? [];
 
         if (!_isEditingInPlace) {
           _syncWorkingStateWithEntity(
             entity,
             relations: originalRelations,
             requirements: originalRequirements,
+            attachments: originalAttachments,
           );
         }
 
@@ -861,6 +918,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   subspecies: subSnapshot.data,
                   instanceId: entity.id,
                   showAttachmentAction: _isEditingInPlace,
+                  workingInstanceAttachments: _isEditingInPlace ? _workingAttachments : null,
+                  onInstanceAttachmentsChanged: _isEditingInPlace
+                      ? (updatedList) => setState(() => _workingAttachments = updatedList)
+                      : null,
                   instanceSpecificsHeader: instanceHeader,
                   instanceSpecificsFooter: instanceFooter,
                   actions: detailViewActions,
@@ -872,6 +933,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               species: species,
               instanceId: entity.id,
               showAttachmentAction: _isEditingInPlace,
+              workingInstanceAttachments: _isEditingInPlace ? _workingAttachments : null,
+              onInstanceAttachmentsChanged: _isEditingInPlace
+                  ? (updatedList) => setState(() => _workingAttachments = updatedList)
+                  : null,
               instanceSpecificsHeader: instanceHeader,
               instanceSpecificsFooter: instanceFooter,
               actions: detailViewActions,
