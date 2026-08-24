@@ -1313,5 +1313,81 @@ void main() {
       // Now inside 'Caja de Herramientas', 'Llave Inglesa' is shown directly here
       expect(find.text('Llave Inglesa'), findsWidgets);
     });
+
+    testWidgets('20. Child location tiles aggregate object counts recursively across all descendant branches', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      // Hierarchy: Casa -> Habitación -> Armario
+      final locHouse = LocationNode(id: 'loc_h2', name: 'Casa', createdAt: now);
+      final locRoom = LocationNode(id: 'loc_r2', name: 'Habitación', parentLocationId: locHouse.id, createdAt: now);
+      final locCloset = LocationNode(id: 'loc_c2', name: 'Armario', parentLocationId: locRoom.id, createdAt: now);
+
+      await locationRepo.saveNode(locHouse);
+      await locationRepo.saveNode(locRoom);
+      await locationRepo.saveNode(locCloset);
+
+      // Direct in Habitación: 1 item (Lámpara)
+      final lampSpecies = CatalogItem(id: 'sp-lamp', name: 'Lámpara', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(lampSpecies);
+      final lampEntity = WorldEntity(id: 'ent-lamp', speciesId: lampSpecies.id, locationId: locRoom.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(lampEntity);
+
+      // In Armario (descendant of Habitación): 2 items (Camisa, Pantalón) + 1 Container (Caja de Zapatos) containing (Zapatos)
+      final shirtSpecies = CatalogItem(id: 'sp-shirt', name: 'Camisa', type: 'Objeto', createdAt: now);
+      final pantsSpecies = CatalogItem(id: 'sp-pants', name: 'Pantalón', type: 'Objeto', createdAt: now);
+      final shoeboxSpecies = CatalogItem(id: 'sp-shoebox', name: 'Caja de Zapatos', type: 'Objeto', createdAt: now);
+      final shoesSpecies = CatalogItem(id: 'sp-shoes', name: 'Zapatos', type: 'Objeto', createdAt: now);
+
+      await catalogRepo.saveCatalogItem(shirtSpecies);
+      await catalogRepo.saveCatalogItem(pantsSpecies);
+      await catalogRepo.saveCatalogItem(shoeboxSpecies);
+      await catalogRepo.saveCatalogItem(shoesSpecies);
+
+      final shirtEntity = WorldEntity(id: 'ent-shirt', speciesId: shirtSpecies.id, locationId: locCloset.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final pantsEntity = WorldEntity(id: 'ent-pants', speciesId: pantsSpecies.id, locationId: locCloset.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final shoeboxEntity = WorldEntity(id: 'ent-shoebox', speciesId: shoeboxSpecies.id, locationId: locCloset.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final shoesEntity = WorldEntity(id: 'ent-shoes', speciesId: shoesSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+
+      await entityRepo.saveEntity(shirtEntity);
+      await entityRepo.saveEntity(pantsEntity);
+      await entityRepo.saveEntity(shoeboxEntity);
+      await entityRepo.saveEntity(shoesEntity);
+
+      // Zapatos is GUARDADO_EN Caja de Zapatos
+      final relation = EntityRelation(
+        id: 'rel-shoes-in-box',
+        sourceEntityId: shoesEntity.id,
+        targetEntityId: shoeboxEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      );
+      await relationRepo.addRelation(relation);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(initialLocationId: 'loc_h2'),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // In Casa, 'Habitación' tile aggregates:
+      // 1 (Lámpara) + 2 (Camisa, Pantalón) + 1 (Caja de Zapatos) + 1 (Zapatos inside Caja) = 5 objetos!
+      expect(find.text('Habitación'), findsOneWidget);
+      expect(find.text('5 objetos'), findsOneWidget);
+    });
   });
 }

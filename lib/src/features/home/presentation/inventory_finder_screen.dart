@@ -19,6 +19,7 @@ import 'inventory_item_interaction_wrapper.dart';
 
 import '../../entities/presentation/instance_preview_card.dart';
 import '../../locations/domain/location_node.dart';
+import '../../locations/domain/location_resolver.dart';
 import '../../locations/infrastructure/location_repository.dart';
 import '../../relations/domain/entity_relation.dart';
 
@@ -348,6 +349,13 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       containerChildrenMap.putIfAbsent(r.targetEntityId, () => []).add(r.sourceEntityId);
     }
 
+    final directLocationsMap = {for (var e in allEntities) e.id: e.locationId};
+    final effectiveLocationsMap = LocationResolver.resolveAllEffectiveLocations(
+      entities: allEntities,
+      directLocations: directLocationsMap,
+      relations: relations,
+    );
+
     // Filter entities by selected location (direct physical location only, excluding child locations)
     var filteredEntities = allEntities.toList();
 
@@ -627,10 +635,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                             : _buildInventoryContent(
                                 currentGroups,
                                 childLocations,
+                                locationNodes,
                                 catalogMap,
                                 containerChildrenMap,
                                 allEntities,
-                                containedEntityIds,
+                                effectiveLocationsMap,
                               ),
                       );
                     },
@@ -723,19 +732,26 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   Widget _buildInventoryContent(
     List<EffectiveEntityGroup> currentGroups,
     List<LocationNode> childLocations,
+    List<LocationNode> allLocations,
     Map<String, CatalogItem> catalogMap,
     Map<String, List<String>> containerChildrenMap,
     List<WorldEntity> allEntities,
-    Set<String> containedEntityIds,
+    Map<String, String?> effectiveLocationsMap,
   ) {
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84.0;
     final totalCount = currentGroups.length + childLocations.length;
 
-    // Direct items count map for child locations
-    final directItemCountMap = <String, int>{};
+    // Recursive items count map for child locations (includes all descendant locations and container contents)
+    final locRepo = LocationRepository(ref.read(databaseProvider));
+    final recursiveItemCountMap = <String, int>{};
     for (final loc in childLocations) {
-      directItemCountMap[loc.id] = allEntities
-          .where((e) => e.locationId == loc.id && !containedEntityIds.contains(e.id))
+      final descendantIds = locRepo.getDescendantIds(loc.id, allLocations);
+      final branchLocIds = {loc.id, ...descendantIds};
+      recursiveItemCountMap[loc.id] = allEntities
+          .where((e) {
+            final effLoc = effectiveLocationsMap[e.id];
+            return effLoc != null && branchLocIds.contains(effLoc);
+          })
           .length;
     }
 
@@ -796,7 +812,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             return _LocationItemInteractionTile(
               key: ValueKey('loc_tile_${locNode.id}'),
               node: locNode,
-              directItemCount: directItemCountMap[locNode.id] ?? 0,
+              itemCount: recursiveItemCountMap[locNode.id] ?? 0,
               viewMode: FinderViewMode.minecraftGrid,
               onTap: () => _handleLocationSelected(locNode.id),
               onDrop: (payload, locId) {
@@ -858,7 +874,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             return _LocationItemInteractionTile(
               key: ValueKey('loc_tile_${locNode.id}'),
               node: locNode,
-              directItemCount: directItemCountMap[locNode.id] ?? 0,
+              itemCount: recursiveItemCountMap[locNode.id] ?? 0,
               viewMode: FinderViewMode.detailedList,
               onTap: () => _handleLocationSelected(locNode.id),
               onDrop: (payload, locId) {
@@ -880,7 +896,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 /// Functions as a container target (DragTarget, spring-load hover navigation, tap to drill down).
 class _LocationItemInteractionTile extends StatefulWidget {
   final LocationNode node;
-  final int directItemCount;
+  final int itemCount;
   final FinderViewMode viewMode;
   final VoidCallback onTap;
   final Function(Object payload, String targetLocationId) onDrop;
@@ -889,7 +905,7 @@ class _LocationItemInteractionTile extends StatefulWidget {
   const _LocationItemInteractionTile({
     super.key,
     required this.node,
-    required this.directItemCount,
+    required this.itemCount,
     required this.viewMode,
     required this.onTap,
     required this.onDrop,
@@ -987,7 +1003,7 @@ class _LocationItemInteractionTileState extends State<_LocationItemInteractionTi
                       ),
                     ],
                   ),
-                  if (widget.directItemCount > 0)
+                  if (widget.itemCount > 0)
                     Positioned(
                       top: 4,
                       right: 4,
@@ -998,7 +1014,7 @@ class _LocationItemInteractionTileState extends State<_LocationItemInteractionTi
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          '${widget.directItemCount}',
+                          '${widget.itemCount}',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -1075,7 +1091,7 @@ class _LocationItemInteractionTileState extends State<_LocationItemInteractionTi
                         Text(
                           widget.node.description != null && widget.node.description!.isNotEmpty
                               ? widget.node.description!
-                              : '${widget.directItemCount} ${AppStrings.objectsLabel}',
+                              : '${widget.itemCount} ${AppStrings.objectsLabel}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: Colors.grey,
                             fontSize: 12,
