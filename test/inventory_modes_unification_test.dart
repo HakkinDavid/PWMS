@@ -1102,5 +1102,96 @@ void main() {
       await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
     });
+
+    testWidgets('16. Canvas drop in Mundo: same origin drops are discarded, container extractions move item to root', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final rootSpecies = CatalogItem(id: 'sp-root-item', name: 'Reloj', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(rootSpecies);
+      final rootEntity = WorldEntity(id: 'ent-root-item', speciesId: rootSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(rootEntity);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      final initialRelCount = (await relationRepo.getAllRelations()).length;
+
+      // Drag Reloj and drop it on the canvas of Mundo
+      final itemTile = find.byType(EffectiveGroupTile);
+      final gesture = await tester.startGesture(tester.getCenter(itemTile));
+      await tester.pump(const Duration(milliseconds: 600));
+      await gesture.moveBy(const Offset(0, 100));
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      // Discarded cleanly without relations modified or errors
+      final afterRelCount = (await relationRepo.getAllRelations()).length;
+      expect(afterRelCount, equals(initialRelCount));
+    });
+
+    testWidgets('17. Root Mundo canvas drop preserves assigned locationId if dropped without navigating, but updates if navigated', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final locHouse = LocationNode(id: 'loc_house_flag', name: 'Casa Test', createdAt: now);
+      await locationRepo.saveNode(locHouse);
+
+      final lampSpecies = CatalogItem(id: 'sp-lamp-flag', name: 'Lámpara', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(lampSpecies);
+      final lampEntity = WorldEntity(id: 'ent-lamp-flag', speciesId: lampSpecies.id, locationId: locHouse.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(lampEntity);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Case A: User in Mundo drags Lámpara (which is in Casa) and drops on Mundo canvas without navigating
+      final itemTile = find.byType(EffectiveGroupTile);
+      final gesture = await tester.startGesture(tester.getCenter(itemTile));
+      await tester.pump(const Duration(milliseconds: 600));
+      await gesture.moveBy(const Offset(0, 100));
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      // Lámpara STILL has locationId == 'loc_house_flag' (NOT stripped to null!)
+      final checkEntA = await entityRepo.getEntityById('ent-lamp-flag');
+      expect(checkEntA?.locationId, equals('loc_house_flag'));
+    });
   });
 }

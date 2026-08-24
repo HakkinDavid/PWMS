@@ -15,6 +15,8 @@ class InventoryItemInteractionWrapper extends StatefulWidget {
   final VoidCallback onTap;
   final Function(Object payload, String targetContainerEntityId) onDropIntoContainer;
   final Function(String targetContainerEntityId)? onHoverSpringLoaded;
+  final VoidCallback? onDragStarted;
+  final VoidCallback? onDragEnd;
 
   const InventoryItemInteractionWrapper({
     super.key,
@@ -27,6 +29,8 @@ class InventoryItemInteractionWrapper extends StatefulWidget {
     required this.onTap,
     required this.onDropIntoContainer,
     this.onHoverSpringLoaded,
+    this.onDragStarted,
+    this.onDragEnd,
   });
 
   @override
@@ -108,6 +112,8 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
       // Normal Mode: Drag the group
       return LongPressDraggable<Object>(
         data: widget.group,
+        onDragStarted: widget.onDragStarted,
+        onDragEnd: (_) => widget.onDragEnd?.call(),
         feedback: Material(
           elevation: 10,
           borderRadius: BorderRadius.circular(16),
@@ -139,6 +145,8 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
     if (widget.isSelected && widget.selectedEntityIds.isNotEmpty) {
       return LongPressDraggable<Object>(
         data: widget.selectedEntityIds.toList(),
+        onDragStarted: widget.onDragStarted,
+        onDragEnd: (_) => widget.onDragEnd?.call(),
         feedback: Material(
           elevation: 10,
           borderRadius: BorderRadius.circular(16),

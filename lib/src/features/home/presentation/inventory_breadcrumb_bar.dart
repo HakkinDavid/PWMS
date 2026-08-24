@@ -15,7 +15,7 @@ import '../../relations/domain/entity_relation.dart';
 
 /// Unified navigation bar for the inventory.
 /// Integrates full-width breadcrumbs (starting at Mundo), real physical path resolution,
-/// spring-loaded horizontal autoscroll, spring-loaded chevron & tree nodes with chevrons,
+/// spring-loaded horizontal autoscroll, spring-loaded chevron & tree nodes with navigation,
 /// top/bottom vertical autoscroll edge zones in the location tree curtain,
 /// and borderless active container hero tile without "Ver Ficha" badge or X button.
 class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
@@ -63,6 +63,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
   Timer? _horizontalAutoScrollTimer;
   Timer? _treeAutoScrollTimer;
   Timer? _chevronSpringTimer;
+  Timer? _mundoSpringTimer;
 
   bool get isCurtainExpanded => _isCurtainExpanded;
 
@@ -93,6 +94,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
     _horizontalAutoScrollTimer?.cancel();
     _treeAutoScrollTimer?.cancel();
     _chevronSpringTimer?.cancel();
+    _mundoSpringTimer?.cancel();
     super.dispose();
   }
 
@@ -128,6 +130,22 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
       );
       _treeScrollController.jumpTo(target);
     });
+  }
+
+  void _startMundoSpringTimer() {
+    if (_mundoSpringTimer != null) return;
+    _mundoSpringTimer = Timer(const Duration(milliseconds: 600), () {
+      _mundoSpringTimer = null;
+      if (mounted) {
+        if (widget.containerPath.isNotEmpty) widget.onExitContainersToRoot();
+        widget.onLocationSelected(null);
+      }
+    });
+  }
+
+  void _cancelMundoSpringTimer() {
+    _mundoSpringTimer?.cancel();
+    _mundoSpringTimer = null;
   }
 
   void _toggleCurtain() {
@@ -474,7 +492,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
             ),
           ),
 
-          // 3. Expandable Location Tree Curtain with Top/Bottom Autoscroll Edge Zones
+          // 3. Expandable Location Tree Curtain with Top/Bottom Autoscroll Edge Zones & Spring-Loaded Navigation
           SizeTransition(
             sizeFactor: _curtainAnimation,
             child: Container(
@@ -491,16 +509,38 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ListTile(
-                          dense: true,
-                          visualDensity: VisualDensity.compact,
-                          leading: const Icon(Icons.public),
-                          title: const Text(AppStrings.rootLocationName, style: TextStyle(fontWeight: FontWeight.bold)),
-                          selected: isRootWorldActive,
-                          onTap: () {
+                        // Spring-loaded Mundo root tile in tree
+                        DragTarget<Object>(
+                          onWillAcceptWithDetails: (_) => true,
+                          onMove: (_) => _startMundoSpringTimer(),
+                          onLeave: (_) => _cancelMundoSpringTimer(),
+                          onAcceptWithDetails: (details) {
+                            _cancelMundoSpringTimer();
                             if (isInsideContainer) widget.onExitContainersToRoot();
-                            widget.onLocationSelected(null);
-                            _toggleCurtain();
+                            widget.onDropOnLocation(details.data, null);
+                          },
+                          builder: (context, candidateData, rejectedData) {
+                            final isHovered = candidateData.isNotEmpty;
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: isHovered
+                                    ? theme.colorScheme.primaryContainer
+                                    : (isRootWorldActive ? theme.colorScheme.primary.withAlpha(20) : null),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ListTile(
+                                dense: true,
+                                visualDensity: VisualDensity.compact,
+                                leading: const Icon(Icons.public),
+                                title: const Text(AppStrings.rootLocationName, style: TextStyle(fontWeight: FontWeight.bold)),
+                                selected: isRootWorldActive,
+                                onTap: () {
+                                  if (isInsideContainer) widget.onExitContainersToRoot();
+                                  widget.onLocationSelected(null);
+                                  _toggleCurtain();
+                                },
+                              ),
+                            );
                           },
                         ),
                         const Divider(height: 1),
@@ -524,6 +564,9 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
                             onSelect: (locId) {
                               widget.onLocationSelected(locId);
                               _toggleCurtain();
+                            },
+                            onSpringLoadNavigate: (locId) {
+                              widget.onLocationSelected(locId);
                             },
                             onDrop: (payload, locId) {
                               widget.onDropOnLocation(payload, locId);
@@ -592,7 +635,9 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
   }
 }
 
-/// Isolated tree item widget with its own spring-load hover timer.
+/// Isolated tree item widget with 2-stage spring-loaded hover:
+/// - Stage 1 (600ms): If collapsed, expands the node.
+/// - Stage 2 (continued 600ms hover or hover on already expanded/leaf): Navigates to that location!
 /// DragTarget is strictly attached to this node row only, not enclosing children subtrees.
 class _TreeItemWidget extends StatefulWidget {
   final LocationNode node;
@@ -602,6 +647,7 @@ class _TreeItemWidget extends StatefulWidget {
   final Set<String> expandedLocationIds;
   final ValueChanged<String> onToggleExpand;
   final ValueChanged<String> onSelect;
+  final ValueChanged<String> onSpringLoadNavigate;
   final Function(Object payload, String locationId) onDrop;
   final Function(String parentId) onOpenAddDialog;
 
@@ -614,6 +660,7 @@ class _TreeItemWidget extends StatefulWidget {
     required this.expandedLocationIds,
     required this.onToggleExpand,
     required this.onSelect,
+    required this.onSpringLoadNavigate,
     required this.onDrop,
     required this.onOpenAddDialog,
   });
@@ -640,14 +687,26 @@ class _TreeItemWidgetState extends State<_TreeItemWidget> {
     if (_springTimer != null) return;
     final children = widget.allLocations.where((l) => l.parentLocationId == widget.node.id).toList();
     final isExpanded = widget.expandedLocationIds.contains(widget.node.id);
-    if (children.isNotEmpty && !isExpanded) {
-      _springTimer = Timer(const Duration(milliseconds: 600), () {
-        _springTimer = null;
-        if (mounted) {
-          widget.onToggleExpand(widget.node.id);
-        }
-      });
-    }
+
+    _springTimer = Timer(const Duration(milliseconds: 600), () {
+      _springTimer = null;
+      if (!mounted) return;
+
+      if (children.isNotEmpty && !isExpanded) {
+        // a) Despliegue de la ubicación
+        widget.onToggleExpand(widget.node.id);
+        // b) Tras el despliegue, si se mantiene el hover por otros 600ms, navega en automático
+        _springTimer = Timer(const Duration(milliseconds: 600), () {
+          _springTimer = null;
+          if (mounted) {
+            widget.onSpringLoadNavigate(widget.node.id);
+          }
+        });
+      } else {
+        // Ya desplegado o es hoja sin hijos -> navega en automático en hover
+        widget.onSpringLoadNavigate(widget.node.id);
+      }
+    });
   }
 
   @override
@@ -735,6 +794,7 @@ class _TreeItemWidgetState extends State<_TreeItemWidget> {
               expandedLocationIds: widget.expandedLocationIds,
               onToggleExpand: widget.onToggleExpand,
               onSelect: widget.onSelect,
+              onSpringLoadNavigate: widget.onSpringLoadNavigate,
               onDrop: widget.onDrop,
               onOpenAddDialog: widget.onOpenAddDialog,
             ),

@@ -50,8 +50,27 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   List<String> _containerPath = [];
 
+  bool _isDragging = false;
+  String? _dragOriginLocationId;
+  String? _dragOriginContainerId;
+  bool _dragHasNavigated = false;
+
   late final ScrollController _scrollController;
   Timer? _autoScrollTimer;
+
+  void _handleDragStarted() {
+    _isDragging = true;
+    _dragOriginLocationId = _selectedLocationId;
+    _dragOriginContainerId = _containerPath.isNotEmpty ? _containerPath.last : null;
+    _dragHasNavigated = false;
+  }
+
+  void _handleDragEnd() {
+    _isDragging = false;
+    _dragOriginLocationId = null;
+    _dragOriginContainerId = null;
+    _dragHasNavigated = false;
+  }
 
   @override
   void initState() {
@@ -124,6 +143,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (newLocId == _selectedLocationId) return;
     if (_selectedLocationId != null || _locationHistory.isNotEmpty) {
       _locationHistory.add(_selectedLocationId);
+    }
+    if (_isDragging) {
+      _dragHasNavigated = true;
     }
     setState(() {
       _selectedLocationId = newLocId;
@@ -473,11 +495,13 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                 }
               },
               onNavigateToContainerIndex: (idx) {
+                if (_isDragging) _dragHasNavigated = true;
                 setState(() {
                   _containerPath.removeRange(idx + 1, _containerPath.length);
                 });
               },
               onExitContainersToRoot: () {
+                if (_isDragging) _dragHasNavigated = true;
                 setState(() {
                   _containerPath.clear();
                   _selectedLocationId = null;
@@ -546,12 +570,26 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                         _breadcrumbBarKey.currentState?.collapseCurtain();
                       }
                       final ids = _extractPayloadIds(details.data);
-                      if (ids.isEmpty) return;
+                      if (ids.isEmpty) {
+                        _handleDragEnd();
+                        return;
+                      }
+
+                      // Si se soltó en el canvas de la misma vista sin haber navegado, descartar
+                      if (!_dragHasNavigated) {
+                        if (_containerPath.isEmpty && _selectedLocationId == null) {
+                          _handleDragEnd();
+                          return;
+                        }
+                      }
+
                       if (_containerPath.isNotEmpty) {
                         _moveEntitiesToContainer(ids, _containerPath.last);
                       } else {
                         _moveEntitiesToLocation(ids, _selectedLocationId);
                       }
+
+                      _handleDragEnd();
                     },
                     builder: (context, candidateData, rejectedData) {
                       final isHovered = candidateData.isNotEmpty;
@@ -704,8 +742,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             isContainer: isContainer,
             onTap: () => _handleItemTap(grp, isContainer),
             onDropIntoContainer: _handleDropIntoContainer,
+            onDragStarted: _handleDragStarted,
+            onDragEnd: _handleDragEnd,
             onHoverSpringLoaded: (targetContainerId) {
               if (!_containerPath.contains(targetContainerId)) {
+                if (_isDragging) _dragHasNavigated = true;
                 setState(() => _containerPath.add(targetContainerId));
               }
             },
@@ -748,8 +789,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             isContainer: isContainer,
             onTap: () => _handleItemTap(grp, isContainer),
             onDropIntoContainer: _handleDropIntoContainer,
+            onDragStarted: _handleDragStarted,
+            onDragEnd: _handleDragEnd,
             onHoverSpringLoaded: (targetContainerId) {
               if (!_containerPath.contains(targetContainerId)) {
+                if (_isDragging) _dragHasNavigated = true;
                 setState(() => _containerPath.add(targetContainerId));
               }
             },
