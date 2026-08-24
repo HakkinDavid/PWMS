@@ -10,6 +10,7 @@ import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_photo_helper.dart';
 import '../../entities/domain/entity_template.dart';
+import '../../entities/presentation/entity_photo_thumbnail.dart';
 import '../domain/catalog_item.dart';
 import '../domain/numismatic_data_helper.dart';
 import '../domain/subspecies.dart';
@@ -426,71 +427,15 @@ class SpeciesDetailView extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  child: ClipRRect(
+                  child: EntityPhotoThumbnail(
+                    species: species,
+                    subspecies: subspecies,
+                    instanceId: instanceId,
+                    size: 140,
                     borderRadius: BorderRadius.circular(18),
-                    child: FutureBuilder<String?>(
-                      future: resolveEffectiveEntityPhotoPath(
-                        ref,
-                        subspecies: subspecies,
-                        species: species,
-                        instanceId: instanceId,
-                      ),
-                      builder: (context, photoPathSnapshot) {
-                        final effectivePhotoPath = photoPathSnapshot.data;
-
-                        return FutureBuilder<String>(
-                          future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
-                              ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
-                              : Future.value(''),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                              return Image.file(
-                                File(snapshot.data!),
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) => Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        theme.colorScheme.primary.withAlpha(180),
-                                        theme.colorScheme.secondary.withAlpha(180),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      template.icon,
-                                      size: 54,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-                            return Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    theme.colorScheme.primary.withAlpha(180),
-                                    theme.colorScheme.secondary.withAlpha(180),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  template.icon,
-                                  size: 54,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                    useTextBadgeFallback: false,
+                    fallbackIcon: template.icon,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),

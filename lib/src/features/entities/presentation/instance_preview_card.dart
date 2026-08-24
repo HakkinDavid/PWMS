@@ -6,16 +6,16 @@ import '../../../core/providers/providers.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
-import '../domain/entity_photo_helper.dart';
 import '../domain/world_entity.dart';
-
-import '../../catalog/presentation/species_text_badge_avatar.dart';
+import 'entity_photo_thumbnail.dart';
 
 class InstancePreviewCard extends ConsumerWidget {
   final WorldEntity? entity;
   final EffectiveEntityGroup? group;
   final VoidCallback? onTap;
   final Widget? trailing;
+  final bool isSelected;
+  final bool isSelectionMode;
 
   const InstancePreviewCard({
     super.key,
@@ -23,6 +23,8 @@ class InstancePreviewCard extends ConsumerWidget {
     this.group,
     this.onTap,
     this.trailing,
+    this.isSelected = false,
+    this.isSelectionMode = false,
   }) : assert(entity != null || group != null, AppStrings.mustProvideEntityOrGroup);
 
   @override
@@ -79,58 +81,51 @@ class InstancePreviewCard extends ConsumerWidget {
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
 
-        return FutureBuilder<String?>(
-          future: resolveEffectiveEntityPhotoPath(
-            ref,
-            subspecies: subspecies,
-            species: species,
-            instanceId: targetEntity.id,
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          elevation: isSelected ? 3.0 : 1.5,
+          color: isSelected
+              ? theme.colorScheme.primaryContainer.withAlpha(120)
+              : theme.cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.dividerColor.withAlpha(40),
+              width: isSelected ? 2.0 : 1.0,
+            ),
           ),
-          builder: (context, photoPathSnapshot) {
-            final effectivePhotoPath = photoPathSnapshot.data;
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  // Selection Checkbox if in Selection Mode
+                  if (isSelectionMode) ...[
+                    Checkbox(
+                      value: isSelected,
+                      onChanged: (_) => onTap?.call(),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    const SizedBox(width: 4),
+                  ],
 
-            return Card(
-              margin: const EdgeInsets.only(bottom: 8),
-              elevation: 1.5,
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(16),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  child: Row(
-                    children: [
-                      // Photo with Subspecies Fallback to Species Text Badge (Point 4)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: SizedBox(
-                          width: 48,
-                          height: 48,
-                          child: FutureBuilder<String>(
-                            future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
-                                ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
-                                : Future.value(''),
-                            builder: (context, photoSnapshot) {
-                              if (photoSnapshot.hasData && photoSnapshot.data!.isNotEmpty && File(photoSnapshot.data!).existsSync()) {
-                                return Image.file(
-                                  File(photoSnapshot.data!),
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => SpeciesTextBadgeAvatar(
-                                    speciesName: speciesName,
-                                    size: 48,
-                                  ),
-                                );
-                              }
-                              return SpeciesTextBadgeAvatar(
-                                speciesName: speciesName,
-                                size: 48,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
+                  // Photo Thumbnail via EntityPhotoThumbnail
+                  EntityPhotoThumbnail(
+                    species: species,
+                    subspecies: subspecies,
+                    instanceId: targetEntity.id,
+                    size: 48,
+                    borderRadius: BorderRadius.circular(12),
+                    useTextBadgeFallback: true,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(width: 12),
 
-                      // Info Column (Subspecies as main title, Species as secondary context)
+                  // Info Column (Subspecies as main title, Species as secondary context)
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,7 +353,5 @@ class InstancePreviewCard extends ConsumerWidget {
         );
       },
     );
-  },
-);
   }
 }

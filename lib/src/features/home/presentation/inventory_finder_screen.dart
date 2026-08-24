@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../entities/domain/effective_entity_group.dart';
@@ -14,6 +15,7 @@ import '../../entities/presentation/register_object_modal.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import '../../locations/presentation/top_curtain_location_sheet.dart';
 import '../../relations/domain/entity_relation.dart';
+import 'inventory_item_interaction_wrapper.dart';
 
 import '../../locations/infrastructure/location_repository.dart';
 
@@ -185,23 +187,43 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     }
   }
 
+  void _handleItemTap(EffectiveEntityGroup grp, bool isContainer) {
+    if (_isSelectionMode) {
+      _toggleSelection(grp.primaryEntity.id);
+    } else if (isContainer && _viewMode == FinderViewMode.detailedList) {
+      setState(() {
+        final id = grp.primaryEntity.id;
+        if (_expandedContainerEntityIds.contains(id)) {
+          _expandedContainerEntityIds.remove(id);
+        } else {
+          _expandedContainerEntityIds.add(id);
+        }
+      });
+    } else if (grp.population == 1) {
+      context.pushEntityDetail(grp.primaryEntity.id);
+    } else {
+      context.pushGroupedInstanceDetail(grp.speciesId, effectiveLocationId: grp.effectiveLocationId);
+    }
+  }
+
+  void _handleDropIntoContainer(Object payload, String targetContainerEntityId) {
+    if (payload is List<String>) {
+      _moveEntitiesToContainer(payload, targetContainerEntityId);
+    } else if (payload is EffectiveEntityGroup) {
+      final ids = payload.entities.map((e) => e.id).toList();
+      _moveEntitiesToContainer(ids, targetContainerEntityId);
+    } else if (payload is WorldEntity) {
+      _moveEntitiesToContainer([payload.id], targetContainerEntityId);
+    }
+  }
+
   Future<void> _deleteSelectedEntities() async {
     if (_selectedEntityIds.isEmpty) return;
 
-    final confirm = await showDialog<bool>(
+    final confirm = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(AppStrings.deleteSelectionTitle),
-        content: Text('${AppStrings.deleteSelectionConfirmationPrefix}${_selectedEntityIds.length}${AppStrings.deleteSelectionConfirmationSuffix}'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Eliminar'),
-          ),
-        ],
-      ),
+      title: AppStrings.deleteSelectionTitle,
+      message: '${AppStrings.deleteSelectionConfirmationPrefix}${_selectedEntityIds.length}${AppStrings.deleteSelectionConfirmationSuffix}',
     );
 
     if (confirm != true) return;
@@ -451,30 +473,30 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           final species = catalogMap[grp.speciesId];
           final isSelected = _selectedEntityIds.contains(primary.id);
           final isExpired = grp.expiredCount(now: DateTime.now()) > 0;
+          final containedIds = grp.entities
+              .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+              .toSet()
+              .toList();
+          final isContainer = containedIds.isNotEmpty;
 
-          return MinecraftTileWidget(
+          return InventoryItemInteractionWrapper(
             group: grp,
-            title: species?.name ?? AppStrings.typeObject,
-            photoPath: species?.mainPhotoPath,
             isSelected: isSelected,
-            isExpired: isExpired,
-            onTap: () {
-              if (_isSelectionMode) {
-                _toggleSelection(primary.id);
-              } else if (grp.population == 1) {
-                context.pushEntityDetail(primary.id);
-              } else {
-                context.pushGroupedInstanceDetail(grp.speciesId, effectiveLocationId: grp.effectiveLocationId);
-              }
-            },
-            onLongPress: () {
-              if (!_isSelectionMode) {
-                setState(() {
-                  _isSelectionMode = true;
-                  _selectedEntityIds.add(primary.id);
-                });
-              }
-            },
+            isSelectionMode: _isSelectionMode,
+            selectedEntityIds: _selectedEntityIds,
+            isContainer: isContainer,
+            onTap: () => _handleItemTap(grp, isContainer),
+            onDropIntoContainer: _handleDropIntoContainer,
+            child: MinecraftTileWidget(
+              group: grp,
+              title: species?.name ?? AppStrings.typeObject,
+              isSelected: isSelected,
+              isSelectionMode: _isSelectionMode,
+              isContainer: isContainer,
+              containedCount: containedIds.length,
+              isExpired: isExpired,
+              onTap: () => _handleItemTap(grp, isContainer),
+            ),
           );
         },
       );
@@ -483,146 +505,65 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       content = ListView.builder(
         controller: _scrollController,
         padding: EdgeInsets.only(left: 12, right: 12, top: 12, bottom: bottomClearance),
-      itemCount: topGroups.length,
-      itemBuilder: (ctx, idx) {
-        final grp = topGroups[idx];
-        final primary = grp.primaryEntity;
-        final primaryId = primary.id;
-        final isSelected = _selectedEntityIds.contains(primaryId);
+        itemCount: topGroups.length,
+        itemBuilder: (ctx, idx) {
+          final grp = topGroups[idx];
+          final primary = grp.primaryEntity;
+          final primaryId = primary.id;
+          final isSelected = _selectedEntityIds.contains(primaryId);
 
-        final containedIds = grp.entities
-            .expand((e) => containerChildrenMap[e.id] ?? <String>[])
-            .toSet()
-            .toList();
-        final isContainer = containedIds.isNotEmpty;
-        final isExpanded = _expandedContainerEntityIds.contains(primaryId);
+          final containedIds = grp.entities
+              .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+              .toSet()
+              .toList();
+          final isContainer = containedIds.isNotEmpty;
+          final isExpanded = _expandedContainerEntityIds.contains(primaryId);
 
-        Widget tileWidget = EffectiveGroupTile(
-          group: grp,
-          onTap: isContainer
-              ? () {
-                  setState(() {
-                    if (isExpanded) {
-                      _expandedContainerEntityIds.remove(primaryId);
-                    } else {
-                      _expandedContainerEntityIds.add(primaryId);
-                    }
-                  });
-                }
-              : null,
-        );
-
-        // Container Stack Items (Point 1: First tap expands/collapses, recursive subtree)
-        if (isContainer && isExpanded) {
-          tileWidget = Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              tileWidget,
-              Padding(
-                padding: const EdgeInsets.only(left: 28.0, top: 4.0, bottom: 8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
-                  ),
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: _buildContainerSubtree(
-                    parentGroup: grp,
-                    containerChildrenMap: containerChildrenMap,
-                    allEntitiesMap: allEntitiesMap,
-                    theme: theme,
-                    visited: {for (var e in grp.entities) e.id},
-                  ),
-                ),
-              ),
-            ],
+          Widget tileWidget = EffectiveGroupTile(
+            group: grp,
+            isSelected: isSelected,
+            isSelectionMode: _isSelectionMode,
+            onTap: () => _handleItemTap(grp, isContainer),
           );
-        }
 
-        // Drag Target for dropping items into Container Entity (Point 1)
-        final innerTileWidget = tileWidget;
-
-        tileWidget = DragTarget<Object>(
-          onWillAcceptWithDetails: (details) => details.data != grp && details.data != primaryId,
-          onAcceptWithDetails: (details) {
-            final data = details.data;
-            if (data is List<String>) {
-              _moveEntitiesToContainer(data, primaryId);
-            } else if (data is EffectiveEntityGroup) {
-              final ids = data.entities.map((e) => e.id).toList();
-              _moveEntitiesToContainer(ids, primaryId);
-            } else if (data is WorldEntity) {
-              _moveEntitiesToContainer([data.id], primaryId);
-            }
-          },
-          builder: (context, candidateData, rejectedData) {
-            final isHovered = candidateData.isNotEmpty;
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: isHovered ? theme.colorScheme.primaryContainer.withAlpha(100) : null,
-              ),
-              child: innerTileWidget,
-            );
-          },
-        );
-
-        // Selection Mode Checkbox / Draggable Logic (Point 2 & 3)
-        if (!_isSelectionMode) {
-          return LongPressDraggable<Object>(
-            data: grp,
-            feedback: Material(
-              elevation: 6,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                color: theme.colorScheme.primaryContainer,
-                child: Text(
-                  'Arrastrando ${grp.population} unidad(es)',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
+          // Container Stack Items: First tap expands/collapses, recursive subtree
+          if (isContainer && isExpanded) {
+            tileWidget = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                tileWidget,
+                Padding(
+                  padding: const EdgeInsets.only(left: 28.0, top: 4.0, bottom: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
+                    ),
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: _buildContainerSubtree(
+                      parentGroup: grp,
+                      containerChildrenMap: containerChildrenMap,
+                      allEntitiesMap: allEntitiesMap,
+                      theme: theme,
+                      visited: {for (var e in grp.entities) e.id},
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            childWhenDragging: Opacity(opacity: 0.4, child: tileWidget),
+              ],
+            );
+          }
+
+          return InventoryItemInteractionWrapper(
+            group: grp,
+            isSelected: isSelected,
+            isSelectionMode: _isSelectionMode,
+            selectedEntityIds: _selectedEntityIds,
+            isContainer: isContainer,
+            onTap: () => _handleItemTap(grp, isContainer),
+            onDropIntoContainer: _handleDropIntoContainer,
             child: tileWidget,
           );
-        }
-
-        // Selection Mode active: Draggable carries selected entity IDs (Point 3)
-        final isItemDraggableInSelection = isSelected;
-
-        Widget selectionContent = Row(
-          children: [
-            Checkbox(
-              value: isSelected,
-              onChanged: (_) => _toggleSelection(primaryId),
-            ),
-            Expanded(child: tileWidget),
-          ],
-        );
-
-        if (isItemDraggableInSelection && _selectedEntityIds.isNotEmpty) {
-          return LongPressDraggable<Object>(
-            data: _selectedEntityIds.toList(),
-            feedback: Material(
-              elevation: 6,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                color: theme.colorScheme.primaryContainer,
-                child: Text(
-                  'Arrastrando ${_selectedEntityIds.length} elementos seleccionados',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
-                ),
-              ),
-            ),
-            childWhenDragging: Opacity(opacity: 0.4, child: selectionContent),
-            child: selectionContent,
-          );
-        }
-
-        return selectionContent;
-      },
-    );
+        },
+      );
     }
 
     return Builder(
@@ -680,20 +621,13 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
         final cIsContainer = cContainedIds.isNotEmpty;
         final cIsExpanded = _expandedContainerEntityIds.contains(cPrimaryId);
+        final cIsSelected = _selectedEntityIds.contains(cPrimaryId);
 
         Widget cTile = EffectiveGroupTile(
           group: cGrp,
-          onTap: cIsContainer
-              ? () {
-                  setState(() {
-                    if (cIsExpanded) {
-                      _expandedContainerEntityIds.remove(cPrimaryId);
-                    } else {
-                      _expandedContainerEntityIds.add(cPrimaryId);
-                    }
-                  });
-                }
-              : null,
+          isSelected: cIsSelected,
+          isSelectionMode: _isSelectionMode,
+          onTap: () => _handleItemTap(cGrp, cIsContainer),
         );
 
         if (cIsContainer && cIsExpanded) {
@@ -723,7 +657,16 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 6.0),
-          child: cTile,
+          child: InventoryItemInteractionWrapper(
+            group: cGrp,
+            isSelected: cIsSelected,
+            isSelectionMode: _isSelectionMode,
+            selectedEntityIds: _selectedEntityIds,
+            isContainer: cIsContainer,
+            onTap: () => _handleItemTap(cGrp, cIsContainer),
+            onDropIntoContainer: _handleDropIntoContainer,
+            child: cTile,
+          ),
         );
       }).toList(),
     );

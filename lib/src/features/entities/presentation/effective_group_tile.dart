@@ -10,11 +10,15 @@ import 'quantity_adjustment_sheet.dart';
 class EffectiveGroupTile extends ConsumerWidget {
   final EffectiveEntityGroup group;
   final VoidCallback? onTap;
+  final bool isSelected;
+  final bool isSelectionMode;
 
   const EffectiveGroupTile({
     super.key,
     required this.group,
     this.onTap,
+    this.isSelected = false,
+    this.isSelectionMode = false,
   });
 
   @override
@@ -28,6 +32,8 @@ class EffectiveGroupTile extends ConsumerWidget {
 
     return InstancePreviewCard(
       group: group,
+      isSelected: isSelected,
+      isSelectionMode: isSelectionMode,
       onTap: onTap ?? () {
         if (group.population == 1) {
           context.pushEntityDetail(group.primaryEntity.id);

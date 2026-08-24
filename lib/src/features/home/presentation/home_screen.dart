@@ -7,7 +7,7 @@ import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/updater/presentation/update_prompt_dialog.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
-import '../../entities/domain/entity_photo_helper.dart';
+import '../../entities/presentation/entity_photo_thumbnail.dart';
 import '../../entities/presentation/register_object_modal.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../locations/infrastructure/location_repository.dart';
@@ -278,7 +278,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     final catalogItems = catalogAsync.asData?.value ?? [];
                                     final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
                                     final speciesType = species?.type ?? AppStrings.typeObject;
-
                                     return FutureBuilder<Subspecies?>(
                                       future: entity.subspeciesId != null
                                           ? ref.read(catalogRepositoryProvider).getSubspeciesById(entity.subspeciesId!)
@@ -290,67 +289,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             ? '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}'
                                             : (species?.name ?? AppStrings.typeObject);
 
-                                        return FutureBuilder<String?>(
-                                          future: resolveEffectiveEntityPhotoPath(
-                                            ref,
-                                            subspecies: subspecies,
-                                            species: species,
-                                            instanceId: entity.id,
-                                          ),
-                                          builder: (context, photoPathSnapshot) {
-                                            final effectivePhotoPath = photoPathSnapshot.data;
-
-                                            return Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Expanded(
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(14),
-                                                    child: FutureBuilder<String>(
-                                                      future: effectivePhotoPath != null && effectivePhotoPath.isNotEmpty
-                                                          ? ref.read(fileStorageServiceProvider).getAbsolutePath(effectivePhotoPath)
-                                                          : Future.value(''),
-                                                      builder: (context, snapshot) {
-                                                        if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                                                          return Image.file(
-                                                            File(snapshot.data!),
-                                                            width: double.infinity,
-                                                            fit: BoxFit.cover,
-                                                            errorBuilder: (_, __, ___) => Container(
-                                                              color: theme.colorScheme.primary.withAlpha(30),
-                                                              child: Center(
-                                                                child: Icon(Icons.category, color: theme.colorScheme.primary),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }
-                                                        return Container(
-                                                          color: theme.colorScheme.primary.withAlpha(30),
-                                                          child: Center(
-                                                            child: Icon(Icons.category, color: theme.colorScheme.primary),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Center(
+                                                child: EntityPhotoThumbnail(
+                                                  species: species,
+                                                  subspecies: subspecies,
+                                                  instanceId: entity.id,
+                                                  size: 80,
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                  borderRadius: BorderRadius.circular(14),
+                                                  useTextBadgeFallback: true,
+                                                  fit: BoxFit.cover,
                                                 ),
-                                                const SizedBox(height: 10),
-                                                Text(
-                                                  primaryTitle,
-                                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  isCustomSubspecies ? '$speciesType • ${species?.name}' : speciesType,
-                                                  style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              ],
-                                            );
-                                          },
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              primaryTitle,
+                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              isCustomSubspecies ? '$speciesType • ${species?.name}' : speciesType,
+                                              style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
                                         );
                                       },
                                     );
