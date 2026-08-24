@@ -13,13 +13,13 @@ import '../../entities/presentation/effective_group_tile.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
 import '../../entities/presentation/register_object_modal.dart';
 import '../../locations/presentation/location_tree_picker.dart';
-import '../../locations/presentation/top_curtain_location_sheet.dart';
-import '../../relations/domain/entity_relation.dart';
+import 'inventory_breadcrumb_bar.dart';
 import 'inventory_item_interaction_wrapper.dart';
 
 import '../../entities/presentation/instance_preview_card.dart';
 import '../../locations/domain/location_node.dart';
 import '../../locations/infrastructure/location_repository.dart';
+import '../../relations/domain/entity_relation.dart';
 
 enum FinderViewMode { detailedList, minecraftGrid }
 
@@ -395,36 +395,38 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
         body: Column(
           children: [
-            // Top Curtain Location Sheet & Breadcrumb Route Bar (only on root level)
-            if (_containerPath.isEmpty)
-              TopCurtainLocationSheet(
-                allLocations: locationNodes,
-                selectedLocationId: _selectedLocationId,
-                initiallyExpanded: widget.startWithCurtainOpen,
-                onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
-                onDropOnLocation: (payload, targetLocId) {
-                  if (payload is List<String>) {
-                    _moveEntitiesToLocation(payload, targetLocId);
-                  } else if (payload is EffectiveEntityGroup) {
-                    final ids = payload.entities.map((e) => e.id).toList();
-                    _moveEntitiesToLocation(ids, targetLocId);
-                  } else if (payload is WorldEntity) {
-                    _moveEntitiesToLocation([payload.id], targetLocId);
-                  }
-                },
-              ),
-
-            // Active Container Header (Breadcrumbs + Hero Tile of active container)
-            if (_containerPath.isNotEmpty && activeContainerEntity != null)
-              _buildActiveContainerHeader(
-                context: context,
-                activeContainerEntity: activeContainerEntity,
-                activeContainerSpecies: activeContainerSpecies,
-                locationNodes: locationNodes,
-                catalogMap: catalogMap,
-                allEntitiesMap: allEntitiesMap,
-                theme: theme,
-              ),
+            // Unified Navigation Bar (Breadcrumbs, Location Curtain, Container Path & Hero Tile)
+            InventoryBreadcrumbBar(
+              allLocations: locationNodes,
+              selectedLocationId: _selectedLocationId,
+              containerPath: _containerPath,
+              catalogMap: catalogMap,
+              allEntitiesMap: allEntitiesMap,
+              initiallyExpanded: widget.startWithCurtainOpen,
+              onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
+              onDropOnLocation: (payload, targetLocId) {
+                final ids = _extractPayloadIds(payload);
+                if (ids.isNotEmpty) {
+                  _moveEntitiesToLocation(ids, targetLocId);
+                }
+              },
+              onDropIntoContainer: (payload, targetContainerId) {
+                final ids = _extractPayloadIds(payload);
+                if (ids.isNotEmpty) {
+                  _moveEntitiesToContainer(ids, targetContainerId);
+                }
+              },
+              onNavigateToContainerIndex: (idx) {
+                setState(() {
+                  _containerPath.removeRange(idx + 1, _containerPath.length);
+                });
+              },
+              onExitContainersToRoot: () {
+                setState(() {
+                  _containerPath.clear();
+                });
+              },
+            ),
 
             // Filter Chips Row
             SingleChildScrollView(
@@ -448,26 +450,45 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             ),
             const Divider(height: 1),
 
-            // Main Inventory Content (Root or Contained items)
+            // Main Inventory Content (Root or Contained items) wrapped in canvas DragTarget
             Expanded(
-              child: currentGroups.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
-                          const SizedBox(height: 12),
-                          Text(
-                            _containerPath.isNotEmpty
-                                ? 'Este contenedor está vacío.\nArrastra elementos aquí para guardarlos.'
-                                : 'No hay elementos en esta ubicación.',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-                          ),
-                        ],
-                      ),
-                    )
-                  : _buildInventoryContent(currentGroups, catalogMap, containerChildrenMap, allEntities),
+              child: DragTarget<Object>(
+                onWillAcceptWithDetails: (details) => true,
+                onAcceptWithDetails: (details) {
+                  final ids = _extractPayloadIds(details.data);
+                  if (ids.isEmpty) return;
+                  if (_containerPath.isNotEmpty) {
+                    _moveEntitiesToContainer(ids, _containerPath.last);
+                  } else {
+                    _moveEntitiesToLocation(ids, _selectedLocationId);
+                  }
+                },
+                builder: (context, candidateData, rejectedData) {
+                  final isHovered = candidateData.isNotEmpty;
+
+                  return Container(
+                    color: isHovered ? theme.colorScheme.primary.withAlpha(15) : Colors.transparent,
+                    child: currentGroups.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
+                                const SizedBox(height: 12),
+                                Text(
+                                  _containerPath.isNotEmpty
+                                      ? 'Este contenedor está vacío.\nArrastra elementos aquí para guardarlos.'
+                                      : 'No hay elementos en esta ubicación.',
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+                                ),
+                              ],
+                            ),
+                          )
+                        : _buildInventoryContent(currentGroups, catalogMap, containerChildrenMap, allEntities),
+                  );
+                },
+              ),
             ),
 
             // Floating Bulk Actions Bar
@@ -513,209 +534,15 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     );
   }
 
-  Widget _buildActiveContainerHeader({
-    required BuildContext context,
-    required WorldEntity activeContainerEntity,
-    required CatalogItem? activeContainerSpecies,
-    required List<LocationNode> locationNodes,
-    required Map<String, CatalogItem> catalogMap,
-    required Map<String, WorldEntity> allEntitiesMap,
-    required ThemeData theme,
-  }) {
-    final rootLocationName = _selectedLocationId == null
-        ? 'Todas las Ubicaciones'
-        : (locationNodes.where((l) => l.id == _selectedLocationId).firstOrNull?.name ?? 'Ubicación');
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.primary.withAlpha(60), width: 1.2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // 1. Breadcrumbs Trail Bar with Drop Targets
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        // Root Breadcrumb (Drop target to move to location)
-                        DragTarget<Object>(
-                          onWillAcceptWithDetails: (details) => true,
-                          onAcceptWithDetails: (details) {
-                            final data = details.data;
-                            if (data is List<String>) {
-                              _moveEntitiesToLocation(data, _selectedLocationId);
-                            } else if (data is EffectiveEntityGroup) {
-                              _moveEntitiesToLocation(data.entities.map((e) => e.id).toList(), _selectedLocationId);
-                            } else if (data is WorldEntity) {
-                              _moveEntitiesToLocation([data.id], _selectedLocationId);
-                            }
-                          },
-                          builder: (context, candidateData, rejectedData) {
-                            final isHovered = candidateData.isNotEmpty;
-                            return InkWell(
-                              onTap: () => setState(() => _containerPath.clear()),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: isHovered
-                                      ? theme.colorScheme.primaryContainer
-                                      : theme.colorScheme.surface.withAlpha(120),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: isHovered ? theme.colorScheme.primary : theme.dividerColor.withAlpha(60),
-                                    width: isHovered ? 1.5 : 1.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.home_outlined, size: 14, color: theme.colorScheme.primary),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      rootLocationName,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-
-                        // Ancestor Breadcrumbs
-                        for (int i = 0; i < _containerPath.length; i++) ...[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            child: Icon(Icons.chevron_right, size: 16, color: Colors.grey),
-                          ),
-                          Builder(
-                            builder: (context) {
-                              final cId = _containerPath[i];
-                              final isCurrent = i == _containerPath.length - 1;
-                              final cEnt = allEntitiesMap[cId];
-                              final cSpecies = catalogMap[cEnt?.speciesId];
-                              final cTitle = cSpecies?.name ?? 'Contenedor';
-
-                              if (isCurrent) {
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withAlpha(25),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: theme.colorScheme.primary.withAlpha(100), width: 1.0),
-                                  ),
-                                  child: Text(
-                                    cTitle,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              return DragTarget<Object>(
-                                onWillAcceptWithDetails: (details) => true,
-                                onAcceptWithDetails: (details) {
-                                  final data = details.data;
-                                  if (data is List<String>) {
-                                    _moveEntitiesToContainer(data, cId);
-                                  } else if (data is EffectiveEntityGroup) {
-                                    _moveEntitiesToContainer(data.entities.map((e) => e.id).toList(), cId);
-                                  } else if (data is WorldEntity) {
-                                    _moveEntitiesToContainer([data.id], cId);
-                                  }
-                                },
-                                builder: (context, candidateData, rejectedData) {
-                                  final isHovered = candidateData.isNotEmpty;
-                                  return InkWell(
-                                    onTap: () => setState(() => _containerPath.removeRange(i + 1, _containerPath.length)),
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: isHovered
-                                            ? theme.colorScheme.primaryContainer
-                                            : theme.colorScheme.surface.withAlpha(120),
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: isHovered ? theme.colorScheme.primary : theme.dividerColor.withAlpha(60),
-                                          width: isHovered ? 1.5 : 1.0,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        cTitle,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: theme.colorScheme.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, size: 20),
-                  tooltip: 'Salir a la raíz',
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () => setState(() => _containerPath.clear()),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-
-          // 2. Active Container Hero Tile (taps open EntityDetailScreen)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InstancePreviewCard(
-              entity: activeContainerEntity,
-              onTap: () => context.pushEntityDetail(activeContainerEntity.id),
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withAlpha(30),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.touch_app, size: 12, color: theme.colorScheme.primary),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Ver Ficha',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  List<String> _extractPayloadIds(Object? payload) {
+    if (payload is List<String>) {
+      return payload;
+    } else if (payload is EffectiveEntityGroup) {
+      return payload.entities.map((e) => e.id).toList();
+    } else if (payload is WorldEntity) {
+      return [payload.id];
+    }
+    return [];
   }
 
   Widget _buildInventoryContent(

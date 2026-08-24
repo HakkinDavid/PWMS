@@ -277,8 +277,9 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Breadcrumb should show Casa > Habitación
-      expect(find.text('Casa > Habitación'), findsOneWidget);
+      // Breadcrumbs should show Casa and Habitación chips
+      expect(find.text('Casa'), findsWidgets);
+      expect(find.text('Habitación'), findsWidgets);
 
       // Should find Lámpara (which is in loc_bedroom, found in tile title and avatar fallback)
       expect(find.text('Lámpara'), findsNWidgets(2));

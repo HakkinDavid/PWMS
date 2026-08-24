@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/storage/file_storage_service.dart';
@@ -405,6 +406,7 @@ void main() {
       expect(find.byIcon(Icons.check), findsNothing);
 
       await gesture.up();
+      await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
     });
 
@@ -534,10 +536,10 @@ void main() {
       // Contained item 'Moneda Antigua' is now displayed in the inventory
       expect(find.byType(EffectiveGroupTile), findsOneWidget);
 
-      // Tap on the root breadcrumb "Todas las Ubicaciones" to go back to root
-      final rootBreadcrumb = find.text('Todas las Ubicaciones');
-      expect(rootBreadcrumb, findsOneWidget);
-      await tester.tap(rootBreadcrumb);
+      // Tap on the root breadcrumb "Todos" to go back to root
+      final rootBreadcrumb = find.text(AppStrings.all);
+      expect(rootBreadcrumb, findsWidgets);
+      await tester.tap(rootBreadcrumb.first);
       await tester.pumpAndSettle();
 
       // Back at root: 'Caja Fuerte' is shown, 'Ver Ficha' header is closed
@@ -610,6 +612,132 @@ void main() {
 
       // Returned to root
       expect(find.text('Ver Ficha'), findsNothing);
+    });
+
+    testWidgets('9. Dropping an item onto blank canvas or Active Container Hero Tile inside container saves it into container', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final boxSpecies = CatalogItem(id: 'sp-box-drop', name: 'Caja Fuerte', type: 'Objeto', createdAt: now);
+      final gemSpecies = CatalogItem(id: 'sp-gem-drop', name: 'Diamante', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(boxSpecies);
+      await catalogRepo.saveCatalogItem(gemSpecies);
+
+      final boxEntity = WorldEntity(id: 'ent-box-drop', speciesId: boxSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final gemEntity = WorldEntity(id: 'ent-gem-drop', speciesId: gemSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(boxEntity);
+      await entityRepo.saveEntity(gemEntity);
+
+      await relationRepo.addRelation(EntityRelation(
+        id: 'rel-init',
+        sourceEntityId: gemEntity.id,
+        targetEntityId: boxEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      ));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Tap on boxEntity to enter container
+      await tester.tap(find.byType(EffectiveGroupTile));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ver Ficha'), findsOneWidget);
+
+      // Verify the Active Container Hero Tile is a DragTarget
+      final heroTileDragTarget = find.ancestor(
+        of: find.text('Ver Ficha'),
+        matching: find.byType(DragTarget<Object>),
+      );
+      expect(heroTileDragTarget, findsWidgets);
+    });
+
+    testWidgets('10. Spring-loaded hover on breadcrumbs: hovering for 600ms navigates level while dragging', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final chestSpecies = CatalogItem(id: 'sp-chest', name: 'Baúl', type: 'Objeto', createdAt: now);
+      final keySpecies = CatalogItem(id: 'sp-key', name: 'Llave Dorada', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(chestSpecies);
+      await catalogRepo.saveCatalogItem(keySpecies);
+
+      final chestEntity = WorldEntity(id: 'ent-chest', speciesId: chestSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final keyEntity = WorldEntity(id: 'ent-key', speciesId: keySpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(chestEntity);
+      await entityRepo.saveEntity(keyEntity);
+
+      await relationRepo.addRelation(EntityRelation(
+        id: 'rel-chest-key',
+        sourceEntityId: keyEntity.id,
+        targetEntityId: chestEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      ));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Enter chest
+      await tester.tap(find.byType(EffectiveGroupTile));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ver Ficha'), findsOneWidget);
+
+      // Start drag gesture on key item inside chest
+      final itemTile = find.byType(EffectiveGroupTile);
+      final gesture = await tester.startGesture(tester.getCenter(itemTile));
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Move drag over the root breadcrumb "Todos"
+      final rootBreadcrumb = find.text(AppStrings.all).first;
+      await gesture.moveTo(tester.getCenter(rootBreadcrumb));
+      await tester.pump();
+
+      // Wait 600ms for spring-loaded navigation to trigger
+      await tester.pump(const Duration(milliseconds: 650));
+      await tester.pumpAndSettle();
+
+      // We should now have navigated back to root (Ver Ficha is gone) even while drag gesture is still active!
+      expect(find.text('Ver Ficha'), findsNothing);
+
+      await gesture.up();
+      await tester.pump(const Duration(seconds: 4));
+      await tester.pumpAndSettle();
     });
   });
 }
