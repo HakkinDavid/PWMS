@@ -18,6 +18,8 @@ import 'package:platinum_world_management_system/src/features/entities/presentat
 import 'package:platinum_world_management_system/src/features/entities/presentation/minecraft_tile_widget.dart';
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_finder_screen.dart';
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_item_interaction_wrapper.dart';
+import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
+import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
 
 class MockFileStorageService implements FileStorageService {
@@ -42,6 +44,7 @@ void main() {
   late CatalogRepository catalogRepo;
   late EntityRepository entityRepo;
   late RelationRepository relationRepo;
+  late LocationRepository locationRepo;
   late MockFileStorageService fileStorageService;
 
   setUp(() {
@@ -55,6 +58,7 @@ void main() {
     catalogRepo = CatalogRepository(db);
     entityRepo = EntityRepository(db);
     relationRepo = RelationRepository(db);
+    locationRepo = LocationRepository(db);
     fileStorageService = MockFileStorageService();
   });
 
@@ -470,6 +474,142 @@ void main() {
       expect(thumbnail.species?.id, equals(species.id));
       expect(thumbnail.subspeciesId, equals(subspecies.id));
       expect(thumbnail.instanceId, equals(entity.id));
+    });
+
+    testWidgets('7. Drill-Down navigation: tapping container opens its contents, displays container hero tile in top bar, and back navigation despools level', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      // Create container species (Caja) and item species (Moneda)
+      final boxSpecies = CatalogItem(id: 'sp-box', name: 'Caja Fuerte', type: 'Objeto', createdAt: now);
+      final coinSpecies = CatalogItem(id: 'sp-coin', name: 'Moneda Antigua', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(boxSpecies);
+      await catalogRepo.saveCatalogItem(coinSpecies);
+
+      // Create container entity and child entity
+      final boxEntity = WorldEntity(id: 'ent-box-1', speciesId: boxSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final coinEntity = WorldEntity(id: 'ent-coin-1', speciesId: coinSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(boxEntity);
+      await entityRepo.saveEntity(coinEntity);
+
+      // Link coin inside box
+      await relationRepo.addRelation(EntityRelation(
+        id: 'rel-1',
+        sourceEntityId: coinEntity.id,
+        targetEntityId: boxEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      ));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // At root level: Container 'Caja Fuerte' is shown (1 EffectiveGroupTile), contained 'Moneda Antigua' is not visible in root
+      expect(find.byType(EffectiveGroupTile), findsOneWidget);
+
+      // Tap container to drill-down into it
+      await tester.tap(find.byType(EffectiveGroupTile));
+      await tester.pumpAndSettle();
+
+      // Inside container: Active Container Hero Tile is displayed in the header with "Ver Ficha"
+      expect(find.text('Ver Ficha'), findsOneWidget);
+
+      // Contained item 'Moneda Antigua' is now displayed in the inventory
+      expect(find.byType(EffectiveGroupTile), findsOneWidget);
+
+      // Tap on the root breadcrumb "Todas las Ubicaciones" to go back to root
+      final rootBreadcrumb = find.text('Todas las Ubicaciones');
+      expect(rootBreadcrumb, findsOneWidget);
+      await tester.tap(rootBreadcrumb);
+      await tester.pumpAndSettle();
+
+      // Back at root: 'Caja Fuerte' is shown, 'Ver Ficha' header is closed
+      expect(find.byType(EffectiveGroupTile), findsOneWidget);
+      expect(find.text('Ver Ficha'), findsNothing);
+    });
+
+    testWidgets('8. Drill-Down in Minecraft Grid mode: tapping container enters grid of contents with top hero tile', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final bagSpecies = CatalogItem(id: 'sp-bag', name: 'Mochila Táctica', type: 'Objeto', createdAt: now);
+      final toolSpecies = CatalogItem(id: 'sp-tool', name: 'Navaja Suiza', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(bagSpecies);
+      await catalogRepo.saveCatalogItem(toolSpecies);
+
+      final bagEntity = WorldEntity(id: 'ent-bag-1', speciesId: bagSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final toolEntity = WorldEntity(id: 'ent-tool-1', speciesId: toolSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(bagEntity);
+      await entityRepo.saveEntity(toolEntity);
+
+      await relationRepo.addRelation(EntityRelation(
+        id: 'rel-bag-tool',
+        sourceEntityId: toolEntity.id,
+        targetEntityId: bagEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      ));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Switch to Minecraft Grid mode
+      await tester.tap(find.byIcon(Icons.view_list));
+      await tester.pumpAndSettle();
+
+      // Verify bag tile is present
+      expect(find.byType(MinecraftTileWidget), findsOneWidget);
+
+      // Tap bag tile to drill down into bag in Minecraft mode
+      await tester.tap(find.byType(MinecraftTileWidget));
+      await tester.pumpAndSettle();
+
+      // Inside bag: Top bar has container hero tile with "Ver Ficha"
+      expect(find.text('Ver Ficha'), findsOneWidget);
+
+      // Grid inside bag contains MinecraftTileWidget for the tool
+      expect(find.byType(MinecraftTileWidget), findsOneWidget);
+
+      // Tap back button
+      await tester.tap(find.byTooltip('Subir nivel'));
+      await tester.pumpAndSettle();
+
+      // Returned to root
+      expect(find.text('Ver Ficha'), findsNothing);
     });
   });
 }

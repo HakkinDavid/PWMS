@@ -163,9 +163,13 @@ class InstancePreviewCard extends ConsumerWidget {
                             children: [
                               const Icon(Icons.qr_code, size: 12, color: Colors.grey),
                               const SizedBox(width: 4),
-                              Text(
-                                '${AppStrings.barcodeLabel}: ${subspecies!.barcode}',
-                                style: const TextStyle(fontSize: 10, color: Colors.grey),
+                              Expanded(
+                                child: Text(
+                                  '${AppStrings.barcodeLabel}: ${subspecies!.barcode}',
+                                  style: const TextStyle(fontSize: 10, color: Colors.grey),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ],
                           ),
@@ -207,9 +211,12 @@ class InstancePreviewCard extends ConsumerWidget {
                                       children: [
                                         Icon(Icons.warning_amber_rounded, size: 10, color: Colors.amber),
                                         SizedBox(width: 3),
-                                        Text(
-                                          AppStrings.badgeOrphan,
-                                          style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold),
+                                        Flexible(
+                                          child: Text(
+                                            AppStrings.badgeOrphan,
+                                            style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -228,9 +235,12 @@ class InstancePreviewCard extends ConsumerWidget {
                                       children: [
                                         Icon(Icons.event_busy, size: 10, color: Colors.blueGrey),
                                         SizedBox(width: 3),
-                                        Text(
-                                          AppStrings.badgeMissingExpiration,
-                                          style: TextStyle(fontSize: 10, color: Colors.blueGrey, fontWeight: FontWeight.bold),
+                                        Flexible(
+                                          child: Text(
+                                            AppStrings.badgeMissingExpiration,
+                                            style: TextStyle(fontSize: 10, color: Colors.blueGrey, fontWeight: FontWeight.bold),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
                                       ],
                                     ),

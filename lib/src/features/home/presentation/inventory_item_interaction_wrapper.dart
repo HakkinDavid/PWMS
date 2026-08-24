@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../entities/domain/effective_entity_group.dart';
 import '../../entities/domain/world_entity.dart';
 
 /// Universal interaction wrapper for inventory items in both Detailed List and Minecraft Grid modes.
-/// Standardizes drag-and-drop source, container drop targets, multi-selection gestures, and visual feedback.
-class InventoryItemInteractionWrapper extends StatelessWidget {
+/// Standardizes drag-and-drop source, container drop targets, multi-selection gestures, and spring-loaded hover opening.
+class InventoryItemInteractionWrapper extends StatefulWidget {
   final Widget child;
   final EffectiveEntityGroup group;
   final bool isSelected;
@@ -13,6 +14,7 @@ class InventoryItemInteractionWrapper extends StatelessWidget {
   final bool isContainer;
   final VoidCallback onTap;
   final Function(Object payload, String targetContainerEntityId) onDropIntoContainer;
+  final Function(String targetContainerEntityId)? onHoverSpringLoaded;
 
   const InventoryItemInteractionWrapper({
     super.key,
@@ -24,28 +26,66 @@ class InventoryItemInteractionWrapper extends StatelessWidget {
     required this.isContainer,
     required this.onTap,
     required this.onDropIntoContainer,
+    this.onHoverSpringLoaded,
   });
+
+  @override
+  State<InventoryItemInteractionWrapper> createState() => _InventoryItemInteractionWrapperState();
+}
+
+class _InventoryItemInteractionWrapperState extends State<InventoryItemInteractionWrapper> {
+  Timer? _hoverTimer;
+
+  @override
+  void dispose() {
+    _hoverTimer?.cancel();
+    super.dispose();
+  }
+
+  void _cancelHoverTimer() {
+    _hoverTimer?.cancel();
+    _hoverTimer = null;
+  }
+
+  void _startHoverTimer(String primaryId) {
+    if (_hoverTimer != null) return;
+    _hoverTimer = Timer(const Duration(milliseconds: 600), () {
+      _hoverTimer = null;
+      if (mounted) {
+        widget.onHoverSpringLoaded?.call(primaryId);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primaryId = group.primaryEntity.id;
+    final primaryId = widget.group.primaryEntity.id;
 
-    Widget content = child;
+    Widget content = widget.child;
 
     // 1. If this item is a container (target of GUARDADO_EN), wrap it with DragTarget
-    if (isContainer) {
+    if (widget.isContainer) {
       content = DragTarget<Object>(
         onWillAcceptWithDetails: (details) {
           final data = details.data;
-          if (data == group || data == primaryId) return false;
+          if (data == widget.group || data == primaryId) return false;
           if (data is EffectiveEntityGroup && data.primaryEntity.id == primaryId) return false;
           if (data is WorldEntity && data.id == primaryId) return false;
           if (data is List<String> && data.contains(primaryId)) return false;
           return true;
         },
+        onMove: (details) {
+          if (widget.onHoverSpringLoaded != null) {
+            _startHoverTimer(primaryId);
+          }
+        },
+        onLeave: (data) {
+          _cancelHoverTimer();
+        },
         onAcceptWithDetails: (details) {
-          onDropIntoContainer(details.data, primaryId);
+          _cancelHoverTimer();
+          widget.onDropIntoContainer(details.data, primaryId);
         },
         builder: (context, candidateData, rejectedData) {
           final isHovered = candidateData.isNotEmpty;
@@ -57,17 +97,17 @@ class InventoryItemInteractionWrapper extends StatelessWidget {
               color: isHovered ? theme.colorScheme.primaryContainer.withAlpha(140) : Colors.transparent,
               border: isHovered ? Border.all(color: theme.colorScheme.primary, width: 2.0) : null,
             ),
-            child: child,
+            child: widget.child,
           );
         },
       );
     }
 
     // 2. Wrap with LongPressDraggable for dragging items or batches
-    if (!isSelectionMode) {
+    if (!widget.isSelectionMode) {
       // Normal Mode: Drag the group
       return LongPressDraggable<Object>(
-        data: group,
+        data: widget.group,
         feedback: Material(
           elevation: 10,
           borderRadius: BorderRadius.circular(16),
@@ -80,7 +120,7 @@ class InventoryItemInteractionWrapper extends StatelessWidget {
                 Icon(Icons.inventory_2, size: 20, color: theme.colorScheme.onPrimaryContainer),
                 const SizedBox(width: 8),
                 Text(
-                  'Arrastrando ${group.population} unidad(es)',
+                  'Arrastrando ${widget.group.population} unidad(es)',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onPrimaryContainer,
@@ -96,9 +136,9 @@ class InventoryItemInteractionWrapper extends StatelessWidget {
     }
 
     // Selection Mode: Drag selected items batch if this item is selected
-    if (isSelected && selectedEntityIds.isNotEmpty) {
+    if (widget.isSelected && widget.selectedEntityIds.isNotEmpty) {
       return LongPressDraggable<Object>(
-        data: selectedEntityIds.toList(),
+        data: widget.selectedEntityIds.toList(),
         feedback: Material(
           elevation: 10,
           borderRadius: BorderRadius.circular(16),
@@ -111,7 +151,7 @@ class InventoryItemInteractionWrapper extends StatelessWidget {
                 Icon(Icons.checklist, size: 20, color: theme.colorScheme.onPrimaryContainer),
                 const SizedBox(width: 8),
                 Text(
-                  'Arrastrando ${selectedEntityIds.length} elementos seleccionados',
+                  'Arrastrando ${widget.selectedEntityIds.length} elementos seleccionados',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onPrimaryContainer,

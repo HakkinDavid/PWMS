@@ -17,6 +17,8 @@ import '../../locations/presentation/top_curtain_location_sheet.dart';
 import '../../relations/domain/entity_relation.dart';
 import 'inventory_item_interaction_wrapper.dart';
 
+import '../../entities/presentation/instance_preview_card.dart';
+import '../../locations/domain/location_node.dart';
 import '../../locations/infrastructure/location_repository.dart';
 
 enum FinderViewMode { detailedList, minecraftGrid }
@@ -42,8 +44,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   String _selectedTypeFilter = AppStrings.all;
   FinderViewMode _viewMode = FinderViewMode.detailedList;
 
-  // Set of expanded container entity IDs for inline container stacking (Point 1)
-  final Set<String> _expandedContainerEntityIds = {};
+  final List<String> _containerPath = [];
 
   late final ScrollController _scrollController;
   Timer? _autoScrollTimer;
@@ -143,7 +144,16 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (entityIds.isEmpty) return;
 
     final repo = ref.read(entityRepositoryProvider);
+    final relationRepo = ref.read(relationRepositoryProvider);
+    final allRels = await relationRepo.getAllRelations();
+
     for (final id in entityIds) {
+      final existingInheriting = allRels.where((r) =>
+        r.sourceEntityId == id && (r.relationType == 'GUARDADO_EN' || r.relationType == 'PARTE_DE')
+      ).toList();
+      for (final rel in existingInheriting) {
+        await relationRepo.deleteRelation(rel.id);
+      }
       await repo.moveEntity(id, targetLocId);
     }
 
@@ -190,14 +200,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   void _handleItemTap(EffectiveEntityGroup grp, bool isContainer) {
     if (_isSelectionMode) {
       _toggleSelection(grp.primaryEntity.id);
-    } else if (isContainer && _viewMode == FinderViewMode.detailedList) {
+    } else if (isContainer) {
       setState(() {
-        final id = grp.primaryEntity.id;
-        if (_expandedContainerEntityIds.contains(id)) {
-          _expandedContainerEntityIds.remove(id);
-        } else {
-          _expandedContainerEntityIds.add(id);
-        }
+        _containerPath.add(grp.primaryEntity.id);
       });
     } else if (grp.population == 1) {
       context.pushEntityDetail(grp.primaryEntity.id);
@@ -253,10 +258,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final allEntities = entitiesState.asData?.value ?? [];
     final relations = relationsState.asData?.value ?? [];
 
-    // Map catalog items by ID
+    // Map catalog items and entities by ID
     final catalogMap = {for (var c in catalogItems) c.id: c};
+    final allEntitiesMap = {for (var e in allEntities) e.id: e};
 
-    // Build GUARDADO_EN relations container map (Point 1)
+    // Build GUARDADO_EN relations container map
     final guardadoEnRelations = relations.where((r) => r.relationType == 'GUARDADO_EN').toList();
     final Set<String> containedEntityIds = guardadoEnRelations.map((r) => r.sourceEntityId).toSet();
     final Map<String, List<String>> containerChildrenMap = {};
@@ -277,180 +283,447 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       }
     }
 
-    // Filter by type
-    if (_selectedTypeFilter != AppStrings.all) {
-      filteredEntities = filteredEntities.where((e) {
-        final species = catalogMap[e.speciesId];
-        return species?.type == _selectedTypeFilter;
-      }).toList();
+    // Grouping container IDs set
+    final groupsContainerEntityIds = relations.where((r) => r.relationType == 'GUARDADO_EN').map((r) => r.targetEntityId).toSet();
+
+    // Determine current level groups based on Drill-Down container path
+    final List<EffectiveEntityGroup> currentGroups;
+    final WorldEntity? activeContainerEntity;
+    final CatalogItem? activeContainerSpecies;
+
+    if (_containerPath.isNotEmpty) {
+      final activeContainerId = _containerPath.last;
+      activeContainerEntity = allEntitiesMap[activeContainerId];
+      activeContainerSpecies = activeContainerEntity != null ? catalogMap[activeContainerEntity.speciesId] : null;
+
+      final directChildIds = containerChildrenMap[activeContainerId] ?? <String>[];
+      var childEntities = directChildIds.map((id) => allEntitiesMap[id]).whereType<WorldEntity>().toList();
+
+      if (_selectedTypeFilter != AppStrings.all) {
+        childEntities = childEntities.where((e) {
+          final species = catalogMap[e.speciesId];
+          return species?.type == _selectedTypeFilter;
+        }).toList();
+      }
+
+      currentGroups = EffectiveEntityGroup.groupEntities(
+        entities: childEntities,
+        effectiveLocationMap: {for (var e in childEntities) e.id: activeContainerEntity?.locationId},
+        containerEntityIds: groupsContainerEntityIds,
+      );
+    } else {
+      activeContainerEntity = null;
+      activeContainerSpecies = null;
+
+      var topLevelEntities = filteredEntities.where((e) => !containedEntityIds.contains(e.id)).toList();
+
+      if (_selectedTypeFilter != AppStrings.all) {
+        topLevelEntities = topLevelEntities.where((e) {
+          final species = catalogMap[e.speciesId];
+          return species?.type == _selectedTypeFilter;
+        }).toList();
+      }
+
+      currentGroups = EffectiveEntityGroup.groupEntities(
+        entities: topLevelEntities,
+        effectiveLocationMap: {for (var e in topLevelEntities) e.id: e.locationId},
+        containerEntityIds: groupsContainerEntityIds,
+      );
     }
 
-    // Separate Top-Level entities from Contained entities (Point 1)
-    final topLevelEntities = filteredEntities.where((e) => !containedEntityIds.contains(e.id)).toList();
-
-    // Group Top-Level entities into effective groups
-    final groupsContainerEntityIds = relations.where((r) => r.relationType == 'GUARDADO_EN').map((r) => r.targetEntityId).toSet();
-    final topGroups = EffectiveEntityGroup.groupEntities(
-      entities: topLevelEntities,
-      effectiveLocationMap: {for (var e in topLevelEntities) e.id: e.locationId},
-      containerEntityIds: groupsContainerEntityIds,
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inventario'),
-        actions: [
-          // 2-Way View Mode Switcher
-          IconButton(
-            icon: Icon(
-              _viewMode == FinderViewMode.detailedList
-                  ? Icons.view_list
-                  : Icons.apps,
+    return PopScope(
+      canPop: _containerPath.isEmpty,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && _containerPath.isNotEmpty) {
+          setState(() {
+            _containerPath.removeLast();
+          });
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_containerPath.isNotEmpty ? (activeContainerSpecies?.name ?? 'Contenedor') : 'Inventario'),
+          leading: _containerPath.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  tooltip: 'Subir nivel',
+                  onPressed: () => setState(() => _containerPath.removeLast()),
+                )
+              : null,
+          actions: [
+            // 2-Way View Mode Switcher
+            IconButton(
+              icon: Icon(
+                _viewMode == FinderViewMode.detailedList
+                    ? Icons.view_list
+                    : Icons.apps,
+              ),
+              tooltip: AppStrings.toggleViewModeTooltip,
+              onPressed: () {
+                setState(() {
+                  if (_viewMode == FinderViewMode.detailedList) {
+                    _viewMode = FinderViewMode.minecraftGrid;
+                  } else {
+                    _viewMode = FinderViewMode.detailedList;
+                  }
+                });
+              },
             ),
-            tooltip: AppStrings.toggleViewModeTooltip,
-            onPressed: () {
-              setState(() {
-                if (_viewMode == FinderViewMode.detailedList) {
-                  _viewMode = FinderViewMode.minecraftGrid;
-                } else {
-                  _viewMode = FinderViewMode.detailedList;
-                }
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(_isSelectionMode ? Icons.check_box : Icons.select_all),
-            tooltip: _isSelectionMode ? AppStrings.cancelSelectionTooltip : AppStrings.multipleSelectionTooltip,
-            onPressed: () {
-              setState(() {
-                _isSelectionMode = !_isSelectionMode;
-                _selectedEntityIds.clear();
-              });
-            },
-          ),
-        ],
-      ),
+            IconButton(
+              icon: Icon(_isSelectionMode ? Icons.check_box : Icons.select_all),
+              tooltip: _isSelectionMode ? AppStrings.cancelSelectionTooltip : AppStrings.multipleSelectionTooltip,
+              onPressed: () {
+                setState(() {
+                  _isSelectionMode = !_isSelectionMode;
+                  _selectedEntityIds.clear();
+                });
+              },
+            ),
+          ],
+        ),
 
-      // Single Round FAB '+'
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: (_isSelectionMode && _selectedEntityIds.isNotEmpty) ? 60.0 : 0.0),
-        child: FloatingActionButton(
-          heroTag: null,
-          onPressed: () => RegisterObjectModal.show(context, initialLocationId: _selectedLocationId),
-          tooltip: 'Crear o Instanciar',
-          child: const Icon(Icons.add),
+        // Single Round FAB '+'
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(bottom: (_isSelectionMode && _selectedEntityIds.isNotEmpty) ? 60.0 : 0.0),
+          child: FloatingActionButton(
+            heroTag: null,
+            onPressed: () => RegisterObjectModal.show(context, initialLocationId: _selectedLocationId),
+            tooltip: 'Crear o Instanciar',
+            child: const Icon(Icons.add),
+          ),
+        ),
+
+        body: Column(
+          children: [
+            // Top Curtain Location Sheet & Breadcrumb Route Bar (only on root level)
+            if (_containerPath.isEmpty)
+              TopCurtainLocationSheet(
+                allLocations: locationNodes,
+                selectedLocationId: _selectedLocationId,
+                initiallyExpanded: widget.startWithCurtainOpen,
+                onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
+                onDropOnLocation: (payload, targetLocId) {
+                  if (payload is List<String>) {
+                    _moveEntitiesToLocation(payload, targetLocId);
+                  } else if (payload is EffectiveEntityGroup) {
+                    final ids = payload.entities.map((e) => e.id).toList();
+                    _moveEntitiesToLocation(ids, targetLocId);
+                  } else if (payload is WorldEntity) {
+                    _moveEntitiesToLocation([payload.id], targetLocId);
+                  }
+                },
+              ),
+
+            // Active Container Header (Breadcrumbs + Hero Tile of active container)
+            if (_containerPath.isNotEmpty && activeContainerEntity != null)
+              _buildActiveContainerHeader(
+                context: context,
+                activeContainerEntity: activeContainerEntity,
+                activeContainerSpecies: activeContainerSpecies,
+                locationNodes: locationNodes,
+                catalogMap: catalogMap,
+                allEntitiesMap: allEntitiesMap,
+                theme: theme,
+              ),
+
+            // Filter Chips Row
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Row(
+                children: _filters.map((f) {
+                  final isSel = _selectedTypeFilter == f;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: FilterChip(
+                      label: Text(f, style: const TextStyle(fontSize: 11)),
+                      selected: isSel,
+                      onSelected: (val) {
+                        if (val) setState(() => _selectedTypeFilter = f);
+                      },
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            const Divider(height: 1),
+
+            // Main Inventory Content (Root or Contained items)
+            Expanded(
+              child: currentGroups.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
+                          const SizedBox(height: 12),
+                          Text(
+                            _containerPath.isNotEmpty
+                                ? 'Este contenedor está vacío.\nArrastra elementos aquí para guardarlos.'
+                                : 'No hay elementos en esta ubicación.',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+                          ),
+                        ],
+                      ),
+                    )
+                  : _buildInventoryContent(currentGroups, catalogMap, containerChildrenMap, allEntities),
+            ),
+
+            // Floating Bulk Actions Bar
+            if (_isSelectionMode && _selectedEntityIds.isNotEmpty)
+              SafeArea(
+                top: false,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  color: theme.colorScheme.primaryContainer,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${_selectedEntityIds.length} seleccionado(s)',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.drive_file_move_outlined),
+                            tooltip: 'Mover Selección',
+                            onPressed: () async {
+                              final res = await LocationTreePicker.show(context);
+                              if (res != null) {
+                                await _moveEntitiesToLocation(_selectedEntityIds.toList(), res.locationId);
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                            tooltip: 'Eliminar Selección',
+                            onPressed: _deleteSelectedEntities,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
+    );
+  }
 
-      body: Column(
+  Widget _buildActiveContainerHeader({
+    required BuildContext context,
+    required WorldEntity activeContainerEntity,
+    required CatalogItem? activeContainerSpecies,
+    required List<LocationNode> locationNodes,
+    required Map<String, CatalogItem> catalogMap,
+    required Map<String, WorldEntity> allEntitiesMap,
+    required ThemeData theme,
+  }) {
+    final rootLocationName = _selectedLocationId == null
+        ? 'Todas las Ubicaciones'
+        : (locationNodes.where((l) => l.id == _selectedLocationId).firstOrNull?.name ?? 'Ubicación');
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.colorScheme.primary.withAlpha(60), width: 1.2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Top Curtain Location Sheet & Breadcrumb Route Bar
-          TopCurtainLocationSheet(
-            allLocations: locationNodes,
-            selectedLocationId: _selectedLocationId,
-            initiallyExpanded: widget.startWithCurtainOpen,
-            onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
-            onDropOnLocation: (payload, targetLocId) {
-              if (payload is List<String>) {
-                _moveEntitiesToLocation(payload, targetLocId);
-              } else if (payload is EffectiveEntityGroup) {
-                final ids = payload.entities.map((e) => e.id).toList();
-                _moveEntitiesToLocation(ids, targetLocId);
-              } else if (payload is WorldEntity) {
-                _moveEntitiesToLocation([payload.id], targetLocId);
-              }
-            },
-          ),
-
-          // Filter Chips Row
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          // 1. Breadcrumbs Trail Bar with Drop Targets
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: Row(
-              children: _filters.map((f) {
-                final isSel = _selectedTypeFilter == f;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: FilterChip(
-                    label: Text(f, style: const TextStyle(fontSize: 11)),
-                    selected: isSel,
-                    onSelected: (val) {
-                      if (val) setState(() => _selectedTypeFilter = f);
-                    },
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        // Root Breadcrumb (Drop target to move to location)
+                        DragTarget<Object>(
+                          onWillAcceptWithDetails: (details) => true,
+                          onAcceptWithDetails: (details) {
+                            final data = details.data;
+                            if (data is List<String>) {
+                              _moveEntitiesToLocation(data, _selectedLocationId);
+                            } else if (data is EffectiveEntityGroup) {
+                              _moveEntitiesToLocation(data.entities.map((e) => e.id).toList(), _selectedLocationId);
+                            } else if (data is WorldEntity) {
+                              _moveEntitiesToLocation([data.id], _selectedLocationId);
+                            }
+                          },
+                          builder: (context, candidateData, rejectedData) {
+                            final isHovered = candidateData.isNotEmpty;
+                            return InkWell(
+                              onTap: () => setState(() => _containerPath.clear()),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: isHovered
+                                      ? theme.colorScheme.primaryContainer
+                                      : theme.colorScheme.surface.withAlpha(120),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: isHovered ? theme.colorScheme.primary : theme.dividerColor.withAlpha(60),
+                                    width: isHovered ? 1.5 : 1.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.home_outlined, size: 14, color: theme.colorScheme.primary),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      rootLocationName,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+
+                        // Ancestor Breadcrumbs
+                        for (int i = 0; i < _containerPath.length; i++) ...[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4),
+                            child: Icon(Icons.chevron_right, size: 16, color: Colors.grey),
+                          ),
+                          Builder(
+                            builder: (context) {
+                              final cId = _containerPath[i];
+                              final isCurrent = i == _containerPath.length - 1;
+                              final cEnt = allEntitiesMap[cId];
+                              final cSpecies = catalogMap[cEnt?.speciesId];
+                              final cTitle = cSpecies?.name ?? 'Contenedor';
+
+                              if (isCurrent) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary.withAlpha(25),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: theme.colorScheme.primary.withAlpha(100), width: 1.0),
+                                  ),
+                                  child: Text(
+                                    cTitle,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return DragTarget<Object>(
+                                onWillAcceptWithDetails: (details) => true,
+                                onAcceptWithDetails: (details) {
+                                  final data = details.data;
+                                  if (data is List<String>) {
+                                    _moveEntitiesToContainer(data, cId);
+                                  } else if (data is EffectiveEntityGroup) {
+                                    _moveEntitiesToContainer(data.entities.map((e) => e.id).toList(), cId);
+                                  } else if (data is WorldEntity) {
+                                    _moveEntitiesToContainer([data.id], cId);
+                                  }
+                                },
+                                builder: (context, candidateData, rejectedData) {
+                                  final isHovered = candidateData.isNotEmpty;
+                                  return InkWell(
+                                    onTap: () => setState(() => _containerPath.removeRange(i + 1, _containerPath.length)),
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: isHovered
+                                            ? theme.colorScheme.primaryContainer
+                                            : theme.colorScheme.surface.withAlpha(120),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: isHovered ? theme.colorScheme.primary : theme.dividerColor.withAlpha(60),
+                                          width: isHovered ? 1.5 : 1.0,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        cTitle,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
-                );
-              }).toList(),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 20),
+                  tooltip: 'Salir a la raíz',
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => setState(() => _containerPath.clear()),
+                ),
+              ],
             ),
           ),
           const Divider(height: 1),
 
-          // Main Inventory Content with Container Stacking & Drag Logic
-          Expanded(
-            child: topGroups.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
-                        const SizedBox(height: 12),
-                        const Text('No hay elementos en esta ubicación.'),
-                      ],
-                    ),
-                  )
-                : _buildInventoryContent(topGroups, catalogMap, containerChildrenMap, allEntities),
-          ),
-
-          // Floating Bulk Actions Bar
-          if (_isSelectionMode && _selectedEntityIds.isNotEmpty)
-            SafeArea(
-              top: false,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                color: theme.colorScheme.primaryContainer,
+          // 2. Active Container Hero Tile (taps open EntityDetailScreen)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InstancePreviewCard(
+              entity: activeContainerEntity,
+              onTap: () => context.pushEntityDetail(activeContainerEntity.id),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withAlpha(30),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    Icon(Icons.touch_app, size: 12, color: theme.colorScheme.primary),
+                    const SizedBox(width: 4),
                     Text(
-                      '${_selectedEntityIds.length} seleccionado(s)',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.drive_file_move_outlined),
-                          tooltip: 'Mover Selección',
-                          onPressed: () async {
-                            final res = await LocationTreePicker.show(context);
-                            if (res != null) {
-                              await _moveEntitiesToLocation(_selectedEntityIds.toList(), res.locationId);
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                          tooltip: 'Eliminar Selección',
-                          onPressed: _deleteSelectedEntities,
-                        ),
-                      ],
+                      'Ver Ficha',
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                     ),
                   ],
                 ),
               ),
             ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildInventoryContent(
-    List<EffectiveEntityGroup> topGroups,
+    List<EffectiveEntityGroup> currentGroups,
     Map<String, CatalogItem> catalogMap,
     Map<String, List<String>> containerChildrenMap,
     List<WorldEntity> allEntities,
   ) {
-    final theme = Theme.of(context);
-    final allEntitiesMap = {for (var e in allEntities) e.id: e};
-
     Widget content;
 
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84.0;
@@ -466,9 +739,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           mainAxisSpacing: 12,
           childAspectRatio: 1.0,
         ),
-        itemCount: topGroups.length,
+        itemCount: currentGroups.length,
         itemBuilder: (ctx, idx) {
-          final grp = topGroups[idx];
+          final grp = currentGroups[idx];
           final primary = grp.primaryEntity;
           final species = catalogMap[grp.speciesId];
           final isSelected = _selectedEntityIds.contains(primary.id);
@@ -487,6 +760,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             isContainer: isContainer,
             onTap: () => _handleItemTap(grp, isContainer),
             onDropIntoContainer: _handleDropIntoContainer,
+            onHoverSpringLoaded: (targetContainerId) {
+              if (!_containerPath.contains(targetContainerId)) {
+                setState(() => _containerPath.add(targetContainerId));
+              }
+            },
             child: MinecraftTileWidget(
               group: grp,
               title: species?.name ?? AppStrings.typeObject,
@@ -501,13 +779,13 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         },
       );
     } else {
-      // Detailed List Mode with Container Stacking
+      // Detailed List Mode
       content = ListView.builder(
         controller: _scrollController,
         padding: EdgeInsets.only(left: 12, right: 12, top: 12, bottom: bottomClearance),
-        itemCount: topGroups.length,
+        itemCount: currentGroups.length,
         itemBuilder: (ctx, idx) {
-          final grp = topGroups[idx];
+          final grp = currentGroups[idx];
           final primary = grp.primaryEntity;
           final primaryId = primary.id;
           final isSelected = _selectedEntityIds.contains(primaryId);
@@ -517,40 +795,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               .toSet()
               .toList();
           final isContainer = containedIds.isNotEmpty;
-          final isExpanded = _expandedContainerEntityIds.contains(primaryId);
-
-          Widget tileWidget = EffectiveGroupTile(
-            group: grp,
-            isSelected: isSelected,
-            isSelectionMode: _isSelectionMode,
-            onTap: () => _handleItemTap(grp, isContainer),
-          );
-
-          // Container Stack Items: First tap expands/collapses, recursive subtree
-          if (isContainer && isExpanded) {
-            tileWidget = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                tileWidget,
-                Padding(
-                  padding: const EdgeInsets.only(left: 28.0, top: 4.0, bottom: 8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
-                    ),
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: _buildContainerSubtree(
-                      parentGroup: grp,
-                      containerChildrenMap: containerChildrenMap,
-                      allEntitiesMap: allEntitiesMap,
-                      theme: theme,
-                      visited: {for (var e in grp.entities) e.id},
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
 
           return InventoryItemInteractionWrapper(
             group: grp,
@@ -560,7 +804,17 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             isContainer: isContainer,
             onTap: () => _handleItemTap(grp, isContainer),
             onDropIntoContainer: _handleDropIntoContainer,
-            child: tileWidget,
+            onHoverSpringLoaded: (targetContainerId) {
+              if (!_containerPath.contains(targetContainerId)) {
+                setState(() => _containerPath.add(targetContainerId));
+              }
+            },
+            child: EffectiveGroupTile(
+              group: grp,
+              isSelected: isSelected,
+              isSelectionMode: _isSelectionMode,
+              onTap: () => _handleItemTap(grp, isContainer),
+            ),
           );
         },
       );
@@ -575,100 +829,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           child: content,
         );
       },
-    );
-  }
-
-  Widget _buildContainerSubtree({
-    required EffectiveEntityGroup parentGroup,
-    required Map<String, List<String>> containerChildrenMap,
-    required Map<String, WorldEntity> allEntitiesMap,
-    required ThemeData theme,
-    required Set<String> visited,
-  }) {
-    final containedIds = parentGroup.entities
-        .expand((e) => containerChildrenMap[e.id] ?? <String>[])
-        .where((id) => !visited.contains(id))
-        .toSet()
-        .toList();
-
-    if (containedIds.isEmpty) return const SizedBox.shrink();
-
-    final containedEntitiesList = containedIds
-        .map((cId) => allEntitiesMap[cId])
-        .whereType<WorldEntity>()
-        .toList();
-
-    if (containedEntitiesList.isEmpty) return const SizedBox.shrink();
-
-    for (final e in containedEntitiesList) {
-      visited.add(e.id);
-    }
-
-    final containedGroups = EffectiveEntityGroup.groupEntities(
-      entities: containedEntitiesList,
-      effectiveLocationMap: {for (var e in containedEntitiesList) e.id: parentGroup.effectiveLocationId},
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: containedGroups.map((cGrp) {
-        final cPrimaryId = cGrp.primaryEntity.id;
-        final cContainedIds = cGrp.entities
-            .expand((e) => containerChildrenMap[e.id] ?? <String>[])
-            .where((id) => !visited.contains(id))
-            .toSet()
-            .toList();
-
-        final cIsContainer = cContainedIds.isNotEmpty;
-        final cIsExpanded = _expandedContainerEntityIds.contains(cPrimaryId);
-        final cIsSelected = _selectedEntityIds.contains(cPrimaryId);
-
-        Widget cTile = EffectiveGroupTile(
-          group: cGrp,
-          isSelected: cIsSelected,
-          isSelectionMode: _isSelectionMode,
-          onTap: () => _handleItemTap(cGrp, cIsContainer),
-        );
-
-        if (cIsContainer && cIsExpanded) {
-          cTile = Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              cTile,
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, top: 4.0, bottom: 6.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(left: BorderSide(color: theme.colorScheme.primary.withAlpha(100), width: 2.0)),
-                  ),
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: _buildContainerSubtree(
-                    parentGroup: cGrp,
-                    containerChildrenMap: containerChildrenMap,
-                    allEntitiesMap: allEntitiesMap,
-                    theme: theme,
-                    visited: Set.from(visited),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
-
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: InventoryItemInteractionWrapper(
-            group: cGrp,
-            isSelected: cIsSelected,
-            isSelectionMode: _isSelectionMode,
-            selectedEntityIds: _selectedEntityIds,
-            isContainer: cIsContainer,
-            onTap: () => _handleItemTap(cGrp, cIsContainer),
-            onDropIntoContainer: _handleDropIntoContainer,
-            child: cTile,
-          ),
-        );
-      }).toList(),
     );
   }
 }
