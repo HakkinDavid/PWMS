@@ -42,8 +42,10 @@ final appRouter = GoRouter(
               path: '/inventory',
               builder: (context, state) {
                 final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
+                final containerId = state.uri.queryParameters['containerId'];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
+                  initialContainerId: containerId,
                 );
               },
             ),
@@ -51,8 +53,10 @@ final appRouter = GoRouter(
               path: '/entities',
               builder: (context, state) {
                 final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
+                final containerId = state.uri.queryParameters['containerId'];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
+                  initialContainerId: containerId,
                 );
               },
             ),
@@ -60,9 +64,11 @@ final appRouter = GoRouter(
               path: '/locations',
               builder: (context, state) {
                 final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
+                final containerId = state.uri.queryParameters['containerId'];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
-                  startWithCurtainOpen: locId == null,
+                  initialContainerId: containerId,
+                  startWithCurtainOpen: locId == null && containerId == null,
                 );
               },
             ),

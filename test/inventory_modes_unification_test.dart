@@ -16,7 +16,9 @@ import 'package:platinum_world_management_system/src/features/entities/domain/wo
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/effective_group_tile.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/entity_photo_thumbnail.dart';
+import 'package:platinum_world_management_system/src/features/entities/presentation/instance_preview_card.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/minecraft_tile_widget.dart';
+import 'package:platinum_world_management_system/src/features/home/presentation/inventory_breadcrumb_bar.dart';
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_finder_screen.dart';
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_item_interaction_wrapper.dart';
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
@@ -530,21 +532,33 @@ void main() {
       await tester.tap(find.byType(EffectiveGroupTile));
       await tester.pumpAndSettle();
 
-      // Inside container: Active Container Hero Tile is displayed in the header with "Ver Ficha"
-      expect(find.text('Ver Ficha'), findsOneWidget);
+      // Inside container: Active Container Hero Tile (InstancePreviewCard) is displayed in the header
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsOneWidget,
+      );
 
       // Contained item 'Moneda Antigua' is now displayed in the inventory
       expect(find.byType(EffectiveGroupTile), findsOneWidget);
 
-      // Tap on the root breadcrumb "Todos" to go back to root
-      final rootBreadcrumb = find.text(AppStrings.all);
+      // Tap on the root breadcrumb "Mundo" to go back to root
+      final rootBreadcrumb = find.text(AppStrings.rootLocationName);
       expect(rootBreadcrumb, findsWidgets);
       await tester.tap(rootBreadcrumb.first);
       await tester.pumpAndSettle();
 
-      // Back at root: 'Caja Fuerte' is shown, 'Ver Ficha' header is closed
+      // Back at root: 'Caja Fuerte' is shown, hero tile in breadcrumb bar is closed
       expect(find.byType(EffectiveGroupTile), findsOneWidget);
-      expect(find.text('Ver Ficha'), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('8. Drill-Down in Minecraft Grid mode: tapping container enters grid of contents with top hero tile', (tester) async {
@@ -600,18 +614,30 @@ void main() {
       await tester.tap(find.byType(MinecraftTileWidget));
       await tester.pumpAndSettle();
 
-      // Inside bag: Top bar has container hero tile with "Ver Ficha"
-      expect(find.text('Ver Ficha'), findsOneWidget);
+      // Inside bag: Top bar has container hero tile (InstancePreviewCard)
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsOneWidget,
+      );
 
       // Grid inside bag contains MinecraftTileWidget for the tool
       expect(find.byType(MinecraftTileWidget), findsOneWidget);
 
-      // Tap back button
+      // Tap back button in AppBar
       await tester.tap(find.byTooltip('Subir nivel'));
       await tester.pumpAndSettle();
 
       // Returned to root
-      expect(find.text('Ver Ficha'), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('9. Dropping an item onto blank canvas or Active Container Hero Tile inside container saves it into container', (tester) async {
@@ -660,11 +686,17 @@ void main() {
       await tester.tap(find.byType(EffectiveGroupTile));
       await tester.pumpAndSettle();
 
-      expect(find.text('Ver Ficha'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsOneWidget,
+      );
 
       // Verify the Active Container Hero Tile is a DragTarget
-      final heroTileDragTarget = find.ancestor(
-        of: find.text('Ver Ficha'),
+      final heroTileDragTarget = find.descendant(
+        of: find.byType(InventoryBreadcrumbBar),
         matching: find.byType(DragTarget<Object>),
       );
       expect(heroTileDragTarget, findsWidgets);
@@ -716,15 +748,21 @@ void main() {
       await tester.tap(find.byType(EffectiveGroupTile));
       await tester.pumpAndSettle();
 
-      expect(find.text('Ver Ficha'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsOneWidget,
+      );
 
       // Start drag gesture on key item inside chest
       final itemTile = find.byType(EffectiveGroupTile);
       final gesture = await tester.startGesture(tester.getCenter(itemTile));
       await tester.pump(const Duration(milliseconds: 600));
 
-      // Move drag over the root breadcrumb "Todos"
-      final rootBreadcrumb = find.text(AppStrings.all).first;
+      // Move drag over the root breadcrumb "Mundo"
+      final rootBreadcrumb = find.text(AppStrings.rootLocationName).first;
       await gesture.moveTo(tester.getCenter(rootBreadcrumb));
       await tester.pump();
 
@@ -732,12 +770,80 @@ void main() {
       await tester.pump(const Duration(milliseconds: 650));
       await tester.pumpAndSettle();
 
-      // We should now have navigated back to root (Ver Ficha is gone) even while drag gesture is still active!
-      expect(find.text('Ver Ficha'), findsNothing);
+      // We should now have navigated back to root (hero card is gone) even while drag gesture is still active!
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsNothing,
+      );
 
       await gesture.up();
       await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('11. Dropping item onto same container or origin location is discarded without redundant writes', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final boxSpecies = CatalogItem(id: 'sp-box-discard', name: 'Caja Fuerte', type: 'Objeto', createdAt: now);
+      final ringSpecies = CatalogItem(id: 'sp-ring-discard', name: 'Anillo', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(boxSpecies);
+      await catalogRepo.saveCatalogItem(ringSpecies);
+
+      final boxEntity = WorldEntity(id: 'ent-box-disc', speciesId: boxSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final ringEntity = WorldEntity(id: 'ent-ring-disc', speciesId: ringSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(boxEntity);
+      await entityRepo.saveEntity(ringEntity);
+
+      await relationRepo.addRelation(EntityRelation(
+        id: 'rel-ring-in-box',
+        sourceEntityId: ringEntity.id,
+        targetEntityId: boxEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      ));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Drill down into boxEntity
+      await tester.tap(find.byType(EffectiveGroupTile));
+      await tester.pumpAndSettle();
+
+      final initialRelCount = (await relationRepo.getAllRelations()).length;
+
+      // Drag ring and drop it on the canvas of the same box
+      final itemTile = find.byType(EffectiveGroupTile);
+      final gesture = await tester.startGesture(tester.getCenter(itemTile));
+      await tester.pump(const Duration(milliseconds: 600));
+      await gesture.moveBy(const Offset(0, 100));
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      // Relation count should be unchanged
+      final afterRelCount = (await relationRepo.getAllRelations()).length;
+      expect(afterRelCount, equals(initialRelCount));
     });
   });
 }

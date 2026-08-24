@@ -25,11 +25,13 @@ enum FinderViewMode { detailedList, minecraftGrid }
 
 class InventoryFinderScreen extends ConsumerStatefulWidget {
   final String? initialLocationId;
+  final String? initialContainerId;
   final bool startWithCurtainOpen;
 
   const InventoryFinderScreen({
     super.key,
     this.initialLocationId,
+    this.initialContainerId,
     this.startWithCurtainOpen = false,
   });
 
@@ -44,7 +46,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   String _selectedTypeFilter = AppStrings.all;
   FinderViewMode _viewMode = FinderViewMode.detailedList;
 
-  final List<String> _containerPath = [];
+  List<String> _containerPath = [];
 
   late final ScrollController _scrollController;
   Timer? _autoScrollTimer;
@@ -53,6 +55,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   void initState() {
     super.initState();
     _selectedLocationId = widget.initialLocationId;
+    if (widget.initialContainerId != null && widget.initialContainerId!.isNotEmpty) {
+      _containerPath.add(widget.initialContainerId!);
+    }
     _scrollController = ScrollController();
   }
 
@@ -62,6 +67,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (widget.initialLocationId != oldWidget.initialLocationId) {
       setState(() {
         _selectedLocationId = widget.initialLocationId;
+      });
+    }
+    if (widget.initialContainerId != oldWidget.initialContainerId && widget.initialContainerId != null) {
+      setState(() {
+        _containerPath = [widget.initialContainerId!];
       });
     }
   }
@@ -76,30 +86,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   void _stopAutoScroll() {
     _autoScrollTimer?.cancel();
     _autoScrollTimer = null;
-  }
-
-  void _handlePointerMove(PointerMoveEvent event, BuildContext scrollableContext) {
-    final RenderBox? box = scrollableContext.findRenderObject() as RenderBox?;
-    if (box == null || !box.hasSize || !_scrollController.hasClients) return;
-
-    final boxOffset = box.localToGlobal(Offset.zero);
-    final topEdge = boxOffset.dy;
-    final bottomEdge = boxOffset.dy + box.size.height;
-    final pointerY = event.position.dy;
-
-    const double threshold = 80.0;
-
-    if (pointerY >= topEdge && pointerY <= topEdge + threshold) {
-      final ratio = 1.0 - ((pointerY - topEdge) / threshold).clamp(0.0, 1.0);
-      final step = -(8.0 + ratio * 18.0);
-      _startAutoScroll(step);
-    } else if (pointerY <= bottomEdge && pointerY >= bottomEdge - threshold) {
-      final ratio = 1.0 - ((bottomEdge - pointerY) / threshold).clamp(0.0, 1.0);
-      final step = (8.0 + ratio * 18.0);
-      _startAutoScroll(step);
-    } else {
-      _stopAutoScroll();
-    }
   }
 
   void _startAutoScroll(double step) {
@@ -146,8 +132,27 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final repo = ref.read(entityRepositoryProvider);
     final relationRepo = ref.read(relationRepositoryProvider);
     final allRels = await relationRepo.getAllRelations();
+    final allEntities = await repo.getAllEntities();
+    final entityMap = {for (var e in allEntities) e.id: e};
 
+    // Filter out entities that are already directly at targetLocId without containers
+    final idsToMove = <String>[];
     for (final id in entityIds) {
+      final ent = entityMap[id];
+      if (ent == null) continue;
+      final existingInheriting = allRels.where((r) =>
+        r.sourceEntityId == id && (r.relationType == 'GUARDADO_EN' || r.relationType == 'PARTE_DE')
+      ).toList();
+
+      if (existingInheriting.isEmpty && ent.locationId == targetLocId) {
+        continue; // Already directly in target location, skip!
+      }
+      idsToMove.add(id);
+    }
+
+    if (idsToMove.isEmpty) return;
+
+    for (final id in idsToMove) {
       final existingInheriting = allRels.where((r) =>
         r.sourceEntityId == id && (r.relationType == 'GUARDADO_EN' || r.relationType == 'PARTE_DE')
       ).toList();
@@ -160,7 +165,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     _refreshAllState();
 
     setState(() {
-      _selectedEntityIds.removeAll(entityIds);
+      _selectedEntityIds.removeAll(idsToMove);
       if (_selectedEntityIds.isEmpty) _isSelectionMode = false;
     });
 
@@ -173,9 +178,24 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (entityIds.isEmpty) return;
 
     final relationRepo = ref.read(relationRepositoryProvider);
+    final allRels = await relationRepo.getAllRelations();
 
+    // Filter out entities that are already inside targetContainerEntityId or self-containment
+    final idsToMove = <String>[];
     for (final sourceId in entityIds) {
-      if (sourceId == targetContainerEntityId) continue; // Prevent self-containment
+      if (sourceId == targetContainerEntityId) continue;
+      final isAlreadyInside = allRels.any((r) =>
+        r.sourceEntityId == sourceId &&
+        r.targetEntityId == targetContainerEntityId &&
+        r.relationType == 'GUARDADO_EN'
+      );
+      if (isAlreadyInside) continue; // Already directly inside target container, skip!
+      idsToMove.add(sourceId);
+    }
+
+    if (idsToMove.isEmpty) return;
+
+    for (final sourceId in idsToMove) {
       await relationRepo.addRelation(EntityRelation(
         id: '${sourceId}_$targetContainerEntityId',
         sourceEntityId: sourceId,
@@ -188,7 +208,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     _refreshAllState();
 
     setState(() {
-      _selectedEntityIds.removeAll(entityIds);
+      _selectedEntityIds.removeAll(idsToMove);
       if (_selectedEntityIds.isEmpty) _isSelectionMode = false;
     });
 
@@ -402,6 +422,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               containerPath: _containerPath,
               catalogMap: catalogMap,
               allEntitiesMap: allEntitiesMap,
+              allRelations: relations,
               initiallyExpanded: widget.startWithCurtainOpen,
               onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
               onDropOnLocation: (payload, targetLocId) {
@@ -450,42 +471,70 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             ),
             const Divider(height: 1),
 
-            // Main Inventory Content (Root or Contained items) wrapped in canvas DragTarget
+            // Main Inventory Content (Root or Contained items) wrapped in canvas DragTarget with edge autoscroll
             Expanded(
-              child: DragTarget<Object>(
-                onWillAcceptWithDetails: (details) => true,
-                onAcceptWithDetails: (details) {
-                  final ids = _extractPayloadIds(details.data);
-                  if (ids.isEmpty) return;
-                  if (_containerPath.isNotEmpty) {
-                    _moveEntitiesToContainer(ids, _containerPath.last);
-                  } else {
-                    _moveEntitiesToLocation(ids, _selectedLocationId);
-                  }
-                },
-                builder: (context, candidateData, rejectedData) {
-                  final isHovered = candidateData.isNotEmpty;
+              child: Builder(
+                builder: (canvasContext) {
+                  return DragTarget<Object>(
+                    onWillAcceptWithDetails: (details) => true,
+                    onMove: (details) {
+                      final RenderBox? box = canvasContext.findRenderObject() as RenderBox?;
+                      if (box == null || !box.hasSize || !_scrollController.hasClients) return;
+                      final boxOffset = box.localToGlobal(Offset.zero);
+                      final topEdge = boxOffset.dy;
+                      final bottomEdge = boxOffset.dy + box.size.height;
+                      final pointerY = details.offset.dy;
 
-                  return Container(
-                    color: isHovered ? theme.colorScheme.primary.withAlpha(15) : Colors.transparent,
-                    child: currentGroups.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
-                                const SizedBox(height: 12),
-                                Text(
-                                  _containerPath.isNotEmpty
-                                      ? 'Este contenedor está vacío.\nArrastra elementos aquí para guardarlos.'
-                                      : 'No hay elementos en esta ubicación.',
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+                      const double threshold = 60.0;
+
+                      if (pointerY >= topEdge && pointerY <= topEdge + threshold) {
+                        final ratio = 1.0 - ((pointerY - topEdge) / threshold).clamp(0.0, 1.0);
+                        final step = -(8.0 + ratio * 16.0);
+                        _startAutoScroll(step);
+                      } else if (pointerY <= bottomEdge && pointerY >= bottomEdge - threshold) {
+                        final ratio = 1.0 - ((bottomEdge - pointerY) / threshold).clamp(0.0, 1.0);
+                        final step = (8.0 + ratio * 16.0);
+                        _startAutoScroll(step);
+                      } else {
+                        _stopAutoScroll();
+                      }
+                    },
+                    onLeave: (_) => _stopAutoScroll(),
+                    onAcceptWithDetails: (details) {
+                      _stopAutoScroll();
+                      final ids = _extractPayloadIds(details.data);
+                      if (ids.isEmpty) return;
+                      if (_containerPath.isNotEmpty) {
+                        _moveEntitiesToContainer(ids, _containerPath.last);
+                      } else {
+                        _moveEntitiesToLocation(ids, _selectedLocationId);
+                      }
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      final isHovered = candidateData.isNotEmpty;
+
+                      return Container(
+                        color: isHovered ? theme.colorScheme.primary.withAlpha(15) : Colors.transparent,
+                        child: currentGroups.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      _containerPath.isNotEmpty
+                                          ? 'Este contenedor está vacío.\nArrastra elementos aquí para guardarlos.'
+                                          : 'No hay elementos en esta ubicación.',
+                                      textAlign: TextAlign.center,
+                                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          )
-                        : _buildInventoryContent(currentGroups, catalogMap, containerChildrenMap, allEntities),
+                              )
+                            : _buildInventoryContent(currentGroups, catalogMap, containerChildrenMap, allEntities),
+                      );
+                    },
                   );
                 },
               ),
@@ -518,9 +567,36 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                            icon: const Icon(Icons.delete_outline),
                             tooltip: 'Eliminar Selección',
-                            onPressed: _deleteSelectedEntities,
+                            onPressed: () async {
+                              final confirmed = await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Confirmar eliminación'),
+                                  content: Text('¿Eliminar ${_selectedEntityIds.length} elemento(s)?'),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.pop(ctx, true),
+                                      style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.error),
+                                      child: const Text(AppStrings.delete, style: TextStyle(color: Colors.white)),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirmed == true) {
+                                final repo = ref.read(entityRepositoryProvider);
+                                for (final id in _selectedEntityIds) {
+                                  await repo.deleteEntity(id);
+                                }
+                                _refreshAllState();
+                                setState(() {
+                                  _selectedEntityIds.clear();
+                                  _isSelectionMode = false;
+                                });
+                              }
+                            },
                           ),
                         ],
                       ),
@@ -551,13 +627,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     Map<String, List<String>> containerChildrenMap,
     List<WorldEntity> allEntities,
   ) {
-    Widget content;
-
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84.0;
 
     if (_viewMode == FinderViewMode.minecraftGrid) {
       // Minecraft Grid Mode
-      content = GridView.builder(
+      return GridView.builder(
         controller: _scrollController,
         padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: bottomClearance),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -607,7 +681,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       );
     } else {
       // Detailed List Mode
-      content = ListView.builder(
+      return ListView.builder(
         controller: _scrollController,
         padding: EdgeInsets.only(left: 12, right: 12, top: 12, bottom: bottomClearance),
         itemCount: currentGroups.length,
@@ -646,16 +720,5 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         },
       );
     }
-
-    return Builder(
-      builder: (contentContext) {
-        return Listener(
-          onPointerMove: (event) => _handlePointerMove(event, contentContext),
-          onPointerUp: (_) => _stopAutoScroll(),
-          onPointerCancel: (_) => _stopAutoScroll(),
-          child: content,
-        );
-      },
-    );
   }
 }

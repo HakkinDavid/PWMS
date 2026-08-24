@@ -14,19 +14,35 @@ extension AppNavigationExtension on BuildContext {
   /// Navega a la pestaña de Inicio.
   void goToHome() => go('/');
 
-  /// Navega a la pestaña de Inventario con o sin enfoque de ubicación específica.
-  void goToInventory({String? focusNodeId}) {
+  /// Navega a la pestaña de Inventario con o sin enfoque de ubicación específica o contenedor.
+  void goToInventory({String? focusNodeId, String? containerId}) {
+    final queryParams = <String, String>{};
     if (focusNodeId != null && focusNodeId.isNotEmpty) {
-      go('/inventory?focusNodeId=$focusNodeId');
+      queryParams['focusNodeId'] = focusNodeId;
+    }
+    if (containerId != null && containerId.isNotEmpty) {
+      queryParams['containerId'] = containerId;
+    }
+    if (queryParams.isNotEmpty) {
+      final uri = Uri(path: '/inventory', queryParameters: queryParams);
+      go(uri.toString());
     } else {
       go('/inventory');
     }
   }
 
   /// Navega a la pestaña de Ubicaciones (Inventario con cortina de ubicaciones abierta).
-  void goToLocations({String? focusNodeId}) {
+  void goToLocations({String? focusNodeId, String? containerId}) {
+    final queryParams = <String, String>{};
     if (focusNodeId != null && focusNodeId.isNotEmpty) {
-      go('/locations?focusNodeId=$focusNodeId');
+      queryParams['focusNodeId'] = focusNodeId;
+    }
+    if (containerId != null && containerId.isNotEmpty) {
+      queryParams['containerId'] = containerId;
+    }
+    if (queryParams.isNotEmpty) {
+      final uri = Uri(path: '/locations', queryParameters: queryParams);
+      go(uri.toString());
     } else {
       go('/locations');
     }

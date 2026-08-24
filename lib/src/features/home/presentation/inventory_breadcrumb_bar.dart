@@ -9,17 +9,21 @@ import '../../catalog/domain/catalog_item.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/instance_preview_card.dart';
 import '../../locations/domain/location_node.dart';
+import '../../locations/domain/location_resolver.dart';
 import '../../locations/infrastructure/location_repository.dart';
+import '../../relations/domain/entity_relation.dart';
 
 /// Unified navigation bar for the inventory.
-/// Integrates location breadcrumbs, drill-down container ancestry, spring-loaded navigation,
-/// an expandable location tree curtain, and the active container hero tile.
+/// Integrates full-width breadcrumbs (starting at Mundo), real physical path resolution,
+/// spring-loaded horizontal autoscroll, spring-loaded chevron & tree nodes with chevrons,
+/// and borderless active container hero tile without "Ver Ficha" badge.
 class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
   final List<LocationNode> allLocations;
   final String? selectedLocationId;
   final List<String> containerPath;
   final Map<String, CatalogItem> catalogMap;
   final Map<String, WorldEntity> allEntitiesMap;
+  final List<EntityRelation> allRelations;
   final ValueChanged<String?> onLocationSelected;
   final Function(Object payload, String? targetLocationId) onDropOnLocation;
   final Function(Object payload, String targetContainerEntityId) onDropIntoContainer;
@@ -34,6 +38,7 @@ class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
     required this.containerPath,
     required this.catalogMap,
     required this.allEntitiesMap,
+    this.allRelations = const [],
     required this.onLocationSelected,
     required this.onDropOnLocation,
     required this.onDropIntoContainer,
@@ -49,7 +54,12 @@ class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
 class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> with SingleTickerProviderStateMixin {
   late AnimationController _curtainController;
   late Animation<double> _curtainAnimation;
+  late ScrollController _breadcrumbScrollController;
   bool _isCurtainExpanded = false;
+
+  final Set<String> _expandedLocationIds = {};
+  Timer? _horizontalAutoScrollTimer;
+  Timer? _chevronSpringTimer;
 
   @override
   void initState() {
@@ -64,12 +74,33 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
       parent: _curtainController,
       curve: Curves.easeInOut,
     );
+    _breadcrumbScrollController = ScrollController();
   }
 
   @override
   void dispose() {
     _curtainController.dispose();
+    _breadcrumbScrollController.dispose();
+    _horizontalAutoScrollTimer?.cancel();
+    _chevronSpringTimer?.cancel();
     super.dispose();
+  }
+
+  void _stopHorizontalAutoScroll() {
+    _horizontalAutoScrollTimer?.cancel();
+    _horizontalAutoScrollTimer = null;
+  }
+
+  void _startHorizontalAutoScroll(double step) {
+    if (_horizontalAutoScrollTimer != null && _horizontalAutoScrollTimer!.isActive) return;
+    _horizontalAutoScrollTimer = Timer.periodic(const Duration(milliseconds: 20), (_) {
+      if (!_breadcrumbScrollController.hasClients) return;
+      final target = (_breadcrumbScrollController.offset + step).clamp(
+        0.0,
+        _breadcrumbScrollController.position.maxScrollExtent,
+      );
+      _breadcrumbScrollController.jumpTo(target);
+    });
   }
 
   void _toggleCurtain() {
@@ -135,13 +166,28 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
     );
   }
 
+  /// Resolves the real physical location ancestry.
+  /// If inside a container and selectedLocationId is null, resolves the container's physical location.
   List<LocationNode> _buildLocationAncestry() {
-    if (widget.selectedLocationId == null || widget.selectedLocationId == '__UNASSIGNED__') {
+    String? targetLocId = widget.selectedLocationId;
+
+    if (targetLocId == null && widget.containerPath.isNotEmpty) {
+      final rootContainerId = widget.containerPath.first;
+      final directLocations = {for (var e in widget.allEntitiesMap.values) e.id: e.locationId};
+      targetLocId = LocationResolver.getEffectiveLocationId(
+        entityId: rootContainerId,
+        directLocations: directLocations,
+        relations: widget.allRelations,
+      );
+    }
+
+    if (targetLocId == null || targetLocId == '__UNASSIGNED__') {
       return [];
     }
+
     final locMap = {for (var l in widget.allLocations) l.id: l};
     final ancestry = <LocationNode>[];
-    String? currId = widget.selectedLocationId;
+    String? currId = targetLocId;
     while (currId != null && locMap.containsKey(currId)) {
       final node = locMap[currId]!;
       ancestry.insert(0, node);
@@ -153,11 +199,29 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
   Widget _buildTreeItem(LocationNode node, int depth) {
     final children = widget.allLocations.where((l) => l.parentLocationId == node.id).toList();
     final isSelected = node.id == widget.selectedLocationId;
+    final isExpanded = _expandedLocationIds.contains(node.id);
     final theme = Theme.of(context);
+
+    Timer? nodeSpringTimer;
 
     return DragTarget<Object>(
       onWillAcceptWithDetails: (details) => true,
+      onMove: (_) {
+        if (children.isNotEmpty && !isExpanded && nodeSpringTimer == null) {
+          nodeSpringTimer = Timer(const Duration(milliseconds: 600), () {
+            if (mounted) {
+              setState(() => _expandedLocationIds.add(node.id));
+            }
+          });
+        }
+      },
+      onLeave: (_) {
+        nodeSpringTimer?.cancel();
+        nodeSpringTimer = null;
+      },
       onAcceptWithDetails: (details) {
+        nodeSpringTimer?.cancel();
+        nodeSpringTimer = null;
         widget.onDropOnLocation(details.data, node.id);
       },
       builder: (context, candidateData, rejectedData) {
@@ -166,7 +230,7 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
         return Column(
           children: [
             Container(
-              margin: EdgeInsets.only(left: depth * 16.0, top: 4, bottom: 4),
+              margin: EdgeInsets.only(left: depth * 16.0, top: 3, bottom: 3),
               decoration: BoxDecoration(
                 color: isHovered
                     ? theme.colorScheme.primaryContainer
@@ -176,9 +240,36 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
               child: ListTile(
                 dense: true,
                 visualDensity: VisualDensity.compact,
-                leading: Icon(
-                  children.isNotEmpty ? Icons.folder_outlined : Icons.location_on_outlined,
-                  color: isSelected ? theme.colorScheme.primary : Colors.grey,
+                leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (children.isNotEmpty)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (isExpanded) {
+                              _expandedLocationIds.remove(node.id);
+                            } else {
+                              _expandedLocationIds.add(node.id);
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 4.0),
+                          child: Icon(
+                            isExpanded ? Icons.keyboard_arrow_down : Icons.chevron_right,
+                            size: 18,
+                            color: isSelected ? theme.colorScheme.primary : Colors.grey,
+                          ),
+                        ),
+                      )
+                    else
+                      const SizedBox(width: 22),
+                    Icon(
+                      children.isNotEmpty ? Icons.folder_outlined : Icons.location_on_outlined,
+                      color: isSelected ? theme.colorScheme.primary : Colors.grey,
+                    ),
+                  ],
                 ),
                 title: Text(
                   node.name,
@@ -198,7 +289,7 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
                 },
               ),
             ),
-            if (children.isNotEmpty)
+            if (children.isNotEmpty && isExpanded)
               ...children.map((child) => _buildTreeItem(child, depth + 1)),
           ],
         );
@@ -217,14 +308,16 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
         ? widget.allEntitiesMap[widget.containerPath.last]
         : null;
 
+    final isRootWorldActive = !isInsideContainer && (widget.selectedLocationId == null);
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(15),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
+            color: Colors.black.withAlpha(12),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -232,150 +325,228 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 1. Unified Breadcrumb Route Bar
+          // 1. Controls Top Bar (Chevron, Add Location, Exit)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Horizontal scrollable breadcrumbs path
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        // Root location chip
-                        _SpringLoadedBreadcrumbChip(
-                          label: widget.selectedLocationId == null
-                              ? AppStrings.all
-                              : (widget.selectedLocationId == '__UNASSIGNED__'
-                                  ? AppStrings.badgeOrphan
-                                  : (locationAncestry.isNotEmpty ? locationAncestry.first.name : AppStrings.all)),
-                          icon: Icons.home_outlined,
-                          isHighlighted: !isInsideContainer && locationAncestry.length <= 1,
-                          onTap: () {
-                            if (isInsideContainer) {
-                              widget.onExitContainersToRoot();
-                            } else if (locationAncestry.isNotEmpty && locationAncestry.length > 1) {
-                              widget.onLocationSelected(locationAncestry.first.id);
-                            } else {
-                              _toggleCurtain();
-                            }
-                          },
-                          onSpringLoad: () {
-                            if (isInsideContainer) {
-                              widget.onExitContainersToRoot();
-                            } else if (locationAncestry.isNotEmpty && locationAncestry.length > 1) {
-                              widget.onLocationSelected(locationAncestry.first.id);
-                            }
-                          },
-                          onDrop: (payload) {
-                            if (isInsideContainer) {
-                              widget.onDropOnLocation(payload, widget.selectedLocationId);
-                            } else if (locationAncestry.isNotEmpty) {
-                              widget.onDropOnLocation(payload, locationAncestry.first.id);
-                            } else {
-                              widget.onDropOnLocation(payload, null);
-                            }
-                          },
+                // Spring-Loaded Chevron to toggle location curtain
+                DragTarget<Object>(
+                  onWillAcceptWithDetails: (_) => true,
+                  onMove: (_) {
+                    if (!_isCurtainExpanded && _chevronSpringTimer == null) {
+                      _chevronSpringTimer = Timer(const Duration(milliseconds: 600), () {
+                        if (mounted && !_isCurtainExpanded) {
+                          _toggleCurtain();
+                        }
+                      });
+                    }
+                  },
+                  onLeave: (_) {
+                    _chevronSpringTimer?.cancel();
+                    _chevronSpringTimer = null;
+                  },
+                  onAcceptWithDetails: (_) {
+                    _chevronSpringTimer?.cancel();
+                    _chevronSpringTimer = null;
+                    if (!_isCurtainExpanded) _toggleCurtain();
+                  },
+                  builder: (context, candidateData, rejectedData) {
+                    final isHovered = candidateData.isNotEmpty;
+                    return InkWell(
+                      onTap: _toggleCurtain,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: isHovered
+                              ? theme.colorScheme.primaryContainer
+                              : theme.colorScheme.surfaceContainerHighest.withAlpha(60),
+                          borderRadius: BorderRadius.circular(8),
                         ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.account_tree_outlined,
+                              size: 16,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Ubicaciones',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            AnimatedRotation(
+                              turns: _isCurtainExpanded ? 0.5 : 0.0,
+                              duration: const Duration(milliseconds: 200),
+                              child: Icon(Icons.keyboard_arrow_down, size: 18, color: theme.colorScheme.primary),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
 
-                        // Intermediate location ancestry
-                        for (int i = 1; i < locationAncestry.length; i++) ...[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2),
-                            child: Icon(Icons.chevron_right, size: 14, color: Colors.grey),
-                          ),
-                          _SpringLoadedBreadcrumbChip(
-                            label: locationAncestry[i].name,
-                            icon: Icons.location_on_outlined,
-                            isHighlighted: !isInsideContainer && i == locationAncestry.length - 1,
-                            onTap: () {
-                              if (isInsideContainer) widget.onExitContainersToRoot();
-                              widget.onLocationSelected(locationAncestry[i].id);
-                            },
-                            onSpringLoad: () {
-                              if (isInsideContainer) widget.onExitContainersToRoot();
-                              widget.onLocationSelected(locationAncestry[i].id);
-                            },
-                            onDrop: (payload) {
-                              widget.onDropOnLocation(payload, locationAncestry[i].id);
-                            },
-                          ),
-                        ],
-
-                        // Container Path Segments
-                        for (int i = 0; i < widget.containerPath.length; i++) ...[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2),
-                            child: Icon(Icons.chevron_right, size: 14, color: Colors.grey),
-                          ),
-                          Builder(
-                            builder: (context) {
-                              final cId = widget.containerPath[i];
-                              final isCurrent = i == widget.containerPath.length - 1;
-                              final cEnt = widget.allEntitiesMap[cId];
-                              final cSpecies = widget.catalogMap[cEnt?.speciesId];
-                              final cTitle = cSpecies?.name ?? 'Contenedor';
-
-                              return _SpringLoadedBreadcrumbChip(
-                                label: cTitle,
-                                icon: Icons.inventory_2_outlined,
-                                isHighlighted: isCurrent,
-                                onTap: () {
-                                  if (!isCurrent) {
-                                    widget.onNavigateToContainerIndex(i);
-                                  }
-                                },
-                                onSpringLoad: () {
-                                  if (!isCurrent) {
-                                    widget.onNavigateToContainerIndex(i);
-                                  }
-                                },
-                                onDrop: (payload) {
-                                  widget.onDropIntoContainer(payload, cId);
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ],
+                // Right action buttons
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.add_location_alt_outlined, size: 20),
+                      tooltip: AppStrings.newLocationTitle,
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () => _showCreateLocationDialog(context),
                     ),
-                  ),
+                    if (isInsideContainer)
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        tooltip: 'Salir a la raíz',
+                        visualDensity: VisualDensity.compact,
+                        onPressed: widget.onExitContainersToRoot,
+                      ),
+                  ],
                 ),
-
-                // Location Curtain toggle button
-                IconButton(
-                  icon: AnimatedRotation(
-                    turns: _isCurtainExpanded ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: const Icon(Icons.keyboard_arrow_down, size: 20),
-                  ),
-                  tooltip: 'Desplegar ubicaciones',
-                  visualDensity: VisualDensity.compact,
-                  onPressed: _toggleCurtain,
-                ),
-
-                // Create Location Shortcut
-                IconButton(
-                  icon: const Icon(Icons.add_location_alt_outlined, size: 20),
-                  tooltip: AppStrings.newLocationTitle,
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () => _showCreateLocationDialog(context),
-                ),
-
-                // Exit container button (if inside container)
-                if (isInsideContainer)
-                  IconButton(
-                    icon: const Icon(Icons.close, size: 20),
-                    tooltip: 'Salir a la raíz',
-                    visualDensity: VisualDensity.compact,
-                    onPressed: widget.onExitContainersToRoot,
-                  ),
               ],
             ),
           ),
 
-          // 2. Expandable Location Tree Curtain
+          // 2. Full-Width Dedicated Breadcrumb Trail Row with Horizontal Edge Autoscroll
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  controller: _breadcrumbScrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      // Root chip: Always Mundo
+                      _SpringLoadedBreadcrumbChip(
+                        label: AppStrings.rootLocationName,
+                        icon: Icons.public,
+                        isHighlighted: isRootWorldActive,
+                        onTap: () {
+                          if (isInsideContainer) {
+                            widget.onExitContainersToRoot();
+                          }
+                          widget.onLocationSelected(null);
+                        },
+                        onSpringLoad: () {
+                          if (isInsideContainer) {
+                            widget.onExitContainersToRoot();
+                          }
+                          widget.onLocationSelected(null);
+                        },
+                        onDrop: (payload) {
+                          widget.onDropOnLocation(payload, null);
+                        },
+                      ),
+
+                      // Intermediate location ancestry (Real physical hierarchy)
+                      for (int i = 0; i < locationAncestry.length; i++) ...[
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 3),
+                          child: Icon(Icons.chevron_right, size: 16, color: Colors.grey),
+                        ),
+                        _SpringLoadedBreadcrumbChip(
+                          label: locationAncestry[i].name,
+                          icon: Icons.location_on_outlined,
+                          isHighlighted: !isInsideContainer && i == locationAncestry.length - 1,
+                          onTap: () {
+                            if (isInsideContainer) widget.onExitContainersToRoot();
+                            widget.onLocationSelected(locationAncestry[i].id);
+                          },
+                          onSpringLoad: () {
+                            if (isInsideContainer) widget.onExitContainersToRoot();
+                            widget.onLocationSelected(locationAncestry[i].id);
+                          },
+                          onDrop: (payload) {
+                            widget.onDropOnLocation(payload, locationAncestry[i].id);
+                          },
+                        ),
+                      ],
+
+                      // Container Path Segments
+                      for (int i = 0; i < widget.containerPath.length; i++) ...[
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 3),
+                          child: Icon(Icons.chevron_right, size: 16, color: Colors.grey),
+                        ),
+                        Builder(
+                          builder: (context) {
+                            final cId = widget.containerPath[i];
+                            final isCurrent = i == widget.containerPath.length - 1;
+                            final cEnt = widget.allEntitiesMap[cId];
+                            final cSpecies = widget.catalogMap[cEnt?.speciesId];
+                            final cTitle = cSpecies?.name ?? 'Contenedor';
+
+                            return _SpringLoadedBreadcrumbChip(
+                              label: cTitle,
+                              icon: Icons.inventory_2_outlined,
+                              isHighlighted: isCurrent,
+                              onTap: () {
+                                if (!isCurrent) {
+                                  widget.onNavigateToContainerIndex(i);
+                                }
+                              },
+                              onSpringLoad: () {
+                                if (!isCurrent) {
+                                  widget.onNavigateToContainerIndex(i);
+                                }
+                              },
+                              onDrop: (payload) {
+                                widget.onDropIntoContainer(payload, cId);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+
+                // Left horizontal autoscroll edge zone
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 32,
+                  child: DragTarget<Object>(
+                    onWillAcceptWithDetails: (_) => true,
+                    onMove: (_) => _startHorizontalAutoScroll(-14.0),
+                    onLeave: (_) => _stopHorizontalAutoScroll(),
+                    onAcceptWithDetails: (_) => _stopHorizontalAutoScroll(),
+                    builder: (context, candidateData, rejectedData) => const SizedBox.expand(),
+                  ),
+                ),
+
+                // Right horizontal autoscroll edge zone
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 32,
+                  child: DragTarget<Object>(
+                    onWillAcceptWithDetails: (_) => true,
+                    onMove: (_) => _startHorizontalAutoScroll(14.0),
+                    onLeave: (_) => _stopHorizontalAutoScroll(),
+                    onAcceptWithDetails: (_) => _stopHorizontalAutoScroll(),
+                    builder: (context, candidateData, rejectedData) => const SizedBox.expand(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // 3. Expandable Location Tree Curtain
           SizeTransition(
             sizeFactor: _curtainAnimation,
             child: Container(
@@ -392,9 +563,9 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
                     ListTile(
                       dense: true,
                       visualDensity: VisualDensity.compact,
-                      leading: const Icon(Icons.all_inbox_outlined),
-                      title: const Text(AppStrings.all, style: TextStyle(fontWeight: FontWeight.bold)),
-                      selected: widget.selectedLocationId == null,
+                      leading: const Icon(Icons.public),
+                      title: const Text(AppStrings.rootLocationName, style: TextStyle(fontWeight: FontWeight.bold)),
+                      selected: isRootWorldActive,
                       onTap: () {
                         if (isInsideContainer) widget.onExitContainersToRoot();
                         widget.onLocationSelected(null);
@@ -409,7 +580,7 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
             ),
           ),
 
-          // 3. Active Container Hero Tile (when inside a container)
+          // 4. Active Container Hero Tile (Direct InstancePreviewCard without outer outline frame or "Ver Ficha" badge)
           if (isInsideContainer && activeContainerEntity != null)
             DragTarget<Object>(
               onWillAcceptWithDetails: (details) => true,
@@ -417,42 +588,11 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
                 widget.onDropIntoContainer(details.data, activeContainerEntity.id);
               },
               builder: (context, candidateData, rejectedData) {
-                final isHovered = candidateData.isNotEmpty;
-
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: isHovered
-                        ? theme.colorScheme.primaryContainer.withAlpha(150)
-                        : theme.colorScheme.surfaceContainerHighest.withAlpha(80),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isHovered ? theme.colorScheme.primary : theme.colorScheme.primary.withAlpha(60),
-                      width: isHovered ? 2.0 : 1.2,
-                    ),
-                  ),
-                  padding: const EdgeInsets.all(8.0),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
                   child: InstancePreviewCard(
                     entity: activeContainerEntity,
                     onTap: () => context.pushEntityDetail(activeContainerEntity.id),
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withAlpha(30),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.touch_app, size: 12, color: theme.colorScheme.primary),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Ver Ficha',
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 );
               },
@@ -463,7 +603,7 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
   }
 }
 
-/// Spring-loaded interactive breadcrumb chip with DragTarget and 600ms hover timer.
+/// Spring-loaded interactive breadcrumb chip with generous size, DragTarget and 600ms hover timer.
 class _SpringLoadedBreadcrumbChip extends StatefulWidget {
   final String label;
   final IconData icon;
@@ -526,22 +666,22 @@ class _SpringLoadedBreadcrumbChipState extends State<_SpringLoadedBreadcrumbChip
 
         return InkWell(
           onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 160),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             decoration: BoxDecoration(
               color: isHovered
                   ? theme.colorScheme.primaryContainer
                   : (widget.isHighlighted
                       ? theme.colorScheme.primary.withAlpha(25)
                       : theme.colorScheme.surfaceContainerHighest.withAlpha(90)),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isHovered
                     ? theme.colorScheme.primary
                     : (widget.isHighlighted
-                        ? theme.colorScheme.primary.withAlpha(120)
+                        ? theme.colorScheme.primary.withAlpha(130)
                         : theme.dividerColor.withAlpha(50)),
                 width: (isHovered || widget.isHighlighted) ? 1.5 : 1.0,
               ),
@@ -551,17 +691,17 @@ class _SpringLoadedBreadcrumbChipState extends State<_SpringLoadedBreadcrumbChip
               children: [
                 Icon(
                   widget.icon,
-                  size: 13,
+                  size: 15,
                   color: (widget.isHighlighted || isHovered)
                       ? theme.colorScheme.primary
                       : theme.colorScheme.onSurfaceVariant,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 6),
                 Text(
                   widget.label,
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: (widget.isHighlighted || isHovered) ? FontWeight.bold : FontWeight.w500,
+                    fontSize: 13,
+                    fontWeight: (widget.isHighlighted || isHovered) ? FontWeight.bold : FontWeight.w600,
                     color: (widget.isHighlighted || isHovered)
                         ? theme.colorScheme.primary
                         : theme.colorScheme.onSurfaceVariant,

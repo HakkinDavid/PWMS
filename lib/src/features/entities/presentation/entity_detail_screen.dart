@@ -506,7 +506,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                     ).firstOrNull;
 
                     if (containerRel != null) {
-                      context.pushEntityDetail(containerRel.targetEntityId);
+                      context.goToInventory(containerId: containerRel.targetEntityId);
                     } else if (_selectedLocationId != null) {
                       context.goToLocations(focusNodeId: _selectedLocationId);
                     } else {
