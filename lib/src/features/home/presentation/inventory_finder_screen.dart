@@ -347,16 +347,14 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       containerChildrenMap.putIfAbsent(r.targetEntityId, () => []).add(r.sourceEntityId);
     }
 
-    // Filter entities by selected location
+    // Filter entities by selected location (direct physical location only, excluding child locations)
     var filteredEntities = allEntities.toList();
 
     if (_selectedLocationId != null) {
       if (_selectedLocationId == '__UNASSIGNED__') {
         filteredEntities = filteredEntities.where((e) => e.locationId == null).toList();
       } else {
-        final descendantLocIds = LocationRepository(ref.read(databaseProvider)).getDescendantIds(_selectedLocationId!, locationNodes);
-        final targetLocIds = {_selectedLocationId!, ...descendantLocIds};
-        filteredEntities = filteredEntities.where((e) => e.locationId != null && targetLocIds.contains(e.locationId)).toList();
+        filteredEntities = filteredEntities.where((e) => e.locationId == _selectedLocationId).toList();
       }
     }
 

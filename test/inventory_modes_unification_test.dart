@@ -1193,5 +1193,51 @@ void main() {
       final checkEntA = await entityRepo.getEntityById('ent-lamp-flag');
       expect(checkEntA?.locationId, equals('loc_house_flag'));
     });
+
+    testWidgets('18. Physical locations do NOT show objects from their child sub-locations', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final locHouse = LocationNode(id: 'loc_house_iso', name: 'Casa Principal', createdAt: now);
+      final locRoom = LocationNode(id: 'loc_room_iso', name: 'Habitación Suite', parentLocationId: locHouse.id, createdAt: now);
+      await locationRepo.saveNode(locHouse);
+      await locationRepo.saveNode(locRoom);
+
+      // Sofa in Casa
+      final sofaSpecies = CatalogItem(id: 'sp-sofa', name: 'Sofá', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(sofaSpecies);
+      final sofaEntity = WorldEntity(id: 'ent-sofa', speciesId: sofaSpecies.id, locationId: locHouse.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(sofaEntity);
+
+      // Bed in Habitación
+      final bedSpecies = CatalogItem(id: 'sp-bed', name: 'Cama', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(bedSpecies);
+      final bedEntity = WorldEntity(id: 'ent-bed', speciesId: bedSpecies.id, locationId: locRoom.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(bedEntity);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(initialLocationId: 'loc_house_iso'),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // In 'Casa Principal', ONLY 'Sofá' is shown. 'Cama' (in child 'Habitación') is NOT shown!
+      expect(find.byType(EffectiveGroupTile), findsOneWidget);
+      expect(find.text('Cama'), findsNothing);
+    });
   });
 }
