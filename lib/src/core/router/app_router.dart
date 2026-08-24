@@ -6,7 +6,6 @@ import '../../features/home/presentation/main_shell_screen.dart';
 import '../../features/home/presentation/settings_screen.dart';
 
 import '../../features/entities/presentation/entity_detail_screen.dart';
-import '../../features/entities/presentation/grouped_instance_detail_screen.dart';
 import '../../features/entities/presentation/register_object_modal.dart';
 import '../../features/search/presentation/search_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
@@ -112,17 +111,6 @@ final appRouter = GoRouter(
       builder: (context, state) => const NotificationsScreen(),
     ),
 
-    GoRoute(
-      path: '/grouped-instance-detail',
-      builder: (context, state) {
-        final speciesId = state.uri.queryParameters['speciesId'] ?? '';
-        final locId = state.uri.queryParameters['locId'];
-        return GroupedInstanceDetailScreen(
-          speciesId: speciesId,
-          effectiveLocationId: locId != null && locId.isNotEmpty ? locId : null,
-        );
-      },
-    ),
     GoRoute(
       path: '/register',
       builder: (context, state) {

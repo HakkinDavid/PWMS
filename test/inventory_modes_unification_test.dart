@@ -1389,5 +1389,113 @@ void main() {
       expect(find.text('Habitación'), findsOneWidget);
       expect(find.text('5 objetos'), findsOneWidget);
     });
+
+    testWidgets('21. Visual stacking: items stack with count badge and tap individualizes in-place without badges', (tester) async {
+      final coinSpecies = CatalogItem(id: 'sp_coin', name: 'Moneda 1 Euro', type: 'Objeto', createdAt: DateTime.now());
+      await catalogRepo.saveCatalogItem(coinSpecies);
+
+      final now = DateTime.now();
+      final coin1 = WorldEntity(id: 'coin-1', speciesId: coinSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final coin2 = WorldEntity(id: 'coin-2', speciesId: coinSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final coin3 = WorldEntity(id: 'coin-3', speciesId: coinSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+
+      await entityRepo.saveEntity(coin1);
+      await entityRepo.saveEntity(coin2);
+      await entityRepo.saveEntity(coin3);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Initially collapsed: 1 tile with count badge '3'
+      expect(find.byType(EffectiveGroupTile), findsOneWidget);
+      expect(find.text('3'), findsOneWidget);
+      expect(find.text('(1)'), findsNothing);
+      expect(find.text('1'), findsNothing);
+
+      // Tap on the stack tile
+      await tester.tap(find.byType(EffectiveGroupTile));
+      await tester.pumpAndSettle();
+
+      // Now individualized in-place: 3 separate tiles appear, none having a count badge
+      expect(find.byType(EffectiveGroupTile), findsNWidgets(3));
+      expect(find.text('3'), findsNothing);
+      expect(find.text('(1)'), findsNothing);
+      expect(find.text('1'), findsNothing);
+    });
+
+    testWidgets('22. Spring-loaded hover: hovering for 600ms during drag individualizes stack in-place', (tester) async {
+      final appleSpecies = CatalogItem(id: 'sp_app', name: 'Manzana Gala', type: 'Objeto', createdAt: DateTime.now());
+      final bookSpecies = CatalogItem(id: 'sp_bk', name: 'Libro Antiguo', type: 'Objeto', createdAt: DateTime.now());
+      await catalogRepo.saveCatalogItem(appleSpecies);
+      await catalogRepo.saveCatalogItem(bookSpecies);
+
+      final now = DateTime.now();
+      final apple1 = WorldEntity(id: 'app-1', speciesId: appleSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final apple2 = WorldEntity(id: 'app-2', speciesId: appleSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final book = WorldEntity(id: 'book-1', speciesId: bookSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+
+      await entityRepo.saveEntity(apple1);
+      await entityRepo.saveEntity(apple2);
+      await entityRepo.saveEntity(book);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // We have 1 book tile and 1 stacked apple tile (count '2')
+      expect(find.text('2'), findsOneWidget);
+      expect(find.byType(EffectiveGroupTile), findsNWidgets(2));
+
+      // Drag the book and hover over the apple stack
+      final tiles = find.byType(EffectiveGroupTile);
+      final bookTile = tiles.at(1);
+      final appleTile = tiles.at(0);
+
+      final gesture = await tester.startGesture(tester.getCenter(bookTile));
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Move over apple tile and hover for 600ms
+      await gesture.moveTo(tester.getCenter(appleTile));
+      await tester.pump(const Duration(milliseconds: 650));
+      await tester.pumpAndSettle();
+
+      // Spring-loaded individualization triggers: apple stack expands into 2 separate tiles!
+      // Total tiles now: 1 book + 2 apples = 3 tiles
+      expect(find.byType(EffectiveGroupTile), findsNWidgets(3));
+      expect(find.text('2'), findsNothing);
+
+      await gesture.up();
+      await tester.pumpAndSettle();
+    });
   });
 }
+

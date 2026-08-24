@@ -49,6 +49,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   final Set<String> _selectedEntityIds = {};
   String _selectedTypeFilter = AppStrings.all;
   FinderViewMode _viewMode = FinderViewMode.detailedList;
+  final Set<String> _expandedStackKeys = {};
 
   List<String> _containerPath = [];
 
@@ -151,6 +152,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     }
     setState(() {
       _selectedLocationId = newLocId;
+      _expandedStackKeys.clear();
     });
   }
 
@@ -165,14 +167,17 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     } else if (_containerPath.isNotEmpty) {
       setState(() {
         _containerPath.removeLast();
+        _expandedStackKeys.clear();
       });
     } else if (_locationHistory.isNotEmpty) {
       setState(() {
         _selectedLocationId = _locationHistory.removeLast();
+        _expandedStackKeys.clear();
       });
     } else if (_selectedLocationId != null) {
       setState(() {
         _selectedLocationId = null;
+        _expandedStackKeys.clear();
       });
     }
   }
@@ -286,13 +291,17 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     } else if (grp.population == 1) {
       context.pushEntityDetail(grp.primaryEntity.id);
     } else {
-      context.pushGroupedInstanceDetail(grp.speciesId, effectiveLocationId: grp.effectiveLocationId);
+      setState(() {
+        _expandedStackKeys.add(grp.key);
+      });
     }
   }
 
   void _handleDropIntoContainer(Object payload, String targetContainerEntityId) {
     if (payload is List<String>) {
       _moveEntitiesToContainer(payload, targetContainerEntityId);
+    } else if (payload is String) {
+      _moveEntitiesToContainer([payload], targetContainerEntityId);
     } else if (payload is EffectiveEntityGroup) {
       final ids = payload.entities.map((e) => e.id).toList();
       _moveEntitiesToContainer(ids, targetContainerEntityId);
@@ -721,6 +730,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   List<String> _extractPayloadIds(Object? payload) {
     if (payload is List<String>) {
       return payload;
+    } else if (payload is String) {
+      return [payload];
     } else if (payload is EffectiveEntityGroup) {
       return payload.entities.map((e) => e.id).toList();
     } else if (payload is WorldEntity) {
@@ -739,7 +750,34 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     Map<String, String?> effectiveLocationsMap,
   ) {
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84.0;
-    final totalCount = currentGroups.length + childLocations.length;
+
+    // Flatten groups into display items: individualized in-place if expanded, or visual stack if collapsed
+    final List<EffectiveEntityGroup> displayGroups = [];
+    final Set<String> activeStackKeys = {};
+
+    for (final grp in currentGroups) {
+      final isContained = grp.entities
+          .expand((e) => containerChildrenMap[e.id] ?? <String>[])
+          .isNotEmpty;
+
+      if (!isContained && grp.population > 1 && _expandedStackKeys.contains(grp.key)) {
+        for (final entity in grp.entities) {
+          displayGroups.add(EffectiveEntityGroup(
+            key: '${grp.key}_${entity.id}',
+            speciesId: grp.speciesId,
+            effectiveLocationId: grp.effectiveLocationId,
+            entities: [entity],
+          ));
+        }
+      } else {
+        displayGroups.add(grp);
+        if (!isContained && grp.population > 1) {
+          activeStackKeys.add(grp.key);
+        }
+      }
+    }
+
+    final totalCount = displayGroups.length + childLocations.length;
 
     // Recursive items count map for child locations (includes all descendant locations and container contents)
     final locRepo = LocationRepository(ref.read(databaseProvider));
@@ -768,8 +806,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         ),
         itemCount: totalCount,
         itemBuilder: (ctx, idx) {
-          if (idx < currentGroups.length) {
-            final grp = currentGroups[idx];
+          if (idx < displayGroups.length) {
+            final grp = displayGroups[idx];
             final primary = grp.primaryEntity;
             final species = catalogMap[grp.speciesId];
             final isSelected = _selectedEntityIds.contains(primary.id);
@@ -779,6 +817,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                 .toSet()
                 .toList();
             final isContainer = containedIds.isNotEmpty;
+            final isStack = !isContainer && grp.population > 1 && !_expandedStackKeys.contains(grp.key);
 
             return InventoryItemInteractionWrapper(
               group: grp,
@@ -786,14 +825,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               isSelectionMode: _isSelectionMode,
               selectedEntityIds: _selectedEntityIds,
               isContainer: isContainer,
+              isStack: isStack,
               onTap: () => _handleItemTap(grp, isContainer),
               onDropIntoContainer: _handleDropIntoContainer,
               onDragStarted: _handleDragStarted,
               onDragEnd: _handleDragEnd,
-              onHoverSpringLoaded: (targetContainerId) {
-                if (!_containerPath.contains(targetContainerId)) {
+              onHoverSpringLoaded: (targetKey) {
+                if (activeStackKeys.contains(targetKey)) {
                   if (_isDragging) _dragHasNavigated = true;
-                  setState(() => _containerPath.add(targetContainerId));
+                  setState(() => _expandedStackKeys.add(targetKey));
+                } else if (!_containerPath.contains(targetKey)) {
+                  if (_isDragging) _dragHasNavigated = true;
+                  setState(() => _containerPath.add(targetKey));
                 }
               },
               child: MinecraftTileWidget(
@@ -808,7 +851,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               ),
             );
           } else {
-            final locNode = childLocations[idx - currentGroups.length];
+            final locNode = childLocations[idx - displayGroups.length];
             return _LocationItemInteractionTile(
               key: ValueKey('loc_tile_${locNode.id}'),
               node: locNode,
@@ -833,8 +876,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         padding: EdgeInsets.only(left: 12, right: 12, top: 12, bottom: bottomClearance),
         itemCount: totalCount,
         itemBuilder: (ctx, idx) {
-          if (idx < currentGroups.length) {
-            final grp = currentGroups[idx];
+          if (idx < displayGroups.length) {
+            final grp = displayGroups[idx];
             final primary = grp.primaryEntity;
             final primaryId = primary.id;
             final isSelected = _selectedEntityIds.contains(primaryId);
@@ -844,6 +887,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                 .toSet()
                 .toList();
             final isContainer = containedIds.isNotEmpty;
+            final isStack = !isContainer && grp.population > 1 && !_expandedStackKeys.contains(grp.key);
 
             return InventoryItemInteractionWrapper(
               group: grp,
@@ -851,14 +895,18 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               isSelectionMode: _isSelectionMode,
               selectedEntityIds: _selectedEntityIds,
               isContainer: isContainer,
+              isStack: isStack,
               onTap: () => _handleItemTap(grp, isContainer),
               onDropIntoContainer: _handleDropIntoContainer,
               onDragStarted: _handleDragStarted,
               onDragEnd: _handleDragEnd,
-              onHoverSpringLoaded: (targetContainerId) {
-                if (!_containerPath.contains(targetContainerId)) {
+              onHoverSpringLoaded: (targetKey) {
+                if (activeStackKeys.contains(targetKey)) {
                   if (_isDragging) _dragHasNavigated = true;
-                  setState(() => _containerPath.add(targetContainerId));
+                  setState(() => _expandedStackKeys.add(targetKey));
+                } else if (!_containerPath.contains(targetKey)) {
+                  if (_isDragging) _dragHasNavigated = true;
+                  setState(() => _containerPath.add(targetKey));
                 }
               },
               child: EffectiveGroupTile(
@@ -870,7 +918,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               ),
             );
           } else {
-            final locNode = childLocations[idx - currentGroups.length];
+            final locNode = childLocations[idx - displayGroups.length];
             return _LocationItemInteractionTile(
               key: ValueKey('loc_tile_${locNode.id}'),
               node: locNode,

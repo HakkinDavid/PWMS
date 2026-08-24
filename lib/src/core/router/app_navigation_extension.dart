@@ -94,13 +94,6 @@ extension AppNavigationExtension on BuildContext {
   /// Empuja la pantalla de detalle maestro de una especie del catálogo.
   void pushSpeciesDetail(String speciesId) => push('/catalog/$speciesId');
 
-  /// Empuja la pantalla de detalle de un grupo de instancias.
-  void pushGroupedInstanceDetail(String speciesId, {String? effectiveLocationId}) {
-    final locParam = (effectiveLocationId != null && effectiveLocationId.isNotEmpty)
-        ? '&locId=$effectiveLocationId'
-        : '';
-    push('/grouped-instance-detail?speciesId=$speciesId$locParam');
-  }
 
   /// Empuja el Centro de Control de Calidad y Auditorías.
   void pushControlCenter() => push('/control-center');

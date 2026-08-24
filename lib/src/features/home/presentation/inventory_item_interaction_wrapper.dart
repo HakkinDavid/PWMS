@@ -12,9 +12,10 @@ class InventoryItemInteractionWrapper extends StatefulWidget {
   final bool isSelectionMode;
   final Set<String> selectedEntityIds;
   final bool isContainer;
+  final bool isStack;
   final VoidCallback onTap;
   final Function(Object payload, String targetContainerEntityId) onDropIntoContainer;
-  final Function(String targetContainerEntityId)? onHoverSpringLoaded;
+  final Function(String targetKey)? onHoverSpringLoaded;
   final VoidCallback? onDragStarted;
   final VoidCallback? onDragEnd;
 
@@ -26,6 +27,7 @@ class InventoryItemInteractionWrapper extends StatefulWidget {
     required this.isSelectionMode,
     required this.selectedEntityIds,
     required this.isContainer,
+    this.isStack = false,
     required this.onTap,
     required this.onDropIntoContainer,
     this.onHoverSpringLoaded,
@@ -51,12 +53,12 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
     _hoverTimer = null;
   }
 
-  void _startHoverTimer(String primaryId) {
+  void _startHoverTimer(String targetKey) {
     if (_hoverTimer != null) return;
     _hoverTimer = Timer(const Duration(milliseconds: 600), () {
       _hoverTimer = null;
       if (mounted) {
-        widget.onHoverSpringLoaded?.call(primaryId);
+        widget.onHoverSpringLoaded?.call(targetKey);
       }
     });
   }
@@ -68,8 +70,8 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
 
     Widget content = widget.child;
 
-    // 1. If this item is a container (target of GUARDADO_EN), wrap it with DragTarget
-    if (widget.isContainer) {
+    // 1. If this item is a container (target of GUARDADO_EN) or a stack (spring-load expandable), wrap it with DragTarget
+    if (widget.isContainer || widget.isStack) {
       content = DragTarget<Object>(
         onWillAcceptWithDetails: (details) {
           final data = details.data;
@@ -81,7 +83,7 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
         },
         onMove: (details) {
           if (widget.onHoverSpringLoaded != null) {
-            _startHoverTimer(primaryId);
+            _startHoverTimer(widget.isContainer ? primaryId : widget.group.key);
           }
         },
         onLeave: (data) {
@@ -89,7 +91,9 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
         },
         onAcceptWithDetails: (details) {
           _cancelHoverTimer();
-          widget.onDropIntoContainer(details.data, primaryId);
+          if (widget.isContainer) {
+            widget.onDropIntoContainer(details.data, primaryId);
+          }
         },
         builder: (context, candidateData, rejectedData) {
           final isHovered = candidateData.isNotEmpty;
@@ -109,9 +113,12 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
 
     // 2. Wrap with LongPressDraggable for dragging items or batches
     if (!widget.isSelectionMode) {
-      // Normal Mode: Drag the group
+      // Normal Mode: Drag the group/stack or single entity
+      final isMulti = widget.group.population > 1;
+      final dragData = isMulti ? widget.group.entities.map((e) => e.id).toList() : widget.group.primaryEntity.id;
+
       return LongPressDraggable<Object>(
-        data: widget.group,
+        data: dragData,
         onDragStarted: widget.onDragStarted,
         onDragEnd: (_) => widget.onDragEnd?.call(),
         feedback: Material(
@@ -126,7 +133,9 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
                 Icon(Icons.inventory_2, size: 20, color: theme.colorScheme.onPrimaryContainer),
                 const SizedBox(width: 8),
                 Text(
-                  'Arrastrando ${widget.group.population} unidad(es)',
+                  isMulti
+                      ? 'Arrastrando ${widget.group.population} unidades'
+                      : 'Arrastrando elemento',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onPrimaryContainer,
