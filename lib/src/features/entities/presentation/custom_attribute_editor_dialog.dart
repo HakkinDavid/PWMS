@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 
 class CustomAttributeEditorDialog extends StatefulWidget {
   final Map<String, dynamic> initialAttributes;
@@ -38,6 +39,26 @@ class _CustomAttributeEditorDialogState extends State<CustomAttributeEditorDialo
     super.dispose();
   }
 
+  bool _forceClose = false;
+
+  bool _hasUnsavedChanges() {
+    if (_keyController.text.trim().isNotEmpty || _valController.text.trim().isNotEmpty) return true;
+    if (_attributes.length != widget.initialAttributes.length) return true;
+    for (final entry in _attributes.entries) {
+      if (widget.initialAttributes[entry.key] != entry.value) return true;
+    }
+    return false;
+  }
+
+  Future<bool> _requestClose() async {
+    if (_hasUnsavedChanges()) {
+      final discard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+      if (!discard) return false;
+    }
+    _forceClose = true;
+    return true;
+  }
+
   void _addAttribute() {
     final k = _keyController.text.trim();
     final v = _valController.text.trim();
@@ -50,17 +71,24 @@ class _CustomAttributeEditorDialogState extends State<CustomAttributeEditorDialo
     }
   }
 
-  void _removeAttribute(String key) {
-    setState(() {
-      _attributes.remove(key);
-    });
+  Future<void> _removeAttribute(String key) async {
+    final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+      context: context,
+      title: AppStrings.confirmRemoveAttributeTitle,
+      message: '${AppStrings.confirmRemoveAttributeMessagePrefix}$key${AppStrings.confirmRemoveAttributeMessageSuffix}',
+    );
+    if (confirm && mounted) {
+      setState(() {
+        _attributes.remove(key);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return AlertDialog(
+    final dialog = AlertDialog(
       title: const Text(AppStrings.customAttributesTitle),
       content: SingleChildScrollView(
         child: Column(
@@ -114,12 +142,35 @@ class _CustomAttributeEditorDialogState extends State<CustomAttributeEditorDialo
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text(AppStrings.cancel)),
+        TextButton(
+          onPressed: () async {
+            final canClose = await _requestClose();
+            if (canClose && mounted) {
+              Navigator.pop(context);
+            }
+          },
+          child: const Text(AppStrings.cancel),
+        ),
         ElevatedButton(
-          onPressed: () => Navigator.pop(context, _attributes),
+          onPressed: () {
+            _forceClose = true;
+            Navigator.pop(context, _attributes);
+          },
           child: const Text(AppStrings.save),
         ),
       ],
+    );
+
+    return PopScope(
+      canPop: _forceClose,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final canClose = await _requestClose();
+        if (canClose && mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: dialog,
     );
   }
 }

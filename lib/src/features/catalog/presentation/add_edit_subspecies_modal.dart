@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../domain/catalog_item.dart';
@@ -90,6 +91,35 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
 
   bool _isSaving = false;
   bool _photoDeleted = false;
+  bool _forceClose = false;
+
+  bool _hasUnsavedChanges() {
+    final initial = widget.initialSubspecies;
+    if (initial != null) {
+      if (_nameController.text.trim() != initial.subspeciesName.trim()) return true;
+      if (_brandController.text.trim() != (initial.brand ?? '').trim()) return true;
+      if (_barcodeController.text.trim() != (initial.barcode ?? '').trim()) return true;
+      if (_notesController.text.trim() != (initial.notes ?? '').trim()) return true;
+      if (_newPickedImage != null || _photoDeleted) return true;
+      return false;
+    } else {
+      if (_nameController.text.trim().isNotEmpty) return true;
+      if (_brandController.text.trim().isNotEmpty) return true;
+      if (_barcodeController.text.trim().isNotEmpty) return true;
+      if (_notesController.text.trim().isNotEmpty) return true;
+      if (_newPickedImage != null) return true;
+      return false;
+    }
+  }
+
+  Future<bool> _requestClose() async {
+    if (_hasUnsavedChanges()) {
+      final discard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+      if (!discard) return false;
+    }
+    _forceClose = true;
+    return true;
+  }
 
   Future<void> _handleSave() async {
     final name = _nameController.text.trim();
@@ -124,6 +154,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       );
 
       if (mounted) {
+        _forceClose = true;
         Navigator.pop(context, resultSubspecies);
       }
     } catch (e) {
@@ -149,7 +180,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
         ? widget.isObject
         : EntityTemplateRegistry.hasBarcodeAndBrand(widget.species!.type);
 
-    return AlertDialog(
+    final dialog = AlertDialog(
       title: Text(
         isEditing ? AppStrings.editSubspecies : AppStrings.newSubspeciesVariantTitle,
         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -267,13 +298,23 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                         shape: const CircleBorder(),
                         clipBehavior: Clip.antiAlias,
                         child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              _newPickedImage = null;
-                              _photoPath = null;
-                              _resolvedPhotoPathFuture = null;
-                              _photoDeleted = true;
-                            });
+                          onTap: () async {
+                            final confirm = await AppConfirmationDialog.show(
+                              context: context,
+                              title: AppStrings.confirmRemovePhotoTitle,
+                              message: AppStrings.confirmRemovePhotoMessage,
+                              confirmLabel: AppStrings.delete,
+                              isDestructive: true,
+                              icon: Icons.delete_outline,
+                            );
+                            if (confirm && mounted) {
+                              setState(() {
+                                _newPickedImage = null;
+                                _photoPath = null;
+                                _resolvedPhotoPathFuture = null;
+                                _photoDeleted = true;
+                              });
+                            }
                           },
                           child: const Padding(
                             padding: EdgeInsets.all(6.0),
@@ -332,7 +373,14 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       ),
       actions: [
         TextButton(
-          onPressed: _isSaving ? null : () => Navigator.pop(context),
+          onPressed: _isSaving
+              ? null
+              : () async {
+                  final canClose = await _requestClose();
+                  if (canClose && mounted) {
+                    Navigator.pop(context);
+                  }
+                },
           child: const Text(AppStrings.cancel),
         ),
         ElevatedButton(
@@ -342,6 +390,18 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
               : const Text(AppStrings.save),
         ),
       ],
+    );
+
+    return PopScope(
+      canPop: _forceClose,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final canClose = await _requestClose();
+        if (canClose && mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: dialog,
     );
   }
 }

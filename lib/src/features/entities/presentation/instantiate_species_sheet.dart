@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
@@ -79,6 +80,28 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   String? _selectedContainerEntityId;
   DateTime? _expirationDate;
   bool _isSaving = false;
+  bool _forceClose = false;
+
+  bool _hasUnsavedChanges() {
+    if (_notesController.text.trim().isNotEmpty && _notesController.text.trim() != (widget.initialNotes ?? '').trim()) return true;
+    if (_qtyController.text.trim() != '1' && _qtyController.text.trim().isNotEmpty) return true;
+    if (_selectedLocationId != widget.initialLocationId) return true;
+    if (_selectedContainerEntityId != null) return true;
+    if (_selectedSpecies != null && widget.species == null) return true;
+    for (final entry in _magnitudeControllers.entries) {
+      if (entry.value.text.trim().isNotEmpty) return true;
+    }
+    return false;
+  }
+
+  Future<bool> _requestClose() async {
+    if (_hasUnsavedChanges()) {
+      final discard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+      if (!discard) return false;
+    }
+    _forceClose = true;
+    return true;
+  }
 
   @override
   void initState() {
@@ -268,6 +291,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, species.name, species.type);
 
       if (mounted) {
+        _forceClose = true;
         Navigator.pop(context);
         AppToast.showSuccess(
           context,
@@ -307,40 +331,70 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         ? mediaQuery.viewInsets.bottom + 20
         : mediaQuery.padding.bottom + 20;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: bottomPadding,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withAlpha(100),
-                  borderRadius: BorderRadius.circular(2),
+    return PopScope(
+      canPop: _forceClose,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final canClose = await _requestClose();
+        if (canClose && mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: bottomPadding,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: mediaQuery.size.height * 0.92),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withAlpha(100),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _selectedSpecies != null
-                  ? '${AppStrings.instantiateAction} "${_selectedSpecies!.name}"'
-                  : AppStrings.instantiateCatalogSpeciesHeader,
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _selectedSpecies != null
+                            ? '${AppStrings.instantiateAction} "${_selectedSpecies!.name}"'
+                            : AppStrings.instantiateCatalogSpeciesHeader,
+                        style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      tooltip: AppStrings.close,
+                      onPressed: () async {
+                        final canClose = await _requestClose();
+                        if (canClose && mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
             // 1. Selector de Especie del Catálogo Maestro
             Text(AppStrings.catalogSpeciesLabel, style: theme.textTheme.labelLarge),
@@ -623,6 +677,8 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             ),
           ],
         ),
+      ),
+      ),
       ),
     );
   }

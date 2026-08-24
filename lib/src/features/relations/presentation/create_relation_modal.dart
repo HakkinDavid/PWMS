@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
@@ -12,20 +13,29 @@ import '../domain/entity_relation.dart';
 
 class CreateRelationModal extends ConsumerStatefulWidget {
   final WorldEntity sourceEntity;
+  final bool returnResultOnly;
 
   const CreateRelationModal({
     super.key,
     required this.sourceEntity,
+    this.returnResultOnly = false,
   });
 
-  static Future<void> show(BuildContext context, {required WorldEntity sourceEntity}) {
-    return showModalBottomSheet(
+  static Future<EntityRelation?> show(
+    BuildContext context, {
+    required WorldEntity sourceEntity,
+    bool returnResultOnly = false,
+  }) {
+    return showModalBottomSheet<EntityRelation>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => CreateRelationModal(sourceEntity: sourceEntity),
+      builder: (_) => CreateRelationModal(
+        sourceEntity: sourceEntity,
+        returnResultOnly: returnResultOnly,
+      ),
     );
   }
 
@@ -40,6 +50,24 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
 
+  bool _forceClose = false;
+
+  bool _hasUnsavedChanges() {
+    if (_selectedTargetEntity != null) return true;
+    if (_selectedRelationType != EntityTemplateRegistry.directedRelationTypes.first) return true;
+    if (_searchQuery.isNotEmpty) return true;
+    return false;
+  }
+
+  Future<bool> _requestClose() async {
+    if (_hasUnsavedChanges()) {
+      final discard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+      if (!discard) return false;
+    }
+    _forceClose = true;
+    return true;
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -52,18 +80,24 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
       return;
     }
 
+    final newRelation = EntityRelation(
+      id: const Uuid().v4(),
+      sourceEntityId: widget.sourceEntity.id,
+      targetEntityId: _selectedTargetEntity!.id,
+      relationType: _selectedRelationType,
+      createdAt: DateTime.now(),
+    );
+
+    if (widget.returnResultOnly) {
+      _forceClose = true;
+      Navigator.pop(context, newRelation);
+      return;
+    }
+
     setState(() => _isSaving = true);
 
     try {
       final relationRepo = ref.read(relationRepositoryProvider);
-      final newRelation = EntityRelation(
-        id: const Uuid().v4(),
-        sourceEntityId: widget.sourceEntity.id,
-        targetEntityId: _selectedTargetEntity!.id,
-        relationType: _selectedRelationType,
-        createdAt: DateTime.now(),
-      );
-
       await relationRepo.addRelation(newRelation);
       ref.invalidate(entityRelationsProvider(widget.sourceEntity.id));
       ref.invalidate(entityRelationsProvider(_selectedTargetEntity!.id));
@@ -71,7 +105,8 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
       ref.invalidate(entityListProvider);
 
       if (mounted) {
-        Navigator.pop(context);
+        _forceClose = true;
+        Navigator.pop(context, newRelation);
         AppToast.showSuccess(context, AppStrings.relationCreatedSuccessPrefix + _selectedRelationType + AppStrings.relationCreatedSuccessSuffix);
       }
     } catch (e) {
@@ -116,40 +151,68 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
         ? mediaQuery.viewInsets.bottom + 16
         : mediaQuery.padding.bottom + 16;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 14,
-        bottom: bottomPadding,
-      ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: mediaQuery.size.height * 0.85,
+    return PopScope(
+      canPop: _forceClose,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final canClose = await _requestClose();
+        if (canClose && mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withAlpha(100),
-                  borderRadius: BorderRadius.circular(2),
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 14,
+          bottom: bottomPadding,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: mediaQuery.size.height * 0.92,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withAlpha(100),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '${AppStrings.link} "$sourceName"',
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${AppStrings.link} "$sourceName"',
+                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: AppStrings.close,
+                    onPressed: () async {
+                      final canClose = await _requestClose();
+                      if (canClose && mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
 
             // Relation Type Wheel Picker
             InkWell(
@@ -245,6 +308,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

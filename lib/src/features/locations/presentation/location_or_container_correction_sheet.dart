@@ -4,11 +4,13 @@ import 'package:uuid/uuid.dart';
 
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../relations/domain/entity_relation.dart';
+import '../domain/location_path_helper.dart';
 import 'location_tree_picker.dart';
 
 enum LocationCorrectionMode { physicalNode, containerEntity }
@@ -44,6 +46,22 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
   String? _selectedLocationId;
   String? _selectedContainerEntityId;
   bool _isSaving = false;
+  bool _forceClose = false;
+
+  bool _hasUnsavedChanges() {
+    if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != widget.entity.locationId) return true;
+    if (_mode == LocationCorrectionMode.containerEntity && _selectedContainerEntityId != null) return true;
+    return false;
+  }
+
+  Future<bool> _requestClose() async {
+    if (_hasUnsavedChanges()) {
+      final discard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+      if (!discard) return false;
+    }
+    _forceClose = true;
+    return true;
+  }
 
   @override
   void initState() {
@@ -131,6 +149,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
       }
 
       if (mounted) {
+        _forceClose = true;
         AppToast.showSuccess(context, AppStrings.locationCorrectedSuccess);
         Navigator.pop(context, true);
       }
@@ -151,23 +170,22 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
     final entitiesState = ref.watch(entityListProvider);
     final subspeciesState = ref.watch(subspeciesListProvider);
 
+    final locations = locationsState.asData?.value ?? [];
     final catalogItems = catalogState.asData?.value ?? [];
     final entities = entitiesState.asData?.value ?? [];
     final subspeciesList = subspeciesState.asData?.value ?? [];
-
-    String locationDisplayName = AppStrings.rootLocationName;
-    if (_selectedLocationId != null) {
-      locationsState.whenData((nodes) {
-        final found = nodes.where((n) => n.id == _selectedLocationId).firstOrNull;
-        if (found != null) locationDisplayName = found.name;
-      });
-    }
 
     final entityName = EntityDisplayHelper.getDisplayName(
       entity: widget.entity,
       catalogItems: catalogItems,
       subspeciesList: subspeciesList,
     );
+
+    // Current location display text
+    final locationDisplayName = LocationPathHelper.buildBreadcrumbPath(
+      _selectedLocationId,
+      locations,
+    ).fullPath;
 
     // Candidates for container: excluding the entity itself
     final candidateContainers = entities.where((e) => e.id != widget.entity.id).toList();
@@ -177,59 +195,87 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
         ? mediaQuery.viewInsets.bottom + 20
         : mediaQuery.padding.bottom + 20;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: bottomPadding,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withAlpha(100),
-                  borderRadius: BorderRadius.circular(2),
+    return PopScope(
+      canPop: _forceClose,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final canClose = await _requestClose();
+        if (canClose && mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 16,
+          bottom: bottomPadding,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withAlpha(100),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              AppStrings.correctLocationTitlePrefix + entityName + AppStrings.correctLocationTitleSuffix,
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppStrings.correctLocationTitlePrefix + entityName + AppStrings.correctLocationTitleSuffix,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: AppStrings.close,
+                    onPressed: () async {
+                      final canClose = await _requestClose();
+                      if (canClose && mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
 
-            // Mode selection: Physical Node vs Container Entity
-            SegmentedButton<LocationCorrectionMode>(
-              segments: const [
-                ButtonSegment(
-                  value: LocationCorrectionMode.physicalNode,
-                  label: Text(AppStrings.physicalLocation),
-                  icon: Icon(Icons.account_tree_outlined),
-                ),
-                ButtonSegment(
-                  value: LocationCorrectionMode.containerEntity,
-                  label: Text(AppStrings.savedInContainer),
-                  icon: Icon(Icons.inventory_2_outlined),
-                ),
-              ],
-              selected: {_mode},
-              onSelectionChanged: (set) {
-                setState(() => _mode = set.first);
-              },
-            ),
-            const SizedBox(height: 16),
+              // Mode selection: Physical Node vs Container Entity
+              SegmentedButton<LocationCorrectionMode>(
+                segments: const [
+                  ButtonSegment(
+                    value: LocationCorrectionMode.physicalNode,
+                    label: Text(AppStrings.physicalLocation),
+                    icon: Icon(Icons.account_tree_outlined),
+                  ),
+                  ButtonSegment(
+                    value: LocationCorrectionMode.containerEntity,
+                    label: Text(AppStrings.savedInContainer),
+                    icon: Icon(Icons.inventory_2_outlined),
+                  ),
+                ],
+                selected: {_mode},
+                onSelectionChanged: (set) {
+                  setState(() => _mode = set.first);
+                },
+              ),
+              const SizedBox(height: 16),
 
             if (_mode == LocationCorrectionMode.physicalNode) ...[
               Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
@@ -305,6 +351,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
             ),
           ],
         ),
+      ),
       ),
     );
   }

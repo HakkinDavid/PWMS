@@ -5,6 +5,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/domain/entity_photo_helper.dart';
@@ -171,7 +172,17 @@ class SpeciesDetailView extends ConsumerWidget {
           targetSide: side,
         );
 
-        if (capturedFile != null) {
+        if (capturedFile != null && context.mounted) {
+          final shouldReplace = await AppConfirmationDialog.show(
+            context: context,
+            title: AppStrings.confirmReplaceAttachmentTitle,
+            message: '${AppStrings.confirmReplaceAttachmentMessage}\n("${att.fileName}")',
+            confirmLabel: 'Reemplazar',
+            cancelLabel: AppStrings.cancel,
+            icon: Icons.sync,
+          );
+          if (!shouldReplace || !context.mounted) return;
+
           await ref.read(entityRepositoryProvider).replaceAttachmentFile(
                 att.id,
                 capturedFile.path,
@@ -194,7 +205,18 @@ class SpeciesDetailView extends ConsumerWidget {
         webSearchQuery: subspecies?.subspeciesName ?? species.name,
       );
 
-      if (result == null) return;
+      if (result == null || !context.mounted) return;
+
+      final newName = result.fileName ?? 'nuevo archivo';
+      final shouldReplace = await AppConfirmationDialog.show(
+        context: context,
+        title: AppStrings.confirmReplaceAttachmentTitle,
+        message: '${AppStrings.confirmReplaceAttachmentMessage}\n("${att.fileName}" ➔ "$newName")',
+        confirmLabel: 'Reemplazar',
+        cancelLabel: AppStrings.cancel,
+        icon: Icons.sync,
+      );
+      if (!shouldReplace || !context.mounted) return;
 
       if (result.file != null) {
         await ref.read(entityRepositoryProvider).replaceAttachmentFile(
@@ -334,23 +356,10 @@ class SpeciesDetailView extends ConsumerWidget {
   }
 
   Future<void> _confirmAndDeleteAttachment(BuildContext context, WidgetRef ref, Attachment att) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Eliminar adjunto'),
-        content: Text('¿Deseas eliminar permanentemente el archivo "${att.fileName}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(AppStrings.cancel),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(AppStrings.delete),
-          ),
-        ],
-      ),
+      title: 'Eliminar adjunto',
+      message: '¿Deseas eliminar permanentemente el archivo "${att.fileName}"?',
     );
 
     if (confirmed == true) {
@@ -742,12 +751,14 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                   size: 18,
                   color: theme.colorScheme.primary,
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(

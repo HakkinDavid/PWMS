@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/entity_tile.dart';
@@ -177,7 +178,14 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
               title: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
               onTap: () async {
                 Navigator.pop(ctx);
-                await ref.read(locationNodeListProvider.notifier).deleteNode(node.id);
+                final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                  context: context,
+                  title: AppStrings.confirmDeleteLocationTitle,
+                  message: '${AppStrings.confirmDeleteLocationMessagePrefix}${node.name}${AppStrings.confirmDeleteLocationMessageSuffix}',
+                );
+                if (confirm) {
+                  await ref.read(locationNodeListProvider.notifier).deleteNode(node.id);
+                }
               },
             ),
           ],

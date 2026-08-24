@@ -17,6 +17,7 @@ import '../../features/history/domain/activity_event.dart';
 import '../../features/history/application/activity_logger_service.dart';
 
 import '../../features/catalog/domain/catalog_item.dart';
+import '../../features/catalog/domain/species_requirement.dart';
 import '../../features/catalog/domain/subspecies.dart';
 import '../../features/catalog/infrastructure/catalog_repository.dart';
 import '../../features/catalog/infrastructure/product_lookup_service.dart';
@@ -241,6 +242,12 @@ final instanceAttachmentsProvider = FutureProvider.family<List<Attachment>, Stri
 final entityRelationsProvider = FutureProvider.family<List<EntityRelation>, String>((ref, entityId) async {
   final repo = ref.watch(relationRepositoryProvider);
   return repo.getRelationsForEntity(entityId);
+});
+
+// Source Requirements Provider
+final sourceRequirementsProvider = FutureProvider.family<List<SpeciesRequirement>, String>((ref, sourceId) async {
+  final repo = ref.watch(catalogRepositoryProvider);
+  return repo.getRequirementsForSource(sourceId);
 });
 
 // All Relations State Provider

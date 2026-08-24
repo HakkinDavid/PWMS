@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../domain/species_requirement.dart';
@@ -12,6 +13,8 @@ class RequirementsSectionWidget extends ConsumerStatefulWidget {
   final String sourceType; // 'species' or 'entity'
   final String title;
   final bool isEditing;
+  final List<SpeciesRequirement>? overrideRequirements;
+  final void Function(List<SpeciesRequirement>)? onRequirementsChanged;
 
   const RequirementsSectionWidget({
     super.key,
@@ -19,6 +22,8 @@ class RequirementsSectionWidget extends ConsumerStatefulWidget {
     this.sourceType = 'species',
     this.title = AppStrings.requirementsTitle,
     this.isEditing = true,
+    this.overrideRequirements,
+    this.onRequirementsChanged,
   });
 
   @override
@@ -32,7 +37,19 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
   @override
   void initState() {
     super.initState();
-    _loadRequirements();
+    if (widget.overrideRequirements == null) {
+      _loadRequirements();
+    } else {
+      _isLoading = false;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RequirementsSectionWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.overrideRequirements != null) {
+      _isLoading = false;
+    }
   }
 
   Future<void> _loadRequirements() async {
@@ -116,8 +133,12 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
         createdAt: DateTime.now(),
       );
 
-      await ref.read(catalogRepositoryProvider).saveRequirement(newReq);
-      _loadRequirements();
+      if (widget.overrideRequirements != null && widget.onRequirementsChanged != null) {
+        widget.onRequirementsChanged!([...widget.overrideRequirements!, newReq]);
+      } else {
+        await ref.read(catalogRepositoryProvider).saveRequirement(newReq);
+        _loadRequirements();
+      }
     }
   }
 
@@ -126,6 +147,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
     final catalogState = ref.watch(catalogListProvider);
     final catalogItems = catalogState.asData?.value ?? [];
     final theme = Theme.of(context);
+    final effectiveRequirements = widget.overrideRequirements ?? _requirements;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +175,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
 
         if (_isLoading)
           const Center(child: Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator()))
-        else if (_requirements.isEmpty)
+        else if (effectiveRequirements.isEmpty)
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -178,9 +200,9 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: _requirements.length,
+            itemCount: effectiveRequirements.length,
             itemBuilder: (context, index) {
-              final req = _requirements[index];
+              final req = effectiveRequirements[index];
               final reqSpecies = catalogItems.where((c) => c.id == req.requiredSpeciesId).firstOrNull;
               final speciesName = reqSpecies?.name ?? AppStrings.typeObject;
               final formattedQty = req.requiredQuantity % 1 == 0 ? '${req.requiredQuantity.toInt()}' : '${req.requiredQuantity}';
@@ -204,8 +226,21 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                       ? IconButton(
                           icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
                           onPressed: () async {
-                            await ref.read(catalogRepositoryProvider).deleteRequirement(req.id);
-                            _loadRequirements();
+                            final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                              context: context,
+                              title: AppStrings.confirmDeleteRequirementTitle,
+                              message: '${AppStrings.confirmDeleteRequirementMessagePrefix}$speciesName${AppStrings.confirmDeleteRequirementMessageSuffix}',
+                            );
+                            if (!confirm) return;
+
+                            if (widget.overrideRequirements != null && widget.onRequirementsChanged != null) {
+                              widget.onRequirementsChanged!(
+                                widget.overrideRequirements!.where((r) => r.id != req.id).toList(),
+                              );
+                            } else {
+                              await ref.read(catalogRepositoryProvider).deleteRequirement(req.id);
+                              _loadRequirements();
+                            }
                           },
                         )
                       : null,

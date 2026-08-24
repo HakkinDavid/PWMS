@@ -723,4 +723,33 @@ class AppStrings {
   static const specifySpecialEditionNotesPrompt = 'Especifica el motivo de la edición especial.';
   static const numismaticDataTitlePrefix = 'Datos numismáticos: ';
   static const selectCurrencyPrompt = 'Selecciona una divisa.';
+
+  // Confirmaciones y Prevención de Descarte de Cambios
+  static const unsavedChangesTitle = 'Cambios sin guardar';
+  static const unsavedChangesMessage = 'Tienes modificaciones pendientes sin guardar. ¿Deseas descartar los cambios o continuar editando?';
+  static const discardChangesAction = 'Descartar cambios';
+  static const keepEditingAction = 'Continuar editando';
+  static const confirmReplaceAttachmentTitle = 'Reemplazar adjunto';
+  static const confirmReplaceAttachmentMessage = '¿Deseas reemplazar este archivo adjunto? El archivo anterior será sustituido.';
+  static const confirmDeleteSubspeciesTitle = 'Eliminar subespecie';
+  static const confirmDeleteSubspeciesMessagePrefix = '¿Estás seguro de que deseas eliminar permanentemente la subespecie "';
+  static const confirmDeleteSubspeciesMessageSuffix = '"?';
+  static const confirmDeleteRequirementTitle = 'Eliminar requisito';
+  static const confirmDeleteRequirementMessagePrefix = '¿Estás seguro de que deseas eliminar este requisito de "';
+  static const confirmDeleteRequirementMessageSuffix = '"?';
+  static const confirmDeleteRelationTitle = 'Eliminar relación';
+  static const confirmDeleteRelationMessagePrefix = '¿Deseas desvincular la relación "';
+  static const confirmDeleteRelationMessageMiddle = '" con "';
+  static const confirmDeleteRelationMessageSuffix = '"?';
+  static const confirmDeleteLocationTitle = 'Eliminar ubicación';
+  static const confirmDeleteLocationMessagePrefix = '¿Estás seguro de que deseas eliminar la ubicación "';
+  static const confirmDeleteLocationMessageSuffix = '" y sus referencias asociadas?';
+  static const confirmRemovePhotoTitle = 'Quitar fotografía';
+  static const confirmRemovePhotoMessage = '¿Deseas quitar la fotografía seleccionada?';
+  static const confirmRemoveAttributeTitle = 'Eliminar atributo';
+  static const confirmRemoveAttributeMessagePrefix = '¿Deseas eliminar el atributo personalizado "';
+  static const confirmRemoveAttributeMessageSuffix = '"?';
+  static const confirmDeletePropertyTitle = 'Eliminar propiedad';
+  static const confirmDeletePropertyMessagePrefix = '¿Estás seguro de que deseas eliminar la propiedad "';
+  static const confirmDeletePropertyMessageSuffix = '"?';
 }

@@ -16,7 +16,11 @@ import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
 import '../../catalog/presentation/requirements_section_widget.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../catalog/domain/species_magnitude.dart';
+import '../../catalog/domain/species_requirement.dart';
+import '../../relations/domain/entity_relation.dart';
 import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 
@@ -32,15 +36,33 @@ class EntityDetailScreen extends ConsumerStatefulWidget {
 
 class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   bool _isEditingInPlace = false;
+  bool _forceClose = false;
   final _qtyController = TextEditingController();
   final _notesController = TextEditingController();
   String? _selectedLocationId;
   DateTime? _selectedExpirationDate;
   List<InstanceMagnitude> _workingMagnitudes = [];
+  List<EntityRelation> _workingRelations = [];
+  List<SpeciesRequirement> _workingRequirements = [];
+  List<EntityRelation>? _originalRelations;
+  List<SpeciesRequirement>? _originalRequirements;
   WorldEntity? _lastInitializedEntity;
 
-  void _syncWorkingStateWithEntity(WorldEntity entity, {bool force = false}) {
+  void _syncWorkingStateWithEntity(
+    WorldEntity entity, {
+    List<EntityRelation>? relations,
+    List<SpeciesRequirement>? requirements,
+    bool force = false,
+  }) {
     if (!force && _lastInitializedEntity?.id == entity.id && _lastInitializedEntity == entity) {
+      if (relations != null && _originalRelations == null) {
+        _originalRelations = List.from(relations);
+        _workingRelations = List.from(relations);
+      }
+      if (requirements != null && _originalRequirements == null) {
+        _originalRequirements = List.from(requirements);
+        _workingRequirements = List.from(requirements);
+      }
       return;
     }
     _lastInitializedEntity = entity;
@@ -54,6 +76,122 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     _selectedLocationId = entity.locationId;
     _selectedExpirationDate = entity.expirationDate;
     _workingMagnitudes = List.from(entity.magnitudes);
+    if (relations != null) {
+      _originalRelations = List.from(relations);
+      _workingRelations = List.from(relations);
+    }
+    if (requirements != null) {
+      _originalRequirements = List.from(requirements);
+      _workingRequirements = List.from(requirements);
+    }
+  }
+
+  bool _hasUnsavedChanges(WorldEntity entity) {
+    if (!_isEditingInPlace) return false;
+    final originalNotes = entity.notes ?? '';
+    if (_notesController.text.trim() != originalNotes.trim()) return true;
+    if (_selectedLocationId != entity.locationId) return true;
+    if (_selectedExpirationDate != entity.expirationDate) return true;
+    if (_workingMagnitudes.length != entity.magnitudes.length) return true;
+    for (int i = 0; i < _workingMagnitudes.length; i++) {
+      final wm = _workingMagnitudes[i];
+      final om = entity.magnitudes.where((m) => m.id == wm.id).firstOrNull;
+      if (om == null) return true;
+      if (wm.magnitudeValue != om.magnitudeValue || wm.stringValue != om.stringValue) return true;
+    }
+
+    if (_originalRelations != null) {
+      if (_workingRelations.length != _originalRelations!.length) return true;
+      final origRelKeys = _originalRelations!.map((r) => '${r.id}_${r.sourceEntityId}_${r.targetEntityId}_${r.relationType}').toSet();
+      for (final wr in _workingRelations) {
+        if (!origRelKeys.contains('${wr.id}_${wr.sourceEntityId}_${wr.targetEntityId}_${wr.relationType}')) return true;
+      }
+    }
+
+    if (_originalRequirements != null) {
+      if (_workingRequirements.length != _originalRequirements!.length) return true;
+      final origReqKeys = _originalRequirements!.map((r) => '${r.id}_${r.requiredSpeciesId}_${r.requiredQuantity}_${r.notes ?? ""}').toSet();
+      for (final wr in _workingRequirements) {
+        if (!origReqKeys.contains('${wr.id}_${wr.requiredSpeciesId}_${wr.requiredQuantity}_${wr.notes ?? ""}')) return true;
+      }
+    }
+
+    return false;
+  }
+
+  Future<void> _handleCancelEditing(WorldEntity entity) async {
+    if (_hasUnsavedChanges(entity)) {
+      final shouldDiscard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+      if (!shouldDiscard) return;
+    }
+    _syncWorkingStateWithEntity(
+      entity,
+      relations: _originalRelations,
+      requirements: _originalRequirements,
+      force: true,
+    );
+    if (mounted) {
+      setState(() => _isEditingInPlace = false);
+    }
+  }
+
+  Future<void> _saveEntityChanges(WorldEntity entity) async {
+    final updated = entity.copyWith(
+      locationId: _selectedLocationId,
+      expirationDate: _selectedExpirationDate,
+      magnitudes: _workingMagnitudes,
+      notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+      updatedAt: DateTime.now(),
+    );
+
+    // 1. Save entity
+    await ref.read(entityListProvider.notifier).saveEntity(updated);
+
+    // 2. Sync relations delta
+    if (_originalRelations != null) {
+      final relationRepo = ref.read(relationRepositoryProvider);
+      final deletedRelations = _originalRelations!.where((orig) => !_workingRelations.any((w) => w.id == orig.id)).toList();
+      final addedRelations = _workingRelations.where((w) => !_originalRelations!.any((orig) => orig.id == w.id)).toList();
+
+      for (final rel in deletedRelations) {
+        await relationRepo.deleteRelation(rel.id);
+      }
+      for (final rel in addedRelations) {
+        await relationRepo.addRelation(rel);
+      }
+    }
+
+    // 3. Sync requirements delta
+    if (_originalRequirements != null) {
+      final catalogRepo = ref.read(catalogRepositoryProvider);
+      final deletedRequirements = _originalRequirements!.where((orig) => !_workingRequirements.any((w) => w.id == orig.id)).toList();
+      final addedRequirements = _workingRequirements.where((w) => !_originalRequirements!.any((orig) => orig.id == w.id)).toList();
+
+      for (final req in deletedRequirements) {
+        await catalogRepo.deleteRequirement(req.id);
+      }
+      for (final req in addedRequirements) {
+        await catalogRepo.saveRequirement(req);
+      }
+    }
+
+    ref.invalidate(entityDetailProvider(widget.entityId));
+    ref.invalidate(entityRelationsProvider(widget.entityId));
+    ref.invalidate(sourceRequirementsProvider(widget.entityId));
+    ref.invalidate(relationListProvider);
+    ref.invalidate(entityListProvider);
+
+    _syncWorkingStateWithEntity(
+      updated,
+      relations: _workingRelations,
+      requirements: _workingRequirements,
+      force: true,
+    );
+
+    if (mounted) {
+      setState(() => _isEditingInPlace = false);
+      AppToast.showSuccess(context, AppStrings.instanceUpdatedSuccess);
+    }
   }
 
   @override
@@ -179,19 +317,10 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     required CatalogItem species,
     required String entityId,
   }) async {
-    final confirm = await showDialog<bool>(
+    final confirm = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(AppStrings.deleteConfirmationTitle),
-        content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-          ),
-        ],
-      ),
+      title: AppStrings.deleteConfirmationTitle,
+      message: '${AppStrings.deleteConfirmationMessage} "${species.name}"?',
     );
 
     if (confirm == true) {
@@ -205,6 +334,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final entityAsync = ref.watch(entityDetailProvider(widget.entityId));
+    final relationsAsync = ref.watch(entityRelationsProvider(widget.entityId));
+    final requirementsAsync = ref.watch(sourceRequirementsProvider(widget.entityId));
     final catalogState = ref.watch(catalogListProvider);
     final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
@@ -218,43 +349,51 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           );
         }
 
-          if (!_isEditingInPlace) {
-            _syncWorkingStateWithEntity(entity);
-          }
+        final originalRelations = relationsAsync.asData?.value ?? [];
+        final originalRequirements = requirementsAsync.asData?.value ?? [];
 
-          final catalogItems = catalogState.asData?.value ?? [];
-          final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull ??
-              CatalogItem(
-                id: entity.speciesId,
-                name: AppStrings.typeObject,
-                type: AppStrings.typeObject,
-                createdAt: DateTime.now(),
-              );
-
-          final locationNodes = locationsState.asData?.value ?? [];
-          final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
-          final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
-          final subspeciesList = ref.watch(subspeciesListProvider).asData?.value ?? [];
-
-          final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
-            entityId: entity.id,
-            effectiveLocationId: _selectedLocationId,
-            allEntities: allEntities,
-            allRelations: allRelations,
-            allNodes: locationNodes,
-            catalogItems: catalogItems,
-            subspeciesList: subspeciesList,
+        if (!_isEditingInPlace) {
+          _syncWorkingStateWithEntity(
+            entity,
+            relations: originalRelations,
+            requirements: originalRequirements,
           );
+        }
 
-          // Instance Header Controls & Interactive Directed Graph
-          final instanceHeader = Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Distinct Instance Header Badge & Relacionar Button (ONLY in Edit Mode!)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
+        final catalogItems = catalogState.asData?.value ?? [];
+        final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull ??
+            CatalogItem(
+              id: entity.speciesId,
+              name: AppStrings.typeObject,
+              type: AppStrings.typeObject,
+              createdAt: DateTime.now(),
+            );
+
+        final locationNodes = locationsState.asData?.value ?? [];
+        final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
+        final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
+        final subspeciesList = ref.watch(subspeciesListProvider).asData?.value ?? [];
+
+        final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
+          entityId: entity.id,
+          effectiveLocationId: _selectedLocationId,
+          allEntities: allEntities,
+          allRelations: allRelations,
+          allNodes: locationNodes,
+          catalogItems: catalogItems,
+          subspeciesList: subspeciesList,
+        );
+
+        // Instance Header Controls & Interactive Directed Graph
+        final instanceHeader = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Distinct Instance Header Badge & Relacionar Button (ONLY in Edit Mode!)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.amber.withAlpha(30),
@@ -265,27 +404,42 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       children: [
                         const Icon(Icons.inventory_2, size: 14, color: Colors.amber),
                         const SizedBox(width: 6),
-                        Text(
-                          AppStrings.instanceWorldHeader,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.8,
-                            color: theme.colorScheme.primary,
+                        Flexible(
+                          child: Text(
+                            AppStrings.instanceWorldHeader,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.8,
+                              color: theme.colorScheme.primary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  if (_isEditingInPlace)
-                    OutlinedButton.icon(
-                      onPressed: () => CreateRelationModal.show(context, sourceEntity: entity),
-                      icon: const Icon(Icons.alt_route, size: 14),
-                      label: const Text(AppStrings.link, style: TextStyle(fontSize: 12)),
-                      style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
-                    ),
-                ],
-              ),
+                ),
+                if (_isEditingInPlace)
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      final newRel = await CreateRelationModal.show(
+                        context,
+                        sourceEntity: entity,
+                        returnResultOnly: true,
+                      );
+                      if (newRel != null && mounted) {
+                        setState(() {
+                          _workingRelations.add(newRel);
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.alt_route, size: 14),
+                    label: const Text(AppStrings.link, style: TextStyle(fontSize: 12)),
+                    style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+                  ),
+              ],
+            ),
               if (entity.subspeciesId != null) ...[
                 const SizedBox(height: 10),
                 FutureBuilder<Subspecies?>(
@@ -475,18 +629,30 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               ),
               const SizedBox(height: 14),
 
-              // Interactive Directed Entity Relations Graph (Passes isEditing mode!)
+              // Interactive Directed Entity Relations Graph (Passes isEditing mode and draft state!)
               InteractiveEntityGraphWidget(
                 currentEntity: entity,
                 isEditing: _isEditingInPlace,
+                overrideRelations: _isEditingInPlace ? _workingRelations : null,
+                onDeleteRelation: (rel) {
+                  setState(() {
+                    _workingRelations.removeWhere((r) => r.id == rel.id);
+                  });
+                },
               ),
               const SizedBox(height: 14),
 
-              // Entity Requirements Section (NECESITA)
+              // Entity Requirements Section (NECESITA - Passes draft state!)
               RequirementsSectionWidget(
                 sourceId: entity.id,
                 sourceType: 'entity',
                 isEditing: _isEditingInPlace,
+                overrideRequirements: _isEditingInPlace ? _workingRequirements : null,
+                onRequirementsChanged: (reqs) {
+                  setState(() {
+                    _workingRequirements = List.from(reqs);
+                  });
+                },
               ),
               const SizedBox(height: 14),
 
@@ -501,9 +667,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            AppStrings.instancePropertiesAndMagnitudesTitle,
-                            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              AppStrings.instancePropertiesAndMagnitudesTitle,
+                              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                            ),
                           ),
                           if (_isEditingInPlace)
                             TextButton.icon(
@@ -563,8 +731,15 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                         IconButton(
                                           icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
                                           tooltip: AppStrings.deletePropertyFromInstanceTooltip,
-                                          onPressed: () {
-                                            setState(() => _workingMagnitudes.removeAt(idx));
+                                          onPressed: () async {
+                                            final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                                              context: context,
+                                              title: AppStrings.confirmDeletePropertyTitle,
+                                              message: '${AppStrings.confirmDeletePropertyMessagePrefix}${mag.propertyName}${AppStrings.confirmDeletePropertyMessageSuffix}',
+                                            );
+                                            if (confirm && mounted) {
+                                              setState(() => _workingMagnitudes.removeAt(idx));
+                                            }
                                           },
                                         ),
                                       ],
@@ -587,7 +762,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             ],
           );
 
-          // Instance Footer (Notes & Save Action)
+          // Instance Footer (Notes & Save Action)          // Instance Footer (Notes & Save / Discard Actions)
           final hasNotes = entity.notes != null && entity.notes!.trim().isNotEmpty;
           final Widget? instanceFooter = (_isEditingInPlace || hasNotes)
               ? Column(
@@ -608,36 +783,77 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                     ),
                     if (_isEditingInPlace) ...[
                       const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            final updated = entity.copyWith(
-                              locationId: _selectedLocationId,
-                              expirationDate: _selectedExpirationDate,
-                              magnitudes: _workingMagnitudes,
-                              notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-                              updatedAt: DateTime.now(),
-                            );
-
-                            await ref.read(entityListProvider.notifier).saveEntity(updated);
-                            ref.invalidate(entityDetailProvider(widget.entityId));
-                            ref.invalidate(entityRelationsProvider(widget.entityId));
-                            ref.invalidate(relationListProvider);
-                            setState(() => _isEditingInPlace = false);
-                          },
-                          icon: const Icon(Icons.check),
-                          label: const Text(AppStrings.saveChangesAction),
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () => _handleCancelEditing(entity),
+                              icon: const Icon(Icons.close, size: 18),
+                              label: const Text(AppStrings.discardChangesAction),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () => _saveEntityChanges(entity),
+                              icon: const Icon(Icons.check, size: 18),
+                              label: const Text(AppStrings.saveChangesAction),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                backgroundColor: theme.colorScheme.primary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ],
                 )
               : null;
 
+          final List<Widget> detailViewActions;
+          if (!_isEditingInPlace) {
+            detailViewActions = [
+              IconButton(
+                icon: const Icon(Icons.public),
+                tooltip: AppStrings.viewCatalogSpecies,
+                onPressed: () => context.pushSpeciesDetail(species.id),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                tooltip: AppStrings.edit,
+                onPressed: () => setState(() => _isEditingInPlace = true),
+              ),
+            ];
+          } else {
+            detailViewActions = [
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                tooltip: AppStrings.delete,
+                onPressed: () => _handleDeletion(species: species, entityId: entity.id),
+              ),
+              IconButton(
+                icon: const Icon(Icons.check, color: Colors.green),
+                tooltip: AppStrings.saveChangesAction,
+                onPressed: () => _saveEntityChanges(entity),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                tooltip: AppStrings.cancel,
+                onPressed: () => _handleCancelEditing(entity),
+              ),
+            ];
+          }
+
+          Widget currentDetailView;
           if (entity.subspeciesId != null && entity.subspeciesId!.isNotEmpty) {
-            return FutureBuilder<Subspecies?>(
+            currentDetailView = FutureBuilder<Subspecies?>(
               future: ref.read(catalogRepositoryProvider).getSubspeciesById(entity.subspeciesId!),
               builder: (context, subSnapshot) {
                 return SpeciesDetailView(
@@ -647,55 +863,37 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   showAttachmentAction: _isEditingInPlace,
                   instanceSpecificsHeader: instanceHeader,
                   instanceSpecificsFooter: instanceFooter,
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.public),
-                      tooltip: AppStrings.viewCatalogSpecies,
-                      onPressed: () => context.pushSpeciesDetail(species.id),
-                    ),
-                    IconButton(
-                      icon: Icon(_isEditingInPlace ? Icons.close : Icons.edit_outlined),
-                      tooltip: _isEditingInPlace ? AppStrings.cancel : AppStrings.edit,
-                      onPressed: () {
-                        setState(() => _isEditingInPlace = !_isEditingInPlace);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                      tooltip: AppStrings.delete,
-                      onPressed: () => _handleDeletion(species: species, entityId: entity.id),
-                    ),
-                  ],
+                  actions: detailViewActions,
                 );
               },
             );
+          } else {
+            currentDetailView = SpeciesDetailView(
+              species: species,
+              instanceId: entity.id,
+              showAttachmentAction: _isEditingInPlace,
+              instanceSpecificsHeader: instanceHeader,
+              instanceSpecificsFooter: instanceFooter,
+              actions: detailViewActions,
+            );
           }
 
-          return SpeciesDetailView(
-            species: species,
-            instanceId: entity.id,
-            showAttachmentAction: _isEditingInPlace,
-            instanceSpecificsHeader: instanceHeader,
-            instanceSpecificsFooter: instanceFooter,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.public),
-                tooltip: AppStrings.viewCatalogSpecies,
-                onPressed: () => context.pushSpeciesDetail(species.id),
-              ),
-              IconButton(
-                icon: Icon(_isEditingInPlace ? Icons.close : Icons.edit_outlined),
-                tooltip: _isEditingInPlace ? AppStrings.cancel : AppStrings.edit,
-                onPressed: () {
-                  setState(() => _isEditingInPlace = !_isEditingInPlace);
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                tooltip: AppStrings.delete,
-                onPressed: () => _handleDeletion(species: species, entityId: entity.id),
-              ),
-            ],
+          return PopScope(
+            canPop: !_isEditingInPlace || _forceClose,
+            onPopInvokedWithResult: (didPop, result) async {
+              if (didPop) return;
+              if (_hasUnsavedChanges(entity)) {
+                final shouldDiscard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+                if (!shouldDiscard || !mounted) return;
+              }
+              _syncWorkingStateWithEntity(entity, force: true);
+              _forceClose = true;
+              if (mounted) {
+                setState(() => _isEditingInPlace = false);
+                Navigator.of(context).pop();
+              }
+            },
+            child: currentDetailView,
           );
         },
         loading: () => Scaffold(
@@ -709,3 +907,4 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       );
   }
 }
+

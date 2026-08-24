@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../domain/subspecies.dart';
 import 'taxonomy_operations_dialog.dart';
@@ -147,6 +148,13 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                             await TaxonomyOperationsDialog.showMoveSubspeciesDialog(context, ref, sub);
                             if (mounted) _loadSubspecies();
                           } else if (val == 'delete' && canDelete) {
+                            final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                              context: context,
+                              title: AppStrings.confirmDeleteSubspeciesTitle,
+                              message: '${AppStrings.confirmDeleteSubspeciesMessagePrefix}${sub.subspeciesName}${AppStrings.confirmDeleteSubspeciesMessageSuffix}',
+                            );
+                            if (!confirm) return;
+
                             try {
                               final catalogRepo = ref.read(catalogRepositoryProvider);
                               await catalogRepo.deleteSubspecies(sub.id);
@@ -157,11 +165,11 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                           }
                         },
                         itemBuilder: (ctx) => [
-                          const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Text(AppStrings.edit)])),
-                          const PopupMenuItem(value: 'separate', child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Text(AppStrings.separateInNewSpeciesTitle)])),
-                          const PopupMenuItem(value: 'move', child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Text(AppStrings.moveSubspeciesTitle)])),
+                          const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.edit))])),
+                          const PopupMenuItem(value: 'separate', child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.separateInNewSpeciesTitle))])),
+                          const PopupMenuItem(value: 'move', child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.moveSubspeciesTitle))])),
                           if (canDelete)
-                            const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent))])),
+                            const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Expanded(child: Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)))]))
                         ],
                       )
                     : null,

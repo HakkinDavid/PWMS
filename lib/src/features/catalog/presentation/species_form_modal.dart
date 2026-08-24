@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/domain/property_data_type.dart';
@@ -138,6 +139,45 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     _defaultShelfLifeController.dispose();
     _warningDaysController.dispose();
     super.dispose();
+  }
+
+  bool _forceClose = false;
+
+  bool _hasUnsavedChanges() {
+    if (_isEditMode && widget.initialSpecies != null) {
+      final s = widget.initialSpecies!;
+      if (_nameController.text.trim() != s.name.trim()) return true;
+      if (_descController.text.trim() != (s.description ?? '').trim()) return true;
+      final defaultShelf = s.defaultShelfLifeDays?.toString() ?? '';
+      if (_defaultShelfLifeController.text.trim() != defaultShelf.trim()) return true;
+      final warnDays = s.warningDaysBeforeExpiration?.toString() ?? '';
+      if (_warningDaysController.text.trim() != warnDays.trim()) return true;
+      if (_selectedType != s.type) return true;
+      if (_isUnique != s.isUnique) return true;
+      if (_isNonPerishable != s.isNonPerishable) return true;
+      if (_selectedImage != null || _photoDeleted) return true;
+      if (_magnitudes.length != s.magnitudes.length) return true;
+      if (_draftSubspecies.isNotEmpty) return true;
+      return false;
+    } else {
+      if (_nameController.text.trim().isNotEmpty) return true;
+      if (_descController.text.trim().isNotEmpty) return true;
+      if (_defaultShelfLifeController.text.trim().isNotEmpty) return true;
+      if (_warningDaysController.text.trim().isNotEmpty) return true;
+      if (_selectedImage != null || _photoDeleted) return true;
+      if (_magnitudes.isNotEmpty) return true;
+      if (_draftSubspecies.isNotEmpty) return true;
+      return false;
+    }
+  }
+
+  Future<bool> _requestClose() async {
+    if (_hasUnsavedChanges()) {
+      final discard = await AppConfirmationDialog.showDiscardChangesDialog(context);
+      if (!discard) return false;
+    }
+    _forceClose = true;
+    return true;
   }
 
   void _applySubgroupConstraints(String type) {
@@ -303,8 +343,16 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     }
   }
 
-  void _removeMagnitudeRow(int index) {
-    setState(() => _magnitudes.removeAt(index));
+  Future<void> _removeMagnitudeRow(int index) async {
+    final mag = _magnitudes[index];
+    final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+      context: context,
+      title: AppStrings.confirmDeletePropertyTitle,
+      message: '${AppStrings.confirmDeletePropertyMessagePrefix}${mag.propertyName}${AppStrings.confirmDeletePropertyMessageSuffix}',
+    );
+    if (confirm && mounted) {
+      setState(() => _magnitudes.removeAt(index));
+    }
   }
 
   Future<void> _addOrEditDraftSubspeciesModal({Subspecies? initial, int? editIndex}) async {
@@ -422,19 +470,21 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       }
 
       if (widget.onSpeciesSaved != null) {
+        _forceClose = true;
         widget.onSpeciesSaved!(savedItem);
-      }
+      } else {
+        if (mounted) {
+          final navCtx = Navigator.of(context).context;
+          _forceClose = true;
+          Navigator.pop(context, savedItem);
 
-      if (mounted) {
-        final navCtx = Navigator.of(context).context;
-        Navigator.pop(context, savedItem);
-
-        if (!_isEditMode) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (navCtx.mounted) {
-              InstantiateSpeciesSheet.show(navCtx, species: savedItem);
-            }
-          });
+          if (!_isEditMode) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (navCtx.mounted) {
+                InstantiateSpeciesSheet.show(navCtx, species: savedItem);
+              }
+            });
+          }
         }
       }
     } catch (e) {
@@ -471,9 +521,26 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            _isEditMode ? AppStrings.editSpeciesTitle : AppStrings.createSpeciesTitle,
-            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  _isEditMode ? AppStrings.editSpeciesTitle : AppStrings.createSpeciesTitle,
+                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                tooltip: AppStrings.close,
+                onPressed: () async {
+                  final canClose = await _requestClose();
+                  if (canClose && mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ],
           ),
           const SizedBox(height: 12),
         ],
@@ -566,12 +633,22 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 shape: const CircleBorder(),
                                 clipBehavior: Clip.antiAlias,
                                 child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedImage = null;
-                                      _speciesPhotoPath = null;
-                                      _photoDeleted = true;
-                                    });
+                                  onTap: () async {
+                                    final confirm = await AppConfirmationDialog.show(
+                                      context: context,
+                                      title: AppStrings.confirmRemovePhotoTitle,
+                                      message: AppStrings.confirmRemovePhotoMessage,
+                                      confirmLabel: AppStrings.delete,
+                                      isDestructive: true,
+                                      icon: Icons.delete_outline,
+                                    );
+                                    if (confirm && mounted) {
+                                      setState(() {
+                                        _selectedImage = null;
+                                        _speciesPhotoPath = null;
+                                        _photoDeleted = true;
+                                      });
+                                    }
                                   },
                                   child: const Padding(
                                     padding: EdgeInsets.all(6.0),
@@ -786,7 +863,16 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                       onTap: () => _addOrEditDraftSubspeciesModal(initial: sub, editIndex: idx),
                                       trailing: IconButton(
                                         icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 18),
-                                        onPressed: () => setState(() => _draftSubspecies.removeAt(idx)),
+                                        onPressed: () async {
+                                          final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                                            context: context,
+                                            title: AppStrings.confirmDeleteSubspeciesTitle,
+                                            message: '${AppStrings.confirmDeleteSubspeciesMessagePrefix}${sub.subspeciesName}${AppStrings.confirmDeleteSubspeciesMessageSuffix}',
+                                          );
+                                          if (confirm && mounted) {
+                                            setState(() => _draftSubspecies.removeAt(idx));
+                                          }
+                                        },
                                       ),
                                     );
                                   },
@@ -839,25 +925,45 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
         );
 
     if (widget.isEmbedded) {
-      return formContent;
+      return PopScope(
+        canPop: _forceClose,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          final canClose = await _requestClose();
+          if (canClose && mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: formContent,
+      );
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 14,
-        bottom: bottomPadding,
-      ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: mediaQuery.size.height * 0.85,
+    return PopScope(
+      canPop: _forceClose,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final canClose = await _requestClose();
+        if (canClose && mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
-        child: formContent,
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 14,
+          bottom: bottomPadding,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: mediaQuery.size.height * 0.92,
+          ),
+          child: formContent,
+        ),
       ),
     );
   }

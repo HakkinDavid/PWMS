@@ -3,23 +3,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
+import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/subspecies.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
+import '../domain/entity_relation.dart';
 
 class InteractiveEntityGraphWidget extends ConsumerWidget {
   final WorldEntity currentEntity;
   final bool isEditing;
+  final List<EntityRelation>? overrideRelations;
+  final void Function(EntityRelation rel)? onDeleteRelation;
 
   const InteractiveEntityGraphWidget({
     super.key,
     required this.currentEntity,
     this.isEditing = false,
+    this.overrideRelations,
+    this.onDeleteRelation,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final relationsAsync = ref.watch(entityRelationsProvider(currentEntity.id));
     final catalogState = ref.watch(catalogListProvider);
     final entitiesState = ref.watch(entityListProvider);
     final subspeciesState = ref.watch(subspeciesListProvider);
@@ -34,11 +41,50 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
       subspeciesList: subspeciesList,
     );
 
+    if (overrideRelations != null) {
+      return _buildContent(
+        context: context,
+        ref: ref,
+        theme: theme,
+        relations: overrideRelations!,
+        catalogItems: catalogItems,
+        allEntities: allEntities,
+        subspeciesList: subspeciesList,
+        centralTitle: centralTitle,
+      );
+    }
+
+    final relationsAsync = ref.watch(entityRelationsProvider(currentEntity.id));
+
     return relationsAsync.when(
-      data: (relations) {
-        final visibleRelations = relations.where((r) =>
-          !(r.sourceEntityId == currentEntity.id && r.relationType == 'GUARDADO_EN')
-        ).toList();
+      data: (relations) => _buildContent(
+        context: context,
+        ref: ref,
+        theme: theme,
+        relations: relations,
+        catalogItems: catalogItems,
+        allEntities: allEntities,
+        subspeciesList: subspeciesList,
+        centralTitle: centralTitle,
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Text('${AppStrings.relationsLoadErrorPrefix}$err'),
+    );
+  }
+
+  Widget _buildContent({
+    required BuildContext context,
+    required WidgetRef ref,
+    required ThemeData theme,
+    required List<EntityRelation> relations,
+    required List<CatalogItem> catalogItems,
+    required List<WorldEntity> allEntities,
+    required List<Subspecies> subspeciesList,
+    required String centralTitle,
+  }) {
+    final visibleRelations = relations.where((r) =>
+      !(r.sourceEntityId == currentEntity.id && r.relationType == 'GUARDADO_EN')
+    ).toList();
 
         return Card(
           margin: EdgeInsets.zero,
@@ -50,16 +96,22 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.hub_outlined, color: theme.colorScheme.primary, size: 20),
-                        const SizedBox(width: 8),
-                        Text(
-                          AppStrings.interactiveRelationsGraphTitle,
-                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(Icons.hub_outlined, color: theme.colorScheme.primary, size: 20),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              AppStrings.interactiveRelationsGraphTitle,
+                              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Chip(
                       visualDensity: VisualDensity.compact,
                       label: Text('${visibleRelations.length}${AppStrings.linksCountSuffix}', style: const TextStyle(fontSize: 10)),
@@ -198,11 +250,22 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                                     icon: const Icon(Icons.close, size: 16, color: Colors.redAccent),
                                     tooltip: AppStrings.deleteRelationTooltip,
                                     onPressed: () async {
-                                      await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
-                                      ref.invalidate(entityRelationsProvider(currentEntity.id));
-                                      ref.invalidate(entityRelationsProvider(otherEntityId));
-                                      ref.invalidate(relationListProvider);
-                                      ref.invalidate(entityListProvider);
+                                      final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                                        context: context,
+                                        title: AppStrings.confirmDeleteRelationTitle,
+                                        message: '${AppStrings.confirmDeleteRelationMessagePrefix}${rel.relationType}${AppStrings.confirmDeleteRelationMessageMiddle}$otherName${AppStrings.confirmDeleteRelationMessageSuffix}',
+                                      );
+                                      if (!confirm) return;
+
+                                      if (onDeleteRelation != null) {
+                                        onDeleteRelation!(rel);
+                                      } else {
+                                        await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
+                                        ref.invalidate(entityRelationsProvider(currentEntity.id));
+                                        ref.invalidate(entityRelationsProvider(otherEntityId));
+                                        ref.invalidate(relationListProvider);
+                                        ref.invalidate(entityListProvider);
+                                      }
                                     },
                                   ),
                                 ],
@@ -217,10 +280,6 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
             ),
           ),
         );
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Text('${AppStrings.relationsLoadErrorPrefix}$err'),
-    );
   }
 
   Widget _buildCentralNodeTile({
@@ -242,9 +301,12 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
             '${AppStrings.centralInstanceLabel}: ',
             style: TextStyle(color: Colors.white.withAlpha(220), fontSize: 12),
           ),
-          Text(
-            title,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
