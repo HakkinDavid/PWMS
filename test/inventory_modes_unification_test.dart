@@ -21,6 +21,7 @@ import 'package:platinum_world_management_system/src/features/entities/presentat
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_breadcrumb_bar.dart';
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_finder_screen.dart';
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_item_interaction_wrapper.dart';
+import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 import 'package:platinum_world_management_system/src/features/locations/infrastructure/location_repository.dart';
 import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/infrastructure/relation_repository.dart';
@@ -627,7 +628,7 @@ void main() {
       expect(find.byType(MinecraftTileWidget), findsOneWidget);
 
       // Tap back button in AppBar
-      await tester.tap(find.byTooltip('Subir nivel'));
+      await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
 
       // Returned to root
@@ -844,6 +845,262 @@ void main() {
       // Relation count should be unchanged
       final afterRelCount = (await relationRepo.getAllRelations()).length;
       expect(afterRelCount, equals(initialRelCount));
+    });
+
+    testWidgets('12. Count badges are hidden for population == 1 or unique items, and container tiles show chevron right', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final boxSpecies = CatalogItem(id: 'sp-box-chev', name: 'Cofre', type: 'Objeto', createdAt: now);
+      final gemSpecies = CatalogItem(id: 'sp-gem-chev', name: 'Zafiro', type: 'Objeto', isUnique: true, createdAt: now);
+      await catalogRepo.saveCatalogItem(boxSpecies);
+      await catalogRepo.saveCatalogItem(gemSpecies);
+
+      final boxEntity = WorldEntity(id: 'ent-box-c', speciesId: boxSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final gemEntity = WorldEntity(id: 'ent-gem-c', speciesId: gemSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(boxEntity);
+      await entityRepo.saveEntity(gemEntity);
+
+      // Link gem in box to make box a container
+      await relationRepo.addRelation(EntityRelation(
+        id: 'rel-c-1',
+        sourceEntityId: gemEntity.id,
+        targetEntityId: boxEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      ));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // At root: Cofre is a container tile -> should display chevron right
+      final boxTileFinder = find.byType(EffectiveGroupTile).first;
+      expect(boxTileFinder, findsOneWidget);
+      expect(
+        find.descendant(of: boxTileFinder, matching: find.byIcon(Icons.chevron_right)),
+        findsOneWidget,
+      );
+
+      // Population is 1 for Cofre -> no count badge '1'
+      expect(find.descendant(of: boxTileFinder, matching: find.text('1')), findsNothing);
+    });
+
+    testWidgets('13. System back button pops container navigation hierarchy before exiting screen', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final boxSpecies = CatalogItem(id: 'sp-box-pop', name: 'Maleta', type: 'Objeto', createdAt: now);
+      final itemSpecies = CatalogItem(id: 'sp-item-pop', name: 'Pasaporte', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(boxSpecies);
+      await catalogRepo.saveCatalogItem(itemSpecies);
+
+      final boxEntity = WorldEntity(id: 'ent-box-p', speciesId: boxSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      final itemEntity = WorldEntity(id: 'ent-item-p', speciesId: itemSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(boxEntity);
+      await entityRepo.saveEntity(itemEntity);
+
+      await relationRepo.addRelation(EntityRelation(
+        id: 'rel-pop-1',
+        sourceEntityId: itemEntity.id,
+        targetEntityId: boxEntity.id,
+        relationType: 'GUARDADO_EN',
+        createdAt: now,
+      ));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Enter Maleta container
+      await tester.tap(find.byType(EffectiveGroupTile));
+      await tester.pumpAndSettle();
+
+      // We are inside Maleta (hero tile is present in breadcrumb bar)
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsOneWidget,
+      );
+
+      // Simulate system back button dispatch
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Should have returned to root (hero tile gone)
+      expect(
+        find.descendant(
+          of: find.byType(InventoryBreadcrumbBar),
+          matching: find.byType(InstancePreviewCard),
+        ),
+        findsNothing,
+      );
+    });
+
+    testWidgets('14. Location history: back button despools location navigation history back to Mundo root', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final locHouse = LocationNode(id: 'loc_h', name: 'Casa', createdAt: now);
+      final locRoom = LocationNode(id: 'loc_r', name: 'Habitación', parentLocationId: locHouse.id, createdAt: now);
+      await locationRepo.saveNode(locHouse);
+      await locationRepo.saveNode(locRoom);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(startWithCurtainOpen: true),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Tap on Casa in the curtain
+      await tester.tap(find.text('Casa'));
+      await tester.pumpAndSettle();
+
+      // Back button should now be visible in AppBar
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+
+      // Re-open curtain and tap Habitación
+      await tester.tap(find.text('Ubicaciones'));
+      await tester.pumpAndSettle();
+      // Expand Casa in tree
+      final treeChevron = find.descendant(
+        of: find.byType(SizeTransition),
+        matching: find.byIcon(Icons.chevron_right),
+      );
+      await tester.tap(treeChevron.first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Habitación'));
+      await tester.pumpAndSettle();
+
+      // Back button still present
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+
+      // Press Back button (despools Habitación -> Casa)
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+      expect(find.text('Casa'), findsWidgets);
+
+      // Press Back button again (despools Casa -> Mundo root)
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+
+      // Now at Mundo root: Back button is gone
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+    });
+
+    testWidgets('15. Isolated tree spring-load: hovering over parent location node expands ONLY that node', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final now = DateTime.now();
+
+      final locWarehouse = LocationNode(id: 'loc_w', name: 'Almacén', createdAt: now);
+      final locAisle = LocationNode(id: 'loc_a', name: 'Pasillo 1', parentLocationId: locWarehouse.id, createdAt: now);
+
+      final locOffice = LocationNode(id: 'loc_o', name: 'Oficina', createdAt: now);
+      final locDesk = LocationNode(id: 'loc_d', name: 'Escritorio', parentLocationId: locOffice.id, createdAt: now);
+
+      final boxSpecies = CatalogItem(id: 'sp-box-tree', name: 'Paquete', type: 'Objeto', createdAt: now);
+      await catalogRepo.saveCatalogItem(boxSpecies);
+      final boxEntity = WorldEntity(id: 'ent-box-t', speciesId: boxSpecies.id, magnitudes: const [], createdAt: now, updatedAt: now);
+      await entityRepo.saveEntity(boxEntity);
+
+      await locationRepo.saveNode(locWarehouse);
+      await locationRepo.saveNode(locAisle);
+      await locationRepo.saveNode(locOffice);
+      await locationRepo.saveNode(locDesk);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            relationRepositoryProvider.overrideWithValue(relationRepo),
+            locationRepositoryProvider.overrideWithValue(locationRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: const MaterialApp(
+            home: InventoryFinderScreen(startWithCurtainOpen: true),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Initially neither sub-location is visible (collapsed)
+      expect(find.text('Pasillo 1'), findsNothing);
+      expect(find.text('Escritorio'), findsNothing);
+
+      // Start drag on Paquete
+      final itemTile = find.byType(EffectiveGroupTile);
+      final gesture = await tester.startGesture(tester.getCenter(itemTile));
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Move drag over 'Almacén'
+      final warehouseNode = find.text('Almacén');
+      await gesture.moveTo(tester.getCenter(warehouseNode));
+      await tester.pump();
+
+      // Wait 650ms for spring-loaded timer
+      await tester.pump(const Duration(milliseconds: 650));
+      await tester.pumpAndSettle();
+
+      // 'Pasillo 1' is now expanded, but 'Escritorio' is STILL COLLAPSED
+      expect(find.text('Pasillo 1'), findsOneWidget);
+      expect(find.text('Escritorio'), findsNothing);
+
+      await gesture.up();
+      await tester.pump(const Duration(seconds: 4));
+      await tester.pumpAndSettle();
     });
   });
 }

@@ -16,7 +16,8 @@ import '../../relations/domain/entity_relation.dart';
 /// Unified navigation bar for the inventory.
 /// Integrates full-width breadcrumbs (starting at Mundo), real physical path resolution,
 /// spring-loaded horizontal autoscroll, spring-loaded chevron & tree nodes with chevrons,
-/// and borderless active container hero tile without "Ver Ficha" badge.
+/// top/bottom vertical autoscroll edge zones in the location tree curtain,
+/// and borderless active container hero tile without "Ver Ficha" badge or X button.
 class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
   final List<LocationNode> allLocations;
   final String? selectedLocationId;
@@ -48,18 +49,24 @@ class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<InventoryBreadcrumbBar> createState() => _InventoryBreadcrumbBarState();
+  ConsumerState<InventoryBreadcrumbBar> createState() => InventoryBreadcrumbBarState();
 }
 
-class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> with SingleTickerProviderStateMixin {
+class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> with SingleTickerProviderStateMixin {
   late AnimationController _curtainController;
   late Animation<double> _curtainAnimation;
   late ScrollController _breadcrumbScrollController;
+  late ScrollController _treeScrollController;
   bool _isCurtainExpanded = false;
 
   final Set<String> _expandedLocationIds = {};
   Timer? _horizontalAutoScrollTimer;
+  Timer? _treeAutoScrollTimer;
   Timer? _chevronSpringTimer;
+
+  bool get isCurtainExpanded => _isCurtainExpanded;
+
+  void collapseCurtain() => _collapseCurtain();
 
   @override
   void initState() {
@@ -75,13 +82,16 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
       curve: Curves.easeInOut,
     );
     _breadcrumbScrollController = ScrollController();
+    _treeScrollController = ScrollController();
   }
 
   @override
   void dispose() {
     _curtainController.dispose();
     _breadcrumbScrollController.dispose();
+    _treeScrollController.dispose();
     _horizontalAutoScrollTimer?.cancel();
+    _treeAutoScrollTimer?.cancel();
     _chevronSpringTimer?.cancel();
     super.dispose();
   }
@@ -103,6 +113,23 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
     });
   }
 
+  void _stopTreeAutoScroll() {
+    _treeAutoScrollTimer?.cancel();
+    _treeAutoScrollTimer = null;
+  }
+
+  void _startTreeAutoScroll(double step) {
+    if (_treeAutoScrollTimer != null && _treeAutoScrollTimer!.isActive) return;
+    _treeAutoScrollTimer = Timer.periodic(const Duration(milliseconds: 20), (_) {
+      if (!_treeScrollController.hasClients) return;
+      final target = (_treeScrollController.offset + step).clamp(
+        0.0,
+        _treeScrollController.position.maxScrollExtent,
+      );
+      _treeScrollController.jumpTo(target);
+    });
+  }
+
   void _toggleCurtain() {
     setState(() {
       _isCurtainExpanded = !_isCurtainExpanded;
@@ -112,6 +139,15 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
         _curtainController.reverse();
       }
     });
+  }
+
+  void _collapseCurtain() {
+    if (_isCurtainExpanded) {
+      setState(() {
+        _isCurtainExpanded = false;
+        _curtainController.reverse();
+      });
+    }
   }
 
   void _showCreateLocationDialog(BuildContext context, {String? parentId}) {
@@ -196,107 +232,6 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
     return ancestry;
   }
 
-  Widget _buildTreeItem(LocationNode node, int depth) {
-    final children = widget.allLocations.where((l) => l.parentLocationId == node.id).toList();
-    final isSelected = node.id == widget.selectedLocationId;
-    final isExpanded = _expandedLocationIds.contains(node.id);
-    final theme = Theme.of(context);
-
-    Timer? nodeSpringTimer;
-
-    return DragTarget<Object>(
-      onWillAcceptWithDetails: (details) => true,
-      onMove: (_) {
-        if (children.isNotEmpty && !isExpanded && nodeSpringTimer == null) {
-          nodeSpringTimer = Timer(const Duration(milliseconds: 600), () {
-            if (mounted) {
-              setState(() => _expandedLocationIds.add(node.id));
-            }
-          });
-        }
-      },
-      onLeave: (_) {
-        nodeSpringTimer?.cancel();
-        nodeSpringTimer = null;
-      },
-      onAcceptWithDetails: (details) {
-        nodeSpringTimer?.cancel();
-        nodeSpringTimer = null;
-        widget.onDropOnLocation(details.data, node.id);
-      },
-      builder: (context, candidateData, rejectedData) {
-        final isHovered = candidateData.isNotEmpty;
-
-        return Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(left: depth * 16.0, top: 3, bottom: 3),
-              decoration: BoxDecoration(
-                color: isHovered
-                    ? theme.colorScheme.primaryContainer
-                    : (isSelected ? theme.colorScheme.primary.withAlpha(30) : null),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ListTile(
-                dense: true,
-                visualDensity: VisualDensity.compact,
-                leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (children.isNotEmpty)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (isExpanded) {
-                              _expandedLocationIds.remove(node.id);
-                            } else {
-                              _expandedLocationIds.add(node.id);
-                            }
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 4.0),
-                          child: Icon(
-                            isExpanded ? Icons.keyboard_arrow_down : Icons.chevron_right,
-                            size: 18,
-                            color: isSelected ? theme.colorScheme.primary : Colors.grey,
-                          ),
-                        ),
-                      )
-                    else
-                      const SizedBox(width: 22),
-                    Icon(
-                      children.isNotEmpty ? Icons.folder_outlined : Icons.location_on_outlined,
-                      color: isSelected ? theme.colorScheme.primary : Colors.grey,
-                    ),
-                  ],
-                ),
-                title: Text(
-                  node.name,
-                  style: TextStyle(
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? theme.colorScheme.primary : null,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.add_location_alt_outlined, size: 18),
-                  tooltip: AppStrings.newSubLocationTitle,
-                  onPressed: () => _showCreateLocationDialog(context, parentId: node.id),
-                ),
-                onTap: () {
-                  widget.onLocationSelected(node.id);
-                  _toggleCurtain();
-                },
-              ),
-            ),
-            if (children.isNotEmpty && isExpanded)
-              ...children.map((child) => _buildTreeItem(child, depth + 1)),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -325,7 +260,7 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 1. Controls Top Bar (Chevron, Add Location, Exit)
+          // 1. Controls Top Bar (Chevron, Add Location)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
             child: Row(
@@ -405,13 +340,6 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
                       visualDensity: VisualDensity.compact,
                       onPressed: () => _showCreateLocationDialog(context),
                     ),
-                    if (isInsideContainer)
-                      IconButton(
-                        icon: const Icon(Icons.close, size: 20),
-                        tooltip: 'Salir a la raíz',
-                        visualDensity: VisualDensity.compact,
-                        onPressed: widget.onExitContainersToRoot,
-                      ),
                   ],
                 ),
               ],
@@ -546,7 +474,7 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
             ),
           ),
 
-          // 3. Expandable Location Tree Curtain
+          // 3. Expandable Location Tree Curtain with Top/Bottom Autoscroll Edge Zones
           SizeTransition(
             sizeFactor: _curtainAnimation,
             child: Container(
@@ -555,27 +483,88 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
                 color: theme.colorScheme.surfaceContainerHighest.withAlpha(60),
                 border: Border(bottom: BorderSide(color: theme.dividerColor.withAlpha(40))),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      leading: const Icon(Icons.public),
-                      title: const Text(AppStrings.rootLocationName, style: TextStyle(fontWeight: FontWeight.bold)),
-                      selected: isRootWorldActive,
-                      onTap: () {
-                        if (isInsideContainer) widget.onExitContainersToRoot();
-                        widget.onLocationSelected(null);
-                        _toggleCurtain();
-                      },
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    controller: _treeScrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          dense: true,
+                          visualDensity: VisualDensity.compact,
+                          leading: const Icon(Icons.public),
+                          title: const Text(AppStrings.rootLocationName, style: TextStyle(fontWeight: FontWeight.bold)),
+                          selected: isRootWorldActive,
+                          onTap: () {
+                            if (isInsideContainer) widget.onExitContainersToRoot();
+                            widget.onLocationSelected(null);
+                            _toggleCurtain();
+                          },
+                        ),
+                        const Divider(height: 1),
+                        ...rootLocations.map(
+                          (root) => _TreeItemWidget(
+                            key: ValueKey(root.id),
+                            node: root,
+                            depth: 0,
+                            allLocations: widget.allLocations,
+                            selectedLocationId: widget.selectedLocationId,
+                            expandedLocationIds: _expandedLocationIds,
+                            onToggleExpand: (locId) {
+                              setState(() {
+                                if (_expandedLocationIds.contains(locId)) {
+                                  _expandedLocationIds.remove(locId);
+                                } else {
+                                  _expandedLocationIds.add(locId);
+                                }
+                              });
+                            },
+                            onSelect: (locId) {
+                              widget.onLocationSelected(locId);
+                              _toggleCurtain();
+                            },
+                            onDrop: (payload, locId) {
+                              widget.onDropOnLocation(payload, locId);
+                            },
+                            onOpenAddDialog: (parentId) => _showCreateLocationDialog(context, parentId: parentId),
+                          ),
+                        ),
+                      ],
                     ),
-                    const Divider(height: 1),
-                    ...rootLocations.map((root) => _buildTreeItem(root, 0)),
-                  ],
-                ),
+                  ),
+
+                  // Top Vertical Autoscroll Edge Zone (Height: 36)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 36,
+                    child: DragTarget<Object>(
+                      onWillAcceptWithDetails: (_) => true,
+                      onMove: (_) => _startTreeAutoScroll(-14.0),
+                      onLeave: (_) => _stopTreeAutoScroll(),
+                      onAcceptWithDetails: (_) => _stopTreeAutoScroll(),
+                      builder: (context, candidateData, rejectedData) => const SizedBox.expand(),
+                    ),
+                  ),
+
+                  // Bottom Vertical Autoscroll Edge Zone (Height: 36)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 36,
+                    child: DragTarget<Object>(
+                      onWillAcceptWithDetails: (_) => true,
+                      onMove: (_) => _startTreeAutoScroll(14.0),
+                      onLeave: (_) => _stopTreeAutoScroll(),
+                      onAcceptWithDetails: (_) => _stopTreeAutoScroll(),
+                      builder: (context, candidateData, rejectedData) => const SizedBox.expand(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -599,6 +588,158 @@ class _InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar>
             ),
         ],
       ),
+    );
+  }
+}
+
+/// Isolated tree item widget with its own spring-load hover timer.
+/// DragTarget is strictly attached to this node row only, not enclosing children subtrees.
+class _TreeItemWidget extends StatefulWidget {
+  final LocationNode node;
+  final int depth;
+  final List<LocationNode> allLocations;
+  final String? selectedLocationId;
+  final Set<String> expandedLocationIds;
+  final ValueChanged<String> onToggleExpand;
+  final ValueChanged<String> onSelect;
+  final Function(Object payload, String locationId) onDrop;
+  final Function(String parentId) onOpenAddDialog;
+
+  const _TreeItemWidget({
+    super.key,
+    required this.node,
+    required this.depth,
+    required this.allLocations,
+    required this.selectedLocationId,
+    required this.expandedLocationIds,
+    required this.onToggleExpand,
+    required this.onSelect,
+    required this.onDrop,
+    required this.onOpenAddDialog,
+  });
+
+  @override
+  State<_TreeItemWidget> createState() => _TreeItemWidgetState();
+}
+
+class _TreeItemWidgetState extends State<_TreeItemWidget> {
+  Timer? _springTimer;
+
+  @override
+  void dispose() {
+    _springTimer?.cancel();
+    super.dispose();
+  }
+
+  void _cancelTimer() {
+    _springTimer?.cancel();
+    _springTimer = null;
+  }
+
+  void _startTimer() {
+    if (_springTimer != null) return;
+    final children = widget.allLocations.where((l) => l.parentLocationId == widget.node.id).toList();
+    final isExpanded = widget.expandedLocationIds.contains(widget.node.id);
+    if (children.isNotEmpty && !isExpanded) {
+      _springTimer = Timer(const Duration(milliseconds: 600), () {
+        _springTimer = null;
+        if (mounted) {
+          widget.onToggleExpand(widget.node.id);
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final children = widget.allLocations.where((l) => l.parentLocationId == widget.node.id).toList();
+    final isSelected = widget.node.id == widget.selectedLocationId;
+    final isExpanded = widget.expandedLocationIds.contains(widget.node.id);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Only this single row is the DragTarget
+        DragTarget<Object>(
+          onWillAcceptWithDetails: (_) => true,
+          onMove: (_) => _startTimer(),
+          onLeave: (_) => _cancelTimer(),
+          onAcceptWithDetails: (details) {
+            _cancelTimer();
+            widget.onDrop(details.data, widget.node.id);
+          },
+          builder: (context, candidateData, rejectedData) {
+            final isHovered = candidateData.isNotEmpty;
+            return Container(
+              margin: EdgeInsets.only(left: widget.depth * 16.0, top: 2, bottom: 2),
+              decoration: BoxDecoration(
+                color: isHovered
+                    ? theme.colorScheme.primaryContainer
+                    : (isSelected ? theme.colorScheme.primary.withAlpha(30) : null),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListTile(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (children.isNotEmpty)
+                      GestureDetector(
+                        onTap: () => widget.onToggleExpand(widget.node.id),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 4.0),
+                          child: Icon(
+                            isExpanded ? Icons.keyboard_arrow_down : Icons.chevron_right,
+                            size: 18,
+                            color: isSelected ? theme.colorScheme.primary : Colors.grey,
+                          ),
+                        ),
+                      )
+                    else
+                      const SizedBox(width: 22),
+                    Icon(
+                      children.isNotEmpty ? Icons.folder_outlined : Icons.location_on_outlined,
+                      color: isSelected ? theme.colorScheme.primary : Colors.grey,
+                    ),
+                  ],
+                ),
+                title: Text(
+                  widget.node.name,
+                  style: TextStyle(
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: isSelected ? theme.colorScheme.primary : null,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_location_alt_outlined, size: 18),
+                  tooltip: AppStrings.newSubLocationTitle,
+                  onPressed: () => widget.onOpenAddDialog(widget.node.id),
+                ),
+                onTap: () => widget.onSelect(widget.node.id),
+              ),
+            );
+          },
+        ),
+
+        // Children sub-tree placed outside the parent DragTarget
+        if (children.isNotEmpty && isExpanded)
+          ...children.map(
+            (child) => _TreeItemWidget(
+              key: ValueKey(child.id),
+              node: child,
+              depth: widget.depth + 1,
+              allLocations: widget.allLocations,
+              selectedLocationId: widget.selectedLocationId,
+              expandedLocationIds: widget.expandedLocationIds,
+              onToggleExpand: widget.onToggleExpand,
+              onSelect: widget.onSelect,
+              onDrop: widget.onDrop,
+              onOpenAddDialog: widget.onOpenAddDialog,
+            ),
+          ),
+      ],
     );
   }
 }

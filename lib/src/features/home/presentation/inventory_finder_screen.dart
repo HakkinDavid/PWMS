@@ -40,7 +40,9 @@ class InventoryFinderScreen extends ConsumerStatefulWidget {
 }
 
 class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
+  final GlobalKey<InventoryBreadcrumbBarState> _breadcrumbBarKey = GlobalKey();
   String? _selectedLocationId; // Null means "Todas las Ubicaciones"
+  final List<String?> _locationHistory = [];
   bool _isSelectionMode = false;
   final Set<String> _selectedEntityIds = {};
   String _selectedTypeFilter = AppStrings.all;
@@ -116,6 +118,39 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         _selectedEntityIds.add(id);
       }
     });
+  }
+
+  void _handleLocationSelected(String? newLocId) {
+    if (newLocId == _selectedLocationId) return;
+    if (_selectedLocationId != null || _locationHistory.isNotEmpty) {
+      _locationHistory.add(_selectedLocationId);
+    }
+    setState(() {
+      _selectedLocationId = newLocId;
+    });
+  }
+
+  void _handleBackNavigation() {
+    if (_isSelectionMode) {
+      setState(() {
+        _isSelectionMode = false;
+        _selectedEntityIds.clear();
+      });
+    } else if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
+      _breadcrumbBarKey.currentState?.collapseCurtain();
+    } else if (_containerPath.isNotEmpty) {
+      setState(() {
+        _containerPath.removeLast();
+      });
+    } else if (_locationHistory.isNotEmpty) {
+      setState(() {
+        _selectedLocationId = _locationHistory.removeLast();
+      });
+    } else if (_selectedLocationId != null) {
+      setState(() {
+        _selectedLocationId = null;
+      });
+    }
   }
 
   void _refreshAllState() {
@@ -351,23 +386,22 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       );
     }
 
+    final bool canGoBack = _containerPath.isNotEmpty || _selectedLocationId != null || _locationHistory.isNotEmpty;
+
     return PopScope(
-      canPop: _containerPath.isEmpty,
+      canPop: !canGoBack && !_isSelectionMode && _breadcrumbBarKey.currentState?.isCurtainExpanded != true,
       onPopInvokedWithResult: (didPop, result) {
-        if (!didPop && _containerPath.isNotEmpty) {
-          setState(() {
-            _containerPath.removeLast();
-          });
-        }
+        if (didPop) return;
+        _handleBackNavigation();
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(_containerPath.isNotEmpty ? (activeContainerSpecies?.name ?? 'Contenedor') : 'Inventario'),
-          leading: _containerPath.isNotEmpty
+          leading: canGoBack
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),
-                  tooltip: 'Subir nivel',
-                  onPressed: () => setState(() => _containerPath.removeLast()),
+                  tooltip: 'Retroceder',
+                  onPressed: _handleBackNavigation,
                 )
               : null,
           actions: [
@@ -417,6 +451,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           children: [
             // Unified Navigation Bar (Breadcrumbs, Location Curtain, Container Path & Hero Tile)
             InventoryBreadcrumbBar(
+              key: _breadcrumbBarKey,
               allLocations: locationNodes,
               selectedLocationId: _selectedLocationId,
               containerPath: _containerPath,
@@ -424,7 +459,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               allEntitiesMap: allEntitiesMap,
               allRelations: relations,
               initiallyExpanded: widget.startWithCurtainOpen,
-              onLocationSelected: (locId) => setState(() => _selectedLocationId = locId),
+              onLocationSelected: _handleLocationSelected,
               onDropOnLocation: (payload, targetLocId) {
                 final ids = _extractPayloadIds(payload);
                 if (ids.isNotEmpty) {
@@ -445,6 +480,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               onExitContainersToRoot: () {
                 setState(() {
                   _containerPath.clear();
+                  _selectedLocationId = null;
+                  _locationHistory.clear();
                 });
               },
             ),
@@ -457,14 +494,14 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                 children: _filters.map((f) {
                   final isSel = _selectedTypeFilter == f;
                   return Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: FilterChip(
-                      label: Text(f, style: const TextStyle(fontSize: 11)),
-                      selected: isSel,
-                      onSelected: (val) {
-                        if (val) setState(() => _selectedTypeFilter = f);
-                      },
-                    ),
+                     padding: const EdgeInsets.only(right: 6),
+                     child: FilterChip(
+                       label: Text(f, style: const TextStyle(fontSize: 11)),
+                       selected: isSel,
+                       onSelected: (val) {
+                         if (val) setState(() => _selectedTypeFilter = f);
+                       },
+                     ),
                   );
                 }).toList(),
               ),
@@ -478,6 +515,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                   return DragTarget<Object>(
                     onWillAcceptWithDetails: (details) => true,
                     onMove: (details) {
+                      if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
+                        _breadcrumbBarKey.currentState?.collapseCurtain();
+                      }
                       final RenderBox? box = canvasContext.findRenderObject() as RenderBox?;
                       if (box == null || !box.hasSize || !_scrollController.hasClients) return;
                       final boxOffset = box.localToGlobal(Offset.zero);
@@ -502,6 +542,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                     onLeave: (_) => _stopAutoScroll(),
                     onAcceptWithDetails: (details) {
                       _stopAutoScroll();
+                      if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
+                        _breadcrumbBarKey.currentState?.collapseCurtain();
+                      }
                       final ids = _extractPayloadIds(details.data);
                       if (ids.isEmpty) return;
                       if (_containerPath.isNotEmpty) {
@@ -714,6 +757,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               group: grp,
               isSelected: isSelected,
               isSelectionMode: _isSelectionMode,
+              isContainer: isContainer,
               onTap: () => _handleItemTap(grp, isContainer),
             ),
           );

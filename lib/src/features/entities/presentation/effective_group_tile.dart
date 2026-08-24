@@ -12,6 +12,7 @@ class EffectiveGroupTile extends ConsumerWidget {
   final VoidCallback? onTap;
   final bool isSelected;
   final bool isSelectionMode;
+  final bool isContainer;
 
   const EffectiveGroupTile({
     super.key,
@@ -19,6 +20,7 @@ class EffectiveGroupTile extends ConsumerWidget {
     this.onTap,
     this.isSelected = false,
     this.isSelectionMode = false,
+    this.isContainer = false,
   });
 
   @override
@@ -29,21 +31,12 @@ class EffectiveGroupTile extends ConsumerWidget {
     final species = catalogItems.where((c) => c.id == group.speciesId).firstOrNull;
     final isUnique = species?.isUnique ?? false;
     final isHomogeneous = group.isHomogeneous;
+    final showCountBadge = group.population > 1 && !isUnique;
 
-    return InstancePreviewCard(
-      group: group,
-      isSelected: isSelected,
-      isSelectionMode: isSelectionMode,
-      onTap: onTap ?? () {
-        if (group.population == 1) {
-          context.pushEntityDetail(group.primaryEntity.id);
-        } else {
-          context.pushGroupedInstanceDetail(group.speciesId, effectiveLocationId: group.effectiveLocationId);
-        }
-      },
-      trailing: GestureDetector(
+    Widget? countBadge;
+    if (showCountBadge) {
+      countBadge = GestureDetector(
         onTap: () {
-          // CORRECCIÓN 1: Solo grupos homogéneos y no únicos pueden abrir QuantityAdjustmentSheet
           if (isHomogeneous && !isUnique) {
             QuantityAdjustmentSheet.show(context, group);
           } else {
@@ -78,7 +71,37 @@ class EffectiveGroupTile extends ConsumerWidget {
             ),
           ),
         ),
-      ),
+      );
+    }
+
+    Widget? trailingWidget;
+    if (countBadge != null && isContainer) {
+      trailingWidget = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          countBadge,
+          const SizedBox(width: 4),
+          Icon(Icons.chevron_right, color: theme.colorScheme.primary, size: 22),
+        ],
+      );
+    } else if (countBadge != null) {
+      trailingWidget = countBadge;
+    } else if (isContainer) {
+      trailingWidget = Icon(Icons.chevron_right, color: theme.colorScheme.primary, size: 22);
+    }
+
+    return InstancePreviewCard(
+      group: group,
+      isSelected: isSelected,
+      isSelectionMode: isSelectionMode,
+      onTap: onTap ?? () {
+        if (group.population == 1) {
+          context.pushEntityDetail(group.primaryEntity.id);
+        } else {
+          context.pushGroupedInstanceDetail(group.speciesId, effectiveLocationId: group.effectiveLocationId);
+        }
+      },
+      trailing: trailingWidget,
     );
   }
 }

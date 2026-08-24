@@ -134,7 +134,7 @@ class MinecraftTileWidget extends ConsumerWidget {
                 ),
 
               // Bottom Right Population Badge Overlay
-              if (population > 1)
+              if (population > 1 && !(species?.isUnique ?? false))
                 Positioned(
                   bottom: 6,
                   right: 6,
