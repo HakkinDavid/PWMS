@@ -1,11 +1,10 @@
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/updater/presentation/update_prompt_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/backup_workflow_helper.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -18,65 +17,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isProcessing = false;
   bool _isCheckingUpdate = false;
 
-  Future<void> _exportBackup() async {
-    setState(() => _isProcessing = true);
-    try {
-      final backupService = ref.read(databaseBackupServiceProvider);
-      await backupService.exportAndShareBackup();
+  Future<void> _exportBackup() => BackupWorkflowHelper.exportBackup(
+        context,
+        ref,
+        (processing) => setState(() => _isProcessing = processing),
+      );
 
-      if (mounted) {
-        AppToast.showSuccess(context, AppStrings.backupExportSuccess);
-      }
-    } catch (e) {
-      if (mounted) AppToast.showError(context, '${AppStrings.backupExportErrorPrefix}$e');
-    } finally {
-      if (mounted) setState(() => _isProcessing = false);
-    }
-  }
-
-  Future<void> _importBackup() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['zip', 'json'],
-    );
-
-    if (result == null || result.files.single.path == null) return;
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(AppStrings.confirmRestoreTitle),
-        content: const Text(AppStrings.confirmRestoreWarningMessage),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(AppStrings.restoreAllAction),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm != true) return;
-
-    setState(() => _isProcessing = true);
-    try {
-      final filePath = result.files.single.path!;
-      final backupService = ref.read(databaseBackupServiceProvider);
-
-      await backupService.importDatabaseFromFile(File(filePath));
-      refreshAllAppProviders(ref);
-
-      if (mounted) {
-        AppToast.showSuccess(context, AppStrings.backupImportSuccess);
-      }
-    } catch (e) {
-      if (mounted) AppToast.showError(context, '${AppStrings.backupImportErrorPrefix}$e');
-    } finally {
-      if (mounted) setState(() => _isProcessing = false);
-    }
-  }
+  Future<void> _importBackup() => BackupWorkflowHelper.importBackup(
+        context,
+        ref,
+        (processing) => setState(() => _isProcessing = processing),
+      );
 
   Future<void> _checkForUpdates() async {
     if (_isCheckingUpdate) return;

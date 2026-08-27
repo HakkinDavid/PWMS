@@ -8,6 +8,7 @@ import 'package:platinum_world_management_system/src/core/storage/app_settings_r
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import '../domain/numismatic_recognition_models.dart';
+import 'camera_capture_helper.dart';
 import 'numismatic_quick_fill_sheet.dart';
 
 class GuidedDualScanWidget extends ConsumerStatefulWidget {
@@ -25,9 +26,7 @@ class GuidedDualScanWidget extends ConsumerStatefulWidget {
 }
 
 class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
-  static List<CameraDescription>? _cachedCameras;
   CameraController? _cameraController;
-  List<CameraDescription> _cameras = [];
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
   bool _showQuickFillForm = false;
@@ -86,79 +85,32 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
   Future<void> _initializeCamera() async {
     if (!mounted || _isDisposed) return;
     try {
-      _cameras = _cachedCameras ?? await availableCameras();
-      _cachedCameras = _cameras;
+      final controller = await CameraCaptureHelper.initializeBackCamera(
+        isDisposed: () => !mounted || _isDisposed,
+      );
 
-      if (_cameras.isNotEmpty) {
-        final backCam = _cameras.firstWhere(
-          (c) => c.lensDirection == CameraLensDirection.back,
-          orElse: () => _cameras.first,
-        );
+      _cameraController = controller;
 
-        if (_isDisposed || !mounted) return;
-
-        // Previsualización fluida en 1080p con arranque instantáneo y captura en alta definición
-        final presetsToTry = [
-          ResolutionPreset.veryHigh,
-          ResolutionPreset.high,
-          ResolutionPreset.max,
-        ];
-
-        CameraController? controller;
-        for (final preset in presetsToTry) {
-          if (_isDisposed || !mounted) break;
-          try {
-            final c = CameraController(
-              backCam,
-              preset,
-              enableAudio: false,
-              imageFormatGroup: ImageFormatGroup.jpeg,
-            );
-            await c.initialize();
-            if (_isDisposed || !mounted) {
-              c.dispose().catchError((_) {});
-              return;
-            }
-            controller = c;
-            break;
-          } catch (_) {}
-        }
-
-        if (_isDisposed || !mounted) {
-          controller?.dispose().catchError((_) {});
-          return;
-        }
-
-        if (controller == null) {
-          throw Exception('No se pudo inicializar la cámara trasera.');
-        }
-
-        _cameraController = controller;
-
-        if (mounted && !_isDisposed) {
-          setState(() {
-            _isCameraInitialized = true;
-            _statusMessage = null;
-          });
-        }
-
-        // Configuración en paralelo de 3A, Spot Metering (-1.5 EV), Zoom y Linterna en segundo plano
-        Future.wait([
-          _cameraController!.getMaxZoomLevel().then((v) {
-            if (mounted && !_isDisposed) setState(() => _maxZoom = v);
-          }).catchError((_) => 4.0),
-          _cameraController!.getMinZoomLevel().then((v) {
-            if (mounted && !_isDisposed) setState(() => _minZoom = v);
-          }).catchError((_) => 1.0),
-          _cameraController!.setFocusMode(FocusMode.auto).catchError((_) {}),
-          _cameraController!.setExposureMode(ExposureMode.auto).catchError((_) {}),
-          _cameraController!.setFocusPoint(const Offset(0.5, 0.5)).catchError((_) {}),
-          _cameraController!.setExposurePoint(const Offset(0.5, 0.5)).catchError((_) {}),
-          _cameraController!.setExposureOffset(_exposureOffset).catchError((_) {}),
-          if (_currentZoom > 1.0) _cameraController!.setZoomLevel(_currentZoom).catchError((_) {}),
-          if (_isTorchOn) _cameraController!.setFlashMode(FlashMode.torch).catchError((_) {}),
-        ]).catchError((_) {});
+      if (mounted && !_isDisposed) {
+        setState(() {
+          _isCameraInitialized = true;
+          _statusMessage = null;
+        });
       }
+
+      CameraCaptureHelper.configureCameraSettings(
+        controller: _cameraController!,
+        exposureOffset: _exposureOffset,
+        currentZoom: _currentZoom,
+        isTorchOn: _isTorchOn,
+        onMaxZoomCalculated: (v) {
+          if (mounted && !_isDisposed) setState(() => _maxZoom = v);
+        },
+        onMinZoomCalculated: (v) {
+          if (mounted && !_isDisposed) setState(() => _minZoom = v);
+        },
+        isDisposed: () => !mounted || _isDisposed,
+      );
     } catch (e) {
       if (mounted && !_isDisposed) {
         setState(() {

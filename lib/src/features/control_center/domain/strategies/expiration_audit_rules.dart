@@ -3,10 +3,9 @@ import 'package:platinum_world_management_system/src/core/domain/property_data_t
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import 'package:uuid/uuid.dart';
-import '../../../entities/domain/entity_display_helper.dart';
 import '../../../entities/domain/instance_magnitude.dart';
-import '../../../entities/presentation/instance_preview_card.dart';
 import '../audit_rule_strategy.dart';
+import 'audit_rule_helper.dart';
 
 /// Strategy 1: Perecederos sin Fecha de Caducidad
 class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
@@ -28,13 +27,9 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
     for (final entity in perishableMissingExp) {
       final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
-      final displayName = EntityDisplayHelper.getDisplayName(
-        entity: entity,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
+      final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forEntity(
         id: 'no_exp_${entity.id}',
         type: AuditCardType.perishableMissingExpiration,
         title: 'Perecedero sin Caducidad',
@@ -44,13 +39,7 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.amber.shade700,
         entity: entity,
         species: species,
-        tile: InstancePreviewCard(entity: entity),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Fecha de caducidad omitida.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Fecha de caducidad omitida.',
         onFix: (ctx, ref) async {
           final defaultDays = species?.defaultShelfLifeDays ?? 30;
           final suggestedDate = DateTime.now().add(Duration(days: defaultDays));
@@ -99,13 +88,9 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
     for (final entity in nonPerishableWithExp) {
       final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
-      final displayName = EntityDisplayHelper.getDisplayName(
-        entity: entity,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
+      final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forEntity(
         id: 'unneeded_exp_${entity.id}',
         type: AuditCardType.nonPerishableWithExpiration,
         title: 'No Perecedero con Caducidad',
@@ -115,13 +100,7 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.blueGrey,
         entity: entity,
         species: species,
-        tile: InstancePreviewCard(entity: entity),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Caducidad conservada.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Caducidad conservada.',
         onFix: (ctx, ref) async {
           final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
           await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(expirationDate: null));
@@ -157,17 +136,12 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
             !entity.magnitudes.any((im) => im.propertyName.trim().toLowerCase() == sm.propertyName.trim().toLowerCase())).toList();
 
         for (final missingProp in missingMags) {
-          final displayName = EntityDisplayHelper.getDisplayName(
-            entity: entity,
-            catalogItems: context.allCatalog,
-            subspeciesList: context.allSubspecies,
-          );
-
+          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
           final unitSuffix = (missingProp.unitSymbol != null && missingProp.unitSymbol!.isNotEmpty)
               ? ' (${missingProp.unitSymbol})'
               : '';
 
-          cards.add(AuditCardData(
+          cards.add(AuditRuleHelper.forEntity(
             id: 'miss_mag_${entity.id}_${missingProp.propertyName}',
             type: AuditCardType.missingMandatoryMagnitudes,
             title: 'Magnitud Faltante: ${missingProp.propertyName}',
@@ -177,13 +151,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
             themeColor: Colors.teal,
             entity: entity,
             species: species,
-            tile: InstancePreviewCard(entity: entity),
-            onConfirm: (ctx, ref) async {
-              if (ctx.mounted) {
-                AppToast.showSuccess(ctx, 'Magnitud omitida.');
-              }
-              return true;
-            },
+            confirmToastMessage: 'Magnitud omitida.',
             onFix: (ctx, ref) async {
               final propType = PropertyDataType.fromCode(missingProp.dataType);
               InstanceMagnitude? newMag;
@@ -219,33 +187,18 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                   );
                 }
               } else {
-                final controller = TextEditingController();
-                final enteredValue = await showDialog<String>(
-                  context: ctx,
-                  builder: (dialogCtx) => AlertDialog(
-                    title: Text('Asignar ${missingProp.propertyName}'),
-                    content: TextField(
-                      controller: controller,
-                      autofocus: true,
-                      keyboardType: propType == PropertyDataType.integer
-                          ? TextInputType.number
-                          : propType == PropertyDataType.string
-                              ? TextInputType.text
-                              : const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(
-                        labelText: missingProp.propertyName,
-                        suffixText: missingProp.unitSymbol,
-                        border: const OutlineInputBorder(),
-                      ),
-                    ),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.pop(dialogCtx, null), child: const Text('Cancelar')),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
-                        child: const Text('Guardar'),
-                      ),
-                    ],
-                  ),
+                final keyboardType = propType == PropertyDataType.integer
+                    ? TextInputType.number
+                    : propType == PropertyDataType.string
+                        ? TextInputType.text
+                        : const TextInputType.numberWithOptions(decimal: true);
+
+                final enteredValue = await AuditRuleHelper.showTextInputDialog(
+                  ctx,
+                  title: 'Asignar ${missingProp.propertyName}',
+                  labelText: missingProp.propertyName,
+                  suffixText: missingProp.unitSymbol,
+                  keyboardType: keyboardType,
                 );
 
                 if (enteredValue != null && enteredValue.isNotEmpty) {
@@ -329,13 +282,9 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
       final anomalousMags = entity.magnitudes.where((m) => m.magnitudeValue <= 0 && m.dataType == 'real').toList();
       for (final mag in anomalousMags) {
         final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
-        final displayName = EntityDisplayHelper.getDisplayName(
-          entity: entity,
-          catalogItems: context.allCatalog,
-          subspeciesList: context.allSubspecies,
-        );
+        final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
-        cards.add(AuditCardData(
+        cards.add(AuditRuleHelper.forEntity(
           id: 'anom_mag_${mag.id}',
           type: AuditCardType.anomalousMagnitude,
           title: 'Magnitud con Valor No Positivo',
@@ -345,36 +294,15 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
           themeColor: Colors.orange,
           entity: entity,
           species: species,
-          tile: InstancePreviewCard(entity: entity),
-          onConfirm: (ctx, ref) async {
-            if (ctx.mounted) {
-              AppToast.showSuccess(ctx, 'Valor conservado.');
-            }
-            return true;
-          },
+          confirmToastMessage: 'Valor conservado.',
           onFix: (ctx, ref) async {
-            final controller = TextEditingController(text: mag.magnitudeValue.toString());
-            final enteredValue = await showDialog<String>(
-              context: ctx,
-              builder: (dialogCtx) => AlertDialog(
-                title: Text('Corregir ${mag.propertyName}'),
-                content: TextField(
-                  controller: controller,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: mag.propertyName,
-                    suffixText: mag.unitSymbol,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(dialogCtx, null), child: const Text('Cancelar')),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
-                    child: const Text('Guardar'),
-                  ),
-                ],
-              ),
+            final enteredValue = await AuditRuleHelper.showTextInputDialog(
+              ctx,
+              title: 'Corregir ${mag.propertyName}',
+              labelText: mag.propertyName,
+              initialValue: mag.magnitudeValue.toString(),
+              suffixText: mag.unitSymbol,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
             );
 
             if (enteredValue != null && enteredValue.isNotEmpty) {
@@ -398,3 +326,4 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
     return cards;
   }
 }
+

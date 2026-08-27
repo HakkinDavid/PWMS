@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import '../../../core/storage/app_settings_repository.dart';
+import 'camera_capture_helper.dart';
 
 class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
   final bool isCoin;
@@ -73,9 +74,7 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
 }
 
 class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCaptureView> {
-  static List<CameraDescription>? _cachedCameras;
   CameraController? _cameraController;
-  List<CameraDescription> _cameras = [];
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
   bool _isDisposed = false;
@@ -120,77 +119,32 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
   Future<void> _initializeCamera() async {
     if (!mounted || _isDisposed) return;
     try {
-      _cameras = _cachedCameras ?? await availableCameras();
-      _cachedCameras = _cameras;
+      final controller = await CameraCaptureHelper.initializeBackCamera(
+        isDisposed: () => !mounted || _isDisposed,
+      );
 
-      if (_cameras.isNotEmpty) {
-        final backCam = _cameras.firstWhere(
-          (c) => c.lensDirection == CameraLensDirection.back,
-          orElse: () => _cameras.first,
-        );
+      _cameraController = controller;
 
-        if (_isDisposed || !mounted) return;
-
-        final presetsToTry = [
-          ResolutionPreset.veryHigh,
-          ResolutionPreset.high,
-          ResolutionPreset.max,
-        ];
-
-        CameraController? controller;
-        for (final preset in presetsToTry) {
-          if (_isDisposed || !mounted) break;
-          try {
-            final c = CameraController(
-              backCam,
-              preset,
-              enableAudio: false,
-              imageFormatGroup: ImageFormatGroup.jpeg,
-            );
-            await c.initialize();
-            if (_isDisposed || !mounted) {
-              c.dispose().catchError((_) {});
-              return;
-            }
-            controller = c;
-            break;
-          } catch (_) {}
-        }
-
-        if (_isDisposed || !mounted) {
-          controller?.dispose().catchError((_) {});
-          return;
-        }
-
-        if (controller == null) {
-          throw Exception('No se pudo inicializar la cámara trasera.');
-        }
-
-        _cameraController = controller;
-
-        if (mounted && !_isDisposed) {
-          setState(() {
-            _isCameraInitialized = true;
-            _statusMessage = null;
-          });
-        }
-
-        Future.wait([
-          _cameraController!.getMaxZoomLevel().then((v) {
-            if (mounted && !_isDisposed) setState(() => _maxZoom = v);
-          }).catchError((_) => 4.0),
-          _cameraController!.getMinZoomLevel().then((v) {
-            if (mounted && !_isDisposed) setState(() => _minZoom = v);
-          }).catchError((_) => 1.0),
-          _cameraController!.setFocusMode(FocusMode.auto).catchError((_) {}),
-          _cameraController!.setExposureMode(ExposureMode.auto).catchError((_) {}),
-          _cameraController!.setFocusPoint(const Offset(0.5, 0.5)).catchError((_) {}),
-          _cameraController!.setExposurePoint(const Offset(0.5, 0.5)).catchError((_) {}),
-          _cameraController!.setExposureOffset(_exposureOffset).catchError((_) {}),
-          if (_currentZoom > 1.0) _cameraController!.setZoomLevel(_currentZoom).catchError((_) {}),
-          if (_isTorchOn) _cameraController!.setFlashMode(FlashMode.torch).catchError((_) {}),
-        ]).catchError((_) {});
+      if (mounted && !_isDisposed) {
+        setState(() {
+          _isCameraInitialized = true;
+          _statusMessage = null;
+        });
       }
+
+      CameraCaptureHelper.configureCameraSettings(
+        controller: _cameraController!,
+        exposureOffset: _exposureOffset,
+        currentZoom: _currentZoom,
+        isTorchOn: _isTorchOn,
+        onMaxZoomCalculated: (v) {
+          if (mounted && !_isDisposed) setState(() => _maxZoom = v);
+        },
+        onMinZoomCalculated: (v) {
+          if (mounted && !_isDisposed) setState(() => _minZoom = v);
+        },
+        isDisposed: () => !mounted || _isDisposed,
+      );
     } catch (e) {
       if (mounted && !_isDisposed) {
         setState(() {

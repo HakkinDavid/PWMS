@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
-import '../../../entities/domain/entity_display_helper.dart';
 import '../../../entities/presentation/instance_preview_card.dart';
-import '../../../locations/domain/location_path_helper.dart';
-import '../../../locations/presentation/location_or_container_correction_sheet.dart';
 import '../audit_rule_strategy.dart';
+import 'audit_rule_helper.dart';
 
 /// Strategy 1: Instancia huérfana (sin ubicación directa ni contenedor)
 class OrphanEntityStrategy implements IAuditRuleStrategy {
@@ -27,23 +25,10 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
     for (final entity in orphanEntities) {
       final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
-      final displayName = EntityDisplayHelper.getDisplayName(
-        entity: entity,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
+      final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
+      final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
-      final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
-        entityId: entity.id,
-        effectiveLocationId: entity.locationId,
-        allEntities: context.allEntities,
-        allRelations: context.allRelations,
-        allNodes: context.allLocations,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
-
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forEntity(
         id: 'orphan_${entity.id}',
         type: AuditCardType.orphanEntity,
         title: 'Instancia sin Ubicación ni Contenedor',
@@ -53,17 +38,8 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
         themeColor: Colors.orangeAccent,
         entity: entity,
         species: species,
-        tile: InstancePreviewCard(entity: entity),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Ubicación mantenida como no asignada.');
-          }
-          return true;
-        },
-        onFix: (ctx, ref) async {
-          final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-          return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
-        },
+        confirmToastMessage: 'Ubicación mantenida como no asignada.',
+        onFix: (ctx, ref) => AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity),
       ));
     }
     return cards;
@@ -98,13 +74,9 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
       final directLoc = context.allLocations.where((l) => l.id == directLocId).firstOrNull;
       final directLocName = directLoc?.name ?? 'Ubicación directa';
 
-      final displayName = EntityDisplayHelper.getDisplayName(
-        entity: entity,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
+      final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forEntity(
         id: 'conflict_${entity.id}',
         type: AuditCardType.locationConflict,
         title: 'Conflicto de Ubicación en Contenedor',
@@ -114,13 +86,7 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
         themeColor: Colors.purpleAccent,
         entity: entity,
         species: species,
-        tile: InstancePreviewCard(entity: entity),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Conflicto de ubicación omitido.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Conflicto de ubicación omitido.',
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
             context: ctx,
@@ -164,8 +130,7 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
             }
             return true;
           } else if (choice == 'reassign') {
-            final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-            return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
+            return await AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity);
           }
           return false;
         },
@@ -205,7 +170,7 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
       final sourceSp = context.allCatalog.where((c) => c.id == sourceEnt?.speciesId).firstOrNull;
       final targetSp = context.allCatalog.where((c) => c.id == targetEnt?.speciesId).firstOrNull;
 
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.createCard(
         id: 'circ_${rel.id}',
         type: AuditCardType.cyclicContainment,
         title: 'Relación circular',
@@ -216,29 +181,17 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
         entity: sourceEnt,
         species: sourceSp,
         tile: sourceEnt != null ? InstancePreviewCard(entity: sourceEnt) : const SizedBox.shrink(),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Relación circular conservada.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Relación circular conservada.',
         onFix: (ctx, ref) async {
-          final confirm = await showDialog<bool>(
-            context: ctx,
-            builder: (dialogCtx) => AlertDialog(
-              title: const Text('Eliminar relación inválida'),
-              content: const Text('¿Confirmas que deseas eliminar esta relación conflictiva?'),
-              actions: [
-                TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text('Cancelar')),
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogCtx, true),
-                  child: const Text('Eliminar Relación', style: TextStyle(color: Colors.redAccent)),
-                ),
-              ],
-            ),
+          final confirm = await AuditRuleHelper.showConfirmationDialog(
+            ctx,
+            title: 'Eliminar relación inválida',
+            content: '¿Confirmas que deseas eliminar esta relación conflictiva?',
+            confirmLabel: 'Eliminar Relación',
+            isDestructive: true,
           );
 
-          if (confirm == true) {
+          if (confirm) {
             await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
             if (ctx.mounted) {
               AppToast.showSuccess(ctx, 'Relación conflictiva eliminada.');
@@ -270,23 +223,10 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
 
     for (final entity in sampleEntities) {
       final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
-      final displayName = EntityDisplayHelper.getDisplayName(
-        entity: entity,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
+      final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
+      final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
-      final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
-        entityId: entity.id,
-        effectiveLocationId: entity.locationId,
-        allEntities: context.allEntities,
-        allRelations: context.allRelations,
-        allNodes: context.allLocations,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
-
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forEntity(
         id: 'own_${entity.id}',
         type: AuditCardType.ownershipCheck,
         title: '¿Conservas este objeto?',
@@ -296,13 +236,7 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
         themeColor: Colors.blueAccent,
         entity: entity,
         species: species,
-        tile: InstancePreviewCard(entity: entity),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Instancia confirmada en inventario.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Instancia confirmada en inventario.',
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
             context: ctx,
@@ -329,25 +263,17 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
           );
 
           if (choice == 'location') {
-            final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-            return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
+            return await AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity);
           } else if (choice == 'delete') {
-            final confirmDelete = await showDialog<bool>(
-              context: ctx,
-              builder: (dialogCtx) => AlertDialog(
-                title: const Text('Dar de Baja Instancia'),
-                content: Text('¿Confirmas que deseas eliminar del inventario esta instancia de "$displayName"?'),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text('Cancelar')),
-                  TextButton(
-                    onPressed: () => Navigator.pop(dialogCtx, true),
-                    child: const Text('Eliminar Instancia', style: TextStyle(color: Colors.redAccent)),
-                  ),
-                ],
-              ),
+            final confirmDelete = await AuditRuleHelper.showConfirmationDialog(
+              ctx,
+              title: 'Dar de Baja Instancia',
+              content: '¿Confirmas que deseas eliminar del inventario esta instancia de "$displayName"?',
+              confirmLabel: 'Eliminar Instancia',
+              isDestructive: true,
             );
 
-            if (confirmDelete == true) {
+            if (confirmDelete) {
               await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
               if (ctx.mounted) {
                 AppToast.showSuccess(ctx, 'Instancia dada de baja.');
@@ -380,23 +306,10 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
 
     for (final entity in locationCheckSample) {
       final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
-      final displayName = EntityDisplayHelper.getDisplayName(
-        entity: entity,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
+      final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
+      final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
-      final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
-        entityId: entity.id,
-        effectiveLocationId: entity.locationId,
-        allEntities: context.allEntities,
-        allRelations: context.allRelations,
-        allNodes: context.allLocations,
-        catalogItems: context.allCatalog,
-        subspeciesList: context.allSubspecies,
-      );
-
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forEntity(
         id: 'loc_verif_${entity.id}',
         type: AuditCardType.locationVerification,
         title: '¿Has movido este objeto?',
@@ -406,19 +319,11 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.teal,
         entity: entity,
         species: species,
-        tile: InstancePreviewCard(entity: entity),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Ubicación confirmada.');
-          }
-          return true;
-        },
-        onFix: (ctx, ref) async {
-          final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-          return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
-        },
+        confirmToastMessage: 'Ubicación confirmada.',
+        onFix: (ctx, ref) => AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity),
       ));
     }
     return cards;
   }
 }
+

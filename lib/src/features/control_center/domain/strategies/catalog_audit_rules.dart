@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import '../../../catalog/presentation/species_form_modal.dart';
-import '../../../catalog/presentation/species_tile.dart';
-import '../../../catalog/presentation/standard_media_picker_sheet.dart';
-import '../../../catalog/presentation/subspecies_tile.dart';
 import '../../../entities/domain/entity_template.dart';
 import '../../../entities/presentation/instantiate_species_sheet.dart';
 import '../audit_rule_strategy.dart';
+import 'audit_rule_helper.dart';
 
 /// Strategy 1: Subespecie sin instancias
 class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
@@ -29,7 +27,7 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
         final parentSpecies = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
         final subNameStr = '${sub.subspeciesName}${sub.brand != null && sub.brand!.isNotEmpty ? " (${sub.brand})" : ""}';
 
-        cards.add(AuditCardData(
+        cards.add(AuditRuleHelper.forSubspecies(
           id: 'sub_${sub.id}',
           type: AuditCardType.uninstantiatedSubspecies,
           title: 'Subespecie sin Instancia',
@@ -95,10 +93,6 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
             }
             return false;
           },
-          tile: SubspeciesTile(
-            subspecies: sub,
-            speciesName: parentSpecies?.name,
-          ),
         ));
       }
     }
@@ -125,7 +119,7 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
       for (final sub in spSubspecies) {
         final matchingInstances = context.allEntities.where((e) => e.speciesId == sp.id && e.subspeciesId == sub.id).toList();
         if (matchingInstances.length > 1) {
-          cards.add(AuditCardData(
+          cards.add(AuditRuleHelper.forSubspecies(
             id: 'uniq_viol_${sub.id}',
             type: AuditCardType.uniquenessViolation,
             title: 'Subespecie Única Duplicada',
@@ -135,13 +129,7 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
             themeColor: Colors.deepOrangeAccent,
             species: sp,
             subspecies: sub,
-            tile: SubspeciesTile(subspecies: sub, speciesName: sp.name),
-            onConfirm: (ctx, ref) async {
-              if (ctx.mounted) {
-                AppToast.showSuccess(ctx, 'Duplicidad de subespecie omitida.');
-              }
-              return true;
-            },
+            confirmToastMessage: 'Duplicidad de subespecie omitida.',
             onFix: (ctx, ref) async {
               final choice = await showDialog<String>(
                 context: ctx,
@@ -214,7 +202,7 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
     for (final sub in invalidSubspecies) {
       final sp = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
 
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forSubspecies(
         id: 'subgroup_viol_${sub.id}',
         type: AuditCardType.subgroupRuleViolation,
         title: 'Infracción de Regla de Subgrupo',
@@ -224,13 +212,7 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.deepPurpleAccent,
         subspecies: sub,
         species: sp,
-        tile: SubspeciesTile(subspecies: sub, speciesName: sp?.name ?? ''),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Atributos omitidos.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Atributos omitidos.',
         onFix: (ctx, ref) async {
           final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
           final updatedSub = freshSub.copyWith(clearBrand: true, clearBarcode: true);
@@ -264,7 +246,7 @@ class UninstantiatedSpeciesStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final sp in uninstantiatedSpecies) {
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forSpecies(
         id: 'uninst_sp_${sp.id}',
         type: AuditCardType.uninstantiatedSpecies,
         title: 'Especie sin Instancias en el Mundo',
@@ -273,13 +255,7 @@ class UninstantiatedSpeciesStrategy implements IAuditRuleStrategy {
         icon: Icons.category_outlined,
         themeColor: Colors.brown,
         species: sp,
-        tile: SpeciesTile(species: sp),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Especie conservada en catálogo.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Especie conservada en catálogo.',
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
             context: ctx,
@@ -343,7 +319,7 @@ class IncompleteSpeciesInfoStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final sp in incompleteSpecies) {
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forSpecies(
         id: 'spec_inc_${sp.id}',
         type: AuditCardType.incompleteSpeciesInfo,
         title: 'Especie sin Imagen Principal',
@@ -352,13 +328,7 @@ class IncompleteSpeciesInfoStrategy implements IAuditRuleStrategy {
         icon: Icons.add_a_photo_outlined,
         themeColor: Colors.purpleAccent,
         species: sp,
-        tile: SpeciesTile(species: sp),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Información omitida por el momento.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Información omitida por el momento.',
         onFix: (ctx, ref) async {
           final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
           final result = await SpeciesFormModal.show(ctx, initialSpecies: freshSp);
@@ -390,7 +360,7 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
       (c.mainPhotoPath!.startsWith('http://') || c.mainPhotoPath!.startsWith('https://'))
     );
     for (final sp in remoteImageSpecies) {
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forSpecies(
         id: 'spec_remote_${sp.id}',
         type: AuditCardType.remoteImageAudit,
         title: 'Imagen de Especie No Local (URL Remota)',
@@ -399,52 +369,20 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
         icon: Icons.cloud_download_outlined,
         themeColor: Colors.indigoAccent,
         species: sp,
-        tile: SpeciesTile(species: sp),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Imagen remota conservada sin descargar.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Imagen remota conservada sin descargar.',
         onFix: (ctx, ref) async {
-          final lookupService = ref.read(productLookupServiceProvider);
-          final fileStorage = ref.read(fileStorageServiceProvider);
-          final localTempPath = await lookupService.downloadAndSaveImage(sp.mainPhotoPath!);
-          if (localTempPath != null) {
-            final relPath = await fileStorage.saveFile(localTempPath);
-            final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
-            final updatedSp = freshSp.copyWith(mainPhotoPath: relPath);
-            await ref.read(catalogRepositoryProvider).saveCatalogItem(updatedSp);
-            ref.read(catalogListProvider.notifier).loadCatalog();
-            if (ctx.mounted) {
-              AppToast.showSuccess(ctx, 'Imagen descargada y guardada localmente con éxito.');
-            }
-            return true;
-          } else {
-            if (ctx.mounted) {
-              AppToast.showError(ctx, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla mediante el selector de medios.');
-              final picked = await StandardMediaPickerSheet.show(
-                ctx,
-                title: 'Foto de ${sp.name}',
-                webSearchQuery: sp.name,
-                allowDocuments: false,
-              );
-              if (picked != null) {
-                final relPath = picked.file != null
-                    ? await fileStorage.saveFile(picked.file!.path)
-                    : picked.relativeStoredPath;
-                if (relPath != null) {
-                  final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
-                  final updatedSp = freshSp.copyWith(mainPhotoPath: relPath);
-                  await ref.read(catalogRepositoryProvider).saveCatalogItem(updatedSp);
-                  ref.invalidate(catalogListProvider);
-                  return true;
-                }
-              }
-              return false;
-            }
-          }
-          return false;
+          return await AuditRuleHelper.resolveRemoteImage(
+            context: ctx,
+            ref: ref,
+            remoteUrl: sp.mainPhotoPath!,
+            displayName: sp.name,
+            onSave: (relPath) async {
+              final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
+              final updatedSp = freshSp.copyWith(mainPhotoPath: relPath);
+              await ref.read(catalogRepositoryProvider).saveCatalogItem(updatedSp);
+              ref.read(catalogListProvider.notifier).loadCatalog();
+            },
+          );
         },
       ));
     }
@@ -456,7 +394,7 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
     );
     for (final sub in remoteImageSubspecies) {
       final parentSpecies = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
-      cards.add(AuditCardData(
+      cards.add(AuditRuleHelper.forSubspecies(
         id: 'sub_remote_${sub.id}',
         type: AuditCardType.remoteImageAudit,
         title: 'Imagen de Subespecie No Local (URL Remota)',
@@ -466,52 +404,20 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
         themeColor: Colors.indigo,
         subspecies: sub,
         species: parentSpecies,
-        tile: SubspeciesTile(subspecies: sub, speciesName: parentSpecies?.name ?? ''),
-        onConfirm: (ctx, ref) async {
-          if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Imagen remota conservada sin descargar.');
-          }
-          return true;
-        },
+        confirmToastMessage: 'Imagen remota conservada sin descargar.',
         onFix: (ctx, ref) async {
-          final lookupService = ref.read(productLookupServiceProvider);
-          final fileStorage = ref.read(fileStorageServiceProvider);
-          final localTempPath = await lookupService.downloadAndSaveImage(sub.photoPath!);
-          if (localTempPath != null) {
-            final relPath = await fileStorage.saveFile(localTempPath);
-            final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
-            final updatedSub = freshSub.copyWith(photoPath: relPath);
-            await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
-            ref.invalidate(subspeciesListProvider);
-            if (ctx.mounted) {
-              AppToast.showSuccess(ctx, 'Imagen descargada y guardada localmente con éxito.');
-            }
-            return true;
-          } else {
-            if (ctx.mounted) {
-              AppToast.showError(ctx, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla mediante el selector de medios.');
-              final picked = await StandardMediaPickerSheet.show(
-                ctx,
-                title: 'Foto de ${sub.subspeciesName}',
-                webSearchQuery: sub.subspeciesName,
-                allowDocuments: false,
-              );
-              if (picked != null) {
-                final relPath = picked.file != null
-                    ? await fileStorage.saveFile(picked.file!.path)
-                    : picked.relativeStoredPath;
-                if (relPath != null) {
-                  final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
-                  final updatedSub = freshSub.copyWith(photoPath: relPath);
-                  await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
-                  ref.invalidate(subspeciesListProvider);
-                  return true;
-                }
-              }
-              return false;
-            }
-          }
-          return false;
+          return await AuditRuleHelper.resolveRemoteImage(
+            context: ctx,
+            ref: ref,
+            remoteUrl: sub.photoPath!,
+            displayName: sub.subspeciesName,
+            onSave: (relPath) async {
+              final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
+              final updatedSub = freshSub.copyWith(photoPath: relPath);
+              await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
+              ref.invalidate(subspeciesListProvider);
+            },
+          );
         },
       ));
     }
@@ -519,3 +425,4 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
     return cards;
   }
 }
+
