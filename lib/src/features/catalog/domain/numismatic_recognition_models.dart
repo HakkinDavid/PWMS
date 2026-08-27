@@ -1,3 +1,5 @@
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+
 class NumismaticScanResult {
   final String speciesType; // 'Moneda' or 'Billete'
   final String generalSpeciesName; // 'Moneda' or 'Billete'
@@ -44,12 +46,12 @@ class NumismaticScanResult {
   Map<String, double> toMagnitudeValues() {
     final map = <String, double>{};
     if (faceValueNumber != null && faceValueNumber! > 0) {
-      map['Unidad Monetaria'] = faceValueNumber!;
+      map[AppStrings.propMonetaryUnit] = faceValueNumber!;
     }
     if (year != null) {
       final y = double.tryParse(year!);
       if (y != null && y > 0) {
-        map['Año'] = y;
+        map[AppStrings.propYear] = y;
       }
     }
     return map;

@@ -75,7 +75,7 @@ class _CustomAttributeEditorDialogState extends State<CustomAttributeEditorDialo
     final confirm = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
       title: AppStrings.confirmRemoveAttributeTitle,
-      message: '${AppStrings.confirmRemoveAttributeMessagePrefix}$key${AppStrings.confirmRemoveAttributeMessageSuffix}',
+      message: AppStrings.confirmRemoveAttributeMessage(key),
     );
     if (confirm && mounted) {
       setState(() {

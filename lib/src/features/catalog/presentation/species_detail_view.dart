@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/attachment.dart';
-import '../../entities/domain/entity_photo_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/presentation/entity_photo_thumbnail.dart';
 import '../domain/catalog_item.dart';
@@ -78,8 +78,8 @@ class SpeciesDetailView extends ConsumerWidget {
     if (isNumismatic && isInstanceLevel) {
       isCoin = NumismaticDataHelper.isCoin(species);
       final targetAttachments = currentAttachments ?? [];
-      final hasObverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('anverso'));
-      final hasReverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains('reverso'));
+      final hasObverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains(AppTechnicalStrings.sideAnverso));
+      final hasReverse = targetAttachments.any((a) => a.fileName.toLowerCase().contains(AppTechnicalStrings.sideReverso));
 
       showObverseScan = !hasObverse;
       showReverseScan = !hasReverse;
@@ -87,7 +87,7 @@ class SpeciesDetailView extends ConsumerWidget {
 
     final result = await StandardMediaPickerSheet.show(
       context,
-      title: isInstanceLevel ? 'Adjuntar a esta Instancia' : 'Adjuntar a Especie',
+      title: isInstanceLevel ? AppStrings.attachToInstanceAction : AppStrings.attachToSpeciesAction,
       webSearchQuery: subspecies?.subspeciesName ?? species.name,
       showNumismaticObverse: showObverseScan,
       showNumismaticReverse: showReverseScan,
@@ -105,24 +105,18 @@ class SpeciesDetailView extends ConsumerWidget {
       if (result.file != null) {
         savedRelativePath = await storage.saveFile(result.file!.path);
 
-        if (isNumismatic && isInstanceLevel && result.source == 'numismatic') {
-          final side = result.fileName.toLowerCase().contains('reverso') || (!showObverseScan && showReverseScan)
-              ? 'reverso'
-              : 'anverso';
-          final ext = result.file!.path.contains('.') ? result.file!.path.split('.').last : 'jpg';
+        if (isNumismatic && isInstanceLevel && result.source == AppTechnicalStrings.mediaSourceNumismatic) {
+          final side = result.fileName.toLowerCase().contains(AppTechnicalStrings.sideReverso) || (!showObverseScan && showReverseScan)
+              ? AppTechnicalStrings.sideReverso
+              : AppTechnicalStrings.sideAnverso;
+          final ext = result.file!.path.contains(AppTechnicalStrings.dot) ? result.file!.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgClean;
 
-          if (subspecies != null) {
-            finalFileName = NumismaticDataHelper.buildAttachmentFileName(
-              subspeciesName: subspecies!.subspeciesName,
-              instanceId: instanceId,
-              side: side,
-              extension: ext,
-            );
-          } else {
-            final subName = species.name;
-            final instPart = ' ($instanceId)';
-            finalFileName = '${NumismaticDataHelper.sanitizeFileName(subName)}$instPart ($side).$ext';
-          }
+          finalFileName = NumismaticDataHelper.buildAttachmentFileName(
+            subspeciesName: subspecies?.subspeciesName ?? species.name,
+            instanceId: instanceId,
+            side: side,
+            extension: ext,
+          );
         }
       } else if (result.relativeStoredPath != null) {
         savedRelativePath = result.relativeStoredPath!;
@@ -143,26 +137,26 @@ class SpeciesDetailView extends ConsumerWidget {
       if (isInstanceLevel && onInstanceAttachmentsChanged != null && workingInstanceAttachments != null) {
         onInstanceAttachmentsChanged!([...workingInstanceAttachments!, attachment]);
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto agregado a la edición.');
+          AppToast.showSuccess(context, AppStrings.attachmentAddedToEditing);
         }
       } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
         onSpeciesAttachmentsChanged!([...workingSpeciesAttachments!, attachment]);
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto agregado a la edición.');
+          AppToast.showSuccess(context, AppStrings.attachmentAddedToEditing);
         }
       } else {
         await ref.read(entityRepositoryProvider).addAttachment(attachment);
         _invalidateAllRelatedProviders(ref, speciesId, instanceId);
 
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto agregado correctamente.');
+          AppToast.showSuccess(context, AppStrings.attachmentAddedSuccessfully);
         }
       }
     } catch (e) {
       if (context.mounted) {
         AppToast.showError(
           context,
-          e.toString().replaceAll('Exception: ', ''),
+          e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty),
         );
       }
     }
@@ -176,12 +170,12 @@ class SpeciesDetailView extends ConsumerWidget {
     final isNumismatic = NumismaticDataHelper.isNumismaticSpecies(species);
     final fileNameLower = att.fileName.toLowerCase();
     final isInstanceLevel = att.instanceId != null && att.instanceId!.isNotEmpty;
-    final isNumismaticSide = isNumismatic && isInstanceLevel && (fileNameLower.contains('anverso') || fileNameLower.contains('reverso'));
+    final isNumismaticSide = isNumismatic && isInstanceLevel && (fileNameLower.contains(AppTechnicalStrings.sideAnverso) || fileNameLower.contains(AppTechnicalStrings.sideReverso));
 
     try {
       if (isNumismaticSide) {
         // Direct jump to numismatic camera with side preselected and hideSideSelector: true (Punto 33)
-        final side = fileNameLower.contains('reverso') ? 'reverso' : 'anverso';
+        final side = fileNameLower.contains(AppTechnicalStrings.sideReverso) ? AppTechnicalStrings.sideReverso : AppTechnicalStrings.sideAnverso;
         final isCoin = NumismaticDataHelper.isCoin(species);
 
         final capturedFile = await NumismaticCameraCaptureView.show(
@@ -195,8 +189,8 @@ class SpeciesDetailView extends ConsumerWidget {
           final shouldReplace = await AppConfirmationDialog.show(
             context: context,
             title: AppStrings.confirmReplaceAttachmentTitle,
-            message: '${AppStrings.confirmReplaceAttachmentMessage}\n("${att.fileName}")',
-            confirmLabel: 'Reemplazar',
+            message: AppStrings.confirmReplaceAttachmentNamedMessage(att.fileName),
+            confirmLabel: AppStrings.replaceAction,
             cancelLabel: AppStrings.cancel,
             icon: Icons.sync,
           );
@@ -204,31 +198,31 @@ class SpeciesDetailView extends ConsumerWidget {
 
           final storage = ref.read(fileStorageServiceProvider);
           final savedRelativePath = await storage.saveFile(capturedFile.path);
-          final updated = att.copyWith(filePath: savedRelativePath, fileType: 'image');
+          final updated = att.copyWith(filePath: savedRelativePath, fileType: AppTechnicalStrings.fileTypeImage);
 
           if (isInstanceLevel && onInstanceAttachmentsChanged != null && workingInstanceAttachments != null) {
             final updatedList = workingInstanceAttachments!.map((a) => a.id == att.id ? updated : a).toList();
             onInstanceAttachmentsChanged!(updatedList);
             if (context.mounted) {
-              AppToast.showSuccess(context, 'Adjunto numismático modificado en la edición.');
+              AppToast.showSuccess(context, AppStrings.numismaticAttachmentModifiedInEditing);
             }
           } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
             final updatedList = workingSpeciesAttachments!.map((a) => a.id == att.id ? updated : a).toList();
             onSpeciesAttachmentsChanged!(updatedList);
             if (context.mounted) {
-              AppToast.showSuccess(context, 'Adjunto numismático modificado en la edición.');
+              AppToast.showSuccess(context, AppStrings.numismaticAttachmentModifiedInEditing);
             }
           } else {
             await ref.read(entityRepositoryProvider).replaceAttachmentFile(
                   att.id,
                   capturedFile.path,
-                  newFileType: 'image',
+                  newFileType: AppTechnicalStrings.fileTypeImage,
                 );
 
             _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
 
             if (context.mounted) {
-              AppToast.showSuccess(context, 'Adjunto numismático actualizado correctamente.');
+              AppToast.showSuccess(context, AppStrings.numismaticAttachmentUpdatedSuccessfully);
             }
           }
         }
@@ -238,7 +232,7 @@ class SpeciesDetailView extends ConsumerWidget {
       // Standard media picker for non-numismatic or general attachments
       final result = await StandardMediaPickerSheet.show(
         context,
-        title: 'Reemplazar Adjunto ("${att.fileName}")',
+        title: AppStrings.replaceAttachmentTitle(att.fileName),
         webSearchQuery: subspecies?.subspeciesName ?? species.name,
       );
 
@@ -248,8 +242,8 @@ class SpeciesDetailView extends ConsumerWidget {
       final shouldReplace = await AppConfirmationDialog.show(
         context: context,
         title: AppStrings.confirmReplaceAttachmentTitle,
-        message: '${AppStrings.confirmReplaceAttachmentMessage}\n("${att.fileName}" ➔ "$newName")',
-        confirmLabel: 'Reemplazar',
+        message: AppStrings.confirmReplaceAttachmentRenamedMessage(att.fileName, newName),
+        confirmLabel: AppStrings.replaceAction,
         cancelLabel: AppStrings.cancel,
         icon: Icons.sync,
       );
@@ -277,13 +271,13 @@ class SpeciesDetailView extends ConsumerWidget {
         final updatedList = workingInstanceAttachments!.map((a) => a.id == att.id ? updated : a).toList();
         onInstanceAttachmentsChanged!(updatedList);
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto modificado en la edición.');
+          AppToast.showSuccess(context, AppStrings.attachmentModifiedInEditing);
         }
       } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
         final updatedList = workingSpeciesAttachments!.map((a) => a.id == att.id ? updated : a).toList();
         onSpeciesAttachmentsChanged!(updatedList);
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto modificado en la edición.');
+          AppToast.showSuccess(context, AppStrings.attachmentModifiedInEditing);
         }
       } else {
         await ref.read(entityRepositoryProvider).replaceAttachmentFile(
@@ -296,12 +290,12 @@ class SpeciesDetailView extends ConsumerWidget {
         _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
 
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Adjunto reemplazado correctamente.');
+          AppToast.showSuccess(context, AppStrings.attachmentReplacedSuccessfully);
         }
       }
     } catch (e) {
       if (context.mounted) {
-        AppToast.showError(context, 'Error al reemplazar adjunto: $e');
+        AppToast.showError(context, AppStrings.replaceAttachmentError(e.toString()));
       }
     }
   }
@@ -316,12 +310,12 @@ class SpeciesDetailView extends ConsumerWidget {
     final newName = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Renombrar adjunto'),
+        title: const Text(AppStrings.renameAttachmentTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
           decoration: const InputDecoration(
-            labelText: 'Nombre del archivo',
+            labelText: AppStrings.fileNameLabel,
             border: OutlineInputBorder(),
           ),
         ),
@@ -352,24 +346,24 @@ class SpeciesDetailView extends ConsumerWidget {
           final updatedList = workingInstanceAttachments!.map((a) => a.id == att.id ? updated : a).toList();
           onInstanceAttachmentsChanged!(updatedList);
           if (context.mounted) {
-            AppToast.showSuccess(context, 'Nombre actualizado en la edición.');
+            AppToast.showSuccess(context, AppStrings.nameUpdatedInEditing);
           }
         } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
           final updatedList = workingSpeciesAttachments!.map((a) => a.id == att.id ? updated : a).toList();
           onSpeciesAttachmentsChanged!(updatedList);
           if (context.mounted) {
-            AppToast.showSuccess(context, 'Nombre actualizado en la edición.');
+            AppToast.showSuccess(context, AppStrings.nameUpdatedInEditing);
           }
         } else {
           await ref.read(entityRepositoryProvider).updateAttachment(updated);
           _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
           if (context.mounted) {
-            AppToast.showSuccess(context, 'Nombre actualizado correctamente.');
+            AppToast.showSuccess(context, AppStrings.nameUpdatedSuccessfully);
           }
         }
       } catch (e) {
         if (context.mounted) {
-          AppToast.showError(context, 'Error al renombrar: $e');
+          AppToast.showError(context, AppStrings.renameError(e.toString()));
         }
       }
     }
@@ -382,14 +376,20 @@ class SpeciesDetailView extends ConsumerWidget {
 
     if (!file.existsSync()) {
       if (context.mounted) {
-        AppToast.showError(context, 'El archivo físico no existe en el almacenamiento.');
+        AppToast.showError(context, AppStrings.physicalFileNotFoundInStorage);
       }
       return;
     }
 
-    final isImage = att.fileType == 'image' ||
-        ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.bmp']
-            .any((ext) => att.filePath.toLowerCase().endsWith(ext));
+    final isImage = att.fileType == AppTechnicalStrings.fileTypeImage ||
+        [
+          AppTechnicalStrings.extJpg,
+          AppTechnicalStrings.extJpeg,
+          AppTechnicalStrings.extPng,
+          AppTechnicalStrings.extWebp,
+          AppTechnicalStrings.extHeic,
+          AppTechnicalStrings.extBmp,
+        ].any((ext) => att.filePath.toLowerCase().endsWith(ext));
 
     if (isImage) {
       if (context.mounted) {
@@ -433,8 +433,8 @@ class SpeciesDetailView extends ConsumerWidget {
   Future<void> _confirmAndDeleteAttachment(BuildContext context, WidgetRef ref, Attachment att) async {
     final confirmed = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
-      title: 'Eliminar adjunto',
-      message: '¿Deseas eliminar permanentemente el archivo "${att.fileName}"?',
+      title: AppStrings.deleteAttachmentAction,
+      message: AppStrings.confirmDeleteAttachmentPrompt(att.fileName),
     );
 
     if (confirmed == true) {
@@ -445,24 +445,24 @@ class SpeciesDetailView extends ConsumerWidget {
           final updatedList = workingInstanceAttachments!.where((a) => a.id != att.id).toList();
           onInstanceAttachmentsChanged!(updatedList);
           if (context.mounted) {
-            AppToast.showSuccess(context, 'Adjunto removido de la edición.');
+            AppToast.showSuccess(context, AppStrings.attachmentRemovedFromEditing);
           }
         } else if (!isInstanceLevel && onSpeciesAttachmentsChanged != null && workingSpeciesAttachments != null) {
           final updatedList = workingSpeciesAttachments!.where((a) => a.id != att.id).toList();
           onSpeciesAttachmentsChanged!(updatedList);
           if (context.mounted) {
-            AppToast.showSuccess(context, 'Adjunto removido de la edición.');
+            AppToast.showSuccess(context, AppStrings.attachmentRemovedFromEditing);
           }
         } else {
           await ref.read(entityRepositoryProvider).deleteAttachment(att.id);
           _invalidateAllRelatedProviders(ref, att.speciesId, att.instanceId);
           if (context.mounted) {
-            AppToast.showSuccess(context, 'Adjunto eliminado correctamente.');
+            AppToast.showSuccess(context, AppStrings.attachmentDeletedSuccessfully);
           }
         }
       } catch (e) {
         if (context.mounted) {
-          AppToast.showError(context, 'Error al eliminar: $e');
+          AppToast.showError(context, AppStrings.deleteError(e.toString()));
         }
       }
     }
@@ -477,10 +477,10 @@ class SpeciesDetailView extends ConsumerWidget {
         ? ref.watch(instanceAttachmentsProvider(instanceId!))
         : null;
 
-    final isCustomSubspecies = subspecies != null && subspecies!.subspeciesName.toLowerCase() != 'genérica';
+    final isCustomSubspecies = subspecies != null && subspecies!.subspeciesName.toLowerCase() != AppTechnicalStrings.genericSubspeciesLower;
 
     final headerTitle = isCustomSubspecies
-        ? '${subspecies!.subspeciesName}${subspecies!.brand != null ? " (${subspecies!.brand})" : ""}'
+        ? AppStrings.subspeciesNameWithBrand(subspecies!.subspeciesName, subspecies!.brand)
         : species.name;
 
     final bottomPadding = MediaQuery.paddingOf(context).bottom + (floatingActionButton != null ? 88.0 : 28.0);
@@ -539,35 +539,17 @@ class SpeciesDetailView extends ConsumerWidget {
                   spacing: 6,
                   runSpacing: 6,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withAlpha(30),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: theme.colorScheme.primary.withAlpha(90)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(template.icon, size: 14, color: theme.colorScheme.primary),
-                          const SizedBox(width: 4),
-                          Text(
-                            species.type,
-                            style: TextStyle(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Chip(
+                      visualDensity: VisualDensity.compact,
+                      avatar: Icon(template.icon, size: 12),
+                      label: Text(species.type, style: const TextStyle(fontSize: 11)),
                     ),
                     if (isCustomSubspecies) ...[
                       Chip(
                         visualDensity: VisualDensity.compact,
-                        avatar: const Icon(Icons.public, size: 12),
+                        avatar: const Icon(Icons.style_outlined, size: 12),
                         label: Text(
-                          'Especie: ${species.name}',
+                          AppStrings.speciesPrefix(species.name),
                           style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -575,13 +557,13 @@ class SpeciesDetailView extends ConsumerWidget {
                         Chip(
                           visualDensity: VisualDensity.compact,
                           avatar: const Icon(Icons.qr_code, size: 12),
-                          label: Text('${AppStrings.barcodeLabel}: ${subspecies!.barcode}', style: const TextStyle(fontSize: 11)),
+                          label: Text(AppStrings.barcodeWithColon(subspecies!.barcode!), style: const TextStyle(fontSize: 11)),
                         ),
                     ] else if (subspecies?.barcode != null) ...[
                       Chip(
                         visualDensity: VisualDensity.compact,
                         avatar: const Icon(Icons.qr_code, size: 12),
-                        label: Text('${AppStrings.barcodeLabel}: ${subspecies!.barcode}', style: const TextStyle(fontSize: 11)),
+                        label: Text(AppStrings.barcodeWithColon(subspecies!.barcode!), style: const TextStyle(fontSize: 11)),
                       ),
                     ],
                     if (species.isUnique)
@@ -599,8 +581,8 @@ class SpeciesDetailView extends ConsumerWidget {
                       ),
                       label: Text(
                         species.isNonPerishable
-                            ? 'Imperecedero'
-                            : 'Perecedero${species.defaultShelfLifeDays != null ? " (${species.defaultShelfLifeDays} días de vida útil)" : ""}',
+                            ? AppStrings.nonPerishable
+                            : AppStrings.perishableWithShelfLife(species.defaultShelfLifeDays),
                         style: TextStyle(
                           fontSize: 11,
                           color: species.isNonPerishable ? Colors.green.shade800 : Colors.orange.shade900,
@@ -632,6 +614,9 @@ class SpeciesDetailView extends ConsumerWidget {
                           itemCount: species.magnitudes.length,
                           itemBuilder: (ctx, idx) {
                             final mag = species.magnitudes[idx];
+                            final unitOrType = (mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty)
+                                ? mag.unitSymbol!.trim()
+                                : mag.dataType;
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
                               child: Row(
@@ -640,7 +625,7 @@ class SpeciesDetailView extends ConsumerWidget {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      '${mag.propertyName} (${(mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty) ? mag.unitSymbol!.trim() : mag.dataType})',
+                                      AppStrings.propertyWithUnitOrType(mag.propertyName, unitOrType),
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -798,7 +783,7 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    '${attachments.length}',
+                    attachments.length.toString(),
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -818,7 +803,7 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                   onPressed: onAdd,
                   icon: const Icon(Icons.add_photo_alternate_outlined, size: 16),
                   label: Text(
-                    isInstanceView ? 'Agregar adjunto a esta instancia' : AppStrings.attachFile,
+                    isInstanceView ? AppStrings.addAttachmentToThisInstance : AppStrings.attachFile,
                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   style: OutlinedButton.styleFrom(
@@ -850,16 +835,22 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                   final isSpeciesLevel = att.instanceId == null || att.instanceId!.isEmpty;
                   final isEditable = isEditing && (!isInstanceView || !isSpeciesLevel);
 
-                  final isImage = att.fileType == 'image' ||
-                      ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.bmp']
-                          .any((ext) => att.filePath.toLowerCase().endsWith(ext));
+                  final isImage = att.fileType == AppTechnicalStrings.fileTypeImage ||
+                      [
+                        AppTechnicalStrings.extJpg,
+                        AppTechnicalStrings.extJpeg,
+                        AppTechnicalStrings.extPng,
+                        AppTechnicalStrings.extWebp,
+                        AppTechnicalStrings.extHeic,
+                        AppTechnicalStrings.extBmp,
+                      ].any((ext) => att.filePath.toLowerCase().endsWith(ext));
 
                   return Consumer(
                     builder: (context, ref, _) {
                       return FutureBuilder<String>(
                         future: ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath),
                         builder: (context, snapshot) {
-                          final absPath = snapshot.data ?? '';
+                          final absPath = snapshot.data ?? AppTechnicalStrings.empty;
                           final fileExists = absPath.isNotEmpty && File(absPath).existsSync();
 
                           return ListTile(
@@ -921,7 +912,7 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                                       ),
                                     ),
                                     child: Text(
-                                      isSpeciesLevel ? 'Especie' : 'Instancia',
+                                      isSpeciesLevel ? AppStrings.speciesLabel : AppStrings.instanceLabel,
                                       style: TextStyle(
                                         fontSize: 9,
                                         fontWeight: FontWeight.bold,
@@ -934,11 +925,11 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                             ),
                             subtitle: fileExists
                                 ? Text(
-                                    att.createdAt.toString().split('.').first,
+                                    att.createdAt.toString().split(AppTechnicalStrings.dot).first,
                                     style: const TextStyle(fontSize: 10, color: Colors.grey),
                                   )
                                 : const Text(
-                                    'Archivo físico no encontrado',
+                                    AppStrings.physicalFileNotFound,
                                     style: TextStyle(fontSize: 11, color: Colors.redAccent, fontWeight: FontWeight.bold),
                                   ),
                             onTap: () => onOpen(att),
@@ -947,54 +938,54 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.open_in_new, size: 18),
-                                  tooltip: 'Abrir adjunto',
+                                  tooltip: AppStrings.openAttachmentTooltip,
                                   onPressed: () => onOpen(att),
                                 ),
                                 if (isEditable) ...[
                                   PopupMenuButton<String>(
                                     icon: const Icon(Icons.more_vert, size: 18),
-                                    tooltip: 'Opciones de adjunto',
+                                    tooltip: AppStrings.attachmentOptionsTooltip,
                                     onSelected: (value) {
                                       switch (value) {
-                                        case 'replace':
+                                        case AppTechnicalStrings.actionReplace:
                                           onReplace(att);
                                           break;
-                                        case 'rename':
+                                        case AppTechnicalStrings.actionRename:
                                           onRename(att);
                                           break;
-                                        case 'delete':
+                                        case AppTechnicalStrings.actionDelete:
                                           onDelete(att);
                                           break;
                                       }
                                     },
                                     itemBuilder: (ctx) => [
                                       const PopupMenuItem(
-                                        value: 'replace',
+                                        value: AppTechnicalStrings.actionReplace,
                                         child: Row(
                                           children: [
                                             Icon(Icons.sync, size: 16, color: Colors.blue),
                                             SizedBox(width: 8),
-                                            Text('Reemplazar archivo', style: TextStyle(fontSize: 12)),
+                                            Text(AppStrings.replaceFileAction, style: TextStyle(fontSize: 12)),
                                           ],
                                         ),
                                       ),
                                       const PopupMenuItem(
-                                        value: 'rename',
+                                        value: AppTechnicalStrings.actionRename,
                                         child: Row(
                                           children: [
                                             Icon(Icons.edit_outlined, size: 16, color: Colors.amber),
                                             SizedBox(width: 8),
-                                            Text('Renombrar', style: TextStyle(fontSize: 12)),
+                                            Text(AppStrings.renameAction, style: TextStyle(fontSize: 12)),
                                           ],
                                         ),
                                       ),
                                       const PopupMenuItem(
-                                        value: 'delete',
+                                        value: AppTechnicalStrings.actionDelete,
                                         child: Row(
                                           children: [
                                             Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
                                             SizedBox(width: 8),
-                                            Text('Eliminar', style: TextStyle(fontSize: 12, color: Colors.redAccent)),
+                                            Text(AppStrings.delete, style: TextStyle(fontSize: 12, color: Colors.redAccent)),
                                           ],
                                         ),
                                       ),

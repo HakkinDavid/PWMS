@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
@@ -42,12 +43,12 @@ class RegisterObjectModal extends ConsumerStatefulWidget {
   }) {
     final queryParams = <String, String>{};
     if (initialLocationId != null && initialLocationId.isNotEmpty) {
-      queryParams['initialLocationId'] = initialLocationId;
+      queryParams[AppTechnicalStrings.paramInitialLocationId] = initialLocationId;
     }
     if (startInCreateSpecies) {
-      queryParams['startInCreateSpecies'] = 'true';
+      queryParams[AppTechnicalStrings.paramStartInCreateSpecies] = AppTechnicalStrings.boolTrue;
     }
-    final uri = Uri(path: '/register', queryParameters: queryParams.isNotEmpty ? queryParams : null);
+    final uri = Uri(path: AppTechnicalStrings.register, queryParameters: queryParams.isNotEmpty ? queryParams : null);
     return context.push(uri.toString(), extra: scannedResult);
   }
 
@@ -233,20 +234,20 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               matchingSpecies = await catalogRepo.getOrCreateSpecies(
                 speciesName,
                 type: AppStrings.typeObject,
-                description: '${AppStrings.numismaticSpeciesDescriptionPrefix}${result.speciesType})',
+                description: AppStrings.numismaticSpeciesDescription(result.speciesType),
                 mainPhotoPath: null,
               );
             }
 
             final currencyUnit = (result.currencyCode != null && result.currencyCode!.trim().isNotEmpty)
                 ? result.currencyCode!.trim()
-                : 'MXN';
+                : AppTechnicalStrings.currencyMxn;
 
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.nominalValuePropertyName, dataType: 'real');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.mintagePropertyName, dataType: 'integer', unitSymbol: AppStrings.yearUnitSymbol);
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.currencyPropertyName, dataType: 'string');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.materialPropertyName, dataType: 'string');
-            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.gradePropertyName, dataType: 'string');
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.nominalValuePropertyName, dataType: AppTechnicalStrings.datatypeRealLower);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.mintagePropertyName, dataType: AppTechnicalStrings.datatypeIntegerLower, unitSymbol: AppStrings.yearUnitSymbol);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.currencyPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.materialPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.gradePropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
 
             if (!mounted) return;
             ref.invalidate(catalogListProvider);
@@ -290,11 +291,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             if (result.isSpecialEdition) {
               final reason = result.specialEditionReason ?? AppStrings.specialEditionTitle;
               if (reason == AppStrings.otherSpecifyOption && result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
-                instanceNotes = '${AppStrings.specialEditionNotePrefix}${result.specialEditionNotes}';
+                instanceNotes = AppStrings.specialEditionWithReason(result.specialEditionNotes!);
               } else {
-                instanceNotes = '${AppStrings.specialEditionNotePrefix}$reason';
+                instanceNotes = AppStrings.specialEditionWithReason(reason);
                 if (result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
-                  instanceNotes = '$instanceNotes (${result.specialEditionNotes})';
+                  instanceNotes = AppStrings.specialEditionWithAdditionalNotes(instanceNotes, result.specialEditionNotes!);
                 }
               }
             }
@@ -322,7 +323,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 id: const Uuid().v4(),
                 sourceEntityId: createdInstance.id,
                 targetEntityId: result.containerEntityId!,
-                relationType: 'GUARDADO_EN',
+                relationType: AppTechnicalStrings.relGuardadoEn,
                 createdAt: DateTime.now(),
               );
               await relationRepo.addRelation(rel);
@@ -373,11 +374,11 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             // 5. Adjuntos de Anverso y Reverso por instancia (sin stitching)
             final obverseFile = File(result.obversePhotoPath);
             if (await obverseFile.exists()) {
-              final ext = obverseFile.path.contains('.') ? obverseFile.path.split('.').last : 'jpg';
+              final ext = obverseFile.path.contains(AppTechnicalStrings.dot) ? obverseFile.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgClean;
               final obverseFileName = NumismaticDataHelper.buildAttachmentFileName(
                 subspeciesName: targetSubspecies.subspeciesName,
                 instanceId: createdInstance.id,
-                side: 'anverso',
+                side: AppTechnicalStrings.anversoLower,
                 extension: ext,
               );
               await catalogRepo.addAttachment(
@@ -385,18 +386,18 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 instanceId: createdInstance.id,
                 filePath: obverseFile.path,
                 fileName: obverseFileName,
-                fileType: 'image',
+                fileType: AppTechnicalStrings.fileTypeImage,
               );
             }
 
             if (result.reversePhotoPath != null) {
               final reverseFile = File(result.reversePhotoPath!);
               if (await reverseFile.exists()) {
-                final ext = reverseFile.path.contains('.') ? reverseFile.path.split('.').last : 'jpg';
+                final ext = reverseFile.path.contains(AppTechnicalStrings.dot) ? reverseFile.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgClean;
                 final reverseFileName = NumismaticDataHelper.buildAttachmentFileName(
                   subspeciesName: targetSubspecies.subspeciesName,
                   instanceId: createdInstance.id,
-                  side: 'reverso',
+                  side: AppTechnicalStrings.reversoLower,
                   extension: ext,
                 );
                 await catalogRepo.addAttachment(
@@ -404,7 +405,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   instanceId: createdInstance.id,
                   filePath: reverseFile.path,
                   fileName: reverseFileName,
-                  fileType: 'image',
+                  fileType: AppTechnicalStrings.fileTypeImage,
                 );
               }
             }
@@ -419,7 +420,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('${AppStrings.pieceInstantiatedDirectlyPrefix}${result.subspeciesName}${AppStrings.pieceInstantiatedDirectlySuffix}'),
+                content: Text(AppStrings.pieceInstantiatedDirectly(result.subspeciesName)),
                 backgroundColor: Colors.green.shade800,
                 duration: const Duration(seconds: 4),
               ),
@@ -447,7 +448,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             items: catalogItems.map((c) => c.id).toList(),
             labelBuilder: (id) {
               final c = catalogItems.where((c) => c.id == id).firstOrNull;
-              return c != null ? '${c.name} (${c.type})' : id;
+              return c != null ? AppStrings.speciesWithType(c.name, c.type) : id;
             },
             title: AppStrings.catalogSpeciesLabel,
             decoration: const InputDecoration(
@@ -522,7 +523,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
+      error: (err, _) => Center(child: Text(AppStrings.errorWithDetails(err))),
     );
   }
 }

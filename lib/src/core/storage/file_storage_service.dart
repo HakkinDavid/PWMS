@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 class FileStorageService {
   Directory? _appDir;
@@ -10,7 +11,7 @@ class FileStorageService {
   Future<Directory> get _storageDir async {
     if (_appDir != null) return _appDir!;
     final docsDir = await getApplicationDocumentsDirectory();
-    final mediaDir = Directory(p.join(docsDir.path, 'pwms_media'));
+    final mediaDir = Directory(p.join(docsDir.path, AppTechnicalStorage.dirMedia));
     if (!await mediaDir.exists()) {
       await mediaDir.create(recursive: true);
     }
@@ -23,11 +24,11 @@ class FileStorageService {
   Future<String> saveFile(String sourcePath) async {
     final file = File(sourcePath);
     if (!await file.exists()) {
-      throw Exception('Source file does not exist at path: $sourcePath');
+      throw Exception(AppStrings.sourceFileNotFoundAtPath(sourcePath));
     }
 
     final ext = p.extension(sourcePath);
-    final filename = '${const Uuid().v4()}$ext';
+    final filename = AppTechnicalStrings.fileNameWithExtension(const Uuid().v4(), ext);
     final targetDir = await _storageDir;
     final targetPath = p.join(targetDir.path, filename);
 
@@ -36,9 +37,9 @@ class FileStorageService {
   }
 
   /// Saves raw bytes to the local PWMS media directory and returns the relative filename.
-  Future<String> saveBytes(List<int> bytes, {String extension = '.jpg'}) async {
-    final ext = extension.startsWith('.') ? extension : '.$extension';
-    final filename = '${const Uuid().v4()}$ext';
+  Future<String> saveBytes(List<int> bytes, {String extension = AppTechnicalStorage.extJpg}) async {
+    final ext = AppTechnicalStrings.withDotPrefix(extension);
+    final filename = AppTechnicalStrings.fileNameWithExtension(const Uuid().v4(), ext);
     final targetDir = await _storageDir;
     final targetPath = p.join(targetDir.path, filename);
 
@@ -59,7 +60,7 @@ class FileStorageService {
 
     // Fallback: check legacy product_images directory
     final docsDir = await getApplicationDocumentsDirectory();
-    final legacyPath = p.join(docsDir.path, 'product_images', relativePath);
+    final legacyPath = p.join(docsDir.path, AppTechnicalStorage.dirProductImages, relativePath);
     if (await File(legacyPath).exists()) return legacyPath;
 
     return primaryPath;

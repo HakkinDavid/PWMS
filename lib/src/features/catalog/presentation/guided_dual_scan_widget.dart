@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/storage/app_settings_repository.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
@@ -71,7 +71,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           _exposureOffset = ev;
           _currentZoom = zoom;
           if (defaultMode != null) {
-            _isCoinMode = defaultMode == 'coin';
+            _isCoinMode = defaultMode == AppTechnicalStrings.modeCoin;
           } else {
             _isCoinMode = true; // Por defecto moneda
           }
@@ -114,7 +114,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
     } catch (e) {
       if (mounted && !_isDisposed) {
         setState(() {
-          _statusMessage = 'Error al inicializar cámara: $e';
+          _statusMessage = AppStrings.cameraInitError(e);
         });
       }
     }
@@ -162,7 +162,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
     });
     try {
       final settings = ref.read(appSettingsRepositoryProvider);
-      settings.setNumismaticDefaultMode(isCoin ? 'coin' : 'banknote').catchError((_) {});
+      settings.setNumismaticDefaultMode(isCoin ? AppTechnicalStrings.modeCoin : AppTechnicalStrings.modeBanknote).catchError((_) {});
     } catch (_) {}
   }
 
@@ -231,7 +231,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
 
     setState(() {
       _isProcessing = true;
-      _statusMessage = 'Capturando en alta definición...';
+      _statusMessage = AppStrings.capturingHighDefinitionPrompt;
     });
 
     try {
@@ -262,7 +262,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
       if (mounted && !_isDisposed) {
         setState(() {
           _isProcessing = false;
-          _statusMessage = 'Error en captura: $e';
+          _statusMessage = AppStrings.cameraCaptureError(e);
         });
       }
     }
@@ -435,8 +435,8 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                       const SizedBox(width: 6),
                       Text(
                         isBothCaptured
-                            ? 'CAPTURA COMPLETA (2/2)'
-                            : (_currentStep == 1 ? 'PASO 1: ANVERSO' : 'PASO 2: REVERSO'),
+                            ? AppStrings.captureCompleteStatus
+                            : (_currentStep == 1 ? AppStrings.step1Obverse : AppStrings.step2Reverse),
                         style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                       ),
                     ],
@@ -453,7 +453,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                   shape: const CircleBorder(),
                   child: IconButton(
                     iconSize: 20,
-                    tooltip: _isTorchOn ? 'Desactivar linterna' : 'Activar linterna (evita barrido)',
+                    tooltip: _isTorchOn ? AppStrings.disableTorchTooltip : AppStrings.enableTorchTooltip,
                     icon: Icon(
                       _isTorchOn ? Icons.flash_on : Icons.flash_off,
                       color: _isTorchOn ? Colors.white : Colors.white70,
@@ -515,7 +515,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                       const Icon(Icons.zoom_in, color: Colors.white, size: 14),
                       const SizedBox(width: 4),
                       Text(
-                        '${_currentZoom.toStringAsFixed(1)}x',
+                        AppStrings.zoomLevelDisplay(_currentZoom),
                         style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -533,7 +533,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
             children: [
               // Anverso Thumbnail
               _buildThumbnailCard(
-                title: 'Anverso',
+                title: AppStrings.coinObverse,
                 file: _obverseFile,
                 isSelected: _currentStep == 1,
                 onTapSelect: () => setState(() => _currentStep = 1),
@@ -548,7 +548,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
               const SizedBox(width: 12),
               // Reverso Thumbnail
               _buildThumbnailCard(
-                title: 'Reverso',
+                title: AppStrings.coinReverse,
                 file: _reverseFile,
                 isSelected: _currentStep == 2,
                 onTapSelect: () => setState(() => _currentStep = 2),
@@ -577,8 +577,8 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
               const SizedBox(width: 4),
               Text(
                 isBothCaptured
-                    ? '¡Ambos lados listos! Pulsa "Continuar a Datos Numismáticos".'
-                    : 'Tip: Activa la linterna y ajusta el zoom para encuadrar la pieza.',
+                    ? AppStrings.bothSidesReadyTip
+                    : AppStrings.cameraIlluminationTip,
                 style: TextStyle(
                   fontSize: 10,
                   color: isBothCaptured ? Colors.green.shade800 : theme.colorScheme.onSurfaceVariant,
@@ -653,7 +653,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
                   ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
                   : const Icon(Icons.arrow_forward_rounded, size: 20),
               label: const Text(
-                'Continuar a Datos Numismáticos',
+                AppStrings.continueToNumismaticDataAction,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
               style: ElevatedButton.styleFrom(
@@ -779,7 +779,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           // Marco circular para monedas
           final double radius = width * 0.35;
           return Stack(
-            key: const ValueKey('coin_targeting_stack'),
+            key: const ValueKey(AppTechnicalStrings.keyCoinTargetingStack),
             children: [
               CustomPaint(
                 size: Size(width, height),
@@ -791,7 +791,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
               ),
               Center(
                 child: Container(
-                  key: const ValueKey('coin_reticle_container'),
+                  key: const ValueKey(AppTechnicalStrings.keyCoinReticleContainer),
                   width: radius * 2,
                   height: radius * 2,
                   decoration: BoxDecoration(
@@ -807,7 +807,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
           final double rectWidth = width * 0.8;
           final double rectHeight = rectWidth * 0.55;
           return Stack(
-            key: const ValueKey('banknote_targeting_stack'),
+            key: const ValueKey(AppTechnicalStrings.keyBanknoteTargetingStack),
             children: [
               CustomPaint(
                 size: Size(width, height),
@@ -820,7 +820,7 @@ class _GuidedDualScanWidgetState extends ConsumerState<GuidedDualScanWidget> {
               ),
               Center(
                 child: Container(
-                  key: const ValueKey('banknote_reticle_container'),
+                  key: const ValueKey(AppTechnicalStrings.keyBanknoteReticleContainer),
                   width: rectWidth,
                   height: rectHeight,
                   decoration: BoxDecoration(
@@ -935,8 +935,8 @@ _CropResult _processCropImageIsolate(_CropParams params) {
   }
 
   // Codificación ultrarrápida JPEG calidad 95: nitidez fotográfica profesional sin pérdida perceptible y < 50ms de procesamiento
-  final ext = '_cropped.jpg';
-  final newPath = params.originalPath.replaceAll(RegExp(r'\.(jpg|jpeg|png)$', caseSensitive: false), '') + ext;
+  const ext = AppTechnicalStrings.extCroppedJpg;
+  final newPath = params.originalPath.replaceAll(RegExp(AppTechnicalStrings.imageFileExtensionsRegex, caseSensitive: false), AppTechnicalStrings.empty) + ext;
   final Uint8List encodedBytes = Uint8List.fromList(img.encodeJpg(cropped, quality: 95));
 
   return _CropResult(croppedBytes: encodedBytes, outputPath: newPath);

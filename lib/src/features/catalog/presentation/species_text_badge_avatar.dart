@@ -24,7 +24,7 @@ class SpeciesTextBadgeAvatar extends StatelessWidget {
     final fg = textColor ?? theme.colorScheme.primary;
     final r = borderRadius ?? BorderRadius.circular(10);
 
-    final displayName = speciesName.trim().isNotEmpty ? speciesName.trim() : 'Especie';
+    final displayName = speciesName.trim().isNotEmpty ? speciesName.trim() : AppStrings.speciesLabel;
 
     return Container(
       width: size,

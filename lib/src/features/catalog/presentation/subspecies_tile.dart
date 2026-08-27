@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/subspecies.dart';
 import 'species_text_badge_avatar.dart';
@@ -25,10 +26,10 @@ class SubspeciesTile extends ConsumerWidget {
     final theme = Theme.of(context);
     final photoPath = subspecies.photoPath;
 
-    final titleText = '${subspecies.subspeciesName}${subspecies.brand != null && subspecies.brand!.isNotEmpty ? " (${subspecies.brand})" : ""}';
+    final titleText = AppStrings.subspeciesNameWithBrand(subspecies.subspeciesName, subspecies.brand);
     final subtitleText = subspecies.barcode != null && subspecies.barcode!.isNotEmpty
-        ? '${AppStrings.barcodeLabel}: ${subspecies.barcode}'
-        : (subspecies.notes ?? '');
+        ? AppStrings.barcodeWithColon(subspecies.barcode!)
+        : (subspecies.notes ?? AppTechnicalStrings.empty);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 6),
@@ -45,7 +46,7 @@ class SubspeciesTile extends ConsumerWidget {
             child: FutureBuilder<String>(
               future: photoPath != null && photoPath.isNotEmpty
                   ? ref.read(fileStorageServiceProvider).getAbsolutePath(photoPath)
-                  : Future.value(''),
+                  : Future.value(AppTechnicalStrings.empty),
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                   return Image.file(

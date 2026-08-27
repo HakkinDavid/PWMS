@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../domain/app_notification.dart';
@@ -71,7 +72,7 @@ class NotificationsScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, st) => Center(
-          child: Text('${AppStrings.loadNotificationsErrorPrefix}$err'),
+          child: Text(AppStrings.loadNotificationsError(err)),
         ),
       ),
     );
@@ -85,11 +86,11 @@ class _NotificationTile extends ConsumerWidget {
 
   Color _getBadgeColor() {
     switch (notification.type) {
-      case 'expired':
+      case AppTechnicalNotifications.notifTypeExpired:
         return Colors.red.shade700;
-      case 'expiring_soon':
+      case AppTechnicalNotifications.notifTypeExpiringSoon:
         return Colors.orange.shade800;
-      case 'unsatisfied_need':
+      case AppTechnicalNotifications.notifTypeUnsatisfiedNeed:
         return Colors.deepPurple.shade700;
       default:
         return Colors.blue.shade700;
@@ -98,11 +99,11 @@ class _NotificationTile extends ConsumerWidget {
 
   IconData _getBadgeIcon() {
     switch (notification.type) {
-      case 'expired':
+      case AppTechnicalNotifications.notifTypeExpired:
         return Icons.error_outline;
-      case 'expiring_soon':
+      case AppTechnicalNotifications.notifTypeExpiringSoon:
         return Icons.warning_amber_rounded;
-      case 'unsatisfied_need':
+      case AppTechnicalNotifications.notifTypeUnsatisfiedNeed:
         return Icons.inventory_2_outlined;
       default:
         return Icons.notifications;
@@ -110,9 +111,9 @@ class _NotificationTile extends ConsumerWidget {
   }
 
   void _onTap(BuildContext context) {
-    if (notification.targetType == 'species') {
+    if (notification.targetType == AppTechnicalNotifications.notifTargetTypeSpecies) {
       context.pushSpeciesDetail(notification.targetId);
-    } else if (notification.targetType == 'entity') {
+    } else if (notification.targetType == AppTechnicalNotifications.notifTargetTypeEntity) {
       context.pushEntityDetail(notification.targetId);
     }
   }
@@ -180,7 +181,7 @@ class _NotificationTile extends ConsumerWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: badgeColor.withOpacity(0.3), width: 1.5),
+        side: BorderSide(color: badgeColor.withValues(alpha: 0.3), width: 1.5),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -196,7 +197,7 @@ class _NotificationTile extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: badgeColor.withOpacity(0.12),
+                      color: badgeColor.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(_getBadgeIcon(), color: badgeColor, size: 22),

@@ -1,3 +1,6 @@
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+
 class PerishabilityInferenceResult {
   final bool isNonPerishable;
   final int? suggestedShelfLifeDays;
@@ -22,13 +25,13 @@ class PerishabilityInferenceEngine {
     if (raw.isEmpty) return null;
 
     // 1. Check for explicit parenthesis notation: (17)YYMMDD or (15)YYMMDD
-    final parenRegex = RegExp(r'\((?:17|15)\)(\d{2})(\d{2})(\d{2})');
+    final parenRegex = RegExp(AppTechnicalStrings.regexGs1ParenExpiration);
     var match = parenRegex.firstMatch(raw);
 
     // 2. If no parenthesis, only match structured GS1 formats (starts with 17/15 or follows GTIN-14)
     if (match == null) {
-      final clean = raw.replaceAll(RegExp(r'[\s\-]'), '');
-      final structuredGs1Regex = RegExp(r'^(?:01\d{14})?(?:17|15)(\d{2})(\d{2})(\d{2})');
+      final clean = raw.replaceAll(RegExp(AppTechnicalStrings.regexGs1StripSpacesDashes), AppTechnicalStrings.empty);
+      final structuredGs1Regex = RegExp(AppTechnicalStrings.regexGs1StructuredExpiration);
       match = structuredGs1Regex.firstMatch(clean);
     }
 
@@ -55,10 +58,10 @@ class PerishabilityInferenceEngine {
     String? barcode,
   }) {
     // Rule 1: Non-Object species types (Ser vivo, Documento, Proyecto, etc.) are strictly non-perishable
-    if (type != 'Objeto') {
+    if (type != AppStrings.typeObject) {
       return const PerishabilityInferenceResult(
         isNonPerishable: true,
-        inferenceReason: 'Las especies de tipo distinto a Objeto son No Perecederas por definición.',
+        inferenceReason: AppStrings.perishabilityReasonNonObjectType,
       );
     }
 
@@ -68,89 +71,86 @@ class PerishabilityInferenceEngine {
       gs1Expiration = parseGS1ExpirationDate(barcode);
     }
 
-    final textToAnalyze = '${title ?? ""} ${category ?? ""} ${genericName ?? ""}'.toLowerCase();
+    final textToAnalyze = [
+      title ?? AppTechnicalStrings.empty,
+      AppTechnicalStrings.space,
+      category ?? AppTechnicalStrings.empty,
+      AppTechnicalStrings.space,
+      genericName ?? AppTechnicalStrings.empty,
+    ].join().toLowerCase();
 
     // Check non-perishable keywords explicitly
-    final nonPerishableKeywords = [
-      'monitor', 'teclado', 'mouse', 'ratón', 'celular', 'smartphone', 'iphone', 'samsung',
-      'laptop', 'computadora', 'cable', 'cargador', 'audífonos', 'headset', 'pantalla', 'tv',
-      'televisión', 'martillo', 'destornillador', 'tornillo', 'taladro', 'herramienta',
-      'mueble', 'silla', 'mesa', 'escritorio', 'estante', 'camisa', 'pantalón', 'zapato',
-      'tenis', 'ropa', 'vestido', 'libro', 'cuaderno', 'libreta', 'pluma', 'bolígrafo',
-      'vaso', 'taza', 'plato', 'sartén', 'olla', 'mochila', 'bolsa'
-    ];
-
-    for (final kw in nonPerishableKeywords) {
+    for (final kw in AppTechnicalStrings.nonPerishableKeywordsElectronics) {
       if (textToAnalyze.contains(kw)) {
         return PerishabilityInferenceResult(
           isNonPerishable: true,
           extractedExpirationDate: gs1Expiration,
-          inferenceReason: 'Detectado como objeto durable/no alimenticio ($kw).',
+          inferenceReason: AppStrings.perishabilityReasonDurableObject(kw),
         );
       }
     }
 
     // Check perishable categories & keywords
-    if (_containsAny(textToAnalyze, ['leche', 'lait', 'milk', 'yogur', 'yogurt', 'queso', 'crema', 'mantequilla', 'kefir'])) {
+    if (_containsAny(textToAnalyze, AppTechnicalStrings.perishableKeywordsDairy)) {
       return PerishabilityInferenceResult(
         isNonPerishable: false,
         suggestedShelfLifeDays: 14,
         extractedExpirationDate: gs1Expiration,
-        inferenceReason: 'Categoría Lácteos (~14 días de vida útil).',
+        inferenceReason: AppStrings.perishabilityReasonDairy,
       );
     }
 
-    if (_containsAny(textToAnalyze, ['pan', 'bread', 'torta', 'pastel', 'galleta', 'panqueque', 'donas'])) {
+    if (_containsAny(textToAnalyze, AppTechnicalStrings.perishableKeywordsBakery)) {
       return PerishabilityInferenceResult(
         isNonPerishable: false,
         suggestedShelfLifeDays: 7,
         extractedExpirationDate: gs1Expiration,
-        inferenceReason: 'Categoría Panadería (~7 días de vida útil).',
+        inferenceReason: AppStrings.perishabilityReasonBakery,
       );
     }
 
-    if (_containsAny(textToAnalyze, ['manzana', 'plátano', 'banana', 'jitomate', 'tomate', 'lechuga', 'aguacate', 'fresa', 'uva', 'fruta', 'verdura'])) {
+    if (_containsAny(textToAnalyze, AppTechnicalStrings.perishableKeywordsFruitVeg)) {
       return PerishabilityInferenceResult(
         isNonPerishable: false,
         suggestedShelfLifeDays: 7,
         extractedExpirationDate: gs1Expiration,
-        inferenceReason: 'Categoría Frutas & Verduras (~7 días de vida útil).',
+        inferenceReason: AppStrings.perishabilityReasonFruitVeg,
       );
     }
 
-    if (_containsAny(textToAnalyze, ['carne', 'pollo', 'pescado', 'jamón', 'salchicha', 'pavo', 'tocino', 'meat', 'chicken'])) {
+    if (_containsAny(textToAnalyze, AppTechnicalStrings.perishableKeywordsMeat)) {
       return PerishabilityInferenceResult(
         isNonPerishable: false,
         suggestedShelfLifeDays: 5,
         extractedExpirationDate: gs1Expiration,
-        inferenceReason: 'Categoría Carnes & Pescados (~5 días de vida útil).',
+        inferenceReason: AppStrings.perishabilityReasonMeat,
       );
     }
 
-    if (_containsAny(textToAnalyze, ['jugo', 'zumo', 'juice', 'batido', 'cerveza', 'beer'])) {
+    if (_containsAny(textToAnalyze, AppTechnicalStrings.perishableKeywordsBeverages)) {
       return PerishabilityInferenceResult(
         isNonPerishable: false,
         suggestedShelfLifeDays: 30,
         extractedExpirationDate: gs1Expiration,
-        inferenceReason: 'Categoría Bebidas Perecederas (~30 días de vida útil).',
+        inferenceReason: AppStrings.perishabilityReasonBeverage,
       );
     }
 
-    if (_containsAny(textToAnalyze, ['medicamento', 'jarabe', 'pastillas', 'antibiótico', 'suero', 'medicina', 'pharmacy'])) {
+    if (_containsAny(textToAnalyze, AppTechnicalStrings.perishableKeywordsPharmacy)) {
       return PerishabilityInferenceResult(
         isNonPerishable: false,
         suggestedShelfLifeDays: 365,
         extractedExpirationDate: gs1Expiration,
-        inferenceReason: 'Categoría Farmacia / Salud (~365 días de vida útil).',
+        inferenceReason: AppStrings.perishabilityReasonPharmacy,
       );
     }
 
-    if (_containsAny(textToAnalyze, ['atún en lata', 'enlatado', 'conserva', 'mermelada', 'canned'])) {
+    if (_containsAny(textToAnalyze, AppTechnicalStrings.perishableKeywordsCanned)) {
       return PerishabilityInferenceResult(
         isNonPerishable: false,
         suggestedShelfLifeDays: 365,
         extractedExpirationDate: gs1Expiration,
-        inferenceReason: 'Categoría Enlatados & Conservas (~365 días de vida útil).',
+        inferenceReason: AppStrings.perishabilityReasonCanned,
       );
     }
 
@@ -158,7 +158,7 @@ class PerishabilityInferenceEngine {
     return PerishabilityInferenceResult(
       isNonPerishable: true,
       extractedExpirationDate: gs1Expiration,
-      inferenceReason: 'No se identificó categoría perecedera; configurado como No Perecedero por defecto.',
+      inferenceReason: AppStrings.perishabilityReasonDefault,
     );
   }
 

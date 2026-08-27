@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
@@ -97,7 +98,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
             const SizedBox(height: 14),
 
             Text(
-              species.isUnique ? AppStrings.locationLabel : '${AppStrings.tabEntities} (${instances.length})',
+              species.isUnique ? AppStrings.locationLabel : AppStrings.entitiesTabWithCount(instances.length),
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
@@ -114,8 +115,8 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                   final firstMag = inst.magnitudes.isNotEmpty ? inst.magnitudes.first : null;
                   final magText = firstMag != null
                       ? ((firstMag.unitSymbol != null && firstMag.unitSymbol!.trim().isNotEmpty)
-                          ? '${AppStrings.quantityLabel}: ${DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol)} ${firstMag.unitSymbol}'
-                          : '${AppStrings.quantityLabel}: ${firstMag.displayValue}')
+                          ? AppStrings.quantityWithFormattedUnit(DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol), firstMag.unitSymbol!)
+                          : AppStrings.quantityWithValue(firstMag.displayValue))
                       : AppStrings.registeredInstance;
 
                   return Card(
@@ -127,7 +128,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                       leading: Icon(Icons.location_on, color: theme.colorScheme.primary, size: 18),
                       title: Text(
-                        '${breadcrumb.ancestorPath} ${breadcrumb.targetName}',
+                        AppStrings.breadcrumbPathAndTarget(breadcrumb.ancestorPath, breadcrumb.targetName),
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                       ),
                       subtitle: Text(
@@ -169,7 +170,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
             }
             _workingAttachments = List.from(_originalAttachments ?? []);
             _forceClose = true;
-            if (mounted) {
+            if (context.mounted) {
               setState(() => _isEditing = false);
               Navigator.of(context).pop();
             }
@@ -208,7 +209,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                               final confirm = await AppConfirmationDialog.showDeleteConfirmation(
                                 context: context,
                                 title: AppStrings.deleteConfirmationTitle,
-                                message: '${AppStrings.deleteConfirmationMessage} "${species.name}"?',
+                                message: AppStrings.confirmDeleteSpeciesNamed(species.name),
                               );
 
                               if (confirm == true) {
@@ -217,7 +218,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                                   if (context.mounted) context.pop();
                                 } catch (e) {
                                   if (context.mounted) {
-                                    AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                                    AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
                                   }
                                 }
                               }
@@ -258,7 +259,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                           _originalAttachments = List.from(_workingAttachments);
                         }
 
-                        if (mounted) {
+                        if (context.mounted) {
                           setState(() => _isEditing = false);
                           AppToast.showSuccess(context, AppStrings.instanceUpdatedSuccess);
                         }
@@ -295,7 +296,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
       ),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text(AppStrings.appName)),
-        body: Center(child: Text('${AppStrings.errorPrefix}$err')),
+        body: Center(child: Text(AppStrings.errorWithDetails(err))),
       ),
     );
   }

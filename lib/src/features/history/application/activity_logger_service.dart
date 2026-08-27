@@ -1,4 +1,6 @@
 import 'package:uuid/uuid.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../domain/activity_event.dart';
 import '../domain/i_history_repository.dart';
 
@@ -12,9 +14,9 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'creation',
-      description: 'Registrado en tu mundo: "$entityName" ($entityType)',
-      metadata: {'name': entityName, 'type': entityType},
+      eventType: AppTechnicalStrings.eventCreation,
+      description: AppStrings.activityEntityCreated(entityName, entityType),
+      metadata: {AppTechnicalStrings.keyName: entityName, AppTechnicalStrings.keyType: entityType},
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -24,9 +26,11 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'edition',
-      description: details != null ? 'Editado "$entityName": $details' : 'Editada información de "$entityName"',
-      metadata: {'name': entityName, 'details': details},
+      eventType: AppTechnicalStrings.eventEdition,
+      description: details != null
+          ? AppStrings.activityEntityEditedWithDetails(entityName, details)
+          : AppStrings.activityEntityEdited(entityName),
+      metadata: {AppTechnicalStrings.keyName: entityName, AppTechnicalStrings.keyDetails: details},
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -36,9 +40,9 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'deletion',
-      description: 'Eliminado de tu mundo: "$entityName"',
-      metadata: {'name': entityName},
+      eventType: AppTechnicalStrings.eventDeletion,
+      description: AppStrings.activityEntityDeleted(entityName),
+      metadata: {AppTechnicalStrings.keyName: entityName},
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -48,9 +52,13 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'movement',
-      description: 'Trasladado "$entityName" de "$oldPlaceName" a "$newPlaceName"',
-      metadata: {'name': entityName, 'from': oldPlaceName, 'to': newPlaceName},
+      eventType: AppTechnicalStrings.eventMovement,
+      description: AppStrings.activityEntityMoved(entityName, oldPlaceName, newPlaceName),
+      metadata: {
+        AppTechnicalStrings.keyName: entityName,
+        AppTechnicalStrings.keyFrom: oldPlaceName,
+        AppTechnicalStrings.keyTo: newPlaceName,
+      },
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -60,9 +68,9 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'attachment',
-      description: 'Adjuntado archivo "$fileName" a "$entityName"',
-      metadata: {'name': entityName, 'file': fileName},
+      eventType: AppTechnicalStrings.eventAttachment,
+      description: AppStrings.activityAttachmentAdded(fileName, entityName),
+      metadata: {AppTechnicalStrings.keyName: entityName, AppTechnicalStrings.keyFile: fileName},
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -72,9 +80,9 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'attachment_removed',
-      description: 'Eliminado archivo "$fileName" de "$entityName"',
-      metadata: {'name': entityName, 'file': fileName},
+      eventType: AppTechnicalStrings.eventAttachmentRemoved,
+      description: AppStrings.activityAttachmentRemoved(fileName, entityName),
+      metadata: {AppTechnicalStrings.keyName: entityName, AppTechnicalStrings.keyFile: fileName},
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -84,9 +92,13 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: null,
-      eventType: 'relation',
-      description: 'Vínculo establecido: "$sourceName" $relationType "$targetName"',
-      metadata: {'source': sourceName, 'target': targetName, 'type': relationType},
+      eventType: AppTechnicalStrings.eventRelation,
+      description: AppStrings.activityRelationAdded(sourceName, relationType, targetName),
+      metadata: {
+        AppTechnicalStrings.keySource: sourceName,
+        AppTechnicalStrings.keyTarget: targetName,
+        AppTechnicalStrings.keyType: relationType,
+      },
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -96,9 +108,13 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: null,
-      eventType: 'relation_removed',
-      description: 'Vínculo eliminado: "$sourceName" $relationType "$targetName"',
-      metadata: {'source': sourceName, 'target': targetName, 'type': relationType},
+      eventType: AppTechnicalStrings.eventRelationRemoved,
+      description: AppStrings.activityRelationRemoved(sourceName, relationType, targetName),
+      metadata: {
+        AppTechnicalStrings.keySource: sourceName,
+        AppTechnicalStrings.keyTarget: targetName,
+        AppTechnicalStrings.keyType: relationType,
+      },
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -108,9 +124,9 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'photo_changed',
-      description: 'Actualizada fotografía principal de "$entityName"',
-      metadata: {'name': entityName},
+      eventType: AppTechnicalStrings.eventPhotoChanged,
+      description: AppStrings.activityPhotoChanged(entityName),
+      metadata: {AppTechnicalStrings.keyName: entityName},
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -120,9 +136,9 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'photo_removed',
-      description: 'Eliminada fotografía principal de "$entityName"',
-      metadata: {'name': entityName},
+      eventType: AppTechnicalStrings.eventPhotoRemoved,
+      description: AppStrings.activityPhotoRemoved(entityName),
+      metadata: {AppTechnicalStrings.keyName: entityName},
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);
@@ -132,9 +148,13 @@ class ActivityLoggerService {
     final event = ActivityEvent(
       id: const Uuid().v4(),
       entityId: entityId,
-      eventType: 'consumption',
-      description: 'Cantidad ajustada de "$entityName": $newQty $unit',
-      metadata: {'name': entityName, 'quantity': newQty, 'unit': unit},
+      eventType: AppTechnicalStrings.eventConsumption,
+      description: AppStrings.activityQuantityConsumed(entityName, newQty, unit),
+      metadata: {
+        AppTechnicalStrings.keyName: entityName,
+        AppTechnicalStrings.keyQuantity: newQty,
+        AppTechnicalStrings.keyUnit: unit,
+      },
       timestamp: DateTime.now(),
     );
     await _historyRepository.logEvent(event);

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import '../../../catalog/presentation/species_form_modal.dart';
@@ -15,7 +17,7 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.uninstantiatedSubspecies;
 
   @override
-  String get ruleId => 'catalog_uninstantiated_subspecies';
+  String get ruleId => AppTechnicalStrings.ruleCatalogUninstantiatedSubspecies;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -23,16 +25,19 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
 
     for (final sub in context.allSubspecies) {
       final instanceCount = context.allEntities.where((e) => e.subspeciesId == sub.id).length;
-      if (instanceCount == 0 && sub.subspeciesName.toLowerCase() != 'genérica') {
+      if (instanceCount == 0 && sub.subspeciesName.toLowerCase() != AppStrings.genericSubspeciesNameLower) {
         final parentSpecies = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
-        final subNameStr = '${sub.subspeciesName}${sub.brand != null && sub.brand!.isNotEmpty ? " (${sub.brand})" : ""}';
+        final subNameStr = AppStrings.subspeciesNameWithBrand(sub.subspeciesName, sub.brand);
 
         cards.add(AuditRuleHelper.forSubspecies(
-          id: 'sub_${sub.id}',
+          id: AppTechnicalStrings.prefixSub + sub.id,
           type: AuditCardType.uninstantiatedSubspecies,
-          title: 'Subespecie sin Instancia',
-          subtitle: '$subNameStr • Especie: ${parentSpecies?.name ?? "Desconocida"}',
-          question: 'No existe ninguna instancia registrada para la subespecie "$subNameStr". ¿Deseas mantenerla o eliminarla?',
+          title: AppStrings.uninstantiatedSubspeciesCardTitle,
+          subtitle: AppStrings.uninstantiatedSubspeciesSubtitle(
+            subNameStr,
+            parentSpecies?.name ?? AppStrings.unknownSpecies,
+          ),
+          question: AppStrings.uninstantiatedSubspeciesQuestion(subNameStr),
           icon: Icons.unarchive_outlined,
           themeColor: Colors.amber,
           subspecies: sub,
@@ -41,34 +46,46 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
             final choice = await showDialog<String>(
               context: ctx,
               builder: (dialogCtx) => AlertDialog(
-                title: const Text('Confirmar Subespecie'),
-                content: Text('¿Deseas mantener la subespecie "$subNameStr" en tu catálogo o eliminarla?'),
+                title: const Text(AppStrings.confirmSubspeciesTitle),
+                content: Text(AppStrings.keepSubspeciesPrompt(subNameStr)),
                 actions: [
-                  TextButton(onPressed: () => Navigator.pop(dialogCtx, 'cancel'), child: const Text('Cancelar')),
-                  TextButton(onPressed: () => Navigator.pop(dialogCtx, 'keep'), child: const Text('Mantener')),
                   TextButton(
-                    onPressed: () => Navigator.pop(dialogCtx, 'delete'),
-                    child: const Text('Eliminar Subespecie', style: TextStyle(color: Colors.redAccent)),
+                    onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                    child: const Text(AppStrings.cancel),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionKeep),
+                    child: const Text(AppStrings.keepAction),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionDelete),
+                    child: const Text(
+                      AppStrings.deleteSubspeciesAction,
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
                   ),
                 ],
               ),
             );
 
-            if (choice == 'keep') {
+            if (choice == AppTechnicalStrings.actionKeep) {
               if (ctx.mounted) {
-                AppToast.showSuccess(ctx, 'Subespecie mantenida.');
+                AppToast.showSuccess(ctx, AppStrings.subspeciesKeptSuccess);
               }
               return true;
-            } else if (choice == 'delete') {
+            } else if (choice == AppTechnicalStrings.actionDelete) {
               try {
                 await ref.read(catalogRepositoryProvider).deleteSubspecies(sub.id);
                 if (ctx.mounted) {
-                  AppToast.showSuccess(ctx, 'Subespecie eliminada.');
+                  AppToast.showSuccess(ctx, AppStrings.subspeciesDeletedSuccess);
                 }
                 return true;
               } catch (e) {
                 if (ctx.mounted) {
-                  AppToast.showError(ctx, e.toString().replaceAll('Exception: ', ''));
+                  AppToast.showError(
+                    ctx,
+                    e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty),
+                  );
                 }
                 return false;
               }
@@ -108,7 +125,7 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.uniquenessViolation;
 
   @override
-  String get ruleId => 'catalog_uniqueness_violation';
+  String get ruleId => AppTechnicalStrings.ruleCatalogUniquenessViolation;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -120,52 +137,69 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
         final matchingInstances = context.allEntities.where((e) => e.speciesId == sp.id && e.subspeciesId == sub.id).toList();
         if (matchingInstances.length > 1) {
           cards.add(AuditRuleHelper.forSubspecies(
-            id: 'uniq_viol_${sub.id}',
+            id: AppTechnicalStrings.prefixUniqViol + sub.id,
             type: AuditCardType.uniquenessViolation,
-            title: 'Subespecie Única Duplicada',
-            subtitle: '${sub.subspeciesName} • ${sp.name} (${matchingInstances.length} instancias)',
-            question: 'La subespecie "${sub.subspeciesName}" de la especie única "${sp.name}" tiene ${matchingInstances.length} instancias físicas duplicadas. ¿Cómo deseas proceder?',
+            title: AppStrings.uniqueSubspeciesDuplicatedTitle,
+            subtitle: AppStrings.uniqueSubspeciesDuplicatedSubtitle(
+              sub.subspeciesName,
+              sp.name,
+              matchingInstances.length,
+            ),
+            question: AppStrings.uniqueSubspeciesDuplicatedQuestion(
+              sub.subspeciesName,
+              sp.name,
+              matchingInstances.length,
+            ),
             icon: Icons.content_copy,
             themeColor: Colors.deepOrangeAccent,
             species: sp,
             subspecies: sub,
-            confirmToastMessage: 'Duplicidad de subespecie omitida.',
+            confirmToastMessage: AppStrings.subspeciesDuplicationSkipped,
             onFix: (ctx, ref) async {
               final choice = await showDialog<String>(
                 context: ctx,
                 builder: (dialogCtx) => AlertDialog(
-                  title: const Text('Resolver unicidad'),
+                  title: const Text(AppStrings.resolveUniquenessTitle),
                   content: Text(
-                    'La subespecie "${sub.subspeciesName}" de la especie única "${sp.name}" tiene ${matchingInstances.length} instancias.\n\n'
-                    '¿Deseas permitir múltiples instancias convirtiendo la especie en No Única o eliminar los duplicados de esta subespecie?'
+                    AppStrings.resolveUniquenessPrompt(
+                      sub.subspeciesName,
+                      sp.name,
+                      matchingInstances.length,
+                    ),
                   ),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(dialogCtx, 'cancel'), child: const Text('Cancelar')),
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                      child: const Text(AppStrings.cancel),
+                    ),
                     OutlinedButton(
-                      onPressed: () => Navigator.pop(dialogCtx, 'make_not_unique'),
-                      child: const Text('Convertir a No Única'),
+                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionMakeNotUnique),
+                      child: const Text(AppStrings.makeNonUniqueAction),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pop(dialogCtx, 'delete_duplicates'),
-                      child: const Text('Eliminar Duplicados', style: TextStyle(color: Colors.redAccent)),
+                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionDeleteDuplicates),
+                      child: const Text(
+                        AppStrings.deleteDuplicatesAction,
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
                     ),
                   ],
                 ),
               );
 
-              if (choice == 'make_not_unique') {
+              if (choice == AppTechnicalStrings.actionMakeNotUnique) {
                 final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
                 await ref.read(catalogRepositoryProvider).saveCatalogItem(freshSp.copyWith(isUnique: false));
                 if (ctx.mounted) {
-                  AppToast.showSuccess(ctx, 'Especie configurada como No Única.');
+                  AppToast.showSuccess(ctx, AppStrings.speciesSetToNotUniqueSuccess);
                 }
                 return true;
-              } else if (choice == 'delete_duplicates') {
+              } else if (choice == AppTechnicalStrings.actionDeleteDuplicates) {
                 for (int i = 1; i < matchingInstances.length; i++) {
                   await ref.read(entityRepositoryProvider).deleteEntity(matchingInstances[i].id);
                 }
                 if (ctx.mounted) {
-                  AppToast.showSuccess(ctx, 'Instancias duplicadas eliminadas. Se conservó 1 instancia.');
+                  AppToast.showSuccess(ctx, AppStrings.duplicatesDeletedPreservedOneSuccess);
                 }
                 return true;
               }
@@ -187,7 +221,7 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.subgroupRuleViolation;
 
   @override
-  String get ruleId => 'catalog_subgroup_rule_violation';
+  String get ruleId => AppTechnicalStrings.ruleCatalogSubgroupRuleViolation;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -203,22 +237,25 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
       final sp = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
 
       cards.add(AuditRuleHelper.forSubspecies(
-        id: 'subgroup_viol_${sub.id}',
+        id: AppTechnicalStrings.prefixSubgroupViol + sub.id,
         type: AuditCardType.subgroupRuleViolation,
-        title: 'Infracción de Regla de Subgrupo',
-        subtitle: '${sub.subspeciesName} • Tipo: ${sp?.type ?? ""}',
-        question: 'El subgrupo "${sp?.type}" no permite marca ni código de barras. ¿Deseas limpiar estos atributos?',
+        title: AppStrings.subgroupRuleViolationTitle,
+        subtitle: AppStrings.subgroupRuleViolationSubtitle(
+          sub.subspeciesName,
+          sp?.type ?? AppTechnicalStrings.empty,
+        ),
+        question: AppStrings.subgroupRuleViolationQuestion(sp?.type ?? AppTechnicalStrings.empty),
         icon: Icons.rule_folder_outlined,
         themeColor: Colors.deepPurpleAccent,
         subspecies: sub,
         species: sp,
-        confirmToastMessage: 'Atributos omitidos.',
+        confirmToastMessage: AppStrings.attributesSkipped,
         onFix: (ctx, ref) async {
           final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
           final updatedSub = freshSub.copyWith(clearBrand: true, clearBarcode: true);
           await ref.read(catalogRepositoryProvider).saveSubspecies(updatedSub);
           if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Marca y código de barras removidos.');
+            AppToast.showSuccess(ctx, AppStrings.brandAndBarcodeRemovedSuccess);
           }
           return true;
         },
@@ -236,7 +273,7 @@ class UninstantiatedSpeciesStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.uninstantiatedSpecies;
 
   @override
-  String get ruleId => 'catalog_uninstantiated_species';
+  String get ruleId => AppTechnicalStrings.ruleCatalogUninstantiatedSpecies;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -247,51 +284,60 @@ class UninstantiatedSpeciesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
     for (final sp in uninstantiatedSpecies) {
       cards.add(AuditRuleHelper.forSpecies(
-        id: 'uninst_sp_${sp.id}',
+        id: AppTechnicalStrings.prefixUninstSp + sp.id,
         type: AuditCardType.uninstantiatedSpecies,
-        title: 'Especie sin Instancias en el Mundo',
-        subtitle: '${sp.name} (${sp.type})',
-        question: 'La especie "${sp.name}" no tiene ninguna instancia física registrada. ¿Deseas crear una instancia o eliminar la especie?',
+        title: AppStrings.uninstantiatedSpeciesWorldTitle,
+        subtitle: AppStrings.speciesWithType(sp.name, sp.type),
+        question: AppStrings.uninstantiatedSpeciesQuestion(sp.name),
         icon: Icons.category_outlined,
         themeColor: Colors.brown,
         species: sp,
-        confirmToastMessage: 'Especie conservada en catálogo.',
+        confirmToastMessage: AppStrings.speciesKeptInCatalog,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
             context: ctx,
             builder: (dialogCtx) => AlertDialog(
-              title: Text('Gestionar "${sp.name}"'),
-              content: const Text('¿Qué acción deseas realizar con esta especie?'),
+              title: Text(AppStrings.manageSpeciesTitle(sp.name)),
+              content: const Text(AppStrings.whatActionForSpeciesPrompt),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(dialogCtx, 'cancel'), child: const Text('Cancelar')),
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                  child: const Text(AppStrings.cancel),
+                ),
                 ElevatedButton.icon(
-                  onPressed: () => Navigator.pop(dialogCtx, 'instantiate'),
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionInstantiate),
                   icon: const Icon(Icons.add),
-                  label: const Text('Crear Instancia'),
+                  label: const Text(AppStrings.createInstanceAction),
                 ),
                 TextButton.icon(
-                  onPressed: () => Navigator.pop(dialogCtx, 'delete'),
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionDelete),
                   icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                  label: const Text('Eliminar Especie', style: TextStyle(color: Colors.redAccent)),
+                  label: const Text(
+                    AppStrings.deleteSpeciesAction,
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
                 ),
               ],
             ),
           );
 
-          if (choice == 'instantiate') {
+          if (choice == AppTechnicalStrings.actionInstantiate) {
             await InstantiateSpeciesSheet.show(ctx, species: sp);
             final afterCount = (await ref.read(entityRepositoryProvider).getAllEntities()).where((e) => e.speciesId == sp.id).length;
             return afterCount > 0;
-          } else if (choice == 'delete') {
+          } else if (choice == AppTechnicalStrings.actionDelete) {
             try {
               await ref.read(catalogRepositoryProvider).deleteCatalogItem(sp.id);
               if (ctx.mounted) {
-                AppToast.showSuccess(ctx, 'Especie eliminada del catálogo.');
+                AppToast.showSuccess(ctx, AppStrings.speciesDeletedFromCatalogSuccess);
               }
               return true;
             } catch (e) {
               if (ctx.mounted) {
-                AppToast.showError(ctx, e.toString().replaceAll('Exception: ', ''));
+                AppToast.showError(
+                  ctx,
+                  e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty),
+                );
               }
             }
           }
@@ -311,7 +357,7 @@ class IncompleteSpeciesInfoStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.incompleteSpeciesInfo;
 
   @override
-  String get ruleId => 'catalog_incomplete_species_info';
+  String get ruleId => AppTechnicalStrings.ruleCatalogIncompleteSpeciesInfo;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -320,15 +366,15 @@ class IncompleteSpeciesInfoStrategy implements IAuditRuleStrategy {
 
     for (final sp in incompleteSpecies) {
       cards.add(AuditRuleHelper.forSpecies(
-        id: 'spec_inc_${sp.id}',
+        id: AppTechnicalStrings.prefixSpecInc + sp.id,
         type: AuditCardType.incompleteSpeciesInfo,
-        title: 'Especie sin Imagen Principal',
-        subtitle: '${sp.name} (${sp.type})',
-        question: 'La especie "${sp.name}" no tiene una imagen principal asignada. ¿Deseas agregarle una foto o buscarla en Internet?',
+        title: AppStrings.incompleteSpeciesInfoTitle,
+        subtitle: AppStrings.speciesWithType(sp.name, sp.type),
+        question: AppStrings.incompleteSpeciesInfoQuestion(sp.name),
         icon: Icons.add_a_photo_outlined,
         themeColor: Colors.purpleAccent,
         species: sp,
-        confirmToastMessage: 'Información omitida por el momento.',
+        confirmToastMessage: AppStrings.informationSkippedForNow,
         onFix: (ctx, ref) async {
           final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
           final result = await SpeciesFormModal.show(ctx, initialSpecies: freshSp);
@@ -348,7 +394,7 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.remoteImageAudit;
 
   @override
-  String get ruleId => 'catalog_remote_image_audit';
+  String get ruleId => AppTechnicalStrings.ruleCatalogRemoteImageAudit;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -357,19 +403,20 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
     // Species with remote images
     final remoteImageSpecies = context.allCatalog.where((c) =>
       c.mainPhotoPath != null &&
-      (c.mainPhotoPath!.startsWith('http://') || c.mainPhotoPath!.startsWith('https://'))
+      (c.mainPhotoPath!.startsWith(AppTechnicalStrings.schemeHttp) ||
+       c.mainPhotoPath!.startsWith(AppTechnicalStrings.schemeHttps))
     );
     for (final sp in remoteImageSpecies) {
       cards.add(AuditRuleHelper.forSpecies(
-        id: 'spec_remote_${sp.id}',
+        id: AppTechnicalStrings.prefixSpecRemote + sp.id,
         type: AuditCardType.remoteImageAudit,
-        title: 'Imagen de Especie No Local (URL Remota)',
-        subtitle: '${sp.name} (${sp.type}) • Imagen en Internet',
-        question: 'La especie "${sp.name}" tiene una imagen referenciada desde una URL remota de Internet. ¿Deseas descargarla y guardarla localmente en el dispositivo para tenerla offline y respaldable?',
+        title: AppStrings.remoteSpeciesImageTitle,
+        subtitle: AppStrings.remoteSpeciesImageSubtitle(sp.name, sp.type),
+        question: AppStrings.remoteSpeciesImageQuestion(sp.name),
         icon: Icons.cloud_download_outlined,
         themeColor: Colors.indigoAccent,
         species: sp,
-        confirmToastMessage: 'Imagen remota conservada sin descargar.',
+        confirmToastMessage: AppStrings.remoteImageKeptWithoutDownload,
         onFix: (ctx, ref) async {
           return await AuditRuleHelper.resolveRemoteImage(
             context: ctx,
@@ -390,21 +437,25 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
     // Subspecies with remote images
     final remoteImageSubspecies = context.allSubspecies.where((s) =>
       s.photoPath != null &&
-      (s.photoPath!.startsWith('http://') || s.photoPath!.startsWith('https://'))
+      (s.photoPath!.startsWith(AppTechnicalStrings.schemeHttp) ||
+       s.photoPath!.startsWith(AppTechnicalStrings.schemeHttps))
     );
     for (final sub in remoteImageSubspecies) {
       final parentSpecies = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
       cards.add(AuditRuleHelper.forSubspecies(
-        id: 'sub_remote_${sub.id}',
+        id: AppTechnicalStrings.prefixSubRemote + sub.id,
         type: AuditCardType.remoteImageAudit,
-        title: 'Imagen de Subespecie No Local (URL Remota)',
-        subtitle: '${sub.subspeciesName} • ${parentSpecies?.name ?? ""}',
-        question: 'La subespecie "${sub.subspeciesName}" tiene una imagen referenciada desde una URL remota de Internet. ¿Deseas descargarla y guardarla localmente en el dispositivo?',
+        title: AppStrings.remoteSubspeciesImageTitle,
+        subtitle: AppStrings.remoteSubspeciesImageSubtitle(
+          sub.subspeciesName,
+          parentSpecies?.name ?? AppTechnicalStrings.empty,
+        ),
+        question: AppStrings.remoteSubspeciesImageQuestion(sub.subspeciesName),
         icon: Icons.cloud_download_outlined,
         themeColor: Colors.indigo,
         subspecies: sub,
         species: parentSpecies,
-        confirmToastMessage: 'Imagen remota conservada sin descargar.',
+        confirmToastMessage: AppStrings.remoteImageKeptWithoutDownload,
         onFix: (ctx, ref) async {
           return await AuditRuleHelper.resolveRemoteImage(
             context: ctx,
@@ -425,4 +476,3 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
     return cards;
   }
 }
-

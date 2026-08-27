@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../constants/app_technical_strings.dart';
 
 /// Utilidad estandarizada de registro para PWMS.
 class AppLogger {
@@ -9,18 +10,18 @@ class AppLogger {
   static String _getAttentionPrefix(int attentionLevel) {
     switch (attentionLevel) {
       case 5:
-        return '🚨 ';
+        return AppTechnicalStrings.logPrefixLevel5;
       case 4:
-        return '‼️ ';
+        return AppTechnicalStrings.logPrefixLevel4;
       case 3:
-        return '📌 ';
+        return AppTechnicalStrings.logPrefixLevel3;
       case 2:
-        return '⚠️ ';
+        return AppTechnicalStrings.logPrefixLevel2;
       case 1:
-        return 'ⓘ ';
+        return AppTechnicalStrings.logPrefixLevel1;
       case 0:
       default:
-        return '   ';
+        return AppTechnicalStrings.logPrefixLevel0;
     }
   }
 
@@ -34,13 +35,13 @@ class AppLogger {
 
     final now = DateTime.now();
     if (now.difference(_lastLogTimestamp).inSeconds > 2) {
-      debugPrint('—' * 70);
+      debugPrint(AppTechnicalStrings.logDivider());
     }
     _lastLogTimestamp = now;
 
     final prefix = _getAttentionPrefix(attentionLevel);
-    final callerInfo = caller != null ? '[$caller] ' : '';
-    debugPrint('$prefix$callerInfo$message');
+    final callerInfo = caller != null ? AppTechnicalStrings.logCallerInfo(caller) : AppTechnicalStrings.empty;
+    debugPrint(AppTechnicalStrings.formatLogEntry(prefix, callerInfo, message));
   }
 
   /// Registra un error con su traza.
@@ -50,7 +51,7 @@ class AppLogger {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    log('ERROR: $message ${error != null ? "($error)" : ""}', caller: caller, attentionLevel: 5);
+    log(AppTechnicalStrings.formatLogError(message, error), caller: caller, attentionLevel: 5);
     if (kDebugMode && stackTrace != null) {
       debugPrint(stackTrace.toString());
     }

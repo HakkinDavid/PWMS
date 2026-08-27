@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 part 'species_magnitude.freezed.dart';
 part 'species_magnitude.g.dart';
@@ -10,7 +10,7 @@ class SpeciesMagnitude with _$SpeciesMagnitude {
     required String id,
     required String speciesId,
     required String propertyName, // e.g. "Masa", "Volumen", "Material"
-    @Default('real') String dataType, // 'real', 'integer', 'string', 'boolean'
+    @Default(AppTechnicalStrings.datatypeRealLower) String dataType, // 'real', 'integer', 'string', 'boolean'
     String? unitSymbol, // null for non-numeric, or valid unit for numeric
     required DateTime createdAt,
   }) = _SpeciesMagnitude;

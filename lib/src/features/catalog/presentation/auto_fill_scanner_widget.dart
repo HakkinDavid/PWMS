@@ -62,7 +62,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
       _isProcessing = true;
       _lastScannedBarcode = rawBarcode.trim();
       _lastScanTime = now;
-      _lastStatusMessage = 'Buscando código $rawBarcode...';
+      _lastStatusMessage = AppStrings.searchingBarcode(rawBarcode);
     });
 
     try {
@@ -84,7 +84,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
             subspeciesId: existingSub.id,
           );
           _refreshState();
-          _showFeedback('Instanciado automáticamente: ${existingSub.subspeciesName} (${species.name})');
+          _showFeedback(AppStrings.autoInstantiatedFeedback(existingSub.subspeciesName, species.name));
           return;
         }
       }
@@ -115,7 +115,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
                   ),
                 ],
               ),
-              content: Text('${AppStrings.invalidOrNotFoundCodeMessagePrefix}$rawBarcode${AppStrings.invalidOrNotFoundCodeMessageSuffix}'),
+              content: Text(AppStrings.invalidOrNotFoundCodeMessage(rawBarcode)),
               actions: [
                 ElevatedButton(
                   onPressed: () => Navigator.pop(ctx),
@@ -127,7 +127,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
         }
       }
     } catch (e) {
-      _showFeedback('Error en autollenado: $e', isError: true);
+      _showFeedback(AppStrings.autoFillError(e.toString()), isError: true);
     } finally {
       if (mounted) {
         setState(() => _isProcessing = false);
@@ -140,7 +140,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
 
     setState(() {
       _isProcessing = true;
-      _lastStatusMessage = 'Analizando imagen capturada...';
+      _lastStatusMessage = AppStrings.analyzingCapturedImage;
     });
 
     try {
@@ -157,12 +157,12 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
           }
         }
 
-        _showFeedback('No se detectó un código de barras o ISBN en la imagen.', isError: true);
+        _showFeedback(AppStrings.noBarcodeOrIsbnDetected, isError: true);
       } else {
-        _showFeedback('No se seleccionó ninguna foto.');
+        _showFeedback(AppStrings.noPhotoSelected);
       }
     } catch (e) {
-      _showFeedback('Error al procesar foto: $e', isError: true);
+      _showFeedback(AppStrings.photoProcessingError(e.toString()), isError: true);
     } finally {
       if (mounted) {
         setState(() => _isProcessing = false);
@@ -272,7 +272,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
               icon: _isProcessing
                   ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                   : const Icon(Icons.camera_alt, size: 20),
-              label: Text(_isProcessing ? 'Procesando...' : 'Capturar Coincidencia Visual', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+              label: Text(_isProcessing ? AppStrings.processing : AppStrings.captureVisualMatchAction, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
             ),
           ),
           const SizedBox(height: 12),
@@ -285,7 +285,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
                   controller: _manualBarcodeCtrl,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    hintText: 'Código de barras manual...',
+                    hintText: AppStrings.manualBarcodeHint,
                     prefixIcon: Icon(Icons.qr_code, size: 20),
                     isDense: true,
                   ),

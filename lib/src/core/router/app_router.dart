@@ -13,14 +13,15 @@ import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 
 import '../../features/control_center/presentation/control_center_screen.dart';
-import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 export 'app_navigation_extension.dart';
+
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: '/',
+  initialLocation: AppTechnicalRoutes.root,
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -30,7 +31,7 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/',
+              path: AppTechnicalRoutes.root,
               builder: (context, state) => const HomeScreen(),
             ),
           ],
@@ -38,10 +39,10 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/inventory',
+              path: AppTechnicalRoutes.inventory,
               builder: (context, state) {
-                final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
-                final containerId = state.uri.queryParameters['containerId'];
+                final locId = state.uri.queryParameters[AppTechnicalRoutes.paramFocusNodeId] ?? state.uri.queryParameters[AppTechnicalRoutes.paramLocationId];
+                final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
                   initialContainerId: containerId,
@@ -49,10 +50,10 @@ final appRouter = GoRouter(
               },
             ),
             GoRoute(
-              path: '/entities',
+              path: AppTechnicalRoutes.entities,
               builder: (context, state) {
-                final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
-                final containerId = state.uri.queryParameters['containerId'];
+                final locId = state.uri.queryParameters[AppTechnicalRoutes.paramFocusNodeId] ?? state.uri.queryParameters[AppTechnicalRoutes.paramLocationId];
+                final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
                   initialContainerId: containerId,
@@ -60,10 +61,10 @@ final appRouter = GoRouter(
               },
             ),
             GoRoute(
-              path: '/locations',
+              path: AppTechnicalRoutes.locations,
               builder: (context, state) {
-                final locId = state.uri.queryParameters['focusNodeId'] ?? state.uri.queryParameters['locationId'];
-                final containerId = state.uri.queryParameters['containerId'];
+                final locId = state.uri.queryParameters[AppTechnicalRoutes.paramFocusNodeId] ?? state.uri.queryParameters[AppTechnicalRoutes.paramLocationId];
+                final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
                   initialContainerId: containerId,
@@ -76,10 +77,10 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/catalog',
+              path: AppTechnicalRoutes.catalog,
               builder: (context, state) {
-                final speciesId = state.uri.queryParameters['speciesId'];
-                final filter = state.uri.queryParameters['filter'];
+                final speciesId = state.uri.queryParameters[AppTechnicalRoutes.paramSpeciesId];
+                final filter = state.uri.queryParameters[AppTechnicalRoutes.paramFilter];
                 return CatalogScreen(
                   initialSpeciesId: speciesId,
                   initialFilter: filter,
@@ -91,10 +92,10 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/search',
+              path: AppTechnicalRoutes.search,
               builder: (context, state) {
-                final q = state.uri.queryParameters['q'];
-                final scope = state.uri.queryParameters['scope'];
+                final q = state.uri.queryParameters[AppTechnicalRoutes.paramQ];
+                final scope = state.uri.queryParameters[AppTechnicalRoutes.paramScope];
                 return SearchScreen(
                   initialQuery: q,
                   initialScope: scope,
@@ -107,15 +108,15 @@ final appRouter = GoRouter(
     ),
 
     GoRoute(
-      path: '/notifications',
+      path: AppTechnicalRoutes.notifications,
       builder: (context, state) => const NotificationsScreen(),
     ),
 
     GoRoute(
-      path: '/register',
+      path: AppTechnicalRoutes.register,
       builder: (context, state) {
-        final initialLocId = state.uri.queryParameters['initialLocationId'];
-        final startInCreate = state.uri.queryParameters['startInCreateSpecies'] == 'true';
+        final initialLocId = state.uri.queryParameters[AppTechnicalRoutes.paramInitialLocationId];
+        final startInCreate = state.uri.queryParameters[AppTechnicalRoutes.paramStartInCreateSpecies] == AppTechnicalStrings.boolTrue;
         final scannedResult = state.extra;
         return RegisterObjectModal(
           initialLocationId: initialLocId,
@@ -125,31 +126,31 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/control-center',
+      path: AppTechnicalRoutes.controlCenter,
       builder: (context, state) => const ControlCenterScreen(),
     ),
     GoRoute(
-      path: '/settings',
+      path: AppTechnicalRoutes.settings,
       builder: (context, state) => const SettingsScreen(),
     ),
     GoRoute(
-      path: '/entity/:id',
+      path: AppTechnicalRoutes.entityDetailLegacy,
       builder: (context, state) {
-        final id = state.pathParameters['id']!;
+        final id = state.pathParameters[AppTechnicalRoutes.paramId]!;
         return EntityDetailScreen(entityId: id);
       },
     ),
     GoRoute(
-      path: '/entities/:id',
+      path: AppTechnicalRoutes.entityDetail,
       builder: (context, state) {
-        final id = state.pathParameters['id']!;
+        final id = state.pathParameters[AppTechnicalRoutes.paramId]!;
         return EntityDetailScreen(entityId: id);
       },
     ),
     GoRoute(
-      path: '/catalog/:id',
+      path: AppTechnicalRoutes.catalogDetail,
       builder: (context, state) {
-        final id = state.pathParameters['id']!;
+        final id = state.pathParameters[AppTechnicalRoutes.paramId]!;
         return SpeciesDetailScreen(speciesId: id);
       },
     ),

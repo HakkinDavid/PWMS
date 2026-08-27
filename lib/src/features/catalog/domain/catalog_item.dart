@@ -10,7 +10,7 @@ class CatalogItem with _$CatalogItem {
   const factory CatalogItem({
     required String id,
     required String name,
-    @Default('Objeto') String type,
+    @Default(AppStrings.typeObject) String type,
     String? description,
     String? mainPhotoPath,
     @Default({}) Map<String, dynamic> customAttributes,
@@ -24,7 +24,7 @@ class CatalogItem with _$CatalogItem {
 
   const CatalogItem._();
 
-  bool get canExpire => type == 'Objeto' && !isNonPerishable;
+  bool get canExpire => type == AppStrings.typeObject && !isNonPerishable;
 
   factory CatalogItem.fromJson(Map<String, dynamic> json) => _$CatalogItemFromJson(json);
 }

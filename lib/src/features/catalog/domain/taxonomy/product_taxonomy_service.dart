@@ -1,3 +1,4 @@
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'taxonomy_chain.dart';
 
 class TaxonomyResolution {
@@ -39,8 +40,8 @@ class ProductTaxonomyService {
     final cleanTitle = title.trim();
     if (cleanTitle.isEmpty) {
       return const TaxonomyResolution(
-        generalSpeciesName: 'Objeto',
-        department: 'General',
+        generalSpeciesName: AppStrings.typeObject,
+        department: AppStrings.taxonomyDepartmentGeneral,
         confidence: 0.1,
       );
     }

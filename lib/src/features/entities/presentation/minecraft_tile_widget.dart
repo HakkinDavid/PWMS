@@ -146,7 +146,7 @@ class MinecraftTileWidget extends ConsumerWidget {
                       border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
                     ),
                     child: Text(
-                      '$population',
+                      population.toString(),
                       style: theme.textTheme.labelSmall?.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,

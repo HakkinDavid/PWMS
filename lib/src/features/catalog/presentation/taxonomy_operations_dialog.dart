@@ -16,7 +16,7 @@ class TaxonomyOperationsDialog {
     final targetOptions = catalog.where((c) => c.id != sourceSpecies.id).toList();
 
     if (targetOptions.isEmpty) {
-      AppToast.showRestriction(context, 'No hay otras especies disponibles para fusionar.');
+      AppToast.showRestriction(context, AppStrings.noOtherSpeciesToMergeError);
       return;
     }
 
@@ -29,13 +29,13 @@ class TaxonomyOperationsDialog {
           builder: (context, setState) {
             return AlertDialog(
               scrollable: true,
-              title: const Text('Unir Especie'),
+              title: const Text(AppStrings.mergeSpeciesDialogTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Se fusionará "${sourceSpecies.name}" con otra especie. Todas las subespecies e instancias pertenecerán a la especie destino.',
+                    AppStrings.mergeSpeciesDescription(sourceSpecies.name),
                     style: const TextStyle(fontSize: 13),
                   ),
                   const SizedBox(height: 16),
@@ -43,9 +43,9 @@ class TaxonomyOperationsDialog {
                     value: selectedTarget,
                     items: targetOptions,
                     labelBuilder: (c) => c.name,
-                    title: 'Especie Destino',
+                    title: AppStrings.targetSpeciesFormLabel,
                     decoration: const InputDecoration(
-                      labelText: 'Especie Destino',
+                      labelText: AppStrings.targetSpeciesFormLabel,
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (val) => setState(() => selectedTarget = val),
@@ -53,11 +53,11 @@ class TaxonomyOperationsDialog {
                 ],
               ),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.amber.shade800, foregroundColor: Colors.white),
                   onPressed: () => Navigator.pop(ctx, true),
-                  child: const Text('Unir Especies'),
+                  child: const Text(AppStrings.mergeSpeciesAction),
                 ),
               ],
             );
@@ -73,30 +73,30 @@ class TaxonomyOperationsDialog {
         ref.read(catalogListProvider.notifier).loadCatalog();
         ref.read(entityListProvider.notifier).loadEntities();
         if (context.mounted) {
-          AppToast.showSuccess(context, 'Especie "${sourceSpecies.name}" unida exitosamente en "${selectedTarget!.name}".');
+          AppToast.showSuccess(context, AppStrings.speciesMergedSuccess(sourceSpecies.name, selectedTarget!.name));
         }
       } catch (e) {
-        if (context.mounted) AppToast.showError(context, 'Error al unir especies: $e');
+        if (context.mounted) AppToast.showError(context, AppStrings.mergeSpeciesError(e.toString()));
       }
     }
   }
 
   /// 2b. Separar Subespecie en una nueva Especie
   static Future<void> showSeparateSubspeciesDialog(BuildContext context, WidgetRef ref, Subspecies subspecies) async {
-    final nameCtrl = TextEditingController(text: '${subspecies.subspeciesName} (Especie)');
+    final nameCtrl = TextEditingController(text: AppStrings.newSpeciesDefaultName(subspecies.subspeciesName));
 
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Separar en Nueva Especie'),
+          title: const Text(AppStrings.separateInNewSpeciesDialogTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'La subespecie "${subspecies.subspeciesName}" se promoverá a una especie independiente.',
+                AppStrings.separateSubspeciesDescription(subspecies.subspeciesName),
                 style: const TextStyle(fontSize: 13),
               ),
               const SizedBox(height: 16),
@@ -104,17 +104,17 @@ class TaxonomyOperationsDialog {
                 controller: nameCtrl,
                 autofocus: true,
                 decoration: const InputDecoration(
-                  labelText: 'Nombre de la Nueva Especie',
+                  labelText: AppStrings.newSpeciesNameFormLabel,
                   border: OutlineInputBorder(),
                 ),
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(AppStrings.cancel)),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: Text(AppStrings.separateAction),
+              child: const Text(AppStrings.separateAction),
             ),
           ],
         );
@@ -128,10 +128,10 @@ class TaxonomyOperationsDialog {
         ref.read(catalogListProvider.notifier).loadCatalog();
         ref.read(entityListProvider.notifier).loadEntities();
         if (context.mounted) {
-          AppToast.showSuccess(context, '${AppStrings.subspeciesSeparatedSuccessPrefix}"${newSpecies.name}".');
+          AppToast.showSuccess(context, AppStrings.subspeciesSeparatedSuccess(newSpecies.name));
         }
       } catch (e) {
-        if (context.mounted) AppToast.showError(context, '${AppStrings.separateSubspeciesErrorPrefix}$e');
+        if (context.mounted) AppToast.showError(context, AppStrings.separateSubspeciesError(e));
       }
     }
   }
@@ -155,13 +155,13 @@ class TaxonomyOperationsDialog {
           builder: (context, setState) {
             return AlertDialog(
               scrollable: true,
-              title: Text(AppStrings.moveSubspeciesTitle),
+              title: const Text(AppStrings.moveSubspeciesTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Se moverá la subespecie "${subspecies.subspeciesName}" y sus instancias a la especie seleccionada.',
+                    AppStrings.moveSubspeciesDescription(subspecies.subspeciesName),
                     style: const TextStyle(fontSize: 13),
                   ),
                   const SizedBox(height: 16),
@@ -179,10 +179,10 @@ class TaxonomyOperationsDialog {
                 ],
               ),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(AppStrings.cancel)),
+                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(ctx, true),
-                  child: Text(AppStrings.moveSubspeciesTitle),
+                  child: const Text(AppStrings.moveSubspeciesTitle),
                 ),
               ],
             );
@@ -198,10 +198,10 @@ class TaxonomyOperationsDialog {
         ref.read(catalogListProvider.notifier).loadCatalog();
         ref.read(entityListProvider.notifier).loadEntities();
         if (context.mounted) {
-          AppToast.showSuccess(context, '${AppStrings.subspeciesMovedSuccessPrefix}"${selectedTarget!.name}".');
+          AppToast.showSuccess(context, AppStrings.subspeciesMovedSuccess(selectedTarget!.name));
         }
       } catch (e) {
-        if (context.mounted) AppToast.showError(context, '${AppStrings.moveSubspeciesErrorPrefix}$e');
+        if (context.mounted) AppToast.showError(context, AppStrings.moveSubspeciesError(e));
       }
     }
   }

@@ -9,7 +9,7 @@ import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
 import '../domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
-
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 class AddRelationSheet extends ConsumerStatefulWidget {
   final WorldEntity sourceEntity;
@@ -32,7 +32,7 @@ class AddRelationSheet extends ConsumerStatefulWidget {
 
 class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
   String? _targetEntityId;
-  String _relationType = 'PERTENECE_A';
+  String _relationType = AppTechnicalStrings.relPerteneceA;
   bool _isSaving = false;
 
   final List<String> _directedRelationTypes = EntityTemplateRegistry.directedRelationTypes;
@@ -68,7 +68,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, AppStrings.saveRelationErrorPrefix + e.toString());
+        AppToast.showError(context, AppStrings.saveRelationError(e));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -133,7 +133,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
               children: [
                 const TextSpan(text: AppStrings.sourceObjectLabel),
                 TextSpan(
-                  text: '"$sourceName"',
+                  text: AppStrings.quoted(sourceName),
                   style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                 ),
               ],
@@ -190,7 +190,7 @@ class _AddRelationSheetState extends ConsumerState<AddRelationSheet> {
               );
             },
             loading: () => const CircularProgressIndicator(),
-            error: (err, _) => Text('Error: $err'),
+            error: (err, _) => Text(AppStrings.formatError(err)),
           ),
 
           const SizedBox(height: 24),

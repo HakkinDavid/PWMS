@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/domain/property_data_type.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
@@ -15,7 +17,7 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.perishableMissingExpiration;
 
   @override
-  String get ruleId => 'expiration_perishable_missing_expiration';
+  String get ruleId => AppTechnicalStrings.ruleExpirationPerishableMissingExpiration;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -30,16 +32,22 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
-        id: 'no_exp_${entity.id}',
+        id: AppTechnicalStrings.prefixNoExp + entity.id,
         type: AuditCardType.perishableMissingExpiration,
-        title: 'Perecedero sin Caducidad',
-        subtitle: '$displayName • Especie: ${species?.name ?? ""}',
-        question: 'La especie "${species?.name}" es perecedera pero la instancia "$displayName" no tiene fecha de caducidad. ¿Deseas asignársela?',
+        title: AppStrings.perishableWithoutExpirationTitle,
+        subtitle: AppStrings.perishableMissingExpirationSubtitle(
+          displayName,
+          species?.name ?? AppTechnicalStrings.empty,
+        ),
+        question: AppStrings.perishableMissingExpirationQuestion(
+          species?.name ?? AppStrings.unknownSpecies,
+          displayName,
+        ),
         icon: Icons.event_busy,
         themeColor: Colors.amber.shade700,
         entity: entity,
         species: species,
-        confirmToastMessage: 'Fecha de caducidad omitida.',
+        confirmToastMessage: AppStrings.expirationDateSkipped,
         onFix: (ctx, ref) async {
           final defaultDays = species?.defaultShelfLifeDays ?? 30;
           final suggestedDate = DateTime.now().add(Duration(days: defaultDays));
@@ -49,14 +57,14 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
             initialDate: suggestedDate,
             firstDate: DateTime(2000),
             lastDate: DateTime(2100),
-            helpText: 'Selecciona Fecha de Caducidad',
+            helpText: AppStrings.selectExpirationDatePrompt,
           );
 
           if (picked != null) {
             final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
             await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(expirationDate: picked));
             if (ctx.mounted) {
-              AppToast.showSuccess(ctx, 'Fecha de caducidad actualizada.');
+              AppToast.showSuccess(ctx, AppStrings.expirationDateUpdatedSuccess);
             }
             return true;
           }
@@ -76,7 +84,7 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.nonPerishableWithExpiration;
 
   @override
-  String get ruleId => 'expiration_non_perishable_with_expiration';
+  String get ruleId => AppTechnicalStrings.ruleExpirationNonPerishableWithExpiration;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -91,21 +99,27 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
-        id: 'unneeded_exp_${entity.id}',
+        id: AppTechnicalStrings.prefixUnneededExp + entity.id,
         type: AuditCardType.nonPerishableWithExpiration,
-        title: 'No Perecedero con Caducidad',
-        subtitle: '$displayName • Caducidad asignada: ${entity.expirationDate.toString().substring(0, 10)}',
-        question: 'La especie "${species?.name}" está marcada como NO perecedera pero "$displayName" tiene caducidad registrada. ¿Deseas remover la fecha?',
+        title: AppStrings.nonPerishableWithExpirationTitle,
+        subtitle: AppStrings.nonPerishableWithExpirationSubtitle(
+          displayName,
+          entity.expirationDate.toString().substring(0, 10),
+        ),
+        question: AppStrings.nonPerishableWithExpirationQuestion(
+          species?.name ?? AppStrings.unknownSpecies,
+          displayName,
+        ),
         icon: Icons.event_repeat,
         themeColor: Colors.blueGrey,
         entity: entity,
         species: species,
-        confirmToastMessage: 'Caducidad conservada.',
+        confirmToastMessage: AppStrings.expirationDateKept,
         onFix: (ctx, ref) async {
           final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
           await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(expirationDate: null));
           if (ctx.mounted) {
-            AppToast.showSuccess(ctx, 'Fecha de caducidad eliminada.');
+            AppToast.showSuccess(ctx, AppStrings.expirationDateRemovedSuccess);
           }
           return true;
         },
@@ -123,7 +137,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.missingMandatoryMagnitudes;
 
   @override
-  String get ruleId => 'expiration_missing_mandatory_magnitudes';
+  String get ruleId => AppTechnicalStrings.ruleExpirationMissingMandatoryMagnitudes;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -138,20 +152,20 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
         for (final missingProp in missingMags) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
           final unitSuffix = (missingProp.unitSymbol != null && missingProp.unitSymbol!.isNotEmpty)
-              ? ' (${missingProp.unitSymbol})'
-              : '';
+              ? AppStrings.unitSymbolParentheses(missingProp.unitSymbol!)
+              : AppTechnicalStrings.empty;
 
           cards.add(AuditRuleHelper.forEntity(
-            id: 'miss_mag_${entity.id}_${missingProp.propertyName}',
+            id: AppTechnicalStrings.prefixMissMag + entity.id + AppTechnicalStrings.dash + missingProp.propertyName,
             type: AuditCardType.missingMandatoryMagnitudes,
-            title: 'Magnitud Faltante: ${missingProp.propertyName}',
-            subtitle: '$displayName • Especie define: ${missingProp.propertyName}$unitSuffix',
-            question: 'La instancia "$displayName" no tiene registrada la magnitud "${missingProp.propertyName}" definida en su especie "${species.name}". ¿Deseas asignarle un valor?',
+            title: AppStrings.missingMagnitudeTitle(missingProp.propertyName),
+            subtitle: AppStrings.missingMagnitudeSubtitle(displayName, missingProp.propertyName, unitSuffix),
+            question: AppStrings.missingMagnitudeQuestion(displayName, missingProp.propertyName, species.name),
             icon: Icons.straighten,
             themeColor: Colors.teal,
             entity: entity,
             species: species,
-            confirmToastMessage: 'Magnitud omitida.',
+            confirmToastMessage: AppStrings.magnitudeSkipped,
             onFix: (ctx, ref) async {
               final propType = PropertyDataType.fromCode(missingProp.dataType);
               InstanceMagnitude? newMag;
@@ -160,17 +174,20 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                 final boolVal = await showDialog<bool>(
                   context: ctx,
                   builder: (dialogCtx) => AlertDialog(
-                    title: Text('Asignar ${missingProp.propertyName}'),
-                    content: Text('Selecciona el valor booleano para "${missingProp.propertyName}":'),
+                    title: Text(AppStrings.assignPropertyTitle(missingProp.propertyName)),
+                    content: Text(AppStrings.assignBooleanPrompt(missingProp.propertyName)),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(dialogCtx, null), child: const Text('Cancelar')),
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogCtx, null),
+                        child: const Text(AppStrings.cancel),
+                      ),
                       OutlinedButton(
                         onPressed: () => Navigator.pop(dialogCtx, false),
-                        child: const Text('No (Falso)'),
+                        child: const Text(AppStrings.booleanFalseAction),
                       ),
                       ElevatedButton(
                         onPressed: () => Navigator.pop(dialogCtx, true),
-                        child: const Text('Sí (Verdadero)'),
+                        child: const Text(AppStrings.booleanTrueAction),
                       ),
                     ],
                   ),
@@ -181,8 +198,8 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                     id: const Uuid().v4(),
                     instanceId: entity.id,
                     propertyName: missingProp.propertyName,
-                    dataType: 'boolean',
-                    stringValue: boolVal ? 'true' : 'false',
+                    dataType: AppTechnicalStrings.datatypeBooleanLower,
+                    stringValue: boolVal ? AppTechnicalStrings.boolTrue : AppTechnicalStrings.boolFalse,
                     magnitudeValue: boolVal ? 1.0 : 0.0,
                   );
                 }
@@ -195,7 +212,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
 
                 final enteredValue = await AuditRuleHelper.showTextInputDialog(
                   ctx,
-                  title: 'Asignar ${missingProp.propertyName}',
+                  title: AppStrings.assignPropertyTitle(missingProp.propertyName),
                   labelText: missingProp.propertyName,
                   suffixText: missingProp.unitSymbol,
                   keyboardType: keyboardType,
@@ -207,7 +224,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                       id: const Uuid().v4(),
                       instanceId: entity.id,
                       propertyName: missingProp.propertyName,
-                      dataType: 'string',
+                      dataType: AppTechnicalStrings.datatypeStringLower,
                       stringValue: enteredValue,
                       magnitudeValue: 0.0,
                     );
@@ -217,7 +234,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                       id: const Uuid().v4(),
                       instanceId: entity.id,
                       propertyName: missingProp.propertyName,
-                      dataType: 'integer',
+                      dataType: AppTechnicalStrings.datatypeIntegerLower,
                       magnitudeValue: intVal.toDouble(),
                       unitSymbol: missingProp.unitSymbol,
                     );
@@ -227,7 +244,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                       id: const Uuid().v4(),
                       instanceId: entity.id,
                       propertyName: missingProp.propertyName,
-                      dataType: 'real',
+                      dataType: AppTechnicalStrings.datatypeRealLower,
                       magnitudeValue: numVal,
                       unitSymbol: missingProp.unitSymbol,
                     );
@@ -250,7 +267,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
 
                 await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(magnitudes: currentMags));
                 if (ctx.mounted) {
-                  AppToast.showSuccess(ctx, 'Propiedad "${missingProp.propertyName}" registrada.');
+                  AppToast.showSuccess(ctx, AppStrings.propertyRegisteredSuccess(missingProp.propertyName));
                 }
                 return true;
               }
@@ -272,33 +289,39 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.anomalousMagnitude;
 
   @override
-  String get ruleId => 'expiration_anomalous_magnitude';
+  String get ruleId => AppTechnicalStrings.ruleExpirationAnomalousMagnitude;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities.take(20)) {
-      final anomalousMags = entity.magnitudes.where((m) => m.magnitudeValue <= 0 && m.dataType == 'real').toList();
+      final anomalousMags = entity.magnitudes.where((m) =>
+          m.magnitudeValue <= 0 && m.dataType == AppTechnicalStrings.datatypeRealLower).toList();
       for (final mag in anomalousMags) {
         final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
         cards.add(AuditRuleHelper.forEntity(
-          id: 'anom_mag_${mag.id}',
+          id: AppTechnicalStrings.prefixAnomMag + mag.id,
           type: AuditCardType.anomalousMagnitude,
-          title: 'Magnitud con Valor No Positivo',
-          subtitle: '$displayName • ${mag.propertyName}: ${mag.magnitudeValue} ${mag.unitSymbol ?? ""}',
-          question: 'La magnitud "${mag.propertyName}" tiene un valor de ${mag.magnitudeValue}. ¿Deseas corregir este valor?',
+          title: AppStrings.anomalousMagnitudeCardTitle,
+          subtitle: AppStrings.anomalousMagnitudeSubtitle(
+            displayName,
+            mag.propertyName,
+            mag.magnitudeValue,
+            mag.unitSymbol ?? AppTechnicalStrings.empty,
+          ),
+          question: AppStrings.anomalousMagnitudeQuestion(mag.propertyName, mag.magnitudeValue),
           icon: Icons.exposure_zero,
           themeColor: Colors.orange,
           entity: entity,
           species: species,
-          confirmToastMessage: 'Valor conservado.',
+          confirmToastMessage: AppStrings.valueKept,
           onFix: (ctx, ref) async {
             final enteredValue = await AuditRuleHelper.showTextInputDialog(
               ctx,
-              title: 'Corregir ${mag.propertyName}',
+              title: AppStrings.correctPropertyTitle(mag.propertyName),
               labelText: mag.propertyName,
               initialValue: mag.magnitudeValue.toString(),
               suffixText: mag.unitSymbol,
@@ -314,7 +337,7 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
                       : m).toList();
               await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(magnitudes: updatedMags));
               if (ctx.mounted) {
-                AppToast.showSuccess(ctx, 'Valor de "${mag.propertyName}" actualizado a $numVal.');
+                AppToast.showSuccess(ctx, AppStrings.propertyValueUpdatedSuccess(mag.propertyName, numVal));
               }
               return true;
             }
@@ -326,4 +349,3 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
     return cards;
   }
 }
-

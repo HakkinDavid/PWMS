@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/storage/app_settings_repository.dart';
 import 'camera_capture_helper.dart';
 
@@ -19,7 +20,7 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
   const NumismaticCameraCaptureView({
     super.key,
     required this.isCoin,
-    this.targetSide = 'anverso',
+    this.targetSide = AppTechnicalStrings.anversoLower,
     this.existingObverseFile,
     this.existingReverseFile,
     this.hideSideSelector = false,
@@ -29,7 +30,7 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
   static Future<File?> show(
     BuildContext context, {
     required bool isCoin,
-    String targetSide = 'anverso',
+    String targetSide = AppTechnicalStrings.anversoLower,
     File? existingObverseFile,
     File? existingReverseFile,
     bool hideSideSelector = false,
@@ -46,8 +47,8 @@ class NumismaticCameraCaptureView extends ConsumerStatefulWidget {
           foregroundColor: Colors.white,
           title: Text(
             isCoin
-                ? 'Captura de Moneda (${targetSide.toUpperCase()})'
-                : 'Captura de Billete (${targetSide.toUpperCase()})',
+                ? AppStrings.numisCaptureCoinTitle(targetSide.toUpperCase())
+                : AppStrings.numisCaptureBanknoteTitle(targetSide.toUpperCase()),
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           leading: IconButton(
@@ -148,7 +149,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
     } catch (e) {
       if (mounted && !_isDisposed) {
         setState(() {
-          _statusMessage = 'Error al inicializar cámara: $e';
+          _statusMessage = AppStrings.numisErrorInitCameraMsg(e);
         });
       }
     }
@@ -243,7 +244,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
       await croppedFile.writeAsBytes(result.croppedBytes);
       return croppedFile;
     } catch (e) {
-      debugPrint('Numismatic crop isolate failed or timed out: $e');
+      debugPrint(AppStrings.numisCropFailedLog(e));
       return originalFile;
     }
   }
@@ -258,7 +259,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
 
     setState(() {
       _isProcessing = true;
-      _statusMessage = 'Capturando en alta definición...';
+      _statusMessage = AppStrings.numisCapturingHD;
     });
 
     try {
@@ -275,7 +276,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
     } catch (e) {
       if (mounted && !_isDisposed) {
         setState(() {
-          _statusMessage = 'Error en captura: $e';
+          _statusMessage = AppStrings.numisErrorCaptureMsg(e);
         });
       }
     } finally {
@@ -289,7 +290,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
 
   @override
   Widget build(BuildContext context) {
-    final isObverseActive = _activeSide == 'anverso';
+    final isObverseActive = _activeSide == AppTechnicalStrings.anversoLower;
     const activeGuideColor = Colors.amber;
 
     return SingleChildScrollView(
@@ -383,7 +384,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'CAPTURA: ${_activeSide.toUpperCase()}',
+                        AppStrings.numisActiveSideLabel(_activeSide.toUpperCase()),
                         style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                       ),
                     ],
@@ -400,7 +401,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
                   shape: const CircleBorder(),
                   child: IconButton(
                     iconSize: 20,
-                    tooltip: _isTorchOn ? 'Desactivar linterna' : 'Activar linterna',
+                    tooltip: _isTorchOn ? AppStrings.disableTorchTooltip : AppStrings.enableTorchTooltip,
                     icon: Icon(
                       _isTorchOn ? Icons.flash_on : Icons.flash_off,
                       color: _isTorchOn ? Colors.white : Colors.white70,
@@ -461,7 +462,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
                       const Icon(Icons.zoom_in, color: Colors.white, size: 14),
                       const SizedBox(width: 4),
                       Text(
-                        '${_currentZoom.toStringAsFixed(1)}x',
+                        AppStrings.zoomLevelDisplay(_currentZoom),
                         style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -479,17 +480,17 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildSideCard(
-                  sideLabel: 'Anverso',
+                  sideLabel: AppStrings.numisAnversoSideLabel,
                   isActive: isObverseActive,
                   existingFile: widget.existingObverseFile,
-                  onTap: isObverseActive ? null : () => setState(() => _activeSide = 'anverso'),
+                  onTap: isObverseActive ? null : () => setState(() => _activeSide = AppTechnicalStrings.anversoLower),
                 ),
                 const SizedBox(width: 14),
                 _buildSideCard(
-                  sideLabel: 'Reverso',
+                  sideLabel: AppStrings.numisReversoSideLabel,
                   isActive: !isObverseActive,
                   existingFile: widget.existingReverseFile,
-                  onTap: !isObverseActive ? null : () => setState(() => _activeSide = 'reverso'),
+                  onTap: !isObverseActive ? null : () => setState(() => _activeSide = AppTechnicalStrings.reversoLower),
                 ),
               ],
             ),
@@ -507,7 +508,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
                 const SizedBox(width: 4),
                 const Flexible(
                   child: Text(
-                    'Tip: Activa la linterna y ajusta el zoom para encuadrar los relieves.',
+                    AppStrings.numisCameraIlluminationTip2,
                     style: TextStyle(fontSize: 11, color: Colors.white70),
                     textAlign: TextAlign.center,
                   ),
@@ -803,8 +804,8 @@ _NumismaticCropResult _numismaticCropImageIsolate(_NumismaticCropParams params) 
     }
   }
 
-  final ext = '_cropped.jpg';
-  final newPath = params.originalPath.replaceAll(RegExp(r'\.(jpg|jpeg|png)$', caseSensitive: false), '') + ext;
+  const ext = AppTechnicalStrings.extCroppedJpg;
+  final newPath = params.originalPath.replaceAll(RegExp(AppTechnicalStrings.imageFileExtensionsRegex, caseSensitive: false), AppTechnicalStrings.empty) + ext;
   final Uint8List encodedBytes = Uint8List.fromList(img.encodeJpg(cropped, quality: 95));
 
   return _NumismaticCropResult(croppedBytes: encodedBytes, outputPath: newPath);

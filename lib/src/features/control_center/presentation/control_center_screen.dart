@@ -70,7 +70,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        AppToast.showError(context, AppStrings.controlCenterLoadErrorPrefix + e.toString());
+        AppToast.showError(context, AppStrings.controlCenterLoadError(e));
       }
     }
   }
@@ -146,7 +146,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             ElevatedButton.icon(
               onPressed: _generateAuditCards,
               icon: const Icon(Icons.autorenew),
-              label: Text(AppStrings.runNewAuditAction),
+              label: const Text(AppStrings.runNewAuditAction),
             ),
           ],
         ),
@@ -167,12 +167,12 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Revisión ${_currentIndex + 1} de ${_cards.length}',
+                AppStrings.reviewCounter(_currentIndex + 1, _cards.length),
                 style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
               ),
               Chip(
                 visualDensity: VisualDensity.compact,
-                label: Text('${_cards.length - _currentIndex} pendientes', style: const TextStyle(fontSize: 11)),
+                label: Text(AppStrings.pendingReviews(_cards.length - _currentIndex), style: const TextStyle(fontSize: 11)),
               ),
             ],
           ),
@@ -283,7 +283,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                     }
                                   },
                                   icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 18),
-                                  label: Text(AppStrings.correctAction, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                                  label: const Text(AppStrings.correctAction, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
                                   style: OutlinedButton.styleFrom(
                                     side: const BorderSide(color: Colors.green),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -304,7 +304,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                     }
                                   },
                                   icon: const Icon(Icons.build_circle_outlined, size: 18),
-                                  label: Text(AppStrings.fixAction, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                  label: const Text(AppStrings.fixAction, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: card.themeColor,
                                     foregroundColor: Colors.white,

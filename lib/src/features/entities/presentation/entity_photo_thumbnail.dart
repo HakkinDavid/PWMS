@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
@@ -48,7 +50,7 @@ class EntityPhotoThumbnail extends ConsumerWidget {
     final effectiveWidth = width ?? size;
     final effectiveHeight = height ?? size;
     final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(12);
-    final speciesName = species?.name ?? 'Objeto';
+    final speciesName = species?.name ?? AppStrings.typeObject;
 
     // 1. Resolve subspecies if not directly provided
     final effectiveSubspecies = subspecies ??
@@ -66,14 +68,14 @@ class EntityPhotoThumbnail extends ConsumerWidget {
         : null;
 
     final attachedImagePath = attachmentsState?.asData?.value.where((a) {
-      if (a.fileType == 'image') return true;
+      if (a.fileType == AppTechnicalStrings.fileTypeImage) return true;
       final path = a.filePath.toLowerCase();
-      return path.endsWith('.jpg') ||
-          path.endsWith('.jpeg') ||
-          path.endsWith('.png') ||
-          path.endsWith('.webp') ||
-          path.endsWith('.heic') ||
-          path.endsWith('.bmp');
+      return path.endsWith(AppTechnicalStrings.extJpg) ||
+          path.endsWith(AppTechnicalStrings.extJpeg) ||
+          path.endsWith(AppTechnicalStrings.extPng) ||
+          path.endsWith(AppTechnicalStrings.extWebp) ||
+          path.endsWith(AppTechnicalStrings.extHeic) ||
+          path.endsWith(AppTechnicalStrings.extBmp);
     }).firstOrNull?.filePath;
 
     return ClipRRect(
@@ -106,7 +108,7 @@ class EntityPhotoThumbnail extends ConsumerWidget {
                   return FutureBuilder<String>(
                     future: ref.read(fileStorageServiceProvider).getAbsolutePath(relPath),
                     builder: (context, absSnapshot) {
-                      final absPath = absSnapshot.data ?? '';
+                      final absPath = absSnapshot.data ?? AppTechnicalStrings.empty;
                       if (absPath.isNotEmpty && File(absPath).existsSync()) {
                         return Image.file(
                           File(absPath),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../domain/location_node.dart';
 
@@ -134,7 +135,7 @@ class _TopCurtainLocationSheetState extends ConsumerState<TopCurtainLocationShee
       currId = node.parentLocationId;
     }
 
-    return path.isEmpty ? AppStrings.unknownLocation : path.join(' > ');
+    return path.isEmpty ? AppStrings.unknownLocation : path.join(AppTechnicalDelimiters.greaterThanWithSpaces);
   }
 
   Widget _buildTreeItem(LocationNode node, int depth) {

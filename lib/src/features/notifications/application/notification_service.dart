@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../catalog/infrastructure/catalog_repository.dart';
 import '../../entities/infrastructure/entity_repository.dart';
@@ -29,7 +30,7 @@ class NotificationService {
   Future<void> initLocalNotifications() async {
     if (_initialized) return;
     try {
-      const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const androidSettings = AndroidInitializationSettings(AppTechnicalStrings.androidDefaultNotificationIcon);
       const darwinSettings = DarwinInitializationSettings();
       const initSettings = InitializationSettings(
         android: androidSettings,
@@ -53,7 +54,8 @@ class NotificationService {
     final catalogMap = {for (var item in allCatalogItems) item.id: item};
     final existingNotifications = await _notificationRepo.getAllNotifications();
     final existingMap = {
-      for (var n in existingNotifications) '${n.type}_${n.targetId}': n
+      for (var n in existingNotifications)
+        AppTechnicalStrings.notifKeyFromNotification(n.type, n.targetId): n
     };
 
     // 1. Evaluate Entity Expirations & Warnings
@@ -66,18 +68,19 @@ class NotificationService {
       final warningDays = species?.warningDaysBeforeExpiration ?? 7;
 
       if (entity.isExpired(canExpire: canExpire, now: now)) {
-        final key = 'expired_${entity.id}';
+        final key = AppTechnicalStrings.notifKeyExpired(entity.id);
         final existing = existingMap[key];
 
-        if (existing == null || existing.status != 'dismissed') {
+        if (existing == null || existing.status != AppTechnicalStrings.notifStatusDismissed) {
+          final formattedDate = AppStrings.formatDateDMY(entity.expirationDate);
           final notif = AppNotification(
             id: existing?.id ?? const Uuid().v4(),
-            type: 'expired',
+            type: AppTechnicalStrings.notifTypeExpired,
             title: AppStrings.expiredItemTitle,
-            message: '${AppStrings.expiredNotificationMessagePrefix}$speciesName${AppStrings.expiredNotificationMessageSuffix}${_formatDate(entity.expirationDate)}).',
+            message: AppStrings.notifMessageExpired(speciesName, formattedDate),
             targetId: entity.id,
-            targetType: 'entity',
-            status: existing?.status ?? 'active',
+            targetType: AppTechnicalStrings.notifTargetTypeEntity,
+            status: existing?.status ?? AppTechnicalStrings.notifStatusActive,
             snoozedUntil: existing?.snoozedUntil,
             createdAt: existing?.createdAt ?? now,
             updatedAt: now,
@@ -88,19 +91,20 @@ class NotificationService {
           }
         }
       } else if (entity.isExpiringSoon(warningDays: warningDays, canExpire: canExpire, now: now)) {
-        final key = 'expiring_soon_${entity.id}';
+        final key = AppTechnicalStrings.notifKeyExpiringSoon(entity.id);
         final existing = existingMap[key];
 
-        if (existing == null || existing.status != 'dismissed') {
+        if (existing == null || existing.status != AppTechnicalStrings.notifStatusDismissed) {
           final daysLeft = entity.expirationDate!.difference(now).inDays + 1;
+          final formattedDate = AppStrings.formatDateDMY(entity.expirationDate);
           final notif = AppNotification(
             id: existing?.id ?? const Uuid().v4(),
-            type: 'expiring_soon',
+            type: AppTechnicalStrings.notifTypeExpiringSoon,
             title: AppStrings.expiringSoonTitle,
-            message: '${AppStrings.expiringSoonNotificationMessagePrefix}$speciesName${AppStrings.expiringSoonNotificationMessageMiddle}$daysLeft${AppStrings.expiringSoonNotificationMessageSuffix}${_formatDate(entity.expirationDate)}).',
+            message: AppStrings.notifMessageExpiringSoon(speciesName, daysLeft, formattedDate),
             targetId: entity.id,
-            targetType: 'entity',
-            status: existing?.status ?? 'active',
+            targetType: AppTechnicalStrings.notifTargetTypeEntity,
+            status: existing?.status ?? AppTechnicalStrings.notifStatusActive,
             snoozedUntil: existing?.snoozedUntil,
             createdAt: existing?.createdAt ?? now,
             updatedAt: now,
@@ -137,7 +141,7 @@ class NotificationService {
       }).toList();
       final validStockCount = validEntities.length.toDouble();
 
-      final key = 'unsatisfied_need_$reqSpeciesId';
+      final key = AppTechnicalStrings.notifKeyUnsatisfiedNeed(reqSpeciesId);
       final existing = existingMap[key];
 
       if (validStockCount < requiredQty) {
@@ -145,12 +149,12 @@ class NotificationService {
         final deficitStr = deficit == deficit.toInt() ? deficit.toInt().toString() : deficit.toStringAsFixed(1);
         final notif = AppNotification(
           id: existing?.id ?? const Uuid().v4(),
-          type: 'unsatisfied_need',
+          type: AppTechnicalStrings.notifTypeUnsatisfiedNeed,
           title: AppStrings.unsatisfiedNeedTitle,
-          message: '${AppStrings.unsatisfiedNeedNotificationMessagePrefix}$deficitStr${AppStrings.unsatisfiedNeedNotificationMessageMiddle}$speciesName${AppStrings.unsatisfiedNeedNotificationMessageSuffix}$validStockCount/$requiredQty disponible).',
+          message: AppStrings.notifMessageUnsatisfiedNeed(deficitStr, speciesName, validStockCount, requiredQty),
           targetId: reqSpeciesId,
-          targetType: 'species',
-          status: existing?.status ?? 'active',
+          targetType: AppTechnicalStrings.notifTargetTypeSpecies,
+          status: existing?.status ?? AppTechnicalStrings.notifStatusActive,
           snoozedUntil: existing?.snoozedUntil,
           createdAt: existing?.createdAt ?? now,
           updatedAt: now,
@@ -161,7 +165,7 @@ class NotificationService {
         }
       } else {
         // Condition satisfied: dismiss/clear existing unsatisfied need notification if any
-        if (existing != null && existing.status != 'dismissed') {
+        if (existing != null && existing.status != AppTechnicalStrings.notifStatusDismissed) {
           await _notificationRepo.dismissNotification(existing.id);
         }
       }
@@ -172,7 +176,7 @@ class NotificationService {
     if (!_initialized) return;
     try {
       const androidDetails = AndroidNotificationDetails(
-        'pwms_notifications',
+        AppTechnicalStrings.notifChannelPwms,
         AppStrings.notificationChannelName,
         channelDescription: AppStrings.notificationChannelDescription,
         importance: Importance.high,
@@ -185,10 +189,5 @@ class NotificationService {
       );
       await _localNotifications.show(id, title, body, osDetails);
     } catch (_) {}
-  }
-
-  String _formatDate(DateTime? dt) {
-    if (dt == null) return '';
-    return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
   }
 }

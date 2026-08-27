@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
@@ -193,9 +194,9 @@ class CatalogRepository {
       mainPhotoPath: Value(item.mainPhotoPath),
       customAttributes: Value(jsonEncode(item.customAttributes)),
       isUnique: Value(item.isUnique),
-      isNonPerishable: Value(finalType == 'Objeto' ? item.isNonPerishable : true),
-      defaultShelfLifeDays: Value(finalType == 'Objeto' && !item.isNonPerishable ? item.defaultShelfLifeDays : null),
-      warningDaysBeforeExpiration: Value(finalType == 'Objeto' && !item.isNonPerishable ? item.warningDaysBeforeExpiration : null),
+      isNonPerishable: Value(finalType == AppStrings.typeObject ? item.isNonPerishable : true),
+      defaultShelfLifeDays: Value(finalType == AppStrings.typeObject && !item.isNonPerishable ? item.defaultShelfLifeDays : null),
+      warningDaysBeforeExpiration: Value(finalType == AppStrings.typeObject && !item.isNonPerishable ? item.warningDaysBeforeExpiration : null),
       createdAt: Value(item.createdAt),
     );
     await _db.transaction(() async {
@@ -316,7 +317,7 @@ class CatalogRepository {
     final newSpecies = await getOrCreateSpecies(
       newSpeciesName,
       type: parentSpecies.type,
-      description: '${AppStrings.separatedFromSpeciesPrefix}${parentSpecies.name}',
+      description: AppStrings.separatedFromSpeciesName(parentSpecies.name),
       mainPhotoPath: sub.photoPath ?? parentSpecies.mainPhotoPath,
     );
 
@@ -350,7 +351,7 @@ class CatalogRepository {
   /// Mover Subespecie a otra especie existente (Requisitos 2c y 7)
   Future<void> moveSubspecies(String subspeciesId, String targetSpeciesId) async {
     final sub = await getSubspeciesById(subspeciesId);
-    if (sub == null) throw Exception('Subespecie no encontrada');
+    if (sub == null) throw Exception(AppStrings.subspeciesNotFoundError);
     final oldSpeciesId = sub.speciesId;
     if (oldSpeciesId == targetSpeciesId) return;
 
@@ -554,7 +555,7 @@ class CatalogRepository {
   Future<void> addSpeciesMagnitude(
     String speciesId,
     String propertyName, {
-    String dataType = 'real',
+    String dataType = AppTechnicalStrings.datatypeRealLower,
     String? unitSymbol,
   }) async {
     final cleanName = propertyName.trim();
@@ -566,7 +567,7 @@ class CatalogRepository {
         if (cleanUnit != null && cleanUnit.isNotEmpty) {
           return nameCond & t.unitSymbol.equals(cleanUnit);
         } else {
-          return nameCond & (t.unitSymbol.isNull() | t.unitSymbol.equals(''));
+          return nameCond & (t.unitSymbol.isNull() | t.unitSymbol.equals(AppTechnicalStrings.empty));
         }
       });
     final existing = await query.getSingleOrNull();

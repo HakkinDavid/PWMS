@@ -1,5 +1,7 @@
 import '../catalog_item.dart';
 import '../../../entities/domain/world_entity.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'numismatic_dictionary.dart';
 
 class NumismaticAttributes {
@@ -30,31 +32,16 @@ class NumismaticParser {
   /// Helper to convert plural currency name to singular if count == 1.
   static String adjustSingularPlural(String text, double? count) {
     if (count == 1 || count == 1.0) {
-      return text
-          .replaceAll('Pesos', 'Peso')
-          .replaceAll('Dólares', 'Dólar')
-          .replaceAll('Dolares', 'Dólar')
-          .replaceAll('Soles', 'Sol')
-          .replaceAll('Euros', 'Euro')
-          .replaceAll('Libras', 'Libra')
-          .replaceAll('Quetzales', 'Quetzal')
-          .replaceAll('Florines', 'Florín')
-          .replaceAll('Colones', 'Colón')
-          .replaceAll('Pesetas', 'Peseta')
-          .replaceAll('Mexicanos', 'Mexicano')
-          .replaceAll('Estadounidenses', 'Estadounidense')
-          .replaceAll('Canadienses', 'Canadiense')
-          .replaceAll('Colombianos', 'Colombiano')
-          .replaceAll('Chilenos', 'Chileno')
-          .replaceAll('Argentinos', 'Argentino')
-          .replaceAll('Cubanos', 'Cubano')
-          .replaceAll('Dominicanos', 'Dominicano')
-          .trim();
+      var result = text;
+      for (final entry in AppTechnicalNumismatics.currencySingularReplacements.entries) {
+        result = result.replaceAll(entry.key, entry.value);
+      }
+      return result.trim();
     }
     return text;
   }
 
-  /// Resolves any currency string (code or name) to its ISO 4217 code (e.g. 'MXN').
+  /// Resolves any currency string (code or name) to its ISO 4217 code (e.g. MXN).
   static String resolveCurrencyIsoCode(String codeOrName) {
     final clean = codeOrName.trim();
     if (clean.isEmpty) return clean;
@@ -65,22 +52,14 @@ class NumismaticParser {
     }
 
     String normalize(String text) {
-      return text.toLowerCase()
-          .replaceAll('pesos', 'peso')
-          .replaceAll('dólares', 'dólar')
-          .replaceAll('dolares', 'dólar')
-          .replaceAll('soles', 'sol')
-          .replaceAll('euros', 'euro')
-          .replaceAll('libras', 'libra')
-          .replaceAll(RegExp(r'\s+mexicanos?'), ' mexicano')
-          .replaceAll(RegExp(r'\s+estadounidenses?'), ' estadounidense')
-          .replaceAll(RegExp(r'\s+canadienses?'), ' canadiense')
-          .replaceAll(RegExp(r'\s+colombianos?'), ' colombiano')
-          .replaceAll(RegExp(r'\s+chilenos?'), ' chileno')
-          .replaceAll(RegExp(r'\s+argentinos?'), ' argentino')
-          .replaceAll(RegExp(r'\s+cubanos?'), ' cubano')
-          .replaceAll(RegExp(r'\s+dominicanos?'), ' dominicano')
-          .trim();
+      var result = text.toLowerCase();
+      for (final entry in AppTechnicalNumismatics.normalizeCurrencyReplacements.entries) {
+        result = result.replaceAll(entry.key, entry.value);
+      }
+      for (final entry in AppTechnicalNumismatics.regexNationalityReplacements.entries) {
+        result = result.replaceAll(RegExp(entry.key), entry.value);
+      }
+      return result.trim();
     }
 
     final normClean = normalize(clean);
@@ -104,22 +83,14 @@ class NumismaticParser {
     }
 
     String normalize(String text) {
-      return text.toLowerCase()
-          .replaceAll('pesos', 'peso')
-          .replaceAll('dólares', 'dólar')
-          .replaceAll('dolares', 'dólar')
-          .replaceAll('soles', 'sol')
-          .replaceAll('euros', 'euro')
-          .replaceAll('libras', 'libra')
-          .replaceAll(RegExp(r'\s+mexicanos?'), ' mexicano')
-          .replaceAll(RegExp(r'\s+estadounidenses?'), ' estadounidense')
-          .replaceAll(RegExp(r'\s+canadienses?'), ' canadiense')
-          .replaceAll(RegExp(r'\s+colombianos?'), ' colombiano')
-          .replaceAll(RegExp(r'\s+chilenos?'), ' chileno')
-          .replaceAll(RegExp(r'\s+argentinos?'), ' argentino')
-          .replaceAll(RegExp(r'\s+cubanos?'), ' cubano')
-          .replaceAll(RegExp(r'\s+dominicanos?'), ' dominicano')
-          .trim();
+      var result = text.toLowerCase();
+      for (final entry in AppTechnicalNumismatics.normalizeCurrencyReplacements.entries) {
+        result = result.replaceAll(entry.key, entry.value);
+      }
+      for (final entry in AppTechnicalNumismatics.regexNationalityReplacements.entries) {
+        result = result.replaceAll(RegExp(entry.key), entry.value);
+      }
+      return result.trim();
     }
 
     final normClean = normalize(clean);
@@ -139,20 +110,10 @@ class NumismaticParser {
     if (NumismaticDictionary.grades.contains(clean)) return clean;
 
     final lower = clean.toLowerCase();
-    if (lower.contains('fdc') || lower.contains('unc') || lower.contains('sin circular')) {
-      return NumismaticDictionary.grades[0];
-    }
-    if (lower.contains('ebc') || lower.contains('xf') || lower.contains('excelente')) {
-      return NumismaticDictionary.grades[1];
-    }
-    if (lower.contains('mbc') || lower.contains('vf') || lower.contains('muy buena')) {
-      return NumismaticDictionary.grades[2];
-    }
-    if (lower.contains('bc') || lower.contains('buena')) {
-      return NumismaticDictionary.grades[3];
-    }
-    if (lower.contains('mc') || lower.contains('regular')) {
-      return NumismaticDictionary.grades[4];
+    for (final entry in AppTechnicalNumismatics.gradeKeywords.entries) {
+      if (lower.contains(entry.key)) {
+        return NumismaticDictionary.grades[entry.value];
+      }
     }
 
     return clean;
@@ -165,32 +126,10 @@ class NumismaticParser {
     if (NumismaticDictionary.coinMaterials.contains(clean)) return clean;
 
     final lower = clean.toLowerCase();
-    if (lower.contains('cuproníquel') || lower.contains('cuproniquel') || lower.contains('cu-ni')) {
-      return 'Cuproníquel';
-    }
-    if (lower.contains('plata') || lower.contains('silver')) {
-      return 'Plata';
-    }
-    if (lower.contains('bronce') || lower.contains('bronze')) {
-      return 'Bronce';
-    }
-    if (lower.contains('oro') || lower.contains('gold')) {
-      return 'Oro';
-    }
-    if (lower.contains('latón') || lower.contains('laton') || lower.contains('brass')) {
-      return 'Latón';
-    }
-    if (lower.contains('aluminio') || lower.contains('aluminum')) {
-      return 'Aluminio';
-    }
-    if (lower.contains('bimetálica') || lower.contains('bimetalica') || lower.contains('bimetal')) {
-      return 'Bimetálica';
-    }
-    if (lower.contains('acero') || lower.contains('steel')) {
-      return 'Acero';
-    }
-    if (lower.contains('papel') || lower.contains('paper')) {
-      return 'Papel';
+    for (final entry in AppTechnicalNumismatics.materialKeywords.entries) {
+      if (lower.contains(entry.key)) {
+        return entry.value;
+      }
     }
 
     return clean;
@@ -203,23 +142,10 @@ class NumismaticParser {
     if (NumismaticDictionary.specialEditionReasons.contains(clean)) return clean;
 
     final lower = clean.toLowerCase();
-    if (lower.contains('conmemorativa') || lower.contains('commemorative')) {
-      return NumismaticDictionary.specialEditionReasons[0];
-    }
-    if (lower.contains('proof') || lower.contains('prueba')) {
-      return NumismaticDictionary.specialEditionReasons[1];
-    }
-    if (lower.contains('error') || lower.contains('impresión') || lower.contains('impresion')) {
-      return NumismaticDictionary.specialEditionReasons[2];
-    }
-    if (lower.contains('limitada') || lower.contains('numeración') || lower.contains('numeracion')) {
-      return NumismaticDictionary.specialEditionReasons[3];
-    }
-    if (lower.contains('aniversario') || lower.contains('histórico') || lower.contains('historico')) {
-      return NumismaticDictionary.specialEditionReasons[4];
-    }
-    if (lower.contains('régimen') || lower.contains('regimen') || lower.contains('cambio')) {
-      return NumismaticDictionary.specialEditionReasons[5];
+    for (final entry in AppTechnicalNumismatics.specialEditionKeywords.entries) {
+      if (lower.contains(entry.key)) {
+        return NumismaticDictionary.specialEditionReasons[entry.value];
+      }
     }
 
     return clean;
@@ -243,14 +169,14 @@ class NumismaticParser {
     if (NumismaticDictionary.numismaticSpeciesNames.any((n) {
       final nLower = n.toLowerCase();
       return nameLower == nLower ||
-          nameLower.startsWith('$nLower ') ||
+          nameLower.startsWith(nLower + AppTechnicalStrings.space) ||
           typeLower == nLower ||
-          typeLower.startsWith('$nLower ');
+          typeLower.startsWith(nLower + AppTechnicalStrings.space);
     })) {
       return true;
     }
     if (species.description != null &&
-        species.description!.toLowerCase().contains('numismátic')) {
+        species.description!.toLowerCase().contains(AppTechnicalStrings.numisNumismaticKeyword)) {
       return true;
     }
     return false;
@@ -260,11 +186,12 @@ class NumismaticParser {
   static bool isCoinSpecies(CatalogItem species) {
     final nameLower = species.name.trim().toLowerCase();
     final typeLower = species.type.trim().toLowerCase();
-    return !nameLower.contains('billete') && !typeLower.contains('billete');
+    return !nameLower.contains(AppTechnicalStrings.numisBanknoteKeyword) &&
+        !typeLower.contains(AppTechnicalStrings.numisBanknoteKeyword);
   }
 
   /// Builds a deterministic subspecies title for coins or banknotes.
-  /// Format: "[Denominación] [Divisa Estándar] - [País] ([Año])"
+  /// Format: [Denominación] [Divisa Estándar] - [País] ([Año])
   static String buildSubspeciesName({
     double? faceValueNumber,
     String? faceValueStr,
@@ -279,7 +206,7 @@ class NumismaticParser {
             ? (faceValueNumber % 1 == 0
                 ? faceValueNumber.toInt().toString()
                 : faceValueNumber.toString())
-            : '');
+            : AppTechnicalStrings.empty);
 
     final countVal = double.tryParse(denom) ?? faceValueNumber;
 
@@ -287,28 +214,30 @@ class NumismaticParser {
         ? currencyName.trim()
         : (currencyCode != null && currencyCode.trim().isNotEmpty
             ? currencyCode.trim()
-            : '');
+            : AppTechnicalStrings.empty);
 
     final canonicalCurr = resolveCurrencyName(rawCurr, count: countVal);
 
     final cty = (country != null && country.trim().isNotEmpty)
         ? country.trim()
-        : '';
+        : AppTechnicalStrings.empty;
 
     final yr = (year != null && year.trim().isNotEmpty) ? year.trim() : null;
 
-    final firstPart = [denom, canonicalCurr].where((s) => s.isNotEmpty).join(' ');
+    final firstPart = [denom, canonicalCurr].where((s) => s.isNotEmpty).join(AppTechnicalStrings.space);
     final titleParts = <String>[];
     if (firstPart.isNotEmpty) titleParts.add(firstPart);
     if (cty.isNotEmpty) titleParts.add(cty);
 
-    var mainText = titleParts.join(' - ');
+    var mainText = titleParts.join(AppTechnicalStrings.dashWithSpaces);
     if (yr != null) {
-      mainText = mainText.isNotEmpty ? '$mainText ($yr)' : '($yr)';
+      mainText = mainText.isNotEmpty
+          ? mainText + AppTechnicalStrings.openParenSpace + yr + AppTechnicalStrings.closeParen
+          : AppTechnicalStrings.openParen + yr + AppTechnicalStrings.closeParen;
     }
 
     if (mainText.isEmpty) {
-      return 'Pieza Numismática';
+      return AppStrings.defaultNumismaticPiece;
     }
 
     return mainText;
@@ -334,32 +263,38 @@ class NumismaticParser {
 
     final notesParts = <String>[];
     if (canonicalCurr != null && canonicalCurr.isNotEmpty) {
-      notesParts.add('Moneda: ${canonicalCurr.trim()}');
+      notesParts.add(AppStrings.noteCoinPrefix + canonicalCurr.trim());
     }
     if (year != null && year.trim().isNotEmpty) {
-      notesParts.add('Año: ${year.trim()}');
+      notesParts.add(AppStrings.noteYearPrefix + year.trim());
     }
     if (canonicalMat != null && canonicalMat.isNotEmpty) {
-      notesParts.add('Material: ${canonicalMat.trim()}');
+      notesParts.add(AppStrings.noteMaterialPrefix + canonicalMat.trim());
     }
-    return notesParts.join(' | ');
+    return notesParts.join(AppTechnicalStrings.pipeWithSpaces);
   }
 
   /// Sanitizes text for file names.
   static String sanitizeFileName(String text) {
-    return text.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+    return text.replaceAll(RegExp(AppTechnicalStrings.regexIllegalFileNameChars), AppTechnicalStrings.underscore);
   }
 
   /// Builds deterministic filename for attachments.
   static String buildAttachmentFileName({
     required String subspeciesName,
     required String instanceId,
-    required String side, // 'anverso' or 'reverso'
+    required String side,
     required String extension,
   }) {
     final sanitizedSubname = sanitizeFileName(subspeciesName);
-    final ext = extension.startsWith('.') ? extension.substring(1) : extension;
-    return '$sanitizedSubname ($instanceId) ($side).$ext';
+    final ext = extension.startsWith(AppTechnicalStrings.dot) ? extension.substring(1) : extension;
+    return sanitizedSubname +
+        AppTechnicalStrings.openParenSpace +
+        instanceId +
+        AppTechnicalStrings.closeParenOpenParen +
+        side +
+        AppTechnicalStrings.closeParenDot +
+        ext;
   }
 
   /// Extracts numismatic attributes from an instance's magnitudes.
@@ -371,19 +306,19 @@ class NumismaticParser {
     String? grade;
 
     for (final mag in entity.magnitudes) {
-      if (mag.propertyName == 'Valor nominal') {
+      if (mag.propertyName == AppStrings.magValorNominal) {
         faceVal = mag.magnitudeValue;
-      } else if (mag.propertyName == 'Acuñación') {
+      } else if (mag.propertyName == AppStrings.magAcunacion) {
         if (mag.magnitudeValue > 0) {
           year = mag.magnitudeValue.toInt().toString();
         } else if (mag.stringValue != null && mag.stringValue!.isNotEmpty) {
           year = mag.stringValue;
         }
-      } else if (mag.propertyName == 'Divisa') {
+      } else if (mag.propertyName == AppStrings.magDivisa) {
         currency = mag.stringValue;
-      } else if (mag.propertyName == 'Material') {
+      } else if (mag.propertyName == AppStrings.magMaterial) {
         material = mag.stringValue;
-      } else if (mag.propertyName == 'Grado') {
+      } else if (mag.propertyName == AppStrings.magGrado) {
         grade = mag.stringValue;
       }
     }
@@ -399,7 +334,7 @@ class NumismaticParser {
 
   /// Parses subspecies title to extract denomination, currency, country, year.
   static NumismaticAttributes parseSubspeciesName(String name) {
-    final yearRegex = RegExp(r'\(([^)]+)\)\s*$');
+    final yearRegex = RegExp(AppTechnicalStrings.regexParenthesizedEndYear);
     final match = yearRegex.firstMatch(name);
     String? year;
     String mainText = name;
@@ -407,18 +342,18 @@ class NumismaticParser {
     if (match != null) {
       year = match.group(1)?.trim();
       mainText = name.substring(0, match.start).trim();
-      if (mainText.endsWith('-')) {
+      if (mainText.endsWith(AppTechnicalStrings.dash)) {
         mainText = mainText.substring(0, mainText.length - 1).trim();
       }
     }
 
-    final dashParts = mainText.split(' - ');
-    String? denomAndCurr;
+    final dashParts = mainText.split(AppTechnicalStrings.dashWithSpaces);
+    String denomAndCurr;
     String? country;
 
     if (dashParts.length >= 2) {
       denomAndCurr = dashParts[0].trim();
-      country = dashParts.sublist(1).join(' - ').trim();
+      country = dashParts.sublist(1).join(AppTechnicalStrings.dashWithSpaces).trim();
     } else {
       denomAndCurr = mainText.trim();
     }
@@ -427,8 +362,8 @@ class NumismaticParser {
     String? faceValStr;
     String? currency;
 
-    if (denomAndCurr != null && denomAndCurr.isNotEmpty) {
-      final firstSpace = denomAndCurr.indexOf(' ');
+    if (denomAndCurr.isNotEmpty) {
+      final firstSpace = denomAndCurr.indexOf(AppTechnicalStrings.space);
       if (firstSpace > 0) {
         final numPart = denomAndCurr.substring(0, firstSpace).trim();
         final parsed = double.tryParse(numPart);

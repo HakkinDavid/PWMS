@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
-import '../catalog_item.dart';
 import '../subspecies.dart';
 import '../../../entities/domain/world_entity.dart';
 import '../../../entities/domain/i_entity_repository.dart';
@@ -48,30 +49,28 @@ class NumismaticDomainRules {
     );
 
     if (subspecies.subspeciesName.trim() != canonicalTitle.trim()) {
-      mismatches.add('Título no estandarizado (Actual: "${subspecies.subspeciesName}" vs Estándar: "$canonicalTitle")');
+      mismatches.add(AppStrings.numisAuditTitleMismatch(subspecies.subspeciesName, canonicalTitle));
     }
 
     // 2. Year check
     if (instAttrs.year != null &&
         subAttrs.year != null &&
         instAttrs.year != subAttrs.year) {
-      mismatches.add('Año (Instancia: ${instAttrs.year} vs Subespecie: ${subAttrs.year})');
+      mismatches.add(AppStrings.numisAuditYearMismatch(instAttrs.year!, subAttrs.year!));
     }
 
     // 3. Face value check
     if (instAttrs.faceValueNumber != null &&
         subAttrs.faceValueNumber != null &&
         (instAttrs.faceValueNumber! - subAttrs.faceValueNumber!).abs() > 0.001) {
-      mismatches.add(
-          'Valor Nominal (Instancia: ${instAttrs.faceValueNumber} vs Subespecie: ${subAttrs.faceValueNumber})');
+      mismatches.add(AppStrings.numisAuditFaceValueMismatch(instAttrs.faceValueNumber!, subAttrs.faceValueNumber!));
     }
 
     // 4. Instance magnitude currency standardization check (must be ISO code)
     if (instAttrs.currencyName != null) {
       final isoCode = NumismaticParser.resolveCurrencyIsoCode(instAttrs.currencyName!);
       if (instAttrs.currencyName!.trim().toUpperCase() != isoCode) {
-        mismatches.add(
-            'Divisa de instancia no es código ISO (Actual: "${instAttrs.currencyName}" vs Código ISO: "$isoCode")');
+        mismatches.add(AppStrings.numisAuditCurrencyNotIso(instAttrs.currencyName!, isoCode));
       }
     }
 
@@ -79,7 +78,7 @@ class NumismaticDomainRules {
     if (instAttrs.grade != null && instAttrs.grade!.isNotEmpty) {
       final stdGrade = NumismaticParser.resolveGrade(instAttrs.grade!);
       if (instAttrs.grade!.trim() != stdGrade) {
-        mismatches.add('Grado de conservación no estandarizado (Actual: "${instAttrs.grade}" vs Estándar: "$stdGrade")');
+        mismatches.add(AppStrings.numisAuditGradeMismatch(instAttrs.grade!, stdGrade));
       }
     }
 
@@ -87,12 +86,12 @@ class NumismaticDomainRules {
     if (instAttrs.material != null && instAttrs.material!.isNotEmpty) {
       final stdMat = NumismaticParser.resolveMaterial(instAttrs.material!);
       if (instAttrs.material!.trim() != stdMat) {
-        mismatches.add('Material no estandarizado (Actual: "${instAttrs.material}" vs Estándar: "$stdMat")');
+        mismatches.add(AppStrings.numisAuditMaterialMismatch(instAttrs.material!, stdMat));
       }
     }
 
     if (mismatches.isNotEmpty) {
-      return 'Incongruencia: ${mismatches.join(" | ")}';
+      return AppStrings.numisAuditIncongruence(mismatches.join(AppTechnicalStrings.pipeWithSpaces));
     }
 
     return null;
@@ -104,7 +103,7 @@ class NumismaticDomainRules {
     final Map<String, List<Subspecies>> grouped = {};
 
     for (final sub in subspeciesList) {
-      if (sub.subspeciesName.toLowerCase() == 'genérica') continue;
+      if (sub.subspeciesName.toLowerCase() == AppTechnicalStrings.numisGenericSubspeciesKind) continue;
 
       final parsed = NumismaticParser.parseSubspeciesName(sub.subspeciesName);
       final normTitle = NumismaticParser.buildSubspeciesName(
@@ -114,7 +113,7 @@ class NumismaticDomainRules {
         year: parsed.year,
       );
 
-      final key = '${sub.speciesId}_${normTitle.trim().toLowerCase()}';
+      final key = AppTechnicalStrings.numisSubspeciesKey(sub.speciesId, normTitle.trim().toLowerCase());
       grouped.putIfAbsent(key, () => []).add(sub);
     }
 
@@ -154,14 +153,14 @@ class NumismaticDomainRules {
 
     // Standardize instance magnitudes ('Divisa', 'Grado', 'Material') if present
     final updatedMags = instance.magnitudes.map((m) {
-      if (m.propertyName == 'Divisa' && m.stringValue != null) {
+      if (m.propertyName == AppStrings.magDivisa && m.stringValue != null) {
         final iso = NumismaticParser.resolveCurrencyIsoCode(m.stringValue!);
         return m.copyWith(stringValue: iso);
       }
-      if (m.propertyName == 'Grado' && m.stringValue != null) {
+      if (m.propertyName == AppStrings.magGrado && m.stringValue != null) {
         return m.copyWith(stringValue: NumismaticParser.resolveGrade(m.stringValue!));
       }
-      if (m.propertyName == 'Material' && m.stringValue != null) {
+      if (m.propertyName == AppStrings.magMaterial && m.stringValue != null) {
         return m.copyWith(stringValue: NumismaticParser.resolveMaterial(m.stringValue!));
       }
       return m;
@@ -214,12 +213,12 @@ class NumismaticDomainRules {
   }) async {
     final attachments = await entityRepo.getAttachmentsForInstance(instance.id);
     for (final att in attachments) {
-      final isObverse = att.fileName.toLowerCase().contains('(anverso)') ||
-          att.fileName.toLowerCase().contains('anverso');
-      final side = isObverse ? 'anverso' : 'reverso';
+      final isObverse = att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoParensLower) ||
+          att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoLower);
+      final side = isObverse ? AppTechnicalStrings.anversoLower : AppTechnicalStrings.reversoLower;
 
       final file = File(att.filePath);
-      final ext = file.path.contains('.') ? file.path.split('.').last : 'jpg';
+      final ext = file.path.contains(AppTechnicalStrings.dot) ? file.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgNoExt;
 
       final expectedName = NumismaticParser.buildAttachmentFileName(
         subspeciesName: subspecies.subspeciesName,
@@ -232,7 +231,7 @@ class NumismaticDomainRules {
         // Renombrar archivo en disco si existe
         if (await file.exists()) {
           final parentDir = file.parent.path;
-          final newPath = '$parentDir/$expectedName';
+          final newPath = AppStrings.numisAttachmentPath(parentDir, expectedName);
           final renamedFile = await file.rename(newPath);
 
           // Actualizar en base de datos

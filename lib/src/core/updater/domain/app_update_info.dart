@@ -1,3 +1,5 @@
+import '../../constants/app_technical_strings.dart';
+
 /// Representa el resultado y metadatos de una verificación de actualización.
 class AppUpdateInfo {
   final bool isAvailable;
@@ -16,6 +18,10 @@ class AppUpdateInfo {
 
   @override
   String toString() {
-    return 'AppUpdateInfo(available: $isAvailable, current: $currentVersion, latest: $latestVersion)';
+    return AppTechnicalStrings.formatAppUpdateInfo(
+      available: isAvailable,
+      current: currentVersion,
+      latest: latestVersion,
+    );
   }
 }

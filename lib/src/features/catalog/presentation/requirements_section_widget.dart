@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -19,7 +20,7 @@ class RequirementsSectionWidget extends ConsumerStatefulWidget {
   const RequirementsSectionWidget({
     super.key,
     required this.sourceId,
-    this.sourceType = 'species',
+    this.sourceType = AppTechnicalStrings.sourceTypeSpecies,
     this.title = AppStrings.requirementsTitle,
     this.isEditing = true,
     this.overrideRequirements,
@@ -73,7 +74,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
     }
 
     String? selectedSpeciesId = catalogItems.first.id;
-    final qtyController = TextEditingController(text: '1');
+    final qtyController = TextEditingController(text: AppTechnicalStrings.defaultInitialQuantity);
     final notesController = TextEditingController();
 
     final confirm = await showDialog<bool>(
@@ -205,7 +206,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
               final req = effectiveRequirements[index];
               final reqSpecies = catalogItems.where((c) => c.id == req.requiredSpeciesId).firstOrNull;
               final speciesName = reqSpecies?.name ?? AppStrings.typeObject;
-              final formattedQty = req.requiredQuantity % 1 == 0 ? '${req.requiredQuantity.toInt()}' : '${req.requiredQuantity}';
+              final formattedQty = AppStrings.formatQuantityValue(req.requiredQuantity);
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 6),
@@ -218,7 +219,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                     child: Icon(Icons.shopping_bag_outlined, color: theme.colorScheme.primary, size: 16),
                   ),
                   title: Text(
-                    '${AppStrings.needsPrefix} $formattedQty x $speciesName',
+                    AppStrings.requirementSummary(formattedQty, speciesName),
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                   subtitle: req.notes != null ? Text(req.notes!, style: const TextStyle(fontSize: 11)) : null,
@@ -229,7 +230,7 @@ class _RequirementsSectionWidgetState extends ConsumerState<RequirementsSectionW
                             final confirm = await AppConfirmationDialog.showDeleteConfirmation(
                               context: context,
                               title: AppStrings.confirmDeleteRequirementTitle,
-                              message: '${AppStrings.confirmDeleteRequirementMessagePrefix}$speciesName${AppStrings.confirmDeleteRequirementMessageSuffix}',
+                              message: AppStrings.confirmDeleteRequirementMessage(speciesName),
                             );
                             if (!confirm) return;
 

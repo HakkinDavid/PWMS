@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/updater/presentation/update_prompt_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -50,7 +51,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, '${AppStrings.updateError}$e');
+        AppToast.showError(context, AppStrings.updateErrorWithDetails(e));
       }
     } finally {
       if (mounted) {
@@ -63,7 +64,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final appVersionAsync = ref.watch(currentAppVersionProvider);
-    final appVersion = appVersionAsync.asData?.value ?? '1.0.0';
+    final appVersion = appVersionAsync.asData?.value ?? AppTechnicalStrings.defaultInitialAppVersion;
 
     return Scaffold(
       appBar: AppBar(
@@ -94,7 +95,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '${AppStrings.appName} • ${AppStrings.appVersionLabel}: v$appVersion',
+                  AppStrings.appVersionDisplay(appVersion),
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 13, color: Colors.grey),
                 ),

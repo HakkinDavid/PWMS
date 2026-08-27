@@ -1,4 +1,5 @@
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../entities/domain/entity_display_helper.dart';
@@ -16,7 +17,7 @@ class LocationBreadcrumb {
     required this.targetName,
   });
 
-  String get fullPath => ancestorPath.isNotEmpty ? '$ancestorPath $targetName' : targetName;
+  String get fullPath => AppTechnicalStrings.formatBreadcrumbFullPath(ancestorPath, targetName);
 }
 
 class LocationPathHelper {
@@ -24,7 +25,7 @@ class LocationPathHelper {
 
   static LocationBreadcrumb buildBreadcrumbPath(String? locationId, List<LocationNode> allNodes) {
     if (locationId == null) {
-      return const LocationBreadcrumb(ancestorPath: '', targetName: AppStrings.rootLocationName);
+      return const LocationBreadcrumb(ancestorPath: AppTechnicalStrings.empty, targetName: AppStrings.rootLocationName);
     }
 
     final List<String> nodeNames = [];
@@ -41,12 +42,12 @@ class LocationPathHelper {
     }
 
     if (nodeNames.isEmpty) {
-      return const LocationBreadcrumb(ancestorPath: '', targetName: AppStrings.rootLocationName);
+      return const LocationBreadcrumb(ancestorPath: AppTechnicalStrings.empty, targetName: AppStrings.rootLocationName);
     }
 
     final targetName = nodeNames.last;
     final ancestors = [AppStrings.rootLocationName, ...nodeNames.sublist(0, nodeNames.length - 1)];
-    final ancestorPath = '${ancestors.join(' > ')} >';
+    final ancestorPath = AppTechnicalStrings.formatBreadcrumbAncestorPath(ancestors);
 
     return LocationBreadcrumb(
       ancestorPath: ancestorPath,
@@ -96,7 +97,7 @@ class LocationPathHelper {
           subspeciesList: subspeciesList,
         );
         final name = targetEntity.notes != null && targetEntity.notes!.isNotEmpty
-            ? '$baseName (${targetEntity.notes})'
+            ? AppTechnicalStrings.formatEntityWithNotes(baseName, targetEntity.notes!)
             : baseName;
         containerNames.insert(0, name);
       }
@@ -117,10 +118,10 @@ class LocationPathHelper {
     }
 
     final physicalFull = physicalBreadcrumb.fullPath;
-    final containerChainStr = containerNames.join(' > ');
+    final containerChainStr = containerNames.join(AppTechnicalDelimiters.greaterThanWithSpaces);
 
     return LocationBreadcrumb(
-      ancestorPath: '$physicalFull @',
+      ancestorPath: AppTechnicalStrings.formatEffectiveBreadcrumbAncestor(physicalFull),
       targetName: containerChainStr,
     );
   }

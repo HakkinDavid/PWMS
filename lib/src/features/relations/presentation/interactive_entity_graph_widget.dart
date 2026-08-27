@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
@@ -68,7 +69,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
         centralTitle: centralTitle,
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Text('${AppStrings.relationsLoadErrorPrefix}$err'),
+      error: (err, _) => Text(AppStrings.relationsLoadError(err)),
     );
   }
 
@@ -83,7 +84,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
     required String centralTitle,
   }) {
     final visibleRelations = relations.where((r) =>
-      !(r.sourceEntityId == currentEntity.id && r.relationType == 'GUARDADO_EN')
+      !(r.sourceEntityId == currentEntity.id && r.relationType == AppTechnicalStrings.relGuardadoEn)
     ).toList();
 
         return Card(
@@ -114,7 +115,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Chip(
                       visualDensity: VisualDensity.compact,
-                      label: Text('${visibleRelations.length}${AppStrings.linksCountSuffix}', style: const TextStyle(fontSize: 10)),
+                      label: Text(AppStrings.linksCount(visibleRelations.length), style: const TextStyle(fontSize: 10)),
                     ),
                   ],
                 ),
@@ -253,7 +254,7 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
                                       final confirm = await AppConfirmationDialog.showDeleteConfirmation(
                                         context: context,
                                         title: AppStrings.confirmDeleteRelationTitle,
-                                        message: '${AppStrings.confirmDeleteRelationMessagePrefix}${rel.relationType}${AppStrings.confirmDeleteRelationMessageMiddle}$otherName${AppStrings.confirmDeleteRelationMessageSuffix}',
+                                        message: AppStrings.confirmDeleteRelationMessage(rel.relationType, otherName),
                                       );
                                       if (!confirm) return;
 
@@ -297,9 +298,9 @@ class InteractiveEntityGraphWidget extends ConsumerWidget {
         children: [
           const Icon(Icons.my_location, color: Colors.white, size: 18),
           const SizedBox(width: 8),
-          Text(
-            '${AppStrings.centralInstanceLabel}: ',
-            style: TextStyle(color: Colors.white.withAlpha(220), fontSize: 12),
+          const Text(
+            AppStrings.centralInstanceLabelColon,
+            style: TextStyle(color: Colors.white, fontSize: 12),
           ),
           Expanded(
             child: Text(

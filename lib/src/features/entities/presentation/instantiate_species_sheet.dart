@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -67,7 +68,7 @@ class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
 enum InstantiationLocationMode { physicalNode, containerEntity }
 
 class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesSheet> {
-  final _qtyController = TextEditingController(text: '1');
+  final _qtyController = TextEditingController(text: AppTechnicalStrings.valOne);
   final _notesController = TextEditingController();
   final Map<String, TextEditingController> _magnitudeControllers = {};
 
@@ -83,8 +84,8 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   bool _forceClose = false;
 
   bool _hasUnsavedChanges() {
-    if (_notesController.text.trim().isNotEmpty && _notesController.text.trim() != (widget.initialNotes ?? '').trim()) return true;
-    if (_qtyController.text.trim() != '1' && _qtyController.text.trim().isNotEmpty) return true;
+    if (_notesController.text.trim().isNotEmpty && _notesController.text.trim() != (widget.initialNotes ?? AppTechnicalStrings.empty).trim()) return true;
+    if (_qtyController.text.trim() != AppTechnicalStrings.valOne && _qtyController.text.trim().isNotEmpty) return true;
     if (_selectedLocationId != widget.initialLocationId) return true;
     if (_selectedContainerEntityId != null) return true;
     if (_selectedSpecies != null && widget.species == null) return true;
@@ -132,7 +133,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         final prefilledVal = widget.initialMagnitudeValues?[mag.propertyName];
         final initialText = prefilledVal != null
             ? (prefilledVal == prefilledVal.roundToDouble() ? prefilledVal.toInt().toString() : prefilledVal.toString())
-            : '';
+            : AppTechnicalStrings.empty;
         _magnitudeControllers[mag.propertyName] = TextEditingController(text: initialText);
       }
     });
@@ -228,7 +229,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         final List<InstanceMagnitude> customInstanceMags = [];
         for (final sm in species.magnitudes) {
           final ctrl = _magnitudeControllers[sm.propertyName];
-          final rawText = ctrl?.text.trim() ?? '';
+          final rawText = ctrl?.text.trim() ?? AppTechnicalStrings.empty;
           final type = PropertyDataType.fromCode(sm.dataType);
 
           double magVal = 0.0;
@@ -262,8 +263,8 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
           speciesId: species.id,
           instanceId: result.id,
           filePath: widget.secondaryPhotoPath!,
-          fileName: 'Reverso_${species.name}.jpg',
-          fileType: 'image',
+          fileName: AppStrings.scanReverseFileName(species.name),
+          fileType: AppTechnicalStrings.fileTypeImage,
         );
         ref.invalidate(instanceAttachmentsProvider(result.id));
         ref.invalidate(speciesAttachmentsProvider(species.id));
@@ -281,7 +282,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
           id: const Uuid().v4(),
           sourceEntityId: result.id,
           targetEntityId: _selectedContainerEntityId!,
-          relationType: 'GUARDADO_EN',
+          relationType: AppTechnicalStrings.relGuardadoEn,
           createdAt: DateTime.now(),
         );
         await relationRepo.addRelation(rel);
@@ -295,12 +296,12 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         Navigator.pop(context);
         AppToast.showSuccess(
           context,
-          '${AppStrings.speciesInstantiatedSuccess}: "${species.name}"',
+          AppStrings.speciesInstantiatedSuccessWithName(species.name),
         );
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, '${AppStrings.errorPrefix}$e');
+        AppToast.showError(context, AppStrings.errorWithDetails(e));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -375,7 +376,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                     Expanded(
                       child: Text(
                         _selectedSpecies != null
-                            ? '${AppStrings.instantiateAction} "${_selectedSpecies!.name}"'
+                            ? AppStrings.instantiateSpeciesTitle(_selectedSpecies!.name)
                             : AppStrings.instantiateCatalogSpeciesHeader,
                         style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                         maxLines: 1,
@@ -404,7 +405,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               items: catalogItems.map((c) => c.id).toList(),
               labelBuilder: (id) {
                 final c = catalogItems.where((c) => c.id == id).firstOrNull;
-                return c != null ? '${c.name} (${c.type})' : id;
+                return c != null ? AppStrings.speciesWithType(c.name, c.type) : id;
               },
               title: AppStrings.catalogSpeciesLabel,
               decoration: const InputDecoration(
@@ -432,8 +433,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                 labelBuilder: (id) {
                   final sub = _availableSubspecies.where((s) => s.id == id).firstOrNull;
                   if (sub == null) return id;
-                  final brandText = sub.brand != null ? ' (${sub.brand})' : '';
-                  return '${sub.subspeciesName}$brandText';
+                  return AppStrings.subspeciesWithBrand(sub.subspeciesName, sub.brand);
                 },
                 title: AppStrings.subspeciesOrBrandCommercialLabel,
                 decoration: const InputDecoration(
@@ -547,8 +547,8 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                       final ctrl = _magnitudeControllers[sm.propertyName];
                       final type = PropertyDataType.fromCode(sm.dataType);
                       final labelText = (sm.unitSymbol != null && sm.unitSymbol!.trim().isNotEmpty)
-                          ? '${sm.propertyName} (${sm.unitSymbol})'
-                          : '${sm.propertyName} (${sm.dataType})';
+                          ? AppStrings.propertyWithUnitOrType(sm.propertyName, sm.unitSymbol!)
+                          : AppStrings.propertyWithUnitOrType(sm.propertyName, sm.dataType);
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
@@ -577,7 +577,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                   final currentVal = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt();
                   final picked = await IntegerWheelPicker.show(context, initialValue: currentVal, minValue: 1);
                   if (picked != null) {
-                    setState(() => _qtyController.text = '$picked');
+                    setState(() => _qtyController.text = picked.toString());
                   }
                 },
                 child: AbsorbPointer(
@@ -615,7 +615,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
+                    border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Row(
@@ -628,7 +628,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                       Expanded(
                         child: Text(
                           _expirationDate != null
-                              ? '${_expirationDate!.day.toString().padLeft(2, '0')}/${_expirationDate!.month.toString().padLeft(2, '0')}/${_expirationDate!.year}'
+                              ? AppStrings.formatDateDMY(_expirationDate)
                               : AppStrings.noExpirationDate,
                           style: TextStyle(
                             color: _expirationDate != null ? theme.colorScheme.onSurface : Colors.grey,

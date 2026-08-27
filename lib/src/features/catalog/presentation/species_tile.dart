@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
@@ -69,7 +69,7 @@ class SpeciesTile extends ConsumerWidget {
                   context: context,
                   builder: (c) => AlertDialog(
                     title: const Text(AppStrings.deleteConfirmationTitle),
-                    content: Text('${AppStrings.deleteConfirmationMessage} "${species.name}"?'),
+                    content: Text(AppStrings.confirmDeleteSpeciesNamed(species.name)),
                     actions: [
                       TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
                       ElevatedButton(
@@ -119,7 +119,7 @@ class SpeciesTile extends ConsumerWidget {
                   child: FutureBuilder<String>(
                     future: species.mainPhotoPath != null
                         ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
-                        : Future.value(''),
+                        : Future.value(AppTechnicalStrings.empty),
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
                         return Image.file(
@@ -162,7 +162,7 @@ class SpeciesTile extends ConsumerWidget {
                           ),
                         ),
                         if (species.isUnique) ...[
-                          const Text(' • ', style: TextStyle(fontSize: 11)),
+                          const Text(AppTechnicalStrings.bulletSeparator, style: TextStyle(fontSize: 11)),
                           const Text(AppStrings.isUniqueLabel, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),
                         ],
                       ],

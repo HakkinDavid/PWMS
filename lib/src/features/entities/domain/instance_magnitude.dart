@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/domain/property_data_type.dart';
 
@@ -13,7 +15,7 @@ class InstanceMagnitude with _$InstanceMagnitude {
     required String id,
     required String instanceId,
     required String propertyName,
-    @Default('real') String dataType,
+    @Default(AppTechnicalStrings.datatypeRealLower) String dataType,
     @Default(0.0) double magnitudeValue,
     String? stringValue,
     String? unitSymbol,
@@ -26,21 +28,26 @@ class InstanceMagnitude with _$InstanceMagnitude {
   String get displayValue {
     switch (type) {
       case PropertyDataType.string:
-        return stringValue ?? '';
+        return stringValue ?? AppTechnicalStrings.empty;
       case PropertyDataType.boolean:
         if (stringValue != null && stringValue!.isNotEmpty) {
           final clean = stringValue!.trim().toLowerCase();
-          return (clean == 'true' || clean == '1' || clean == 'sí' || clean == 'si') ? 'Sí' : 'No';
+          return (clean == AppTechnicalStrings.boolTrue ||
+                  clean == AppTechnicalStrings.valOne ||
+                  clean == AppTechnicalStrings.valSiWithAccent ||
+                  clean == AppTechnicalStrings.valSiWithoutAccent)
+              ? AppStrings.affirmativeYes
+              : AppStrings.negativeNo;
         }
-        return magnitudeValue > 0 ? 'Sí' : 'No';
+        return magnitudeValue > 0 ? AppStrings.affirmativeYes : AppStrings.negativeNo;
       case PropertyDataType.integer:
         final formattedInt = magnitudeValue.toInt().toString();
-        final u = unitSymbol?.trim() ?? '';
-        return u.isNotEmpty ? '$formattedInt $u' : formattedInt;
+        final u = unitSymbol?.trim() ?? AppTechnicalStrings.empty;
+        return u.isNotEmpty ? AppStrings.valueWithUnit(formattedInt, u) : formattedInt;
       case PropertyDataType.real:
         final formattedVal = DomainRules.formatMagnitude(magnitudeValue, unitSymbol);
-        final u = unitSymbol?.trim() ?? '';
-        return u.isNotEmpty ? '$formattedVal $u' : formattedVal;
+        final u = unitSymbol?.trim() ?? AppTechnicalStrings.empty;
+        return u.isNotEmpty ? AppStrings.valueWithUnit(formattedVal, u) : formattedVal;
     }
   }
 }

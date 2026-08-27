@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -27,7 +28,7 @@ class CustomTemplateEditorSheet extends ConsumerStatefulWidget {
 class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditorSheet> {
   final _nameController = TextEditingController();
   final _unitsController = TextEditingController();
-  final String _selectedIcon = 'build';
+  final String _selectedIcon = AppTechnicalStrings.iconBuild;
   bool _isSaving = false;
 
   @override
@@ -61,7 +62,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
     try {
       final unitsStr = _unitsController.text.trim();
       final unitsList = unitsStr.isNotEmpty
-          ? unitsStr.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList()
+          ? unitsStr.split(AppTechnicalStrings.comma).map((e) => e.trim()).where((e) => e.isNotEmpty).toList()
           : <String>[];
 
       final template = CustomTemplate(
@@ -81,7 +82,7 @@ class _CustomTemplateEditorSheetState extends ConsumerState<CustomTemplateEditor
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, '${AppStrings.errorPrefix}$e');
+        AppToast.showError(context, AppStrings.errorWithDetails(e));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

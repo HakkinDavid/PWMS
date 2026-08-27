@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import '../../../entities/presentation/instance_preview_card.dart';
@@ -13,13 +15,13 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.orphanEntity;
 
   @override
-  String get ruleId => 'relational_orphan_entity';
+  String get ruleId => AppTechnicalStrings.ruleRelationalOrphanEntity;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final orphanEntities = context.allEntities.where((e) =>
       e.locationId == null &&
-      !context.allRelations.any((r) => r.sourceEntityId == e.id && r.relationType == 'GUARDADO_EN')
+      !context.allRelations.any((r) => r.sourceEntityId == e.id && r.relationType == AppTechnicalStrings.relGuardadoEn)
     ).take(10);
 
     final cards = <AuditCardData>[];
@@ -29,16 +31,16 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
       final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
-        id: 'orphan_${entity.id}',
+        id: AppTechnicalStrings.prefixOrphan + entity.id,
         type: AuditCardType.orphanEntity,
-        title: 'Instancia sin Ubicación ni Contenedor',
-        subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
-        question: 'La instancia "$displayName" no tiene ubicación física ni contenedor asignado. ¿Asignarle una ubicación o contenedor ahora?',
+        title: AppStrings.orphanEntityTitle,
+        subtitle: AppStrings.orphanEntitySubtitle(displayName, breadcrumb.fullPath),
+        question: AppStrings.orphanEntityQuestion(displayName),
         icon: Icons.wrong_location_outlined,
         themeColor: Colors.orangeAccent,
         entity: entity,
         species: species,
-        confirmToastMessage: 'Ubicación mantenida como no asignada.',
+        confirmToastMessage: AppStrings.locationKeptUnassigned,
         onFix: (ctx, ref) => AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity),
       ));
     }
@@ -54,82 +56,82 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.locationConflict;
 
   @override
-  String get ruleId => 'relational_location_conflict';
+  String get ruleId => AppTechnicalStrings.ruleRelationalLocationConflict;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final conflictEntities = context.allEntities.where((e) {
       if (!context.effectiveLocationMap.containsKey(e.id)) return false;
-      return context.allRelations.any((r) => r.sourceEntityId == e.id && r.relationType == 'GUARDADO_EN');
+      return context.allRelations.any((r) => r.sourceEntityId == e.id && r.relationType == AppTechnicalStrings.relGuardadoEn);
     }).take(8);
 
     final cards = <AuditCardData>[];
     for (final entity in conflictEntities) {
       final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
-      final containerRel = context.allRelations.where((r) => r.sourceEntityId == entity.id && r.relationType == 'GUARDADO_EN').first;
+      final containerRel = context.allRelations.where((r) => r.sourceEntityId == entity.id && r.relationType == AppTechnicalStrings.relGuardadoEn).first;
       final containerEntity = context.allEntities.where((e) => e.id == containerRel.targetEntityId).firstOrNull;
       final containerSpecies = context.allCatalog.where((c) => c.id == containerEntity?.speciesId).firstOrNull;
-      final containerName = containerSpecies?.name ?? 'Contenedor';
+      final containerName = containerSpecies?.name ?? AppStrings.containerFallback;
       final directLocId = context.effectiveLocationMap[entity.id];
       final directLoc = context.allLocations.where((l) => l.id == directLocId).firstOrNull;
-      final directLocName = directLoc?.name ?? 'Ubicación directa';
+      final directLocName = directLoc?.name ?? AppStrings.directLocationFallback;
 
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
-        id: 'conflict_${entity.id}',
+        id: AppTechnicalStrings.prefixConflict + entity.id,
         type: AuditCardType.locationConflict,
-        title: 'Conflicto de Ubicación en Contenedor',
-        subtitle: '$displayName • En: $containerName & $directLocName',
-        question: 'La instancia "$displayName" está guardada en "$containerName" pero también tiene asignada la ubicación directa "$directLocName". ¿Cómo deseas resolver la redundancia?',
+        title: AppStrings.relationalLocationConflictTitle,
+        subtitle: AppStrings.locationConflictSubtitle(displayName, containerName, directLocName),
+        question: AppStrings.locationConflictQuestion(displayName, containerName, directLocName),
         icon: Icons.alt_route,
         themeColor: Colors.purpleAccent,
         entity: entity,
         species: species,
-        confirmToastMessage: 'Conflicto de ubicación omitido.',
+        confirmToastMessage: AppStrings.locationConflictSkipped,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
             context: ctx,
             builder: (dialogCtx) => AlertDialog(
-              title: const Text('Resolver ubicación'),
+              title: const Text(AppStrings.resolveLocationTitle),
               content: Text(
-                'El elemento "$displayName" tiene doble asignación:\n\n'
-                '• Contenedor: $containerName\n'
-                '• Ubicación directa: $directLocName\n\n'
-                '¿Cómo deseas resolverlo?'
+                AppStrings.resolveLocationConflictPrompt(displayName, containerName, directLocName),
               ),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(dialogCtx, 'cancel'), child: const Text('Cancelar')),
-                OutlinedButton(
-                  onPressed: () => Navigator.pop(dialogCtx, 'keep_container'),
-                  child: const Text('Solo en Contenedor'),
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                  child: const Text(AppStrings.cancel),
                 ),
                 OutlinedButton(
-                  onPressed: () => Navigator.pop(dialogCtx, 'keep_direct'),
-                  child: const Text('Solo Ubicación Directa'),
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionKeepContainer),
+                  child: const Text(AppStrings.onlyInContainerAction),
+                ),
+                OutlinedButton(
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionKeepDirect),
+                  child: const Text(AppStrings.onlyDirectLocationAction),
                 ),
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(dialogCtx, 'reassign'),
-                  child: const Text('Reasignar'),
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionReassign),
+                  child: const Text(AppStrings.reassignLocationAction),
                 ),
               ],
             ),
           );
 
-          if (choice == 'keep_container') {
+          if (choice == AppTechnicalStrings.actionKeepContainer) {
             final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
             await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(locationId: null));
             if (ctx.mounted) {
-              AppToast.showSuccess(ctx, 'Ubicación directa removida. Conservado en contenedor.');
+              AppToast.showSuccess(ctx, AppStrings.directLocationRemovedKeptInContainerSuccess);
             }
             return true;
-          } else if (choice == 'keep_direct') {
+          } else if (choice == AppTechnicalStrings.actionKeepDirect) {
             await ref.read(relationRepositoryProvider).deleteRelation(containerRel.id);
             if (ctx.mounted) {
-              AppToast.showSuccess(ctx, 'Elemento retirado del contenedor.');
+              AppToast.showSuccess(ctx, AppStrings.elementRemovedFromContainerSuccess);
             }
             return true;
-          } else if (choice == 'reassign') {
+          } else if (choice == AppTechnicalStrings.actionReassign) {
             return await AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity);
           }
           return false;
@@ -148,17 +150,17 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.cyclicContainment;
 
   @override
-  String get ruleId => 'relational_cyclic_containment';
+  String get ruleId => AppTechnicalStrings.ruleRelationalCyclicContainment;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final circularRels = context.allRelations.where((r) {
       if (r.sourceEntityId == r.targetEntityId) return true;
-      if (r.relationType == 'GUARDADO_EN') {
+      if (r.relationType == AppTechnicalStrings.relGuardadoEn) {
         return context.allRelations.any((r2) =>
             r2.sourceEntityId == r.targetEntityId &&
             r2.targetEntityId == r.sourceEntityId &&
-            r2.relationType == 'GUARDADO_EN');
+            r2.relationType == AppTechnicalStrings.relGuardadoEn);
       }
       return false;
     }).toList();
@@ -171,30 +173,37 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
       final targetSp = context.allCatalog.where((c) => c.id == targetEnt?.speciesId).firstOrNull;
 
       cards.add(AuditRuleHelper.createCard(
-        id: 'circ_${rel.id}',
+        id: AppTechnicalStrings.prefixCirc + rel.id,
         type: AuditCardType.cyclicContainment,
-        title: 'Relación circular',
-        subtitle: '${sourceSp?.name ?? "Origen"} ➔ ${targetSp?.name ?? "Destino"} (${rel.relationType})',
-        question: 'Se detectó una relación circular o auto-referencia inválida entre "${sourceSp?.name}" y "${targetSp?.name}". ¿Deseas eliminar la relación conflictiva?',
+        title: AppStrings.circularRelationTitle,
+        subtitle: AppStrings.circularRelationSubtitle(
+          sourceSp?.name ?? AppStrings.originFallback,
+          targetSp?.name ?? AppStrings.destinationFallback,
+          rel.relationType,
+        ),
+        question: AppStrings.circularRelationQuestion(
+          sourceSp?.name ?? AppStrings.originFallback,
+          targetSp?.name ?? AppStrings.destinationFallback,
+        ),
         icon: Icons.loop,
         themeColor: Colors.redAccent,
         entity: sourceEnt,
         species: sourceSp,
         tile: sourceEnt != null ? InstancePreviewCard(entity: sourceEnt) : const SizedBox.shrink(),
-        confirmToastMessage: 'Relación circular conservada.',
+        confirmToastMessage: AppStrings.circularRelationKept,
         onFix: (ctx, ref) async {
           final confirm = await AuditRuleHelper.showConfirmationDialog(
             ctx,
-            title: 'Eliminar relación inválida',
-            content: '¿Confirmas que deseas eliminar esta relación conflictiva?',
-            confirmLabel: 'Eliminar Relación',
+            title: AppStrings.deleteInvalidRelationAction,
+            content: AppStrings.confirmDeleteConflictingRelationMessage,
+            confirmLabel: AppStrings.deleteRelationActionLabel,
             isDestructive: true,
           );
 
           if (confirm) {
             await ref.read(relationRepositoryProvider).deleteRelation(rel.id);
             if (ctx.mounted) {
-              AppToast.showSuccess(ctx, 'Relación conflictiva eliminada.');
+              AppToast.showSuccess(ctx, AppStrings.conflictingRelationDeletedSuccess);
             }
             return true;
           }
@@ -214,7 +223,7 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.ownershipCheck;
 
   @override
-  String get ruleId => 'relational_ownership_check';
+  String get ruleId => AppTechnicalStrings.ruleRelationalOwnershipCheck;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -227,56 +236,59 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
       final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
-        id: 'own_${entity.id}',
+        id: AppTechnicalStrings.prefixOwn + entity.id,
         type: AuditCardType.ownershipCheck,
-        title: '¿Conservas este objeto?',
-        subtitle: '$displayName • Ubicación efectiva: ${breadcrumb.fullPath}',
-        question: '¿Aún conservas la instancia "$displayName" en su ubicación efectiva "${breadcrumb.fullPath}"?',
+        title: AppStrings.keepThisObjectQuestion,
+        subtitle: AppStrings.ownershipCheckSubtitle(displayName, breadcrumb.fullPath),
+        question: AppStrings.ownershipCheckQuestion(displayName, breadcrumb.fullPath),
         icon: Icons.inventory_outlined,
         themeColor: Colors.blueAccent,
         entity: entity,
         species: species,
-        confirmToastMessage: 'Instancia confirmada en inventario.',
+        confirmToastMessage: AppStrings.instanceConfirmedInInventory,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
             context: ctx,
             builder: (dialogCtx) => AlertDialog(
-              title: const Text('Corregir Instancia'),
-              content: Text('¿Qué acción deseas realizar sobre la instancia "$displayName"?'),
+              title: const Text(AppStrings.correctInstanceTitle),
+              content: Text(AppStrings.whatActionForInstancePrompt(displayName)),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(dialogCtx, 'cancel'),
-                  child: const Text('Cancelar'),
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                  child: const Text(AppStrings.cancel),
                 ),
                 OutlinedButton.icon(
-                  onPressed: () => Navigator.pop(dialogCtx, 'location'),
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionLocation),
                   icon: const Icon(Icons.edit_location_alt_outlined),
-                  label: const Text('Corregir Ubicación / Contenedor'),
+                  label: const Text(AppStrings.correctLocationOrContainerAction),
                 ),
                 TextButton.icon(
-                  onPressed: () => Navigator.pop(dialogCtx, 'delete'),
+                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionDelete),
                   icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                  label: const Text('Eliminar de Inventario', style: TextStyle(color: Colors.redAccent)),
+                  label: const Text(
+                    AppStrings.deleteFromInventoryAction,
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
                 ),
               ],
             ),
           );
 
-          if (choice == 'location') {
+          if (choice == AppTechnicalStrings.actionLocation) {
             return await AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity);
-          } else if (choice == 'delete') {
+          } else if (choice == AppTechnicalStrings.actionDelete) {
             final confirmDelete = await AuditRuleHelper.showConfirmationDialog(
               ctx,
-              title: 'Dar de Baja Instancia',
-              content: '¿Confirmas que deseas eliminar del inventario esta instancia de "$displayName"?',
-              confirmLabel: 'Eliminar Instancia',
+              title: AppStrings.deregisterInstanceTitle,
+              content: AppStrings.confirmDeregisterInstanceMessage(displayName),
+              confirmLabel: AppStrings.deregisterInstanceAction,
               isDestructive: true,
             );
 
             if (confirmDelete) {
               await ref.read(entityRepositoryProvider).deleteEntity(entity.id);
               if (ctx.mounted) {
-                AppToast.showSuccess(ctx, 'Instancia dada de baja.');
+                AppToast.showSuccess(ctx, AppStrings.instanceDeregisteredSuccess);
               }
               return true;
             }
@@ -297,7 +309,7 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.locationVerification;
 
   @override
-  String get ruleId => 'relational_location_verification';
+  String get ruleId => AppTechnicalStrings.ruleRelationalLocationVerification;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -310,20 +322,19 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
       final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
-        id: 'loc_verif_${entity.id}',
+        id: AppTechnicalStrings.prefixLocVerif + entity.id,
         type: AuditCardType.locationVerification,
-        title: '¿Has movido este objeto?',
-        subtitle: '$displayName • Ubicación registrada: ${breadcrumb.fullPath}',
-        question: '¿La ubicación efectiva actual de "$displayName" sigue siendo exactamente "${breadcrumb.fullPath}"?',
+        title: AppStrings.haveYouMovedThisObjectQuestion,
+        subtitle: AppStrings.locationVerificationSubtitle(displayName, breadcrumb.fullPath),
+        question: AppStrings.locationVerificationQuestion(displayName, breadcrumb.fullPath),
         icon: Icons.edit_location_alt_outlined,
         themeColor: Colors.teal,
         entity: entity,
         species: species,
-        confirmToastMessage: 'Ubicación confirmada.',
+        confirmToastMessage: AppStrings.locationConfirmedSuccess,
         onFix: (ctx, ref) => AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity),
       ));
     }
     return cards;
   }
 }
-

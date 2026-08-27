@@ -1,5 +1,8 @@
+import 'app_technical_strings.dart';
+
 class AppStrings {
   AppStrings._();
+
 
   // Navegación y General
   static const appName = 'PWMS';
@@ -33,6 +36,8 @@ class AppStrings {
   static const tabCatalog = 'Catálogo';
   static const tabHistory = 'Historial';
   static const tabSearch = 'Buscar';
+  static const tabInventory = 'Inventario';
+  static const inventoryTitle = 'Inventario';
 
   // Pantalla de Inicio
   static const recentEntitiesTitle = 'Instancias recientes';
@@ -73,7 +78,7 @@ class AppStrings {
   static const brandLabel = 'Marca';
   static const isUniqueLabel = 'Especie única';
   static const monetaryValueLabel = 'Valor monetario';
-  static const currencyLabel = 'Moneda';
+  static const currencyLabel = 'Divisa';
   static const isSaleLabel = 'Registrar como venta';
   static const takePhoto = 'Tomar fotografía';
   static const chooseGallery = 'Elegir de galería';
@@ -412,7 +417,7 @@ class AppStrings {
   static const noOtherSpeciesToMoveError = 'Sin otras especies disponibles para mover.';
   static const noOtherSpeciesToMergeError = 'Sin otras especies disponibles para fusionar.';
   static const mergeSpeciesTitle = 'Unir especie';
-  static const mergeSpeciesAction = 'Unir especies';
+  static const mergeSpeciesAction = 'Unir Especies';
   static const speciesMergedSuccessPrefix = 'Especie "';
   static const speciesMergedSuccessMiddle = '" unida exitosamente en "';
   static const separateInNewSpeciesTitle = 'Separar en nueva especie';
@@ -752,4 +757,550 @@ class AppStrings {
   static const confirmDeletePropertyTitle = 'Eliminar propiedad';
   static const confirmDeletePropertyMessagePrefix = '¿Estás seguro de que deseas eliminar la propiedad "';
   static const confirmDeletePropertyMessageSuffix = '"?';
+
+  // Navegación y Buscador (Acciones y Confirmaciones)
+  static const goBackAction = 'Retroceder';
+  static const createOrInstantiateAction = 'Crear o Instanciar';
+  static const moveSelectionAction = 'Mover Selección';
+  static const deleteSelectionAction = 'Eliminar Selección';
+  static const confirmDeleteSelectionTitle = 'Confirmar eliminación';
+  static const viewAllLocationsAction = 'Ver todas';
+  static String confirmDeleteSelectionPrompt(int count) => '¿Eliminar $count elemento(s)?';
+  static String deleteElementsConfirmation(int count) => '¿Deseas eliminar $count elementos seleccionados?';
+
+  // Formateadores de Errores
+  static String formatError(Object err) => 'Error: $err';
+
+  // Operaciones de Taxonomía
+  static const mergeSpeciesDialogTitle = 'Unir Especie';
+  static const targetSpeciesFormLabel = 'Especie Destino';
+  static const separateInNewSpeciesDialogTitle = 'Separar en Nueva Especie';
+  static const newSpeciesNameFormLabel = 'Nombre de la Nueva Especie';
+
+  // Gestión de Adjuntos en Vista Detallada
+  static const renameAttachmentTitle = 'Renombrar adjunto';
+  static const fileNameLabel = 'Nombre del archivo';
+  static const replaceFileAction = 'Reemplazar archivo';
+  static const renameAction = 'Renombrar';
+  static const deleteAttachmentAction = 'Eliminar adjunto';
+  static const openAttachmentTooltip = 'Abrir adjunto';
+  static const attachmentOptionsTooltip = 'Opciones de adjunto';
+  static String replaceAttachmentTitle(String name) => 'Reemplazar Adjunto ($name)';
+
+  // Multimedia, Escáner y Llenado Rápido
+  static const shelfLifeDaysLabel = 'Vida útil (días)';
+  static const shelfLifeDaysHint = 'ej. 30';
+  static const warningDaysLabel = 'Aviso prev. (días)';
+  static const warningDaysHint = 'ej. 7';
+  static const attachToSpeciesAction = 'Adjuntar a Especie';
+  static const speciesPhotoTitle = 'Foto de la Especie';
+  static const subspeciesPhotoTitle = 'Foto de la Subespecie / Variante';
+  static const standardCameraCapture = 'Captura estándar con la cámara';
+  static const chooseFromGallery = 'Elegir imagen de la galería de fotos';
+  static const searchWeb = 'Buscar en la web';
+  static const fileExplorer = 'Explorador de archivos';
+  static const selectPdfOrDocument = 'Seleccionar PDF, documento o archivo local';
+  static const manualBarcodeHint = 'Código de barras manual...';
+  static const productOrSpeciesSearchHint = 'Nombre del producto / especie...';
+  static const coinObverse = 'Anverso';
+  static const coinReverse = 'Reverso';
+  static const completeAllFieldsPrompt = 'Por favor completa todos los campos antes de guardar.';
+  static const exampleDecimalHint = 'Ej: 0.50';
+  static const exampleYearHint = 'Ej: 1982';
+
+  // Reglas de Auditoría y Centro de Control
+  static const confirmSubspeciesTitle = 'Confirmar Subespecie';
+  static const keepAction = 'Mantener';
+  static const deleteSubspeciesAction = 'Eliminar Subespecie';
+  static const resolveUniquenessTitle = 'Resolver unicidad';
+  static const makeNonUniqueAction = 'Convertir a No Única';
+  static const deleteDuplicatesAction = 'Eliminar Duplicados';
+  static const whatActionForSpeciesPrompt = '¿Qué acción deseas realizar con esta especie?';
+  static const createInstanceAction = 'Crear Instancia';
+  static const deleteSpeciesAction = 'Eliminar Especie';
+  static const relationalLocationConflictTitle = 'Conflicto de Ubicación en Contenedor';
+  static const onlyInContainerAction = 'Solo en Contenedor';
+  static const onlyDirectLocationAction = 'Solo Ubicación Directa';
+  static const reassignLocationAction = 'Reasignar';
+  static const circularRelationTitle = 'Relación circular';
+  static const deleteInvalidRelationAction = 'Eliminar relación inválida';
+  static const keepThisObjectQuestion = '¿Conservas este objeto?';
+  static const perishableWithoutExpirationTitle = 'Perecedero sin Caducidad';
+  static const nonPerishableWithExpirationTitle = 'No Perecedero con Caducidad';
+  static const booleanFalseAction = 'No (Falso)';
+  static const booleanTrueAction = 'Sí (Verdadero)';
+  static const numismaticIncongruityTitle = 'Incongruencia en Datos Numismáticos';
+  static const updateSubspeciesFromInstanceAction = 'Actualizar Subespecie según la Instancia';
+  static const desyncedAttachmentNameTitle = 'Nombre de Adjunto Desincronizado';
+  static const mergeDuplicateSubspeciesAction = 'Fusionar Subespecies Duplicadas';
+
+  static const uninstantiatedSubspeciesCardTitle = 'Subespecie sin Instancia';
+  static const uniqueSubspeciesDuplicatedTitle = 'Subespecie Única Duplicada';
+  static const subgroupRuleViolationTitle = 'Infracción de Regla de Subgrupo';
+  static const uninstantiatedSpeciesWorldTitle = 'Especie sin Instancias en el Mundo';
+  static const incompleteSpeciesInfoTitle = 'Especie sin Imagen Principal';
+  static const remoteSpeciesImageTitle = 'Imagen de Especie No Local (URL Remota)';
+  static const remoteSubspeciesImageTitle = 'Imagen de Subespecie No Local (URL Remota)';
+  static const orphanEntityTitle = 'Instancia sin Ubicación ni Contenedor';
+  static const resolveLocationTitle = 'Resolver ubicación';
+  static const correctInstanceTitle = 'Corregir Instancia';
+  static const deregisterInstanceTitle = 'Dar de Baja Instancia';
+  static const haveYouMovedThisObjectQuestion = '¿Has movido este objeto?';
+  static const selectExpirationDatePrompt = 'Selecciona Fecha de Caducidad';
+  static const anomalousMagnitudeCardTitle = 'Magnitud con Valor No Positivo';
+  static const numismaticDuplicateSubspeciesCardTitle = 'Subespecies Numismáticas Duplicadas';
+  static const correctNumismaticIncongruityTitle = 'Corregir Incongruencia Numismática';
+
+  static const correctLocationOrContainerAction = 'Corregir Ubicación / Contenedor';
+  static const deleteFromInventoryAction = 'Eliminar de Inventario';
+  static const deregisterInstanceAction = 'Eliminar Instancia';
+  static const deleteRelationActionLabel = 'Eliminar Relación';
+  static const mergeAndReassignAction = 'Fusionar y Reasignar';
+
+  static const unknownSpecies = 'Desconocida';
+  static const originFallback = 'Origen';
+  static const destinationFallback = 'Destino';
+  static const containerFallback = 'Contenedor';
+  static const directLocationFallback = 'Ubicación directa';
+  static const genericSubspeciesNameLower = 'genérica';
+  static const unitYear = 'año';
+
+  static const subspeciesKeptSuccess = 'Subespecie mantenida.';
+  static const subspeciesDeletedSuccess = 'Subespecie eliminada.';
+  static const subspeciesDuplicationSkipped = 'Duplicidad de subespecie omitida.';
+  static const speciesSetToNotUniqueSuccess = 'Especie configurada como No Única.';
+  static const duplicatesDeletedPreservedOneSuccess = 'Instancias duplicadas eliminadas. Se conservó 1 instancia.';
+  static const attributesSkipped = 'Atributos omitidos.';
+  static const brandAndBarcodeRemovedSuccess = 'Marca y código de barras removidos.';
+  static const speciesKeptInCatalog = 'Especie conservada en catálogo.';
+  static const speciesDeletedFromCatalogSuccess = 'Especie eliminada del catálogo.';
+  static const informationSkippedForNow = 'Información omitida por el momento.';
+  static const remoteImageKeptWithoutDownload = 'Imagen remota conservada sin descargar.';
+  static const locationKeptUnassigned = 'Ubicación mantenida como no asignada.';
+  static const locationConflictSkipped = 'Conflicto de ubicación omitido.';
+  static const directLocationRemovedKeptInContainerSuccess = 'Ubicación directa removida. Conservado en contenedor.';
+  static const elementRemovedFromContainerSuccess = 'Elemento retirado del contenedor.';
+  static const circularRelationKept = 'Relación circular conservada.';
+  static const conflictingRelationDeletedSuccess = 'Relación conflictiva eliminada.';
+  static const instanceConfirmedInInventory = 'Instancia confirmada en inventario.';
+  static const instanceDeregisteredSuccess = 'Instancia dada de baja.';
+  static const locationConfirmedSuccess = 'Ubicación confirmada.';
+  static const expirationDateSkipped = 'Fecha de caducidad omitida.';
+  static const expirationDateUpdatedSuccess = 'Fecha de caducidad actualizada.';
+  static const expirationDateKept = 'Caducidad conservada.';
+  static const expirationDateRemovedSuccess = 'Fecha de caducidad eliminada.';
+  static const magnitudeSkipped = 'Magnitud omitida.';
+  static const valueKept = 'Valor conservado.';
+  static const duplicateSubspeciesKeptWithoutChanges = 'Subespecies duplicadas conservadas sin cambios.';
+  static const duplicateSubspeciesMergedSuccess = 'Subespecies duplicadas fusionadas con éxito.';
+  static const incongruitySkipped = 'Incongruencia omitida.';
+  static const subspeciesAndAttachmentsSyncedSuccess = 'Subespecie y adjuntos sincronizados con éxito.';
+  static const remoteImageDownloadedSuccess = 'Imagen descargada y guardada localmente con éxito.';
+  static const remoteImageDownloadFailedMessage = 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla mediante el selector de medios.';
+
+  static const confirmDeleteConflictingRelationMessage = '¿Confirmas que deseas eliminar esta relación conflictiva?';
+
+  static String keepSubspeciesPrompt(String name) => '¿Deseas mantener la subespecie "$name" en tu catálogo o eliminarla?';
+  static String manageSpeciesTitle(String name) => 'Gestionar "$name"';
+  static String assignPropertyTitle(String prop) => 'Asignar $prop';
+  static String assignBooleanPrompt(String prop) => 'Selecciona el valor booleano para "$prop":';
+  static String correctPropertyTitle(String prop) => 'Corregir $prop';
+  static String syncInfoPrompt(String name, String msg) => 'Sincronizar información para "$name":\n\n$msg';
+
+  static String subspeciesNameWithBrand(String name, String? brand) => brand != null && brand.isNotEmpty ? '$name ($brand)' : name;
+  static String uninstantiatedSubspeciesSubtitle(String subName, String speciesName) => '$subName • Especie: $speciesName';
+  static String uninstantiatedSubspeciesQuestion(String subName) => 'No existe ninguna instancia registrada para la subespecie "$subName". ¿Deseas mantenerla o eliminarla?';
+  static String uniqueSubspeciesDuplicatedSubtitle(String subspecies, String species, int count) => '$subspecies • $species ($count instancias)';
+  static String uniqueSubspeciesDuplicatedQuestion(String subspecies, String species, int count) => 'La subespecie "$subspecies" de la especie única "$species" tiene $count instancias físicas duplicadas. ¿Cómo deseas proceder?';
+  static String resolveUniquenessPrompt(String subspecies, String species, int count) => 'La subespecie "$subspecies" de la especie única "$species" tiene $count instancias.\n\n¿Deseas permitir múltiples instancias convirtiendo la especie en No Única o eliminar los duplicados de esta subespecie?';
+  static String subgroupRuleViolationSubtitle(String subspecies, String type) => '$subspecies • Tipo: $type';
+  static String subgroupRuleViolationQuestion(String type) => 'El subgrupo "$type" no permite marca ni código de barras. ¿Deseas limpiar estos atributos?';
+  static String speciesWithType(String name, String type) => '$name ($type)';
+  static String uninstantiatedSpeciesQuestion(String name) => 'La especie "$name" no tiene ninguna instancia física registrada. ¿Deseas crear una instancia o eliminar la especie?';
+  static String incompleteSpeciesInfoQuestion(String name) => 'La especie "$name" no tiene una imagen principal asignada. ¿Deseas agregarle una foto o buscarla en Internet?';
+  static String remoteSpeciesImageSubtitle(String name, String type) => '$name ($type) • Imagen en Internet';
+  static String remoteSpeciesImageQuestion(String name) => 'La especie "$name" tiene una imagen referenciada desde una URL remota de Internet. ¿Deseas descargarla y guardarla localmente en el dispositivo para tenerla offline y respaldable?';
+  static String remoteSubspeciesImageSubtitle(String subspecies, String species) => '$subspecies • $species';
+  static String remoteSubspeciesImageQuestion(String subspecies) => 'La subespecie "$subspecies" tiene una imagen referenciada desde una URL remota de Internet. ¿Deseas descargarla y guardarla localmente en el dispositivo?';
+  static String orphanEntitySubtitle(String displayName, String path) => '$displayName • Ubicación efectiva: $path';
+  static String orphanEntityQuestion(String displayName) => 'La instancia "$displayName" no tiene ubicación física ni contenedor asignado. ¿Asignarle una ubicación o contenedor ahora?';
+  static String locationConflictSubtitle(String displayName, String container, String directLoc) => '$displayName • En: $container & $directLoc';
+  static String locationConflictQuestion(String displayName, String container, String directLoc) => 'La instancia "$displayName" está guardada en "$container" pero también tiene asignada la ubicación directa "$directLoc". ¿Cómo deseas resolver la redundancia?';
+  static String resolveLocationConflictPrompt(String displayName, String container, String directLoc) => 'El elemento "$displayName" tiene doble asignación:\n\n• Contenedor: $container\n• Ubicación directa: $directLoc\n\n¿Cómo deseas resolverlo?';
+  static String circularRelationSubtitle(String source, String target, String relationType) => '$source ➔ $target ($relationType)';
+  static String circularRelationQuestion(String source, String target) => 'Se detectó una relación circular o auto-referencia inválida entre "$source" y "$target". ¿Deseas eliminar la relación conflictiva?';
+  static String ownershipCheckSubtitle(String displayName, String path) => '$displayName • Ubicación efectiva: $path';
+  static String ownershipCheckQuestion(String displayName, String path) => '¿Aún conservas la instancia "$displayName" en su ubicación efectiva "$path"?';
+  static String whatActionForInstancePrompt(String displayName) => '¿Qué acción deseas realizar sobre la instancia "$displayName"?';
+  static String confirmDeregisterInstanceMessage(String displayName) => '¿Confirmas que deseas eliminar del inventario esta instancia de "$displayName"?';
+  static String locationVerificationSubtitle(String displayName, String path) => '$displayName • Ubicación registrada: $path';
+  static String locationVerificationQuestion(String displayName, String path) => '¿La ubicación efectiva actual de "$displayName" sigue siendo exactamente "$path"?';
+  static String perishableMissingExpirationSubtitle(String displayName, String species) => '$displayName • Especie: $species';
+  static String perishableMissingExpirationQuestion(String species, String displayName) => 'La especie "$species" es perecedera pero la instancia "$displayName" no tiene fecha de caducidad. ¿Deseas asignársela?';
+  static String nonPerishableWithExpirationSubtitle(String displayName, String date) => '$displayName • Caducidad asignada: $date';
+  static String nonPerishableWithExpirationQuestion(String species, String displayName) => 'La especie "$species" está marcada como NO perecedera pero "$displayName" tiene caducidad registrada. ¿Deseas remover la fecha?';
+  static String unitSymbolParentheses(String symbol) => ' ($symbol)';
+  static String missingMagnitudeTitle(String property) => 'Magnitud Faltante: $property';
+  static String missingMagnitudeSubtitle(String displayName, String property, String unitSuffix) => '$displayName • Especie define: $property$unitSuffix';
+  static String missingMagnitudeQuestion(String displayName, String property, String species) => 'La instancia "$displayName" no tiene registrada la magnitud "$property" definida en su especie "$species". ¿Deseas asignarle un valor?';
+  static String propertyRegisteredSuccess(String property) => 'Propiedad "$property" registrada.';
+  static String anomalousMagnitudeSubtitle(String displayName, String property, num value, String unit) => unit.isNotEmpty ? '$displayName • $property: $value $unit' : '$displayName • $property: $value';
+  static String anomalousMagnitudeQuestion(String property, num value) => 'La magnitud "$property" tiene un valor de $value. ¿Deseas corregir este valor?';
+  static String propertyValueUpdatedSuccess(String property, num value) => 'Valor de "$property" actualizado a $value.';
+  static String numismaticDuplicateSubspeciesSubtitle(String subspecies, int count, String species) => '$subspecies • $count subespecies idénticas en $species';
+  static String numismaticDuplicateSubspeciesQuestion(int count, String subspecies) => 'Existen $count subespecies registradas para "$subspecies". ¿Deseas fusionarlas y reasignar sus piezas a una sola subespecie canónica?';
+  static String mergeDuplicateSubspeciesPrompt(int count, String subspecies) => '¿Deseas consolidar las $count subespecies de "$subspecies" en una sola subespecie y reasignar todas las instancias existentes?';
+  static String numismaticSubspeciesIncongruitySubtitle(String displayName, String subspecies) => '$displayName • Subespecie: $subspecies';
+  static String numismaticSubspeciesIncongruityQuestion(String issueMsg) => '$issueMsg ¿Deseas actualizar la subespecie con los valores reales de la instancia?';
+  static String desyncedAttachmentNameSubtitle(String displayName, String fileName) => '$displayName • Actual: $fileName';
+  static String desyncedAttachmentNameQuestion(String fileName, String subspecies, String expected) => 'El adjunto "$fileName" no coincide con el título actual de la subespecie "$subspecies". ¿Renombrar archivo a "$expected"?';
+  static String incompleteNumismaticMagnitudesSubtitle(String displayName, String mags) => '$displayName • Faltan: $mags';
+  static String incompleteNumismaticMagnitudesQuestion(String displayName, String mags) => 'La instancia "$displayName" no tiene registradas las magnitudes ($mags). ¿Deseas autocompletarlas desde el título de la subespecie?';
+  static String emptyGradeDataSubtitle(String displayName) => '$displayName • Grado de conservación sin asignar';
+  static String emptyGradeDataQuestion(String displayName) => 'La pieza "$displayName" no tiene especificado su estado o grado de conservación. ¿Deseas asignarle un grado ahora?';
+  static String gradeUpdatedSuccess(String grade) => 'Grado de conservación actualizado a "$grade".';
+  static String photoOfDisplayName(String name) => 'Foto de $name';
+
+  // Formularios Numismáticos, Asistente de Escaneo e Inventario
+  static const otherSpecifyParenthesized = 'Otro (especificar)';
+  static const materialPaper = 'Papel';
+  static const inAppQuickFillSourceEngine = 'Formulario Rápido In-App';
+  static const coinCircularDescriptor = 'Moneda (Circular)';
+  static const banknoteRectangleDescriptor = 'Billete (Rectangular)';
+  static const capturingHighDefinitionPrompt = 'Capturando en alta definición...';
+  static const captureCompleteStatus = 'CAPTURA COMPLETA (2/2)';
+  static const step1Obverse = 'PASO 1: ANVERSO';
+  static const step2Reverse = 'PASO 2: REVERSO';
+  static const disableTorchTooltip = 'Desactivar linterna';
+  static const enableTorchTooltip = 'Activar linterna (evita barrido)';
+  static const bothSidesReadyTip = '¡Ambos lados listos! Pulsa "Continuar a Datos Numismáticos".';
+  static const cameraIlluminationTip = 'Tip: Activa la linterna y ajusta el zoom para encuadrar la pieza.';
+  static const continueToNumismaticDataAction = 'Continuar a Datos Numismáticos';
+  static const emptyContainerPrompt = 'Este contenedor está vacío.\nArrastra elementos aquí para guardarlos.';
+  static const emptyLocationPrompt = 'No hay elementos en esta ubicación.';
+  static const cameraInitErrorPrefix = 'Error al inicializar cámara: ';
+  static const cameraCaptureErrorPrefix = 'Error en captura: ';
+  static String selectedCount(int count) => '$count seleccionado(s)';
+  static String currencyCodeWithName(String code, String name) => '$code ($name)';
+  static String zoomLevelDisplay(double zoom) => '${zoom.toStringAsFixed(1)}x';
+
+  // Catalog, Taxonomy, Media and Species Form Strings
+  static const replaceAction = 'Reemplazar';
+  static const attachToInstanceAction = 'Adjuntar a esta Instancia';
+  static const attachmentAddedToEditing = 'Adjunto agregado a la edición.';
+  static const attachmentAddedSuccessfully = 'Adjunto agregado correctamente.';
+  static const numismaticAttachmentModifiedInEditing = 'Adjunto numismático modificado en la edición.';
+  static const numismaticAttachmentUpdatedSuccessfully = 'Adjunto numismático actualizado correctamente.';
+  static const attachmentModifiedInEditing = 'Adjunto modificado en la edición.';
+  static const attachmentReplacedSuccessfully = 'Adjunto reemplazado correctamente.';
+  static const nameUpdatedInEditing = 'Nombre actualizado en la edición.';
+  static const nameUpdatedSuccessfully = 'Nombre actualizado correctamente.';
+  static const physicalFileNotFoundInStorage = 'El archivo físico no existe en el almacenamiento.';
+  static const attachmentRemovedFromEditing = 'Adjunto removido de la edición.';
+  static const attachmentDeletedSuccessfully = 'Adjunto eliminado correctamente.';
+  static const speciesLabel = 'Especie';
+  static const instanceLabel = 'Instancia';
+  static const nonPerishable = 'Imperecedero';
+  static const perishable = 'Perecedero';
+  static const addAttachmentToThisInstance = 'Agregar adjunto a esta instancia';
+  static const physicalFileNotFound = 'Archivo físico no encontrado';
+  static const selectOrCaptureAttachmentTitle = 'Seleccionar o Capturar Adjunto';
+  static const scanObverseTitle = 'Escanear anverso';
+  static const scanReverseTitle = 'Escanear reverso';
+  static const coinWord = 'moneda';
+  static const banknoteWord = 'billete';
+  static const searchOnlineImagesByName = 'Buscar imágenes online por nombre';
+  static const captureVisualMatchAction = 'Capturar Coincidencia Visual';
+  static const analyzingCapturedImage = 'Analizando imagen capturada...';
+  static const noBarcodeOrIsbnDetected = 'No se detectó un código de barras o ISBN en la imagen.';
+  static const noPhotoSelected = 'No se seleccionó ninguna foto.';
+  static const searchWebImageTitle = 'Buscar Imagen en Internet';
+  static const defaultNewObjectName = 'Nuevo Objeto';
+  static const processing = 'Procesando...';
+
+  static String confirmDeleteAttachmentPrompt(String name) => '¿Deseas eliminar permanentemente el archivo "$name"?';
+  static String speciesPrefix(String name) => 'Especie: $name';
+  static String perishableWithShelfLife(int? days) => days != null ? 'Perecedero ($days días de vida útil)' : 'Perecedero';
+  static String mergeSpeciesDescription(String sourceName) => 'Se fusionará "$sourceName" con otra especie. Todas las subespecies e instancias pertenecerán a la especie destino.';
+  static String speciesMergedSuccess(String source, String target) => 'Especie "$source" unida exitosamente en "$target".';
+  static String separateSubspeciesDescription(String subName) => 'La subespecie "$subName" se promoverá a una especie independiente.';
+  static String moveSubspeciesDescription(String subName) => 'Se moverá la subespecie "$subName" y sus instancias a la especie seleccionada.';
+  static String newSpeciesDefaultName(String subName) => '$subName (Especie)';
+  static String numismaticObverseSubtitle(String itemType) => 'Retícula guiada, corrección de exposición y recorte centrado para anverso de $itemType.';
+  static String numismaticReverseSubtitle(String itemType) => 'Retícula guiada, corrección de exposición y recorte centrado para reverso de $itemType.';
+  static String suggestedSearchQuery(String query) => 'Búsqueda sugerida: "$query"';
+  static String searchingBarcode(String barcode) => 'Buscando código $barcode...';
+  static String autoInstantiatedFeedback(String subName, String speciesName) => 'Instanciado automáticamente: $subName ($speciesName)';
+  static String autoFillError(String err) => 'Error en autollenado: $err';
+  static String photoProcessingError(String err) => 'Error al procesar foto: $err';
+  static String searchWebImagesError(String err) => 'Error buscando imágenes: $err';
+  static String downloadOrAssignImageError(String err) => 'Error al descargar/asignar la imagen: $err';
+  static String saveSubspeciesError(String err) => 'Error al guardar subespecie: $err';
+  static String replaceAttachmentError(String err) => 'Error al reemplazar adjunto: $err';
+  static String renameError(String err) => 'Error al renombrar: $err';
+  static String deleteError(String err) => 'Error al eliminar: $err';
+  static String mergeSpeciesError(String err) => 'Error al unir especies: $err';
+
+  // Respaldo y Base de Datos (Errores y Mensajes Adicionales)
+  static const backupZipCompressionError = 'Error al generar la compresión del paquete de respaldo.';
+  static const backupZipMissingDatabaseJsonError = 'El paquete ZIP no contiene un archivo database.json válido.';
+  static const invalidBackupStructureError = 'El archivo de respaldo no tiene una estructura válida.';
+  static const unspecifiedGrade = 'No especificado';
+
+  // Servicio de Actualizaciones (Logs y Mensajes de UI)
+  static const errorGettingPackageVersion = 'Error al obtener la versión del paquete';
+  static const checkingUpdateInNativeChannel = 'Consultando disponibilidad de actualización en canal nativo...';
+  static const platformExceptionCheckingUpdate = 'PlatformException al verificar actualización';
+  static const unexpectedErrorCheckingUpdate = 'Error inesperado verificando actualización';
+  static const invokingUpdateAppNative = 'Invocando método updateApp en canal nativo...';
+  static const errorExecutingUpdateApp = 'Error al ejecutar updateApp';
+  static const errorTriggeringUpdate = 'Error al disparar actualización';
+
+  // Dynamic Helpers para Actualizaciones, Almacenamiento y Versiones
+  static String sourceFileNotFoundAtPath(String path) => 'El archivo origen no existe en la ruta: $path';
+  static String errorComparingVersions(String latest, String current) => 'Error comparando versiones ($latest vs $current)';
+  static String autoUpdatesOnlyOnAndroid(String platform) => 'Las actualizaciones automáticas solo están disponibles en Android (Plataforma actual: $platform).';
+  static String updateCheckResult(bool available, String? latest, String current) => 'Resultado de actualización: disponible=$available (remoto=$latest, actual=$current)';
+  static String versionDisplay(String? version) => 'v${version ?? '?'}';
+  static String sqlSecurityError(String kw) => '$sqlSecurityErrorPrefix$kw$sqlSecurityErrorSuffix';
+  static String sqlSyntaxError(String err) => '$sqlSyntaxErrorPrefix$err';
+  static String rowsRetrieved(int count) => '$rowsRetrievedPrefix$count';
+  static String noSearchMatches(String query) => '$noSearchMatchesPrefix$query$noSearchMatchesSuffix';
+  static String errorWithDetails(Object err) => '$errorPrefix$err';
+  static String updateErrorWithException(Object error) => '$updateError$error';
+  static String backupExportErrorMessage(Object error) => '$backupExportErrorPrefix$error';
+  static String backupImportErrorMessage(Object error) => '$backupImportErrorPrefix$error';
+  static String formatObjectsCount(int count) => '$count $objectsLabel';
+
+  // Activity Log Dynamic Helpers
+  static String activityRegistered(String name, String type) => 'Registrado en tu mundo: "$name" ($type)';
+  static String activityEditedWithDetails(String name, String details) => 'Editado "$name": $details';
+  static String activityEdited(String name) => 'Editada información de "$name"';
+  static String activityDeleted(String name) => 'Eliminado de tu mundo: "$name"';
+  static String activityMoved(String name, String from, String to) => 'Trasladado "$name" de "$from" a "$to"';
+  static String activityAttachmentAdded(String fileName, String entityName) => 'Adjuntado archivo "$fileName" a "$entityName"';
+  static String activityAttachmentRemoved(String fileName, String entityName) => 'Eliminado archivo "$fileName" de "$entityName"';
+  static String activityRelationAdded(String sourceName, String relationType, String targetName) => 'Vínculo establecido: "$sourceName" $relationType "$targetName"';
+  static String activityRelationRemoved(String sourceName, String relationType, String targetName) => 'Vínculo eliminado: "$sourceName" $relationType "$targetName"';
+  static String activityPhotoChanged(String name) => 'Actualizada fotografía principal de "$name"';
+  static String activityPhotoRemoved(String name) => 'Eliminada fotografía principal de "$name"';
+  static String activityQuantityConsumed(String name, Object qty, String unit) => 'Cantidad ajustada de "$name": $qty $unit';
+
+
+  // Presentation Dynamic Helpers (Entities, Locations, Notifications)
+  static String editPropertyTitle(String propertyName) => 'Editar propiedad "$propertyName"';
+  static String valueWithUnitLabel(String unit) => 'Valor ($unit)';
+  static String valueWithDataTypeLabel(String dataType) => 'Valor ($dataType)';
+  static String unitOrTypeInParentheses(String value) => ' ($value)';
+  static String propertyWithUnitOrType(String propertyName, String unitOrType) => '$propertyName ($unitOrType)';
+  static String deleteSpeciesInstanceConfirmation(String speciesName) => '¿Estás seguro de que deseas eliminar "$speciesName"?';
+  static String speciesGeneralWithType(String speciesName, String type) => 'Especie general: $speciesName ($type)';
+  static String barcodeWithColon(String barcode) => 'Código de barras: $barcode';
+  static String dateFormattedWithDays(String dateStr, String daysStr) => '$dateStr ($daysStr)';
+  static String expiredDaysAgo(int days) => 'Vencido hace $days días';
+  static String expiresInDaysAlert(int days) => '¡Vence en $days días!';
+  static String expiresInDays(int days) => 'Vence en $days días';
+  static String confirmDeleteProperty(String propertyName) => '¿Estás seguro de que deseas eliminar la propiedad "$propertyName"?';
+  static String numismaticSpeciesDescription(String speciesType) => 'Colección Numismática ($speciesType)';
+  static String pieceInstantiatedDirectly(String name) => 'Pieza "$name" instanciada directamente.';
+  static String speciesInstantiatedSuccessWithName(String speciesName) => 'Instancia agregada exitosamente: "$speciesName"';
+  static String instantiateSpeciesTitle(String speciesName) => 'Instanciar "$speciesName"';
+  static String subspeciesWithBrand(String name, String? brand) => brand != null ? '$name ($brand)' : name;
+  static String typeWithPropertyAndValue(String type, String propertyName, String displayValue) => '$type • $propertyName: $displayValue';
+  static String confirmReplaceAttachmentNamedMessage(String fileName) => '$confirmReplaceAttachmentMessage\n("$fileName")';
+  static String confirmReplaceAttachmentRenamedMessage(String oldName, String newName) => '$confirmReplaceAttachmentMessage\n("$oldName" ➔ "$newName")';
+  static String confirmRemoveAttributeMessage(String key) => '¿Deseas eliminar el atributo "$key"?';
+  static String confirmDeleteLocationMessage(String name) => '¿Estás seguro de que deseas eliminar la ubicación "$name" y todo su contenido?';
+  static String objectsInLocationAndSublocations(int count) => '$count objetos contenidos';
+  static String locationCorrectionError(String err) => 'Error al corregir ubicación: $err';
+  static String correctLocationTitle(String entityName) => 'Corregir ubicación de "$entityName"';
+
+  // Domain Rules Property Name Suggestions
+  static const propMass = 'Masa';
+  static const propVolume = 'Volumen';
+  static const propLength = 'Longitud';
+  static const propSurface = 'Superficie';
+  static const propTime = 'Tiempo';
+  static const propElectricCurrent = 'Corriente eléctrica';
+  static const propTemperature = 'Temperatura';
+  static const propSubstanceAmount = 'Cantidad de sustancia';
+  static const propLuminousIntensity = 'Intensidad luminosa';
+  static const propForce = 'Fuerza';
+  static const propPressure = 'Presión';
+  static const propEnergy = 'Energía';
+  static const propPower = 'Potencia';
+  static const propFrequency = 'Frecuencia';
+  static const propVoltage = 'Voltaje';
+  static const propResistance = 'Resistencia';
+  static const propStorage = 'Almacenamiento';
+  static const propYear = 'Año';
+  static const propQuantity = 'Cantidad';
+  static const propPrice = 'Precio';
+  static const propFaceValue = 'Valor Facial';
+  static const propDefault = 'Propiedad';
+
+  // Numismatic Defaults, Prefixes & Magnitude Names
+  static const defaultNumismaticPiece = 'Pieza Numismática';
+  static const noteCoinPrefix = 'Moneda: ';
+  static const noteYearPrefix = 'Año: ';
+  static const noteMaterialPrefix = 'Material: ';
+  static const magValorNominal = 'Valor nominal';
+  static const magAcunacion = 'Acuñación';
+  static const magDivisa = 'Divisa';
+  static const magMaterial = 'Material';
+  static const magGrado = 'Grado';
+
+  // Taxonomy & Product Defaults
+  static const speciesBook = 'Libro';
+
+  // Perishability Inference Reasons
+  static const perishabilityReasonNonObjectType = 'Las especies de tipo distinto a Objeto son No Perecederas por definición.';
+  static String perishabilityReasonDurableObject(String kw) => 'Detectado como objeto durable/no alimenticio ($kw).';
+  static const perishabilityReasonDairy = 'Categoría Lácteos (~14 días de vida útil).';
+  static const perishabilityReasonBakery = 'Categoría Panadería (~7 días de vida útil).';
+  static const perishabilityReasonFruitVeg = 'Categoría Frutas & Verduras (~7 días de vida útil).';
+  static const perishabilityReasonMeat = 'Categoría Carnes & Pescados (~5 días de vida útil).';
+  static const perishabilityReasonBeverage = 'Categoría Bebidas Perecederas (~30 días de vida útil).';
+  static const perishabilityReasonPharmacy = 'Categoría Farmacia / Salud (~365 días de vida útil).';
+  static const perishabilityReasonCanned = 'Categoría Enlatados & Conservas (~365 días de vida útil).';
+  static const perishabilityReasonDefault = 'No se identificó categoría perecedera; configurado como No Perecedero por defecto.';
+
+  // Activity Logger Descriptions (new entry-point methods not in previous block)
+  static String activityEntityCreated(String name, String type) => 'Registrado en tu mundo: "$name" ($type)';
+  static String activityEntityEditedWithDetails(String name, String details) => 'Editado "$name": $details';
+  static String activityEntityEdited(String name) => 'Editada información de "$name"';
+  static String activityEntityDeleted(String name) => 'Eliminado de tu mundo: "$name"';
+  static String activityEntityMoved(String name, String from, String to) => 'Trasladado "$name" de "$from" a "$to"';
+
+  // Notification Message Builders
+  static String notifMessageExpired(String speciesName, String formattedDate) => '"$speciesName" ha caducado ($formattedDate).';
+  static String notifMessageExpiringSoon(String speciesName, int daysLeft, String formattedDate) => '"$speciesName" caducará en $daysLeft día(s) ($formattedDate).';
+  static String notifMessageUnsatisfiedNeed(String deficitStr, String speciesName, double stockCount, double requiredQty) =>
+      'Faltan $deficitStr unidad(es) de "$speciesName" para cubrir los requerimientos totales ($stockCount/$requiredQty disponible).';
+
+  // Date Formatting
+  static const _zeroPad = '0';
+  static String formatDateDMY(DateTime? dt) {
+    if (dt == null) return AppTechnicalStrings.empty;
+    final d = dt.day.toString().padLeft(2, _zeroPad);
+    final m = dt.month.toString().padLeft(2, _zeroPad);
+    return '$d/$m/${dt.year}';
+  }
+
+  // Numismatic Camera Capture View
+  static const numisAnversoSideLabel = 'Anverso';
+  static const numisReversoSideLabel = 'Reverso';
+  static String numisCaptureCoinTitle(String side) => 'Captura de Moneda ($side)';
+  static String numisCaptureBanknoteTitle(String side) => 'Captura de Billete ($side)';
+  static String numisActiveSideLabel(String side) => 'CAPTURA: $side';
+  static const numisCapturingHD = 'Capturando en alta definición...';
+  static const numisErrorInitCamera = 'Error al inicializar cámara: ';
+  static String numisErrorInitCameraMsg(Object e) => 'Error al inicializar cámara: $e';
+  static const numisCropFailedLogPrefix = 'Numismatic crop isolate failed or timed out: ';
+  static String numisCropFailedLog(Object e) => 'Numismatic crop isolate failed or timed out: $e';
+  static const numisErrorCapture = 'Error en captura: ';
+  static String numisErrorCaptureMsg(Object e) => 'Error en captura: $e';
+  static const numisCameraIlluminationTip2 = 'Tip: Activa la linterna y ajusta el zoom para encuadrar los relieves.';
+
+  // Numismatic Audit Message Builders
+  static String numisAuditTitleMismatch(String actual, String canonical) =>
+      'Título no estandarizado (Actual: "$actual" vs Estándar: "$canonical")';
+  static String numisAuditYearMismatch(Object inst, Object sub) =>
+      'Año (Instancia: $inst vs Subespecie: $sub)';
+  static String numisAuditFaceValueMismatch(Object inst, Object sub) =>
+      'Valor Nominal (Instancia: $inst vs Subespecie: $sub)';
+  static String numisAuditCurrencyNotIso(String actual, String iso) =>
+      'Divisa de instancia no es código ISO (Actual: "$actual" vs Código ISO: "$iso")';
+  static String numisAuditGradeMismatch(String actual, String std) =>
+      'Grado de conservación no estandarizado (Actual: "$actual" vs Estándar: "$std")';
+  static String numisAuditMaterialMismatch(String actual, String std) =>
+      'Material no estandarizado (Actual: "$actual" vs Estándar: "$std")';
+  static String numisAuditIncongruence(String joined) => 'Incongruencia: $joined';
+  static String numisAttachmentPath(String dir, String name) => '$dir/$name';
+
+  // Taxonomy Chain
+  static const taxonomyDepartmentGeneral = 'General';
+  static String taxonomyCombinedText(String? g, String? c, String t) =>
+      '${g ?? AppTechnicalStrings.empty} ${c ?? AppTechnicalStrings.empty} $t';
+
+  // Species Form Modal Helpers
+  static String fileAttachedToSpecies(String fileName) => 'Archivo "$fileName" adjuntado a la especie.';
+  static String confirmDeletePropertyNamed(String propertyName) => '¿Estás seguro de que deseas eliminar la propiedad "$propertyName"?';
+  static String confirmDeleteSubspeciesNamed(String subspeciesName) => '¿Estás seguro de que deseas eliminar permanentemente la subespecie "$subspeciesName"?';
+  static String subspeciesOrBrandsWithCount(int count) => '$subspeciesOrBrands ($count)';
+  static String confirmDeleteSpeciesNamed(String name) => '$deleteConfirmationMessage "$name"?';
+
+  // Catalog Domain & Presentation Helpers
+  static const propMonetaryUnit = 'Unidad Monetaria';
+  static String separatedFromSpeciesName(String name) => '$separatedFromSpeciesPrefix$name';
+  static const errorNoCamerasFound = 'No se encontraron cámaras disponibles en el dispositivo.';
+  static const errorCameraInitCancelledWidgetDisposed = 'Inicialización cancelada: el widget ya fue descartado.';
+  static const errorCouldNotInitBackCamera = 'No se pudo inicializar la cámara trasera.';
+  static String invalidOrNotFoundCodeMessage(String barcode) => '$invalidOrNotFoundCodeMessagePrefix$barcode$invalidOrNotFoundCodeMessageSuffix';
+  static String cameraInitError(Object e) => '$cameraInitErrorPrefix$e';
+  static String cameraCaptureError(Object e) => '$cameraCaptureErrorPrefix$e';
+  static String nameWithType(String name, String type) => '$name ($type)';
+  static String confirmDeleteRequirementMessage(String speciesName) => '$confirmDeleteRequirementMessagePrefix$speciesName$confirmDeleteRequirementMessageSuffix';
+  static String requirementSummary(String formattedQty, String speciesName) => '$needsPrefix $formattedQty x $speciesName';
+  static String formatQuantityValue(double qty) => qty % 1 == 0 ? '${qty.toInt()}' : '$qty';
+  static String entitiesTabWithCount(int count) => '$tabEntities ($count)';
+  static String quantityWithFormattedUnit(String formattedValue, String unit) => '$quantityLabel: $formattedValue $unit';
+  static String quantityWithValue(String value) => '$quantityLabel: $value';
+  static String breadcrumbPathAndTarget(String ancestorPath, String targetName) => '$ancestorPath $targetName';
+
+  // Presentation & Interaction Helpers
+  static String reviewCounter(int current, int total) => 'Revisión $current de $total';
+  static String pendingReviews(int count) => '$count pendientes';
+  static String controlCenterLoadError(Object error) => '$controlCenterLoadErrorPrefix$error';
+  static String countString(num count) => count.toString();
+  static String speciesTypeWithBullet(String type, String? name) => name != null && name.isNotEmpty ? '$type • $name' : type;
+  static String objectsCount(int count) => '$count $objectsLabel';
+  static const draggingElement = 'Arrastrando elemento';
+  static String draggingUnits(int count) => 'Arrastrando $count unidades';
+  static String draggingSelectedElements(int count) => 'Arrastrando $count elementos seleccionados';
+  static String updateErrorWithDetails(Object err) => '$updateError$err';
+  static String appVersionDisplay(String version) => '$appName • $appVersionLabel: v$version';
+  static String loadNotificationsError(Object err) => '$loadNotificationsErrorPrefix$err';
+  static String saveRelationError(Object err) => '$saveRelationErrorPrefix$err';
+  static String quoted(String text) => '"$text"';
+  static String relationCreatedSuccess(String relationType) => '$relationCreatedSuccessPrefix$relationType$relationCreatedSuccessSuffix';
+  static String linkEntityTitle(String name) => '$link "$name"';
+  static String relationsLoadError(Object err) => '$relationsLoadErrorPrefix$err';
+  static String linksCount(int count) => '$count$linksCountSuffix';
+  static String confirmDeleteRelationMessage(String relationType, String otherName) => '$confirmDeleteRelationMessagePrefix$relationType$confirmDeleteRelationMessageMiddle$otherName$confirmDeleteRelationMessageSuffix';
+  static const centralInstanceLabelColon = '$centralInstanceLabel: ';
+
+  // Taxonomy Operations Helpers
+  static String subspeciesSeparatedSuccess(String speciesName) => '$subspeciesSeparatedSuccessPrefix"$speciesName".';
+  static String separateSubspeciesError(Object e) => '$separateSubspeciesErrorPrefix$e';
+  static String subspeciesMovedSuccess(String targetName) => '$subspeciesMovedSuccessPrefix"$targetName".';
+  static String moveSubspeciesError(Object e) => '$moveSubspeciesErrorPrefix$e';
+
+  // Entity Display Helpers
+  static String speciesWithSubspeciesDisplay(String speciesName, String subspeciesWithBrand) => '$speciesName - $subspeciesWithBrand';
+  static const affirmativeYes = 'Sí';
+  static const negativeNo = 'No';
+  static String valueWithUnit(String value, String unit) => '$value $unit';
+  static String propertyNameWithUnitText(String name, String unitText) => '$name$unitText';
+
+  // Instance Preview Card Helpers
+  static String speciesTypeWithSpeciesNamePrefix(String type, String speciesName) => '$type • $speciesName • ';
+  static String speciesTypeBulletPrefix(String type) => '$type • ';
+  static String propertyWithColon(String propertyName, String displayValue) => '$propertyName: $displayValue';
+  static String countWithStatus(int count, String status) => '$count $status';
+  static String ancestorPathWithSpace(String path) => '$path ';
+
+  // Special Edition Helpers
+  static String specialEditionWithReason(String reason) => '$specialEditionNotePrefix$reason';
+  static String specialEditionWithAdditionalNotes(String baseNote, String extraNotes) => '$baseNote ($extraNotes)';
+
+  // Attachment Helpers
+  static String scanReverseFileName(String speciesName) => '${scanReverseTitle}_$speciesName${AppTechnicalStrings.extJpg}';
 }
+
+
+
+
+
+
+

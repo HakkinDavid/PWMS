@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -48,7 +49,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
   String _selectedRelationType = EntityTemplateRegistry.directedRelationTypes.first;
   bool _isSaving = false;
   final _searchController = TextEditingController();
-  String _searchQuery = '';
+  String _searchQuery = AppTechnicalStrings.empty;
 
   bool _forceClose = false;
 
@@ -107,11 +108,11 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
       if (mounted) {
         _forceClose = true;
         Navigator.pop(context, newRelation);
-        AppToast.showSuccess(context, AppStrings.relationCreatedSuccessPrefix + _selectedRelationType + AppStrings.relationCreatedSuccessSuffix);
+        AppToast.showSuccess(context, AppStrings.relationCreatedSuccess(_selectedRelationType));
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, '${AppStrings.errorPrefix}$e');
+        AppToast.showError(context, AppStrings.errorWithDetails(e));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -156,7 +157,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         final canClose = await _requestClose();
-        if (canClose && mounted) {
+        if (canClose && context.mounted) {
           Navigator.of(context).pop();
         }
       },
@@ -194,7 +195,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                 children: [
                   Expanded(
                     child: Text(
-                      '${AppStrings.link} "$sourceName"',
+                      AppStrings.linkEntityTitle(sourceName),
                       style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -205,7 +206,7 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                     tooltip: AppStrings.close,
                     onPressed: () async {
                       final canClose = await _requestClose();
-                      if (canClose && mounted) {
+                      if (canClose && context.mounted) {
                         Navigator.of(context).pop();
                       }
                     },

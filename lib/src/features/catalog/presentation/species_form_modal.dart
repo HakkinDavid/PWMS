@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
@@ -18,7 +18,6 @@ import '../domain/catalog_item.dart';
 import '../domain/species_magnitude.dart';
 import '../domain/subspecies.dart';
 import 'subspecies_section_widget.dart';
-import 'web_image_picker_dialog.dart';
 import 'add_edit_subspecies_modal.dart';
 import 'standard_media_picker_sheet.dart';
 import 'subspecies_tile.dart';
@@ -96,9 +95,9 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     if (_isEditMode) {
       final s = widget.initialSpecies!;
       _nameController.text = s.name;
-      _descController.text = s.description ?? '';
-      _defaultShelfLifeController.text = s.defaultShelfLifeDays?.toString() ?? '';
-      _warningDaysController.text = s.warningDaysBeforeExpiration?.toString() ?? '';
+      _descController.text = s.description ?? AppTechnicalStrings.empty;
+      _defaultShelfLifeController.text = s.defaultShelfLifeDays?.toString() ?? AppTechnicalStrings.empty;
+      _warningDaysController.text = s.warningDaysBeforeExpiration?.toString() ?? AppTechnicalStrings.empty;
       _selectedType = s.type;
       _isUnique = s.isUnique;
       _isNonPerishable = s.isNonPerishable;
@@ -106,18 +105,18 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _magnitudes.addAll(s.magnitudes);
     } else if (widget.scannedResult != null) {
       final res = widget.scannedResult;
-      final genName = res.generalSpeciesName?.toString() ?? '';
-      final subName = res.subspeciesName?.toString() ?? '';
+      final genName = res.generalSpeciesName?.toString() ?? AppTechnicalStrings.empty;
+      final subName = res.subspeciesName?.toString() ?? AppTechnicalStrings.empty;
 
-      _nameController.text = genName.isNotEmpty ? genName : (subName.isNotEmpty ? subName : 'Nuevo Objeto');
-      _descController.text = res.description?.toString() ?? '';
+      _nameController.text = genName.isNotEmpty ? genName : (subName.isNotEmpty ? subName : AppStrings.defaultNewObjectName);
+      _descController.text = res.description?.toString() ?? AppTechnicalStrings.empty;
       _selectedType = res.type?.toString() ?? AppStrings.typeObject;
       _speciesPhotoPath = res.localPhotoPath?.toString() ?? res.photoUrl?.toString();
 
       if (subName.isNotEmpty) {
         _draftSubspecies.add(Subspecies(
           id: const Uuid().v4(),
-          speciesId: '',
+          speciesId: AppTechnicalStrings.empty,
           subspeciesName: subName,
           brand: res.brand?.toString(),
           barcode: res.barcode?.toString(),
@@ -147,10 +146,10 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     if (_isEditMode && widget.initialSpecies != null) {
       final s = widget.initialSpecies!;
       if (_nameController.text.trim() != s.name.trim()) return true;
-      if (_descController.text.trim() != (s.description ?? '').trim()) return true;
-      final defaultShelf = s.defaultShelfLifeDays?.toString() ?? '';
+      if (_descController.text.trim() != (s.description ?? AppTechnicalStrings.empty).trim()) return true;
+      final defaultShelf = s.defaultShelfLifeDays?.toString() ?? AppTechnicalStrings.empty;
       if (_defaultShelfLifeController.text.trim() != defaultShelf.trim()) return true;
-      final warnDays = s.warningDaysBeforeExpiration?.toString() ?? '';
+      final warnDays = s.warningDaysBeforeExpiration?.toString() ?? AppTechnicalStrings.empty;
       if (_warningDaysController.text.trim() != warnDays.trim()) return true;
       if (_selectedType != s.type) return true;
       if (_isUnique != s.isUnique) return true;
@@ -196,7 +195,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   Future<void> _pickAndAddDocument(String speciesId) async {
     final result = await StandardMediaPickerSheet.show(
       context,
-      title: 'Adjuntar a Especie',
+      title: AppStrings.attachToSpeciesAction,
       webSearchQuery: _nameController.text.trim(),
     );
     if (result == null) return;
@@ -224,11 +223,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       ref.invalidate(recentEntitiesProvider);
 
       if (mounted) {
-        AppToast.showSuccess(context, '${AppStrings.fileAttachedToSpeciesPrefix}${result.fileName}${AppStrings.fileAttachedToSpeciesSuffix}');
+        AppToast.showSuccess(context, AppStrings.fileAttachedToSpecies(result.fileName));
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+        AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
       }
     }
   }
@@ -322,7 +321,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     ctx,
                     SpeciesMagnitude(
                       id: const Uuid().v4(),
-                      speciesId: widget.initialSpecies?.id ?? '',
+                      speciesId: widget.initialSpecies?.id ?? AppTechnicalStrings.empty,
                       propertyName: propName,
                       dataType: chosenType.code,
                       unitSymbol: chosenType.isNumeric ? chosenUnit : null,
@@ -348,7 +347,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     final confirm = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
       title: AppStrings.confirmDeletePropertyTitle,
-      message: '${AppStrings.confirmDeletePropertyMessagePrefix}${mag.propertyName}${AppStrings.confirmDeletePropertyMessageSuffix}',
+      message: AppStrings.confirmDeletePropertyNamed(mag.propertyName),
     );
     if (confirm && mounted) {
       setState(() => _magnitudes.removeAt(index));
@@ -412,7 +411,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       subspeciesToSave.add(
         Subspecies(
           id: const Uuid().v4(),
-          speciesId: '',
+          speciesId: AppTechnicalStrings.empty,
           subspeciesName: AppStrings.genericSubspeciesName,
           createdAt: DateTime.now(),
         ),
@@ -489,7 +488,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+        AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -555,7 +554,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       onTap: () async {
                         final result = await StandardMediaPickerSheet.show(
                           context,
-                          title: 'Foto de la Especie',
+                          title: AppStrings.speciesPhotoTitle,
                           webSearchQuery: _nameController.text.trim(),
                           allowDocuments: false,
                         );
@@ -592,7 +591,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                       errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, size: 28),
                                     )
                                   : (_speciesPhotoPath != null && _speciesPhotoPath!.isNotEmpty)
-                                      ? (_speciesPhotoPath!.startsWith('http')
+                                      ? (_speciesPhotoPath!.startsWith(AppTechnicalStrings.httpPrefix)
                                           ? Image.network(
                                               _speciesPhotoPath!,
                                               fit: BoxFit.contain,
@@ -732,8 +731,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 controller: _defaultShelfLifeController,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
-                                  labelText: 'Vida útil (días)',
-                                  hintText: 'ej. 30',
+                                  labelText: AppStrings.shelfLifeDaysLabel,
+                                  hintText: AppStrings.shelfLifeDaysHint,
                                   prefixIcon: Icon(Icons.timer_outlined, size: 20),
                                 ),
                               ),
@@ -744,8 +743,8 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 controller: _warningDaysController,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
-                                  labelText: 'Aviso prev. (días)',
-                                  hintText: 'ej. 7',
+                                  labelText: AppStrings.warningDaysLabel,
+                                  hintText: AppStrings.warningDaysHint,
                                   prefixIcon: Icon(Icons.warning_amber_rounded, size: 20),
                                 ),
                               ),
@@ -799,9 +798,12 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
                                       title: Text(
-                                        mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
-                                            ? '${mag.propertyName} (${mag.unitSymbol})'
-                                            : '${mag.propertyName} (${mag.dataType})',
+                                        AppStrings.propertyWithUnitOrType(
+                                          mag.propertyName,
+                                          mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
+                                              ? mag.unitSymbol!
+                                              : mag.dataType,
+                                        ),
                                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                       ),
                                       trailing: IconButton(
@@ -832,7 +834,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      '${AppStrings.subspeciesOrBrands} (${_draftSubspecies.length})',
+                                      AppStrings.subspeciesOrBrandsWithCount(_draftSubspecies.length),
                                       style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -867,7 +869,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                                           final confirm = await AppConfirmationDialog.showDeleteConfirmation(
                                             context: context,
                                             title: AppStrings.confirmDeleteSubspeciesTitle,
-                                            message: '${AppStrings.confirmDeleteSubspeciesMessagePrefix}${sub.subspeciesName}${AppStrings.confirmDeleteSubspeciesMessageSuffix}',
+                                            message: AppStrings.confirmDeleteSubspeciesNamed(sub.subspeciesName),
                                           );
                                           if (confirm && mounted) {
                                             setState(() => _draftSubspecies.removeAt(idx));

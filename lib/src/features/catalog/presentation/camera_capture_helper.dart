@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:camera/camera.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 /// Helper auxiliar para gestionar la inicialización y configuración de cámara numismática.
 class CameraCaptureHelper {
@@ -23,7 +24,7 @@ class CameraCaptureHelper {
   }) async {
     final cameras = await getAvailableCameras();
     if (cameras.isEmpty) {
-      throw Exception('No se encontraron cámaras disponibles en el dispositivo.');
+      throw Exception(AppStrings.errorNoCamerasFound);
     }
 
     final backCam = cameras.firstWhere(
@@ -32,7 +33,7 @@ class CameraCaptureHelper {
     );
 
     if (isDisposed != null && isDisposed()) {
-      throw Exception('Inicialización cancelada: el widget ya fue descartado.');
+      throw Exception(AppStrings.errorCameraInitCancelledWidgetDisposed);
     }
 
     CameraController? controller;
@@ -48,7 +49,7 @@ class CameraCaptureHelper {
         await c.initialize();
         if (isDisposed != null && isDisposed()) {
           c.dispose().catchError((_) {});
-          throw Exception('Inicialización cancelada: el widget ya fue descartado.');
+          throw Exception(AppStrings.errorCameraInitCancelledWidgetDisposed);
         }
         controller = c;
         break;
@@ -57,11 +58,11 @@ class CameraCaptureHelper {
 
     if (isDisposed != null && isDisposed()) {
       controller?.dispose().catchError((_) {});
-      throw Exception('Inicialización cancelada: el widget ya fue descartado.');
+      throw Exception(AppStrings.errorCameraInitCancelledWidgetDisposed);
     }
 
     if (controller == null) {
-      throw Exception('No se pudo inicializar la cámara trasera.');
+      throw Exception(AppStrings.errorCouldNotInitBackCamera);
     }
 
     return controller;
@@ -78,20 +79,20 @@ class CameraCaptureHelper {
     bool Function()? isDisposed,
   }) async {
     await Future.wait([
-      controller.getMaxZoomLevel().then((v) {
+      controller.getMaxZoomLevel().catchError((_) => 4.0).then((v) {
         if (isDisposed != null && isDisposed()) return;
         onMaxZoomCalculated?.call(v);
-      }).catchError((_) => 4.0),
-      controller.getMinZoomLevel().then((v) {
+      }),
+      controller.getMinZoomLevel().catchError((_) => 1.0).then((v) {
         if (isDisposed != null && isDisposed()) return;
         onMinZoomCalculated?.call(v);
-      }).catchError((_) => 1.0),
+      }),
       controller.setFocusMode(FocusMode.auto).catchError((_) {}),
       controller.setExposureMode(ExposureMode.auto).catchError((_) {}),
       controller.setFocusPoint(const Offset(0.5, 0.5)).catchError((_) {}),
       controller.setExposurePoint(const Offset(0.5, 0.5)).catchError((_) {}),
-      controller.setExposureOffset(exposureOffset).catchError((_) {}),
-      if (currentZoom > 1.0) controller.setZoomLevel(currentZoom).catchError((_) {}),
+      controller.setExposureOffset(exposureOffset).then((_) {}).catchError((_) {}),
+      if (currentZoom > 1.0) controller.setZoomLevel(currentZoom).then((_) {}).catchError((_) {}),
       if (isTorchOn) controller.setFlashMode(FlashMode.torch).catchError((_) {}),
     ]).catchError((_) => <dynamic>[]);
   }

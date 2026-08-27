@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -12,7 +13,6 @@ import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
 import '../../entities/domain/entity_template.dart';
 import 'standard_media_picker_sheet.dart';
-import 'web_image_picker_dialog.dart';
 
 class AddEditSubspeciesModal extends ConsumerStatefulWidget {
   final CatalogItem? species;
@@ -70,10 +70,10 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     super.initState();
     final initial = widget.initialSubspecies;
     _selectedSpeciesId = widget.species?.id ?? initial?.speciesId;
-    _nameController = TextEditingController(text: initial?.subspeciesName ?? '');
-    _brandController = TextEditingController(text: initial?.brand ?? '');
-    _barcodeController = TextEditingController(text: initial?.barcode ?? '');
-    _notesController = TextEditingController(text: initial?.notes ?? '');
+    _nameController = TextEditingController(text: initial?.subspeciesName ?? AppTechnicalStrings.empty);
+    _brandController = TextEditingController(text: initial?.brand ?? AppTechnicalStrings.empty);
+    _barcodeController = TextEditingController(text: initial?.barcode ?? AppTechnicalStrings.empty);
+    _notesController = TextEditingController(text: initial?.notes ?? AppTechnicalStrings.empty);
     _photoPath = initial?.photoPath;
     if (_photoPath != null && _photoPath!.isNotEmpty) {
       _resolvedPhotoPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(_photoPath!);
@@ -97,9 +97,9 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     final initial = widget.initialSubspecies;
     if (initial != null) {
       if (_nameController.text.trim() != initial.subspeciesName.trim()) return true;
-      if (_brandController.text.trim() != (initial.brand ?? '').trim()) return true;
-      if (_barcodeController.text.trim() != (initial.barcode ?? '').trim()) return true;
-      if (_notesController.text.trim() != (initial.notes ?? '').trim()) return true;
+      if (_brandController.text.trim() != (initial.brand ?? AppTechnicalStrings.empty).trim()) return true;
+      if (_barcodeController.text.trim() != (initial.barcode ?? AppTechnicalStrings.empty).trim()) return true;
+      if (_notesController.text.trim() != (initial.notes ?? AppTechnicalStrings.empty).trim()) return true;
       if (_newPickedImage != null || _photoDeleted) return true;
       return false;
     } else {
@@ -140,7 +140,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
         finalPhotoPath = null;
       }
 
-      final targetSpeciesId = widget.species?.id ?? widget.initialSubspecies?.speciesId ?? _selectedSpeciesId ?? '';
+      final targetSpeciesId = widget.species?.id ?? widget.initialSubspecies?.speciesId ?? _selectedSpeciesId ?? AppTechnicalStrings.empty;
 
       final resultSubspecies = Subspecies(
         id: widget.initialSubspecies?.id ?? const Uuid().v4(),
@@ -159,7 +159,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, 'Error al guardar subespecie: $e');
+        AppToast.showError(context, AppStrings.saveSubspeciesError(e.toString()));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -199,7 +199,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                 items: catalogItems.map((c) => c.id).toList(),
                 labelBuilder: (id) {
                   final found = catalogItems.where((c) => c.id == id).firstOrNull;
-                  return found != null ? '${found.name} (${found.type})' : id;
+                  return found != null ? AppStrings.nameWithType(found.name, found.type) : id;
                 },
                 title: AppStrings.associatedSpeciesLabel,
                 decoration: const InputDecoration(
@@ -218,12 +218,12 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
               onTap: () async {
                 final name = _nameController.text.trim();
                 final brand = _brandController.text.trim();
-                final query = [if (name.isNotEmpty) name, if (brand.isNotEmpty) brand].join(' ');
-                final finalQuery = query.isNotEmpty ? query : (widget.species?.name ?? widget.defaultSpeciesName ?? '');
+                final query = [if (name.isNotEmpty) name, if (brand.isNotEmpty) brand].join(AppTechnicalStrings.space);
+                final finalQuery = query.isNotEmpty ? query : (widget.species?.name ?? widget.defaultSpeciesName ?? AppTechnicalStrings.empty);
 
                 final result = await StandardMediaPickerSheet.show(
                   context,
-                  title: 'Foto de la Subespecie / Variante',
+                  title: AppStrings.subspeciesPhotoTitle,
                   webSearchQuery: finalQuery,
                   allowDocuments: false,
                 );
@@ -377,7 +377,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
               ? null
               : () async {
                   final canClose = await _requestClose();
-                  if (canClose && mounted) {
+                  if (canClose && context.mounted) {
                     Navigator.pop(context);
                   }
                 },
@@ -397,7 +397,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         final canClose = await _requestClose();
-        if (canClose && mounted) {
+        if (canClose && context.mounted) {
           Navigator.of(context).pop();
         }
       },

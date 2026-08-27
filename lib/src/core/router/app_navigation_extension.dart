@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 /// Extension on [BuildContext] that standardizes navigation across the app.
 ///
@@ -12,22 +13,22 @@ extension AppNavigationExtension on BuildContext {
   // =========================================================================
 
   /// Navega a la pestaña de Inicio.
-  void goToHome() => go('/');
+  void goToHome() => go(AppTechnicalRoutes.root);
 
   /// Navega a la pestaña de Inventario con o sin enfoque de ubicación específica o contenedor.
   void goToInventory({String? focusNodeId, String? containerId}) {
     final queryParams = <String, String>{};
     if (focusNodeId != null && focusNodeId.isNotEmpty) {
-      queryParams['focusNodeId'] = focusNodeId;
+      queryParams[AppTechnicalRoutes.paramFocusNodeId] = focusNodeId;
     }
     if (containerId != null && containerId.isNotEmpty) {
-      queryParams['containerId'] = containerId;
+      queryParams[AppTechnicalRoutes.paramContainerId] = containerId;
     }
     if (queryParams.isNotEmpty) {
-      final uri = Uri(path: '/inventory', queryParameters: queryParams);
+      final uri = Uri(path: AppTechnicalRoutes.inventory, queryParameters: queryParams);
       go(uri.toString());
     } else {
-      go('/inventory');
+      go(AppTechnicalRoutes.inventory);
     }
   }
 
@@ -35,16 +36,16 @@ extension AppNavigationExtension on BuildContext {
   void goToLocations({String? focusNodeId, String? containerId}) {
     final queryParams = <String, String>{};
     if (focusNodeId != null && focusNodeId.isNotEmpty) {
-      queryParams['focusNodeId'] = focusNodeId;
+      queryParams[AppTechnicalRoutes.paramFocusNodeId] = focusNodeId;
     }
     if (containerId != null && containerId.isNotEmpty) {
-      queryParams['containerId'] = containerId;
+      queryParams[AppTechnicalRoutes.paramContainerId] = containerId;
     }
     if (queryParams.isNotEmpty) {
-      final uri = Uri(path: '/locations', queryParameters: queryParams);
+      final uri = Uri(path: AppTechnicalRoutes.locations, queryParameters: queryParams);
       go(uri.toString());
     } else {
-      go('/locations');
+      go(AppTechnicalRoutes.locations);
     }
   }
 
@@ -52,17 +53,17 @@ extension AppNavigationExtension on BuildContext {
   void goToCatalog({String? speciesId, String? filter}) {
     final queryParams = <String, String>{};
     if (speciesId != null && speciesId.isNotEmpty) {
-      queryParams['speciesId'] = speciesId;
+      queryParams[AppTechnicalRoutes.paramSpeciesId] = speciesId;
     }
     if (filter != null && filter.isNotEmpty) {
-      queryParams['filter'] = filter;
+      queryParams[AppTechnicalRoutes.paramFilter] = filter;
     }
 
     if (queryParams.isNotEmpty) {
-      final uri = Uri(path: '/catalog', queryParameters: queryParams);
+      final uri = Uri(path: AppTechnicalRoutes.catalog, queryParameters: queryParams);
       go(uri.toString());
     } else {
-      go('/catalog');
+      go(AppTechnicalRoutes.catalog);
     }
   }
 
@@ -70,17 +71,17 @@ extension AppNavigationExtension on BuildContext {
   void goToSearch({String? query, String? scope}) {
     final queryParams = <String, String>{};
     if (query != null && query.isNotEmpty) {
-      queryParams['q'] = query;
+      queryParams[AppTechnicalRoutes.paramQ] = query;
     }
     if (scope != null && scope.isNotEmpty) {
-      queryParams['scope'] = scope;
+      queryParams[AppTechnicalRoutes.paramScope] = scope;
     }
 
     if (queryParams.isNotEmpty) {
-      final uri = Uri(path: '/search', queryParameters: queryParams);
+      final uri = Uri(path: AppTechnicalRoutes.search, queryParameters: queryParams);
       go(uri.toString());
     } else {
-      go('/search');
+      go(AppTechnicalRoutes.search);
     }
   }
 
@@ -89,18 +90,18 @@ extension AppNavigationExtension on BuildContext {
   // =========================================================================
 
   /// Empuja la pantalla de detalle de una instancia/entidad específica.
-  void pushEntityDetail(String entityId) => push('/entity/$entityId');
+  void pushEntityDetail(String entityId) => push(AppTechnicalRoutes.entityDetailPath(entityId));
 
   /// Empuja la pantalla de detalle maestro de una especie del catálogo.
-  void pushSpeciesDetail(String speciesId) => push('/catalog/$speciesId');
+  void pushSpeciesDetail(String speciesId) => push(AppTechnicalRoutes.catalogDetailPath(speciesId));
 
 
   /// Empuja el Centro de Control de Calidad y Auditorías.
-  void pushControlCenter() => push('/control-center');
+  void pushControlCenter() => push(AppTechnicalRoutes.controlCenter);
 
   /// Empuja la pantalla de Ajustes.
-  void pushSettings() => push('/settings');
+  void pushSettings() => push(AppTechnicalRoutes.settings);
 
   /// Empuja la pantalla de Notificaciones.
-  void pushNotifications() => push('/notifications');
+  void pushNotifications() => push(AppTechnicalRoutes.notifications);
 }

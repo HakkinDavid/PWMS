@@ -143,7 +143,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
+              error: (err, _) => Center(child: Text(AppStrings.errorWithDetails(err))),
             ),
           ),
         ],

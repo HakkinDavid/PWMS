@@ -3,7 +3,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
-import '../../../core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'numismatic_camera_capture_view.dart';
 import 'web_image_picker_dialog.dart';
 
@@ -74,9 +75,9 @@ class StandardMediaPickerSheet extends StatelessWidget {
     NumismaticScanOption? numismaticOption,
   }) {
     final bool obverse = showNumismaticObverse ||
-        (numismaticOption != null && (numismaticOption.missingSide == 'anverso' || numismaticOption.missingSide == 'ambos'));
+        (numismaticOption != null && (numismaticOption.missingSide == AppTechnicalStrings.sideAnverso || numismaticOption.missingSide == AppTechnicalStrings.sideAmbos));
     final bool reverse = showNumismaticReverse ||
-        (numismaticOption != null && (numismaticOption.missingSide == 'reverso' || numismaticOption.missingSide == 'ambos'));
+        (numismaticOption != null && (numismaticOption.missingSide == AppTechnicalStrings.sideReverso || numismaticOption.missingSide == AppTechnicalStrings.sideAmbos));
     final bool coin = numismaticOption?.isCoin ?? isCoin;
     final File? obvFile = numismaticOption?.existingObverseFile ?? existingObverseFile;
     final File? revFile = numismaticOption?.existingReverseFile ?? existingReverseFile;
@@ -110,8 +111,8 @@ class StandardMediaPickerSheet extends StatelessWidget {
         SelectedMediaResult(
           file: file,
           fileName: fileName,
-          fileType: 'image',
-          source: 'camera',
+          fileType: AppTechnicalStrings.fileTypeImage,
+          source: AppTechnicalStrings.mediaSourceCamera,
         ),
       );
     }
@@ -128,15 +129,15 @@ class StandardMediaPickerSheet extends StatelessWidget {
         SelectedMediaResult(
           file: file,
           fileName: fileName,
-          fileType: 'image',
-          source: 'gallery',
+          fileType: AppTechnicalStrings.fileTypeImage,
+          source: AppTechnicalStrings.mediaSourceGallery,
         ),
       );
     }
   }
 
   Future<void> _handleWebSearch(BuildContext context) async {
-    final query = webSearchQuery?.trim() ?? '';
+    final query = webSearchQuery?.trim() ?? AppTechnicalStrings.empty;
     final relPath = await WebImagePickerDialog.show(context, searchQuery: query);
     if (relPath != null && relPath.isNotEmpty && context.mounted) {
       final fileName = p.basename(relPath);
@@ -145,8 +146,8 @@ class StandardMediaPickerSheet extends StatelessWidget {
         SelectedMediaResult(
           relativeStoredPath: relPath,
           fileName: fileName,
-          fileType: 'image',
-          source: 'web',
+          fileType: AppTechnicalStrings.fileTypeImage,
+          source: AppTechnicalStrings.mediaSourceWeb,
         ),
       );
     }
@@ -157,16 +158,23 @@ class StandardMediaPickerSheet extends StatelessWidget {
     if (result != null && result.files.single.path != null && context.mounted) {
       final picked = result.files.single;
       final file = File(picked.path!);
-      final ext = picked.extension?.toLowerCase() ?? 'file';
-      final isImg = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'bmp'].contains(ext);
+      final ext = picked.extension?.toLowerCase() ?? AppTechnicalStrings.extFileClean;
+      final isImg = [
+        AppTechnicalStrings.extJpgClean,
+        AppTechnicalStrings.extJpegClean,
+        AppTechnicalStrings.extPngClean,
+        AppTechnicalStrings.extWebpClean,
+        AppTechnicalStrings.extHeicClean,
+        AppTechnicalStrings.extBmpClean,
+      ].contains(ext);
 
       Navigator.pop(
         context,
         SelectedMediaResult(
           file: file,
           fileName: picked.name,
-          fileType: isImg ? 'image' : ext,
-          source: 'file',
+          fileType: isImg ? AppTechnicalStrings.fileTypeImage : ext,
+          source: AppTechnicalStrings.mediaSourceFile,
         ),
       );
     }
@@ -189,8 +197,8 @@ class StandardMediaPickerSheet extends StatelessWidget {
         SelectedMediaResult(
           file: file,
           fileName: fileName,
-          fileType: 'image',
-          source: 'numismatic',
+          fileType: AppTechnicalStrings.fileTypeImage,
+          source: AppTechnicalStrings.mediaSourceNumismatic,
         ),
       );
     }
@@ -202,7 +210,7 @@ class StandardMediaPickerSheet extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.dialogBackgroundColor,
+        color: theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SafeArea(
@@ -227,7 +235,7 @@ class StandardMediaPickerSheet extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      title ?? 'Seleccionar o Capturar Adjunto',
+                      title ?? AppStrings.selectOrCaptureAttachmentTitle,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -252,14 +260,14 @@ class StandardMediaPickerSheet extends StatelessWidget {
                     ),
                   ),
                   title: const Text(
-                    'Escanear anverso',
+                    AppStrings.scanObverseTitle,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    'Retícula guiada, corrección de exposición y recorte centrado para anverso de ${isCoin ? "moneda" : "billete"}.',
+                    AppStrings.numismaticObverseSubtitle(isCoin ? AppStrings.coinWord : AppStrings.banknoteWord),
                     style: const TextStyle(fontSize: 11),
                   ),
-                  onTap: () => _handleNumismaticSideScan(context, 'anverso'),
+                  onTap: () => _handleNumismaticSideScan(context, AppTechnicalStrings.sideAnverso),
                 ),
                 const Divider(height: 1),
               ],
@@ -280,14 +288,14 @@ class StandardMediaPickerSheet extends StatelessWidget {
                     ),
                   ),
                   title: const Text(
-                    'Escanear reverso',
+                    AppStrings.scanReverseTitle,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    'Retícula guiada, corrección de exposición y recorte centrado para reverso de ${isCoin ? "moneda" : "billete"}.',
+                    AppStrings.numismaticReverseSubtitle(isCoin ? AppStrings.coinWord : AppStrings.banknoteWord),
                     style: const TextStyle(fontSize: 11),
                   ),
-                  onTap: () => _handleNumismaticSideScan(context, 'reverso'),
+                  onTap: () => _handleNumismaticSideScan(context, AppTechnicalStrings.sideReverso),
                 ),
                 const Divider(height: 1),
               ],
@@ -296,7 +304,7 @@ class StandardMediaPickerSheet extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.camera_alt),
                 title: const Text(AppStrings.takePhoto),
-                subtitle: const Text('Captura estándar con la cámara', style: TextStyle(fontSize: 11)),
+                subtitle: const Text(AppStrings.standardCameraCapture, style: TextStyle(fontSize: 11)),
                 onTap: () => _handleCamera(context),
               ),
 
@@ -304,18 +312,18 @@ class StandardMediaPickerSheet extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.photo_library),
                 title: const Text(AppStrings.chooseGallery),
-                subtitle: const Text('Elegir imagen de la galería de fotos', style: TextStyle(fontSize: 11)),
+                subtitle: const Text(AppStrings.chooseFromGallery, style: TextStyle(fontSize: 11)),
                 onTap: () => _handleGallery(context),
               ),
 
               // Web Search
               ListTile(
                 leading: const Icon(Icons.travel_explore),
-                title: const Text('Buscar en la web'),
+                title: const Text(AppStrings.searchWeb),
                 subtitle: Text(
                   webSearchQuery != null && webSearchQuery!.isNotEmpty
-                      ? 'Búsqueda sugerida: "$webSearchQuery"'
-                      : 'Buscar imágenes online por nombre',
+                      ? AppStrings.suggestedSearchQuery(webSearchQuery!)
+                      : AppStrings.searchOnlineImagesByName,
                   style: const TextStyle(fontSize: 11),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -327,8 +335,8 @@ class StandardMediaPickerSheet extends StatelessWidget {
               if (allowDocuments) ...[
                 ListTile(
                   leading: const Icon(Icons.attach_file),
-                  title: const Text('Explorador de archivos'),
-                  subtitle: const Text('Seleccionar PDF, documento o archivo local', style: TextStyle(fontSize: 11)),
+                  title: const Text(AppStrings.fileExplorer),
+                  subtitle: const Text(AppStrings.selectPdfOrDocument, style: TextStyle(fontSize: 11)),
                   onTap: () => _handleFilePicker(context),
                 ),
               ],

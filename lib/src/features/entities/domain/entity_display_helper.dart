@@ -27,14 +27,12 @@ class EntityDisplayHelper {
             subNameTrimmed.toLowerCase() == AppStrings.defaultSubspeciesName.toLowerCase();
 
         if (!isGeneric) {
-          final brandText = (sub.brand != null && sub.brand!.trim().isNotEmpty)
-              ? ' (${sub.brand!.trim()})'
-              : '';
+          final subWithBrand = AppStrings.subspeciesNameWithBrand(subNameTrimmed, sub.brand?.trim());
           final hasSpeciesInSub = subNameTrimmed.toLowerCase().contains(speciesName.toLowerCase());
           if (hasSpeciesInSub) {
-            return '$subNameTrimmed$brandText';
+            return subWithBrand;
           } else {
-            return '$speciesName - $subNameTrimmed$brandText';
+            return AppStrings.speciesWithSubspeciesDisplay(speciesName, subWithBrand);
           }
         }
       }

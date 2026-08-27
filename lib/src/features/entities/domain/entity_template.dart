@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 enum TemplateViewKind {
   details,
@@ -43,10 +44,10 @@ class EntityTemplateRegistry {
   EntityTemplateRegistry._();
 
   static const List<String> directedRelationTypes = [
-    'PERTENECE_A',
-    'PARTE_DE',
-    'DOCUMENTA',
-    'USA',
+    AppTechnicalStrings.relPerteneceA,
+    AppTechnicalStrings.relParteDe,
+    AppTechnicalStrings.relDocumenta,
+    AppTechnicalStrings.relUsa,
   ];
 
   static const Map<String, EntityTemplate> _templates = {
@@ -58,7 +59,12 @@ class EntityTemplateRegistry {
       isAlwaysUnique: false,
       primaryView: TemplateViewKind.details,
       allowedActions: EntityActionType.values,
-      validRelationTypes: ['PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
+      validRelationTypes: [
+        AppTechnicalStrings.relPerteneceA,
+        AppTechnicalStrings.relParteDe,
+        AppTechnicalStrings.relUsa,
+        AppTechnicalStrings.relDocumenta,
+      ],
     ),
     AppStrings.typeLivingBeing: EntityTemplate(
       typeName: AppStrings.typeLivingBeing,
@@ -68,7 +74,12 @@ class EntityTemplateRegistry {
       isAlwaysUnique: false,
       primaryView: TemplateViewKind.details,
       allowedActions: EntityActionType.values,
-      validRelationTypes: ['PERTENECE_A', 'PARTE_DE', 'USA', 'DOCUMENTA'],
+      validRelationTypes: [
+        AppTechnicalStrings.relPerteneceA,
+        AppTechnicalStrings.relParteDe,
+        AppTechnicalStrings.relUsa,
+        AppTechnicalStrings.relDocumenta,
+      ],
     ),
     AppStrings.typeDocument: EntityTemplate(
       typeName: AppStrings.typeDocument,
@@ -85,7 +96,10 @@ class EntityTemplateRegistry {
         EntityActionType.addFile,
         EntityActionType.delete,
       ],
-      validRelationTypes: ['DOCUMENTA', 'PERTENECE_A'],
+      validRelationTypes: [
+        AppTechnicalStrings.relDocumenta,
+        AppTechnicalStrings.relPerteneceA,
+      ],
     ),
     AppStrings.typeProject: EntityTemplate(
       typeName: AppStrings.typeProject,
@@ -101,7 +115,11 @@ class EntityTemplateRegistry {
         EntityActionType.addFile,
         EntityActionType.delete,
       ],
-      validRelationTypes: ['PARTE_DE', 'DOCUMENTA', 'USA'],
+      validRelationTypes: [
+        AppTechnicalStrings.relParteDe,
+        AppTechnicalStrings.relDocumenta,
+        AppTechnicalStrings.relUsa,
+      ],
     ),
     AppStrings.typeMemory: EntityTemplate(
       typeName: AppStrings.typeMemory,
@@ -118,7 +136,9 @@ class EntityTemplateRegistry {
         EntityActionType.addFile,
         EntityActionType.delete,
       ],
-      validRelationTypes: ['PERTENECE_A'],
+      validRelationTypes: [
+        AppTechnicalStrings.relPerteneceA,
+      ],
     ),
   };
 
@@ -128,10 +148,17 @@ class EntityTemplateRegistry {
       return map[typeName]!;
     }
     final clean = typeName.toLowerCase();
-    if (clean.contains('ser vivo') || clean.contains('mascota') || clean.contains('planta')) return map[AppStrings.typeLivingBeing]!;
-    if (clean.contains('doc')) return map[AppStrings.typeDocument]!;
-    if (clean.contains('proyect') || clean.contains('idea')) return map[AppStrings.typeProject]!;
-    if (clean.contains('recuerdo')) return map[AppStrings.typeMemory]!;
+    if (clean.contains(AppTechnicalStrings.entityTypeKeywordSerVivo) ||
+        clean.contains(AppTechnicalStrings.entityTypeKeywordMascota) ||
+        clean.contains(AppTechnicalStrings.entityTypeKeywordPlanta)) {
+      return map[AppStrings.typeLivingBeing]!;
+    }
+    if (clean.contains(AppTechnicalStrings.entityTypeKeywordDoc)) return map[AppStrings.typeDocument]!;
+    if (clean.contains(AppTechnicalStrings.entityTypeKeywordProyect) ||
+        clean.contains(AppTechnicalStrings.entityTypeKeywordIdea)) {
+      return map[AppStrings.typeProject]!;
+    }
+    if (clean.contains(AppTechnicalStrings.entityTypeKeywordRecuerdo)) return map[AppStrings.typeMemory]!;
 
     return map[AppStrings.typeObject]!;
   }

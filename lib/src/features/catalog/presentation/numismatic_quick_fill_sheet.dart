@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/storage/app_settings_repository.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
@@ -110,7 +111,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   String? _composition;
 
   // Empty year text field by default
-  final TextEditingController _yearController = TextEditingController(text: '');
+  final TextEditingController _yearController = TextEditingController(text: AppTechnicalStrings.empty);
 
   // Custom denomination text field (when 'Otro' is selected)
   final TextEditingController _customDenominationController = TextEditingController();
@@ -196,7 +197,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Por favor completa todos los campos antes de guardar.'),
+          content: Text(AppStrings.completeAllFieldsPrompt),
           backgroundColor: Colors.redAccent,
           behavior: SnackBarBehavior.floating,
         ),
@@ -232,14 +233,14 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       }
     } catch (_) {}
 
-    final isCustomDenom = _denomination == 'Otro';
+    final isCustomDenom = _denomination == AppStrings.otherSpecifyOption;
     final effectiveDenom = isCustomDenom
         ? _customDenominationController.text.trim()
         : _denomination!;
     final faceVal = double.tryParse(effectiveDenom);
     final currName = _currencyMap[_currencyCode!] ?? _currencyCode;
     final yearStr = _yearController.text.trim();
-    final speciesType = widget.isCoin ? 'Moneda' : 'Billete';
+    final speciesType = widget.isCoin ? AppStrings.coinCircularLabel : AppStrings.banknoteRectangleLabel;
 
     final title = NumismaticDataHelper.buildSubspeciesName(
       faceValueStr: effectiveDenom,
@@ -250,7 +251,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     );
 
     final isSpecialNotesApplicable = _isSpecialEdition &&
-        (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)');
+        (_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized);
 
     final result = NumismaticScanResult(
       speciesType: speciesType,
@@ -261,7 +262,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       faceValueNumber: faceVal,
       currencyCode: _currencyCode,
       currencyName: currName,
-      composition: widget.isCoin ? _composition : 'Papel',
+      composition: widget.isCoin ? _composition : AppStrings.materialPaper,
       grade: _grade,
       isSpecialEdition: _isSpecialEdition,
       specialEditionReason: _isSpecialEdition ? _specialReason : null,
@@ -270,7 +271,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
           : null,
       obversePhotoPath: widget.obversePhoto.path,
       reversePhotoPath: widget.reversePhoto?.path,
-      sourceEngine: 'Formulario Rápido In-App',
+      sourceEngine: AppStrings.inAppQuickFillSourceEngine,
       locationId: _locationMode == InstantiationLocationMode.physicalNode ? _selectedLocationId : null,
       containerEntityId: _locationMode == InstantiationLocationMode.containerEntity ? _selectedContainerEntityId : null,
       isContainer: _locationMode == InstantiationLocationMode.containerEntity,
@@ -286,7 +287,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final speciesLabel = widget.isCoin ? 'Moneda (Circular)' : 'Billete (Rectangular)';
+    final speciesLabel = widget.isCoin ? AppStrings.coinCircularDescriptor : AppStrings.banknoteRectangleDescriptor;
 
     final locationsState = ref.watch(locationNodeListProvider);
     final catalogState = ref.watch(catalogListProvider);
@@ -402,22 +403,22 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 validator: (val) => val == null ? AppStrings.selectDenominationPrompt : null,
                 onChanged: (val) => setState(() => _denomination = val),
               ),
-              if (_denomination == 'Otro') ...[
+              if (_denomination == AppStrings.otherSpecifyOption) ...[
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _customDenominationController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                    FilteringTextInputFormatter.allow(RegExp(AppTechnicalStrings.digitsWithDecimalFilter)),
                   ],
                   decoration: InputDecoration(
                     labelText: AppStrings.denominationNumberLabel,
-                    hintText: 'Ej: 0.50',
+                    hintText: AppStrings.exampleDecimalHint,
                     prefixIcon: const Icon(Icons.pin),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   validator: (val) {
-                    if (_denomination == 'Otro') {
+                    if (_denomination == AppStrings.otherSpecifyOption) {
                       if (val == null || val.trim().isEmpty) {
                         return AppStrings.enterDenominationNumberPrompt;
                       }
@@ -442,11 +443,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     labelBuilder: (code) {
                       if (code == null) return AppStrings.noSelectionPrompt;
                       final name = availableCurrencies[code] ?? code;
-                      return '$code ($name)';
+                      return AppStrings.currencyCodeWithName(code, name);
                     },
-                    title: 'Divisa',
+                    title: AppStrings.currencyLabel,
                     decoration: InputDecoration(
-                      labelText: 'Divisa',
+                      labelText: AppStrings.currencyLabel,
                       hintText: AppStrings.noSelectionPrompt,
                       prefixIcon: const Icon(Icons.monetization_on),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
@@ -464,7 +465,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: AppStrings.mintageYearLabel,
-                  hintText: 'Ej: 1982',
+                  hintText: AppStrings.exampleYearHint,
                   prefixIcon: const Icon(Icons.calendar_today),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
@@ -645,7 +646,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                         },
                         onChanged: (val) => setState(() => _specialReason = val),
                       ),
-                      if (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)') ...[
+                      if (_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized) ...[
                         const SizedBox(height: 12),
                         TextFormField(
                           controller: _specialNotesController,
@@ -656,7 +657,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                           ),
                           validator: (val) {
                             if (_isSpecialEdition &&
-                                (_specialReason == 'Otro' || _specialReason == 'Otro (especificar)') &&
+                                (_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized) &&
                                 (val == null || val.trim().isEmpty)) {
                               return AppStrings.specifySpecialEditionNotesPrompt;
                             }

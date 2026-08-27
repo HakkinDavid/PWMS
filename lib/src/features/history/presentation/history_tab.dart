@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 
 class HistoryTab extends ConsumerWidget {
@@ -46,9 +47,9 @@ class HistoryTab extends ConsumerWidget {
                 leading: CircleAvatar(
                   backgroundColor: theme.colorScheme.primary.withAlpha(25),
                   child: Icon(
-                    evt.eventType == 'creation'
+                    evt.eventType == AppTechnicalStrings.eventTypeCreation
                         ? Icons.add_circle_outline
-                        : evt.eventType == 'deletion'
+                        : evt.eventType == AppTechnicalStrings.eventTypeDeletion
                             ? Icons.delete_outline
                             : Icons.history,
                     color: theme.colorScheme.primary,
@@ -64,7 +65,7 @@ class HistoryTab extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
+        error: (err, _) => Center(child: Text(AppStrings.errorWithDetails(err))),
       ),
     );
   }

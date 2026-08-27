@@ -1,3 +1,5 @@
+import '../../../core/constants/app_technical_strings.dart';
+
 class AppNotification {
   final String id;
   final String type; // 'expired', 'expiring_soon', 'unsatisfied_need'
@@ -17,18 +19,18 @@ class AppNotification {
     required this.message,
     required this.targetId,
     required this.targetType,
-    this.status = 'active',
+    this.status = AppTechnicalStrings.notifStatusActive,
     this.snoozedUntil,
     required this.createdAt,
     required this.updatedAt,
   });
 
   bool get isActive {
-    if (status == 'dismissed') return false;
-    if (status == 'snoozed' && snoozedUntil != null) {
+    if (status == AppTechnicalStrings.notifStatusDismissed) return false;
+    if (status == AppTechnicalStrings.notifStatusSnoozed && snoozedUntil != null) {
       return DateTime.now().isAfter(snoozedUntil!);
     }
-    return status == 'active';
+    return status == AppTechnicalStrings.notifStatusActive;
   }
 
   AppNotification copyWith({

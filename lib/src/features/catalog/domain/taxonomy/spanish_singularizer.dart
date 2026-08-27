@@ -1,3 +1,5 @@
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+
 class SpanishSingularizer {
   SpanishSingularizer._();
 
@@ -9,98 +11,42 @@ class SpanishSingularizer {
     final lower = clean.toLowerCase();
 
     // Mapeo directo de plurales comunes a singular
-    const Map<String, String> explicitPluralToSingular = {
-      'audífonos': 'Audífono',
-      'audifonos': 'Audífono',
-      'tomates': 'Tomate',
-      'jabones': 'Jabón',
-      'papas': 'Papa',
-      'galletas': 'Galleta',
-      'chocolates': 'Chocolate',
-      'limpiadores': 'Limpiador',
-      'detergentes': 'Detergente',
-      'suavizantes': 'Suavizante',
-      'desinfectantes': 'Desinfectante',
-      'cables': 'Cable',
-      'cargadores': 'Cargador',
-      'adaptadores': 'Adaptador',
-      'monitores': 'Monitor',
-      'televisores': 'Televisor',
-      'pantallas': 'Pantalla',
-      'impresoras': 'Impresora',
-      'bocinas': 'Bocina',
-      'auriculares': 'Auricular',
-      'dulces': 'Dulce',
-      'botanas': 'Botana',
-      'refrescos': 'Refresco',
-      'jugos': 'Jugo',
-      'cervezas': 'Cerveza',
-      'vinos': 'Vino',
-      'licores': 'Licor',
-      'pastas': 'Pasta',
-      'salsas': 'Salsa',
-      'aceites': 'Aceite',
-      'sartenes': 'Sartén',
-      'ollas': 'Olla',
-      'vasos': 'Vaso',
-      'tazas': 'Taza',
-      'herramientas': 'Herramienta',
-      'taladros': 'Taladro',
-      'martillos': 'Martillo',
-      'pinzas': 'Pinza',
-      'llaves': 'Llave',
-      'tenis': 'Tenis',
-      'zapatos': 'Zapato',
-      'botas': 'Bota',
-      'playeras': 'Playera',
-      'camisas': 'Camisa',
-      'pantalones': 'Pantalón',
-      'sudaderas': 'Sudadera',
-      'pañales': 'Pañal',
-      'panales': 'Pañal',
-      'toallitas': 'Toallita',
-      'juguetes': 'Juguete',
-      'muñecas': 'Muñeca',
-      'croquetas': 'Croqueta',
-      'cuadernos': 'Cuaderno',
-      'plumas': 'Pluma',
-      'marcadores': 'Marcador',
-      'carpetas': 'Carpeta',
-      'libros': 'Libro',
-      'lápices': 'Lápiz',
-      'lapices': 'Lápiz',
-      'luces': 'Luz',
-      'peces': 'Pez',
-      'nueces': 'Nuez',
-    };
+    const explicitPluralToSingular = AppTechnicalSpanishSingularizer.explicitPluralToSingular;
 
     if (explicitPluralToSingular.containsKey(lower)) {
       return explicitPluralToSingular[lower]!;
     }
 
     // Invariable nouns ending in 's'
-    const Set<String> invariableNouns = {
-      'tenis', 'paraguas', 'abrelatas', 'sacapuntas', 'cortauñas',
-      'crisis', 'virus', 'atlas', 'análisis', 'oasis', 'status', 'campus'
-    };
+    const invariableNouns = AppTechnicalSpanishSingularizer.invariableNouns;
     if (invariableNouns.contains(lower)) {
       return clean[0].toUpperCase() + clean.substring(1);
     }
 
     // Reglas lingüísticas gramaticales para español
-    if (lower.endsWith('iones')) {
-      clean = clean.substring(0, clean.length - 5) + 'ión';
-    } else if (lower.endsWith('anes')) {
-      clean = clean.substring(0, clean.length - 4) + 'án';
-    } else if (lower.endsWith('enes') && lower.length > 5) {
-      clean = clean.substring(0, clean.length - 4) + 'én';
-    } else if (lower.endsWith('ces')) {
-      clean = clean.substring(0, clean.length - 3) + 'z';
-    } else if (lower.endsWith('les') || lower.endsWith('res') || lower.endsWith('des') || lower.endsWith('nes')) {
+    if (lower.endsWith(AppTechnicalStrings.suffixIones)) {
+      clean = clean.substring(0, clean.length - 5) + AppTechnicalStrings.suffixIon;
+    } else if (lower.endsWith(AppTechnicalStrings.suffixAnes)) {
+      clean = clean.substring(0, clean.length - 4) + AppTechnicalStrings.suffixAn;
+    } else if (lower.endsWith(AppTechnicalStrings.suffixEnes) && lower.length > 5) {
+      clean = clean.substring(0, clean.length - 4) + AppTechnicalStrings.suffixEn;
+    } else if (lower.endsWith(AppTechnicalStrings.suffixCes)) {
+      clean = clean.substring(0, clean.length - 3) + AppTechnicalStrings.suffixZ;
+    } else if (lower.endsWith(AppTechnicalStrings.suffixLes) ||
+        lower.endsWith(AppTechnicalStrings.suffixRes) ||
+        lower.endsWith(AppTechnicalStrings.suffixDes) ||
+        lower.endsWith(AppTechnicalStrings.suffixNes)) {
       clean = clean.substring(0, clean.length - 2);
-    } else if (lower.endsWith('es') && !lower.endsWith('tes') && !lower.endsWith('ques') && !lower.endsWith('gues') && !lower.endsWith('ses')) {
+    } else if (lower.endsWith(AppTechnicalStrings.suffixEs) &&
+        !lower.endsWith(AppTechnicalStrings.suffixTes) &&
+        !lower.endsWith(AppTechnicalStrings.suffixQues) &&
+        !lower.endsWith(AppTechnicalStrings.suffixGues) &&
+        !lower.endsWith(AppTechnicalStrings.suffixSes)) {
       clean = clean.substring(0, clean.length - 2);
-    } else if (lower.endsWith('s') && !lower.endsWith('ss') && !lower.endsWith('is') && !lower.endsWith('us')) {
+    } else if (lower.endsWith(AppTechnicalStrings.suffixS) &&
+        !lower.endsWith(AppTechnicalStrings.suffixSs) &&
+        !lower.endsWith(AppTechnicalStrings.suffixIs) &&
+        !lower.endsWith(AppTechnicalStrings.suffixUs)) {
       // Regular plurals ending in -as, -os, -es (preceded by consonant like -tes), etc.
       clean = clean.substring(0, clean.length - 1);
     }
@@ -109,3 +55,4 @@ class SpanishSingularizer {
     return clean[0].toUpperCase() + clean.substring(1);
   }
 }
+

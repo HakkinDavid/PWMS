@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../catalog/domain/catalog_item.dart';
@@ -10,7 +11,6 @@ import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/instance_preview_card.dart';
 import '../../locations/domain/location_node.dart';
 import '../../locations/domain/location_resolver.dart';
-import '../../locations/infrastructure/location_repository.dart';
 import '../../relations/domain/entity_relation.dart';
 
 /// Unified navigation bar for the inventory.
@@ -235,7 +235,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
       );
     }
 
-    if (targetLocId == null || targetLocId == '__UNASSIGNED__') {
+    if (targetLocId == null || targetLocId == AppTechnicalStrings.unassignedLocationId) {
       return [];
     }
 
@@ -328,7 +328,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              'Ubicaciones',
+                              AppStrings.tabLocations,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -432,7 +432,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
                             final isCurrent = i == widget.containerPath.length - 1;
                             final cEnt = widget.allEntitiesMap[cId];
                             final cSpecies = widget.catalogMap[cEnt?.speciesId];
-                            final cTitle = cSpecies?.name ?? 'Contenedor';
+                            final cTitle = cSpecies?.name ?? AppStrings.containerFallback;
 
                             return _SpringLoadedBreadcrumbChip(
                               label: cTitle,

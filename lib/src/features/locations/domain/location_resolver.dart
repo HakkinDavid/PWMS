@@ -1,3 +1,4 @@
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../relations/domain/entity_relation.dart';
 
@@ -5,7 +6,10 @@ class LocationResolver {
   LocationResolver._();
 
   /// Relation types that transmit location inheritance recursively
-  static const Set<String> locationInheritingTypes = {'GUARDADO_EN', 'PARTE_DE'};
+  static const Set<String> locationInheritingTypes = {
+    AppTechnicalStrings.relGuardadoEn,
+    AppTechnicalStrings.relParteDe,
+  };
 
   /// Resolves the effective location ID for [entityId] by inspecting relations and direct locations.
   /// 

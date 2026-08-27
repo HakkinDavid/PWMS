@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_strings.dart';
+import '../constants/app_technical_strings.dart';
 import 'app_wheel_picker.dart';
 
 class IntegerWheelPicker extends StatelessWidget {
@@ -30,7 +31,7 @@ class IntegerWheelPicker extends StatelessWidget {
       context,
       items: items,
       initialValue: initialValue.clamp(minValue, maxValue),
-      labelBuilder: (val) => '$val',
+      labelBuilder: AppTechnicalStrings.formatInt,
       title: title,
     );
   }
@@ -43,7 +44,7 @@ class IntegerWheelPicker extends StatelessWidget {
     return AppWheelPicker<int>(
       items: items,
       initialValue: initialValue.clamp(minValue, maxValue),
-      labelBuilder: (val) => '$val',
+      labelBuilder: AppTechnicalStrings.formatInt,
       title: title,
     );
   }

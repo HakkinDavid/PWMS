@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
@@ -75,11 +76,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     _lastInitializedEntity = entity;
     final primaryMag = entity.magnitudes.isNotEmpty ? entity.magnitudes.first : null;
     final primaryVal = primaryMag?.magnitudeValue ?? 1.0;
-    final primaryUnit = primaryMag?.unitSymbol ?? '';
+    final primaryUnit = primaryMag?.unitSymbol ?? AppTechnicalStrings.empty;
     final hasMagnitudes = entity.magnitudes.isNotEmpty;
 
-    _qtyController.text = hasMagnitudes ? DomainRules.formatMagnitude(primaryVal, primaryUnit) : '';
-    _notesController.text = entity.notes ?? '';
+    _qtyController.text = hasMagnitudes ? DomainRules.formatMagnitude(primaryVal, primaryUnit) : AppTechnicalStrings.empty;
+    _notesController.text = entity.notes ?? AppTechnicalStrings.empty;
     _selectedLocationId = entity.locationId;
     _selectedExpirationDate = entity.expirationDate;
     _workingMagnitudes = List.from(entity.magnitudes);
@@ -99,7 +100,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
   bool _hasUnsavedChanges(WorldEntity entity) {
     if (!_isEditingInPlace) return false;
-    final originalNotes = entity.notes ?? '';
+    final originalNotes = entity.notes ?? AppTechnicalStrings.empty;
     if (_notesController.text.trim() != originalNotes.trim()) return true;
     if (_selectedLocationId != entity.locationId) return true;
     if (_selectedExpirationDate != entity.expirationDate) return true;
@@ -113,17 +114,17 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
 
     if (_originalRelations != null) {
       if (_workingRelations.length != _originalRelations!.length) return true;
-      final origRelKeys = _originalRelations!.map((r) => '${r.id}_${r.sourceEntityId}_${r.targetEntityId}_${r.relationType}').toSet();
+      final origRelKeys = _originalRelations!.map((r) => AppTechnicalStrings.relationKey(r.id, r.sourceEntityId, r.targetEntityId, r.relationType)).toSet();
       for (final wr in _workingRelations) {
-        if (!origRelKeys.contains('${wr.id}_${wr.sourceEntityId}_${wr.targetEntityId}_${wr.relationType}')) return true;
+        if (!origRelKeys.contains(AppTechnicalStrings.relationKey(wr.id, wr.sourceEntityId, wr.targetEntityId, wr.relationType))) return true;
       }
     }
 
     if (_originalRequirements != null) {
       if (_workingRequirements.length != _originalRequirements!.length) return true;
-      final origReqKeys = _originalRequirements!.map((r) => '${r.id}_${r.requiredSpeciesId}_${r.requiredQuantity}_${r.notes ?? ""}').toSet();
+      final origReqKeys = _originalRequirements!.map((r) => AppTechnicalStrings.requirementKey(r.id, r.requiredSpeciesId, r.requiredQuantity, r.notes)).toSet();
       for (final wr in _workingRequirements) {
-        if (!origReqKeys.contains('${wr.id}_${wr.requiredSpeciesId}_${wr.requiredQuantity}_${wr.notes ?? ""}')) return true;
+        if (!origReqKeys.contains(AppTechnicalStrings.requirementKey(wr.id, wr.requiredSpeciesId, wr.requiredQuantity, wr.notes))) return true;
       }
     }
 
@@ -259,13 +260,13 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     final valCtrl = TextEditingController(
       text: mag.type.isNumeric
           ? mag.magnitudeValue.toString()
-          : (mag.stringValue ?? ''),
+          : (mag.stringValue ?? AppTechnicalStrings.empty),
     );
 
     final result = await showDialog<InstanceMagnitude>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('${AppStrings.editPropertyTitlePrefix}${mag.propertyName}"'),
+        title: Text(AppStrings.editPropertyTitle(mag.propertyName)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,8 +279,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               autofocus: true,
               decoration: InputDecoration(
                 labelText: (mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty)
-                    ? 'Valor (${mag.unitSymbol})'
-                    : 'Valor (${mag.dataType})',
+                    ? AppStrings.valueWithUnitLabel(mag.unitSymbol!)
+                    : AppStrings.valueWithDataTypeLabel(mag.dataType),
                 suffixText: mag.unitSymbol,
                 border: const OutlineInputBorder(),
               ),
@@ -315,9 +316,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   }
 
   Future<void> _addInstancePropertyDialog(CatalogItem species) async {
-    final existingNames = _workingMagnitudes.map((m) => '${m.propertyName}_${m.unitSymbol ?? ""}').toSet();
+    final existingNames = _workingMagnitudes.map((m) => AppTechnicalStrings.propertyNameWithUnitKey(m.propertyName, m.unitSymbol)).toSet();
     final availableSpeciesMags = species.magnitudes.where((sm) =>
-      !existingNames.contains('${sm.propertyName}_${sm.unitSymbol ?? ""}')
+      !existingNames.contains(AppTechnicalStrings.propertyNameWithUnitKey(sm.propertyName, sm.unitSymbol))
     ).toList();
 
     if (availableSpeciesMags.isEmpty) {
@@ -333,8 +334,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
         title: const Text(AppStrings.addSpeciesPropertyTitle),
         children: availableSpeciesMags.map((sm) {
           final unitText = (sm.unitSymbol != null && sm.unitSymbol!.trim().isNotEmpty)
-              ? ' (${sm.unitSymbol})'
-              : ' (${sm.dataType})';
+              ? AppStrings.unitOrTypeInParentheses(sm.unitSymbol!)
+              : AppStrings.unitOrTypeInParentheses(sm.dataType);
           return SimpleDialogOption(
             onPressed: () => Navigator.pop(ctx, sm),
             child: Padding(
@@ -343,7 +344,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 children: [
                   const Icon(Icons.add_circle_outline, size: 18, color: Colors.blueAccent),
                   const SizedBox(width: 8),
-                  Text('${sm.propertyName}$unitText', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(AppStrings.propertyNameWithUnitText(sm.propertyName, unitText), style: const TextStyle(fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
@@ -374,7 +375,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     final confirm = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
       title: AppStrings.deleteConfirmationTitle,
-      message: '${AppStrings.deleteConfirmationMessage} "${species.name}"?',
+      message: AppStrings.deleteSpeciesInstanceConfirmation(species.name),
     );
 
     if (confirm == true) {
@@ -520,11 +521,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${AppStrings.generalSpeciesPrefix}${species.name} (${species.type})',
+                                  AppStrings.speciesGeneralWithType(species.name, species.type),
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                 ),
                                 if (sub.barcode != null)
-                                  Text('${AppStrings.barcodeLabel}: ${sub.barcode}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                                  Text(AppStrings.barcodeWithColon(sub.barcode!), style: const TextStyle(fontSize: 11, color: Colors.grey)),
                               ],
                             ),
                           ),
@@ -646,13 +647,13 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                 builder: (_) {
                                   final now = DateTime.now();
                                   final diffDays = _selectedExpirationDate!.difference(now).inDays;
-                                  final dateStr = '${_selectedExpirationDate!.day}/${_selectedExpirationDate!.month}/${_selectedExpirationDate!.year}';
+                                  final dateStr = AppStrings.formatDateDMY(_selectedExpirationDate);
                                   if (diffDays < 0) {
-                                    return Text('$dateStr (${AppStrings.expiredDaysAgoPrefix}${-diffDays}${AppStrings.expiredDaysAgoSuffix})', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 11));
+                                    return Text(AppStrings.dateFormattedWithDays(dateStr, AppStrings.expiredDaysAgo(-diffDays)), style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 11));
                                   } else if (diffDays <= 7) {
-                                    return Text('$dateStr (${AppStrings.expiresInDaysAlertPrefix}$diffDays${AppStrings.expiresInDaysAlertSuffix})', style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 11));
+                                    return Text(AppStrings.dateFormattedWithDays(dateStr, AppStrings.expiresInDaysAlert(diffDays)), style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 11));
                                   } else {
-                                    return Text('$dateStr (${AppStrings.expiresInDaysPrefix}$diffDays${AppStrings.expiresInDaysSuffix})', style: const TextStyle(color: Colors.green, fontSize: 11));
+                                    return Text(AppStrings.dateFormattedWithDays(dateStr, AppStrings.expiresInDays(diffDays)), style: const TextStyle(color: Colors.green, fontSize: 11));
                                   }
                                 },
                               ),
@@ -702,7 +703,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               // Entity Requirements Section (NECESITA - Passes draft state!)
               RequirementsSectionWidget(
                 sourceId: entity.id,
-                sourceType: 'entity',
+                sourceType: AppTechnicalStrings.sourceTypeEntity,
                 isEditing: _isEditingInPlace,
                 overrideRequirements: _isEditingInPlace ? _workingRequirements : null,
                 onRequirementsChanged: (reqs) {
@@ -761,8 +762,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   Expanded(
                                     child: Text(
                                       mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
-                                          ? '${mag.propertyName} (${mag.unitSymbol})'
-                                          : '${mag.propertyName} (${mag.dataType})',
+                                          ? AppStrings.propertyWithUnitOrType(mag.propertyName, mag.unitSymbol!)
+                                          : AppStrings.propertyWithUnitOrType(mag.propertyName, mag.dataType),
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                     ),
                                   ),
@@ -792,7 +793,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                             final confirm = await AppConfirmationDialog.showDeleteConfirmation(
                                               context: context,
                                               title: AppStrings.confirmDeletePropertyTitle,
-                                              message: '${AppStrings.confirmDeletePropertyMessagePrefix}${mag.propertyName}${AppStrings.confirmDeletePropertyMessageSuffix}',
+                                              message: AppStrings.confirmDeleteProperty(mag.propertyName),
                                             );
                                             if (confirm && mounted) {
                                               setState(() => _workingMagnitudes.removeAt(idx));
@@ -967,7 +968,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
         ),
         error: (err, _) => Scaffold(
           appBar: AppBar(title: const Text(AppStrings.appName)),
-          body: Center(child: Text('${AppStrings.errorPrefix}$err')),
+          body: Center(child: Text(AppStrings.errorWithDetails(err))),
         ),
       );
   }

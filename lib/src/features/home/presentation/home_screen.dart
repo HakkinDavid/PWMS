@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/updater/presentation/update_prompt_dialog.dart';
@@ -111,9 +111,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           final evt = events[idx];
                           return ListTile(
                             leading: Icon(
-                              evt.eventType == 'creation'
+                              evt.eventType == AppTechnicalStrings.eventTypeCreation
                                   ? Icons.add_circle_outline
-                                  : evt.eventType == 'deletion'
+                                  : evt.eventType == AppTechnicalStrings.eventTypeDeletion
                                       ? Icons.delete_outline
                                       : Icons.history,
                               color: theme.colorScheme.primary,
@@ -125,7 +125,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       );
                     },
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
+                    error: (err, _) => Text(AppStrings.formatError(err)),
                   ),
                 ),
               ],
@@ -201,7 +201,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         minHeight: 18,
                                       ),
                                       child: Text(
-                                        '$notifCount',
+                                        AppStrings.countString(notifCount),
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 10,
@@ -284,9 +284,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           : Future.value(null),
                                       builder: (context, subSnapshot) {
                                         final subspecies = subSnapshot.data;
-                                        final isCustomSubspecies = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
+                                        final isCustomSubspecies = subspecies != null && subspecies.subspeciesName.toLowerCase() != AppStrings.genericSubspeciesNameLower;
                                         final primaryTitle = isCustomSubspecies
-                                            ? '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}'
+                                            ? AppStrings.subspeciesNameWithBrand(subspecies.subspeciesName, subspecies.brand)
                                             : (species?.name ?? AppStrings.typeObject);
 
                                         return Column(
@@ -316,7 +316,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
-                                              isCustomSubspecies ? '$speciesType • ${species?.name}' : speciesType,
+                                              isCustomSubspecies ? AppStrings.speciesTypeWithBullet(speciesType, species?.name) : speciesType,
                                               style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -334,7 +334,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       );
                     },
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Text('${AppStrings.errorPrefix}$e'),
+                    error: (e, _) => Text(AppStrings.formatError(e)),
                   ),
                 ],
               ),
@@ -358,7 +358,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                         TextButton(
                           onPressed: () => context.goToLocations(),
-                          child: const Text('Ver todas'),
+                          child: const Text(AppStrings.viewAllLocationsAction),
                         ),
                       ],
                     ),
@@ -403,7 +403,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         );
                       },
                       loading: () => const CircularProgressIndicator(),
-                      error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
+                      error: (err, _) => Text(AppStrings.formatError(err)),
                     ),
                   ],
                 ),
@@ -459,7 +459,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         );
                       },
                       loading: () => const CircularProgressIndicator(),
-                      error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
+                      error: (err, _) => Text(AppStrings.formatError(err)),
                     ),
                   ],
                 ),
@@ -505,9 +505,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             final evt = topEvents[index];
                             return ListTile(
                               leading: Icon(
-                                evt.eventType == 'creation'
+                                evt.eventType == AppTechnicalStrings.eventTypeCreation
                                     ? Icons.add_circle_outline
-                                    : evt.eventType == 'deletion'
+                                    : evt.eventType == AppTechnicalStrings.eventTypeDeletion
                                         ? Icons.delete_outline
                                         : Icons.history,
                                 color: theme.colorScheme.primary,
@@ -519,7 +519,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         );
                       },
                       loading: () => const CircularProgressIndicator(),
-                      error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
+                      error: (err, _) => Text(AppStrings.formatError(err)),
                     ),
                     const SizedBox(height: 100),
                   ],

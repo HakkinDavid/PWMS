@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
@@ -33,14 +34,14 @@ Future<String?> resolveEffectiveEntityPhotoPathWithRepo(
   if (instanceId != null && instanceId.isNotEmpty) {
     final attachments = await entityRepo.getAttachmentsForInstance(instanceId);
     final imageAttachment = attachments.where((a) {
-      if (a.fileType == 'image') return true;
+      if (a.fileType == AppTechnicalStrings.fileTypeImage) return true;
       final path = a.filePath.toLowerCase();
-      return path.endsWith('.jpg') ||
-          path.endsWith('.jpeg') ||
-          path.endsWith('.png') ||
-          path.endsWith('.webp') ||
-          path.endsWith('.heic') ||
-          path.endsWith('.bmp');
+      return path.endsWith(AppTechnicalStrings.extJpg) ||
+          path.endsWith(AppTechnicalStrings.extJpeg) ||
+          path.endsWith(AppTechnicalStrings.extPng) ||
+          path.endsWith(AppTechnicalStrings.extWebp) ||
+          path.endsWith(AppTechnicalStrings.extHeic) ||
+          path.endsWith(AppTechnicalStrings.extBmp);
     }).firstOrNull;
     if (imageAttachment != null) {
       return imageAttachment.filePath;

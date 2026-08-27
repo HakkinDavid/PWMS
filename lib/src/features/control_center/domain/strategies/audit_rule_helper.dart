@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import '../../../catalog/domain/catalog_item.dart';
@@ -81,7 +83,7 @@ class AuditRuleHelper {
     Future<bool> Function(BuildContext, WidgetRef)? onConfirm,
     required Future<bool> Function(BuildContext, WidgetRef) onFix,
   }) {
-    assert(confirmToastMessage != null || onConfirm != null, 'Either confirmToastMessage or onConfirm must be provided');
+    assert(confirmToastMessage != null || onConfirm != null, AppTechnicalStrings.assertConfirmToastOrOnConfirm);
     return AuditCardData(
       id: id,
       type: type,
@@ -115,7 +117,7 @@ class AuditRuleHelper {
     Future<bool> Function(BuildContext, WidgetRef)? onConfirm,
     required Future<bool> Function(BuildContext, WidgetRef) onFix,
   }) {
-    assert(confirmToastMessage != null || onConfirm != null, 'Either confirmToastMessage or onConfirm must be provided');
+    assert(confirmToastMessage != null || onConfirm != null, AppTechnicalStrings.assertConfirmToastOrOnConfirm);
     return AuditCardData(
       id: id,
       type: type,
@@ -149,7 +151,7 @@ class AuditRuleHelper {
     Future<bool> Function(BuildContext, WidgetRef)? onConfirm,
     required Future<bool> Function(BuildContext, WidgetRef) onFix,
   }) {
-    assert(confirmToastMessage != null || onConfirm != null, 'Either confirmToastMessage or onConfirm must be provided');
+    assert(confirmToastMessage != null || onConfirm != null, AppTechnicalStrings.assertConfirmToastOrOnConfirm);
     return AuditCardData(
       id: id,
       type: type,
@@ -183,7 +185,7 @@ class AuditRuleHelper {
     Future<bool> Function(BuildContext, WidgetRef)? onConfirm,
     required Future<bool> Function(BuildContext, WidgetRef) onFix,
   }) {
-    assert(confirmToastMessage != null || onConfirm != null, 'Either confirmToastMessage or onConfirm must be provided');
+    assert(confirmToastMessage != null || onConfirm != null, AppTechnicalStrings.assertConfirmToastOrOnConfirm);
     return AuditCardData(
       id: id,
       type: type,
@@ -215,7 +217,10 @@ class AuditRuleHelper {
         title: Text(title),
         content: Text(content),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx, false),
+            child: const Text(AppStrings.cancel),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, true),
             child: Text(
@@ -257,10 +262,13 @@ class AuditRuleHelper {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogCtx, null), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx, null),
+            child: const Text(AppStrings.cancel),
+          ),
           ElevatedButton(
             onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
-            child: const Text('Guardar'),
+            child: const Text(AppStrings.save),
           ),
         ],
       ),
@@ -283,15 +291,15 @@ class AuditRuleHelper {
       final relPath = await fileStorage.saveFile(localTempPath);
       await onSave(relPath);
       if (context.mounted) {
-        AppToast.showSuccess(context, 'Imagen descargada y guardada localmente con éxito.');
+        AppToast.showSuccess(context, AppStrings.remoteImageDownloadedSuccess);
       }
       return true;
     } else {
       if (context.mounted) {
-        AppToast.showError(context, 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla mediante el selector de medios.');
+        AppToast.showError(context, AppStrings.remoteImageDownloadFailedMessage);
         final picked = await StandardMediaPickerSheet.show(
           context,
-          title: 'Foto de $displayName',
+          title: AppStrings.photoOfDisplayName(displayName),
           webSearchQuery: displayName,
           allowDocuments: false,
         );

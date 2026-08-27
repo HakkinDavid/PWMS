@@ -1,15 +1,14 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../domain/taxonomy/product_taxonomy_service.dart';
 import '../../../core/storage/file_storage_service.dart';
 
 class ProductLookupResult {
-  final String generalSpeciesName; // ej. "Monitor", "Libro", "Control de Videojuegos"
-  final String subspeciesName;     // ej. "Cien Años de Soledad", "Dell P2425DE"
+  final String generalSpeciesName;
+  final String subspeciesName;
   final String? brand;
   final String? barcode;
   final String? description;
@@ -24,7 +23,7 @@ class ProductLookupResult {
     this.brand,
     this.barcode,
     this.description,
-    this.type = 'Objeto',
+    this.type = AppStrings.typeObject,
     this.photoUrl,
     this.localPhotoPath,
     this.extraAttributes = const {},
@@ -72,7 +71,7 @@ class ProductLookupService {
 
   /// Consultar producto por código de barras o ISBN con arquitectura multinivel
   Future<ProductLookupResult?> lookupByBarcode(String rawBarcode) async {
-    final cleanCode = rawBarcode.trim().replaceAll('-', '').replaceAll(' ', '');
+    final cleanCode = rawBarcode.trim().replaceAll(AppTechnicalStrings.dash, AppTechnicalStrings.empty).replaceAll(AppTechnicalStrings.space, AppTechnicalStrings.empty);
     if (cleanCode.isEmpty) return null;
 
     // Level 0: ISBN Book Search (Google Books & Open Library)
@@ -84,12 +83,7 @@ class ProductLookupService {
     }
 
     // Level 1: Open Food Facts, Open Beauty Facts, Open Products Facts, Open Pet Food Facts APIs (v2)
-    final openFactsDomains = [
-      'world.openfoodfacts.org',
-      'world.openbeautyfacts.org',
-      'world.openproductsfacts.org',
-      'world.openpetfoodfacts.org',
-    ];
+    const openFactsDomains = AppTechnicalProductLookup.openFactsDomains;
     for (final domain in openFactsDomains) {
       final offResult = await _fetchFromOpenFactsApi(domain, cleanCode);
       if (offResult != null) {
@@ -114,7 +108,7 @@ class ProductLookupService {
 
   bool _isPotentialIsbn(String code) {
     if (code.length == 10) return true;
-    if (code.length == 13 && (code.startsWith('978') || code.startsWith('979'))) return true;
+    if (code.length == 13 && (code.startsWith(AppTechnicalStrings.isbnPrefix978) || code.startsWith(AppTechnicalStrings.isbnPrefix979))) return true;
     return false;
   }
 
@@ -122,34 +116,34 @@ class ProductLookupService {
   Future<ProductLookupResult?> _fetchFromIsbnApis(String isbn) async {
     // 1. Google Books API
     try {
-      final uri = Uri.parse('https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn');
+      final uri = Uri.parse(AppTechnicalStrings.endpointGoogleBooksIsbn + isbn);
       final response = await _client.get(uri).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final items = data['items'] as List?;
+        final items = data[AppTechnicalStrings.keyItems] as List?;
         if (items != null && items.isNotEmpty) {
-          final volumeInfo = items.first['volumeInfo'] as Map<String, dynamic>?;
+          final volumeInfo = items.first[AppTechnicalStrings.keyVolumeInfo] as Map<String, dynamic>?;
           if (volumeInfo != null) {
-            final title = (volumeInfo['title'] ?? '').toString().trim();
-            final authorsList = volumeInfo['authors'] as List?;
-            final authorStr = (authorsList != null && authorsList.isNotEmpty) ? authorsList.join(', ') : null;
-            final publisher = volumeInfo['publisher']?.toString();
-            final description = volumeInfo['description']?.toString();
-            final imageLinks = volumeInfo['imageLinks'] as Map<String, dynamic>?;
-            var photoUrl = imageLinks?['thumbnail'] ?? imageLinks?['smallThumbnail'];
-            if (photoUrl != null && photoUrl.startsWith('http:')) {
-              photoUrl = photoUrl.replaceFirst('http:', 'https:');
+            final title = (volumeInfo[AppTechnicalStrings.keyTitle] ?? AppTechnicalStrings.empty).toString().trim();
+            final authorsList = volumeInfo[AppTechnicalStrings.keyAuthors] as List?;
+            final authorStr = (authorsList != null && authorsList.isNotEmpty) ? authorsList.join(AppTechnicalStrings.commaSpace) : null;
+            final publisher = volumeInfo[AppTechnicalStrings.keyPublisher]?.toString();
+            final description = volumeInfo[AppTechnicalStrings.colDescription]?.toString();
+            final imageLinks = volumeInfo[AppTechnicalStrings.keyImageLinks] as Map<String, dynamic>?;
+            var photoUrl = imageLinks?[AppTechnicalStrings.keyThumbnail] ?? imageLinks?[AppTechnicalStrings.keySmallThumbnail];
+            if (photoUrl != null && photoUrl.startsWith(AppTechnicalStrings.httpProtocol)) {
+              photoUrl = photoUrl.replaceFirst(AppTechnicalStrings.httpProtocol, AppTechnicalStrings.httpsProtocol);
             }
 
             if (title.isNotEmpty) {
               return ProductLookupResult(
-                generalSpeciesName: 'Libro',
+                generalSpeciesName: AppStrings.speciesBook,
                 subspeciesName: title,
                 brand: authorStr ?? publisher,
                 barcode: isbn,
                 description: description,
-                type: 'Documento',
+                type: AppStrings.typeDocument,
                 photoUrl: photoUrl?.toString(),
               );
             }
@@ -160,27 +154,27 @@ class ProductLookupService {
 
     // 2. Open Library API Fallback
     try {
-      final uri = Uri.parse('https://openlibrary.org/api/books?bibkeys=ISBN:$isbn&format=json&jscmd=data');
+      final uri = Uri.parse(AppTechnicalStrings.endpointOpenLibraryIsbnPrefix + isbn + AppTechnicalStrings.endpointOpenLibraryIsbnSuffix);
       final response = await _client.get(uri).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        final key = 'ISBN:$isbn';
+        final key = AppTechnicalStrings.prefixIsbnKey + isbn;
         if (data.containsKey(key)) {
           final bookData = data[key] as Map<String, dynamic>;
-          final title = (bookData['title'] ?? '').toString().trim();
-          final authors = bookData['authors'] as List?;
-          final authorName = (authors != null && authors.isNotEmpty) ? authors.first['name']?.toString() : null;
-          final coverMap = bookData['cover'] as Map<String, dynamic>?;
-          final photoUrl = coverMap?['large'] ?? coverMap?['medium'];
+          final title = (bookData[AppTechnicalStrings.keyTitle] ?? AppTechnicalStrings.empty).toString().trim();
+          final authors = bookData[AppTechnicalStrings.keyAuthors] as List?;
+          final authorName = (authors != null && authors.isNotEmpty) ? authors.first[AppTechnicalStrings.colName]?.toString() : null;
+          final coverMap = bookData[AppTechnicalStrings.keyCover] as Map<String, dynamic>?;
+          final photoUrl = coverMap?[AppTechnicalStrings.keyLarge] ?? coverMap?[AppTechnicalStrings.keyMedium];
 
           if (title.isNotEmpty) {
             return ProductLookupResult(
-              generalSpeciesName: 'Libro',
+              generalSpeciesName: AppStrings.speciesBook,
               subspeciesName: title,
               brand: authorName,
               barcode: isbn,
-              type: 'Documento',
+              type: AppStrings.typeDocument,
               photoUrl: photoUrl?.toString(),
             );
           }
@@ -193,17 +187,17 @@ class ProductLookupService {
 
   Future<ProductLookupResult?> _fetchFromOpenFactsApi(String domain, String barcode) async {
     try {
-      final uri = Uri.parse('https://$domain/api/v2/product/$barcode.json');
+      final uri = Uri.parse(AppTechnicalStrings.endpointOpenFactsPrefix + domain + AppTechnicalStrings.endpointOpenFactsProductPath + barcode + AppTechnicalStrings.endpointOpenFactsProductExt);
       final response = await _client.get(uri).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        if (data['status'] == 1 && data['product'] != null) {
-          final prod = data['product'] as Map<String, dynamic>;
-          final name = (prod['product_name'] ?? prod['product_name_es'] ?? prod['abbreviated_product_name'] ?? '').toString().trim();
-          final brand = (prod['brands'] ?? '').toString().trim();
-          final categories = (prod['categories'] ?? '').toString().trim();
-          final genericName = (prod['generic_name'] ?? '').toString().trim();
+        if (data[AppTechnicalStrings.keyStatus] == 1 && data[AppTechnicalStrings.keyProduct] != null) {
+          final prod = data[AppTechnicalStrings.keyProduct] as Map<String, dynamic>;
+          final name = (prod[AppTechnicalStrings.keyProductName] ?? prod[AppTechnicalStrings.keyProductNameEs] ?? prod[AppTechnicalStrings.keyAbbreviatedProductName] ?? AppTechnicalStrings.empty).toString().trim();
+          final brand = (prod[AppTechnicalStrings.keyBrands] ?? AppTechnicalStrings.empty).toString().trim();
+          final categories = (prod[AppTechnicalStrings.keyCategories] ?? AppTechnicalStrings.empty).toString().trim();
+          final genericName = (prod[AppTechnicalStrings.keyGenericName] ?? AppTechnicalStrings.empty).toString().trim();
           final imgUrl = _extractFrontPhotoUrl(prod);
 
           if (name.isNotEmpty) {
@@ -231,19 +225,19 @@ class ProductLookupService {
 
   Future<ProductLookupResult?> _fetchFromUpcItemDb(String barcode) async {
     try {
-      final uri = Uri.parse('https://api.upcitemdb.com/prod/trial/lookup?upc=$barcode');
+      final uri = Uri.parse(AppTechnicalStrings.endpointUpcItemDbLookup + barcode);
       final response = await _client.get(uri).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final items = data['items'] as List?;
+        final items = data[AppTechnicalStrings.keyItems] as List?;
         if (items != null && items.isNotEmpty) {
           final item = items.first as Map<String, dynamic>;
-          final title = (item['title'] ?? '').toString().trim();
-          final brand = (item['brand'] ?? '').toString().trim();
-          final category = (item['category'] ?? '').toString().trim();
-          final description = (item['description'] ?? '').toString().trim();
-          final images = item['images'] as List?;
+          final title = (item[AppTechnicalStrings.keyTitle] ?? AppTechnicalStrings.empty).toString().trim();
+          final brand = (item[AppTechnicalStrings.colBrand] ?? AppTechnicalStrings.empty).toString().trim();
+          final category = (item[AppTechnicalStrings.keyCategory] ?? AppTechnicalStrings.empty).toString().trim();
+          final description = (item[AppTechnicalStrings.colDescription] ?? AppTechnicalStrings.empty).toString().trim();
+          final images = item[AppTechnicalStrings.keyImages] as List?;
           final imgUrl = (images != null && images.isNotEmpty) ? images.first.toString() : null;
 
           if (title.isNotEmpty) {
@@ -270,32 +264,35 @@ class ProductLookupService {
 
   Future<ProductLookupResult?> _fetchFromWebSearchFallback(String barcodeOrQuery) async {
     try {
-      final uri = Uri.parse('https://html.duckduckgo.com/html/?q=${Uri.encodeComponent(barcodeOrQuery)}');
+      final uri = Uri.parse(AppTechnicalStrings.endpointDuckDuckGoHtml + Uri.encodeComponent(barcodeOrQuery));
       final response = await _client.get(
         uri,
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          AppTechnicalStrings.headerUserAgent: AppTechnicalStrings.userAgentDesktop,
         },
       ).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
         final html = response.body;
-        final titleRegex = RegExp(r'<a class="result__a"[^>]*>(.*?)<\/a>', dotAll: true, caseSensitive: false);
+        final titleRegex = RegExp(AppTechnicalStrings.regexDuckDuckGoResultLink, dotAll: true, caseSensitive: false);
         final matches = titleRegex.allMatches(html);
 
         for (final match in matches) {
-          var rawTitle = match.group(1) ?? '';
-          rawTitle = rawTitle.replaceAll(RegExp(r'<[^>]*>'), '').trim();
-          rawTitle = rawTitle.replaceAll('&quot;', '"').replaceAll('&amp;', '&').replaceAll('&#39;', "'");
+          var rawTitle = match.group(1) ?? AppTechnicalStrings.empty;
+          rawTitle = rawTitle.replaceAll(RegExp(AppTechnicalStrings.regexHtmlTags), AppTechnicalStrings.empty).trim();
+          rawTitle = rawTitle
+              .replaceAll(AppTechnicalStrings.htmlEntityQuot, AppTechnicalStrings.doubleQuote)
+              .replaceAll(AppTechnicalStrings.htmlEntityAmp, AppTechnicalStrings.amp)
+              .replaceAll(AppTechnicalStrings.htmlEntityApos, AppTechnicalStrings.singleQuote);
 
-          if (rawTitle.isNotEmpty && rawTitle.length > 5 && !rawTitle.toLowerCase().contains('duckduckgo')) {
+          if (rawTitle.isNotEmpty && rawTitle.length > 5 && !rawTitle.toLowerCase().contains(AppTechnicalStrings.siteDuckDuckGo)) {
             final taxonomy = _taxonomyService.resolve(title: rawTitle);
 
             return ProductLookupResult(
               generalSpeciesName: taxonomy.generalSpeciesName,
               subspeciesName: rawTitle,
               brand: taxonomy.inferredBrand,
-              barcode: RegExp(r'^\d+$').hasMatch(barcodeOrQuery) ? barcodeOrQuery : null,
+              barcode: RegExp(AppTechnicalStrings.digitsOnly).hasMatch(barcodeOrQuery) ? barcodeOrQuery : null,
             );
           }
         }
@@ -305,15 +302,15 @@ class ProductLookupService {
   }
 
   String? _extractFrontPhotoUrl(Map<String, dynamic> prod) {
-    if (prod['image_front_url'] != null && prod['image_front_url'].toString().isNotEmpty) {
-      return prod['image_front_url'].toString();
+    if (prod[AppTechnicalStrings.keyImageFrontUrl] != null && prod[AppTechnicalStrings.keyImageFrontUrl].toString().isNotEmpty) {
+      return prod[AppTechnicalStrings.keyImageFrontUrl].toString();
     }
-    if (prod['image_front_large_url'] != null && prod['image_front_large_url'].toString().isNotEmpty) {
-      return prod['image_front_large_url'].toString();
+    if (prod[AppTechnicalStrings.keyImageFrontLargeUrl] != null && prod[AppTechnicalStrings.keyImageFrontLargeUrl].toString().isNotEmpty) {
+      return prod[AppTechnicalStrings.keyImageFrontLargeUrl].toString();
     }
-    if (prod['image_url'] != null && prod['image_url'].toString().isNotEmpty) {
-      final url = prod['image_url'].toString();
-      if (!url.contains('nutrition') && !url.contains('ingredients')) {
+    if (prod[AppTechnicalStrings.keyImageUrl] != null && prod[AppTechnicalStrings.keyImageUrl].toString().isNotEmpty) {
+      final url = prod[AppTechnicalStrings.keyImageUrl].toString();
+      if (!url.contains(AppTechnicalStrings.keyNutrition) && !url.contains(AppTechnicalStrings.keyIngredients)) {
         return url;
       }
     }
@@ -326,34 +323,34 @@ class ProductLookupService {
     if (cleanQuery.isEmpty) return [];
     final List<String> imageUrls = [];
     final headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      AppTechnicalStrings.headerUserAgent: AppTechnicalStrings.userAgentDesktop,
     };
 
     // 1. DuckDuckGo Image Search con token vqd
     try {
-      String vqd = '';
+      String vqd = AppTechnicalStrings.empty;
       final initRes = await _client.get(
-        Uri.parse('https://duckduckgo.com/?q=${Uri.encodeComponent(cleanQuery)}'),
+        Uri.parse(AppTechnicalStrings.endpointDuckDuckGoSearch + Uri.encodeComponent(cleanQuery)),
         headers: headers,
       ).timeout(const Duration(seconds: 4));
 
-      final vqdMatch = RegExp(r'vqd="([^"]+)"').firstMatch(initRes.body) ?? RegExp(r"vqd=([^&'\s]+)").firstMatch(initRes.body);
+      final vqdMatch = RegExp(AppTechnicalStrings.regexVqdDoubleQuotes).firstMatch(initRes.body) ?? RegExp(AppTechnicalStrings.regexVqdSingleQuotes).firstMatch(initRes.body);
       if (vqdMatch != null) {
-        vqd = vqdMatch.group(1) ?? '';
+        vqd = vqdMatch.group(1) ?? AppTechnicalStrings.empty;
       }
 
-      final uri = Uri.parse('https://duckduckgo.com/i.js?q=${Uri.encodeComponent(cleanQuery)}&o=json&vqd=$vqd');
+      final uri = Uri.parse(AppTechnicalStrings.endpointDuckDuckGoImageSearch + Uri.encodeComponent(cleanQuery) + AppTechnicalStrings.endpointDuckDuckGoImageParams + vqd);
       final response = await _client.get(uri, headers: headers).timeout(const Duration(seconds: 6));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final results = data['results'] as List?;
+        final results = data[AppTechnicalStrings.keyResults] as List?;
         if (results != null) {
           for (final res in results) {
-            final image = res['image']?.toString();
-            if (image != null && image.startsWith('http') && !imageUrls.contains(image)) {
+            final image = res[AppTechnicalStrings.keyImage]?.toString();
+            if (image != null && image.startsWith(AppTechnicalStrings.httpPrefix) && !imageUrls.contains(image)) {
               final lower = image.toLowerCase();
-              if (!lower.endsWith('.svg') && !lower.endsWith('.avif') && !lower.contains('data:image')) {
+              if (!lower.endsWith(AppTechnicalStrings.extSvg) && !lower.endsWith(AppTechnicalStrings.extAvif) && !lower.contains(AppTechnicalStrings.dataImagePrefix)) {
                 imageUrls.add(image);
                 if (imageUrls.length >= 12) break;
               }
@@ -367,16 +364,16 @@ class ProductLookupService {
     if (imageUrls.length < 4) {
       try {
         final wikiUri = Uri.parse(
-          'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&piprop=original&generator=search&gsrsearch=${Uri.encodeComponent(cleanQuery)}&gsrlimit=8',
+          AppTechnicalStrings.endpointWikiCommonsSearch + Uri.encodeComponent(cleanQuery) + AppTechnicalStrings.endpointWikiCommonsLimit,
         );
         final res = await _client.get(wikiUri, headers: headers).timeout(const Duration(seconds: 4));
         if (res.statusCode == 200) {
           final data = jsonDecode(res.body);
-          final pages = data['query']?['pages'] as Map<String, dynamic>?;
+          final pages = data[AppTechnicalStrings.keyQuery]?[AppTechnicalStrings.keyPages] as Map<String, dynamic>?;
           if (pages != null) {
             for (final page in pages.values) {
-              final original = page['original']?['source']?.toString();
-              if (original != null && original.startsWith('http') && !imageUrls.contains(original)) {
+              final original = page[AppTechnicalStrings.keyOriginal]?[AppTechnicalStrings.keySource]?.toString();
+              if (original != null && original.startsWith(AppTechnicalStrings.httpPrefix) && !imageUrls.contains(original)) {
                 imageUrls.add(original);
               }
             }
@@ -392,7 +389,8 @@ class ProductLookupService {
     String? photoUrl = result.photoUrl;
 
     if (photoUrl == null || photoUrl.isEmpty) {
-      final images = await searchWebImages('${result.brand ?? ''} ${result.subspeciesName}');
+      final brandPrefix = (result.brand != null && result.brand!.isNotEmpty) ? result.brand! + AppTechnicalStrings.space : AppTechnicalStrings.empty;
+      final images = await searchWebImages(brandPrefix + result.subspeciesName);
       if (images.isNotEmpty) {
         photoUrl = images.first;
       }
@@ -412,8 +410,8 @@ class ProductLookupService {
     try {
       final response = await _client.get(Uri.parse(imageUrl)).timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
-        final ext = p.extension(imageUrl).split('?').first;
-        final validExt = (ext.isNotEmpty && ext.length <= 5) ? ext : '.jpg';
+        final ext = p.extension(imageUrl).split(AppTechnicalStrings.questionMark).first;
+        final validExt = (ext.isNotEmpty && ext.length <= 5) ? ext : AppTechnicalStrings.extJpg;
         final filename = await _fileStorage.saveBytes(response.bodyBytes, extension: validExt);
         return await _fileStorage.getAbsolutePath(filename);
       }

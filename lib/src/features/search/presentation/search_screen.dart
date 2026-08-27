@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../catalog/domain/catalog_item.dart';
@@ -36,7 +37,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   late String _selectedScope;
   SqlPresetCategory _selectedSqlCategory = SqlPresetCategory.all;
   SqlResultViewMode _viewMode = SqlResultViewMode.table;
-  final TextEditingController _sqlController = TextEditingController(text: 'SELECT * FROM catalog_table LIMIT 20;');
+  final TextEditingController _sqlController = TextEditingController(text: AppTechnicalStrings.sqlDefaultSearchSample);
 
   bool _isExecutingSql = false;
   List<String> _sqlColumns = [];
@@ -98,12 +99,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final queryStr = _sqlController.text.trim();
     if (queryStr.isEmpty) return;
 
-    final forbiddenKeywords = ['INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'CREATE', 'REPLACE', 'TRUNCATE'];
+    const forbiddenKeywords = AppTechnicalStrings.sqlForbiddenKeywords;
 
     for (final kw in forbiddenKeywords) {
-      if (RegExp(r'\b' + kw + r'\b', caseSensitive: false).hasMatch(queryStr)) {
+      if (RegExp(AppTechnicalStrings.wordBoundaryKeywordPattern(kw), caseSensitive: false).hasMatch(queryStr)) {
         setState(() {
-          _sqlError = AppStrings.sqlSecurityErrorPrefix + kw + AppStrings.sqlSecurityErrorSuffix;
+          _sqlError = AppStrings.sqlSecurityError(kw);
           _sqlColumns = [];
           _sqlRows = [];
         });
@@ -143,7 +144,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
     } catch (e) {
       setState(() {
-        _sqlError = AppStrings.sqlSyntaxErrorPrefix + e.toString();
+        _sqlError = AppStrings.sqlSyntaxError(e.toString());
         _sqlColumns = [];
         _sqlRows = [];
       });
@@ -181,7 +182,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
-                ref.read(searchQueryProvider.notifier).state = '';
+                ref.read(searchQueryProvider.notifier).state = AppTechnicalStrings.empty;
               },
             ),
         ],
@@ -353,7 +354,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${AppStrings.rowsRetrievedPrefix}${_sqlRows.length}',
+                                AppStrings.rowsRetrieved(_sqlRows.length),
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                               ),
                               SegmentedButton<SqlResultViewMode>(
@@ -403,7 +404,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         child: DataTable(
           border: TableBorder.all(color: theme.dividerColor, width: 0.5),
           columnSpacing: 16,
-          headingRowColor: MaterialStateProperty.all(theme.colorScheme.primary.withAlpha(20)),
+          headingRowColor: WidgetStateProperty.all(theme.colorScheme.primary.withAlpha(20)),
           columns: _sqlColumns.map((col) {
             return DataColumn(
               label: Text(
@@ -415,7 +416,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           rows: _sqlRows.map((row) {
             return DataRow(
               cells: row.map((cell) {
-                final cellStr = cell != null ? cell.toString() : 'NULL';
+                final cellStr = cell != null ? cell.toString() : AppTechnicalStrings.sqlNull;
                 return DataCell(
                   Text(cellStr, style: const TextStyle(fontSize: 12)),
                 );
@@ -434,8 +435,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     // 1. Try to find entity IDs
     final entityIdColIndex = _sqlColumns.indexWhere((c) =>
-        ['id', 'instance_id', 'entity_id', 'source_entity_id', 'target_entity_id', 'entity_a', 'entity_b']
-            .contains(c.toLowerCase()));
+        [
+          AppTechnicalStrings.colId,
+          AppTechnicalStrings.colInstanceId,
+          AppTechnicalStrings.colEntityId,
+          AppTechnicalStrings.colSourceEntityId,
+          AppTechnicalStrings.colTargetEntityId,
+          AppTechnicalStrings.colEntityA,
+          AppTechnicalStrings.colEntityB,
+        ].contains(c.toLowerCase()));
 
     if (entityIdColIndex != -1) {
       final matchingEntities = <WorldEntity>[];
@@ -462,7 +470,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     // 2. Try to find species IDs
     final speciesIdColIndex = _sqlColumns.indexWhere((c) =>
-        ['id', 'species_id'].contains(c.toLowerCase()));
+        [
+          AppTechnicalStrings.colId,
+          AppTechnicalStrings.colSpeciesId,
+        ].contains(c.toLowerCase()));
 
     if (speciesIdColIndex != -1) {
       final matchingSpecies = <CatalogItem>[];
@@ -489,7 +500,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     // 3. Try to find location IDs
     final locIdColIndex = _sqlColumns.indexWhere((c) =>
-        ['id', 'location_id', 'parent_location_id'].contains(c.toLowerCase()));
+        [
+          AppTechnicalStrings.colId,
+          AppTechnicalStrings.colLocationId,
+          AppTechnicalStrings.colParentLocationId,
+        ].contains(c.toLowerCase()));
 
     if (locIdColIndex != -1) {
       final matchingLocations = <LocationNode>[];
@@ -536,12 +551,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${_sqlColumns[i]}: ',
+                          AppTechnicalStrings.labelWithColon(_sqlColumns[i]),
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                         Expanded(
                           child: Text(
-                            row[i] != null ? row[i].toString() : 'NULL',
+                            row[i] != null ? row[i].toString() : AppTechnicalStrings.sqlNull,
                             style: const TextStyle(fontSize: 12),
                           ),
                         ),
@@ -577,7 +592,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       final catalogItems = catalogState.asData?.value ?? [];
 
       final containerEntityIds = relations
-          .where((r) => r.relationType == 'GUARDADO_EN')
+          .where((r) => r.relationType == AppTechnicalStrings.relGuardadoEn)
           .map((r) => r.targetEntityId)
           .toSet();
 
@@ -680,7 +695,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 Icon(Icons.search_off, size: 64, color: theme.colorScheme.primary.withAlpha(100)),
                 const SizedBox(height: 16),
                 Text(
-                  AppStrings.noSearchMatchesPrefix + query + AppStrings.noSearchMatchesSuffix,
+                  AppStrings.noSearchMatches(query),
                   style: theme.textTheme.titleMedium,
                 ),
               ],
@@ -697,7 +712,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
+      error: (err, _) => Center(child: Text(AppStrings.errorWithDetails(err))),
     );
   }
 }

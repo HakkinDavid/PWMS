@@ -83,7 +83,7 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
         _imageUrls = urls;
       });
     } catch (e) {
-      if (mounted) AppToast.showError(context, 'Error buscando imágenes: $e');
+      if (mounted) AppToast.showError(context, AppStrings.searchWebImagesError(e.toString()));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -148,7 +148,7 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
         }
       }
     } catch (e) {
-      if (mounted) AppToast.showError(context, 'Error al descargar/asignar la imagen: $e');
+      if (mounted) AppToast.showError(context, AppStrings.downloadOrAssignImageError(e.toString()));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -160,7 +160,7 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
 
     return AlertDialog(
       title: Text(
-        'Buscar Imagen en Internet',
+        AppStrings.searchWebImageTitle,
         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
       ),
       content: SizedBox(
@@ -174,7 +174,7 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
                   child: TextField(
                     controller: _searchCtrl,
                     decoration: const InputDecoration(
-                      hintText: 'Nombre del producto / especie...',
+                      hintText: AppStrings.productOrSpeciesSearchHint,
                       prefixIcon: Icon(Icons.search),
                       isDense: true,
                     ),

@@ -1,3 +1,4 @@
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'world_entity.dart';
 
 class EffectiveEntityGroup {
@@ -31,7 +32,7 @@ class EffectiveEntityGroup {
 
   static String _magnitudeSignature(WorldEntity entity) {
     final sorted = List.of(entity.magnitudes)..sort((a, b) => a.propertyName.compareTo(b.propertyName));
-    return sorted.map((m) => '${m.propertyName}:${m.displayValue}').join('|');
+    return sorted.map((m) => AppTechnicalStrings.magnitudePropertySignature(m.propertyName, m.displayValue)).join(AppTechnicalStrings.pipe);
   }
 
   static List<EffectiveEntityGroup> groupEntities({
@@ -48,15 +49,15 @@ class EffectiveEntityGroup {
       // Requisito 6: Los elementos que contengan a otros (recibidores de GUARDADO_EN) NO deben agruparse.
       // Permanecen como instancias únicas e independientes.
       if (isContainer) {
-        final uniqueKey = 'container_${entity.id}';
+        final uniqueKey = AppTechnicalStrings.containerEntityKey(entity.id);
         grouped[uniqueKey] = [entity];
       } else {
         // Requisitos 5 y 6: Solo agrupar elementos homogéneos con idéntica ubicación efectiva,
         // misma subespecie, mismas magnitudes y notas idénticas.
-        final subId = entity.subspeciesId ?? 'generic';
+        final subId = entity.subspeciesId ?? AppTechnicalStrings.keyGeneric;
         final magSig = _magnitudeSignature(entity);
-        final notesKey = entity.notes?.trim() ?? '';
-        final groupKey = '${entity.speciesId}_${locId ?? "root"}_${subId}_${magSig}_$notesKey';
+        final notesKey = entity.notes?.trim() ?? AppTechnicalStrings.empty;
+        final groupKey = AppTechnicalStrings.entityGroupKey(entity.speciesId, locId, subId, magSig, notesKey);
 
         if (!grouped.containsKey(groupKey)) {
           grouped[groupKey] = [];

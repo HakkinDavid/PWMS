@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../entities/domain/effective_entity_group.dart';
 import '../../entities/domain/world_entity.dart';
 
@@ -134,8 +135,8 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
                 const SizedBox(width: 8),
                 Text(
                   isMulti
-                      ? 'Arrastrando ${widget.group.population} unidades'
-                      : 'Arrastrando elemento',
+                      ? AppStrings.draggingUnits(widget.group.population)
+                      : AppStrings.draggingElement,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onPrimaryContainer,
@@ -168,7 +169,7 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
                 Icon(Icons.checklist, size: 20, color: theme.colorScheme.onPrimaryContainer),
                 const SizedBox(width: 8),
                 Text(
-                  'Arrastrando ${widget.selectedEntityIds.length} elementos seleccionados',
+                  AppStrings.draggingSelectedElements(widget.selectedEntityIds.length),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onPrimaryContainer,

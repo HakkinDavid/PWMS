@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../constants/app_technical_strings.dart';
 import '../database/app_database.dart';
 import '../database/database_backup_service.dart';
 import '../storage/file_storage_service.dart';
@@ -27,7 +28,6 @@ import '../../features/notifications/infrastructure/notification_repository.dart
 import '../../features/notifications/application/notification_service.dart';
 
 import '../updater/infrastructure/app_update_service.dart';
-import '../updater/domain/app_update_info.dart';
 
 // Singletons / Core Services
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -209,7 +209,7 @@ final recentActivityProvider = FutureProvider<List<ActivityEvent>>((ref) async {
 });
 
 // Search Query State
-final searchQueryProvider = StateProvider<String>((ref) => '');
+final searchQueryProvider = StateProvider<String>((ref) => AppTechnicalStrings.empty);
 
 // Real-time Filtered Search Provider
 final searchResultsProvider = FutureProvider<List<WorldEntity>>((ref) async {

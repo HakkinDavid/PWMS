@@ -1,3 +1,5 @@
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'brand_dictionary.dart';
 import 'fast_lazy_taxonomy_registry.dart';
 import 'product_taxonomy_dictionary.dart';
@@ -22,7 +24,7 @@ class TaxonomyRequestContext {
   })  : inferredBrand = (brandHint != null && brandHint.trim().isNotEmpty)
             ? brandHint.trim()
             : BrandDictionary.inferBrand(cleanTitle),
-        combinedText = '${genericName ?? ""} ${categoryHint ?? ""} $cleanTitle'.toLowerCase();
+        combinedText = AppStrings.taxonomyCombinedText(genericName, categoryHint, cleanTitle).toLowerCase();
 }
 
 abstract class ITaxonomyHandler {
@@ -42,8 +44,8 @@ abstract class ITaxonomyHandler {
       return _nextHandler!.handle(context);
     }
     return const TaxonomyResolution(
-      generalSpeciesName: 'Objeto',
-      department: 'General',
+      generalSpeciesName: AppStrings.typeObject,
+      department: AppStrings.taxonomyDepartmentGeneral,
       confidence: 0.1,
     );
   }
@@ -123,7 +125,7 @@ class NlpFallbackHandler extends ITaxonomyHandler {
 
     return TaxonomyResolution(
       generalSpeciesName: SpanishSingularizer.toSingular(nlpSpeciesName),
-      department: 'General',
+      department: AppStrings.taxonomyDepartmentGeneral,
       inferredBrand: context.inferredBrand,
       confidence: 0.4,
     );
@@ -132,21 +134,21 @@ class NlpFallbackHandler extends ITaxonomyHandler {
   String _extractNounFromTitle(String title, String? brand) {
     var cleaned = title;
     if (brand != null && brand.isNotEmpty) {
-      cleaned = cleaned.replaceAll(RegExp(brand, caseSensitive: false), '');
+      cleaned = cleaned.replaceAll(RegExp(brand, caseSensitive: false), AppTechnicalStrings.empty);
     }
 
     cleaned = cleaned.replaceAll(
-        RegExp(r'\b\d+(\.\d+)?\s*(ml|l|g|kg|gb|tb|mb|hz|v|w|in|mm|cm|m|k|p|fps)\b', caseSensitive: false), '');
-    cleaned = cleaned.replaceAll(RegExp(r'\b\d{2,4}[a-z]*\b', caseSensitive: false), '');
-    cleaned = cleaned.replaceAll(RegExp(r'[^\w\s\u00C0-\u017F]', unicode: true), ' ');
+        RegExp(AppTechnicalStrings.regexUnitsStrip, caseSensitive: false), AppTechnicalStrings.empty);
+    cleaned = cleaned.replaceAll(RegExp(AppTechnicalStrings.regexYearNumberStrip, caseSensitive: false), AppTechnicalStrings.empty);
+    cleaned = cleaned.replaceAll(RegExp(AppTechnicalStrings.regexNonAlphaNumeric, unicode: true), AppTechnicalStrings.space);
 
-    final words = cleaned.trim().split(RegExp(r'\s+')).where((w) => w.length >= 3).toList();
+    final words = cleaned.trim().split(RegExp(AppTechnicalStrings.regexMultipleSpaces)).where((w) => w.length >= 3).toList();
 
     if (words.isNotEmpty) {
       final firstWord = words.first;
       return firstWord[0].toUpperCase() + firstWord.substring(1).toLowerCase();
     }
 
-    return 'Objeto';
+    return AppStrings.typeObject;
   }
 }

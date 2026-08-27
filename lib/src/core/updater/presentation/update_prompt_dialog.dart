@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_strings.dart';
+import '../../constants/app_technical_strings.dart';
 import '../domain/app_update_info.dart';
 import '../../widgets/app_toast.dart';
 
@@ -53,7 +54,7 @@ class _UpdatePromptDialogState extends State<UpdatePromptDialog> {
         setState(() => _isUpdating = false);
         AppToast.showError(
           context,
-          '${AppStrings.updateError}$e',
+          AppStrings.updateErrorWithException(e),
         );
       }
     }
@@ -135,13 +136,13 @@ class _UpdatePromptDialogState extends State<UpdatePromptDialog> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         AppStrings.currentVersionLabel,
-                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'v${widget.updateInfo.currentVersion}',
+                        AppStrings.versionDisplay(widget.updateInfo.currentVersion),
                         style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
                       ),
                     ],
@@ -150,13 +151,13 @@ class _UpdatePromptDialogState extends State<UpdatePromptDialog> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         AppStrings.latestVersionLabel,
-                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'v${widget.updateInfo.latestVersion ?? "?"}',
+                        AppStrings.versionDisplay(widget.updateInfo.latestVersion),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
@@ -203,7 +204,7 @@ class _UpdatePromptDialogState extends State<UpdatePromptDialog> {
                       style: const TextStyle(
                         fontSize: 12.5,
                         height: 1.4,
-                        fontFamily: 'monospace',
+                        fontFamily: AppTechnicalStrings.fontFamilyMonospace,
                         color: Colors.white70,
                       ),
                     ),

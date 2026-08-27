@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -75,7 +76,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
       final relationRepo = ref.read(relationRepositoryProvider);
       final relations = await relationRepo.getRelationsForEntity(widget.entity.id);
       final existingContainerRel = relations.where((r) =>
-        r.sourceEntityId == widget.entity.id && r.relationType == 'GUARDADO_EN'
+        r.sourceEntityId == widget.entity.id && r.relationType == AppTechnicalStrings.relGuardadoEn
       ).firstOrNull;
 
       if (existingContainerRel != null) {
@@ -105,7 +106,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
       // Clean up previous GUARDADO_EN relations for this source entity
       final existingRelations = await relationRepo.getRelationsForEntity(widget.entity.id);
       for (final rel in existingRelations) {
-        if (rel.sourceEntityId == widget.entity.id && rel.relationType == 'GUARDADO_EN') {
+        if (rel.sourceEntityId == widget.entity.id && rel.relationType == AppTechnicalStrings.relGuardadoEn) {
           await relationRepo.deleteRelation(rel.id);
         }
       }
@@ -134,7 +135,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
           id: const Uuid().v4(),
           sourceEntityId: widget.entity.id,
           targetEntityId: _selectedContainerEntityId!,
-          relationType: 'GUARDADO_EN',
+          relationType: AppTechnicalStrings.relGuardadoEn,
           createdAt: DateTime.now(),
         );
         await relationRepo.addRelation(newRelation);
@@ -155,7 +156,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
       }
     } catch (e) {
       if (mounted) {
-        AppToast.showError(context, AppStrings.locationCorrectionErrorPrefix + e.toString());
+        AppToast.showError(context, AppStrings.locationCorrectionError(e.toString()));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -236,7 +237,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
                 children: [
                   Expanded(
                     child: Text(
-                      AppStrings.correctLocationTitlePrefix + entityName + AppStrings.correctLocationTitleSuffix,
+                      AppStrings.correctLocationTitle(entityName),
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

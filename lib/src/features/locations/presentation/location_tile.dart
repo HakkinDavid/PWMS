@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../domain/location_node.dart';
 
 class LocationTile extends StatelessWidget {
@@ -19,12 +20,12 @@ class LocationTile extends StatelessWidget {
   static IconData resolveLocationIcon(String? iconName) {
     if (iconName == null || iconName.trim().isEmpty) return Icons.location_on;
     final name = iconName.trim().toLowerCase();
-    if (name.contains('home') || name.contains('casa')) return Icons.home_outlined;
-    if (name.contains('room') || name.contains('cuarto') || name.contains('habitacion')) return Icons.bedroom_parent_outlined;
-    if (name.contains('box') || name.contains('caja') || name.contains('contenedor')) return Icons.inventory_2_outlined;
-    if (name.contains('folder') || name.contains('carpeta')) return Icons.folder_outlined;
-    if (name.contains('store') || name.contains('bodega') || name.contains('almacen')) return Icons.store_outlined;
-    if (name.contains('shelf') || name.contains('estante') || name.contains('armario')) return Icons.shelves;
+    if (name.contains(AppTechnicalStrings.iconKeywordHome) || name.contains(AppTechnicalStrings.iconKeywordCasa)) return Icons.home_outlined;
+    if (name.contains(AppTechnicalStrings.iconKeywordRoom) || name.contains(AppTechnicalStrings.iconKeywordCuarto) || name.contains(AppTechnicalStrings.iconKeywordHabitacion)) return Icons.bedroom_parent_outlined;
+    if (name.contains(AppTechnicalStrings.iconKeywordBox) || name.contains(AppTechnicalStrings.iconKeywordCaja) || name.contains(AppTechnicalStrings.iconKeywordContenedor)) return Icons.inventory_2_outlined;
+    if (name.contains(AppTechnicalStrings.iconKeywordFolder) || name.contains(AppTechnicalStrings.iconKeywordCarpeta)) return Icons.folder_outlined;
+    if (name.contains(AppTechnicalStrings.iconKeywordStore) || name.contains(AppTechnicalStrings.iconKeywordBodega) || name.contains(AppTechnicalStrings.iconKeywordAlmacen)) return Icons.store_outlined;
+    if (name.contains(AppTechnicalStrings.iconKeywordShelf) || name.contains(AppTechnicalStrings.iconKeywordEstante) || name.contains(AppTechnicalStrings.iconKeywordArmario)) return Icons.shelves;
     return Icons.location_on_outlined;
   }
 
@@ -79,7 +80,7 @@ class LocationTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '$itemCount ${AppStrings.objectsLabel}',
+                    AppStrings.formatObjectsCount(itemCount),
                     style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
                   ),
                 ],

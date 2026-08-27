@@ -181,7 +181,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
                 final confirm = await AppConfirmationDialog.showDeleteConfirmation(
                   context: context,
                   title: AppStrings.confirmDeleteLocationTitle,
-                  message: '${AppStrings.confirmDeleteLocationMessagePrefix}${node.name}${AppStrings.confirmDeleteLocationMessageSuffix}',
+                  message: AppStrings.confirmDeleteLocationMessage(node.name),
                 );
                 if (confirm) {
                   await ref.read(locationNodeListProvider.notifier).deleteNode(node.id);
@@ -225,7 +225,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
             ),
           ),
           title: Text(node.name, style: TextStyle(fontWeight: FontWeight.bold, color: isFocused ? theme.colorScheme.primary : null)),
-          subtitle: Text('$totalCount${AppStrings.objectsInLocationAndSublocationsSuffix}'),
+          subtitle: Text(AppStrings.objectsInLocationAndSublocations(totalCount)),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -293,7 +293,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
                 );
               },
               loading: () => const CircularProgressIndicator(),
-              error: (err, _) => Text('${AppStrings.errorPrefix}$err'),
+              error: (err, _) => Text(AppStrings.errorWithDetails(err)),
             ),
             const SizedBox(height: 8),
           ],
@@ -359,7 +359,7 @@ class _LocationsGraphScreenState extends ConsumerState<LocationsGraphScreen> {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
+        error: (err, _) => Center(child: Text(AppStrings.errorWithDetails(err))),
       ),
     );
   }

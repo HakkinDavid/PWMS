@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/app_strings.dart';
+import '../constants/app_technical_strings.dart';
 import '../providers/providers.dart';
 import 'app_toast.dart';
 
@@ -24,7 +25,7 @@ class BackupWorkflowHelper {
       }
     } catch (e) {
       if (context.mounted) {
-        AppToast.showError(context, '${AppStrings.backupExportErrorPrefix}$e');
+        AppToast.showError(context, AppStrings.backupExportErrorMessage(e));
       }
     } finally {
       if (context.mounted) {
@@ -41,7 +42,7 @@ class BackupWorkflowHelper {
   }) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['zip', 'json'],
+      allowedExtensions: [AppTechnicalStrings.extZipClean, AppTechnicalStrings.extJsonClean],
     );
 
     if (result == null || result.files.single.path == null) return;
@@ -85,7 +86,7 @@ class BackupWorkflowHelper {
       }
     } catch (e) {
       if (context.mounted) {
-        AppToast.showError(context, '${AppStrings.backupImportErrorPrefix}$e');
+        AppToast.showError(context, AppStrings.backupImportErrorMessage(e));
       }
     } finally {
       if (context.mounted) {

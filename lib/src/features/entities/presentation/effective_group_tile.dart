@@ -45,7 +45,7 @@ class EffectiveGroupTile extends ConsumerWidget {
         ),
         child: Center(
           child: Text(
-            '${group.population}',
+            group.population.toString(),
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,

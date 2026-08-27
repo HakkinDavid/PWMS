@@ -1,14 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/app_database.dart';
 import '../providers/providers.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 class AppSettingsRepository {
   final AppDatabase _db;
 
   AppSettingsRepository(this._db);
 
-  static const String keyGeminiApiKey = 'gemini_api_key';
-  static const String keyNumistaApiKey = 'numista_api_key';
+  static const String keyGeminiApiKey = AppTechnicalStrings.keyGeminiApiKey;
+  static const String keyNumistaApiKey = AppTechnicalStrings.keyNumistaApiKey;
 
   Future<String?> getGeminiApiKey() async {
     return await _db.getSetting(keyGeminiApiKey);
@@ -26,9 +27,9 @@ class AppSettingsRepository {
     await _db.setSetting(keyNumistaApiKey, value.trim());
   }
 
-  static const String keyLastNumismaticLocationMode = 'last_numismatic_location_mode';
-  static const String keyLastNumismaticLocationId = 'last_numismatic_location_id';
-  static const String keyLastNumismaticContainerEntityId = 'last_numismatic_container_entity_id';
+  static const String keyLastNumismaticLocationMode = AppTechnicalStrings.keyLastNumismaticLocationMode;
+  static const String keyLastNumismaticLocationId = AppTechnicalStrings.keyLastNumismaticLocationId;
+  static const String keyLastNumismaticContainerEntityId = AppTechnicalStrings.keyLastNumismaticContainerEntityId;
 
   Future<String?> getLastNumismaticLocationMode() async {
     return await _db.getSetting(keyLastNumismaticLocationMode);
@@ -55,15 +56,15 @@ class AppSettingsRepository {
   }
 
   // Numismatic Camera Settings & Preferences
-  static const String keyNumismaticTorchEnabled = 'numismatic_torch_enabled';
-  static const String keyNumismaticExposureOffset = 'numismatic_exposure_offset';
-  static const String keyNumismaticDefaultMode = 'numismatic_default_mode';
-  static const String keyNumismaticZoomLevel = 'numismatic_zoom_level';
+  static const String keyNumismaticTorchEnabled = AppTechnicalStrings.keyNumismaticTorchEnabled;
+  static const String keyNumismaticExposureOffset = AppTechnicalStrings.keyNumismaticExposureOffset;
+  static const String keyNumismaticDefaultMode = AppTechnicalStrings.keyNumismaticDefaultMode;
+  static const String keyNumismaticZoomLevel = AppTechnicalStrings.keyNumismaticZoomLevel;
 
   Future<bool> getNumismaticTorchEnabled({bool defaultValue = false}) async {
     final val = await _db.getSetting(keyNumismaticTorchEnabled);
     if (val == null) return defaultValue;
-    return val.toLowerCase() == 'true';
+    return val.toLowerCase() == AppTechnicalStrings.boolTrue;
   }
 
   Future<void> setNumismaticTorchEnabled(bool value) async {

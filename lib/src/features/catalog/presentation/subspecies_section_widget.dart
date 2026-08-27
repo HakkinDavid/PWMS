@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -102,7 +103,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
           children: [
             Expanded(
               child: Text(
-                '${AppStrings.subspeciesOrBrands} (${_subspeciesList.length})',
+                AppStrings.subspeciesOrBrandsWithCount(_subspeciesList.length),
                 style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -139,19 +140,19 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                     ? PopupMenuButton<String>(
                         icon: const Icon(Icons.more_vert, size: 18),
                         onSelected: (val) async {
-                          if (val == 'edit') {
+                          if (val == AppTechnicalStrings.actionEdit) {
                             _addOrEditSubspeciesModal(initial: sub);
-                          } else if (val == 'separate') {
+                          } else if (val == AppTechnicalStrings.actionSeparate) {
                             await TaxonomyOperationsDialog.showSeparateSubspeciesDialog(context, ref, sub);
                             if (mounted) _loadSubspecies();
-                          } else if (val == 'move') {
+                          } else if (val == AppTechnicalStrings.actionMove) {
                             await TaxonomyOperationsDialog.showMoveSubspeciesDialog(context, ref, sub);
                             if (mounted) _loadSubspecies();
-                          } else if (val == 'delete' && canDelete) {
+                          } else if (val == AppTechnicalStrings.actionDelete && canDelete) {
                             final confirm = await AppConfirmationDialog.showDeleteConfirmation(
                               context: context,
                               title: AppStrings.confirmDeleteSubspeciesTitle,
-                              message: '${AppStrings.confirmDeleteSubspeciesMessagePrefix}${sub.subspeciesName}${AppStrings.confirmDeleteSubspeciesMessageSuffix}',
+                              message: AppStrings.confirmDeleteSubspeciesNamed(sub.subspeciesName),
                             );
                             if (!confirm) return;
 
@@ -160,16 +161,16 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                               await catalogRepo.deleteSubspecies(sub.id);
                               if (mounted) _loadSubspecies();
                             } catch (e) {
-                              if (context.mounted) AppToast.showError(context, e.toString().replaceAll('Exception: ', ''));
+                              if (context.mounted) AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
                             }
                           }
                         },
                         itemBuilder: (ctx) => [
-                          const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.edit))])),
-                          const PopupMenuItem(value: 'separate', child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.separateInNewSpeciesTitle))])),
-                          const PopupMenuItem(value: 'move', child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.moveSubspeciesTitle))])),
+                          const PopupMenuItem(value: AppTechnicalStrings.actionEdit, child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.edit))])),
+                          const PopupMenuItem(value: AppTechnicalStrings.actionSeparate, child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.separateInNewSpeciesTitle))])),
+                          const PopupMenuItem(value: AppTechnicalStrings.actionMove, child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.moveSubspeciesTitle))])),
                           if (canDelete)
-                            const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Expanded(child: Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)))]))
+                            const PopupMenuItem(value: AppTechnicalStrings.actionDelete, child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Expanded(child: Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)))]))
                         ],
                       )
                     : null,

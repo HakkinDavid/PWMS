@@ -1,3 +1,5 @@
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+
 class SpeciesRequirement {
   final String id;
   final String sourceId; // speciesId or entityId
@@ -10,7 +12,7 @@ class SpeciesRequirement {
   const SpeciesRequirement({
     required this.id,
     required this.sourceId,
-    this.sourceType = 'species',
+    this.sourceType = AppTechnicalStrings.sourceTypeSpecies,
     required this.requiredSpeciesId,
     required this.requiredQuantity,
     this.notes,

@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import '../../../core/constants/app_technical_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/app_notification.dart';
 
@@ -54,7 +55,7 @@ class NotificationRepository {
     final snoozedUntil = DateTime.now().add(duration);
     final query = _db.update(_db.notificationsTable)..where((t) => t.id.equals(id));
     await query.write(NotificationsTableCompanion(
-      status: const Value('snoozed'),
+      status: const Value(AppTechnicalStrings.notifStatusSnoozed),
       snoozedUntil: Value(snoozedUntil),
       updatedAt: Value(DateTime.now()),
     ));
@@ -63,7 +64,7 @@ class NotificationRepository {
   Future<void> dismissNotification(String id) async {
     final query = _db.update(_db.notificationsTable)..where((t) => t.id.equals(id));
     await query.write(NotificationsTableCompanion(
-      status: const Value('dismissed'),
+      status: const Value(AppTechnicalStrings.notifStatusDismissed),
       updatedAt: Value(DateTime.now()),
     ));
   }

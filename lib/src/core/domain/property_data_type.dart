@@ -1,10 +1,11 @@
-import '../constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 enum PropertyDataType {
-  real('real', AppStrings.dataTypeRealLabel),
-  integer('integer', AppStrings.dataTypeIntegerLabel),
-  string('string', AppStrings.dataTypeStringLabel),
-  boolean('boolean', AppStrings.dataTypeBooleanLabel);
+  real(AppTechnicalStrings.datatypeRealLower, AppStrings.dataTypeRealLabel),
+  integer(AppTechnicalStrings.datatypeIntegerLower, AppStrings.dataTypeIntegerLabel),
+  string(AppTechnicalStrings.datatypeStringLower, AppStrings.dataTypeStringLabel),
+  boolean(AppTechnicalStrings.datatypeBooleanLower, AppStrings.dataTypeBooleanLabel);
 
   final String code;
   final String label;
@@ -15,23 +16,23 @@ enum PropertyDataType {
     if (code == null) return PropertyDataType.real;
     final clean = code.trim().toLowerCase();
     switch (clean) {
-      case 'integer':
-      case 'entero':
-      case 'int':
-      case 'año':
+      case AppTechnicalStrings.datatypeIntegerLower:
+      case AppTechnicalStrings.datatypeEntero:
+      case AppTechnicalStrings.datatypeInt:
+      case AppTechnicalStrings.unitYear:
         return PropertyDataType.integer;
-      case 'string':
-      case 'texto':
-      case 'text':
+      case AppTechnicalStrings.datatypeStringLower:
+      case AppTechnicalStrings.datatypeTexto:
+      case AppTechnicalStrings.datatypeText:
         return PropertyDataType.string;
-      case 'boolean':
-      case 'booleano':
-      case 'bool':
+      case AppTechnicalStrings.datatypeBooleanLower:
+      case AppTechnicalStrings.datatypeBooleano:
+      case AppTechnicalStrings.datatypeBool:
         return PropertyDataType.boolean;
-      case 'real':
-      case 'double':
-      case 'float':
-      case 'número real':
+      case AppTechnicalStrings.datatypeRealLower:
+      case AppTechnicalStrings.datatypeDouble:
+      case AppTechnicalStrings.datatypeFloat:
+      case AppTechnicalStrings.datatypeNumeroReal:
       default:
         return PropertyDataType.real;
     }
@@ -41,3 +42,4 @@ enum PropertyDataType {
   bool get isString => this == PropertyDataType.string;
   bool get isBoolean => this == PropertyDataType.boolean;
 }
+

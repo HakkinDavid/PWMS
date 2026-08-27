@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
@@ -17,7 +18,6 @@ import '../../locations/presentation/location_tree_picker.dart';
 import 'inventory_breadcrumb_bar.dart';
 import 'inventory_item_interaction_wrapper.dart';
 
-import '../../entities/presentation/instance_preview_card.dart';
 import '../../locations/domain/location_node.dart';
 import '../../locations/domain/location_resolver.dart';
 import '../../locations/infrastructure/location_repository.dart';
@@ -54,8 +54,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   List<String> _containerPath = [];
 
   bool _isDragging = false;
-  String? _dragOriginLocationId;
-  String? _dragOriginContainerId;
   bool _dragHasNavigated = false;
 
   late final ScrollController _scrollController;
@@ -63,15 +61,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   void _handleDragStarted() {
     _isDragging = true;
-    _dragOriginLocationId = _selectedLocationId;
-    _dragOriginContainerId = _containerPath.isNotEmpty ? _containerPath.last : null;
     _dragHasNavigated = false;
   }
 
   void _handleDragEnd() {
     _isDragging = false;
-    _dragOriginLocationId = null;
-    _dragOriginContainerId = null;
     _dragHasNavigated = false;
   }
 
@@ -205,7 +199,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       final ent = entityMap[id];
       if (ent == null) continue;
       final existingInheriting = allRels.where((r) =>
-        r.sourceEntityId == id && (r.relationType == 'GUARDADO_EN' || r.relationType == 'PARTE_DE')
+        r.sourceEntityId == id && (r.relationType == AppTechnicalStrings.relGuardadoEn || r.relationType == AppTechnicalStrings.relParteDe)
       ).toList();
 
       if (existingInheriting.isEmpty && ent.locationId == targetLocId) {
@@ -218,7 +212,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
     for (final id in idsToMove) {
       final existingInheriting = allRels.where((r) =>
-        r.sourceEntityId == id && (r.relationType == 'GUARDADO_EN' || r.relationType == 'PARTE_DE')
+        r.sourceEntityId == id && (r.relationType == AppTechnicalStrings.relGuardadoEn || r.relationType == AppTechnicalStrings.relParteDe)
       ).toList();
       for (final rel in existingInheriting) {
         await relationRepo.deleteRelation(rel.id);
@@ -251,7 +245,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       final isAlreadyInside = allRels.any((r) =>
         r.sourceEntityId == sourceId &&
         r.targetEntityId == targetContainerEntityId &&
-        r.relationType == 'GUARDADO_EN'
+        r.relationType == AppTechnicalStrings.relGuardadoEn
       );
       if (isAlreadyInside) continue; // Already directly inside target container, skip!
       idsToMove.add(sourceId);
@@ -261,10 +255,10 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
     for (final sourceId in idsToMove) {
       await relationRepo.addRelation(EntityRelation(
-        id: '${sourceId}_$targetContainerEntityId',
+        id: AppTechnicalStrings.compositeId(sourceId, targetContainerEntityId),
         sourceEntityId: sourceId,
         targetEntityId: targetContainerEntityId,
-        relationType: 'GUARDADO_EN',
+        relationType: AppTechnicalStrings.relGuardadoEn,
         createdAt: DateTime.now(),
       ));
     }
@@ -316,7 +310,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final confirm = await AppConfirmationDialog.showDeleteConfirmation(
       context: context,
       title: AppStrings.deleteSelectionTitle,
-      message: '${AppStrings.deleteSelectionConfirmationPrefix}${_selectedEntityIds.length}${AppStrings.deleteSelectionConfirmationSuffix}',
+      message: AppStrings.deleteElementsConfirmation(_selectedEntityIds.length),
     );
 
     if (confirm != true) return;
@@ -351,7 +345,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     final allEntitiesMap = {for (var e in allEntities) e.id: e};
 
     // Build GUARDADO_EN relations container map
-    final guardadoEnRelations = relations.where((r) => r.relationType == 'GUARDADO_EN').toList();
+    final guardadoEnRelations = relations.where((r) => r.relationType == AppTechnicalStrings.relGuardadoEn).toList();
     final Set<String> containedEntityIds = guardadoEnRelations.map((r) => r.sourceEntityId).toSet();
     final Map<String, List<String>> containerChildrenMap = {};
     for (final r in guardadoEnRelations) {
@@ -369,7 +363,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     var filteredEntities = allEntities.toList();
 
     if (_selectedLocationId != null) {
-      if (_selectedLocationId == '__UNASSIGNED__') {
+      if (_selectedLocationId == AppTechnicalStrings.unassignedLocationId) {
         filteredEntities = filteredEntities.where((e) => e.locationId == null).toList();
       } else {
         filteredEntities = filteredEntities.where((e) => e.locationId == _selectedLocationId).toList();
@@ -377,7 +371,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     }
 
     // Grouping container IDs set
-    final groupsContainerEntityIds = relations.where((r) => r.relationType == 'GUARDADO_EN').map((r) => r.targetEntityId).toSet();
+    final groupsContainerEntityIds = relations.where((r) => r.relationType == AppTechnicalStrings.relGuardadoEn).map((r) => r.targetEntityId).toSet();
 
     // Determine current level groups based on Drill-Down container path
     final List<EffectiveEntityGroup> currentGroups;
@@ -446,11 +440,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_containerPath.isNotEmpty ? (activeContainerSpecies?.name ?? 'Contenedor') : 'Inventario'),
+          title: Text(_containerPath.isNotEmpty ? (activeContainerSpecies?.name ?? AppStrings.containerLabel) : AppStrings.inventoryTitle),
           leading: canGoBack
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),
-                  tooltip: 'Retroceder',
+                  tooltip: AppStrings.goBackAction,
                   onPressed: _handleBackNavigation,
                 )
               : null,
@@ -492,7 +486,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           child: FloatingActionButton(
             heroTag: null,
             onPressed: () => RegisterObjectModal.show(context, initialLocationId: _selectedLocationId),
-            tooltip: 'Crear o Instanciar',
+            tooltip: AppStrings.createOrInstantiateAction,
             child: const Icon(Icons.add),
           ),
         ),
@@ -633,8 +627,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                                     const SizedBox(height: 12),
                                     Text(
                                       _containerPath.isNotEmpty
-                                          ? 'Este contenedor está vacío.\nArrastra elementos aquí para guardarlos.'
-                                          : 'No hay elementos en esta ubicación.',
+                                          ? AppStrings.emptyContainerPrompt
+                                          : AppStrings.emptyLocationPrompt,
                                       textAlign: TextAlign.center,
                                       style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
                                     ),
@@ -668,14 +662,14 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${_selectedEntityIds.length} seleccionado(s)',
+                        AppStrings.selectedCount(_selectedEntityIds.length),
                         style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
                       ),
                       Row(
                         children: [
                           IconButton(
                             icon: const Icon(Icons.drive_file_move_outlined),
-                            tooltip: 'Mover Selección',
+                            tooltip: AppStrings.moveSelectionAction,
                             onPressed: () async {
                               final res = await LocationTreePicker.show(context);
                               if (res != null) {
@@ -685,35 +679,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete_outline),
-                            tooltip: 'Eliminar Selección',
-                            onPressed: () async {
-                              final confirmed = await showDialog<bool>(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: const Text('Confirmar eliminación'),
-                                  content: Text('¿Eliminar ${_selectedEntityIds.length} elemento(s)?'),
-                                  actions: [
-                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.cancel)),
-                                    ElevatedButton(
-                                      onPressed: () => Navigator.pop(ctx, true),
-                                      style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.error),
-                                      child: const Text(AppStrings.delete, style: TextStyle(color: Colors.white)),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              if (confirmed == true) {
-                                final repo = ref.read(entityRepositoryProvider);
-                                for (final id in _selectedEntityIds) {
-                                  await repo.deleteEntity(id);
-                                }
-                                _refreshAllState();
-                                setState(() {
-                                  _selectedEntityIds.clear();
-                                  _isSelectionMode = false;
-                                });
-                              }
-                            },
+                            tooltip: AppStrings.deleteSelectionAction,
+                            onPressed: _deleteSelectedEntities,
                           ),
                         ],
                       ),
@@ -763,7 +730,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       if (!isContained && grp.population > 1 && _expandedStackKeys.contains(grp.key)) {
         for (final entity in grp.entities) {
           displayGroups.add(EffectiveEntityGroup(
-            key: '${grp.key}_${entity.id}',
+            key: AppTechnicalStrings.compositeKey(grp.key, entity.id),
             speciesId: grp.speciesId,
             effectiveLocationId: grp.effectiveLocationId,
             entities: [entity],
@@ -853,7 +820,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           } else {
             final locNode = childLocations[idx - displayGroups.length];
             return _LocationItemInteractionTile(
-              key: ValueKey('loc_tile_${locNode.id}'),
+              key: ValueKey(AppTechnicalStrings.locTileKey(locNode.id)),
               node: locNode,
               itemCount: recursiveItemCountMap[locNode.id] ?? 0,
               viewMode: FinderViewMode.minecraftGrid,
@@ -920,7 +887,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           } else {
             final locNode = childLocations[idx - displayGroups.length];
             return _LocationItemInteractionTile(
-              key: ValueKey('loc_tile_${locNode.id}'),
+              key: ValueKey(AppTechnicalStrings.locTileKey(locNode.id)),
               node: locNode,
               itemCount: recursiveItemCountMap[locNode.id] ?? 0,
               viewMode: FinderViewMode.detailedList,
@@ -1062,7 +1029,7 @@ class _LocationItemInteractionTileState extends State<_LocationItemInteractionTi
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          '${widget.itemCount}',
+                          AppStrings.countString(widget.itemCount),
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -1139,7 +1106,7 @@ class _LocationItemInteractionTileState extends State<_LocationItemInteractionTi
                         Text(
                           widget.node.description != null && widget.node.description!.isNotEmpty
                               ? widget.node.description!
-                              : '${widget.itemCount} ${AppStrings.objectsLabel}',
+                              : AppStrings.objectsCount(widget.itemCount),
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: Colors.grey,
                             fontSize: 12,

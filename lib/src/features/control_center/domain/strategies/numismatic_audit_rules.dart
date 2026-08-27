@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_wheel_picker.dart';
@@ -20,7 +21,7 @@ class NumismaticDuplicateSubspeciesStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.numismaticDuplicateSubspecies;
 
   @override
-  String get ruleId => 'numismatic_duplicate_subspecies';
+  String get ruleId => AppTechnicalStrings.ruleNumismaticDuplicateSubspecies;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -33,22 +34,32 @@ class NumismaticDuplicateSubspeciesStrategy implements IAuditRuleStrategy {
       if (parentSpecies != null && NumismaticDataHelper.isNumismaticSpecies(parentSpecies)) {
         final dupCount = entry.value.length;
         cards.add(AuditRuleHelper.forSubspecies(
-          id: 'numis_dup_${canonicalSub.id}',
+          id: AppTechnicalStrings.prefixNumisDup + canonicalSub.id,
           type: AuditCardType.numismaticDuplicateSubspecies,
-          title: 'Subespecies Numismáticas Duplicadas',
-          subtitle: '${canonicalSub.subspeciesName} • $dupCount subespecies idénticas en ${parentSpecies.name}',
-          question: 'Existen $dupCount subespecies registradas para "${canonicalSub.subspeciesName}". ¿Deseas fusionarlas y reasignar sus piezas a una sola subespecie canónica?',
+          title: AppStrings.numismaticDuplicateSubspeciesCardTitle,
+          subtitle: AppStrings.numismaticDuplicateSubspeciesSubtitle(
+            canonicalSub.subspeciesName,
+            dupCount,
+            parentSpecies.name,
+          ),
+          question: AppStrings.numismaticDuplicateSubspeciesQuestion(
+            dupCount,
+            canonicalSub.subspeciesName,
+          ),
           icon: Icons.filter_none,
           themeColor: Colors.deepOrange,
           subspecies: canonicalSub,
           species: parentSpecies,
-          confirmToastMessage: 'Subespecies duplicadas conservadas sin cambios.',
+          confirmToastMessage: AppStrings.duplicateSubspeciesKeptWithoutChanges,
           onFix: (ctx, ref) async {
             final confirm = await AuditRuleHelper.showConfirmationDialog(
               ctx,
-              title: 'Fusionar Subespecies Duplicadas',
-              content: '¿Deseas consolidar las $dupCount subespecies de "${canonicalSub.subspeciesName}" en una sola subespecie y reasignar todas las instancias existentes?',
-              confirmLabel: 'Fusionar y Reasignar',
+              title: AppStrings.mergeDuplicateSubspeciesAction,
+              content: AppStrings.mergeDuplicateSubspeciesPrompt(
+                dupCount,
+                canonicalSub.subspeciesName,
+              ),
+              confirmLabel: AppStrings.mergeAndReassignAction,
             );
 
             if (confirm) {
@@ -59,7 +70,7 @@ class NumismaticDuplicateSubspeciesStrategy implements IAuditRuleStrategy {
                 duplicateSubspeciesList: entry.value,
               );
               if (ctx.mounted) {
-                AppToast.showSuccess(ctx, 'Subespecies duplicadas fusionadas con éxito.');
+                AppToast.showSuccess(ctx, AppStrings.duplicateSubspeciesMergedSuccess);
               }
               return true;
             }
@@ -80,7 +91,7 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.numismaticSubspeciesIncongruity;
 
   @override
-  String get ruleId => 'numismatic_subspecies_incongruity';
+  String get ruleId => AppTechnicalStrings.ruleNumismaticSubspeciesIncongruity;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -100,34 +111,40 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
 
           if (issueMsg != null) {
             cards.add(AuditRuleHelper.forEntity(
-              id: 'numis_inc_${entity.id}',
+              id: AppTechnicalStrings.prefixNumisInc + entity.id,
               type: AuditCardType.numismaticSubspeciesIncongruity,
-              title: 'Incongruencia en Datos Numismáticos',
-              subtitle: '$displayName • Subespecie: ${sub.subspeciesName}',
-              question: '$issueMsg ¿Deseas actualizar la subespecie con los valores reales de la instancia?',
+              title: AppStrings.numismaticIncongruityTitle,
+              subtitle: AppStrings.numismaticSubspeciesIncongruitySubtitle(
+                displayName,
+                sub.subspeciesName,
+              ),
+              question: AppStrings.numismaticSubspeciesIncongruityQuestion(issueMsg),
               icon: Icons.currency_exchange,
               themeColor: Colors.purple,
               entity: entity,
               subspecies: sub,
               species: species,
-              confirmToastMessage: 'Incongruencia omitida.',
+              confirmToastMessage: AppStrings.incongruitySkipped,
               onFix: (ctx, ref) async {
                 final action = await showDialog<String>(
                   context: ctx,
                   builder: (dialogCtx) => AlertDialog(
-                    title: const Text('Corregir Incongruencia Numismática'),
-                    content: Text('Sincronizar información para "$displayName":\n\n$issueMsg'),
+                    title: const Text(AppStrings.correctNumismaticIncongruityTitle),
+                    content: Text(AppStrings.syncInfoPrompt(displayName, issueMsg)),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(dialogCtx, 'cancel'), child: const Text('Cancelar')),
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                        child: const Text(AppStrings.cancel),
+                      ),
                       OutlinedButton(
-                        onPressed: () => Navigator.pop(dialogCtx, 'subspecies'),
-                        child: const Text('Actualizar Subespecie según la Instancia'),
+                        onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionSubspecies),
+                        child: const Text(AppStrings.updateSubspeciesFromInstanceAction),
                       ),
                     ],
                   ),
                 );
 
-                if (action == 'subspecies') {
+                if (action == AppTechnicalStrings.actionSubspecies) {
                   final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
                   final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
                   final updatedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
@@ -143,7 +160,7 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
                     instance: freshEntity,
                   );
                   if (ctx.mounted) {
-                    AppToast.showSuccess(ctx, 'Subespecie y adjuntos sincronizados con éxito.');
+                    AppToast.showSuccess(ctx, AppStrings.subspeciesAndAttachmentsSyncedSuccess);
                   }
                   return true;
                 }
@@ -166,7 +183,7 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.numismaticAttachmentIncongruity;
 
   @override
-  String get ruleId => 'numismatic_attachment_incongruity';
+  String get ruleId => AppTechnicalStrings.ruleNumismaticAttachmentIncongruity;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -183,10 +200,13 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
               ? await EntityRepository(context.db).getAttachmentsForInstance(entity.id)
               : <Attachment>[];
           for (final att in instanceAttachments) {
-            final isObverse = att.fileName.toLowerCase().contains('(anverso)') || att.fileName.toLowerCase().contains('anverso');
-            final side = isObverse ? 'anverso' : 'reverso';
+            final isObverse = att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoParensLower) ||
+                att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoLower);
+            final side = isObverse ? AppTechnicalStrings.anversoLower : AppTechnicalStrings.reversoLower;
             final file = File(att.filePath);
-            final ext = file.path.contains('.') ? file.path.split('.').last : 'jpg';
+            final ext = file.path.contains(AppTechnicalStrings.dot)
+                ? file.path.split(AppTechnicalStrings.dot).last
+                : AppTechnicalStrings.extJpgClean;
 
             final expectedName = NumismaticDataHelper.buildAttachmentFileName(
               subspeciesName: sub.subspeciesName,
@@ -197,11 +217,15 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
 
             if (att.fileName != expectedName) {
               cards.add(AuditRuleHelper.forEntity(
-                id: 'numis_att_${att.id}',
+                id: AppTechnicalStrings.prefixNumisAtt + att.id,
                 type: AuditCardType.numismaticAttachmentIncongruity,
-                title: 'Nombre de Adjunto Desincronizado',
-                subtitle: '$displayName • Actual: ${att.fileName}',
-                question: 'El adjunto "${att.fileName}" no coincide con el título actual de la subespecie "${sub.subspeciesName}". ¿Renombrar archivo a "$expectedName"?',
+                title: AppStrings.desyncedAttachmentNameTitle,
+                subtitle: AppStrings.desyncedAttachmentNameSubtitle(displayName, att.fileName),
+                question: AppStrings.desyncedAttachmentNameQuestion(
+                  att.fileName,
+                  sub.subspeciesName,
+                  expectedName,
+                ),
                 icon: Icons.attachment,
                 themeColor: Colors.indigo,
                 entity: entity,
@@ -240,7 +264,7 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.numismaticMissingMagnitudes;
 
   @override
-  String get ruleId => 'numismatic_missing_magnitudes';
+  String get ruleId => AppTechnicalStrings.ruleNumismaticMissingMagnitudes;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -261,11 +285,17 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
 
           if (missingMags.isNotEmpty) {
             cards.add(AuditRuleHelper.forEntity(
-              id: 'numis_mag_${entity.id}',
+              id: AppTechnicalStrings.prefixNumisMag + entity.id,
               type: AuditCardType.numismaticMissingMagnitudes,
               title: AppStrings.incompleteNumismaticMagnitudesTitle,
-              subtitle: '$displayName • Faltan: ${missingMags.join(", ")}',
-              question: 'La instancia "$displayName" no tiene registradas las magnitudes (${missingMags.join(", ")}). ¿Deseas autocompletarlas desde el título de la subespecie?',
+              subtitle: AppStrings.incompleteNumismaticMagnitudesSubtitle(
+                displayName,
+                missingMags.join(AppTechnicalStrings.commaSpace),
+              ),
+              question: AppStrings.incompleteNumismaticMagnitudesQuestion(
+                displayName,
+                missingMags.join(AppTechnicalStrings.commaSpace),
+              ),
               icon: Icons.fact_check_outlined,
               themeColor: Colors.blueGrey,
               entity: entity,
@@ -283,7 +313,7 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
                     id: const Uuid().v4(),
                     instanceId: freshEntity.id,
                     propertyName: AppStrings.nominalValuePropertyName,
-                    dataType: 'real',
+                    dataType: AppTechnicalStrings.datatypeRealLower,
                     magnitudeValue: parsedSub.faceValueNumber!,
                   ));
                 }
@@ -293,9 +323,9 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
                     id: const Uuid().v4(),
                     instanceId: freshEntity.id,
                     propertyName: AppStrings.mintagePropertyName,
-                    dataType: 'integer',
+                    dataType: AppTechnicalStrings.datatypeIntegerLower,
                     magnitudeValue: double.parse(parsedSub.year!),
-                    unitSymbol: 'año',
+                    unitSymbol: AppStrings.unitYear,
                   ));
                 }
 
@@ -304,7 +334,7 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
                     id: const Uuid().v4(),
                     instanceId: freshEntity.id,
                     propertyName: AppStrings.currencyPropertyName,
-                    dataType: 'string',
+                    dataType: AppTechnicalStrings.datatypeStringLower,
                     stringValue: parsedSub.currencyName,
                   ));
                 }
@@ -334,7 +364,7 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.emptyDataAudit;
 
   @override
-  String get ruleId => 'numismatic_empty_data_audit';
+  String get ruleId => AppTechnicalStrings.ruleNumismaticEmptyDataAudit;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -350,11 +380,11 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
           final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
           if (instAttrs.grade == null || instAttrs.grade!.trim().isEmpty) {
             cards.add(AuditRuleHelper.forEntity(
-              id: 'numis_empty_grade_${entity.id}',
+              id: AppTechnicalStrings.prefixNumisEmptyGrade + entity.id,
               type: AuditCardType.emptyDataAudit,
               title: AppStrings.emptyGradeDataTitle,
-              subtitle: '$displayName • Grado de conservación sin asignar',
-              question: 'La pieza "$displayName" no tiene especificado su estado o grado de conservación. ¿Deseas asignarle un grado ahora?',
+              subtitle: AppStrings.emptyGradeDataSubtitle(displayName),
+              question: AppStrings.emptyGradeDataQuestion(displayName),
               icon: Icons.star_outline,
               themeColor: Colors.amber.shade800,
               entity: entity,
@@ -376,7 +406,7 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
                   final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == AppStrings.gradePropertyName);
                   if (existingGradeIdx >= 0) {
                     currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
-                      dataType: 'string',
+                      dataType: AppTechnicalStrings.datatypeStringLower,
                       stringValue: chosenGrade,
                       unitSymbol: null,
                       magnitudeValue: 0.0,
@@ -386,7 +416,7 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
                       id: const Uuid().v4(),
                       instanceId: freshEntity.id,
                       propertyName: AppStrings.gradePropertyName,
-                      dataType: 'string',
+                      dataType: AppTechnicalStrings.datatypeStringLower,
                       stringValue: chosenGrade,
                     ));
                   }
@@ -395,7 +425,7 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
                   await ref.read(entityRepositoryProvider).saveEntity(updatedEntity);
 
                   if (ctx.mounted) {
-                    AppToast.showSuccess(ctx, 'Grado de conservación actualizado a "$chosenGrade".');
+                    AppToast.showSuccess(ctx, AppStrings.gradeUpdatedSuccess(chosenGrade));
                   }
                   return true;
                 }
@@ -409,4 +439,3 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
     return cards;
   }
 }
-

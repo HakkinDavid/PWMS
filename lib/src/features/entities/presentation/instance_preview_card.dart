@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/domain/location_path_helper.dart';
@@ -67,16 +67,16 @@ class InstancePreviewCard extends ConsumerWidget {
       builder: (context, subSnapshot) {
         final subspecies = subSnapshot.data;
 
-        final isCustomSub = subspecies != null && subspecies.subspeciesName.toLowerCase() != 'genérica';
+        final isCustomSub = subspecies != null && subspecies.subspeciesName.toLowerCase() != AppTechnicalStrings.genericSubspeciesLower;
         final String primaryTitle;
         final String typeAndSpeciesText;
 
         if (isCustomSub) {
-          primaryTitle = '${subspecies.subspeciesName}${subspecies.brand != null ? " (${subspecies.brand})" : ""}';
-          typeAndSpeciesText = '$speciesType • $speciesName • ';
+          primaryTitle = AppStrings.subspeciesNameWithBrand(subspecies.subspeciesName, subspecies.brand);
+          typeAndSpeciesText = AppStrings.speciesTypeWithSpeciesNamePrefix(speciesType, speciesName);
         } else {
           primaryTitle = speciesName;
-          typeAndSpeciesText = '$speciesType • ';
+          typeAndSpeciesText = AppStrings.speciesTypeBulletPrefix(speciesType);
         }
 
         final firstMag = targetEntity.magnitudes.isNotEmpty ? targetEntity.magnitudes.first : null;
@@ -144,7 +144,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                     TextSpan(text: typeAndSpeciesText),
                                     if (breadcrumb.ancestorPath.isNotEmpty)
                                       TextSpan(
-                                        text: '${breadcrumb.ancestorPath} ',
+                                        text: AppStrings.ancestorPathWithSpace(breadcrumb.ancestorPath),
                                         style: TextStyle(color: theme.colorScheme.secondary.withAlpha(160)),
                                       ),
                                     TextSpan(
@@ -165,7 +165,7 @@ class InstancePreviewCard extends ConsumerWidget {
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  '${AppStrings.barcodeLabel}: ${subspecies!.barcode}',
+                                  AppStrings.barcodeWithColon(subspecies!.barcode!),
                                   style: const TextStyle(fontSize: 10, color: Colors.grey),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -177,7 +177,7 @@ class InstancePreviewCard extends ConsumerWidget {
                         if (firstMag != null) ...[
                           const SizedBox(height: 2),
                           Text(
-                            '${firstMag.propertyName}: ${firstMag.displayValue}',
+                            AppStrings.propertyWithColon(firstMag.propertyName, firstMag.displayValue),
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -188,8 +188,7 @@ class InstancePreviewCard extends ConsumerWidget {
                             final warningDays = species?.warningDaysBeforeExpiration ?? 7;
                             final now = DateTime.now();
 
-                            final containedCount = allRelations.where((r) => r.targetEntityId == targetEntity.id && r.relationType == 'GUARDADO_EN').length;
-                            final isContained = allRelations.any((r) => r.sourceEntityId == targetEntity.id && r.relationType == 'GUARDADO_EN');
+                            final isContained = allRelations.any((r) => r.sourceEntityId == targetEntity.id && r.relationType == AppTechnicalStrings.relGuardadoEn);
                             final isOrphan = entity != null && targetEntity.locationId == null && !isContained;
                             final isMissingExpiration = entity != null && (species?.isNonPerishable == false) && targetEntity.expirationDate == null;
 
@@ -251,7 +250,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                       margin: const EdgeInsets.only(top: 4),
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: Colors.red.shade900.withOpacity(0.3),
+                                        color: Colors.red.shade900.withValues(alpha: 0.3),
                                         borderRadius: BorderRadius.circular(6),
                                         border: Border.all(color: Colors.red.shade400, width: 0.8),
                                       ),
@@ -265,7 +264,7 @@ class InstancePreviewCard extends ConsumerWidget {
                                       margin: const EdgeInsets.only(top: 4),
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: Colors.orange.shade900.withOpacity(0.3),
+                                        color: Colors.orange.shade900.withValues(alpha: 0.3),
                                         borderRadius: BorderRadius.circular(6),
                                         border: Border.all(color: Colors.orange.shade400, width: 0.8),
                                       ),
@@ -288,12 +287,12 @@ class InstancePreviewCard extends ConsumerWidget {
                                               margin: const EdgeInsets.only(top: 4, right: 4),
                                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: Colors.red.shade900.withOpacity(0.3),
+                                                color: Colors.red.shade900.withValues(alpha: 0.3),
                                                 borderRadius: BorderRadius.circular(6),
                                                 border: Border.all(color: Colors.red.shade400, width: 0.8),
                                               ),
                                               child: Text(
-                                                '$expiredCnt ${AppStrings.statusExpired}',
+                                                AppStrings.countWithStatus(expiredCnt, AppStrings.statusExpired),
                                                 style: const TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold),
                                               ),
                                             ),
@@ -302,12 +301,12 @@ class InstancePreviewCard extends ConsumerWidget {
                                               margin: const EdgeInsets.only(top: 4),
                                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: Colors.orange.shade900.withOpacity(0.3),
+                                                color: Colors.orange.shade900.withValues(alpha: 0.3),
                                                 borderRadius: BorderRadius.circular(6),
                                                 border: Border.all(color: Colors.orange.shade400, width: 0.8),
                                               ),
                                               child: Text(
-                                                '$warningCnt ${AppStrings.statusWarning}',
+                                                AppStrings.countWithStatus(warningCnt, AppStrings.statusWarning),
                                                 style: const TextStyle(fontSize: 10, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
                                               ),
                                             ),

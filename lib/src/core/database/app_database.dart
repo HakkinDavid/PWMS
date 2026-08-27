@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
 part 'app_database.g.dart';
 
@@ -21,10 +22,10 @@ class LocationsTable extends Table {
 class CatalogTable extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
-  TextColumn get type => text().withDefault(const Constant('Objeto'))();
+  TextColumn get type => text().withDefault(const Constant(AppStrings.typeObject))();
   TextColumn get description => text().nullable()();
   TextColumn get mainPhotoPath => text().nullable()();
-  TextColumn get customAttributes => text().withDefault(const Constant('{}'))();
+  TextColumn get customAttributes => text().withDefault(const Constant(AppTechnicalStrings.emptyJsonMap))();
   BoolColumn get isUnique => boolean().withDefault(const Constant(false))();
   BoolColumn get isNonPerishable => boolean().withDefault(const Constant(true))();
   IntColumn get defaultShelfLifeDays => integer().nullable()();
@@ -55,7 +56,7 @@ class SpeciesMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get speciesId => text().references(CatalogTable, #id)();
   TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Material"
-  TextColumn get dataType => text().withDefault(const Constant('real'))(); // 'real', 'integer', 'string', 'boolean'
+  TextColumn get dataType => text().withDefault(const Constant(AppTechnicalStrings.datatypeRealLower))(); // 'real', 'integer', 'string', 'boolean'
   TextColumn get unitSymbol => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
@@ -82,7 +83,7 @@ class InstanceMagnitudesTable extends Table {
   TextColumn get id => text()();
   TextColumn get instanceId => text().references(EntitiesTable, #id)();
   TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Material"
-  TextColumn get dataType => text().withDefault(const Constant('real'))(); // 'real', 'integer', 'string', 'boolean'
+  TextColumn get dataType => text().withDefault(const Constant(AppTechnicalStrings.datatypeRealLower))(); // 'real', 'integer', 'string', 'boolean'
   RealColumn get magnitudeValue => real().withDefault(const Constant(0.0))();
   TextColumn get stringValue => text().nullable()();
   TextColumn get unitSymbol => text().nullable()();
@@ -93,9 +94,9 @@ class InstanceMagnitudesTable extends Table {
 
 class RelationsTable extends Table {
   TextColumn get id => text()();
-  @ReferenceName('sourceRelations')
+  @ReferenceName(AppTechnicalStrings.refSourceRelations)
   TextColumn get sourceEntityId => text().references(EntitiesTable, #id)();
-  @ReferenceName('targetRelations')
+  @ReferenceName(AppTechnicalStrings.refTargetRelations)
   TextColumn get targetEntityId => text().references(EntitiesTable, #id)();
   TextColumn get relationType => text()();
   DateTimeColumn get createdAt => dateTime()();
@@ -133,7 +134,7 @@ class CustomTemplatesTable extends Table {
   TextColumn get id => text()();
   TextColumn get typeName => text()();
   TextColumn get iconName => text()();
-  TextColumn get commonUnits => text().withDefault(const Constant('[]'))();
+  TextColumn get commonUnits => text().withDefault(const Constant(AppTechnicalStrings.emptyJsonList))();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -154,7 +155,7 @@ class InstanceLocationsTable extends Table {
 class SpeciesRequirementsTable extends Table {
   TextColumn get id => text()();
   TextColumn get sourceId => text()(); // speciesId or entityId
-  TextColumn get sourceType => text().withDefault(const Constant('species'))(); // 'species' or 'entity'
+  TextColumn get sourceType => text().withDefault(const Constant(AppTechnicalStrings.sourceTypeSpecies))(); // 'species' or 'entity'
   TextColumn get requiredSpeciesId => text().references(CatalogTable, #id)();
   RealColumn get requiredQuantity => real().withDefault(const Constant(1.0))();
   TextColumn get notes => text().nullable()();
@@ -171,7 +172,7 @@ class NotificationsTable extends Table {
   TextColumn get message => text()();
   TextColumn get targetId => text()();
   TextColumn get targetType => text()(); // 'entity', 'species'
-  TextColumn get status => text().withDefault(const Constant('active'))(); // 'active', 'snoozed', 'dismissed'
+  TextColumn get status => text().withDefault(const Constant(AppTechnicalStrings.notifStatusActive))(); // 'active', 'snoozed', 'dismissed'
   DateTimeColumn get snoozedUntil => dateTime().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
@@ -227,28 +228,15 @@ class AppDatabase extends _$AppDatabase {
               // Migración 3 -> 4:
               // Limpieza y forzado de invariante: entidades contenidas (GUARDADO_EN / PARTE_DE)
               // deben tener location_id NULL en entities_table y eliminarse de instance_locations_table.
-              await customStatement('''
-                DELETE FROM instance_locations_table
-                WHERE instance_id IN (
-                  SELECT source_entity_id FROM relations_table
-                  WHERE relation_type IN ('GUARDADO_EN', 'PARTE_DE')
-                );
-              ''');
-              await customStatement('''
-                UPDATE entities_table
-                SET location_id = NULL
-                WHERE id IN (
-                  SELECT source_entity_id FROM relations_table
-                  WHERE relation_type IN ('GUARDADO_EN', 'PARTE_DE')
-                );
-              ''');
+              await customStatement(AppTechnicalStrings.sqlMigration3To4CleanInstanceLocations);
+              await customStatement(AppTechnicalStrings.sqlMigration3To4CleanEntitiesLocation);
             }
           }
         },
       );
 
   static QueryExecutor _openConnection() {
-    return driftDatabase(name: 'pwms_database');
+    return driftDatabase(name: AppTechnicalStrings.dbName);
   }
 
   // App Settings Helper Methods

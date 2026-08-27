@@ -4,7 +4,6 @@ import '../domain/location_node.dart';
 import '../infrastructure/location_repository.dart';
 import '../../entities/domain/world_entity.dart';
 
-
 class VisualLocationsGraph extends StatefulWidget {
   final List<LocationNode> nodes;
   final List<WorldEntity> entities;
@@ -137,7 +136,7 @@ class _VisualLocationsGraphState extends State<VisualLocationsGraph> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Text(
-                                  '$itemCount',
+                                  itemCount.toString(),
                                   style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,

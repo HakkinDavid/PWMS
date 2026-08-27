@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
@@ -57,7 +56,7 @@ class ContainerContentsView extends ConsumerWidget {
 
             final firstMag = child.magnitudes.isNotEmpty ? child.magnitudes.first : null;
             final subtitleText = firstMag != null
-                ? '$type • ${firstMag.propertyName}: ${firstMag.displayValue}'
+                ? AppStrings.typeWithPropertyAndValue(type, firstMag.propertyName, firstMag.displayValue)
                 : type;
 
             return Card(
@@ -75,7 +74,7 @@ class ContainerContentsView extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => Center(child: Text('${AppStrings.errorPrefix}$err')),
+      error: (err, _) => Center(child: Text(AppStrings.errorWithDetails(err))),
     );
   }
 }
