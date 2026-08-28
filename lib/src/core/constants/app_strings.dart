@@ -514,6 +514,40 @@ class AppStrings {
   static const containersCategory = 'Contenedores';
   static const executeAction = 'Ejecutar';
   static const rowsRetrievedPrefix = 'Filas obtenidas: ';
+  static const selectSearchScopePrompt = 'Seleccionar ámbito de búsqueda';
+  static const searchScopePrefix = 'Ámbito: ';
+  static const sqlPresetsSelectPrompt = 'Seleccionar plantilla SQL';
+  static const sqlCategorySelectPrompt = 'Seleccionar categoría SQL';
+  static const openSqlEditorAction = 'Abrir Editor SQL';
+  static const executeSqlAction = 'Ejecutar consulta SQL';
+  static const editQueryAction = 'Editar consulta';
+  static const fullScreenSqlEditorTitle = 'Editor de Consulta SQL';
+  static const sqlQueryPreviewLabel = 'Consulta SQL activa:';
+  static const sqlCodeEditorHint = 'Escribe tu consulta SQL SELECT aquí...';
+  static const dateFilterLabel = 'Filtrar por fecha';
+  static const dateAll = 'Cualquier fecha';
+  static const dateToday = 'Hoy';
+  static const dateLast7Days = 'Últimos 7 días';
+  static const dateLast30Days = 'Últimos 30 días';
+  static const dateThisMonth = 'Este mes';
+  static const dateThisYear = 'Este año';
+  static const dateCustomRange = 'Rango personalizado...';
+  static const selectDateFilterPrompt = 'Seleccionar filtro de fecha';
+  static const selectCategoryFilterPrompt = 'Seleccionar categoría';
+  static const selectTypeFilterPrompt = 'Seleccionar tipo';
+  static const searchInAllScope = 'Búsqueda global en todos los elementos';
+  static const sectionInstances = 'Instancias';
+  static const sectionCatalog = 'Catálogo (Especies y Subespecies)';
+  static const sectionLocations = 'Ubicaciones';
+  static const sectionHistory = 'Historial de Actividad';
+  static const sectionContainers = 'Contenedores';
+  static const filterByType = 'Tipo';
+  static const filterByCategory = 'Categoría';
+  static const filterByDate = 'Fecha';
+  static const customDateRange = 'Rango personalizado';
+  static const clearFilterAction = 'Limpiar filtro';
+  static const searchResultsCount = 'Resultados encontrados';
+  static const noSubspeciesFound = 'Sin subespecies coincidentes.';
 
   // Categorías de Consultas SQL Predefinidas
   static const sqlCategoryAll = 'Todas';
@@ -1102,6 +1136,9 @@ class AppStrings {
   static String backupExportErrorMessage(Object error) => '$backupExportErrorPrefix$error';
   static String backupImportErrorMessage(Object error) => '$backupImportErrorPrefix$error';
   static String formatObjectsCount(int count) => '$count $objectsLabel';
+  static String sectionHeaderWithCount(String section, int count) => '$section ($count)';
+  static String scopeWithPrefix(String scope) => '$searchScopePrefix$scope';
+  static String dateRangeFormatted(String start, String end) => '$start - $end';
 
   // Activity Log Dynamic Helpers & Constants
   static const historyTitle = 'Historial y Auditoría';

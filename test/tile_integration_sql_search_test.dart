@@ -197,19 +197,11 @@ void main() {
             databaseProvider.overrideWithValue(db),
           ],
           child: const MaterialApp(
-            home: SearchScreen(),
+            home: SearchScreen(initialScope: AppStrings.tabContainers),
           ),
         ),
       );
 
-      await tester.pumpAndSettle();
-
-      // Tap on "Contenedores" top scope chip
-      final containersScopeChip = find.widgetWithText(FilterChip, AppStrings.tabContainers);
-      expect(containersScopeChip, findsOneWidget);
-      await tester.ensureVisible(containersScopeChip);
-      await tester.pumpAndSettle();
-      await tester.tap(containersScopeChip);
       await tester.pumpAndSettle();
 
       // Verify container entity e_vault is rendered in an EntityTile
@@ -217,7 +209,7 @@ void main() {
       expect(find.text('Caja Fuerte'), findsWidgets);
     });
 
-    testWidgets('SQL Console View Mode switch toggles between Table and Tiles',
+    testWidgets('SQL Console View Mode switch toggles between Tiles and Table',
         (WidgetTester tester) async {
       final now = DateTime.now();
 
@@ -234,40 +226,35 @@ void main() {
             databaseProvider.overrideWithValue(db),
           ],
           child: const MaterialApp(
-            home: SearchScreen(),
+            home: SearchScreen(initialScope: AppStrings.arbitrarySqlQueryLabel),
           ),
         ),
       );
 
       await tester.pumpAndSettle();
 
-      // Open SQL console
-      final sqlTabChip = find.widgetWithText(FilterChip, AppStrings.arbitrarySqlQueryLabel);
-      await tester.ensureVisible(sqlTabChip);
-      await tester.pumpAndSettle();
-      await tester.tap(sqlTabChip);
+      // Open presets picker via AppWheelPicker and pick "Instancias"
+      final presetButton = find.widgetWithText(FilledButton, AppStrings.sqlPresetsSelectPrompt);
+      await tester.tap(presetButton);
       await tester.pumpAndSettle();
 
-      // Run "Instancias" preset
-      final instancesPresetChip = find.widgetWithText(ActionChip, AppStrings.sqlPresetInstances);
-      await tester.ensureVisible(instancesPresetChip);
-      await tester.pumpAndSettle();
-      await tester.tap(instancesPresetChip);
+      final confirmBtn = find.widgetWithText(ElevatedButton, AppStrings.confirm);
+      await tester.tap(confirmBtn);
       await tester.pumpAndSettle();
 
-      // In default Table view mode, DataTable is rendered
-      expect(find.byType(DataTable), findsOneWidget);
-      expect(find.text('e_dremel'), findsOneWidget);
-
-      // Switch to Tarjetas (Tiles) view mode via SegmentedButton
-      final tilesSegment = find.text(AppStrings.viewModeTiles);
-      expect(tilesSegment, findsOneWidget);
-      await tester.tap(tilesSegment);
-      await tester.pumpAndSettle();
-
-      // In Tiles view mode, EntityTile is rendered
+      // In default Tiles (Tarjetas) view mode (Item j), EntityTile is rendered
       expect(find.byType(EntityTile), findsOneWidget);
       expect(find.text('Herramienta Rotativa'), findsWidgets);
+
+      // Switch to Table view mode via SegmentedButton
+      final tableSegment = find.text(AppStrings.viewModeTable);
+      expect(tableSegment, findsOneWidget);
+      await tester.tap(tableSegment);
+      await tester.pumpAndSettle();
+
+      // In Table view mode, DataTable is rendered
+      expect(find.byType(DataTable), findsOneWidget);
+      expect(find.text('e_dremel'), findsOneWidget);
     });
   });
 }

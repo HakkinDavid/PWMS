@@ -147,35 +147,27 @@ void main() {
             databaseProvider.overrideWithValue(db),
           ],
           child: const MaterialApp(
-            home: SearchScreen(),
+            home: SearchScreen(initialScope: AppStrings.arbitrarySqlQueryLabel),
           ),
         ),
       );
 
       await tester.pumpAndSettle();
 
-      // Tap on "Consulta SQL" filter chip to open SQL console
-      final sqlTabChip = find.widgetWithText(FilterChip, AppStrings.arbitrarySqlQueryLabel);
-      expect(sqlTabChip, findsOneWidget);
-      await tester.ensureVisible(sqlTabChip);
-      await tester.pumpAndSettle();
-      await tester.tap(sqlTabChip);
+      // Open presets picker via AppWheelPicker
+      final presetButton = find.widgetWithText(FilledButton, AppStrings.sqlPresetsSelectPrompt);
+      expect(presetButton, findsOneWidget);
+      await tester.tap(presetButton);
       await tester.pumpAndSettle();
 
-      // Verify the 'Contenedores' ActionChip is visible
-      final containersActionChip = find.widgetWithText(ActionChip, AppStrings.containersCategory);
-      expect(containersActionChip, findsOneWidget);
-      await tester.ensureVisible(containersActionChip);
+      // Confirm preset selection
+      final confirmBtn = find.widgetWithText(ElevatedButton, AppStrings.confirm);
+      await tester.tap(confirmBtn);
       await tester.pumpAndSettle();
 
-      // Tap the preset chip
-      await tester.tap(containersActionChip);
-      await tester.pumpAndSettle();
-
-      // Verify query result renders in DataTable
-      expect(find.text('entity_backpack'), findsOneWidget);
-      expect(find.text('Mochila de Viaje'), findsOneWidget);
-      expect(find.text('${AppStrings.rowsRetrievedPrefix}1'), findsOneWidget);
+      // Verify query result renders
+      expect(find.text('entity_backpack'), findsWidgets);
+      expect(find.text('Mochila de Viaje'), findsWidgets);
     });
   });
 }

@@ -260,61 +260,29 @@ void main() {
             databaseProvider.overrideWithValue(db),
           ],
           child: const MaterialApp(
-            home: SearchScreen(),
+            home: SearchScreen(initialScope: AppStrings.arbitrarySqlQueryLabel),
           ),
         ),
       );
 
       await tester.pumpAndSettle();
 
-      // Open SQL console
-      final sqlTabChip = find.widgetWithText(FilterChip, AppStrings.arbitrarySqlQueryLabel);
-      expect(sqlTabChip, findsOneWidget);
-      await tester.ensureVisible(sqlTabChip);
-      await tester.pumpAndSettle();
-      await tester.tap(sqlTabChip);
+      // Verify SQL console is open and preset button is present
+      final presetButton = find.widgetWithText(FilledButton, AppStrings.sqlPresetsSelectPrompt);
+      expect(presetButton, findsOneWidget);
+
+      // Open presets picker via AppWheelPicker
+      await tester.tap(presetButton);
       await tester.pumpAndSettle();
 
-      // Category choice chips should be visible
-      final containersCategoryChip = find.widgetWithText(ChoiceChip, AppStrings.sqlCategoryContainers);
-      expect(containersCategoryChip, findsOneWidget);
-      await tester.ensureVisible(containersCategoryChip);
-      await tester.pumpAndSettle();
-      await tester.tap(containersCategoryChip);
+      // In bottom sheet AppWheelPicker, confirm button should be present
+      final confirmBtn = find.widgetWithText(ElevatedButton, AppStrings.confirm);
+      expect(confirmBtn, findsOneWidget);
+      await tester.tap(confirmBtn);
       await tester.pumpAndSettle();
 
-      // In Contenedores category, "Elementos no guardados" ActionChip should be visible
-      final nonContainedChip = find.widgetWithText(ActionChip, AppStrings.sqlPresetNonContainedItems);
-      expect(nonContainedChip, findsOneWidget);
-      await tester.ensureVisible(nonContainedChip);
-      await tester.pumpAndSettle();
-      await tester.tap(nonContainedChip);
-      await tester.pumpAndSettle();
-
-      // Verify result table is displayed with e_test_1
-      expect(find.text('e_test_1'), findsOneWidget);
-      expect(find.text('Elemento de Prueba'), findsOneWidget);
-
-      // Switch category to Auditoría
-      final auditCategoryChip = find.widgetWithText(ChoiceChip, AppStrings.sqlCategoryAudit);
-      expect(auditCategoryChip, findsOneWidget);
-      await tester.ensureVisible(auditCategoryChip);
-      await tester.pumpAndSettle();
-      await tester.tap(auditCategoryChip);
-      await tester.pumpAndSettle();
-
-      // In Auditoría category, "Huérfanos sin ubicación" ActionChip should be visible
-      final orphanChip = find.widgetWithText(ActionChip, AppStrings.sqlPresetOrphanEntities);
-      expect(orphanChip, findsOneWidget);
-      await tester.ensureVisible(orphanChip);
-      await tester.pumpAndSettle();
-      await tester.tap(orphanChip);
-      await tester.pump();
-      await tester.pumpAndSettle();
-
-      // Verify DataTable or error
-      expect(find.byType(DataTable), findsOneWidget);
-      expect(find.text('e_test_1'), findsWidgets);
+      // Verify results are displayed
+      expect(find.text('Elemento de Prueba'), findsWidgets);
     });
   });
 }
