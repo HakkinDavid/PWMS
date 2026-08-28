@@ -24,6 +24,9 @@ class DuplicateSpeciesStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleGovernanceDuplicateSpecies;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final Map<String, List<CatalogItem>> grouped = {};
     for (final sp in context.allCatalog) {
@@ -47,6 +50,8 @@ class DuplicateSpeciesStrategy implements IAuditRuleStrategy {
         icon: Icons.copy_all_outlined,
         themeColor: Colors.deepOrange,
         species: canonical,
+        confirmLabel: AppStrings.confirmKeepSeparateAction,
+        fixLabel: AppStrings.fixMergeOrRenameAction,
         confirmToastMessage: AppStrings.attributesSkipped,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
@@ -114,6 +119,9 @@ class DuplicatePhotoStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleGovernanceDuplicatePhoto;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final Map<String, List<CatalogItem>> photoMap = {};
     for (final sp in context.allCatalog) {
@@ -139,6 +147,8 @@ class DuplicatePhotoStrategy implements IAuditRuleStrategy {
           icon: Icons.photo_library_outlined,
           themeColor: Colors.indigoAccent,
           species: current,
+          confirmLabel: AppStrings.confirmKeepSharedPhotoAction,
+          fixLabel: AppStrings.fixChangeOrSeparateAction,
           confirmToastMessage: AppStrings.attributesSkipped,
           onFix: (ctx, ref) async {
             final choice = await showDialog<String>(
@@ -210,6 +220,9 @@ class SpeciesWithoutSubspeciesStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleGovernanceSpeciesWithoutSubspecies;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final emptySpecies = context.allCatalog.where((sp) {
       return !context.allSubspecies.any((sub) => sub.speciesId == sp.id);
@@ -226,6 +239,8 @@ class SpeciesWithoutSubspeciesStrategy implements IAuditRuleStrategy {
         icon: Icons.view_in_ar_outlined,
         themeColor: Colors.amber.shade800,
         species: sp,
+        confirmLabel: AppStrings.confirmWithoutSubspeciesAction,
+        fixLabel: AppStrings.fixCreateSubspeciesAction,
         confirmToastMessage: AppStrings.speciesKeptInCatalog,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
@@ -307,6 +322,9 @@ class UnlinkedInstancesStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleGovernanceUnlinkedInstances;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final unlinkedEntities = context.allEntities.where((e) {
       final hasSpecies = context.allCatalog.any((c) => c.id == e.speciesId);
@@ -329,6 +347,8 @@ class UnlinkedInstancesStrategy implements IAuditRuleStrategy {
         themeColor: Colors.redAccent,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmKeepUnlinkedAction,
+        fixLabel: AppStrings.fixReassignOrDeregisterAction,
         confirmToastMessage: AppStrings.attributesSkipped,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
@@ -414,6 +434,9 @@ class AnomalousExpirationStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleGovernanceAnomalousExpiration;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final now = DateTime.now();
     final anomalousEntities = context.allEntities.where((e) {
@@ -440,6 +463,8 @@ class AnomalousExpirationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.amber.shade900,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmKeepExpirationAction,
+        fixLabel: AppStrings.fixCorrectExpirationAction,
         confirmToastMessage: AppStrings.attributesSkipped,
         onFix: (ctx, ref) async {
           final picked = await showDatePicker(

@@ -18,6 +18,9 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleRelationalOrphanEntity;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final orphanEntities = context.allEntities.where((e) =>
       e.locationId == null &&
@@ -40,6 +43,8 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
         themeColor: Colors.orangeAccent,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmKeepUnassignedAction,
+        fixLabel: AppStrings.fixAssignLocationAction,
         confirmToastMessage: AppStrings.locationKeptUnassigned,
         onFix: (ctx, ref) => AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity),
       ));
@@ -57,6 +62,9 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
 
   @override
   String get ruleId => AppTechnicalStrings.ruleRelationalLocationConflict;
+
+  @override
+  AuditCategory get category => AuditCategory.integrity;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -88,6 +96,8 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
         themeColor: Colors.purpleAccent,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmKeepConflictAction,
+        fixLabel: AppStrings.fixResolveLocationAction,
         confirmToastMessage: AppStrings.locationConflictSkipped,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
@@ -153,6 +163,9 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleRelationalCyclicContainment;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final circularRels = context.allRelations.where((r) {
       if (r.sourceEntityId == r.targetEntityId) return true;
@@ -190,6 +203,8 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
         entity: sourceEnt,
         species: sourceSp,
         tile: sourceEnt != null ? InstancePreviewCard(entity: sourceEnt) : const SizedBox.shrink(),
+        confirmLabel: AppStrings.confirmKeepRelationAction,
+        fixLabel: AppStrings.fixDeleteRelationAction,
         confirmToastMessage: AppStrings.circularRelationKept,
         onFix: (ctx, ref) async {
           final confirm = await AuditRuleHelper.showConfirmationDialog(
@@ -226,6 +241,9 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleRelationalOwnershipCheck;
 
   @override
+  AuditCategory get category => AuditCategory.routine;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final sampleEntities = (context.allEntities.toList()..shuffle()).take(8);
     final cards = <AuditCardData>[];
@@ -238,6 +256,7 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
       cards.add(AuditRuleHelper.forEntity(
         id: AppTechnicalStrings.prefixOwn + entity.id,
         type: AuditCardType.ownershipCheck,
+        category: AuditCategory.routine,
         title: AppStrings.keepThisObjectQuestion,
         subtitle: AppStrings.ownershipCheckSubtitle(displayName, breadcrumb.fullPath),
         question: AppStrings.ownershipCheckQuestion(displayName, breadcrumb.fullPath),
@@ -245,6 +264,8 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
         themeColor: Colors.blueAccent,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmIKeepThisObject,
+        fixLabel: AppStrings.fixRelocateOrManageAction,
         confirmToastMessage: AppStrings.instanceConfirmedInInventory,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
@@ -312,6 +333,9 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleRelationalLocationVerification;
 
   @override
+  AuditCategory get category => AuditCategory.routine;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final locationCheckSample = (context.allEntities.where((e) => e.locationId != null).toList()..shuffle()).take(6);
     final cards = <AuditCardData>[];
@@ -324,6 +348,7 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
       cards.add(AuditRuleHelper.forEntity(
         id: AppTechnicalStrings.prefixLocVerif + entity.id,
         type: AuditCardType.locationVerification,
+        category: AuditCategory.routine,
         title: AppStrings.haveYouMovedThisObjectQuestion,
         subtitle: AppStrings.locationVerificationSubtitle(displayName, breadcrumb.fullPath),
         question: AppStrings.locationVerificationQuestion(displayName, breadcrumb.fullPath),
@@ -331,6 +356,8 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.teal,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmItIsHere,
+        fixLabel: AppStrings.fixRelocateAction,
         confirmToastMessage: AppStrings.locationConfirmedSuccess,
         onFix: (ctx, ref) => AuditRuleHelper.openLocationCorrection(ctx, ref, entityId: entity.id, fallback: entity),
       ));

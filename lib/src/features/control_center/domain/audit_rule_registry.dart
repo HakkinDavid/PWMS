@@ -62,4 +62,16 @@ class AuditRuleRegistry {
 
     return allCards;
   }
+
+  Future<List<AuditCardData>> evaluateCategory(AuditEvaluationContext context, AuditCategory category) async {
+    final List<AuditCardData> cards = [];
+    final categoryStrategies = _strategies.where((s) => s.category == category);
+
+    for (final strategy in categoryStrategies) {
+      final res = await strategy.evaluate(context);
+      cards.addAll(res);
+    }
+
+    return cards;
+  }
 }

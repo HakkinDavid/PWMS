@@ -218,7 +218,11 @@ class NumismaticDomainRules {
       final side = isObverse ? AppTechnicalStrings.anversoLower : AppTechnicalStrings.reversoLower;
 
       final file = File(att.filePath);
-      final ext = file.path.contains(AppTechnicalStrings.dot) ? file.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgNoExt;
+      final ext = att.fileName.contains(AppTechnicalStrings.dot)
+          ? att.fileName.split(AppTechnicalStrings.dot).last
+          : (file.path.contains(AppTechnicalStrings.dot)
+              ? file.path.split(AppTechnicalStrings.dot).last
+              : AppTechnicalStrings.empty);
 
       final expectedName = NumismaticParser.buildAttachmentFileName(
         subspeciesName: subspecies.subspeciesName,
@@ -229,10 +233,10 @@ class NumismaticDomainRules {
 
       if (att.fileName != expectedName) {
         // Renombrar archivo en disco si existe
-        if (await file.exists()) {
+        if (file.existsSync()) {
           final parentDir = file.parent.path;
           final newPath = AppStrings.numisAttachmentPath(parentDir, expectedName);
-          final renamedFile = await file.rename(newPath);
+          final renamedFile = file.renameSync(newPath);
 
           // Actualizar en base de datos
           final updatedAtt = att.copyWith(

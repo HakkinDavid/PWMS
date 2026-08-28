@@ -20,6 +20,9 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleCatalogUninstantiatedSubspecies;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -42,6 +45,8 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
           themeColor: Colors.amber,
           subspecies: sub,
           species: parentSpecies,
+          confirmLabel: AppStrings.confirmKeepInCatalogAction,
+          fixLabel: AppStrings.fixCreateInstanceAction,
           onConfirm: (ctx, ref) async {
             final choice = await showDialog<String>(
               context: ctx,
@@ -128,6 +133,9 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleCatalogUniquenessViolation;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -154,6 +162,8 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
             themeColor: Colors.deepOrangeAccent,
             species: sp,
             subspecies: sub,
+            confirmLabel: AppStrings.confirmKeepAction,
+            fixLabel: AppStrings.fixResolveDuplicatesAction,
             confirmToastMessage: AppStrings.subspeciesDuplicationSkipped,
             onFix: (ctx, ref) async {
               final choice = await showDialog<String>(
@@ -177,7 +187,7 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
                       child: const Text(AppStrings.makeNonUniqueAction),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionDeleteDuplicates),
+                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionDelete),
                       child: const Text(
                         AppStrings.deleteDuplicatesAction,
                         style: TextStyle(color: Colors.redAccent),
@@ -224,6 +234,9 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleCatalogSubgroupRuleViolation;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final invalidSubspecies = context.allSubspecies.where((sub) {
       final sp = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
@@ -249,6 +262,8 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.deepPurpleAccent,
         subspecies: sub,
         species: sp,
+        confirmLabel: AppStrings.confirmKeepValueAction,
+        fixLabel: AppStrings.fixCleanAttributesAction,
         confirmToastMessage: AppStrings.attributesSkipped,
         onFix: (ctx, ref) async {
           final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
@@ -276,6 +291,9 @@ class UninstantiatedSpeciesStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleCatalogUninstantiatedSpecies;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final uninstantiatedSpecies = context.allCatalog.where((sp) {
       return !context.allEntities.any((e) => e.speciesId == sp.id);
@@ -292,6 +310,8 @@ class UninstantiatedSpeciesStrategy implements IAuditRuleStrategy {
         icon: Icons.category_outlined,
         themeColor: Colors.brown,
         species: sp,
+        confirmLabel: AppStrings.confirmKeepInCatalogAction,
+        fixLabel: AppStrings.fixManageAction,
         confirmToastMessage: AppStrings.speciesKeptInCatalog,
         onFix: (ctx, ref) async {
           final choice = await showDialog<String>(
@@ -360,6 +380,9 @@ class IncompleteSpeciesInfoStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleCatalogIncompleteSpeciesInfo;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final incompleteSpecies = context.allCatalog.where((c) => (c.mainPhotoPath == null || c.mainPhotoPath!.isEmpty)).take(5);
     final cards = <AuditCardData>[];
@@ -374,6 +397,8 @@ class IncompleteSpeciesInfoStrategy implements IAuditRuleStrategy {
         icon: Icons.add_a_photo_outlined,
         themeColor: Colors.purpleAccent,
         species: sp,
+        confirmLabel: AppStrings.confirmSkipAction,
+        fixLabel: AppStrings.fixAddPhotoAction,
         confirmToastMessage: AppStrings.informationSkippedForNow,
         onFix: (ctx, ref) async {
           final freshSp = await ref.read(catalogRepositoryProvider).getCatalogItemById(sp.id) ?? sp;
@@ -397,6 +422,9 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleCatalogRemoteImageAudit;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -416,6 +444,8 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
         icon: Icons.cloud_download_outlined,
         themeColor: Colors.indigoAccent,
         species: sp,
+        confirmLabel: AppStrings.confirmKeepUrlAction,
+        fixLabel: AppStrings.fixDownloadLocallyAction,
         confirmToastMessage: AppStrings.remoteImageKeptWithoutDownload,
         onFix: (ctx, ref) async {
           return await AuditRuleHelper.resolveRemoteImage(
@@ -455,6 +485,8 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
         themeColor: Colors.indigo,
         subspecies: sub,
         species: parentSpecies,
+        confirmLabel: AppStrings.confirmKeepUrlAction,
+        fixLabel: AppStrings.fixDownloadLocallyAction,
         confirmToastMessage: AppStrings.remoteImageKeptWithoutDownload,
         onFix: (ctx, ref) async {
           return await AuditRuleHelper.resolveRemoteImage(

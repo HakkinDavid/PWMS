@@ -24,6 +24,9 @@ class NumismaticDuplicateSubspeciesStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleNumismaticDuplicateSubspecies;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final duplicateSubGroups = NumismaticDataHelper.findDuplicateSubspeciesGroups(context.allSubspecies);
     final cards = <AuditCardData>[];
@@ -50,6 +53,8 @@ class NumismaticDuplicateSubspeciesStrategy implements IAuditRuleStrategy {
           themeColor: Colors.deepOrange,
           subspecies: canonicalSub,
           species: parentSpecies,
+          confirmLabel: AppStrings.confirmKeepSeparateAction,
+          fixLabel: AppStrings.fixMergeSubspeciesAction,
           confirmToastMessage: AppStrings.duplicateSubspeciesKeptWithoutChanges,
           onFix: (ctx, ref) async {
             final confirm = await AuditRuleHelper.showConfirmationDialog(
@@ -94,6 +99,9 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleNumismaticSubspeciesIncongruity;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -124,6 +132,8 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
               entity: entity,
               subspecies: sub,
               species: species,
+              confirmLabel: AppStrings.confirmKeepDataAction,
+              fixLabel: AppStrings.fixUpdateSubspeciesAction,
               confirmToastMessage: AppStrings.incongruitySkipped,
               onFix: (ctx, ref) async {
                 final action = await showDialog<String>(
@@ -186,6 +196,9 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleNumismaticAttachmentIncongruity;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -204,9 +217,11 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
                 att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoLower);
             final side = isObverse ? AppTechnicalStrings.anversoLower : AppTechnicalStrings.reversoLower;
             final file = File(att.filePath);
-            final ext = file.path.contains(AppTechnicalStrings.dot)
-                ? file.path.split(AppTechnicalStrings.dot).last
-                : AppTechnicalStrings.extJpgClean;
+            final ext = att.fileName.contains(AppTechnicalStrings.dot)
+                ? att.fileName.split(AppTechnicalStrings.dot).last
+                : (file.path.contains(AppTechnicalStrings.dot)
+                    ? file.path.split(AppTechnicalStrings.dot).last
+                    : AppTechnicalStrings.empty);
 
             final expectedName = NumismaticDataHelper.buildAttachmentFileName(
               subspeciesName: sub.subspeciesName,
@@ -231,6 +246,8 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
                 entity: entity,
                 subspecies: sub,
                 species: species,
+                confirmLabel: AppStrings.confirmKeepNameAction,
+                fixLabel: AppStrings.fixRenameFileAction,
                 confirmToastMessage: AppStrings.attachmentNameRetainedSuccess,
                 onFix: (ctx, ref) async {
                   final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
@@ -267,6 +284,9 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleNumismaticMissingMagnitudes;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -301,6 +321,8 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
               entity: entity,
               subspecies: sub,
               species: species,
+              confirmLabel: AppStrings.confirmKeepEmptyAction,
+              fixLabel: AppStrings.fixAutocompleteAction,
               confirmToastMessage: AppStrings.magnitudesRetainedSuccess,
               onFix: (ctx, ref) async {
                 final parsedSub = NumismaticDataHelper.parseSubspeciesName(sub.subspeciesName);
@@ -367,6 +389,9 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleNumismaticEmptyDataAudit;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -390,6 +415,8 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
               entity: entity,
               subspecies: sub,
               species: species,
+              confirmLabel: AppStrings.confirmWithoutGradeAction,
+              fixLabel: AppStrings.fixAssignGradeAction,
               confirmToastMessage: AppStrings.gradeRetainedEmptySuccess,
               onFix: (ctx, ref) async {
                 final chosenGrade = await AppWheelPicker.show<String>(

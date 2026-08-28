@@ -20,6 +20,9 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleExpirationPerishableMissingExpiration;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final perishableMissingExp = context.allEntities.where((e) {
       final sp = context.allCatalog.where((c) => c.id == e.speciesId).firstOrNull;
@@ -47,6 +50,8 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.amber.shade700,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmWithoutExpirationAction,
+        fixLabel: AppStrings.fixAssignDateAction,
         confirmToastMessage: AppStrings.expirationDateSkipped,
         onFix: (ctx, ref) async {
           final defaultDays = species?.defaultShelfLifeDays ?? 30;
@@ -87,6 +92,9 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleExpirationNonPerishableWithExpiration;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final nonPerishableWithExp = context.allEntities.where((e) {
       final sp = context.allCatalog.where((c) => c.id == e.speciesId).firstOrNull;
@@ -114,6 +122,8 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
         themeColor: Colors.blueGrey,
         entity: entity,
         species: species,
+        confirmLabel: AppStrings.confirmKeepExpirationAction,
+        fixLabel: AppStrings.fixRemoveDateAction,
         confirmToastMessage: AppStrings.expirationDateKept,
         onFix: (ctx, ref) async {
           final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
@@ -138,6 +148,9 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
 
   @override
   String get ruleId => AppTechnicalStrings.ruleExpirationMissingMandatoryMagnitudes;
+
+  @override
+  AuditCategory get category => AuditCategory.integrity;
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
@@ -165,6 +178,8 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
             themeColor: Colors.teal,
             entity: entity,
             species: species,
+            confirmLabel: AppStrings.confirmKeepEmptyAction,
+            fixLabel: AppStrings.fixEnterValueAction,
             confirmToastMessage: AppStrings.magnitudeSkipped,
             onFix: (ctx, ref) async {
               final propType = PropertyDataType.fromCode(missingProp.dataType);
@@ -336,6 +351,9 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleExpirationAnomalousMagnitude;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -363,6 +381,8 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
           themeColor: Colors.orange,
           entity: entity,
           species: species,
+          confirmLabel: AppStrings.confirmKeepValueAction,
+          fixLabel: AppStrings.fixCorrectValueAction,
           confirmToastMessage: AppStrings.valueKept,
           onFix: (ctx, ref) async {
             final enteredValue = await AuditRuleHelper.showTextInputDialog(

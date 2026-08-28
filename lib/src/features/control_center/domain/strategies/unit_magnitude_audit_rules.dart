@@ -23,6 +23,9 @@ class InvalidUnitSymbolStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleUnitInvalidSymbol;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -43,6 +46,8 @@ class InvalidUnitSymbolStrategy implements IAuditRuleStrategy {
           icon: Icons.straighten,
           themeColor: Colors.purple,
           species: species,
+          confirmLabel: AppStrings.confirmKeepUnitAction,
+          fixLabel: AppStrings.fixChangeUnitAction,
           confirmToastMessage: AppStrings.invalidUnitRetained,
           onFix: (ctx, ref) async {
             final picked = await AppWheelPicker.show<String>(
@@ -99,6 +104,8 @@ class InvalidUnitSymbolStrategy implements IAuditRuleStrategy {
           themeColor: Colors.purple,
           entity: entity,
           species: species,
+          confirmLabel: AppStrings.confirmKeepUnitAction,
+          fixLabel: AppStrings.fixChangeUnitAction,
           confirmToastMessage: AppStrings.invalidUnitRetained,
           onFix: (ctx, ref) async {
             final picked = await AppWheelPicker.show<String>(
@@ -149,6 +156,9 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleUnitIntegerIncongruity;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -173,6 +183,8 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
           icon: Icons.pin_outlined,
           themeColor: Colors.deepOrange,
           species: species,
+          confirmLabel: AppStrings.confirmKeepValueAction,
+          fixLabel: AppStrings.fixNormalizeIntegerAction,
           confirmToastMessage: AppStrings.attributesSkipped,
           onFix: (ctx, ref) async {
             final catalogRepo = ref.read(catalogRepositoryProvider);
@@ -222,6 +234,8 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
           themeColor: Colors.deepOrange,
           entity: entity,
           species: species,
+          confirmLabel: AppStrings.confirmKeepValueAction,
+          fixLabel: AppStrings.fixNormalizeIntegerAction,
           confirmToastMessage: AppStrings.attributesSkipped,
           onFix: (ctx, ref) async {
             final entityRepo = ref.read(entityRepositoryProvider);
@@ -261,6 +275,9 @@ class NonNumericWithUnitStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleUnitNonNumericWithUnit;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -281,6 +298,8 @@ class NonNumericWithUnitStrategy implements IAuditRuleStrategy {
           icon: Icons.text_fields_outlined,
           themeColor: Colors.blueGrey,
           species: species,
+          confirmLabel: AppStrings.confirmKeepUnitAction,
+          fixLabel: AppStrings.fixRemoveUnitAction,
           confirmToastMessage: AppStrings.attributesSkipped,
           onFix: (ctx, ref) async {
             final catalogRepo = ref.read(catalogRepositoryProvider);
@@ -323,6 +342,8 @@ class NonNumericWithUnitStrategy implements IAuditRuleStrategy {
           themeColor: Colors.blueGrey,
           entity: entity,
           species: species,
+          confirmLabel: AppStrings.confirmKeepUnitAction,
+          fixLabel: AppStrings.fixRemoveUnitAction,
           confirmToastMessage: AppStrings.attributesSkipped,
           onFix: (ctx, ref) async {
             final entityRepo = ref.read(entityRepositoryProvider);
@@ -359,6 +380,9 @@ class NegativeMagnitudeViolationStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleUnitNegativeMagnitudeViolation;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -388,6 +412,8 @@ class NegativeMagnitudeViolationStrategy implements IAuditRuleStrategy {
           themeColor: Colors.redAccent,
           entity: entity,
           species: species,
+          confirmLabel: AppStrings.confirmKeepValueAction,
+          fixLabel: AppStrings.fixCorrectValueAction,
           confirmToastMessage: AppStrings.valueKept,
           onFix: (ctx, ref) async {
             final enteredValue = await AuditRuleHelper.showTextInputDialog(
@@ -438,6 +464,9 @@ class PropertyNameSuggestionIncongruityStrategy implements IAuditRuleStrategy {
   String get ruleId => AppTechnicalStrings.ruleUnitPropertyNameSuggestionIncongruity;
 
   @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
@@ -461,6 +490,8 @@ class PropertyNameSuggestionIncongruityStrategy implements IAuditRuleStrategy {
           icon: Icons.auto_fix_high,
           themeColor: Colors.indigo,
           species: species,
+          confirmLabel: AppStrings.confirmKeepNameAction,
+          fixLabel: AppStrings.fixRenamePropertyAction,
           confirmToastMessage: AppStrings.attributesSkipped,
           onFix: (ctx, ref) async {
             final catalogRepo = ref.read(catalogRepositoryProvider);

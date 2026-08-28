@@ -10,6 +10,11 @@ import '../../entities/domain/world_entity.dart';
 import '../../locations/domain/location_node.dart';
 import '../../relations/domain/entity_relation.dart';
 
+enum AuditCategory {
+  integrity,
+  routine,
+}
+
 enum AuditCardType {
   uninstantiatedSubspecies,
   locationVerification,
@@ -47,6 +52,7 @@ enum AuditCardType {
 class AuditCardData {
   final String id;
   final AuditCardType type;
+  final AuditCategory category;
   final String title;
   final String subtitle;
   final String question;
@@ -57,12 +63,17 @@ class AuditCardData {
   final Subspecies? subspecies;
   final WorldEntity? entity;
   final int? totalDetectedCount;
+  final String? confirmLabel;
+  final String? fixLabel;
+  final IconData? confirmIcon;
+  final IconData? fixIcon;
   final Future<bool> Function(BuildContext context, WidgetRef ref) onConfirm;
   final Future<bool> Function(BuildContext context, WidgetRef ref) onFix;
 
   AuditCardData({
     required this.id,
     required this.type,
+    this.category = AuditCategory.integrity,
     required this.title,
     required this.subtitle,
     required this.question,
@@ -73,6 +84,10 @@ class AuditCardData {
     this.subspecies,
     this.entity,
     this.totalDetectedCount,
+    this.confirmLabel,
+    this.fixLabel,
+    this.confirmIcon,
+    this.fixIcon,
     required this.onConfirm,
     required this.onFix,
   });
@@ -107,6 +122,7 @@ class AuditEvaluationContext {
 abstract class IAuditRuleStrategy {
   AuditCardType get cardType;
   String get ruleId;
+  AuditCategory get category => AuditCategory.integrity;
 
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context);
 }

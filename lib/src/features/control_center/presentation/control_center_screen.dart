@@ -14,16 +14,31 @@ class ControlCenterScreen extends ConsumerStatefulWidget {
   ConsumerState<ControlCenterScreen> createState() => _ControlCenterScreenState();
 }
 
-class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
+class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
+    with SingleTickerProviderStateMixin {
   final AuditRuleRegistry _registry = AuditRuleRegistry();
-  List<AuditCardData> _cards = [];
+  late TabController _tabController;
+
+  List<AuditCardData> _integrityCards = [];
+  List<AuditCardData> _routineCards = [];
   bool _isLoading = true;
-  int _currentIndex = 0;
+  int _integrityIndex = 0;
+  int _routineIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
     _generateAuditCards();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _generateAuditCards() async {
@@ -58,12 +73,16 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         effectiveLocationMap: directLocMap,
       );
 
-      final cards = await _registry.evaluateAll(evalContext);
+      final allCards = await _registry.evaluateAll(evalContext);
+      final integrityCards = allCards.where((c) => c.category == AuditCategory.integrity).toList();
+      final routineCards = allCards.where((c) => c.category == AuditCategory.routine).toList();
 
       if (mounted) {
         setState(() {
-          _cards = cards;
-          _currentIndex = 0;
+          _integrityCards = integrityCards;
+          _routineCards = routineCards;
+          _integrityIndex = 0;
+          _routineIndex = 0;
           _isLoading = false;
         });
       }
@@ -75,17 +94,27 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
     }
   }
 
-  void _advanceCard() {
-    if (_currentIndex < _cards.length - 1) {
-      setState(() => _currentIndex++);
+  void _advanceCard(AuditCategory category) {
+    if (category == AuditCategory.integrity) {
+      if (_integrityIndex < _integrityCards.length - 1) {
+        setState(() => _integrityIndex++);
+      } else {
+        setState(() => _integrityCards = []);
+      }
     } else {
-      setState(() => _cards = []);
+      if (_routineIndex < _routineCards.length - 1) {
+        setState(() => _routineIndex++);
+      } else {
+        setState(() => _routineCards = []);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final integrityPending = _integrityCards.length - _integrityIndex;
+    final routinePending = _routineCards.length - _routineIndex;
 
     return Scaffold(
       appBar: AppBar(
@@ -110,43 +139,114 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             onPressed: _generateAuditCards,
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.white,
+          tabs: [
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.shield_outlined, size: 16),
+                  const SizedBox(width: 4),
+                  const Flexible(
+                    child: Text(
+                      AppStrings.ccTabIntegrityRules,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                  ),
+                  if (integrityPending > 0 && !_isLoading) ...[
+                    const SizedBox(width: 4),
+                    Badge.count(
+                      count: integrityPending,
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.rule_folder_outlined, size: 16),
+                  const SizedBox(width: 4),
+                  const Flexible(
+                    child: Text(
+                      AppStrings.ccTabRoutineChecks,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                  ),
+                  if (routinePending > 0 && !_isLoading) ...[
+                    const SizedBox(width: 4),
+                    Badge.count(
+                      count: routinePending,
+                      backgroundColor: Colors.blueAccent,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         top: false,
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : _cards.isEmpty
-                ? _buildEmptyState(theme)
-                : _buildCardStack(theme),
+            : TabBarView(
+                controller: _tabController,
+                children: [
+                  _integrityCards.isEmpty
+                      ? _buildEmptyState(theme, category: AuditCategory.integrity)
+                      : _buildCardStack(theme, category: AuditCategory.integrity),
+                  _routineCards.isEmpty
+                      ? _buildEmptyState(theme, category: AuditCategory.routine)
+                      : _buildCardStack(theme, category: AuditCategory.routine),
+                ],
+              ),
       ),
     );
   }
 
-  Widget _buildEmptyState(ThemeData theme) {
+  Widget _buildEmptyState(ThemeData theme, {required AuditCategory category}) {
+    final isIntegrity = category == AuditCategory.integrity;
+    final icon = isIntegrity ? Icons.verified_outlined : Icons.inventory_2_outlined;
+    final iconColor = isIntegrity ? Colors.green : Colors.blueAccent;
+    final title = isIntegrity ? AppStrings.ccIntegrityEmptyTitle : AppStrings.ccRoutineEmptyTitle;
+    final subtitle = isIntegrity ? AppStrings.ccIntegrityEmptySubtitle : AppStrings.ccRoutineEmptySubtitle;
+    final actionLabel = isIntegrity ? AppStrings.runNewAuditAction : AppStrings.runNewRoutineCheckAction;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.verified_outlined, size: 80, color: Colors.green),
+            Icon(icon, size: 80, color: iconColor),
             const SizedBox(height: 20),
             Text(
-              AppStrings.dataHealthVerifiedTitle,
+              title,
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
-            const Text(
-              AppStrings.dataHealthVerifiedSubtitle,
+            Text(
+              subtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: _generateAuditCards,
               icon: const Icon(Icons.autorenew),
-              label: const Text(AppStrings.runNewAuditAction),
+              label: Text(actionLabel),
             ),
           ],
         ),
@@ -154,9 +254,18 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
     );
   }
 
-  Widget _buildCardStack(ThemeData theme) {
-    final card = _cards[_currentIndex];
-    final progress = (_currentIndex + 1) / _cards.length;
+  Widget _buildCardStack(ThemeData theme, {required AuditCategory category}) {
+    final isIntegrity = category == AuditCategory.integrity;
+    final cards = isIntegrity ? _integrityCards : _routineCards;
+    final currentIndex = isIntegrity ? _integrityIndex : _routineIndex;
+
+    final card = cards[currentIndex];
+    final progress = (currentIndex + 1) / cards.length;
+
+    final confirmLabel = card.confirmLabel ?? AppStrings.correctAction;
+    final fixLabel = card.fixLabel ?? AppStrings.fixAction;
+    final confirmIcon = card.confirmIcon ?? Icons.check_circle_outline;
+    final fixIcon = card.fixIcon ?? Icons.build_circle_outlined;
 
     return Column(
       children: [
@@ -167,12 +276,12 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppStrings.reviewCounter(_currentIndex + 1, _cards.length),
+                AppStrings.reviewCounter(currentIndex + 1, cards.length),
                 style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
               ),
               Chip(
                 visualDensity: VisualDensity.compact,
-                label: Text(AppStrings.pendingReviews(_cards.length - _currentIndex), style: const TextStyle(fontSize: 11)),
+                label: Text(AppStrings.pendingReviews(cards.length - currentIndex), style: const TextStyle(fontSize: 11)),
               ),
             ],
           ),
@@ -201,18 +310,18 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                   ref.invalidate(catalogListProvider);
                   ref.invalidate(subspeciesListProvider);
                   ref.invalidate(relationListProvider);
-                  _advanceCard();
+                  _advanceCard(category);
                 },
                 background: _buildSwipeBackground(
                   color: Colors.blue.shade700,
-                  icon: Icons.check_circle_outline,
-                  label: AppStrings.correctAction,
+                  icon: confirmIcon,
+                  label: confirmLabel,
                   alignment: Alignment.centerLeft,
                 ),
                 secondaryBackground: _buildSwipeBackground(
                   color: Colors.red.shade800,
-                  icon: Icons.build_circle_outlined,
-                  label: AppStrings.fixAction,
+                  icon: fixIcon,
+                  label: fixLabel,
                   alignment: Alignment.centerRight,
                 ),
                 child: Card(
@@ -283,14 +392,19 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                       ref.invalidate(catalogListProvider);
                                       ref.invalidate(subspeciesListProvider);
                                       ref.invalidate(relationListProvider);
-                                      _advanceCard();
+                                      _advanceCard(category);
                                     }
                                   },
-                                  icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 18),
-                                  label: const Text(AppStrings.correctAction, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                                  icon: Icon(confirmIcon, color: Colors.green, size: 18),
+                                  label: Text(
+                                    confirmLabel,
+                                    style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   style: OutlinedButton.styleFrom(
                                     side: const BorderSide(color: Colors.green),
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                                   ),
                                 ),
                               ),
@@ -305,15 +419,20 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                       ref.invalidate(catalogListProvider);
                                       ref.invalidate(subspeciesListProvider);
                                       ref.invalidate(relationListProvider);
-                                      _advanceCard();
+                                      _advanceCard(category);
                                     }
                                   },
-                                  icon: const Icon(Icons.build_circle_outlined, size: 18),
-                                  label: const Text(AppStrings.fixAction, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                  icon: Icon(fixIcon, size: 18),
+                                  label: Text(
+                                    fixLabel,
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: card.themeColor,
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                                   ),
                                 ),
                               ),
@@ -350,7 +469,14 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         children: [
           Icon(icon, color: Colors.white, size: 28),
           const SizedBox(width: 8),
-          Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
         ],
       ),
     );
