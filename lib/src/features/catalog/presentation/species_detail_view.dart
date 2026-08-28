@@ -1038,6 +1038,7 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                       ].any((ext) => att.filePath.toLowerCase().endsWith(ext));
 
                   return _AttachmentListTile(
+                    key: ValueKey(att.id),
                     attachment: att,
                     isInstanceView: isInstanceView,
                     isEditable: isEditable,
@@ -1071,6 +1072,7 @@ class _AttachmentListTile extends ConsumerStatefulWidget {
   final VoidCallback onDelete;
 
   const _AttachmentListTile({
+    super.key,
     required this.attachment,
     required this.isInstanceView,
     required this.isEditable,
@@ -1113,6 +1115,7 @@ class _AttachmentListTileState extends ConsumerState<_AttachmentListTile> {
     return FutureBuilder<String>(
       future: _absPathFuture,
       builder: (context, snapshot) {
+        final isResolving = snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData;
         final absPath = snapshot.data ?? AppTechnicalStrings.empty;
         final fileExists = absPath.isNotEmpty && File(absPath).existsSync();
 
@@ -1123,26 +1126,30 @@ class _AttachmentListTileState extends ConsumerState<_AttachmentListTile> {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: fileExists
-                  ? (widget.isImage ? Colors.blue.withAlpha(20) : Colors.amber.withAlpha(20))
-                  : Colors.red.withAlpha(20),
+              color: isResolving
+                  ? theme.colorScheme.surfaceContainerHighest.withAlpha(50)
+                  : (fileExists
+                      ? (widget.isImage ? Colors.blue.withAlpha(20) : Colors.amber.withAlpha(20))
+                      : Colors.red.withAlpha(20)),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
-              child: !fileExists
-                  ? const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 20)
-                  : (widget.isImage
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            File(absPath),
-                            fit: BoxFit.cover,
-                            width: 38,
-                            height: 38,
-                            errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 20, color: Colors.blue),
-                          ),
-                        )
-                      : const Icon(Icons.picture_as_pdf, color: Colors.amber, size: 20)),
+              child: isResolving
+                  ? const Icon(Icons.attach_file, color: Colors.grey, size: 20)
+                  : (!fileExists
+                      ? const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 20)
+                      : (widget.isImage
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.file(
+                                File(absPath),
+                                fit: BoxFit.cover,
+                                width: 38,
+                                height: 38,
+                                errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 20, color: Colors.blue),
+                              ),
+                            )
+                          : const Icon(Icons.picture_as_pdf, color: Colors.amber, size: 20))),
             ),
           ),
           title: Row(
@@ -1153,7 +1160,7 @@ class _AttachmentListTileState extends ConsumerState<_AttachmentListTile> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: fileExists ? null : Colors.red.shade700,
+                    color: (isResolving || fileExists) ? null : Colors.red.shade700,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -1186,105 +1193,97 @@ class _AttachmentListTileState extends ConsumerState<_AttachmentListTile> {
               ],
             ],
           ),
-          subtitle: fileExists
-              ? Text(
-                  att.createdAt.toString().split(AppTechnicalStrings.dot).first,
-                  style: const TextStyle(fontSize: 10, color: Colors.grey),
-                )
-              : const Text(
-                  AppStrings.physicalFileNotFound,
-                  style: TextStyle(fontSize: 11, color: Colors.redAccent, fontWeight: FontWeight.bold),
-                ),
+          subtitle: isResolving
+              ? const SizedBox.shrink()
+              : (fileExists
+                  ? Text(
+                      att.createdAt.toString().split(AppTechnicalStrings.dot).first,
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    )
+                  : const Text(
+                      AppStrings.physicalFileNotFound,
+                      style: TextStyle(fontSize: 11, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                    )),
           onTap: widget.onOpen,
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.share_outlined, size: 18),
-                tooltip: AppStrings.shareAttachmentTooltip,
-                onPressed: widget.onShare,
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert, size: 18),
-                tooltip: AppStrings.attachmentOptionsTooltip,
-                onSelected: (value) {
-                  switch (value) {
-                    case AppTechnicalStrings.actionOpen:
-                      widget.onOpen();
-                      break;
-                    case AppTechnicalStrings.actionOpenExternally:
-                      widget.onOpenExternally();
-                      break;
-                    case AppTechnicalStrings.actionShare:
-                      widget.onShare();
-                      break;
-                    case AppTechnicalStrings.actionReplace:
-                      widget.onReplace();
-                      break;
-                    case AppTechnicalStrings.actionRename:
-                      widget.onRename();
-                      break;
-                    case AppTechnicalStrings.actionDelete:
-                      widget.onDelete();
-                      break;
-                  }
-                },
-                itemBuilder: (ctx) => [
-                  const PopupMenuItem(
-                    value: AppTechnicalStrings.actionOpenExternally,
-                    child: Row(
-                      children: [
-                        Icon(Icons.open_in_new, size: 16, color: Colors.blueAccent),
-                        SizedBox(width: 8),
-                        Text(AppStrings.openExternallyAction, style: TextStyle(fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: AppTechnicalStrings.actionShare,
-                    child: Row(
-                      children: [
-                        Icon(Icons.share, size: 16, color: Colors.teal),
-                        SizedBox(width: 8),
-                        Text(AppStrings.shareAction, style: TextStyle(fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                  if (widget.isEditable) ...[
-                    const PopupMenuDivider(height: 1),
-                    const PopupMenuItem(
-                      value: AppTechnicalStrings.actionReplace,
-                      child: Row(
-                        children: [
-                          Icon(Icons.sync, size: 16, color: Colors.blue),
-                          SizedBox(width: 8),
-                          Text(AppStrings.replaceFileAction, style: TextStyle(fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: AppTechnicalStrings.actionRename,
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit_outlined, size: 16, color: Colors.amber),
-                          SizedBox(width: 8),
-                          Text(AppStrings.renameAction, style: TextStyle(fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: AppTechnicalStrings.actionDelete,
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
-                          SizedBox(width: 8),
-                          Text(AppStrings.delete, style: TextStyle(fontSize: 12, color: Colors.redAccent)),
-                        ],
-                      ),
-                    ),
+          trailing: PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, size: 18),
+            tooltip: AppStrings.attachmentOptionsTooltip,
+            onSelected: (value) {
+              switch (value) {
+                case AppTechnicalStrings.actionOpen:
+                  widget.onOpen();
+                  break;
+                case AppTechnicalStrings.actionOpenExternally:
+                  widget.onOpenExternally();
+                  break;
+                case AppTechnicalStrings.actionShare:
+                  widget.onShare();
+                  break;
+                case AppTechnicalStrings.actionReplace:
+                  widget.onReplace();
+                  break;
+                case AppTechnicalStrings.actionRename:
+                  widget.onRename();
+                  break;
+                case AppTechnicalStrings.actionDelete:
+                  widget.onDelete();
+                  break;
+              }
+            },
+            itemBuilder: (ctx) => [
+              const PopupMenuItem(
+                value: AppTechnicalStrings.actionOpenExternally,
+                child: Row(
+                  children: [
+                    Icon(Icons.open_in_new, size: 16, color: Colors.blueAccent),
+                    SizedBox(width: 8),
+                    Text(AppStrings.openExternallyAction, style: TextStyle(fontSize: 12)),
                   ],
-                ],
+                ),
               ),
+              const PopupMenuItem(
+                value: AppTechnicalStrings.actionShare,
+                child: Row(
+                  children: [
+                    Icon(Icons.share, size: 16, color: Colors.teal),
+                    SizedBox(width: 8),
+                    Text(AppStrings.shareAction, style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+              ),
+              if (widget.isEditable) ...[
+                const PopupMenuDivider(height: 1),
+                const PopupMenuItem(
+                  value: AppTechnicalStrings.actionReplace,
+                  child: Row(
+                    children: [
+                      Icon(Icons.sync, size: 16, color: Colors.blue),
+                      SizedBox(width: 8),
+                      Text(AppStrings.replaceFileAction, style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: AppTechnicalStrings.actionRename,
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_outlined, size: 16, color: Colors.amber),
+                      SizedBox(width: 8),
+                      Text(AppStrings.renameAction, style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: AppTechnicalStrings.actionDelete,
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
+                      SizedBox(width: 8),
+                      Text(AppStrings.delete, style: TextStyle(fontSize: 12, color: Colors.redAccent)),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         );

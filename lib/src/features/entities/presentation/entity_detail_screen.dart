@@ -60,15 +60,15 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
     bool force = false,
   }) {
     if (!force && _lastInitializedEntity?.id == entity.id && _lastInitializedEntity == entity) {
-      if (relations != null && _originalRelations == null) {
+      if (relations != null && !_isEditingInPlace) {
         _originalRelations = List.from(relations);
         _workingRelations = List.from(relations);
       }
-      if (requirements != null && _originalRequirements == null) {
+      if (requirements != null && !_isEditingInPlace) {
         _originalRequirements = List.from(requirements);
         _workingRequirements = List.from(requirements);
       }
-      if (attachments != null && _originalAttachments == null) {
+      if (attachments != null && !_isEditingInPlace) {
         _originalAttachments = List.from(attachments);
         _workingAttachments = List.from(attachments);
       }

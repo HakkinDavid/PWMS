@@ -17,6 +17,7 @@ import 'package:platinum_world_management_system/src/features/catalog/presentati
 import 'package:platinum_world_management_system/src/features/entities/domain/attachment.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
+import 'package:platinum_world_management_system/src/features/entities/presentation/entity_detail_screen.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/photo_viewer_dialog.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform with MockPlatformInterfaceMixin {
@@ -101,7 +102,7 @@ void main() {
     expect(find.text(AppStrings.delete), findsOneWidget);
   });
 
-  testWidgets('3. Attachment popup menu in read-only mode shows Open Externally and Share', (tester) async {
+  testWidgets('3. Attachment popup menu in read-only mode shows Open Externally and Share without redundant button', (tester) async {
     final species = CatalogItem(
       id: 'sp_1',
       name: 'Moneda 10 Pesos',
@@ -142,7 +143,9 @@ void main() {
     await tester.pump();
 
     expect(find.text('documento_guia.pdf'), findsOneWidget);
-    expect(find.byTooltip(AppStrings.shareAttachmentTooltip), findsOneWidget);
+
+    // Redundant inline share button is removed
+    expect(find.byIcon(Icons.share_outlined), findsNothing);
 
     // Open the popup menu
     final moreVert = find.byIcon(Icons.more_vert);
@@ -208,6 +211,71 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify all options are present
+    expect(find.text(AppStrings.openExternallyAction), findsOneWidget);
+    expect(find.text(AppStrings.shareAction), findsOneWidget);
+    expect(find.text(AppStrings.replaceFileAction), findsOneWidget);
+    expect(find.text(AppStrings.renameAction), findsOneWidget);
+    expect(find.text(AppStrings.delete), findsOneWidget);
+  });
+
+  testWidgets('5. EntityDetailScreen displays attachments when switching from read-only to editing mode', (tester) async {
+    final species = await catalogRepo.getOrCreateSpecies('Laptop Pro', type: 'Electrónica');
+    final entity = WorldEntity(
+      id: 'ent_instance_100',
+      speciesId: species.id,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    await entityRepo.saveEntity(entity);
+
+    final att = Attachment(
+      id: 'att_inst_1',
+      speciesId: species.id,
+      instanceId: entity.id,
+      filePath: 'dummy/invoice.pdf',
+      fileName: 'factura_compra.pdf',
+      fileType: 'pdf',
+      createdAt: DateTime(2026, 1, 1),
+    );
+    await entityRepo.addAttachment(att);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          catalogRepositoryProvider.overrideWithValue(catalogRepo),
+          entityRepositoryProvider.overrideWithValue(entityRepo),
+          fileStorageServiceProvider.overrideWithValue(fileStorageService),
+        ],
+        child: MaterialApp(
+          home: EntityDetailScreen(entityId: entity.id),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Verify attachment is visible in read-only mode
+    expect(find.text('factura_compra.pdf'), findsOneWidget);
+
+    // Enter edit mode
+    final editButton = find.byIcon(Icons.edit_outlined);
+    expect(editButton, findsOneWidget);
+    await tester.tap(editButton);
+    await tester.pumpAndSettle();
+
+    // Verify attachment remains visible in editing mode!
+    expect(find.text('factura_compra.pdf'), findsOneWidget);
+
+    // Open options in edit mode (scroll into view if needed)
+    final moreVert = find.byIcon(Icons.more_vert);
+    expect(moreVert, findsOneWidget);
+    await tester.ensureVisible(moreVert);
+    await tester.pumpAndSettle();
+    await tester.tap(moreVert);
+    await tester.pumpAndSettle();
+
+    // Verify edit actions are present in edit mode
     expect(find.text(AppStrings.openExternallyAction), findsOneWidget);
     expect(find.text(AppStrings.shareAction), findsOneWidget);
     expect(find.text(AppStrings.replaceFileAction), findsOneWidget);
