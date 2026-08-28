@@ -21,8 +21,10 @@ import '../../locations/domain/location_node.dart';
 import '../../locations/domain/location_resolver.dart';
 import '../../locations/infrastructure/location_repository.dart';
 import '../../relations/domain/entity_relation.dart';
+import '../../../core/domain/item_view_mode.dart';
+import '../../../core/widgets/view_mode_toggle_button.dart';
 
-enum FinderViewMode { detailedList, minecraftGrid }
+typedef FinderViewMode = ItemViewMode;
 
 class InventoryFinderScreen extends ConsumerStatefulWidget {
   final String? initialLocationId;
@@ -449,22 +451,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               : null,
           actions: [
             // 2-Way View Mode Switcher
-            IconButton(
-              icon: Icon(
-                _viewMode == FinderViewMode.detailedList
-                    ? Icons.view_list
-                    : Icons.apps,
-              ),
-              tooltip: AppStrings.toggleViewModeTooltip,
-              onPressed: () {
-                setState(() {
-                  if (_viewMode == FinderViewMode.detailedList) {
-                    _viewMode = FinderViewMode.minecraftGrid;
-                  } else {
-                    _viewMode = FinderViewMode.detailedList;
-                  }
-                });
-              },
+            ViewModeToggleButton(
+              viewMode: _viewMode,
+              onChanged: (mode) => setState(() => _viewMode = mode),
             ),
             IconButton(
               icon: Icon(_isSelectionMode ? Icons.check_box : Icons.select_all),

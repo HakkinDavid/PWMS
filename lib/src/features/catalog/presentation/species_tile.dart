@@ -8,6 +8,7 @@ import '../../../core/router/app_navigation_extension.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
 import 'species_form_modal.dart';
+import 'species_quick_actions_sheet.dart';
 import 'species_text_badge_avatar.dart';
 
 class SpeciesTile extends ConsumerWidget {
@@ -22,74 +23,12 @@ class SpeciesTile extends ConsumerWidget {
     this.onTap,
   });
 
-  void _showQuickActionsMenu(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      useSafeArea: true,
-      builder: (ctx) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.visibility),
-              title: const Text(AppStrings.viewSpeciesDetail),
-              onTap: () {
-                Navigator.pop(ctx);
-                context.pushSpeciesDetail(species.id);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text(AppStrings.instantiateAction),
-              onTap: () {
-                Navigator.pop(ctx);
-                InstantiateSpeciesSheet.show(context, species: species);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.edit_outlined),
-              title: const Text(AppStrings.editSpeciesTitle),
-              onTap: () {
-                Navigator.pop(ctx);
-                SpeciesFormModal.show(
-                  context,
-                  initialSpecies: species,
-                  onSpeciesSaved: (_) {
-                    ref.invalidate(catalogListProvider);
-                  },
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
-              title: const Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)),
-              onTap: () async {
-                Navigator.pop(ctx);
-                final confirm = await showDialog<bool>(
-                  context: context,
-                  builder: (c) => AlertDialog(
-                    title: const Text(AppStrings.deleteConfirmationTitle),
-                    content: Text(AppStrings.confirmDeleteSpeciesNamed(species.name)),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.pop(c, false), child: const Text(AppStrings.cancel)),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(c, true),
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-                        child: const Text(AppStrings.delete),
-                      ),
-                    ],
-                  ),
-                );
+  static void showQuickActionsMenu(BuildContext context, WidgetRef ref, CatalogItem species) {
+    SpeciesQuickActionsSheet.show(context, ref, species);
+  }
 
-                if (confirm == true) {
-                  await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+  void _showQuickActionsMenu(BuildContext context, WidgetRef ref) {
+    SpeciesQuickActionsSheet.show(context, ref, species);
   }
 
   @override

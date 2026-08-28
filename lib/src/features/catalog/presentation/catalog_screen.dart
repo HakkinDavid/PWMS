@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import '../../../core/domain/item_view_mode.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/minecraft_grid_view.dart';
+import '../../../core/widgets/view_mode_toggle_button.dart';
 
+import 'species_minecraft_tile.dart';
 import 'species_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 
@@ -22,6 +26,7 @@ class CatalogScreen extends ConsumerStatefulWidget {
 
 class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   late String _selectedTypeFilter;
+  ItemViewMode _viewMode = ItemViewMode.detailedList;
 
   final List<String> _filters = [
     AppStrings.all,
@@ -55,10 +60,17 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   Widget build(BuildContext context) {
     final catalogState = ref.watch(catalogListProvider);
     final theme = Theme.of(context);
+    final bottomClearance = MediaQuery.paddingOf(context).bottom + 84;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.catalogTitle),
+        actions: [
+          ViewModeToggleButton(
+            viewMode: _viewMode,
+            onChanged: (mode) => setState(() => _viewMode = mode),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,12 +124,30 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                   );
                 }
 
+                if (_viewMode == ItemViewMode.minecraftGrid) {
+                  return MinecraftGridView(
+                    padding: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                      bottom: bottomClearance,
+                    ),
+                    itemCount: filtered.length,
+                    itemBuilder: (context, index) {
+                      final item = filtered[index];
+                      return SpeciesMinecraftTile(
+                        species: item,
+                      );
+                    },
+                  );
+                }
+
                 return ListView.builder(
                   padding: EdgeInsets.only(
                     left: 16,
                     right: 16,
                     top: 16,
-                    bottom: MediaQuery.paddingOf(context).bottom + 84,
+                    bottom: bottomClearance,
                   ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {

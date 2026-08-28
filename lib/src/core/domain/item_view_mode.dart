@@ -1,0 +1,4 @@
+enum ItemViewMode {
+  detailedList,
+  minecraftGrid,
+}
