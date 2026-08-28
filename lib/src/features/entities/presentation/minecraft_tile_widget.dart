@@ -76,12 +76,55 @@ class MinecraftTileWidget extends ConsumerWidget {
       );
     }
 
+    Widget? containerBadge;
+    if (isContainer) {
+      containerBadge = Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.secondaryContainer.withAlpha(220),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: theme.colorScheme.secondary,
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(50),
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Icon(
+          Icons.inventory_2_rounded,
+          size: 11,
+          color: theme.colorScheme.onSecondaryContainer,
+        ),
+      );
+    }
+
     return MinecraftGridCell(
       onTap: onTap,
       onLongPress: onLongPress,
       isSelected: isSelected,
       isDimmed: isDimmed,
       isExpired: isExpired,
+      isContainer: isContainer,
+      topLeftBadge: containerBadge,
+      topRightBadge: isExpired && containerBadge != null
+          ? Container(
+              padding: const EdgeInsets.all(3),
+              decoration: const BoxDecoration(
+                color: Colors.redAccent,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.warning_amber_rounded,
+                size: 11,
+                color: Colors.white,
+              ),
+            )
+          : null,
       bottomRightBadge: populationBadge,
       child: EntityPhotoThumbnail(
         species: species,

@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/app_technical_strings.dart';
 import '../database/app_database.dart';
 import '../database/database_backup_service.dart';
+import '../domain/item_view_mode.dart';
+import '../storage/app_settings_repository.dart';
 import '../storage/file_storage_service.dart';
 import '../../features/entities/domain/i_entity_repository.dart';
 import '../../features/entities/infrastructure/entity_repository.dart';
@@ -400,3 +402,52 @@ void refreshAllAppProviders(WidgetRef ref) {
   ref.read(relationListProvider.notifier).loadRelations();
   ref.read(notificationListProvider.notifier).evaluateAndLoad();
 }
+
+// ---------------------------------------------------------------------------
+// View Mode Persistence Providers (Independent for Inventory and Catalog)
+// ---------------------------------------------------------------------------
+class InventoryViewModeNotifier extends StateNotifier<ItemViewMode> {
+  final AppSettingsRepository _settingsRepo;
+
+  InventoryViewModeNotifier(this._settingsRepo) : super(ItemViewMode.detailedList) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final mode = await _settingsRepo.getInventoryViewMode();
+    state = mode;
+  }
+
+  Future<void> setMode(ItemViewMode mode) async {
+    state = mode;
+    await _settingsRepo.setInventoryViewMode(mode);
+  }
+}
+
+final inventoryViewModeProvider = StateNotifierProvider<InventoryViewModeNotifier, ItemViewMode>((ref) {
+  final repo = ref.watch(appSettingsRepositoryProvider);
+  return InventoryViewModeNotifier(repo);
+});
+
+class CatalogViewModeNotifier extends StateNotifier<ItemViewMode> {
+  final AppSettingsRepository _settingsRepo;
+
+  CatalogViewModeNotifier(this._settingsRepo) : super(ItemViewMode.detailedList) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final mode = await _settingsRepo.getCatalogViewMode();
+    state = mode;
+  }
+
+  Future<void> setMode(ItemViewMode mode) async {
+    state = mode;
+    await _settingsRepo.setCatalogViewMode(mode);
+  }
+}
+
+final catalogViewModeProvider = StateNotifierProvider<CatalogViewModeNotifier, ItemViewMode>((ref) {
+  final repo = ref.watch(appSettingsRepositoryProvider);
+  return CatalogViewModeNotifier(repo);
+});

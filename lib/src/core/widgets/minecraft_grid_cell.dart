@@ -16,6 +16,7 @@ class MinecraftGridCell extends StatelessWidget {
   final bool isSelected;
   final bool isDimmed;
   final bool isExpired;
+  final bool isContainer;
   final Widget? topLeftBadge;
   final Widget? bottomRightBadge;
   final Widget? topRightBadge;
@@ -31,6 +32,7 @@ class MinecraftGridCell extends StatelessWidget {
     this.isSelected = false,
     this.isDimmed = false,
     this.isExpired = false,
+    this.isContainer = false,
     this.topLeftBadge,
     this.bottomRightBadge,
     this.topRightBadge,
@@ -65,8 +67,10 @@ class MinecraftGridCell extends StatelessWidget {
                   ? highlightColor
                   : (isExpired
                       ? Colors.redAccent.withAlpha(180)
-                      : theme.dividerColor.withAlpha(isDimmed ? 20 : 50)),
-              width: isSelected ? 3.0 : 1.0,
+                      : (isContainer
+                          ? theme.colorScheme.secondary.withAlpha(isDimmed ? 60 : 130)
+                          : theme.dividerColor.withAlpha(isDimmed ? 20 : 50))),
+              width: isSelected ? 3.0 : (isContainer ? 1.5 : 1.0),
             ),
             boxShadow: isSelected
                 ? [

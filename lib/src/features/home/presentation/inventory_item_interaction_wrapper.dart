@@ -14,8 +14,9 @@ class InventoryItemInteractionWrapper extends StatefulWidget {
   final Set<String> selectedEntityIds;
   final bool isContainer;
   final bool isStack;
+  final bool isHighlighted;
   final VoidCallback onTap;
-  final Function(Object payload, String targetContainerEntityId) onDropIntoContainer;
+  final Function(Object payload, String targetEntityId, bool isContainer) onDropIntoContainer;
   final Function(String targetKey)? onHoverSpringLoaded;
   final VoidCallback? onDragStarted;
   final VoidCallback? onDragEnd;
@@ -29,6 +30,7 @@ class InventoryItemInteractionWrapper extends StatefulWidget {
     required this.selectedEntityIds,
     required this.isContainer,
     this.isStack = false,
+    this.isHighlighted = false,
     required this.onTap,
     required this.onDropIntoContainer,
     this.onHoverSpringLoaded,
@@ -69,48 +71,58 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
     final theme = Theme.of(context);
     final primaryId = widget.group.primaryEntity.id;
 
-    Widget content = widget.child;
+    // 1. Wrap all items with DragTarget so any item can receive dropped items
+    // (prompting confirmation in parent if not yet a container)
+    Widget content = DragTarget<Object>(
+      onWillAcceptWithDetails: (details) {
+        final data = details.data;
+        if (data == widget.group || data == primaryId) return false;
+        if (data is EffectiveEntityGroup && data.primaryEntity.id == primaryId) return false;
+        if (data is WorldEntity && data.id == primaryId) return false;
+        if (data is List<String> && data.contains(primaryId)) return false;
+        return true;
+      },
+      onMove: (details) {
+        if (widget.onHoverSpringLoaded != null && (widget.isContainer || widget.isStack)) {
+          _startHoverTimer(widget.isContainer ? primaryId : widget.group.key);
+        }
+      },
+      onLeave: (data) {
+        _cancelHoverTimer();
+      },
+      onAcceptWithDetails: (details) {
+        _cancelHoverTimer();
+        widget.onDropIntoContainer(details.data, primaryId, widget.isContainer);
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovered = candidateData.isNotEmpty;
 
-    // 1. If this item is a container (target of GUARDADO_EN) or a stack (spring-load expandable), wrap it with DragTarget
-    if (widget.isContainer || widget.isStack) {
-      content = DragTarget<Object>(
-        onWillAcceptWithDetails: (details) {
-          final data = details.data;
-          if (data == widget.group || data == primaryId) return false;
-          if (data is EffectiveEntityGroup && data.primaryEntity.id == primaryId) return false;
-          if (data is WorldEntity && data.id == primaryId) return false;
-          if (data is List<String> && data.contains(primaryId)) return false;
-          return true;
-        },
-        onMove: (details) {
-          if (widget.onHoverSpringLoaded != null) {
-            _startHoverTimer(widget.isContainer ? primaryId : widget.group.key);
-          }
-        },
-        onLeave: (data) {
-          _cancelHoverTimer();
-        },
-        onAcceptWithDetails: (details) {
-          _cancelHoverTimer();
-          if (widget.isContainer) {
-            widget.onDropIntoContainer(details.data, primaryId);
-          }
-        },
-        builder: (context, candidateData, rejectedData) {
-          final isHovered = candidateData.isNotEmpty;
-
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: isHovered ? theme.colorScheme.primaryContainer.withAlpha(140) : Colors.transparent,
-              border: isHovered ? Border.all(color: theme.colorScheme.primary, width: 2.0) : null,
-            ),
-            child: widget.child,
-          );
-        },
-      );
-    }
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: isHovered
+                ? theme.colorScheme.primaryContainer.withAlpha(140)
+                : (widget.isHighlighted ? theme.colorScheme.primary.withAlpha(35) : Colors.transparent),
+            border: isHovered
+                ? Border.all(color: theme.colorScheme.primary, width: 2.0)
+                : (widget.isHighlighted
+                    ? Border.all(color: theme.colorScheme.primary, width: 2.5)
+                    : null),
+            boxShadow: widget.isHighlighted
+                ? [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withAlpha(120),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : null,
+          ),
+          child: widget.child,
+        );
+      },
+    );
 
     // 2. Wrap with LongPressDraggable for dragging items or batches
     if (!widget.isSelectionMode) {

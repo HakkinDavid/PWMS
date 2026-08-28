@@ -42,6 +42,7 @@ class AppTechnicalStrings {
   static const paramScope = 'scope';
   static const paramStartInCreateSpecies = 'startInCreateSpecies';
   static const paramInitialLocationId = 'initialLocationId';
+  static const paramTargetEntityId = 'targetEntityId';
   static const currencyMxn = 'MXN';
   static const sourceTypeEntity = 'entity';
   static const sourceTypeSpecies = 'species';
@@ -512,6 +513,8 @@ WHERE id IN (
   static String notifKeyFromNotification(String type, String targetId) => '${type}_$targetId';
   static String compositeId(String a, String b) => '${a}_$b';
   static String compositeKey(String a, String b) => '${a}_$b';
+  static String containerLevelKey(String joinedPath) => 'cont_$joinedPath';
+  static String locationLevelKey(String? locationId) => 'loc_${locationId ?? unassignedLocationId}';
   static String wordBoundaryKeywordPattern(String keyword) => '$regexWordBoundary$keyword$regexWordBoundary';
   static String labelWithColon(String label) => '$label$colonSpace';
 
@@ -713,6 +716,8 @@ WHERE id IN (
   static const keyNumismaticExposureOffset = 'numismatic_exposure_offset';
   static const keyNumismaticDefaultMode = 'numismatic_default_mode';
   static const keyNumismaticZoomLevel = 'numismatic_zoom_level';
+  static const keyInventoryViewMode = 'inventory_view_mode';
+  static const keyCatalogViewMode = 'catalog_view_mode';
 
   // ---------------------------------------------------------------------------
   // Updater & Platform Channels
@@ -1056,6 +1061,7 @@ abstract final class AppTechnicalRoutes {
   static const paramScope = AppTechnicalStrings.paramScope;
   static const paramInitialLocationId = AppTechnicalStrings.paramInitialLocationId;
   static const paramStartInCreateSpecies = AppTechnicalStrings.paramStartInCreateSpecies;
+  static const paramTargetEntityId = AppTechnicalStrings.paramTargetEntityId;
   static String entityDetailPath(String id) => AppTechnicalStrings.entityDetailPath(id);
   static String catalogDetailPath(String id) => AppTechnicalStrings.catalogDetailPath(id);
 }

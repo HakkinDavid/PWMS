@@ -218,6 +218,16 @@ class AppStrings {
   static const emptyAttachments = 'Sin archivos adjuntos.';
   static const deleteConfirmationTitle = 'Eliminar elemento';
   static const deleteConfirmationMessage = '¿Deseas eliminar este elemento de tu mundo?';
+  static const convertToContainerTitle = '¿Convertir en contenedor?';
+  static String convertToContainerMessage(String name, int count) =>
+      count == 1
+          ? '¿Deseas guardar 1 elemento dentro de "$name" y convertirlo en un nuevo contenedor?'
+          : '¿Deseas guardar $count elementos dentro de "$name" y convertirlo en un nuevo contenedor?';
+  static const moveToWorldConfirmationTitle = '¿Mover al Mundo?';
+  static String moveToWorldConfirmationMessage(int count) =>
+      count == 1
+          ? 'El elemento seleccionado dejará de pertenecer a su ubicación o contenedor actual y pasará al Mundo raíz sin ubicación específica. ¿Deseas continuar?'
+          : 'Los $count elementos seleccionados dejarán de pertenecer a su ubicación o contenedor actual y pasarán al Mundo raíz sin ubicación específica. ¿Deseas continuar?';
   static const zeroQuantityMessage = 'La magnitud llegó a cero. ¿Deseas eliminar la instancia?';
   static const mustProvideEntityOrGroup = 'Debe proporcionarse entidad o grupo.';
   static const photoNotAvailable = 'Fotografía no disponible.';

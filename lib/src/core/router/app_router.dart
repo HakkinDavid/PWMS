@@ -44,9 +44,11 @@ final appRouter = GoRouter(
               builder: (context, state) {
                 final locId = state.uri.queryParameters[AppTechnicalRoutes.paramFocusNodeId] ?? state.uri.queryParameters[AppTechnicalRoutes.paramLocationId];
                 final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
+                final targetEntityId = state.uri.queryParameters[AppTechnicalRoutes.paramTargetEntityId];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
                   initialContainerId: containerId,
+                  initialTargetEntityId: targetEntityId,
                 );
               },
             ),
@@ -55,9 +57,11 @@ final appRouter = GoRouter(
               builder: (context, state) {
                 final locId = state.uri.queryParameters[AppTechnicalRoutes.paramFocusNodeId] ?? state.uri.queryParameters[AppTechnicalRoutes.paramLocationId];
                 final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
+                final targetEntityId = state.uri.queryParameters[AppTechnicalRoutes.paramTargetEntityId];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
                   initialContainerId: containerId,
+                  initialTargetEntityId: targetEntityId,
                 );
               },
             ),
@@ -66,9 +70,11 @@ final appRouter = GoRouter(
               builder: (context, state) {
                 final locId = state.uri.queryParameters[AppTechnicalRoutes.paramFocusNodeId] ?? state.uri.queryParameters[AppTechnicalRoutes.paramLocationId];
                 final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
+                final targetEntityId = state.uri.queryParameters[AppTechnicalRoutes.paramTargetEntityId];
                 return InventoryFinderScreen(
                   initialLocationId: locId,
                   initialContainerId: containerId,
+                  initialTargetEntityId: targetEntityId,
                   startWithCurtainOpen: locId == null && containerId == null,
                 );
               },

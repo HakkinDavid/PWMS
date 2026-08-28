@@ -15,14 +15,17 @@ extension AppNavigationExtension on BuildContext {
   /// Navega a la pestaña de Inicio.
   void goToHome() => go(AppTechnicalRoutes.root);
 
-  /// Navega a la pestaña de Inventario con o sin enfoque de ubicación específica o contenedor.
-  void goToInventory({String? focusNodeId, String? containerId}) {
+  /// Navega a la pestaña de Inventario con o sin enfoque de ubicación específica, contenedor o entidad destino.
+  void goToInventory({String? focusNodeId, String? containerId, String? targetEntityId}) {
     final queryParams = <String, String>{};
     if (focusNodeId != null && focusNodeId.isNotEmpty) {
       queryParams[AppTechnicalRoutes.paramFocusNodeId] = focusNodeId;
     }
     if (containerId != null && containerId.isNotEmpty) {
       queryParams[AppTechnicalRoutes.paramContainerId] = containerId;
+    }
+    if (targetEntityId != null && targetEntityId.isNotEmpty) {
+      queryParams[AppTechnicalRoutes.paramTargetEntityId] = targetEntityId;
     }
     if (queryParams.isNotEmpty) {
       final uri = Uri(path: AppTechnicalRoutes.inventory, queryParameters: queryParams);
@@ -33,13 +36,16 @@ extension AppNavigationExtension on BuildContext {
   }
 
   /// Navega a la pestaña de Ubicaciones (Inventario con cortina de ubicaciones abierta).
-  void goToLocations({String? focusNodeId, String? containerId}) {
+  void goToLocations({String? focusNodeId, String? containerId, String? targetEntityId}) {
     final queryParams = <String, String>{};
     if (focusNodeId != null && focusNodeId.isNotEmpty) {
       queryParams[AppTechnicalRoutes.paramFocusNodeId] = focusNodeId;
     }
     if (containerId != null && containerId.isNotEmpty) {
       queryParams[AppTechnicalRoutes.paramContainerId] = containerId;
+    }
+    if (targetEntityId != null && targetEntityId.isNotEmpty) {
+      queryParams[AppTechnicalRoutes.paramTargetEntityId] = targetEntityId;
     }
     if (queryParams.isNotEmpty) {
       final uri = Uri(path: AppTechnicalRoutes.locations, queryParameters: queryParams);

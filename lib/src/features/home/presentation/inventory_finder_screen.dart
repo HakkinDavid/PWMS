@@ -29,12 +29,14 @@ typedef FinderViewMode = ItemViewMode;
 class InventoryFinderScreen extends ConsumerStatefulWidget {
   final String? initialLocationId;
   final String? initialContainerId;
+  final String? initialTargetEntityId;
   final bool startWithCurtainOpen;
 
   const InventoryFinderScreen({
     super.key,
     this.initialLocationId,
     this.initialContainerId,
+    this.initialTargetEntityId,
     this.startWithCurtainOpen = false,
   });
 
@@ -49,13 +51,17 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   bool _isSelectionMode = false;
   final Set<String> _selectedEntityIds = {};
   String _selectedTypeFilter = AppStrings.all;
-  FinderViewMode _viewMode = FinderViewMode.detailedList;
   final Set<String> _expandedStackKeys = {};
 
   List<String> _containerPath = [];
 
   bool _isDragging = false;
   bool _dragHasNavigated = false;
+  bool _isCurtainExpanded = false;
+
+  final Map<String, double> _scrollOffsetCache = {};
+  String? _highlightEntityId;
+  Timer? _highlightTimer;
 
   late final ScrollController _scrollController;
   Timer? _autoScrollTimer;
@@ -70,6 +76,32 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     _dragHasNavigated = false;
   }
 
+  String _getCurrentLevelKey() {
+    if (_containerPath.isNotEmpty) {
+      return AppTechnicalStrings.containerLevelKey(_containerPath.join(AppTechnicalStrings.slash));
+    }
+    return AppTechnicalStrings.locationLevelKey(_selectedLocationId);
+  }
+
+  void _saveCurrentScrollOffset() {
+    if (_scrollController.hasClients) {
+      _scrollOffsetCache[_getCurrentLevelKey()] = _scrollController.offset;
+    }
+  }
+
+  void _restoreScrollOffsetForCurrentLevel() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      final saved = _scrollOffsetCache[_getCurrentLevelKey()];
+      if (saved != null) {
+        final target = saved.clamp(0.0, _scrollController.position.maxScrollExtent);
+        _scrollController.jumpTo(target);
+      } else {
+        _scrollController.jumpTo(0.0);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -77,7 +109,12 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (widget.initialContainerId != null && widget.initialContainerId!.isNotEmpty) {
       _containerPath.add(widget.initialContainerId!);
     }
+    _isCurtainExpanded = widget.startWithCurtainOpen;
     _scrollController = ScrollController();
+
+    if (widget.initialTargetEntityId != null && widget.initialTargetEntityId!.isNotEmpty) {
+      _resolveAndScrollToTargetEntity(widget.initialTargetEntityId!);
+    }
   }
 
   @override
@@ -93,13 +130,120 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         _containerPath = [widget.initialContainerId!];
       });
     }
+    if (widget.initialTargetEntityId != oldWidget.initialTargetEntityId && widget.initialTargetEntityId != null) {
+      _resolveAndScrollToTargetEntity(widget.initialTargetEntityId!);
+    }
   }
 
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
+    _highlightTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _resolveAndScrollToTargetEntity(String targetEntityId) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final entities = ref.read(entityListProvider).asData?.value ?? [];
+      final relations = ref.read(relationListProvider).asData?.value ?? [];
+      final targetEntity = entities.where((e) => e.id == targetEntityId).firstOrNull;
+      if (targetEntity == null) return;
+
+      // Tracing container ancestry
+      final guardadoRels = relations.where((r) => r.relationType == AppTechnicalStrings.relGuardadoEn).toList();
+      final parentMap = {for (var r in guardadoRels) r.sourceEntityId: r.targetEntityId};
+
+      final path = <String>[];
+      var currentId = targetEntity.id;
+      while (parentMap.containsKey(currentId)) {
+        final parentId = parentMap[currentId]!;
+        if (path.contains(parentId)) break; // cycle safety
+        path.insert(0, parentId);
+        currentId = parentId;
+      }
+
+      if (path.isNotEmpty) {
+        setState(() {
+          _containerPath = path;
+          _selectedLocationId = null;
+        });
+      } else if (targetEntity.locationId != null) {
+        setState(() {
+          _containerPath = [];
+          _selectedLocationId = targetEntity.locationId;
+        });
+      }
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToTargetEntity(targetEntityId);
+      });
+    });
+  }
+
+  void _scrollToTargetEntity(String targetEntityId) {
+    if (!mounted || !_scrollController.hasClients) return;
+    setState(() {
+      _highlightEntityId = targetEntityId;
+    });
+    _highlightTimer?.cancel();
+    _highlightTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _highlightEntityId = null;
+        });
+      }
+    });
+
+    final entities = ref.read(entityListProvider).asData?.value ?? [];
+    final relations = ref.read(relationListProvider).asData?.value ?? [];
+    final groupsContainerEntityIds = relations.where((r) => r.relationType == AppTechnicalStrings.relGuardadoEn).map((r) => r.targetEntityId).toSet();
+
+    List<WorldEntity> activeList;
+    if (_containerPath.isNotEmpty) {
+      final activeContainerId = _containerPath.last;
+      final childIds = relations
+          .where((r) => r.relationType == AppTechnicalStrings.relGuardadoEn && r.targetEntityId == activeContainerId)
+          .map((r) => r.sourceEntityId)
+          .toSet();
+      activeList = entities.where((e) => childIds.contains(e.id)).toList();
+    } else {
+      final containedIds = relations
+          .where((r) => r.relationType == AppTechnicalStrings.relGuardadoEn)
+          .map((r) => r.sourceEntityId)
+          .toSet();
+      activeList = entities.where((e) => !containedIds.contains(e.id)).toList();
+      if (_selectedLocationId != null) {
+        activeList = activeList.where((e) => e.locationId == _selectedLocationId).toList();
+      }
+    }
+
+    final groups = EffectiveEntityGroup.groupEntities(
+      entities: activeList,
+      effectiveLocationMap: {for (var e in activeList) e.id: e.locationId},
+      containerEntityIds: groupsContainerEntityIds,
+    );
+
+    final targetIndex = groups.indexWhere((g) => g.entities.any((e) => e.id == targetEntityId));
+    if (targetIndex >= 0) {
+      final viewMode = ref.read(inventoryViewModeProvider);
+      double targetOffset;
+      if (viewMode == ItemViewMode.minecraftGrid) {
+        final row = targetIndex ~/ 4;
+        const cellHeight = 90.0;
+        targetOffset = (row * cellHeight).clamp(0.0, _scrollController.position.maxScrollExtent);
+      } else {
+        const itemHeight = 76.0;
+        targetOffset = (targetIndex * itemHeight).clamp(0.0, _scrollController.position.maxScrollExtent);
+      }
+
+      _scrollController.animateTo(
+        targetOffset,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+      );
+    }
   }
 
   void _stopAutoScroll() {
@@ -139,6 +283,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   void _handleLocationSelected(String? newLocId) {
     if (newLocId == _selectedLocationId) return;
+    _saveCurrentScrollOffset();
     if (_selectedLocationId != null || _locationHistory.isNotEmpty) {
       _locationHistory.add(_selectedLocationId);
     }
@@ -149,6 +294,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       _selectedLocationId = newLocId;
       _expandedStackKeys.clear();
     });
+    _restoreScrollOffsetForCurrentLevel();
   }
 
   void _handleBackNavigation() {
@@ -157,23 +303,32 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         _isSelectionMode = false;
         _selectedEntityIds.clear();
       });
-    } else if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
+    } else if (_isCurtainExpanded || _breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
       _breadcrumbBarKey.currentState?.collapseCurtain();
+      setState(() => _isCurtainExpanded = false);
     } else if (_containerPath.isNotEmpty) {
+      _saveCurrentScrollOffset();
       setState(() {
         _containerPath.removeLast();
         _expandedStackKeys.clear();
       });
+      _restoreScrollOffsetForCurrentLevel();
     } else if (_locationHistory.isNotEmpty) {
+      _saveCurrentScrollOffset();
       setState(() {
         _selectedLocationId = _locationHistory.removeLast();
         _expandedStackKeys.clear();
       });
+      _restoreScrollOffsetForCurrentLevel();
     } else if (_selectedLocationId != null) {
+      _saveCurrentScrollOffset();
       setState(() {
         _selectedLocationId = null;
         _expandedStackKeys.clear();
       });
+      _restoreScrollOffsetForCurrentLevel();
+    } else {
+      context.goToHome();
     }
   }
 
@@ -210,6 +365,28 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     }
 
     if (idsToMove.isEmpty) return;
+
+    // If moving to root Mundo (targetLocId == null) and entities come from an assigned location or container, ask for confirmation
+    if (targetLocId == null) {
+      final hasAssignedSource = idsToMove.any((id) {
+        final ent = entityMap[id];
+        if (ent == null) return false;
+        final hasLocation = ent.locationId != null;
+        final hasContainer = allRels.any((r) =>
+          r.sourceEntityId == id && (r.relationType == AppTechnicalStrings.relGuardadoEn || r.relationType == AppTechnicalStrings.relParteDe)
+        );
+        return hasLocation || hasContainer;
+      });
+
+      if (hasAssignedSource) {
+        final confirm = await AppConfirmationDialog.show(
+          context: context,
+          title: AppStrings.moveToWorldConfirmationTitle,
+          message: AppStrings.moveToWorldConfirmationMessage(idsToMove.length),
+        );
+        if (confirm != true) return;
+      }
+    }
 
     for (final id in idsToMove) {
       final existingInheriting = allRels.where((r) =>
@@ -280,9 +457,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     if (_isSelectionMode) {
       _toggleSelection(grp.primaryEntity.id);
     } else if (isContainer) {
+      _saveCurrentScrollOffset();
       setState(() {
         _containerPath.add(grp.primaryEntity.id);
       });
+      _restoreScrollOffsetForCurrentLevel();
     } else if (grp.population == 1) {
       context.pushEntityDetail(grp.primaryEntity.id);
     } else {
@@ -292,17 +471,33 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     }
   }
 
-  void _handleDropIntoContainer(Object payload, String targetContainerEntityId) {
-    if (payload is List<String>) {
-      _moveEntitiesToContainer(payload, targetContainerEntityId);
-    } else if (payload is String) {
-      _moveEntitiesToContainer([payload], targetContainerEntityId);
-    } else if (payload is EffectiveEntityGroup) {
-      final ids = payload.entities.map((e) => e.id).toList();
-      _moveEntitiesToContainer(ids, targetContainerEntityId);
-    } else if (payload is WorldEntity) {
-      _moveEntitiesToContainer([payload.id], targetContainerEntityId);
+  Future<void> _handleDropOntoItem(Object payload, String targetEntityId, bool isContainer) async {
+    final ids = _extractPayloadIds(payload);
+    if (ids.isEmpty) return;
+
+    if (isContainer) {
+      await _moveEntitiesToContainer(ids, targetEntityId);
+      return;
     }
+
+    // Target is not yet a container, prompt for confirmation to turn it into a container
+    final allEntities = ref.read(entityListProvider).asData?.value ?? [];
+    final targetEntity = allEntities.where((e) => e.id == targetEntityId).firstOrNull;
+    final catalog = ref.read(catalogListProvider).asData?.value ?? [];
+    final targetSpecies = catalog.where((c) => c.id == targetEntity?.speciesId).firstOrNull;
+    final targetName = targetSpecies?.name ?? AppStrings.typeObject;
+
+    if (!mounted) return;
+
+    final confirm = await AppConfirmationDialog.show(
+      context: context,
+      title: AppStrings.convertToContainerTitle,
+      message: AppStrings.convertToContainerMessage(targetName, ids.length),
+    );
+
+    if (confirm != true) return;
+
+    await _moveEntitiesToContainer(ids, targetEntityId);
   }
 
   Future<void> _deleteSelectedEntities() async {
@@ -432,9 +627,10 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     }
 
     final bool canGoBack = _containerPath.isNotEmpty || _selectedLocationId != null || _locationHistory.isNotEmpty;
+    final viewMode = ref.watch(inventoryViewModeProvider);
 
     return PopScope(
-      canPop: !canGoBack && !_isSelectionMode && _breadcrumbBarKey.currentState?.isCurtainExpanded != true,
+      canPop: !canGoBack && !_isSelectionMode && !_isCurtainExpanded && _breadcrumbBarKey.currentState?.isCurtainExpanded != true,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         _handleBackNavigation();
@@ -450,10 +646,10 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                 )
               : null,
           actions: [
-            // 2-Way View Mode Switcher
+            // 2-Way View Mode Switcher (Persisted independently)
             ViewModeToggleButton(
-              viewMode: _viewMode,
-              onChanged: (mode) => setState(() => _viewMode = mode),
+              viewMode: viewMode,
+              onChanged: (mode) => ref.read(inventoryViewModeProvider.notifier).setMode(mode),
             ),
             IconButton(
               icon: Icon(_isSelectionMode ? Icons.check_box : Icons.select_all),
@@ -480,6 +676,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               allEntitiesMap: allEntitiesMap,
               allRelations: relations,
               initiallyExpanded: widget.startWithCurtainOpen,
+              onCurtainExpandedChanged: (expanded) {
+                setState(() => _isCurtainExpanded = expanded);
+              },
               onLocationSelected: _handleLocationSelected,
               onDropOnLocation: (payload, targetLocId) {
                 final ids = _extractPayloadIds(payload);
@@ -495,17 +694,21 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               },
               onNavigateToContainerIndex: (idx) {
                 if (_isDragging) _dragHasNavigated = true;
+                _saveCurrentScrollOffset();
                 setState(() {
                   _containerPath.removeRange(idx + 1, _containerPath.length);
                 });
+                _restoreScrollOffsetForCurrentLevel();
               },
               onExitContainersToRoot: () {
                 if (_isDragging) _dragHasNavigated = true;
+                _saveCurrentScrollOffset();
                 setState(() {
                   _containerPath.clear();
                   _selectedLocationId = null;
                   _locationHistory.clear();
                 });
+                _restoreScrollOffsetForCurrentLevel();
               },
             ),
 
@@ -620,6 +823,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                                 containerChildrenMap,
                                 allEntities,
                                 effectiveLocationsMap,
+                                viewMode,
                               ),
                       );
                     },
@@ -692,6 +896,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     Map<String, List<String>> containerChildrenMap,
     List<WorldEntity> allEntities,
     Map<String, String?> effectiveLocationsMap,
+    FinderViewMode viewMode,
   ) {
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84.0;
 
@@ -737,7 +942,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           .length;
     }
 
-    if (_viewMode == FinderViewMode.minecraftGrid) {
+    if (viewMode == FinderViewMode.minecraftGrid) {
       // Minecraft Grid Mode
       return GridView.builder(
         controller: _scrollController,
@@ -762,6 +967,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                 .toList();
             final isContainer = containedIds.isNotEmpty;
             final isStack = !isContainer && grp.population > 1 && !_expandedStackKeys.contains(grp.key);
+            final isHighlighted = _highlightEntityId != null && grp.entities.any((e) => e.id == _highlightEntityId);
 
             return InventoryItemInteractionWrapper(
               group: grp,
@@ -770,8 +976,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               selectedEntityIds: _selectedEntityIds,
               isContainer: isContainer,
               isStack: isStack,
+              isHighlighted: isHighlighted,
               onTap: () => _handleItemTap(grp, isContainer),
-              onDropIntoContainer: _handleDropIntoContainer,
+              onDropIntoContainer: _handleDropOntoItem,
               onDragStarted: _handleDragStarted,
               onDragEnd: _handleDragEnd,
               onHoverSpringLoaded: (targetKey) {
@@ -832,6 +1039,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                 .toList();
             final isContainer = containedIds.isNotEmpty;
             final isStack = !isContainer && grp.population > 1 && !_expandedStackKeys.contains(grp.key);
+            final isHighlighted = _highlightEntityId != null && grp.entities.any((e) => e.id == _highlightEntityId);
 
             return InventoryItemInteractionWrapper(
               group: grp,
@@ -840,8 +1048,9 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               selectedEntityIds: _selectedEntityIds,
               isContainer: isContainer,
               isStack: isStack,
+              isHighlighted: isHighlighted,
               onTap: () => _handleItemTap(grp, isContainer),
-              onDropIntoContainer: _handleDropIntoContainer,
+              onDropIntoContainer: _handleDropOntoItem,
               onDragStarted: _handleDragStarted,
               onDragEnd: _handleDragEnd,
               onHoverSpringLoaded: (targetKey) {

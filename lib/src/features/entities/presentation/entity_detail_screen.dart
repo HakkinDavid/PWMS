@@ -570,11 +570,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                     ).firstOrNull;
 
                     if (containerRel != null) {
-                      context.goToInventory(containerId: containerRel.targetEntityId);
+                      context.goToInventory(containerId: containerRel.targetEntityId, targetEntityId: entity.id);
                     } else if (_selectedLocationId != null) {
-                      context.goToLocations(focusNodeId: _selectedLocationId);
+                      context.goToInventory(focusNodeId: _selectedLocationId, targetEntityId: entity.id);
                     } else {
-                      context.goToLocations();
+                      context.goToInventory(targetEntityId: entity.id);
                     }
                   }
                 },

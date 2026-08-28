@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/app_database.dart';
+import '../domain/item_view_mode.dart';
 import '../providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
@@ -97,6 +98,29 @@ class AppSettingsRepository {
 
   Future<void> setNumismaticZoomLevel(double value) async {
     await _db.setSetting(keyNumismaticZoomLevel, value.toString());
+  }
+
+  static const String keyInventoryViewMode = AppTechnicalStrings.keyInventoryViewMode;
+  static const String keyCatalogViewMode = AppTechnicalStrings.keyCatalogViewMode;
+
+  Future<ItemViewMode> getInventoryViewMode({ItemViewMode defaultValue = ItemViewMode.detailedList}) async {
+    final val = await _db.getSetting(keyInventoryViewMode);
+    if (val == null) return defaultValue;
+    return ItemViewMode.values.where((m) => m.name == val).firstOrNull ?? defaultValue;
+  }
+
+  Future<void> setInventoryViewMode(ItemViewMode mode) async {
+    await _db.setSetting(keyInventoryViewMode, mode.name);
+  }
+
+  Future<ItemViewMode> getCatalogViewMode({ItemViewMode defaultValue = ItemViewMode.detailedList}) async {
+    final val = await _db.getSetting(keyCatalogViewMode);
+    if (val == null) return defaultValue;
+    return ItemViewMode.values.where((m) => m.name == val).firstOrNull ?? defaultValue;
+  }
+
+  Future<void> setCatalogViewMode(ItemViewMode mode) async {
+    await _db.setSetting(keyCatalogViewMode, mode.name);
   }
 }
 

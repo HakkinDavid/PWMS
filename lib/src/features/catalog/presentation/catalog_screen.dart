@@ -26,7 +26,6 @@ class CatalogScreen extends ConsumerStatefulWidget {
 
 class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   late String _selectedTypeFilter;
-  ItemViewMode _viewMode = ItemViewMode.detailedList;
 
   final List<String> _filters = [
     AppStrings.all,
@@ -59,6 +58,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   @override
   Widget build(BuildContext context) {
     final catalogState = ref.watch(catalogListProvider);
+    final viewMode = ref.watch(catalogViewModeProvider);
     final theme = Theme.of(context);
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84;
 
@@ -67,8 +67,8 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
         title: const Text(AppStrings.catalogTitle),
         actions: [
           ViewModeToggleButton(
-            viewMode: _viewMode,
-            onChanged: (mode) => setState(() => _viewMode = mode),
+            viewMode: viewMode,
+            onChanged: (mode) => ref.read(catalogViewModeProvider.notifier).setMode(mode),
           ),
         ],
       ),
@@ -124,7 +124,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                   );
                 }
 
-                if (_viewMode == ItemViewMode.minecraftGrid) {
+                if (viewMode == ItemViewMode.minecraftGrid) {
                   return MinecraftGridView(
                     padding: EdgeInsets.only(
                       left: 16,

@@ -31,6 +31,7 @@ class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
   final Function(int targetContainerIndex) onNavigateToContainerIndex;
   final VoidCallback onExitContainersToRoot;
   final bool initiallyExpanded;
+  final ValueChanged<bool>? onCurtainExpandedChanged;
 
   const InventoryBreadcrumbBar({
     super.key,
@@ -46,6 +47,7 @@ class InventoryBreadcrumbBar extends ConsumerStatefulWidget {
     required this.onNavigateToContainerIndex,
     required this.onExitContainersToRoot,
     this.initiallyExpanded = false,
+    this.onCurtainExpandedChanged,
   });
 
   @override
@@ -157,6 +159,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
         _curtainController.reverse();
       }
     });
+    widget.onCurtainExpandedChanged?.call(_isCurtainExpanded);
   }
 
   void _collapseCurtain() {
@@ -165,6 +168,7 @@ class InventoryBreadcrumbBarState extends ConsumerState<InventoryBreadcrumbBar> 
         _isCurtainExpanded = false;
         _curtainController.reverse();
       });
+      widget.onCurtainExpandedChanged?.call(false);
     }
   }
 

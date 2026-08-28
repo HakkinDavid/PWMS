@@ -134,7 +134,7 @@ void main() {
               selectedEntityIds: const {},
               isContainer: true,
               onTap: () {},
-              onDropIntoContainer: (payload, targetId) {
+              onDropIntoContainer: (payload, targetId, isCont) {
                 droppedData = payload;
                 targetContainer = targetId;
               },
