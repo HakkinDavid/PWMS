@@ -67,9 +67,7 @@ class MinecraftGridCell extends StatelessWidget {
                   ? highlightColor
                   : (isExpired
                       ? Colors.redAccent.withAlpha(180)
-                      : (isContainer
-                          ? theme.colorScheme.secondary.withAlpha(isDimmed ? 60 : 130)
-                          : theme.dividerColor.withAlpha(isDimmed ? 20 : 50))),
+                      : (theme.dividerColor.withAlpha(isDimmed ? 20 : 50))),
               width: isSelected ? 3.0 : (isContainer ? 1.5 : 1.0),
             ),
             boxShadow: isSelected
