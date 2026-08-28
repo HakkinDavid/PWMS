@@ -493,12 +493,16 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
             content: Text(AppStrings.duplicatePhotoPrompt(existingWithSamePhoto.name)),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: const Text(AppStrings.changePhotoAction),
+                onPressed: () => Navigator.pop(ctx, null),
+                child: const Text(AppStrings.cancel),
               ),
-              ElevatedButton(
+              OutlinedButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 child: const Text(AppStrings.reusePhotoAction),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text(AppStrings.changePhotoAction),
               ),
             ],
           ),

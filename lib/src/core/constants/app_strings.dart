@@ -1475,6 +1475,9 @@ class AppStrings {
   static String subgroupDeviationPrompt(String type, String attribute) => 'El subgrupo "$type" habitualmente no utiliza $attribute. ¿Deseas guardar esta excepción o prefieres corregirla?';
   static const confirmExceptionAction = 'Guardar Excepción';
   static const correctDataAction = 'Corregir Datos';
+  static const showNonStandardFields = 'Campos adicionales no estándar';
+  static const hideNonStandardFields = 'Ocultar campos adicionales';
+  static const nonStandardFieldsHint = 'Campos no habituales para este subgrupo (se guardarán como excepción)';
   static String originSpeciesLeftEmptyWarning(String speciesName) => 'La especie de origen "$speciesName" ha quedado sin subespecies y se conservará como plantilla vacía en el catálogo.';
   static String instancesReassignedSuccess(int count, String target) => '$count instancia(s) reasignada(s) correctamente a "$target".';
   static String speciesDeletedWithCascadeSuccess(int count) => 'Especie y $count instancia(s) eliminadas correctamente.';

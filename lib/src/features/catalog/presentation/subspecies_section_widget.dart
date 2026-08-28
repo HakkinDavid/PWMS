@@ -184,7 +184,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                                       child: const Text(AppStrings.cancel),
                                     ),
                                     if (otherSubs.isNotEmpty)
-                                      OutlinedButton(
+                                      ElevatedButton(
                                         onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionReassign),
                                         child: const Text(AppStrings.reassignInstancesAction),
                                       ),

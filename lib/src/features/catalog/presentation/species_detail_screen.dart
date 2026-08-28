@@ -169,7 +169,7 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                                   child: const Text(AppStrings.cancel),
                                 ),
                                 if (otherSpecies.isNotEmpty)
-                                  OutlinedButton(
+                                  ElevatedButton(
                                     onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionReassign),
                                     child: const Text(AppStrings.reassignInstancesAction),
                                   ),

@@ -64,6 +64,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
   String? _photoPath;
   XFile? _newPickedImage;
   Future<String>? _resolvedPhotoPathFuture;
+  bool _showAdvancedFields = false;
 
   @override
   void initState() {
@@ -74,6 +75,7 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
     _brandController = TextEditingController(text: initial?.brand ?? AppTechnicalStrings.empty);
     _barcodeController = TextEditingController(text: initial?.barcode ?? AppTechnicalStrings.empty);
     _notesController = TextEditingController(text: initial?.notes ?? AppTechnicalStrings.empty);
+    _showAdvancedFields = (_brandController.text.trim().isNotEmpty || _barcodeController.text.trim().isNotEmpty);
     _photoPath = initial?.photoPath;
     if (_photoPath != null && _photoPath!.isNotEmpty) {
       _resolvedPhotoPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(_photoPath!);
@@ -387,6 +389,58 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
                   isDense: true,
                 ),
               ),
+            ] else ...[
+              const SizedBox(height: 6),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () => setState(() => _showAdvancedFields = !_showAdvancedFields),
+                  icon: Icon(_showAdvancedFields ? Icons.expand_less : Icons.expand_more, size: 18),
+                  label: Text(
+                    _showAdvancedFields ? AppStrings.hideNonStandardFields : AppStrings.showNonStandardFields,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
+              if (_showAdvancedFields) ...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withAlpha(15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline, size: 16, color: theme.colorScheme.primary),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          AppStrings.nonStandardFieldsHint,
+                          style: TextStyle(fontSize: 11, color: theme.colorScheme.primary),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _brandController,
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.brandOptionalLabel,
+                    prefixIcon: Icon(Icons.branding_watermark),
+                    isDense: true,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _barcodeController,
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.barcodeOptionalLabel,
+                    prefixIcon: Icon(Icons.qr_code),
+                    isDense: true,
+                  ),
+                ),
+              ],
             ],
 
             const SizedBox(height: 10),
