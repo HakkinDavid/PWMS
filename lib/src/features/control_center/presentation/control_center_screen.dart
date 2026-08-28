@@ -187,7 +187,11 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                 direction: DismissDirection.horizontal,
                 confirmDismiss: (direction) async {
                   if (direction == DismissDirection.endToStart) {
-                    return await card.onFix(context, ref);
+                    final ok = await card.onFix(context, ref);
+                    if (ok) {
+                      await ref.read(activityLoggerServiceProvider).logAuditFixApplied(card.title, card.subtitle);
+                    }
+                    return ok;
                   } else {
                     return await card.onConfirm(context, ref);
                   }
@@ -296,6 +300,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
                                   onPressed: () async {
                                     final ok = await card.onFix(context, ref);
                                     if (ok) {
+                                      await ref.read(activityLoggerServiceProvider).logAuditFixApplied(card.title, card.subtitle);
                                       ref.invalidate(entityListProvider);
                                       ref.invalidate(catalogListProvider);
                                       ref.invalidate(subspeciesListProvider);

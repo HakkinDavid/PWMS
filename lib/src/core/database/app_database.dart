@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'package:platinum_world_management_system/src/features/history/application/history_migration_post_processor.dart';
 
 part 'app_database.g.dart';
 
@@ -232,6 +233,9 @@ class AppDatabase extends _$AppDatabase {
               await customStatement(AppTechnicalStrings.sqlMigration3To4CleanEntitiesLocation);
             }
           }
+        },
+        beforeOpen: (details) async {
+          await HistoryMigrationPostProcessor.backfillMissingHistory(this);
         },
       );
 

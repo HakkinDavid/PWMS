@@ -384,7 +384,7 @@ class $CatalogTableTable extends CatalogTable
       'type', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('Objeto'));
+      defaultValue: const Constant(AppStrings.typeObject));
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -404,7 +404,7 @@ class $CatalogTableTable extends CatalogTable
       'custom_attributes', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('{}'));
+      defaultValue: const Constant(AppTechnicalStrings.emptyJsonMap));
   static const VerificationMeta _isUniqueMeta =
       const VerificationMeta('isUnique');
   @override
@@ -1430,7 +1430,7 @@ class $SpeciesMagnitudesTableTable extends SpeciesMagnitudesTable
       'data_type', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('real'));
+      defaultValue: const Constant(AppTechnicalStrings.datatypeRealLower));
   static const VerificationMeta _unitSymbolMeta =
       const VerificationMeta('unitSymbol');
   @override
@@ -2246,7 +2246,7 @@ class $InstanceMagnitudesTableTable extends InstanceMagnitudesTable
       'data_type', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('real'));
+      defaultValue: const Constant(AppTechnicalStrings.datatypeRealLower));
   static const VerificationMeta _magnitudeValueMeta =
       const VerificationMeta('magnitudeValue');
   @override
@@ -3990,7 +3990,7 @@ class $CustomTemplatesTableTable extends CustomTemplatesTable
       'common_units', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('[]'));
+      defaultValue: const Constant(AppTechnicalStrings.emptyJsonList));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -4303,7 +4303,7 @@ class $SpeciesRequirementsTableTable extends SpeciesRequirementsTable
       'source_type', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('species'));
+      defaultValue: const Constant(AppTechnicalStrings.sourceTypeSpecies));
   static const VerificationMeta _requiredSpeciesIdMeta =
       const VerificationMeta('requiredSpeciesId');
   @override
@@ -4731,7 +4731,7 @@ class $NotificationsTableTable extends NotificationsTable
       'status', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('active'));
+      defaultValue: const Constant(AppTechnicalStrings.notifStatusActive));
   static const VerificationMeta _snoozedUntilMeta =
       const VerificationMeta('snoozedUntil');
   @override

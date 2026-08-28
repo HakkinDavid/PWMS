@@ -2,12 +2,16 @@ import 'package:drift/drift.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/database/app_database.dart';
 import '../../entities/domain/world_entity.dart';
+import '../../history/application/activity_logger_service.dart';
+import '../../history/infrastructure/history_repository.dart';
 import '../domain/location_node.dart';
 
 class LocationRepository {
   final AppDatabase _db;
+  final ActivityLoggerService _activityLogger;
 
-  LocationRepository(this._db);
+  LocationRepository(this._db, [ActivityLoggerService? activityLogger])
+      : _activityLogger = activityLogger ?? ActivityLoggerService(HistoryRepository(_db));
 
   LocationNode _mapToDomain(LocationsTableData row) {
     return LocationNode(
@@ -44,6 +48,7 @@ class LocationRepository {
   }
 
   Future<void> saveNode(LocationNode node) async {
+    final existing = await getNodeById(node.id);
     final companion = LocationsTableCompanion(
       id: Value(node.id),
       name: Value(node.name),
@@ -53,6 +58,12 @@ class LocationRepository {
       createdAt: Value(node.createdAt),
     );
     await _db.into(_db.locationsTable).insertOnConflictUpdate(companion);
+
+    if (existing == null) {
+      await _activityLogger.logLocationCreated(node.id, node.name);
+    } else if (existing.name != node.name) {
+      await _activityLogger.logLocationEdited(node.id, node.name);
+    }
   }
 
   // Cycle Prevention Rules
@@ -87,10 +98,21 @@ class LocationRepository {
 
     final updated = node.copyWith(parentLocationId: newParentLocationId);
     await saveNode(updated);
+
+    String? parentName;
+    if (newParentLocationId != null) {
+      final pNode = await getNodeById(newParentLocationId);
+      parentName = pNode?.name;
+    }
+    await _activityLogger.logLocationMoved(nodeId, node.name, parentName);
   }
 
   Future<void> deleteNode(String id) async {
+    final node = await getNodeById(id);
     await (_db.delete(_db.locationsTable)..where((t) => t.id.equals(id))).go();
+    if (node != null) {
+      await _activityLogger.logLocationDeleted(id, node.name);
+    }
   }
 
   // Global Recursive Count Engine

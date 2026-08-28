@@ -1073,7 +1073,56 @@ class AppStrings {
   static String backupImportErrorMessage(Object error) => '$backupImportErrorPrefix$error';
   static String formatObjectsCount(int count) => '$count $objectsLabel';
 
-  // Activity Log Dynamic Helpers
+  // Activity Log Dynamic Helpers & Constants
+  static const historyTitle = 'Historial y Auditoría';
+  static const historyScreenTitle = 'Historial y Auditoría';
+  static const historyScreenSubtitle = 'Consulta todos los cambios y eventos registrados en la base de datos';
+  static const historySearchHint = 'Buscar eventos, descripciones o nombres...';
+  static const filterAll = 'Todos';
+  static const filterEntities = 'Instancias';
+  static const filterSpecies = 'Especies';
+  static const filterLocations = 'Ubicaciones';
+  static const filterRelations = 'Relaciones';
+  static const filterBackups = 'Respaldos y Sistema';
+  static const categoryFilterAll = 'Todos';
+  static const categoryFilterEntities = 'Instancias';
+  static const categoryFilterSpecies = 'Especies';
+  static const categoryFilterLocations = 'Ubicaciones';
+  static const categoryFilterRelations = 'Relaciones';
+  static const categoryFilterBackupsAndSystem = 'Respaldos y Sistema';
+  static const historyDetailTitle = 'Detalle de Evento';
+  static const eventDetailsTitle = 'Detalle de Evento';
+  static const historyEmptySearch = 'No se encontraron eventos que coincidan con la búsqueda.';
+  static const historyEmptyCategory = 'Sin actividad registrada en esta categoría.';
+  static const noHistoryEvents = 'Sin actividad registrada';
+  static const noHistoryEventsSubtitle = 'Los eventos y modificaciones en el sistema aparecerán aquí cronológicamente.';
+  static const historyTimestampLabel = 'Fecha y hora exacta';
+  static const exactTimestampLabel = 'Fecha y hora exacta';
+  static const historyCategoryLabel = 'Categoría';
+  static const categoryLabel = 'Categoría';
+  static const historyTypeLabel = 'Tipo de evento';
+  static const historyTargetLabel = 'Elemento involucrado';
+  static const targetIdLabel = 'ID del elemento';
+  static const targetTypeLabel = 'Tipo de elemento';
+  static const historyPayloadLabel = 'Metadatos / Cambios';
+  static const technicalDetailsTitle = 'Metadatos / Detalles técnicos';
+  static const historyNavigateToTarget = 'Ver elemento';
+  static const viewTargetAction = 'Ver elemento';
+  static const historyClearHistoryTooltip = 'Limpiar historial';
+  static const clearHistoryTooltip = 'Limpiar historial';
+  static const historyClearConfirmationTitle = '¿Vaciar historial de actividad?';
+  static const clearHistoryTitle = '¿Vaciar historial de actividad?';
+  static const historyClearConfirmationMessage = 'Esta acción eliminará los registros del historial de eventos. Los datos de tus entidades, especies y ubicaciones no se verán afectados.';
+  static const clearHistoryConfirmation = 'Esta acción eliminará los registros del historial de eventos. Los datos de tus entidades, especies y ubicaciones no se verán afectados.';
+  static const cancelAction = 'Cancelar';
+  static const clearAction = 'Vaciar';
+  static const historyAuditLogSettings = 'Historial de auditoría de BD';
+  static const historyAuditLogSettingsSubtitle = 'Consulta todos los cambios y eventos registrados en la base de datos';
+  static const timeJustNow = 'Hace un momento';
+  static String timeMinutesAgo(int m) => 'Hace $m min';
+  static String timeHoursAgo(int h) => 'Hace $h h';
+  static String timeDaysAgo(int d) => 'Hace $d d';
+
   static String activityRegistered(String name, String type) => 'Registrado en tu mundo: "$name" ($type)';
   static String activityEditedWithDetails(String name, String details) => 'Editado "$name": $details';
   static String activityEdited(String name) => 'Editada información de "$name"';
@@ -1086,6 +1135,23 @@ class AppStrings {
   static String activityPhotoChanged(String name) => 'Actualizada fotografía principal de "$name"';
   static String activityPhotoRemoved(String name) => 'Eliminada fotografía principal de "$name"';
   static String activityQuantityConsumed(String name, Object qty, String unit) => 'Cantidad ajustada de "$name": $qty $unit';
+  static String activitySpeciesCreated(String name, String type) => 'Nueva especie registrada: "$name" ($type)';
+  static String activitySpeciesEdited(String name, String details) => 'Especie modificada "$name": $details';
+  static String activitySpeciesDeleted(String name) => 'Especie eliminada: "$name"';
+  static String activitySpeciesMerged(String source, String target) => 'Especie "$source" fusionada en "$target"';
+  static String activitySubspeciesCreated(String subName, String speciesName) => 'Nueva subespecie registrada: "$subName" en "$speciesName"';
+  static String activitySubspeciesSeparated(String subName, String newSpecies) => 'Subespecie "$subName" separada a especie "$newSpecies"';
+  static String activitySubspeciesMoved(String subName, String targetSpecies) => 'Subespecie "$subName" trasladada a "$targetSpecies"';
+  static String activitySubspeciesDeleted(String subName) => 'Subespecie eliminada: "$subName"';
+  static String activityLocationCreated(String name) => 'Nueva ubicación registrada: "$name"';
+  static String activityLocationEdited(String name) => 'Ubicación modificada: "$name"';
+  static String activityLocationMoved(String name, String? parent) => parent != null ? 'Ubicación "$name" trasladada a "$parent"' : 'Ubicación "$name" convertida en principal';
+  static String activityLocationDeleted(String name) => 'Ubicación eliminada: "$name"';
+  static String activityEntitiesBatchDeleted(int count) => 'Eliminación en lote: $count instancias eliminadas';
+  static String activityBackupExported(int totalRecords) => 'Copia de seguridad exportada ($totalRecords registros)';
+  static String activityBackupRestored(int totalRecords, String? originDate) => originDate != null ? 'Copia de seguridad restaurada ($totalRecords registros, origen: $originDate)' : 'Copia de seguridad restaurada ($totalRecords registros)';
+  static String activityAuditFixApplied(String ruleTitle, String details) => 'Auditoría aplicada: $ruleTitle ($details)';
+  static String activityEntityUpdatedInPlace(String name, String changes) => 'Actualizada instancia de "$name": $changes';
 
 
   // Presentation Dynamic Helpers (Entities, Locations, Notifications)
@@ -1187,6 +1253,21 @@ class AppStrings {
     final m = dt.month.toString().padLeft(2, _zeroPad);
     return '$d/$m/${dt.year}';
   }
+
+  static String formatDateTimeDMY(DateTime? dt) {
+    if (dt == null) return AppTechnicalStrings.empty;
+    final y = dt.year.toString().padLeft(4, _zeroPad);
+    final m = dt.month.toString().padLeft(2, _zeroPad);
+    final d = dt.day.toString().padLeft(2, _zeroPad);
+    final hh = dt.hour.toString().padLeft(2, _zeroPad);
+    final mm = dt.minute.toString().padLeft(2, _zeroPad);
+    return '$d/$m/$y $hh:$mm';
+  }
+
+  static const infoUpdated = 'Información actualizada';
+  static const historyLocationModified = 'Ubicación modificada';
+  static const historyNotesUpdated = 'Notas actualizadas';
+  static const historyExpirationUpdated = 'Fecha de caducidad actualizada';
 
   // Numismatic Camera Capture View
   static const numisAnversoSideLabel = 'Anverso';

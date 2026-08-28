@@ -104,4 +104,7 @@ extension AppNavigationExtension on BuildContext {
 
   /// Empuja la pantalla de Notificaciones.
   void pushNotifications() => push(AppTechnicalRoutes.notifications);
+
+  /// Empuja el Historial Completo de Actividad.
+  void pushHistory() => push(AppTechnicalRoutes.history);
 }

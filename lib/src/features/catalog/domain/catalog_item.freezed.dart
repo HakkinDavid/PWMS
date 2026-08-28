@@ -254,7 +254,7 @@ class _$CatalogItemImpl extends _CatalogItem {
   const _$CatalogItemImpl(
       {required this.id,
       required this.name,
-      this.type = 'Objeto',
+      this.type = AppStrings.typeObject,
       this.description,
       this.mainPhotoPath,
       final Map<String, dynamic> customAttributes = const {},

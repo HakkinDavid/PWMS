@@ -10,7 +10,7 @@ _$CatalogItemImpl _$$CatalogItemImplFromJson(Map<String, dynamic> json) =>
     _$CatalogItemImpl(
       id: json['id'] as String,
       name: json['name'] as String,
-      type: json['type'] as String? ?? 'Objeto',
+      type: json['type'] as String? ?? AppStrings.typeObject,
       description: json['description'] as String?,
       mainPhotoPath: json['mainPhotoPath'] as String?,
       customAttributes:

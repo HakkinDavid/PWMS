@@ -22,8 +22,7 @@ ActivityEvent _$ActivityEventFromJson(Map<String, dynamic> json) {
 mixin _$ActivityEvent {
   String get id => throw _privateConstructorUsedError;
   String? get entityId => throw _privateConstructorUsedError;
-  String get eventType =>
-      throw _privateConstructorUsedError; // creation, edition, movement, attachment, relation
+  String get eventType => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   Map<String, dynamic>? get metadata => throw _privateConstructorUsedError;
   DateTime get timestamp => throw _privateConstructorUsedError;
@@ -172,7 +171,7 @@ class __$$ActivityEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ActivityEventImpl implements _ActivityEvent {
+class _$ActivityEventImpl extends _ActivityEvent {
   const _$ActivityEventImpl(
       {required this.id,
       this.entityId,
@@ -180,7 +179,8 @@ class _$ActivityEventImpl implements _ActivityEvent {
       required this.description,
       final Map<String, dynamic>? metadata,
       required this.timestamp})
-      : _metadata = metadata;
+      : _metadata = metadata,
+        super._();
 
   factory _$ActivityEventImpl.fromJson(Map<String, dynamic> json) =>
       _$$ActivityEventImplFromJson(json);
@@ -191,7 +191,6 @@ class _$ActivityEventImpl implements _ActivityEvent {
   final String? entityId;
   @override
   final String eventType;
-// creation, edition, movement, attachment, relation
   @override
   final String description;
   final Map<String, dynamic>? _metadata;
@@ -250,7 +249,7 @@ class _$ActivityEventImpl implements _ActivityEvent {
   }
 }
 
-abstract class _ActivityEvent implements ActivityEvent {
+abstract class _ActivityEvent extends ActivityEvent {
   const factory _ActivityEvent(
       {required final String id,
       final String? entityId,
@@ -258,6 +257,7 @@ abstract class _ActivityEvent implements ActivityEvent {
       required final String description,
       final Map<String, dynamic>? metadata,
       required final DateTime timestamp}) = _$ActivityEventImpl;
+  const _ActivityEvent._() : super._();
 
   factory _ActivityEvent.fromJson(Map<String, dynamic> json) =
       _$ActivityEventImpl.fromJson;
@@ -267,7 +267,7 @@ abstract class _ActivityEvent implements ActivityEvent {
   @override
   String? get entityId;
   @override
-  String get eventType; // creation, edition, movement, attachment, relation
+  String get eventType;
   @override
   String get description;
   @override

@@ -12,7 +12,8 @@ _$SpeciesMagnitudeImpl _$$SpeciesMagnitudeImplFromJson(
       id: json['id'] as String,
       speciesId: json['speciesId'] as String,
       propertyName: json['propertyName'] as String,
-      dataType: json['dataType'] as String? ?? 'real',
+      dataType:
+          json['dataType'] as String? ?? AppTechnicalStrings.datatypeRealLower,
       unitSymbol: json['unitSymbol'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );

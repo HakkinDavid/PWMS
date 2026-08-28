@@ -179,7 +179,7 @@ class _$SpeciesMagnitudeImpl implements _SpeciesMagnitude {
       {required this.id,
       required this.speciesId,
       required this.propertyName,
-      this.dataType = 'real',
+      this.dataType = AppTechnicalStrings.datatypeRealLower,
       this.unitSymbol,
       required this.createdAt});
 

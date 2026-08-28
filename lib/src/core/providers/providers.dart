@@ -53,29 +53,44 @@ final currentAppVersionProvider = FutureProvider<String>((ref) async {
   return service.getCurrentAppVersion();
 });
 
-// Repositories
-final entityRepositoryProvider = Provider<IEntityRepository>((ref) {
-  return EntityRepository(ref.watch(databaseProvider));
-});
-
-final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
-  return CatalogRepository(ref.watch(databaseProvider));
-});
-
-final locationRepositoryProvider = Provider<LocationRepository>((ref) {
-  return LocationRepository(ref.watch(databaseProvider));
-});
-
-final relationRepositoryProvider = Provider<IRelationRepository>((ref) {
-  return RelationRepository(ref.watch(databaseProvider));
-});
-
+// History and Audit Services
 final historyRepositoryProvider = Provider<IHistoryRepository>((ref) {
   return HistoryRepository(ref.watch(databaseProvider));
 });
 
 final activityLoggerServiceProvider = Provider<ActivityLoggerService>((ref) {
   return ActivityLoggerService(ref.watch(historyRepositoryProvider));
+});
+
+// Repositories
+final entityRepositoryProvider = Provider<IEntityRepository>((ref) {
+  return EntityRepository(
+    ref.watch(databaseProvider),
+    ref.watch(fileStorageServiceProvider),
+    ref.watch(activityLoggerServiceProvider),
+  );
+});
+
+final catalogRepositoryProvider = Provider<CatalogRepository>((ref) {
+  return CatalogRepository(
+    ref.watch(databaseProvider),
+    ref.watch(fileStorageServiceProvider),
+    ref.watch(activityLoggerServiceProvider),
+  );
+});
+
+final locationRepositoryProvider = Provider<LocationRepository>((ref) {
+  return LocationRepository(
+    ref.watch(databaseProvider),
+    ref.watch(activityLoggerServiceProvider),
+  );
+});
+
+final relationRepositoryProvider = Provider<IRelationRepository>((ref) {
+  return RelationRepository(
+    ref.watch(databaseProvider),
+    ref.watch(activityLoggerServiceProvider),
+  );
 });
 
 // Location Graph State
@@ -204,8 +219,43 @@ final recentEntitiesProvider = FutureProvider<List<WorldEntity>>((ref) async {
 // Recent Activity Provider
 final recentActivityProvider = FutureProvider<List<ActivityEvent>>((ref) async {
   ref.watch(entityListProvider);
+  ref.watch(catalogListProvider);
+  ref.watch(locationNodeListProvider);
   final repo = ref.watch(historyRepositoryProvider);
   return repo.getRecentEvents(limit: 15);
+});
+
+// Full History Reactive Stream & Filters
+final historySearchQueryProvider = StateProvider<String>((ref) => AppTechnicalStrings.empty);
+final historySelectedCategoryProvider = StateProvider<String>((ref) => AppTechnicalStrings.categoryAll);
+
+final allHistoryEventsStreamProvider = StreamProvider<List<ActivityEvent>>((ref) {
+  final repo = ref.watch(historyRepositoryProvider);
+  return repo.watchAllEvents();
+});
+
+final filteredHistoryEventsProvider = Provider<AsyncValue<List<ActivityEvent>>>((ref) {
+  final allEventsAsync = ref.watch(allHistoryEventsStreamProvider);
+  final category = ref.watch(historySelectedCategoryProvider);
+  final query = ref.watch(historySearchQueryProvider);
+
+  return allEventsAsync.whenData((events) {
+    var filtered = events;
+    if (category.isNotEmpty && category != AppTechnicalStrings.categoryAll) {
+      filtered = filtered.where((e) => e.category == category).toList();
+    }
+    if (query.trim().isNotEmpty) {
+      final clean = query.trim().toLowerCase();
+      filtered = filtered.where((e) {
+        if (e.description.toLowerCase().contains(clean)) return true;
+        if (e.entityId?.toLowerCase().contains(clean) ?? false) return true;
+        if (e.resolvedTargetId?.toLowerCase().contains(clean) ?? false) return true;
+        if (e.metadata != null && e.metadata.toString().toLowerCase().contains(clean)) return true;
+        return false;
+      }).toList();
+    }
+    return filtered;
+  });
 });
 
 // Search Query State

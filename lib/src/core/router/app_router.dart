@@ -11,6 +11,7 @@ import '../../features/search/presentation/search_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/history/presentation/history_screen.dart';
 
 import '../../features/control_center/presentation/control_center_screen.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
@@ -132,6 +133,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppTechnicalRoutes.settings,
       builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: AppTechnicalRoutes.history,
+      builder: (context, state) => const HistoryScreen(),
     ),
     GoRoute(
       path: AppTechnicalRoutes.entityDetailLegacy,

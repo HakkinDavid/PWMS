@@ -13,12 +13,20 @@ import '../../entities/domain/entity_template.dart';
 
 import '../../../core/storage/file_storage_service.dart';
 
+import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';
+import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
+
 class CatalogRepository {
   final AppDatabase _db;
   final FileStorageService _fileStorageService;
+  final ActivityLoggerService _activityLogger;
 
-  CatalogRepository(this._db, [FileStorageService? fileStorageService])
-      : _fileStorageService = fileStorageService ?? FileStorageService();
+  CatalogRepository(
+    this._db, [
+    FileStorageService? fileStorageService,
+    ActivityLoggerService? activityLogger,
+  ])  : _fileStorageService = fileStorageService ?? FileStorageService(),
+        _activityLogger = activityLogger ?? ActivityLoggerService(HistoryRepository(_db));
 
   Future<Map<String, List<SpeciesMagnitude>>> _fetchMagnitudesForSpecies(List<String> speciesIds) async {
     if (speciesIds.isEmpty) return {};
@@ -216,6 +224,11 @@ class CatalogRepository {
     });
 
     final saved = await getCatalogItemById(item.id);
+    if (isNewSpecies) {
+      await _activityLogger.logSpeciesCreated(item.id, finalName, finalType);
+    } else {
+      await _activityLogger.logSpeciesEdited(item.id, finalName, AppStrings.infoUpdated);
+    }
     return saved ?? item;
   }
 
@@ -264,6 +277,7 @@ class CatalogRepository {
   }
 
   Future<void> deleteCatalogItem(String id) async {
+    final item = await getCatalogItemById(id);
     final entityRows = await (_db.select(_db.entitiesTable)..where((t) => t.speciesId.equals(id))).get();
     if (entityRows.isNotEmpty) {
       throw Exception(AppStrings.cannotDeleteSpeciesWithInstancesError);
@@ -273,6 +287,10 @@ class CatalogRepository {
     await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(id) | t.requiredSpeciesId.equals(id))).go();
     await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(id))).go();
     await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(id))).go();
+
+    if (item != null) {
+      await _activityLogger.logSpeciesDeleted(id, item.name);
+    }
   }
 
   // --- REORGANIZACIÓN TAXONÓMICA ---
@@ -280,6 +298,8 @@ class CatalogRepository {
   /// Unir Especie A en Especie B (Requisito 2a)
   Future<void> mergeSpecies(String sourceSpeciesId, String targetSpeciesId) async {
     if (sourceSpeciesId == targetSpeciesId) return;
+    final src = await getCatalogItemById(sourceSpeciesId);
+    final tgt = await getCatalogItemById(targetSpeciesId);
 
     await _db.transaction(() async {
       // 1. Reasignar subespecies de origen a destino
@@ -304,6 +324,10 @@ class CatalogRepository {
       await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(sourceSpeciesId))).go();
       await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(sourceSpeciesId))).go();
     });
+
+    if (src != null && tgt != null) {
+      await _activityLogger.logSpeciesMerged(src.name, tgt.name, targetSpeciesId: targetSpeciesId);
+    }
   }
 
   /// Separar Subespecie de su especie original a una nueva especie (Requisitos 2b, 6a, 6b)
@@ -345,6 +369,7 @@ class CatalogRepository {
       }
     });
 
+    await _activityLogger.logSubspeciesSeparated(sub.subspeciesName, newSpecies.name, newSpeciesId: newSpecies.id);
     return newSpecies;
   }
 
@@ -354,6 +379,7 @@ class CatalogRepository {
     if (sub == null) throw Exception(AppStrings.subspeciesNotFoundError);
     final oldSpeciesId = sub.speciesId;
     if (oldSpeciesId == targetSpeciesId) return;
+    final targetSpecies = await getCatalogItemById(targetSpeciesId);
 
     await _db.transaction(() async {
       // Reasignar subespecie
@@ -372,6 +398,10 @@ class CatalogRepository {
         await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(oldSpeciesId))).go();
       }
     });
+
+    if (targetSpecies != null) {
+      await _activityLogger.logSubspeciesMoved(sub.subspeciesName, targetSpecies.name, targetSpeciesId: targetSpeciesId);
+    }
   }
 
   // --- SUBSPECIES CRUD ---
@@ -457,6 +487,16 @@ class CatalogRepository {
       createdAt: Value(subspecies.createdAt),
     );
     await _db.into(_db.subspeciesTable).insertOnConflictUpdate(companion);
+
+    if (existingSub == null) {
+      final species = await getCatalogItemById(subspecies.speciesId);
+      await _activityLogger.logSubspeciesCreated(
+        subspecies.id,
+        subspecies.subspeciesName.trim(),
+        species?.name ?? AppTechnicalStrings.empty,
+        speciesId: subspecies.speciesId,
+      );
+    }
   }
 
   Future<void> deleteSubspecies(String id) async {
@@ -474,6 +514,9 @@ class CatalogRepository {
     }
 
     await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();
+    if (sub != null) {
+      await _activityLogger.logSubspeciesDeleted(sub.subspeciesName);
+    }
   }
 
   // --- SPECIES & ENTITY REQUIREMENTS CRUD ---
@@ -537,6 +580,9 @@ class CatalogRepository {
       createdAt: Value(DateTime.now()),
     );
     await _db.into(_db.attachmentsTable).insertOnConflictUpdate(companion);
+
+    final species = await getCatalogItemById(speciesId);
+    await _activityLogger.logAttachmentAdded(instanceId, species?.name ?? AppStrings.typeObject, fileName, speciesId: speciesId);
   }
 
   Future<void> updateAttachment(Attachment attachment) async {

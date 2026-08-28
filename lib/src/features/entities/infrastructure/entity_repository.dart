@@ -11,13 +11,21 @@ import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 
 import '../../../core/storage/file_storage_service.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';
+import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
 
 class EntityRepository implements IEntityRepository {
   final AppDatabase _db;
   final FileStorageService _fileStorageService;
+  final ActivityLoggerService _activityLogger;
 
-  EntityRepository(this._db, [FileStorageService? fileStorageService])
-      : _fileStorageService = fileStorageService ?? FileStorageService();
+  EntityRepository(
+    this._db, [
+    FileStorageService? fileStorageService,
+    ActivityLoggerService? activityLogger,
+  ])  : _fileStorageService = fileStorageService ?? FileStorageService(),
+        _activityLogger = activityLogger ?? ActivityLoggerService(HistoryRepository(_db));
 
   Future<Map<String, List<InstanceMagnitude>>> _fetchMagnitudesForEntities(List<String> entityIds) async {
     if (entityIds.isEmpty) return {};
@@ -237,6 +245,9 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> saveEntity(WorldEntity entity) async {
+    final existingEntity = await (_db.select(_db.entitiesTable)..where((t) => t.id.equals(entity.id))).getSingleOrNull();
+    String? directLocId;
+
     await _db.transaction(() async {
       // Ensure that if the entity is contained in a container (GUARDADO_EN / PARTE_DE),
       // direct physical location in DB is null (as location is inherited from container).
@@ -244,7 +255,7 @@ class EntityRepository implements IEntityRepository {
         ..where((t) => t.sourceEntityId.equals(entity.id) & t.relationType.isIn(LocationResolver.locationInheritingTypes.toList()))
       ).get()).isNotEmpty;
 
-      final String? directLocId = isContained ? null : entity.locationId;
+      directLocId = isContained ? null : entity.locationId;
 
       final companion = EntitiesTableCompanion(
         id: Value(entity.id),
@@ -264,7 +275,7 @@ class EntityRepository implements IEntityRepository {
         await _db.into(_db.instanceLocationsTable).insertOnConflictUpdate(
           InstanceLocationsTableCompanion(
             instanceId: Value(entity.id),
-            locationId: Value(directLocId),
+            locationId: Value(directLocId!),
             createdAt: Value(DateTime.now()),
           ),
         );
@@ -286,6 +297,36 @@ class EntityRepository implements IEntityRepository {
         ));
       }
     });
+
+    final speciesRow = await (_db.select(_db.catalogTable)..where((t) => t.id.equals(entity.speciesId))).getSingleOrNull();
+    final speciesName = speciesRow?.name ?? AppStrings.typeObject;
+    final speciesType = speciesRow?.type ?? AppStrings.typeObject;
+
+    if (existingEntity == null) {
+      await _activityLogger.logEntityCreated(
+        entity.id,
+        speciesName,
+        speciesType,
+        speciesId: entity.speciesId,
+        subspeciesId: entity.subspeciesId,
+        locationId: directLocId,
+        timestamp: entity.createdAt,
+      );
+    } else {
+      String? detail;
+      if (existingEntity.locationId != directLocId) {
+        detail = AppStrings.historyLocationModified;
+      } else if (existingEntity.notes != entity.notes) {
+        detail = AppStrings.historyNotesUpdated;
+      } else if (existingEntity.expirationDate != entity.expirationDate) {
+        detail = AppStrings.historyExpirationUpdated;
+      }
+      await _activityLogger.logEntityEdited(
+        entity.id,
+        speciesName,
+        details: detail,
+      );
+    }
   }
 
   @override
@@ -384,10 +425,19 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<void> deleteEntity(String id) async {
+    final entityRow = await (_db.select(_db.entitiesTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+    String speciesName = AppStrings.typeObject;
+    if (entityRow != null) {
+      final speciesRow = await (_db.select(_db.catalogTable)..where((t) => t.id.equals(entityRow.speciesId))).getSingleOrNull();
+      if (speciesRow != null) speciesName = speciesRow.name;
+    }
+
     await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.equals(id))).go();
     await (_db.delete(_db.relationsTable)..where((t) => t.sourceEntityId.equals(id) | t.targetEntityId.equals(id))).go();
     await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(id))).go();
     await (_db.delete(_db.entitiesTable)..where((t) => t.id.equals(id))).go();
+
+    await _activityLogger.logEntityDeleted(id, speciesName);
   }
 
   @override
@@ -399,6 +449,7 @@ class EntityRepository implements IEntityRepository {
       batch.deleteWhere(_db.instanceMagnitudesTable, (t) => t.instanceId.isIn(ids));
       batch.deleteWhere(_db.entitiesTable, (t) => t.id.isIn(ids));
     });
+    await _activityLogger.logEntitiesBatchDeleted(ids.length, entityIds: ids);
   }
 
   @override
@@ -485,6 +536,7 @@ class EntityRepository implements IEntityRepository {
     if (row != null) {
       await (_db.delete(_db.attachmentsTable)..where((t) => t.id.equals(attachmentId))).go();
       await _fileStorageService.deleteFile(row.filePath);
+      await _activityLogger.logAttachmentRemoved(row.instanceId, row.fileName, row.fileName);
     }
   }
 

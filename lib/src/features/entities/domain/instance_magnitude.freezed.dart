@@ -189,7 +189,7 @@ class _$InstanceMagnitudeImpl extends _InstanceMagnitude {
       {required this.id,
       required this.instanceId,
       required this.propertyName,
-      this.dataType = 'real',
+      this.dataType = AppTechnicalStrings.datatypeRealLower,
       this.magnitudeValue = 0.0,
       this.stringValue,
       this.unitSymbol})

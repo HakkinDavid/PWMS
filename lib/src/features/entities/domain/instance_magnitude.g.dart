@@ -12,7 +12,8 @@ _$InstanceMagnitudeImpl _$$InstanceMagnitudeImplFromJson(
       id: json['id'] as String,
       instanceId: json['instanceId'] as String,
       propertyName: json['propertyName'] as String,
-      dataType: json['dataType'] as String? ?? 'real',
+      dataType:
+          json['dataType'] as String? ?? AppTechnicalStrings.datatypeRealLower,
       magnitudeValue: (json['magnitudeValue'] as num?)?.toDouble() ?? 0.0,
       stringValue: json['stringValue'] as String?,
       unitSymbol: json['unitSymbol'] as String?,

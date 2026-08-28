@@ -11,13 +11,19 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_backup_post_processor.dart';
+import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';
+import 'package:platinum_world_management_system/src/features/history/application/history_migration_post_processor.dart';
+import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
 
 class DatabaseBackupService {
   final AppDatabase _db;
   final List<IDataMigrationPostProcessor> _postProcessors;
 
   DatabaseBackupService(this._db, [List<IDataMigrationPostProcessor>? postProcessors])
-      : _postProcessors = postProcessors ?? const [NumismaticBackupPostProcessor()];
+      : _postProcessors = postProcessors ?? const [
+          NumismaticBackupPostProcessor(),
+          HistoryMigrationPostProcessor(),
+        ];
 
   /// Sanitiza rutas de archivos para evitar almacenar rutas absolutas locales del SO (ej. Android)
   /// Si es una URL externa (http/https), la preserva intacta.
@@ -261,6 +267,14 @@ class DatabaseBackupService {
       await Share.shareXFiles(
         [XFile(tempZipFile.path)],
       );
+
+      // Log backup export
+      int totalRecords = 0;
+      for (final tableList in tables.values) {
+        if (tableList is List) totalRecords += tableList.length;
+      }
+      final logger = ActivityLoggerService(HistoryRepository(_db));
+      await logger.logBackupExported(totalRecords);
     } finally {
       if (await tempZipFile.exists()) {
         try {
@@ -882,9 +896,26 @@ class DatabaseBackupService {
       }
     });
 
-    // Execute decoupled migration post-processors (e.g. Numismatic standardization)
+    // Execute decoupled migration post-processors (e.g. Numismatic standardization, History backfill)
     for (final processor in _postProcessors) {
       await processor.processAfterImport(_db);
     }
+
+    // Log backup restore event
+    int totalImportedRecords = 0;
+    for (final tableList in tables.values) {
+      if (tableList is List) {
+        totalImportedRecords += tableList.length;
+      }
+    }
+    final originDate = migratedData[AppTechnicalJsonKeys.keyExportedAt]?.toString();
+    final schemaVer = migratedData[AppTechnicalJsonKeys.keyVersion] is int ? migratedData[AppTechnicalJsonKeys.keyVersion] as int : null;
+
+    final logger = ActivityLoggerService(HistoryRepository(_db));
+    await logger.logBackupRestored(
+      totalImportedRecords,
+      originDate: originDate,
+      schemaVersion: schemaVer,
+    );
   }
 }

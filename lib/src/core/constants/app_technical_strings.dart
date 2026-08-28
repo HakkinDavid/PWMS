@@ -31,6 +31,7 @@ class AppTechnicalStrings {
   static const register = '/register';
   static const inventory = '/inventory';
   static const notifications = '/notifications';
+  static const history = '/history';
   static const paramId = 'id';
   static const paramFocusNodeId = 'focusNodeId';
   static const paramLocationId = 'locationId';
@@ -386,6 +387,19 @@ WHERE id IN (
   static const keyTarget = 'target';
   static const keyQuantity = 'quantity';
   static const keyUnit = 'unit';
+  static const keyCount = 'count';
+  static const keyEntityIds = 'entityIds';
+  static const keyNewSpecies = 'newSpecies';
+  static const keyTargetSpecies = 'targetSpecies';
+  static const keySpeciesName = 'speciesName';
+  static const keyParent = 'parent';
+  static const keyTotalRecords = 'totalRecords';
+  static const keyOriginDate = 'originDate';
+  static const keyRuleTitle = 'ruleTitle';
+  static const keyRelationId = 'relationId';
+  static const keyAttachmentId = 'attachmentId';
+  static const categoryAuditLower = 'audit';
+  static const typeMigration = 'migration';
 
   // ---------------------------------------------------------------------------
   // Data Types
@@ -585,6 +599,14 @@ WHERE id IN (
   static const digitsWithDecimalFilter = r'[0-9.]';
   static const imageFileExtensionsRegex = r'\.(jpg|jpeg|png)$';
   static const extCroppedJpg = '_cropped.jpg';
+  static const categoryAll = 'all';
+  static const categoryEntity = 'entity';
+  static const categorySpecies = 'species';
+  static const categoryLocation = 'location';
+  static const categoryRelation = 'relation';
+  static const categoryBackup = 'backup';
+  static const categorySystem = 'system';
+
   static const eventTypeCreation = 'creation';
   static const eventTypeEdition = 'edition';
   static const eventTypeDeletion = 'deletion';
@@ -596,6 +618,22 @@ WHERE id IN (
   static const eventTypePhotoChanged = 'photo_changed';
   static const eventTypePhotoRemoved = 'photo_removed';
   static const eventTypeConsumption = 'consumption';
+  static const eventTypeSpeciesCreation = 'species_creation';
+  static const eventTypeSpeciesEdition = 'species_edition';
+  static const eventTypeSpeciesDeletion = 'species_deletion';
+  static const eventTypeSpeciesMerge = 'species_merge';
+  static const eventTypeSubspeciesCreation = 'subspecies_creation';
+  static const eventTypeSubspeciesSeparation = 'subspecies_separation';
+  static const eventTypeSubspeciesMovement = 'subspecies_movement';
+  static const eventTypeSubspeciesDeletion = 'subspecies_deletion';
+  static const eventTypeLocationCreation = 'location_creation';
+  static const eventTypeLocationEdition = 'location_edition';
+  static const eventTypeLocationMovement = 'location_movement';
+  static const eventTypeLocationDeletion = 'location_deletion';
+  static const eventTypeBackupExport = 'backup_export';
+  static const eventTypeBackupRestore = 'backup_restore';
+  static const eventTypeAuditFix = 'audit_fix';
+  static const eventTypeBatchDeletion = 'batch_deletion';
 
   static const eventCreation = eventTypeCreation;
   static const eventEdition = eventTypeEdition;
@@ -959,6 +997,7 @@ abstract final class AppTechnicalRoutes {
   static const register = AppTechnicalStrings.register;
   static const inventory = AppTechnicalStrings.inventory;
   static const notifications = AppTechnicalStrings.notifications;
+  static const history = AppTechnicalStrings.history;
   static const paramId = AppTechnicalStrings.paramId;
   static const paramFocusNodeId = AppTechnicalStrings.paramFocusNodeId;
   static const paramLocationId = AppTechnicalStrings.paramLocationId;

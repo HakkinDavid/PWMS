@@ -6,10 +6,15 @@ import '../domain/i_relation_repository.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 
 
+import '../../history/application/activity_logger_service.dart';
+import '../../history/infrastructure/history_repository.dart';
+
 class RelationRepository implements IRelationRepository {
   final AppDatabase _db;
+  final ActivityLoggerService _activityLogger;
 
-  RelationRepository(this._db);
+  RelationRepository(this._db, [ActivityLoggerService? activityLogger])
+      : _activityLogger = activityLogger ?? ActivityLoggerService(HistoryRepository(_db));
 
   EntityRelation _mapToDomain(RelationsTableData row) {
     return EntityRelation(
@@ -79,13 +84,34 @@ class RelationRepository implements IRelationRepository {
       );
       await _db.into(_db.relationsTable).insertOnConflictUpdate(companion);
     });
+
+    final srcEnt = await (_db.select(_db.entitiesTable)..where((t) => t.id.equals(relation.sourceEntityId))).getSingleOrNull();
+    final tgtEnt = await (_db.select(_db.entitiesTable)..where((t) => t.id.equals(relation.targetEntityId))).getSingleOrNull();
+    String srcName = relation.sourceEntityId;
+    String tgtName = relation.targetEntityId;
+    if (srcEnt != null) {
+      final s = await (_db.select(_db.catalogTable)..where((t) => t.id.equals(srcEnt.speciesId))).getSingleOrNull();
+      if (s != null) srcName = s.name;
+    }
+    if (tgtEnt != null) {
+      final s = await (_db.select(_db.catalogTable)..where((t) => t.id.equals(tgtEnt.speciesId))).getSingleOrNull();
+      if (s != null) tgtName = s.name;
+    }
+
+    await _activityLogger.logRelationAdded(
+      srcName,
+      tgtName,
+      relation.relationType,
+      sourceId: relation.sourceEntityId,
+      targetId: relation.targetEntityId,
+    );
   }
 
   @override
   Future<void> deleteRelation(String relationId) async {
-    await _db.transaction(() async {
-      final relRow = await (_db.select(_db.relationsTable)..where((t) => t.id.equals(relationId))).getSingleOrNull();
+    final relRow = await (_db.select(_db.relationsTable)..where((t) => t.id.equals(relationId))).getSingleOrNull();
 
+    await _db.transaction(() async {
       if (relRow != null && LocationResolver.locationInheritingTypes.contains(relRow.relationType)) {
         // Resolve target container's current effective location
         final locRows = await _db.select(_db.instanceLocationsTable).get();
@@ -116,6 +142,29 @@ class RelationRepository implements IRelationRepository {
 
       await (_db.delete(_db.relationsTable)..where((t) => t.id.equals(relationId))).go();
     });
+
+    if (relRow != null) {
+      final srcEnt = await (_db.select(_db.entitiesTable)..where((t) => t.id.equals(relRow.sourceEntityId))).getSingleOrNull();
+      final tgtEnt = await (_db.select(_db.entitiesTable)..where((t) => t.id.equals(relRow.targetEntityId))).getSingleOrNull();
+      String srcName = relRow.sourceEntityId;
+      String tgtName = relRow.targetEntityId;
+      if (srcEnt != null) {
+        final s = await (_db.select(_db.catalogTable)..where((t) => t.id.equals(srcEnt.speciesId))).getSingleOrNull();
+        if (s != null) srcName = s.name;
+      }
+      if (tgtEnt != null) {
+        final s = await (_db.select(_db.catalogTable)..where((t) => t.id.equals(tgtEnt.speciesId))).getSingleOrNull();
+        if (s != null) tgtName = s.name;
+      }
+
+      await _activityLogger.logRelationRemoved(
+        srcName,
+        tgtName,
+        relRow.relationType,
+        sourceId: relRow.sourceEntityId,
+        targetId: relRow.targetEntityId,
+      );
+    }
   }
 }
 

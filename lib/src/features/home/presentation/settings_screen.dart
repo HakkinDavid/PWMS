@@ -6,6 +6,7 @@ import '../../../core/providers/providers.dart';
 import '../../../core/updater/presentation/update_prompt_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/backup_workflow_helper.dart';
+import '../../../core/router/app_navigation_extension.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -215,6 +216,45 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ],
                   ),
+
+                const SizedBox(height: 28),
+
+                // Sección 3: Historial y Auditoría
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8),
+                    child: Text(
+                      AppStrings.historyTitle,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: theme.colorScheme.outlineVariant.withAlpha(120)),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.teal.withAlpha(30),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.history_rounded, color: Colors.teal),
+                    ),
+                    title: const Text(AppStrings.historyTitle, style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: const Text(AppStrings.historyScreenSubtitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.pushHistory(),
+                  ),
+                ),
               ],
             ),
           ),
