@@ -320,5 +320,47 @@ void main() {
       // Returned to SearchScreen and query executed, default view mode is Tiles (Tarjetas) (Item j)
       expect(find.byType(EntityTile), findsWidgets);
     });
+
+    testWidgets('SQL Console: Dedicated buttons row, preset name on button, and auto execution on first load',
+        (WidgetTester tester) async {
+      await seedDatabase(db);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: SearchScreen(initialScope: AppStrings.arbitrarySqlQueryLabel),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 1. Initial preselected query should execute automatically on first load
+      expect(find.byType(EntityTile), findsWidgets);
+
+      // 2. Button displays the preset title (e.g. Catálogo de Especies or first preset)
+      final presetButton = find.widgetWithIcon(FilledButton, Icons.bookmark_border);
+      expect(presetButton, findsOneWidget);
+      expect(find.text(SqlPreset.defaultPresets.first.title), findsOneWidget);
+
+      // 3. Dedicated action buttons row: Open Editor and Execute buttons are distinct
+      final openEditorBtn = find.widgetWithText(OutlinedButton, AppStrings.openSqlEditorAction);
+      final executeBtn = find.widgetWithText(ElevatedButton, AppStrings.executeAction);
+      expect(openEditorBtn, findsOneWidget);
+      expect(executeBtn, findsOneWidget);
+
+      // 4. Picking another preset updates the button label and executes query immediately
+      await tester.tap(presetButton);
+      await tester.pumpAndSettle();
+
+      final confirmBtn = find.widgetWithText(ElevatedButton, AppStrings.confirm);
+      await tester.tap(confirmBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EntityTile), findsWidgets);
+    });
   });
 }

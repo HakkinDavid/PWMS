@@ -155,7 +155,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Open presets picker via AppWheelPicker
-      final presetButton = find.widgetWithText(FilledButton, AppStrings.sqlPresetsSelectPrompt);
+      final presetButton = find.widgetWithIcon(FilledButton, Icons.bookmark_border);
       expect(presetButton, findsOneWidget);
       await tester.tap(presetButton);
       await tester.pumpAndSettle();

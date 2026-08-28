@@ -98,8 +98,9 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   late String _selectedScope;
   SqlPresetCategory _selectedSqlCategory = SqlPresetCategory.all;
+  late SqlPreset _selectedSqlPreset;
   SqlResultViewMode _viewMode = SqlResultViewMode.tiles; // Default to Tiles / Tarjetas (Item j)
-  final TextEditingController _sqlController = TextEditingController(text: AppTechnicalStrings.sqlDefaultSearchSample);
+  late final TextEditingController _sqlController;
 
   bool _isExecutingSql = false;
   List<String> _sqlColumns = [];
@@ -145,6 +146,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    _selectedSqlPreset = SqlPreset.defaultPresets.first;
+    _sqlController = TextEditingController(text: _selectedSqlPreset.query);
+
     _selectedScope = (widget.initialScope != null && _scopes.contains(widget.initialScope))
         ? widget.initialScope!
         : AppStrings.all;
@@ -153,6 +157,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           ref.read(searchQueryProvider.notifier).state = widget.initialQuery!;
+        }
+      });
+    }
+
+    // Automatically execute the preselected query when loading the SQL view directly
+    if (_selectedScope == AppStrings.arbitrarySqlQueryLabel) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _sqlRows.isEmpty && !_isExecutingSql) {
+          _executeSqlQuery();
         }
       });
     }
@@ -166,6 +179,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         setState(() {
           _selectedScope = widget.initialScope!;
         });
+        if (widget.initialScope == AppStrings.arbitrarySqlQueryLabel && _sqlRows.isEmpty && !_isExecutingSql) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _executeSqlQuery();
+          });
+        }
       }
     }
     if (widget.initialQuery != null && widget.initialQuery != oldWidget.initialQuery) {
@@ -196,6 +214,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     if (picked != null && mounted) {
       setState(() => _selectedScope = picked);
+      if (picked == AppStrings.arbitrarySqlQueryLabel && _sqlRows.isEmpty && !_isExecutingSql) {
+        _executeSqlQuery();
+      }
     }
   }
 
@@ -279,7 +300,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
 
     if (picked != null && mounted) {
-      setState(() => _selectedSqlCategory = picked);
+      setState(() {
+        _selectedSqlCategory = picked;
+        final matchingPresets = SqlPreset.defaultPresets
+            .where((p) => picked == SqlPresetCategory.all || p.category == picked)
+            .toList();
+        if (!matchingPresets.contains(_selectedSqlPreset) && matchingPresets.isNotEmpty) {
+          _selectedSqlPreset = matchingPresets.first;
+          _sqlController.text = _selectedSqlPreset.query;
+        }
+      });
+      _executeSqlQuery();
     }
   }
 
@@ -290,15 +321,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     if (presets.isEmpty) return;
 
+    final initialP = presets.contains(_selectedSqlPreset)
+        ? _selectedSqlPreset
+        : (presets.isNotEmpty ? presets.first : null);
+
     final picked = await AppWheelPicker.show<SqlPreset>(
       context,
       items: presets,
+      initialValue: initialP,
       labelBuilder: (p) => p.title,
       title: AppStrings.sqlPresetsSelectPrompt,
     );
 
     if (picked != null && mounted) {
-      _sqlController.text = picked.query;
+      setState(() {
+        _selectedSqlPreset = picked;
+        _sqlController.text = picked.query;
+      });
       _executeSqlQuery();
     }
   }
@@ -307,10 +346,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final updatedQuery = await SqlEditorFullScreenView.show(
       context,
       initialQuery: _sqlController.text,
+      initialCategory: _selectedSqlCategory,
+      initialPreset: _selectedSqlPreset,
     );
 
     if (updatedQuery != null && mounted) {
-      _sqlController.text = updatedQuery;
+      setState(() {
+        _sqlController.text = updatedQuery;
+        final match = SqlPreset.defaultPresets.where((p) => p.query.trim() == updatedQuery.trim()).firstOrNull;
+        if (match != null) {
+          _selectedSqlPreset = match;
+          _selectedSqlCategory = match.category;
+        }
+      });
       _executeSqlQuery();
     }
   }
@@ -823,7 +871,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SQL Category & Presets Pickers with AppWheelPicker (Item h)
+            // Row 1: SQL Category & Presets Pickers with AppWheelPicker (Dedicated row, explicit button styling)
             Row(
               children: [
                 Expanded(
@@ -832,12 +880,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     icon: const Icon(Icons.category_outlined, size: 16),
                     label: Text(
                       _selectedSqlCategory.displayName,
-                      style: const TextStyle(fontSize: 12),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                       overflow: TextOverflow.ellipsis,
                     ),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                 ),
@@ -846,14 +894,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   child: FilledButton.tonalIcon(
                     onPressed: _pickSqlPreset,
                     icon: const Icon(Icons.bookmark_border, size: 16),
-                    label: const Text(
-                      AppStrings.sqlPresetsSelectPrompt,
-                      style: TextStyle(fontSize: 12),
+                    label: Text(
+                      _selectedSqlPreset.title,
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                       overflow: TextOverflow.ellipsis,
                     ),
                     style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                 ),
@@ -861,66 +909,26 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
             const SizedBox(height: 10),
 
-            // SQL Full-Screen Editor Launcher Card (Item i)
+            // Row 2: SQL Query Preview Box (Clickable, clean code area without redundant header)
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
                 side: BorderSide(color: theme.dividerColor.withAlpha(80)),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppStrings.sqlQueryPreviewLabel,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            OutlinedButton.icon(
-                              onPressed: _openFullScreenSqlEditor,
-                              icon: const Icon(Icons.fullscreen, size: 16),
-                              label: const Text(AppStrings.openSqlEditorAction, style: TextStyle(fontSize: 11)),
-                              style: OutlinedButton.styleFrom(
-                                visualDensity: VisualDensity.compact,
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            FilledButton.icon(
-                              onPressed: _isExecutingSql ? null : _executeSqlQuery,
-                              icon: const Icon(Icons.play_arrow, size: 16),
-                              label: const Text(AppStrings.executeAction, style: TextStyle(fontSize: 11)),
-                              style: FilledButton.styleFrom(
-                                visualDensity: VisualDensity.compact,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    InkWell(
-                      onTap: _openFullScreenSqlEditor,
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: theme.dividerColor.withAlpha(50)),
-                        ),
+              child: InkWell(
+                onTap: _openFullScreenSqlEditor,
+                borderRadius: BorderRadius.circular(14),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0, right: 8.0),
+                        child: Icon(Icons.code, size: 18, color: theme.colorScheme.primary),
+                      ),
+                      Expanded(
                         child: Text(
                           _sqlController.text.trim().isNotEmpty
                               ? _sqlController.text
@@ -930,13 +938,41 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           style: const TextStyle(
                             fontFamily: AppTechnicalStrings.fontFamilyMonospace,
                             fontSize: 12,
+                            height: 1.3,
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Icon(Icons.edit_outlined, size: 16, color: theme.hintColor),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            ),
+            const SizedBox(height: 10),
+
+            // Row 3: Dedicated Action Buttons Row (Separate row, prominent buttons)
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _isExecutingSql ? null : _executeSqlQuery,
+                    icon: const Icon(Icons.play_arrow_rounded, size: 20),
+                    label: const Text(
+                      AppStrings.executeAction,
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
 

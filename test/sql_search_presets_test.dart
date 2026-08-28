@@ -268,7 +268,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify SQL console is open and preset button is present
-      final presetButton = find.widgetWithText(FilledButton, AppStrings.sqlPresetsSelectPrompt);
+      final presetButton = find.widgetWithIcon(FilledButton, Icons.bookmark_border);
       expect(presetButton, findsOneWidget);
 
       // Open presets picker via AppWheelPicker

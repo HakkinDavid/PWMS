@@ -6,18 +6,31 @@ import '../domain/sql_preset.dart';
 
 class SqlEditorFullScreenView extends StatefulWidget {
   final String initialQuery;
+  final SqlPresetCategory initialCategory;
+  final SqlPreset? initialPreset;
 
   const SqlEditorFullScreenView({
     super.key,
     required this.initialQuery,
+    this.initialCategory = SqlPresetCategory.all,
+    this.initialPreset,
   });
 
-  static Future<String?> show(BuildContext context, {required String initialQuery}) {
+  static Future<String?> show(
+    BuildContext context, {
+    required String initialQuery,
+    SqlPresetCategory initialCategory = SqlPresetCategory.all,
+    SqlPreset? initialPreset,
+  }) {
     return Navigator.push<String>(
       context,
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (_) => SqlEditorFullScreenView(initialQuery: initialQuery),
+        builder: (_) => SqlEditorFullScreenView(
+          initialQuery: initialQuery,
+          initialCategory: initialCategory,
+          initialPreset: initialPreset,
+        ),
       ),
     );
   }
@@ -28,12 +41,17 @@ class SqlEditorFullScreenView extends StatefulWidget {
 
 class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
   late final TextEditingController _controller;
-  SqlPresetCategory _selectedCategory = SqlPresetCategory.all;
+  late SqlPresetCategory _selectedCategory;
+  SqlPreset? _selectedPreset;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialQuery);
+    _selectedCategory = widget.initialCategory;
+    _selectedPreset = widget.initialPreset ??
+        SqlPreset.defaultPresets.where((p) => p.query.trim() == widget.initialQuery.trim()).firstOrNull ??
+        SqlPreset.defaultPresets.first;
   }
 
   @override
@@ -52,7 +70,16 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
     );
 
     if (picked != null && mounted) {
-      setState(() => _selectedCategory = picked);
+      setState(() {
+        _selectedCategory = picked;
+        final matchingPresets = SqlPreset.defaultPresets
+            .where((p) => picked == SqlPresetCategory.all || p.category == picked)
+            .toList();
+        if (_selectedPreset != null && !matchingPresets.contains(_selectedPreset) && matchingPresets.isNotEmpty) {
+          _selectedPreset = matchingPresets.first;
+          _controller.text = _selectedPreset!.query;
+        }
+      });
     }
   }
 
@@ -63,15 +90,21 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
 
     if (filteredPresets.isEmpty) return;
 
+    final initialP = filteredPresets.contains(_selectedPreset)
+        ? _selectedPreset
+        : (filteredPresets.isNotEmpty ? filteredPresets.first : null);
+
     final picked = await AppWheelPicker.show<SqlPreset>(
       context,
       items: filteredPresets,
+      initialValue: initialP,
       labelBuilder: (p) => p.title,
       title: AppStrings.sqlPresetsSelectPrompt,
     );
 
     if (picked != null && mounted) {
       setState(() {
+        _selectedPreset = picked;
         _controller.text = picked.query;
       });
     }
@@ -86,6 +119,10 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    final presetButtonLabel = _selectedPreset != null
+        ? _selectedPreset!.title
+        : AppStrings.sqlPresetsSelectPrompt;
 
     return Scaffold(
       appBar: AppBar(
@@ -106,7 +143,7 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
           Positioned.fill(
             child: Column(
               children: [
-                // Toolbar with Category & Presets Pickers
+                // Toolbar with Category & Presets Pickers (Dedicated Row)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
@@ -121,12 +158,12 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
                           icon: const Icon(Icons.category_outlined, size: 16),
                           label: Text(
                             _selectedCategory.displayName,
-                            style: const TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                           ),
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            visualDensity: VisualDensity.compact,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
                       ),
@@ -135,14 +172,14 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
                         child: FilledButton.tonalIcon(
                           onPressed: _pickPreset,
                           icon: const Icon(Icons.bookmark_border, size: 16),
-                          label: const Text(
-                            AppStrings.sqlPresetsSelectPrompt,
-                            style: TextStyle(fontSize: 12),
+                          label: Text(
+                            presetButtonLabel,
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                           ),
                           style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            visualDensity: VisualDensity.compact,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
                       ),
@@ -154,7 +191,7 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
                 Expanded(
                   child: Container(
                     margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surfaceContainerHighest.withAlpha(70),
                       borderRadius: BorderRadius.circular(16),

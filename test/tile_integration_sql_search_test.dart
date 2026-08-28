@@ -234,7 +234,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Open presets picker via AppWheelPicker and pick "Instancias"
-      final presetButton = find.widgetWithText(FilledButton, AppStrings.sqlPresetsSelectPrompt);
+      final presetButton = find.widgetWithIcon(FilledButton, Icons.bookmark_border);
       await tester.tap(presetButton);
       await tester.pumpAndSettle();
 
