@@ -4,6 +4,10 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
+import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/presentation/species_tile.dart';
+import '../../entities/domain/world_entity.dart';
+import '../../entities/presentation/instance_preview_card.dart';
 import '../domain/app_notification.dart';
 
 class NotificationsScreen extends ConsumerWidget {
@@ -110,14 +114,6 @@ class _NotificationTile extends ConsumerWidget {
     }
   }
 
-  void _onTap(BuildContext context) {
-    if (notification.targetType == AppTechnicalNotifications.notifTargetTypeSpecies) {
-      context.pushSpeciesDetail(notification.targetId);
-    } else if (notification.targetType == AppTechnicalNotifications.notifTargetTypeEntity) {
-      context.pushEntityDetail(notification.targetId);
-    }
-  }
-
   void _showSnoozeOptions(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
@@ -175,7 +171,89 @@ class _NotificationTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final badgeColor = _getBadgeColor();
+    final allEntities = ref.watch(entityListProvider).asData?.value ?? [];
+    final allCatalog = ref.watch(catalogListProvider).asData?.value ?? [];
+
+    final isEntityTarget = notification.targetType == AppTechnicalNotifications.notifTargetTypeEntity;
+    final isSpeciesTarget = notification.targetType == AppTechnicalNotifications.notifTargetTypeSpecies;
+
+    final targetEntity = isEntityTarget
+        ? allEntities.where((e) => e.id == notification.targetId).firstOrNull
+        : null;
+    final targetSpecies = isSpeciesTarget
+        ? allCatalog.where((s) => s.id == notification.targetId).firstOrNull
+        : null;
+
+    Widget? standardizedTile;
+    if (isEntityTarget) {
+      if (targetEntity != null) {
+        standardizedTile = InstancePreviewCard(
+          entity: targetEntity,
+          onTap: () => context.pushEntityDetail(targetEntity.id),
+        );
+      } else {
+        standardizedTile = FutureBuilder<WorldEntity?>(
+          future: ref.read(entityRepositoryProvider).getEntityById(notification.targetId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            }
+            final ent = snapshot.data;
+            if (ent != null) {
+              return InstancePreviewCard(
+                entity: ent,
+                onTap: () => context.pushEntityDetail(ent.id),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        );
+      }
+    } else if (isSpeciesTarget) {
+      if (targetSpecies != null) {
+        standardizedTile = SpeciesTile(
+          species: targetSpecies,
+          onTap: () => context.pushSpeciesDetail(targetSpecies.id),
+        );
+      } else {
+        standardizedTile = FutureBuilder<CatalogItem?>(
+          future: ref.read(catalogRepositoryProvider).getCatalogItemById(notification.targetId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            }
+            final sp = snapshot.data;
+            if (sp != null) {
+              return SpeciesTile(
+                species: sp,
+                onTap: () => context.pushSpeciesDetail(sp.id),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        );
+      }
+    }
 
     return Card(
       elevation: 2,
@@ -183,68 +261,81 @@ class _NotificationTile extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: badgeColor.withValues(alpha: 0.3), width: 1.5),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () => _onTap(context),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: badgeColor.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(_getBadgeIcon(), color: badgeColor, size: 22),
+      child: Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Event Header: Badge Icon + Event Title + Event Message
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: badgeColor.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      notification.title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: badgeColor,
+                  child: Icon(_getBadgeIcon(), color: badgeColor, size: 20),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notification.title,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: badgeColor,
+                        ),
                       ),
-                    ),
+                      if (notification.message.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          notification.message,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                notification.message,
-                style: const TextStyle(fontSize: 14, height: 1.3),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  OutlinedButton.icon(
-                    icon: const Icon(Icons.snooze, size: 18),
-                    label: const Text(AppStrings.snoozeAction),
-                    style: OutlinedButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      foregroundColor: Colors.blue.shade800,
-                    ),
-                    onPressed: () => _showSnoozeOptions(context, ref),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+
+            // Standardized Tile for Instance or Species
+            if (standardizedTile != null)
+              standardizedTile,
+
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.snooze, size: 16),
+                  label: const Text(AppStrings.snoozeAction, style: TextStyle(fontSize: 12)),
+                  style: OutlinedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    foregroundColor: Colors.blue.shade800,
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.close, size: 20, color: Colors.grey),
-                    tooltip: AppStrings.dismissAction,
-                    onPressed: () {
-                      ref.read(notificationListProvider.notifier).dismissNotification(notification.id);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
+                  onPressed: () => _showSnoozeOptions(context, ref),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18, color: Colors.grey),
+                  tooltip: AppStrings.dismissAction,
+                  onPressed: () {
+                    ref.read(notificationListProvider.notifier).dismissNotification(notification.id);
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

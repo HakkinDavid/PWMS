@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
@@ -80,7 +81,7 @@ class SubspeciesTile extends ConsumerWidget {
         child: ListTile(
           dense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-          onTap: onTap,
+          onTap: onTap ?? () => context.pushSpeciesDetail(subspecies.speciesId),
           leading: _buildLeadingThumbnail(context, ref),
           title: Text(
             titleText,

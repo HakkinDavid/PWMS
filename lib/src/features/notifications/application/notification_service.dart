@@ -64,7 +64,6 @@ class NotificationService {
       final canExpire = species?.canExpire ?? false;
       if (!canExpire) continue;
 
-      final speciesName = species?.name ?? AppStrings.defaultItemName;
       final warningDays = species?.warningDaysBeforeExpiration ?? 7;
 
       if (entity.isExpired(canExpire: canExpire, now: now)) {
@@ -77,7 +76,7 @@ class NotificationService {
             id: existing?.id ?? const Uuid().v4(),
             type: AppTechnicalStrings.notifTypeExpired,
             title: AppStrings.expiredItemTitle,
-            message: AppStrings.notifMessageExpired(speciesName, formattedDate),
+            message: AppStrings.notifMessageExpired(formattedDate),
             targetId: entity.id,
             targetType: AppTechnicalStrings.notifTargetTypeEntity,
             status: existing?.status ?? AppTechnicalStrings.notifStatusActive,
@@ -101,7 +100,7 @@ class NotificationService {
             id: existing?.id ?? const Uuid().v4(),
             type: AppTechnicalStrings.notifTypeExpiringSoon,
             title: AppStrings.expiringSoonTitle,
-            message: AppStrings.notifMessageExpiringSoon(speciesName, daysLeft, formattedDate),
+            message: AppStrings.notifMessageExpiringSoon(daysLeft, formattedDate),
             targetId: entity.id,
             targetType: AppTechnicalStrings.notifTargetTypeEntity,
             status: existing?.status ?? AppTechnicalStrings.notifStatusActive,
@@ -131,7 +130,6 @@ class NotificationService {
       final requiredQty = entry.value;
 
       final species = catalogMap[reqSpeciesId];
-      final speciesName = species?.name ?? AppStrings.typeObject;
       final canExpire = species?.canExpire ?? false;
 
       // Count valid non-expired stock
@@ -151,7 +149,7 @@ class NotificationService {
           id: existing?.id ?? const Uuid().v4(),
           type: AppTechnicalStrings.notifTypeUnsatisfiedNeed,
           title: AppStrings.unsatisfiedNeedTitle,
-          message: AppStrings.notifMessageUnsatisfiedNeed(deficitStr, speciesName, validStockCount, requiredQty),
+          message: AppStrings.notifMessageUnsatisfiedNeed(deficitStr, validStockCount, requiredQty),
           targetId: reqSpeciesId,
           targetType: AppTechnicalStrings.notifTargetTypeSpecies,
           status: existing?.status ?? AppTechnicalStrings.notifStatusActive,

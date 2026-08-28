@@ -1386,10 +1386,12 @@ class AppStrings {
   static String activityEntityMoved(String name, String from, String to) => 'Trasladado "$name" de "$from" a "$to"';
 
   // Notification Message Builders
-  static String notifMessageExpired(String speciesName, String formattedDate) => '"$speciesName" ha caducado ($formattedDate).';
-  static String notifMessageExpiringSoon(String speciesName, int daysLeft, String formattedDate) => '"$speciesName" caducará en $daysLeft día(s) ($formattedDate).';
-  static String notifMessageUnsatisfiedNeed(String deficitStr, String speciesName, double stockCount, double requiredQty) =>
-      'Faltan $deficitStr unidad(es) de "$speciesName" para cubrir los requerimientos totales ($stockCount/$requiredQty disponible).';
+  static String notifMessageExpired(String formattedDate) =>
+      formattedDate.isNotEmpty ? 'Fecha de caducidad: $formattedDate' : expiredItemTitle;
+  static String notifMessageExpiringSoon(int daysLeft, String formattedDate) =>
+      'Caduca en $daysLeft día(s) ($formattedDate)';
+  static String notifMessageUnsatisfiedNeed(String deficitStr, double stockCount, double requiredQty) =>
+      'Faltan $deficitStr unidad(es) ($stockCount/$requiredQty en inventario)';
 
   // Date Formatting
   static const _zeroPad = '0';
