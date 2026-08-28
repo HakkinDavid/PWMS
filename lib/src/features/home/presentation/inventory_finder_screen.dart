@@ -12,7 +12,6 @@ import '../../entities/domain/effective_entity_group.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/effective_group_tile.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
-import '../../entities/presentation/register_object_modal.dart';
 import '../../locations/presentation/location_tile.dart';
 import '../../locations/presentation/location_tree_picker.dart';
 import 'inventory_breadcrumb_bar.dart';
@@ -478,17 +477,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               },
             ),
           ],
-        ),
-
-        // Single Round FAB '+'
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(bottom: (_isSelectionMode && _selectedEntityIds.isNotEmpty) ? 60.0 : 0.0),
-          child: FloatingActionButton(
-            heroTag: null,
-            onPressed: () => RegisterObjectModal.show(context, initialLocationId: _selectedLocationId),
-            tooltip: AppStrings.createOrInstantiateAction,
-            child: const Icon(Icons.add),
-          ),
         ),
 
         body: Column(

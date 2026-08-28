@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import '../../entities/presentation/register_object_modal.dart';
 
 class MainShellScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -14,6 +15,11 @@ class MainShellScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: navigationShell,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => RegisterObjectModal.show(context),
+        tooltip: AppStrings.registerObjectTitle,
+        child: const Icon(Icons.add),
+      ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         selectedIndex: navigationShell.currentIndex,
@@ -35,9 +41,9 @@ class MainShellScreen extends StatelessWidget {
             label: AppStrings.tabInventory,
           ),
           NavigationDestination(
-            icon: Icon(Icons.public_outlined),
-            selectedIcon: Icon(Icons.public),
-            label: AppStrings.tabLocations,
+            icon: Icon(Icons.category_outlined),
+            selectedIcon: Icon(Icons.category),
+            label: AppStrings.tabCatalog,
           ),
           NavigationDestination(
             icon: Icon(Icons.search_outlined),

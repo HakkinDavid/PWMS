@@ -19,14 +19,15 @@ The core shell of the application is built on `GoRouter`'s `StatefulShellRoute.i
 
 ```mermaid
 graph TD
-    Shell["MainShellScreen (IndexedStack - 3 Tabs)"]
+    Shell["MainShellScreen (IndexedStack - Tabs)"]
     
     Shell --> Tab1["Inicio (HomeScreen)"]
-    Shell --> Tab2["Inventario & Grafo (InventoryFinderScreen)"]
+    Shell --> Tab2["Inventario (InventoryFinderScreen)"]
     Shell --> Tab3["Catálogo (CatalogScreen)"]
+    Shell --> Tab4["Buscar (SearchScreen)"]
     
     Shell --> TopBar["Top Navigation Actions (/notifications & BackupSettingsDialog)"]
-    Shell --> FAB["Floating Search Action Button (/search)"]
+    Shell --> FAB["Persistent '+' Floating Action Button (RegisterObjectModal)"]
 ```
 
 ---

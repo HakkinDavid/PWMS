@@ -6,8 +6,6 @@ import '../../../core/providers/providers.dart';
 import 'species_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 
-import '../../entities/presentation/register_object_modal.dart';
-
 class CatalogScreen extends ConsumerStatefulWidget {
   final String? initialSpeciesId;
   final String? initialFilter;
@@ -61,12 +59,6 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.catalogTitle),
-      ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: null,
-        onPressed: () => RegisterObjectModal.show(context, startInCreateSpecies: true),
-        tooltip: AppStrings.newSpeciesTitle,
-        child: const Icon(Icons.add),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
