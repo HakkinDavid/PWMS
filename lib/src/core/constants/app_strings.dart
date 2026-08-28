@@ -180,6 +180,7 @@ class AppStrings {
   static const cannotDeleteOnlySubspecies = 'No se puede eliminar la única subespecie de una especie.';
   static const cannotDeleteOnlySubspeciesTooltip = 'No se puede eliminar la única subespecie.';
   static const subspeciesLabel = 'Subespecie:';
+  static const otherUnassignedInstances = 'Otras instancias sin subespecie';
 
   // Ubicaciones y Grafo Jerárquico
   static const locationsGraphTitle = 'Ubicaciones';
@@ -1229,6 +1230,8 @@ class AppStrings {
   static String confirmDeletePropertyNamed(String propertyName) => '¿Estás seguro de que deseas eliminar la propiedad "$propertyName"?';
   static String confirmDeleteSubspeciesNamed(String subspeciesName) => '¿Estás seguro de que deseas eliminar permanentemente la subespecie "$subspeciesName"?';
   static String subspeciesOrBrandsWithCount(int count) => '$subspeciesOrBrands ($count)';
+  static String instancesCount(int count) => count == 1 ? '1 instancia' : '$count instancias';
+  static String subspeciesCountWithInstances(int subspeciesCount, int instancesCount) => '$subspeciesOrBrands ($subspeciesCount) • $tabEntities ($instancesCount)';
   static String confirmDeleteSpeciesNamed(String name) => '$deleteConfirmationMessage "$name"?';
 
   // Catalog Domain & Presentation Helpers

@@ -5,21 +5,24 @@ import 'package:platinum_world_management_system/src/core/constants/app_technica
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
-import '../domain/subspecies.dart';
-import 'taxonomy_operations_dialog.dart';
-import 'add_edit_subspecies_modal.dart';
-import 'subspecies_tile.dart';
-
+import '../../entities/presentation/entity_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
+import '../domain/subspecies.dart';
+import 'add_edit_subspecies_modal.dart';
+import 'species_text_badge_avatar.dart';
+import 'subspecies_tile.dart';
+import 'taxonomy_operations_dialog.dart';
 
 class SubspeciesSectionWidget extends ConsumerStatefulWidget {
   final String speciesId;
   final bool isEditing;
+  final bool showInstances;
 
   const SubspeciesSectionWidget({
     super.key,
     required this.speciesId,
     this.isEditing = false,
+    this.showInstances = false,
   });
 
   @override
@@ -92,8 +95,17 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
     final theme = Theme.of(context);
     final entitiesState = ref.watch(entityListProvider);
     final allEntities = entitiesState.asData?.value ?? [];
-
     final catalogItems = ref.watch(catalogListProvider).asData?.value ?? [];
+    final species = catalogItems.where((c) => c.id == widget.speciesId).firstOrNull;
+
+    final allSpeciesEntities = allEntities.where((e) => e.speciesId == widget.speciesId).toList();
+    final unassignedInstances = widget.showInstances
+        ? allSpeciesEntities.where((e) => e.subspeciesId == null || !_subspeciesList.any((s) => s.id == e.subspeciesId)).toList()
+        : null;
+
+    final headerTitle = widget.showInstances
+        ? AppStrings.subspeciesCountWithInstances(_subspeciesList.length, allSpeciesEntities.length)
+        : AppStrings.subspeciesOrBrandsWithCount(_subspeciesList.length);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +115,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
           children: [
             Expanded(
               child: Text(
-                AppStrings.subspeciesOrBrandsWithCount(_subspeciesList.length),
+                headerTitle,
                 style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -121,21 +133,26 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
 
         if (_isLoading)
           const Center(child: CircularProgressIndicator())
-        else if (_subspeciesList.isEmpty)
+        else if (_subspeciesList.isEmpty && (unassignedInstances == null || unassignedInstances.isEmpty))
           const Text(AppStrings.noSubspeciesOrBrandsAdded, style: TextStyle(color: Colors.grey, fontSize: 12))
-        else
+        else ...[
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _subspeciesList.length,
             itemBuilder: (context, index) {
               final sub = _subspeciesList[index];
-              final hasInstances = allEntities.any((e) => e.subspeciesId == sub.id);
+              final subInstances = allSpeciesEntities.where((e) => e.subspeciesId == sub.id).toList();
+              final hasInstances = subInstances.isNotEmpty;
               final canDelete = _subspeciesList.length > 1 && !hasInstances;
 
               return SubspeciesTile(
                 subspecies: sub,
-                speciesName: catalogItems.where((c) => c.id == widget.speciesId).firstOrNull?.name,
+                speciesName: species?.name,
+                species: species,
+                isExpandable: widget.showInstances,
+                initiallyExpanded: false,
+                instances: widget.showInstances ? subInstances : null,
                 trailing: widget.isEditing
                     ? PopupMenuButton<String>(
                         icon: const Icon(Icons.more_vert, size: 18),
@@ -177,6 +194,74 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
               );
             },
           ),
+          if (widget.showInstances && unassignedInstances != null && unassignedInstances.isNotEmpty)
+            Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              elevation: 1.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+                side: BorderSide(color: theme.dividerColor.withAlpha(40), width: 1.0),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: ExpansionTile(
+                key: const ValueKey<String>(AppTechnicalStrings.empty),
+                initiallyExpanded: false,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  side: BorderSide.none,
+                ),
+                collapsedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  side: BorderSide.none,
+                ),
+                tilePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                childrenPadding: const EdgeInsets.only(left: 10, right: 10, bottom: 8, top: 2),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: SpeciesTextBadgeAvatar(
+                      speciesName: species?.name ?? AppStrings.otherUnassignedInstances,
+                      size: 40,
+                    ),
+                  ),
+                ),
+                title: const Text(
+                  AppStrings.otherUnassignedInstances,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+                subtitle: Row(
+                  children: [
+                    Icon(
+                      Icons.inventory_2_outlined,
+                      size: 12,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      AppStrings.instancesCount(unassignedInstances.length),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: unassignedInstances.length,
+                    itemBuilder: (ctx, idx) {
+                      return EntityTile(entity: unassignedInstances[idx]);
+                    },
+                  ),
+                ],
+              ),
+            ),
+        ],
       ],
     );
   }

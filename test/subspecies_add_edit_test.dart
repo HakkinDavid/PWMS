@@ -14,7 +14,10 @@ import 'package:platinum_world_management_system/src/features/catalog/infrastruc
 import 'package:platinum_world_management_system/src/features/catalog/presentation/add_edit_subspecies_modal.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/species_form_modal.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/subspecies_section_widget.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
+import 'package:platinum_world_management_system/src/features/entities/presentation/entity_tile.dart';
+import 'package:platinum_world_management_system/src/features/entities/presentation/instance_preview_card.dart';
 
 class MockFileStorageService implements FileStorageService {
   @override
@@ -440,6 +443,219 @@ void main() {
       expect(allSubs.length, equals(1));
       expect(allSubs.first.subspeciesName, equals('Odyssey G9'));
       expect(allSubs.any((s) => s.subspeciesName == 'Genérica'), isFalse);
+    });
+
+    testWidgets('8. SubspeciesSectionWidget with showInstances: true renders collapsed tiles by default and expands instances on tap', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final entityRepo = EntityRepository(db);
+
+      final species = CatalogItem(
+        id: 'sp-battery',
+        name: 'Pila AA',
+        type: 'Objeto',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveCatalogItem(species);
+
+      final sub1 = Subspecies(
+        id: 'sub-duracell',
+        speciesId: species.id,
+        subspeciesName: 'Ultra',
+        brand: 'Duracell',
+        createdAt: DateTime.now(),
+      );
+      final sub2 = Subspecies(
+        id: 'sub-energizer',
+        speciesId: species.id,
+        subspeciesName: 'Max',
+        brand: 'Energizer',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub1);
+      await catalogRepo.saveSubspecies(sub2);
+
+      final inst1 = WorldEntity(
+        id: 'ent-dura-1',
+        speciesId: species.id,
+        subspeciesId: sub1.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      final inst2 = WorldEntity(
+        id: 'ent-dura-2',
+        speciesId: species.id,
+        subspeciesId: sub1.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await entityRepo.saveEntity(inst1);
+      await entityRepo.saveEntity(inst2);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: SubspeciesSectionWidget(
+                  speciesId: species.id,
+                  showInstances: true,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Check header shows unified count
+      expect(find.text(AppStrings.subspeciesCountWithInstances(2, 2)), findsOneWidget);
+
+      // Check subspecies tiles are present with their count badges
+      expect(find.textContaining('Ultra (Duracell)'), findsOneWidget);
+      expect(find.textContaining('Max (Energizer)'), findsOneWidget);
+      expect(find.text(AppStrings.instancesCount(2)), findsOneWidget);
+      expect(find.text(AppStrings.instancesCount(0)), findsOneWidget);
+
+      // Tiles are collapsed by default: EntityTile should NOT be visible yet
+      expect(find.byType(EntityTile), findsNothing);
+
+      // Tap on the first subspecies tile to expand it
+      final firstSubTile = find.textContaining('Ultra (Duracell)');
+      await tester.tap(firstSubTile);
+      await tester.pumpAndSettle();
+
+      // Now the 2 EntityTiles for sub1 should be visible
+      expect(find.byType(EntityTile), findsNWidgets(2));
+      expect(find.byType(InstancePreviewCard), findsNWidgets(2));
+    });
+
+    testWidgets('9. Subspecies without instances shows empty state when expanded', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final entityRepo = EntityRepository(db);
+
+      final species = CatalogItem(
+        id: 'sp-toy',
+        name: 'Juguete',
+        type: 'Objeto',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveCatalogItem(species);
+
+      final sub = Subspecies(
+        id: 'sub-toy-1',
+        speciesId: species.id,
+        subspeciesName: 'Bloques de Construcción',
+        brand: 'Lego',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: SubspeciesSectionWidget(
+                  speciesId: species.id,
+                  showInstances: true,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Tap to expand the subspecies tile
+      await tester.tap(find.textContaining('Bloques de Construcción (Lego)'));
+      await tester.pumpAndSettle();
+
+      // Empty state message and instantiate button should appear
+      expect(find.text(AppStrings.notInstantiatedYet), findsOneWidget);
+      expect(find.text(AppStrings.instantiateAction), findsOneWidget);
+    });
+
+    testWidgets('10. Unassigned instances appear in a dedicated dropdown group', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final entityRepo = EntityRepository(db);
+
+      final species = CatalogItem(
+        id: 'sp-doc',
+        name: 'Contrato',
+        type: 'Documento',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveCatalogItem(species);
+
+      final sub = Subspecies(
+        id: 'sub-doc-1',
+        speciesId: species.id,
+        subspeciesName: 'Laboral',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      final orphanEntity = WorldEntity(
+        id: 'ent-orphan-1',
+        speciesId: species.id,
+        subspeciesId: null,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await entityRepo.saveEntity(orphanEntity);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            entityRepositoryProvider.overrideWithValue(entityRepo),
+            catalogRepositoryProvider.overrideWithValue(catalogRepo),
+            fileStorageServiceProvider.overrideWithValue(fileStorageService),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: SubspeciesSectionWidget(
+                  speciesId: species.id,
+                  showInstances: true,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Check unassigned instances tile header is rendered
+      expect(find.text(AppStrings.otherUnassignedInstances), findsOneWidget);
+
+      // Expand the unassigned group
+      await tester.tap(find.text(AppStrings.otherUnassignedInstances));
+      await tester.pumpAndSettle();
+
+      // EntityTile should be visible inside
+      expect(find.byType(EntityTile), findsOneWidget);
     });
   });
 }

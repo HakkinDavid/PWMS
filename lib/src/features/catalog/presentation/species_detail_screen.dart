@@ -3,14 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
-import '../../../core/domain/domain_rules.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
-import '../../locations/domain/location_path_helper.dart';
 import 'species_detail_view.dart';
 import 'species_form_modal.dart';
 import 'subspecies_section_widget.dart';
@@ -47,7 +45,6 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
   Widget build(BuildContext context) {
     final catalogState = ref.watch(catalogListProvider);
     final entitiesState = ref.watch(entityListProvider);
-    final locationsState = ref.watch(locationNodeListProvider);
     final theme = Theme.of(context);
 
     return catalogState.when(
@@ -63,7 +60,6 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
         }
 
         final allEntities = entitiesState.asData?.value ?? [];
-        final locationNodes = locationsState.asData?.value ?? [];
         final instances = allEntities.where((e) => e.speciesId == species.id).toList();
         final hasExistingInstance = instances.isNotEmpty;
 
@@ -96,55 +92,11 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
               ),
             ),
             const SizedBox(height: 14),
-
-            Text(
-              species.isUnique ? AppStrings.locationLabel : AppStrings.entitiesTabWithCount(instances.length),
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            SubspeciesSectionWidget(
+              speciesId: species.id,
+              isEditing: _isEditing,
+              showInstances: true,
             ),
-            const SizedBox(height: 6),
-            if (instances.isEmpty)
-              const Text(AppStrings.notInstantiatedYet, style: TextStyle(color: Colors.grey, fontSize: 12))
-            else
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: instances.length,
-                itemBuilder: (ctx, idx) {
-                  final inst = instances[idx];
-                  final breadcrumb = LocationPathHelper.buildBreadcrumbPath(inst.locationId, locationNodes);
-                  final firstMag = inst.magnitudes.isNotEmpty ? inst.magnitudes.first : null;
-                  final magText = firstMag != null
-                      ? ((firstMag.unitSymbol != null && firstMag.unitSymbol!.trim().isNotEmpty)
-                          ? AppStrings.quantityWithFormattedUnit(DomainRules.formatMagnitude(firstMag.magnitudeValue, firstMag.unitSymbol), firstMag.unitSymbol!)
-                          : AppStrings.quantityWithValue(firstMag.displayValue))
-                      : AppStrings.registeredInstance;
-
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 4),
-                    elevation: 0.5,
-                    child: ListTile(
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                      leading: Icon(Icons.location_on, color: theme.colorScheme.primary, size: 18),
-                      title: Text(
-                        AppStrings.breadcrumbPathAndTarget(breadcrumb.ancestorPath, breadcrumb.targetName),
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
-                      ),
-                      subtitle: Text(
-                        magText,
-                        style: const TextStyle(fontSize: 10),
-                      ),
-                      trailing: const Icon(Icons.chevron_right, size: 16),
-                      onTap: () {
-                        context.pushEntityDetail(inst.id);
-                      },
-                    ),
-                  );
-                },
-              ),
-            const SizedBox(height: 16),
-            SubspeciesSectionWidget(speciesId: species.id, isEditing: _isEditing),
             const SizedBox(height: 16),
           ],
         );
