@@ -56,7 +56,7 @@ void main() {
       final executor = NativeDatabase.memory();
       final db = AppDatabase(executor);
 
-      expect(db.schemaVersion, equals(5));
+      expect(db.schemaVersion, equals(6));
 
       // Execute migration v4 -> v5
       await db.migration.onUpgrade(db.createMigrator(), 4, 5);

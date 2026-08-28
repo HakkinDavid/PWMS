@@ -52,6 +52,7 @@ class DatabaseBackupService {
     final speciesRequirements = await _db.select(_db.speciesRequirementsTable).get();
     final notifications = await _db.select(_db.notificationsTable).get();
     final appSettings = await _db.select(_db.appSettingsTable).get();
+    final ignoredAuditCards = await _db.select(_db.ignoredAuditCardsTable).get();
 
     return {
       AppTechnicalJsonKeys.keyVersion: _db.schemaVersion,
@@ -175,6 +176,15 @@ class DatabaseBackupService {
         AppTechnicalDb.tableAppSettings: appSettings.map((r) => {
           AppTechnicalJsonKeys.keyKey: r.key,
           AppTechnicalJsonKeys.keyValue: r.value,
+        }).toList(),
+        AppTechnicalDb.tableIgnoredAuditCards: ignoredAuditCards.map((r) => {
+          AppTechnicalJsonKeys.keyCardId: r.cardId,
+          AppTechnicalJsonKeys.keyRuleId: r.ruleId,
+          AppTechnicalJsonKeys.keyTargetId: r.targetId,
+          AppTechnicalJsonKeys.keyTargetType: r.targetType,
+          AppTechnicalJsonKeys.keyTitle: r.title,
+          AppTechnicalJsonKeys.keySubtitle: r.subtitle,
+          AppTechnicalJsonKeys.keyCreatedAt: r.createdAt.toIso8601String(),
         }).toList(),
       },
     };
@@ -517,6 +527,12 @@ class DatabaseBackupService {
       tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
     }
 
+    if (fromVersion == 5 && toVersion >= 6) {
+      // Migración 5 -> 6:
+      // Agregar tabla ignored_audit_cards para anomalías/tarjetas del Centro de Control omitidas
+      tables.putIfAbsent(AppTechnicalDb.tableIgnoredAuditCards, () => <Map<String, dynamic>>[]);
+    }
+
     data[AppTechnicalJsonKeys.keyTables] = tables;
     return data;
   }
@@ -526,8 +542,9 @@ class DatabaseBackupService {
   Map<String, dynamic> _repairAndStandardizeImportedData(Map<String, dynamic> data) {
     final tables = Map<String, dynamic>.from(data[AppTechnicalJsonKeys.keyTables] as Map<String, dynamic>? ?? {});
 
-    // Asegurar tabla appSettings
+    // Asegurar tabla appSettings e ignoredAuditCards
     tables.putIfAbsent(AppTechnicalDb.tableAppSettings, () => <Map<String, dynamic>>[]);
+    tables.putIfAbsent(AppTechnicalDb.tableIgnoredAuditCards, () => <Map<String, dynamic>>[]);
 
     // 1. Construir mapas de búsqueda rápida
     final catalogList = (tables[AppTechnicalStrings.tableCatalog] as List? ?? []);
@@ -708,6 +725,7 @@ class DatabaseBackupService {
 
     await _db.transaction(() async {
       // Limpiar datos existentes en orden inverso de clave foránea
+      await _db.delete(_db.ignoredAuditCardsTable).go();
       await _db.delete(_db.appSettingsTable).go();
       await _db.delete(_db.notificationsTable).go();
       await _db.delete(_db.speciesRequirementsTable).go();
@@ -910,6 +928,24 @@ class DatabaseBackupService {
           await _db.into(_db.appSettingsTable).insert(AppSettingsTableCompanion.insert(
             key: r[AppTechnicalJsonKeys.keyKey].toString(),
             value: r[AppTechnicalJsonKeys.keyValue].toString(),
+          ));
+        }
+      }
+
+      // Restaurar Tarjetas de Auditoría Omitidas
+      final ignored = (tables[AppTechnicalDb.tableIgnoredAuditCards] as List? ?? []);
+      for (final r in ignored) {
+        if (r is Map && r[AppTechnicalJsonKeys.keyCardId] != null) {
+          await _db.into(_db.ignoredAuditCardsTable).insert(IgnoredAuditCardsTableCompanion.insert(
+            cardId: r[AppTechnicalJsonKeys.keyCardId].toString(),
+            ruleId: Value(r[AppTechnicalJsonKeys.keyRuleId]?.toString()),
+            targetId: Value(r[AppTechnicalJsonKeys.keyTargetId]?.toString()),
+            targetType: Value(r[AppTechnicalJsonKeys.keyTargetType]?.toString()),
+            title: r[AppTechnicalJsonKeys.keyTitle]?.toString() ?? AppTechnicalStrings.empty,
+            subtitle: Value(r[AppTechnicalJsonKeys.keySubtitle]?.toString()),
+            createdAt: r[AppTechnicalJsonKeys.keyCreatedAt] != null
+                ? DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt].toString())
+                : DateTime.now(),
           ));
         }
       }

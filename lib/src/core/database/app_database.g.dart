@@ -5395,6 +5395,400 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
   }
 }
 
+class $IgnoredAuditCardsTableTable extends IgnoredAuditCardsTable
+    with TableInfo<$IgnoredAuditCardsTableTable, IgnoredAuditCardsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $IgnoredAuditCardsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _cardIdMeta = const VerificationMeta('cardId');
+  @override
+  late final GeneratedColumn<String> cardId = GeneratedColumn<String>(
+      'card_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _ruleIdMeta = const VerificationMeta('ruleId');
+  @override
+  late final GeneratedColumn<String> ruleId = GeneratedColumn<String>(
+      'rule_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _targetIdMeta =
+      const VerificationMeta('targetId');
+  @override
+  late final GeneratedColumn<String> targetId = GeneratedColumn<String>(
+      'target_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _targetTypeMeta =
+      const VerificationMeta('targetType');
+  @override
+  late final GeneratedColumn<String> targetType = GeneratedColumn<String>(
+      'target_type', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _subtitleMeta =
+      const VerificationMeta('subtitle');
+  @override
+  late final GeneratedColumn<String> subtitle = GeneratedColumn<String>(
+      'subtitle', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [cardId, ruleId, targetId, targetType, title, subtitle, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ignored_audit_cards_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<IgnoredAuditCardsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('card_id')) {
+      context.handle(_cardIdMeta,
+          cardId.isAcceptableOrUnknown(data['card_id']!, _cardIdMeta));
+    } else if (isInserting) {
+      context.missing(_cardIdMeta);
+    }
+    if (data.containsKey('rule_id')) {
+      context.handle(_ruleIdMeta,
+          ruleId.isAcceptableOrUnknown(data['rule_id']!, _ruleIdMeta));
+    }
+    if (data.containsKey('target_id')) {
+      context.handle(_targetIdMeta,
+          targetId.isAcceptableOrUnknown(data['target_id']!, _targetIdMeta));
+    }
+    if (data.containsKey('target_type')) {
+      context.handle(
+          _targetTypeMeta,
+          targetType.isAcceptableOrUnknown(
+              data['target_type']!, _targetTypeMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('subtitle')) {
+      context.handle(_subtitleMeta,
+          subtitle.isAcceptableOrUnknown(data['subtitle']!, _subtitleMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {cardId};
+  @override
+  IgnoredAuditCardsTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return IgnoredAuditCardsTableData(
+      cardId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}card_id'])!,
+      ruleId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}rule_id']),
+      targetId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}target_id']),
+      targetType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}target_type']),
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      subtitle: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}subtitle']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $IgnoredAuditCardsTableTable createAlias(String alias) {
+    return $IgnoredAuditCardsTableTable(attachedDatabase, alias);
+  }
+}
+
+class IgnoredAuditCardsTableData extends DataClass
+    implements Insertable<IgnoredAuditCardsTableData> {
+  final String cardId;
+  final String? ruleId;
+  final String? targetId;
+  final String? targetType;
+  final String title;
+  final String? subtitle;
+  final DateTime createdAt;
+  const IgnoredAuditCardsTableData(
+      {required this.cardId,
+      this.ruleId,
+      this.targetId,
+      this.targetType,
+      required this.title,
+      this.subtitle,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['card_id'] = Variable<String>(cardId);
+    if (!nullToAbsent || ruleId != null) {
+      map['rule_id'] = Variable<String>(ruleId);
+    }
+    if (!nullToAbsent || targetId != null) {
+      map['target_id'] = Variable<String>(targetId);
+    }
+    if (!nullToAbsent || targetType != null) {
+      map['target_type'] = Variable<String>(targetType);
+    }
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || subtitle != null) {
+      map['subtitle'] = Variable<String>(subtitle);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  IgnoredAuditCardsTableCompanion toCompanion(bool nullToAbsent) {
+    return IgnoredAuditCardsTableCompanion(
+      cardId: Value(cardId),
+      ruleId:
+          ruleId == null && nullToAbsent ? const Value.absent() : Value(ruleId),
+      targetId: targetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetId),
+      targetType: targetType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetType),
+      title: Value(title),
+      subtitle: subtitle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subtitle),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory IgnoredAuditCardsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return IgnoredAuditCardsTableData(
+      cardId: serializer.fromJson<String>(json['cardId']),
+      ruleId: serializer.fromJson<String?>(json['ruleId']),
+      targetId: serializer.fromJson<String?>(json['targetId']),
+      targetType: serializer.fromJson<String?>(json['targetType']),
+      title: serializer.fromJson<String>(json['title']),
+      subtitle: serializer.fromJson<String?>(json['subtitle']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'cardId': serializer.toJson<String>(cardId),
+      'ruleId': serializer.toJson<String?>(ruleId),
+      'targetId': serializer.toJson<String?>(targetId),
+      'targetType': serializer.toJson<String?>(targetType),
+      'title': serializer.toJson<String>(title),
+      'subtitle': serializer.toJson<String?>(subtitle),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  IgnoredAuditCardsTableData copyWith(
+          {String? cardId,
+          Value<String?> ruleId = const Value.absent(),
+          Value<String?> targetId = const Value.absent(),
+          Value<String?> targetType = const Value.absent(),
+          String? title,
+          Value<String?> subtitle = const Value.absent(),
+          DateTime? createdAt}) =>
+      IgnoredAuditCardsTableData(
+        cardId: cardId ?? this.cardId,
+        ruleId: ruleId.present ? ruleId.value : this.ruleId,
+        targetId: targetId.present ? targetId.value : this.targetId,
+        targetType: targetType.present ? targetType.value : this.targetType,
+        title: title ?? this.title,
+        subtitle: subtitle.present ? subtitle.value : this.subtitle,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  IgnoredAuditCardsTableData copyWithCompanion(
+      IgnoredAuditCardsTableCompanion data) {
+    return IgnoredAuditCardsTableData(
+      cardId: data.cardId.present ? data.cardId.value : this.cardId,
+      ruleId: data.ruleId.present ? data.ruleId.value : this.ruleId,
+      targetId: data.targetId.present ? data.targetId.value : this.targetId,
+      targetType:
+          data.targetType.present ? data.targetType.value : this.targetType,
+      title: data.title.present ? data.title.value : this.title,
+      subtitle: data.subtitle.present ? data.subtitle.value : this.subtitle,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IgnoredAuditCardsTableData(')
+          ..write('cardId: $cardId, ')
+          ..write('ruleId: $ruleId, ')
+          ..write('targetId: $targetId, ')
+          ..write('targetType: $targetType, ')
+          ..write('title: $title, ')
+          ..write('subtitle: $subtitle, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      cardId, ruleId, targetId, targetType, title, subtitle, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is IgnoredAuditCardsTableData &&
+          other.cardId == this.cardId &&
+          other.ruleId == this.ruleId &&
+          other.targetId == this.targetId &&
+          other.targetType == this.targetType &&
+          other.title == this.title &&
+          other.subtitle == this.subtitle &&
+          other.createdAt == this.createdAt);
+}
+
+class IgnoredAuditCardsTableCompanion
+    extends UpdateCompanion<IgnoredAuditCardsTableData> {
+  final Value<String> cardId;
+  final Value<String?> ruleId;
+  final Value<String?> targetId;
+  final Value<String?> targetType;
+  final Value<String> title;
+  final Value<String?> subtitle;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const IgnoredAuditCardsTableCompanion({
+    this.cardId = const Value.absent(),
+    this.ruleId = const Value.absent(),
+    this.targetId = const Value.absent(),
+    this.targetType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.subtitle = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  IgnoredAuditCardsTableCompanion.insert({
+    required String cardId,
+    this.ruleId = const Value.absent(),
+    this.targetId = const Value.absent(),
+    this.targetType = const Value.absent(),
+    required String title,
+    this.subtitle = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : cardId = Value(cardId),
+        title = Value(title),
+        createdAt = Value(createdAt);
+  static Insertable<IgnoredAuditCardsTableData> custom({
+    Expression<String>? cardId,
+    Expression<String>? ruleId,
+    Expression<String>? targetId,
+    Expression<String>? targetType,
+    Expression<String>? title,
+    Expression<String>? subtitle,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (cardId != null) 'card_id': cardId,
+      if (ruleId != null) 'rule_id': ruleId,
+      if (targetId != null) 'target_id': targetId,
+      if (targetType != null) 'target_type': targetType,
+      if (title != null) 'title': title,
+      if (subtitle != null) 'subtitle': subtitle,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  IgnoredAuditCardsTableCompanion copyWith(
+      {Value<String>? cardId,
+      Value<String?>? ruleId,
+      Value<String?>? targetId,
+      Value<String?>? targetType,
+      Value<String>? title,
+      Value<String?>? subtitle,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return IgnoredAuditCardsTableCompanion(
+      cardId: cardId ?? this.cardId,
+      ruleId: ruleId ?? this.ruleId,
+      targetId: targetId ?? this.targetId,
+      targetType: targetType ?? this.targetType,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (cardId.present) {
+      map['card_id'] = Variable<String>(cardId.value);
+    }
+    if (ruleId.present) {
+      map['rule_id'] = Variable<String>(ruleId.value);
+    }
+    if (targetId.present) {
+      map['target_id'] = Variable<String>(targetId.value);
+    }
+    if (targetType.present) {
+      map['target_type'] = Variable<String>(targetType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (subtitle.present) {
+      map['subtitle'] = Variable<String>(subtitle.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IgnoredAuditCardsTableCompanion(')
+          ..write('cardId: $cardId, ')
+          ..write('ruleId: $ruleId, ')
+          ..write('targetId: $targetId, ')
+          ..write('targetType: $targetType, ')
+          ..write('title: $title, ')
+          ..write('subtitle: $subtitle, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5422,6 +5816,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $NotificationsTableTable(this);
   late final $AppSettingsTableTable appSettingsTable =
       $AppSettingsTableTable(this);
+  late final $IgnoredAuditCardsTableTable ignoredAuditCardsTable =
+      $IgnoredAuditCardsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5440,7 +5836,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         customTemplatesTable,
         speciesRequirementsTable,
         notificationsTable,
-        appSettingsTable
+        appSettingsTable,
+        ignoredAuditCardsTable
       ];
 }
 
@@ -10610,6 +11007,216 @@ typedef $$AppSettingsTableTableProcessedTableManager = ProcessedTableManager<
     ),
     AppSettingsTableData,
     PrefetchHooks Function()>;
+typedef $$IgnoredAuditCardsTableTableCreateCompanionBuilder
+    = IgnoredAuditCardsTableCompanion Function({
+  required String cardId,
+  Value<String?> ruleId,
+  Value<String?> targetId,
+  Value<String?> targetType,
+  required String title,
+  Value<String?> subtitle,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$IgnoredAuditCardsTableTableUpdateCompanionBuilder
+    = IgnoredAuditCardsTableCompanion Function({
+  Value<String> cardId,
+  Value<String?> ruleId,
+  Value<String?> targetId,
+  Value<String?> targetType,
+  Value<String> title,
+  Value<String?> subtitle,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+class $$IgnoredAuditCardsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $IgnoredAuditCardsTableTable> {
+  $$IgnoredAuditCardsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get cardId => $composableBuilder(
+      column: $table.cardId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get ruleId => $composableBuilder(
+      column: $table.ruleId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get targetId => $composableBuilder(
+      column: $table.targetId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get targetType => $composableBuilder(
+      column: $table.targetType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get subtitle => $composableBuilder(
+      column: $table.subtitle, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$IgnoredAuditCardsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $IgnoredAuditCardsTableTable> {
+  $$IgnoredAuditCardsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get cardId => $composableBuilder(
+      column: $table.cardId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get ruleId => $composableBuilder(
+      column: $table.ruleId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get targetId => $composableBuilder(
+      column: $table.targetId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get targetType => $composableBuilder(
+      column: $table.targetType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get subtitle => $composableBuilder(
+      column: $table.subtitle, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$IgnoredAuditCardsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $IgnoredAuditCardsTableTable> {
+  $$IgnoredAuditCardsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get cardId =>
+      $composableBuilder(column: $table.cardId, builder: (column) => column);
+
+  GeneratedColumn<String> get ruleId =>
+      $composableBuilder(column: $table.ruleId, builder: (column) => column);
+
+  GeneratedColumn<String> get targetId =>
+      $composableBuilder(column: $table.targetId, builder: (column) => column);
+
+  GeneratedColumn<String> get targetType => $composableBuilder(
+      column: $table.targetType, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get subtitle =>
+      $composableBuilder(column: $table.subtitle, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$IgnoredAuditCardsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $IgnoredAuditCardsTableTable,
+    IgnoredAuditCardsTableData,
+    $$IgnoredAuditCardsTableTableFilterComposer,
+    $$IgnoredAuditCardsTableTableOrderingComposer,
+    $$IgnoredAuditCardsTableTableAnnotationComposer,
+    $$IgnoredAuditCardsTableTableCreateCompanionBuilder,
+    $$IgnoredAuditCardsTableTableUpdateCompanionBuilder,
+    (
+      IgnoredAuditCardsTableData,
+      BaseReferences<_$AppDatabase, $IgnoredAuditCardsTableTable,
+          IgnoredAuditCardsTableData>
+    ),
+    IgnoredAuditCardsTableData,
+    PrefetchHooks Function()> {
+  $$IgnoredAuditCardsTableTableTableManager(
+      _$AppDatabase db, $IgnoredAuditCardsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$IgnoredAuditCardsTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$IgnoredAuditCardsTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$IgnoredAuditCardsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> cardId = const Value.absent(),
+            Value<String?> ruleId = const Value.absent(),
+            Value<String?> targetId = const Value.absent(),
+            Value<String?> targetType = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String?> subtitle = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              IgnoredAuditCardsTableCompanion(
+            cardId: cardId,
+            ruleId: ruleId,
+            targetId: targetId,
+            targetType: targetType,
+            title: title,
+            subtitle: subtitle,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String cardId,
+            Value<String?> ruleId = const Value.absent(),
+            Value<String?> targetId = const Value.absent(),
+            Value<String?> targetType = const Value.absent(),
+            required String title,
+            Value<String?> subtitle = const Value.absent(),
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              IgnoredAuditCardsTableCompanion.insert(
+            cardId: cardId,
+            ruleId: ruleId,
+            targetId: targetId,
+            targetType: targetType,
+            title: title,
+            subtitle: subtitle,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$IgnoredAuditCardsTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $IgnoredAuditCardsTableTable,
+        IgnoredAuditCardsTableData,
+        $$IgnoredAuditCardsTableTableFilterComposer,
+        $$IgnoredAuditCardsTableTableOrderingComposer,
+        $$IgnoredAuditCardsTableTableAnnotationComposer,
+        $$IgnoredAuditCardsTableTableCreateCompanionBuilder,
+        $$IgnoredAuditCardsTableTableUpdateCompanionBuilder,
+        (
+          IgnoredAuditCardsTableData,
+          BaseReferences<_$AppDatabase, $IgnoredAuditCardsTableTable,
+              IgnoredAuditCardsTableData>
+        ),
+        IgnoredAuditCardsTableData,
+        PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10646,4 +11253,7 @@ class $AppDatabaseManager {
       $$NotificationsTableTableTableManager(_db, _db.notificationsTable);
   $$AppSettingsTableTableTableManager get appSettingsTable =>
       $$AppSettingsTableTableTableManager(_db, _db.appSettingsTable);
+  $$IgnoredAuditCardsTableTableTableManager get ignoredAuditCardsTable =>
+      $$IgnoredAuditCardsTableTableTableManager(
+          _db, _db.ignoredAuditCardsTable);
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../domain/audit_rule_registry.dart';
@@ -21,6 +22,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
 
   List<AuditCardData> _integrityCards = [];
   List<AuditCardData> _routineCards = [];
+  List<AuditCardData> _ignoredCards = [];
   bool _isLoading = true;
   int _integrityIndex = 0;
   int _routineIndex = 0;
@@ -28,7 +30,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (mounted) setState(() {});
     });
@@ -74,13 +76,18 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
       );
 
       final allCards = await _registry.evaluateAll(evalContext);
-      final integrityCards = allCards.where((c) => c.category == AuditCategory.integrity).toList();
-      final routineCards = allCards.where((c) => c.category == AuditCategory.routine).toList();
+      final ignoredRows = await db.getAllIgnoredAuditCards();
+      final ignoredIds = {for (var r in ignoredRows) r.cardId};
+
+      final integrityCards = allCards.where((c) => c.category == AuditCategory.integrity && !ignoredIds.contains(c.id)).toList();
+      final routineCards = allCards.where((c) => c.category == AuditCategory.routine && !ignoredIds.contains(c.id)).toList();
+      final ignoredCards = allCards.where((c) => ignoredIds.contains(c.id)).toList();
 
       if (mounted) {
         setState(() {
           _integrityCards = integrityCards;
           _routineCards = routineCards;
+          _ignoredCards = ignoredCards;
           _integrityIndex = 0;
           _routineIndex = 0;
           _isLoading = false;
@@ -101,7 +108,7 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
       } else {
         setState(() => _integrityCards = []);
       }
-    } else {
+    } else if (category == AuditCategory.routine) {
       if (_routineIndex < _routineCards.length - 1) {
         setState(() => _routineIndex++);
       } else {
@@ -110,11 +117,63 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
     }
   }
 
+  Future<void> _ignoreCard(AuditCardData card, AuditCategory category) async {
+    final db = ref.read(databaseProvider);
+    final targetId = card.entity?.id ?? card.subspecies?.id ?? card.species?.id;
+    final targetType = card.entity != null
+        ? AppTechnicalStrings.sourceTypeEntity
+        : (card.subspecies != null
+            ? AppTechnicalStrings.sourceTypeSubspecies
+            : (card.species != null ? AppTechnicalStrings.sourceTypeSpecies : null));
+    await db.ignoreAuditCard(
+      card.id,
+      ruleId: card.type.name,
+      targetId: targetId,
+      targetType: targetType,
+      title: card.title,
+      subtitle: card.subtitle,
+    );
+    if (mounted) {
+      AppToast.showInfo(context, AppStrings.cardMarkedAsIgnoredSuccess);
+      setState(() {
+        if (category == AuditCategory.integrity) {
+          _integrityCards.removeWhere((c) => c.id == card.id);
+          if (_integrityIndex >= _integrityCards.length && _integrityCards.isNotEmpty) {
+            _integrityIndex = _integrityCards.length - 1;
+          }
+        } else if (category == AuditCategory.routine) {
+          _routineCards.removeWhere((c) => c.id == card.id);
+          if (_routineIndex >= _routineCards.length && _routineCards.isNotEmpty) {
+            _routineIndex = _routineCards.length - 1;
+          }
+        }
+        _ignoredCards.add(card);
+      });
+    }
+  }
+
+  Future<void> _unignoreCard(AuditCardData card) async {
+    final db = ref.read(databaseProvider);
+    await db.unignoreAuditCard(card.id);
+    if (mounted) {
+      AppToast.showSuccess(context, AppStrings.cardUnignoredSuccess);
+      setState(() {
+        _ignoredCards.removeWhere((c) => c.id == card.id);
+        if (card.category == AuditCategory.routine) {
+          _routineCards.add(card);
+        } else {
+          _integrityCards.add(card);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final integrityPending = _integrityCards.length - _integrityIndex;
     final routinePending = _routineCards.length - _routineIndex;
+    final ignoredCount = _ignoredCards.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -193,6 +252,31 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
                 ],
               ),
             ),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.visibility_off_outlined, size: 16),
+                  const SizedBox(width: 4),
+                  const Flexible(
+                    child: Text(
+                      AppStrings.ccTabIgnored,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                  ),
+                  if (ignoredCount > 0 && !_isLoading) ...[
+                    const SizedBox(width: 4),
+                    Badge.count(
+                      count: ignoredCount,
+                      backgroundColor: Colors.blueGrey,
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -209,6 +293,9 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
                   _routineCards.isEmpty
                       ? _buildEmptyState(theme, category: AuditCategory.routine)
                       : _buildCardStack(theme, category: AuditCategory.routine),
+                  _ignoredCards.isEmpty
+                      ? _buildEmptyState(theme, category: AuditCategory.ignored)
+                      : _buildIgnoredCardsList(theme),
                 ],
               ),
       ),
@@ -217,11 +304,33 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
 
   Widget _buildEmptyState(ThemeData theme, {required AuditCategory category}) {
     final isIntegrity = category == AuditCategory.integrity;
-    final icon = isIntegrity ? Icons.verified_outlined : Icons.inventory_2_outlined;
-    final iconColor = isIntegrity ? Colors.green : Colors.blueAccent;
-    final title = isIntegrity ? AppStrings.ccIntegrityEmptyTitle : AppStrings.ccRoutineEmptyTitle;
-    final subtitle = isIntegrity ? AppStrings.ccIntegrityEmptySubtitle : AppStrings.ccRoutineEmptySubtitle;
-    final actionLabel = isIntegrity ? AppStrings.runNewAuditAction : AppStrings.runNewRoutineCheckAction;
+    final isRoutine = category == AuditCategory.routine;
+
+    final IconData icon;
+    final Color iconColor;
+    final String title;
+    final String subtitle;
+    final String? actionLabel;
+
+    if (isIntegrity) {
+      icon = Icons.verified_outlined;
+      iconColor = Colors.green;
+      title = AppStrings.ccIntegrityEmptyTitle;
+      subtitle = AppStrings.ccIntegrityEmptySubtitle;
+      actionLabel = AppStrings.runNewAuditAction;
+    } else if (isRoutine) {
+      icon = Icons.inventory_2_outlined;
+      iconColor = Colors.blueAccent;
+      title = AppStrings.ccRoutineEmptyTitle;
+      subtitle = AppStrings.ccRoutineEmptySubtitle;
+      actionLabel = AppStrings.runNewRoutineCheckAction;
+    } else {
+      icon = Icons.visibility_off_outlined;
+      iconColor = Colors.blueGrey;
+      title = AppStrings.ccIgnoredEmptyTitle;
+      subtitle = AppStrings.ccIgnoredEmptySubtitle;
+      actionLabel = null;
+    }
 
     return Center(
       child: Padding(
@@ -242,15 +351,146 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _generateAuditCards,
-              icon: const Icon(Icons.autorenew),
-              label: Text(actionLabel),
-            ),
+            if (actionLabel != null) ...[
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: _generateAuditCards,
+                icon: const Icon(Icons.autorenew),
+                label: Text(actionLabel),
+              ),
+            ],
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildIgnoredCardsList(ThemeData theme) {
+    final db = ref.read(databaseProvider);
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      itemCount: _ignoredCards.length,
+      itemBuilder: (context, index) {
+        final card = _ignoredCards[index];
+        final fixLabel = card.fixLabel ?? AppStrings.fixAction;
+        final fixIcon = card.fixIcon ?? Icons.build_circle_outlined;
+
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: card.themeColor.withAlpha(80), width: 1.5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: card.themeColor.withAlpha(30),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(card.icon, size: 22, color: card.themeColor),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            card.title,
+                            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          if (card.subtitle.isNotEmpty)
+                            Text(
+                              card.subtitle,
+                              style: const TextStyle(color: Colors.grey, fontSize: 12),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (card.question.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: theme.cardColor,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: theme.dividerColor),
+                    ),
+                    child: Text(
+                      card.question,
+                      style: theme.textTheme.bodySmall?.copyWith(fontSize: 11),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _unignoreCard(card),
+                        icon: const Icon(Icons.visibility_outlined, size: 16),
+                        label: const Text(
+                          AppStrings.restoreAction,
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final ok = await card.onFix(context, ref);
+                          if (ok) {
+                            await ref.read(activityLoggerServiceProvider).logAuditFixApplied(card.title, card.subtitle);
+                            await db.unignoreAuditCard(card.id);
+                            ref.invalidate(entityListProvider);
+                            ref.invalidate(catalogListProvider);
+                            ref.invalidate(subspeciesListProvider);
+                            ref.invalidate(relationListProvider);
+                            if (mounted) {
+                              setState(() {
+                                _ignoredCards.removeWhere((c) => c.id == card.id);
+                              });
+                            }
+                          }
+                        },
+                        icon: Icon(fixIcon, size: 16),
+                        label: Text(
+                          fixLabel,
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: card.themeColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -437,6 +677,17 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
                                 ),
                               ),
                             ],
+                          ),
+                          const SizedBox(height: 6),
+
+                          // "No volver a mostrar" tertiary button
+                          TextButton.icon(
+                            onPressed: () => _ignoreCard(card, category),
+                            icon: const Icon(Icons.visibility_off_outlined, size: 16, color: Colors.blueGrey),
+                            label: const Text(
+                              AppStrings.doNotShowAgainAction,
+                              style: TextStyle(fontSize: 12, color: Colors.blueGrey),
+                            ),
                           ),
                         ],
                       ),

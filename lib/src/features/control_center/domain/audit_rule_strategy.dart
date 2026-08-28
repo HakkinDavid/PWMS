@@ -13,6 +13,7 @@ import '../../relations/domain/entity_relation.dart';
 enum AuditCategory {
   integrity,
   routine,
+  ignored,
 }
 
 enum AuditCardType {

@@ -962,15 +962,23 @@ class AppStrings {
   static String keepSubspeciesPrompt(String name) => '¿Deseas mantener la subespecie "$name" en tu catálogo o eliminarla?';
   static String manageSpeciesTitle(String name) => 'Gestionar "$name"';
   static String assignPropertyTitle(String prop) => 'Asignar $prop';
-  static const ccTabIntegrityRules = 'Reglas de Integridad';
+   static const ccTabIntegrityRules = 'Reglas de Integridad';
   static const ccTabRoutineChecks = 'Comprobaciones Rutinarias';
+  static const ccTabIgnored = 'Omitidas';
   static const ccIntegrityEmptyTitle = 'Integridad de Datos Verificada';
   static const ccIntegrityEmptySubtitle = 'No se encontraron violaciones de reglas ni inconsistencias en el catálogo o inventario.';
   static const ccRoutineEmptyTitle = 'Verificaciones Rutinarias al Día';
   static const ccRoutineEmptySubtitle = 'Todas las comprobaciones periódicas de inventario y ubicación han sido completadas.';
+  static const ccIgnoredEmptyTitle = 'Sin Comprobaciones Omitidas';
+  static const ccIgnoredEmptySubtitle = 'Las comprobaciones que marques como "no volver a mostrar" aparecerán aquí para que no pierdas su rastro.';
   static const runNewRoutineCheckAction = 'Iniciar Verificaciones';
+  static const doNotShowAgainAction = 'No volver a mostrar';
+  static const restoreAction = 'Volver a mostrar';
+  static const cardMarkedAsIgnoredSuccess = 'Marcada como "no volver a mostrar". Puedes encontrarla en la pestaña Omitidas.';
+  static const cardUnignoredSuccess = 'Comprobación reactivada y devuelta a la lista activa.';
   static String pendingIntegrityRules(int count) => '$count regla(s) pendiente(s)';
   static String pendingRoutineChecks(int count) => '$count verificación(es) pendiente(s)';
+  static String pendingIgnoredCount(int count) => '$count omitida(s)';
 
   // Botones Semánticos de CCCs (Confirmación y Acción)
   static const confirmKeepAction = 'Mantener';

@@ -59,12 +59,13 @@ void main() {
       expect(jsonMap.containsKey('tables'), isTrue);
 
       final tables = jsonMap['tables'] as Map<String, dynamic>;
-      expect(tables.length, equals(14));
+      expect(tables.length, equals(15));
       expect(tables.containsKey('catalog'), isTrue);
       expect(tables.containsKey('subspecies'), isTrue);
       expect(tables.containsKey('entities'), isTrue);
       expect(tables.containsKey('locations'), isTrue);
       expect(tables.containsKey('appSettings'), isTrue);
+      expect(tables.containsKey('ignored_audit_cards'), isTrue);
 
       final settings = tables['appSettings'] as List;
       expect(settings.any((s) => s['key'] == 'app_theme' && s['value'] == 'dark'), isTrue);

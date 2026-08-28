@@ -190,6 +190,19 @@ class AppSettingsTable extends Table {
   Set<Column> get primaryKey => {key};
 }
 
+class IgnoredAuditCardsTable extends Table {
+  TextColumn get cardId => text()();
+  TextColumn get ruleId => text().nullable()();
+  TextColumn get targetId => text().nullable()();
+  TextColumn get targetType => text().nullable()();
+  TextColumn get title => text()();
+  TextColumn get subtitle => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {cardId};
+}
+
 @DriftDatabase(tables: [
   LocationsTable,
   CatalogTable,
@@ -205,12 +218,13 @@ class AppSettingsTable extends Table {
   SpeciesRequirementsTable,
   NotificationsTable,
   AppSettingsTable,
+  IgnoredAuditCardsTable,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -236,6 +250,11 @@ class AppDatabase extends _$AppDatabase {
               // Migración 4 -> 5:
               // magnitude_value en instance_magnitudes_table ahora es nullable en Drift y en el modelo de dominio.
             }
+            if (v == 5) {
+              // Migración 5 -> 6:
+              // Agregar tabla de anomalías/tarjetas del Centro de Control omitidas ("No volver a mostrar").
+              await m.createTable(ignoredAuditCardsTable);
+            }
           }
         },
         beforeOpen: (details) async {
@@ -258,5 +277,43 @@ class AppDatabase extends _$AppDatabase {
     await into(appSettingsTable).insertOnConflictUpdate(
       AppSettingsTableCompanion.insert(key: key, value: value),
     );
+  }
+
+  // Ignored Audit Cards Helper Methods
+  Future<List<IgnoredAuditCardsTableData>> getAllIgnoredAuditCards() async {
+    final query = select(ignoredAuditCardsTable);
+    return await query.get();
+  }
+
+  Future<void> ignoreAuditCard(
+    String cardId, {
+    String? ruleId,
+    String? targetId,
+    String? targetType,
+    required String title,
+    String? subtitle,
+    DateTime? createdAt,
+  }) async {
+    await into(ignoredAuditCardsTable).insertOnConflictUpdate(
+      IgnoredAuditCardsTableCompanion.insert(
+        cardId: cardId,
+        ruleId: Value(ruleId),
+        targetId: Value(targetId),
+        targetType: Value(targetType),
+        title: title,
+        subtitle: Value(subtitle),
+        createdAt: createdAt ?? DateTime.now(),
+      ),
+    );
+  }
+
+  Future<void> unignoreAuditCard(String cardId) async {
+    await (delete(ignoredAuditCardsTable)..where((tbl) => tbl.cardId.equals(cardId))).go();
+  }
+
+  Future<bool> isAuditCardIgnored(String cardId) async {
+    final query = select(ignoredAuditCardsTable)..where((tbl) => tbl.cardId.equals(cardId));
+    final row = await query.getSingleOrNull();
+    return row != null;
   }
 }

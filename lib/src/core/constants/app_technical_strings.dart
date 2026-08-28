@@ -45,6 +45,7 @@ class AppTechnicalStrings {
   static const currencyMxn = 'MXN';
   static const sourceTypeEntity = 'entity';
   static const sourceTypeSpecies = 'species';
+  static const sourceTypeSubspecies = 'subspecies';
   static const iconBuild = 'build';
 
   // ---------------------------------------------------------------------------
@@ -69,6 +70,7 @@ class AppTechnicalStrings {
   static const tableInstanceLocations = 'instanceLocations';
   static const tableSpeciesMagnitudes = 'speciesMagnitudes';
   static const tableInstanceMagnitudes = 'instanceMagnitudes';
+  static const tableIgnoredAuditCards = 'ignored_audit_cards';
 
   static const refSourceRelations = 'sourceRelations';
   static const refTargetRelations = 'targetRelations';
@@ -368,9 +370,12 @@ WHERE id IN (
   static const keyRequiredSpeciesId = 'requiredSpeciesId';
   static const keyRequiredQuantity = 'requiredQuantity';
   static const keyTitle = 'title';
+  static const keySubtitle = 'subtitle';
   static const keyMessage = 'message';
   static const keyTargetId = 'targetId';
   static const keyTargetType = 'targetType';
+  static const keyCardId = 'cardId';
+  static const keyRuleId = 'ruleId';
   static const keyStatus = 'status';
   static const keySnoozedUntil = 'snoozedUntil';
   static const keyKey = 'key';
@@ -1071,6 +1076,7 @@ abstract final class AppTechnicalDb {
   static const tableInstanceLocations = AppTechnicalStrings.tableInstanceLocations;
   static const tableHistoryEvents = AppTechnicalStrings.tableHistoryEvents;
   static const tableCustomTemplates = AppTechnicalStrings.tableCustomTemplates;
+  static const tableIgnoredAuditCards = AppTechnicalStrings.tableIgnoredAuditCards;
 
 
   static const colId = AppTechnicalStrings.colId;
@@ -1248,9 +1254,12 @@ abstract final class AppTechnicalJsonKeys {
   static const keyRequiredSpeciesId = AppTechnicalStrings.keyRequiredSpeciesId;
   static const keyRequiredQuantity = AppTechnicalStrings.keyRequiredQuantity;
   static const keyTitle = AppTechnicalStrings.keyTitle;
+  static const keySubtitle = AppTechnicalStrings.keySubtitle;
   static const keyMessage = AppTechnicalStrings.keyMessage;
   static const keyTargetId = AppTechnicalStrings.keyTargetId;
   static const keyTargetType = AppTechnicalStrings.keyTargetType;
+  static const keyCardId = AppTechnicalStrings.keyCardId;
+  static const keyRuleId = AppTechnicalStrings.keyRuleId;
   static const keyStatus = AppTechnicalStrings.keyStatus;
   static const keySnoozedUntil = AppTechnicalStrings.keySnoozedUntil;
   static const keyKey = AppTechnicalStrings.keyKey;

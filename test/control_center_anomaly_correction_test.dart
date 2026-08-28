@@ -801,5 +801,76 @@ void main() {
       expect(updatedAtt.fileName.endsWith('.webp'), isTrue);
       await tester.pump(const Duration(seconds: 4));
     });
+
+    testWidgets('User can mark a card as "No volver a mostrar", see it in Omitidas tab, and restore it', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      // Seed an orphan entity
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_orphan', name: 'Llave Perdida', mainPhotoPath: const Value('local/key.jpg'), createdAt: now),
+          );
+      await db.into(db.subspeciesTable).insert(
+            SubspeciesTableCompanion.insert(id: 'sub_orphan', speciesId: 'sp_orphan', subspeciesName: 'Llave Perdida', photoPath: const Value('local/sub_key.jpg'), createdAt: now),
+          );
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_orphan', speciesId: 'sp_orphan', subspeciesId: const Value('sub_orphan'), createdAt: now, updatedAt: now),
+          );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: ControlCenterScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Card is in active Integrity tab
+      expect(find.text(AppStrings.orphanEntityTitle), findsOneWidget);
+      expect(find.text(AppStrings.doNotShowAgainAction), findsOneWidget);
+
+      // Tap "No volver a mostrar"
+      await tester.tap(find.text(AppStrings.doNotShowAgainAction));
+      await tester.pumpAndSettle();
+
+      // Card should no longer be visible in active Integrity tab (now empty state)
+      expect(find.text(AppStrings.ccIntegrityEmptyTitle), findsOneWidget);
+
+      // Verify persisted in database
+      final isIgnored = await db.isAuditCardIgnored('orphan_e_orphan');
+      expect(isIgnored, isTrue);
+
+      // Switch to "Omitidas" tab
+      final omittedTab = find.text(AppStrings.ccTabIgnored);
+      expect(omittedTab, findsOneWidget);
+      await tester.tap(omittedTab);
+      await tester.pumpAndSettle();
+
+      // Card should be rendered in Omitidas tab with "Volver a mostrar" button
+      expect(find.text(AppStrings.orphanEntityTitle), findsOneWidget);
+      final restoreBtn = find.text(AppStrings.restoreAction);
+      expect(restoreBtn, findsOneWidget);
+
+      // Tap "Volver a mostrar"
+      await tester.tap(restoreBtn);
+      await tester.pumpAndSettle();
+
+      // Omitidas tab should now show empty state
+      expect(find.text(AppStrings.ccIgnoredEmptyTitle), findsOneWidget);
+      expect(await db.isAuditCardIgnored('orphan_e_orphan'), isFalse);
+
+      // Switch back to Integrity tab
+      final integrityTab = find.text(AppStrings.ccTabIntegrityRules);
+      await tester.tap(integrityTab);
+      await tester.pumpAndSettle();
+
+      // Card should be back in Integrity tab
+      expect(find.text(AppStrings.orphanEntityTitle), findsOneWidget);
+      await tester.pump(const Duration(seconds: 4));
+    });
   });
 }
