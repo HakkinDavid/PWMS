@@ -32,6 +32,11 @@ enum AuditCardType {
   missingMandatoryMagnitudes,
   uninstantiatedSpecies,
   anomalousMagnitude,
+  invalidUnitSymbol,
+  integerUnitIncongruity,
+  nonNumericWithUnit,
+  negativeMagnitudeViolation,
+  propertyNameSuggestionIncongruity,
 }
 
 class AuditCardData {

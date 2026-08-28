@@ -3,6 +3,7 @@ import 'strategies/catalog_audit_rules.dart';
 import 'strategies/expiration_audit_rules.dart';
 import 'strategies/numismatic_audit_rules.dart';
 import 'strategies/relational_audit_rules.dart';
+import 'strategies/unit_magnitude_audit_rules.dart';
 
 class AuditRuleRegistry {
   final List<IAuditRuleStrategy> _strategies;
@@ -25,13 +26,19 @@ class AuditRuleRegistry {
           NonPerishableWithExpirationStrategy(),
           MissingMandatoryMagnitudesStrategy(),
           AnomalousMagnitudeStrategy(),
-          // 4. Numismatic rules
+          // 4. Unit and Magnitude rules
+          InvalidUnitSymbolStrategy(),
+          IntegerUnitIncongruityStrategy(),
+          NonNumericWithUnitStrategy(),
+          NegativeMagnitudeViolationStrategy(),
+          PropertyNameSuggestionIncongruityStrategy(),
+          // 5. Numismatic rules
           NumismaticDuplicateSubspeciesStrategy(),
           NumismaticSubspeciesIncongruityStrategy(),
           NumismaticAttachmentIncongruityStrategy(),
           NumismaticMissingMagnitudesStrategy(),
           EmptyDataAuditStrategy(),
-          // 5. Periodic verification sampling
+          // 6. Periodic verification sampling
           OwnershipCheckStrategy(),
           LocationVerificationStrategy(),
         ];

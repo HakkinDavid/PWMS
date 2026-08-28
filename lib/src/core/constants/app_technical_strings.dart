@@ -529,6 +529,11 @@ WHERE id IN (
   static const ruleNumismaticAttachmentIncongruity = 'numismatic_attachment_incongruity';
   static const ruleNumismaticMissingMagnitudes = 'numismatic_missing_magnitudes';
   static const ruleNumismaticEmptyDataAudit = 'numismatic_empty_data_audit';
+  static const ruleUnitInvalidSymbol = 'unit_invalid_symbol';
+  static const ruleUnitIntegerIncongruity = 'unit_integer_incongruity';
+  static const ruleUnitNonNumericWithUnit = 'unit_non_numeric_with_unit';
+  static const ruleUnitNegativeMagnitudeViolation = 'unit_negative_magnitude_violation';
+  static const ruleUnitPropertyNameSuggestionIncongruity = 'unit_property_name_suggestion_incongruity';
 
   // ---------------------------------------------------------------------------
   // Action Identifiers & Dialog Returns
@@ -547,6 +552,8 @@ WHERE id IN (
   static const actionReassign = 'reassign';
   static const actionLocation = 'location';
   static const actionSubspecies = 'subspecies';
+  static const actionRemoveUnit = 'remove_unit';
+  static const actionChangeUnit = 'change_unit';
 
   // ---------------------------------------------------------------------------
   // Audit Card ID Prefixes
@@ -572,6 +579,11 @@ WHERE id IN (
   static const prefixNumisAtt = 'numis_att_';
   static const prefixNumisMag = 'numis_mag_';
   static const prefixNumisEmptyGrade = 'numis_empty_grade_';
+  static const prefixInvUnit = 'inv_unit_';
+  static const prefixIntUnit = 'int_unit_';
+  static const prefixNonNumUnit = 'non_num_unit_';
+  static const prefixNegMag = 'neg_mag_';
+  static const prefixPropSug = 'prop_sug_';
 
   // ---------------------------------------------------------------------------
   // Lowercase Data Types & Technical Values
@@ -582,9 +594,22 @@ WHERE id IN (
   static const datatypeRealLower = 'real';
   static const boolTrue = 'true';
   static const boolFalse = 'false';
+  static const valZero = '0';
   static const valOne = '1';
   static const valSiWithAccent = 'sí';
   static const valSiWithoutAccent = 'si';
+  static const genericPropNamePropiedad = 'propiedad';
+  static const genericPropNameValor = 'valor';
+  static const genericPropNameDefault = 'default';
+  static const genericPropNameItem = 'item';
+  static const genericPropNameSinNombre = 'sin nombre';
+  static const Set<String> genericPropertyNamesSet = {
+    genericPropNamePropiedad,
+    genericPropNameValor,
+    genericPropNameDefault,
+    genericPropNameItem,
+    genericPropNameSinNombre,
+  };
   static const exceptionPrefix = 'Exception: ';
   static const anversoParensLower = '(anverso)';
   static const anversoLower = 'anverso';

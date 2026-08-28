@@ -851,6 +851,11 @@ class AppStrings {
   static const anomalousMagnitudeCardTitle = 'Magnitud con Valor No Positivo';
   static const numismaticDuplicateSubspeciesCardTitle = 'Subespecies Numismáticas Duplicadas';
   static const correctNumismaticIncongruityTitle = 'Corregir Incongruencia Numismática';
+  static const invalidUnitSymbolTitle = 'Unidad de Medida Desconocida';
+  static const integerUnitIncongruityTitle = 'Incongruencia de Unidad Entera';
+  static const nonNumericWithUnitTitle = 'Unidad en Propiedad No Numérica';
+  static const negativeMagnitudeViolationTitle = 'Valor Numérico Negativo Inválido';
+  static const propertyNameSuggestionIncongruityTitle = 'Nombre de Propiedad Sugerido';
 
   static const correctLocationOrContainerAction = 'Corregir Ubicación / Contenedor';
   static const deleteFromInventoryAction = 'Eliminar de Inventario';
@@ -898,6 +903,14 @@ class AppStrings {
   static const subspeciesAndAttachmentsSyncedSuccess = 'Subespecie y adjuntos sincronizados con éxito.';
   static const remoteImageDownloadedSuccess = 'Imagen descargada y guardada localmente con éxito.';
   static const remoteImageDownloadFailedMessage = 'No se pudo descargar automáticamente la imagen. Puedes seleccionarla mediante el selector de medios.';
+  static const invalidUnitRetained = 'Símbolo de unidad conservado.';
+  static const unitUpdatedSuccess = 'Unidad de medida actualizada con éxito.';
+  static const unitRemovedSuccess = 'Unidad de medida removida con éxito.';
+  static const integerUnitNormalizedSuccess = 'Propiedad normalizada a tipo entero con éxito.';
+  static const negativeValueCorrectedSuccess = 'Valor numérico corregido con éxito.';
+  static const propertyNameRenamedSuccess = 'Nombre de propiedad actualizado con éxito.';
+  static const changeUnitAction = 'Cambiar Unidad de Medida';
+  static const selectNewUnitPrompt = 'Selecciona una nueva unidad de medida';
 
   static const confirmDeleteConflictingRelationMessage = '¿Confirmas que deseas eliminar esta relación conflictiva?';
 
@@ -961,6 +974,17 @@ class AppStrings {
   static String emptyGradeDataQuestion(String displayName) => 'La pieza "$displayName" no tiene especificado su estado o grado de conservación. ¿Deseas asignarle un grado ahora?';
   static String gradeUpdatedSuccess(String grade) => 'Grado de conservación actualizado a "$grade".';
   static String photoOfDisplayName(String name) => 'Foto de $name';
+
+  static String invalidUnitSymbolSubtitle(String targetName, String propName, String symbol) => '$targetName • Propiedad "$propName" con unidad no estándar "$symbol"';
+  static String invalidUnitSymbolQuestion(String propName, String symbol) => 'La propiedad "$propName" tiene la unidad no reconocida "$symbol". ¿Deseas reemplazarla por una unidad del catálogo o removerla?';
+  static String integerUnitIncongruitySubtitle(String targetName, String propName, String symbol) => '$targetName • Propiedad "$propName" ($symbol) con tipo o valor no entero';
+  static String integerUnitIncongruityQuestion(String propName, String symbol) => 'La unidad "$symbol" es de conteo discreto/entero. ¿Deseas normalizar el tipo de dato y redondear su valor a entero?';
+  static String nonNumericWithUnitSubtitle(String targetName, String propName, String dataType, String symbol) => '$targetName • Propiedad "$propName" ($dataType) con unidad física "$symbol"';
+  static String nonNumericWithUnitQuestion(String propName, String dataType) => 'La propiedad "$propName" es de tipo no numérico ($dataType). ¿Deseas remover la unidad de medida?';
+  static String negativeMagnitudeViolationSubtitle(String targetName, String propName, num val, String symbol) => symbol.isNotEmpty ? '$targetName • "$propName" con valor negativo inválido ($val $symbol)' : '$targetName • "$propName" con valor negativo inválido ($val)';
+  static String negativeMagnitudeViolationQuestion(String propName) => 'La propiedad "$propName" no permite valores negativos. ¿Deseas corregir este valor?';
+  static String propertyNameSuggestionIncongruitySubtitle(String spName, String currentProp, String suggestedProp, String symbol) => '$spName • "$currentProp" ($symbol) ➔ Sugerido: "$suggestedProp"';
+  static String propertyNameSuggestionIncongruityQuestion(String currentProp, String suggestedProp, String symbol) => 'La unidad "$symbol" sugiere convencionalmente el nombre "$suggestedProp". ¿Deseas renombrar "$currentProp" a "$suggestedProp"?';
 
   // Formularios Numismáticos, Asistente de Escaneo e Inventario
   static const otherSpecifyParenthesized = 'Otro (especificar)';

@@ -52,8 +52,8 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen> {
         allSubspecies: subspeciesList,
         allRelations: relationsList,
         allLocations: locationNodes,
-        allSpeciesMagnitudes: const [],
-        allInstanceMagnitudes: const [],
+        allSpeciesMagnitudes: speciesList.expand((s) => s.magnitudes).toList(),
+        allInstanceMagnitudes: entitiesList.expand((e) => e.magnitudes).toList(),
         allRequirements: const [],
         effectiveLocationMap: directLocMap,
       );
