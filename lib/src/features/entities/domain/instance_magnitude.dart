@@ -16,7 +16,7 @@ class InstanceMagnitude with _$InstanceMagnitude {
     required String instanceId,
     required String propertyName,
     @Default(AppTechnicalStrings.datatypeRealLower) String dataType,
-    @Default(0.0) double magnitudeValue,
+    double? magnitudeValue,
     String? stringValue,
     String? unitSymbol,
   }) = _InstanceMagnitude;
@@ -39,12 +39,15 @@ class InstanceMagnitude with _$InstanceMagnitude {
               ? AppStrings.affirmativeYes
               : AppStrings.negativeNo;
         }
-        return magnitudeValue > 0 ? AppStrings.affirmativeYes : AppStrings.negativeNo;
+        if (magnitudeValue == null) return AppStrings.unspecifiedPropertyPlaceholder;
+        return magnitudeValue! > 0 ? AppStrings.affirmativeYes : AppStrings.negativeNo;
       case PropertyDataType.integer:
-        final formattedInt = magnitudeValue.toInt().toString();
+        if (magnitudeValue == null) return AppStrings.unspecifiedPropertyPlaceholder;
+        final formattedInt = magnitudeValue!.toInt().toString();
         final u = unitSymbol?.trim() ?? AppTechnicalStrings.empty;
         return u.isNotEmpty ? AppStrings.valueWithUnit(formattedInt, u) : formattedInt;
       case PropertyDataType.real:
+        if (magnitudeValue == null) return AppStrings.unspecifiedPropertyPlaceholder;
         final formattedVal = DomainRules.formatMagnitude(magnitudeValue, unitSymbol);
         final u = unitSymbol?.trim() ?? AppTechnicalStrings.empty;
         return u.isNotEmpty ? AppStrings.valueWithUnit(formattedVal, u) : formattedVal;

@@ -498,6 +498,25 @@ class DatabaseBackupService {
       tables[AppTechnicalDb.tableEntities] = updatedEntities;
     }
 
+    if (fromVersion == 4 && toVersion >= 5) {
+      // Migración 4 -> 5:
+      // Permitir magnitudes de instancia con magnitudeValue nullable de forma nativa.
+      // Preserva explícitamente null cuando no se especificó un valor numérico.
+      final instanceMagnitudes = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
+      final List<Map<String, dynamic>> updatedIM = [];
+      for (var item in instanceMagnitudes) {
+        if (item is Map) {
+          final m = Map<String, dynamic>.from(item);
+          if (m.containsKey(AppTechnicalJsonKeys.keyMagnitudeValue)) {
+            final rawVal = m[AppTechnicalJsonKeys.keyMagnitudeValue];
+            m[AppTechnicalJsonKeys.keyMagnitudeValue] = rawVal != null ? (rawVal as num).toDouble() : null;
+          }
+          updatedIM.add(m);
+        }
+      }
+      tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
+    }
+
     data[AppTechnicalJsonKeys.keyTables] = tables;
     return data;
   }
@@ -597,7 +616,7 @@ class DatabaseBackupService {
         final instId = m[AppTechnicalJsonKeys.keyInstanceId]?.toString();
         var dt = m[AppTechnicalJsonKeys.keyDataType]?.toString();
         var strVal = m[AppTechnicalJsonKeys.keyStringValue]?.toString();
-        var numVal = (m[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble() ?? 0.0;
+        var numVal = (m[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble();
         var unit = m[AppTechnicalJsonKeys.keyUnitSymbol]?.toString();
 
         final entity = instId != null ? entityMap[instId] : null;
@@ -786,7 +805,7 @@ class DatabaseBackupService {
           instanceId: r[AppTechnicalJsonKeys.keyInstanceId],
           propertyName: r[AppTechnicalJsonKeys.keyPropertyName],
           dataType: Value(r[AppTechnicalJsonKeys.keyDataType] ?? AppTechnicalStrings.datatypeRealLower),
-          magnitudeValue: Value((r[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble() ?? 0.0),
+          magnitudeValue: Value((r[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble()),
           stringValue: Value(r[AppTechnicalJsonKeys.keyStringValue]),
           unitSymbol: Value(r[AppTechnicalJsonKeys.keyUnitSymbol]),
         ));

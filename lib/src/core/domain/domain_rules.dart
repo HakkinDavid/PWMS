@@ -7,7 +7,8 @@ class DomainRules {
   DomainRules._();
 
   /// Format magnitude value: Display whole numbers as clean integers without `.0`
-  static String formatMagnitude(double value, String? unitSymbol) {
+  static String formatMagnitude(double? value, String? unitSymbol) {
+    if (value == null) return AppStrings.unspecifiedPropertyPlaceholder;
     if (isIntegerUnit(unitSymbol) || value == value.roundToDouble()) {
       return value.toInt().toString();
     }
@@ -34,7 +35,8 @@ class DomainRules {
   }
 
   /// Validate if a magnitude value is valid for a given unit symbol
-  static bool isValidMagnitudeForUnit({required double magnitude, required String? unitSymbol}) {
+  static bool isValidMagnitudeForUnit({required double? magnitude, required String? unitSymbol}) {
+    if (magnitude == null) return true;
     if (isIntegerUnit(unitSymbol)) {
       return magnitude == magnitude.roundToDouble() && magnitude >= 0;
     }

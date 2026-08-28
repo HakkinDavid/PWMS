@@ -309,8 +309,8 @@ class NumismaticParser {
       if (mag.propertyName == AppStrings.magValorNominal) {
         faceVal = mag.magnitudeValue;
       } else if (mag.propertyName == AppStrings.magAcunacion) {
-        if (mag.magnitudeValue > 0) {
-          year = mag.magnitudeValue.toInt().toString();
+        if (mag.magnitudeValue != null && mag.magnitudeValue! > 0) {
+          year = mag.magnitudeValue!.toInt().toString();
         } else if (mag.stringValue != null && mag.stringValue!.isNotEmpty) {
           year = mag.stringValue;
         }

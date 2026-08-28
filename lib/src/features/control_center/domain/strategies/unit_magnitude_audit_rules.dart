@@ -204,7 +204,7 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
         final isIntUnit = DomainRules.isIntegerUnit(im.unitSymbol);
         if (!isIntUnit) return false;
         final isWrongType = im.dataType != AppTechnicalStrings.datatypeIntegerLower;
-        final hasDecimals = im.magnitudeValue != im.magnitudeValue.roundToDouble();
+        final hasDecimals = im.magnitudeValue != null && im.magnitudeValue != im.magnitudeValue!.roundToDouble();
         return isWrongType || hasDecimals;
       }).toList();
 
@@ -230,7 +230,7 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
               if (m.id == im.id || m.propertyName.trim().toLowerCase() == im.propertyName.trim().toLowerCase()) {
                 return m.copyWith(
                   dataType: AppTechnicalStrings.datatypeIntegerLower,
-                  magnitudeValue: m.magnitudeValue.roundToDouble(),
+                  magnitudeValue: m.magnitudeValue?.roundToDouble(),
                 );
               }
               return m;
@@ -364,7 +364,7 @@ class NegativeMagnitudeViolationStrategy implements IAuditRuleStrategy {
 
     for (final entity in context.allEntities.take(30)) {
       final negativeMags = entity.magnitudes.where((im) {
-        if (im.magnitudeValue >= 0) return false;
+        if (im.magnitudeValue == null || im.magnitudeValue! >= 0) return false;
         final def = UnitsRegistry.getDefinition(im.unitSymbol);
         return !def.allowNegatives;
       }).toList();
@@ -380,7 +380,7 @@ class NegativeMagnitudeViolationStrategy implements IAuditRuleStrategy {
           subtitle: AppStrings.negativeMagnitudeViolationSubtitle(
             displayName,
             im.propertyName,
-            im.magnitudeValue,
+            im.magnitudeValue ?? 0.0,
             im.unitSymbol ?? AppTechnicalStrings.empty,
           ),
           question: AppStrings.negativeMagnitudeViolationQuestion(im.propertyName),

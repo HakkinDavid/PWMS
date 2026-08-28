@@ -337,7 +337,7 @@ class EntityRepository implements IEntityRepository {
     String? subspeciesId,
     String? notes,
     String? unit,
-    Map<String, double>? customMagnitudeValues,
+    Map<String, double?>? customMagnitudeValues,
     DateTime? expirationDate,
   }) async {
     final count = addQuantity.toInt() > 0 ? addQuantity.toInt() : 1;
@@ -353,7 +353,7 @@ class EntityRepository implements IEntityRepository {
     final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
 
     // Si no se proveyeron magnitudes explícitas, copiar de una instancia existente de la misma subespecie (si existe)
-    Map<String, double> effectiveMagnitudeValues = Map.from(customMagnitudeValues ?? {});
+    Map<String, double?> effectiveMagnitudeValues = Map.from(customMagnitudeValues ?? {});
     if (customMagnitudeValues == null && resolvedSubspeciesId != null && resolvedSubspeciesId.isNotEmpty) {
       final subId = resolvedSubspeciesId;
       final existingEntities = await (_db.select(_db.entitiesTable)
@@ -375,11 +375,14 @@ class EntityRepository implements IEntityRepository {
     for (int i = 0; i < count; i++) {
       final newId = const Uuid().v4();
       final initialMags = speciesMagRows.map((sm) {
-        final val = effectiveMagnitudeValues[sm.propertyName] ?? 1.0;
+        final val = effectiveMagnitudeValues.containsKey(sm.propertyName)
+            ? effectiveMagnitudeValues[sm.propertyName]
+            : null;
         return InstanceMagnitude(
           id: const Uuid().v4(),
           instanceId: newId,
           propertyName: sm.propertyName,
+          dataType: sm.dataType,
           magnitudeValue: val,
           unitSymbol: sm.unitSymbol,
         );

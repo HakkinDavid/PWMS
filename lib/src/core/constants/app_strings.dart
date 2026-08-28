@@ -911,6 +911,9 @@ class AppStrings {
   static const propertyNameRenamedSuccess = 'Nombre de propiedad actualizado con éxito.';
   static const changeUnitAction = 'Cambiar Unidad de Medida';
   static const selectNewUnitPrompt = 'Selecciona una nueva unidad de medida';
+  static const unspecifiedPropertyPlaceholder = '—';
+  static const markAsUnknownOrNotApplicable = 'Marcar como Desconocido / No aplica';
+  static const propertyMarkedAsUnknownSuccess = 'Propiedad marcada como no disponible/desconocida.';
 
   static const confirmDeleteConflictingRelationMessage = '¿Confirmas que deseas eliminar esta relación conflictiva?';
 

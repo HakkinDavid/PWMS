@@ -24,7 +24,7 @@ mixin _$InstanceMagnitude {
   String get instanceId => throw _privateConstructorUsedError;
   String get propertyName => throw _privateConstructorUsedError;
   String get dataType => throw _privateConstructorUsedError;
-  double get magnitudeValue => throw _privateConstructorUsedError;
+  double? get magnitudeValue => throw _privateConstructorUsedError;
   String? get stringValue => throw _privateConstructorUsedError;
   String? get unitSymbol => throw _privateConstructorUsedError;
 
@@ -49,7 +49,7 @@ abstract class $InstanceMagnitudeCopyWith<$Res> {
       String instanceId,
       String propertyName,
       String dataType,
-      double magnitudeValue,
+      double? magnitudeValue,
       String? stringValue,
       String? unitSymbol});
 }
@@ -73,7 +73,7 @@ class _$InstanceMagnitudeCopyWithImpl<$Res, $Val extends InstanceMagnitude>
     Object? instanceId = null,
     Object? propertyName = null,
     Object? dataType = null,
-    Object? magnitudeValue = null,
+    Object? magnitudeValue = freezed,
     Object? stringValue = freezed,
     Object? unitSymbol = freezed,
   }) {
@@ -94,10 +94,10 @@ class _$InstanceMagnitudeCopyWithImpl<$Res, $Val extends InstanceMagnitude>
           ? _value.dataType
           : dataType // ignore: cast_nullable_to_non_nullable
               as String,
-      magnitudeValue: null == magnitudeValue
+      magnitudeValue: freezed == magnitudeValue
           ? _value.magnitudeValue
           : magnitudeValue // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       stringValue: freezed == stringValue
           ? _value.stringValue
           : stringValue // ignore: cast_nullable_to_non_nullable
@@ -123,7 +123,7 @@ abstract class _$$InstanceMagnitudeImplCopyWith<$Res>
       String instanceId,
       String propertyName,
       String dataType,
-      double magnitudeValue,
+      double? magnitudeValue,
       String? stringValue,
       String? unitSymbol});
 }
@@ -145,7 +145,7 @@ class __$$InstanceMagnitudeImplCopyWithImpl<$Res>
     Object? instanceId = null,
     Object? propertyName = null,
     Object? dataType = null,
-    Object? magnitudeValue = null,
+    Object? magnitudeValue = freezed,
     Object? stringValue = freezed,
     Object? unitSymbol = freezed,
   }) {
@@ -166,10 +166,10 @@ class __$$InstanceMagnitudeImplCopyWithImpl<$Res>
           ? _value.dataType
           : dataType // ignore: cast_nullable_to_non_nullable
               as String,
-      magnitudeValue: null == magnitudeValue
+      magnitudeValue: freezed == magnitudeValue
           ? _value.magnitudeValue
           : magnitudeValue // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       stringValue: freezed == stringValue
           ? _value.stringValue
           : stringValue // ignore: cast_nullable_to_non_nullable
@@ -190,7 +190,7 @@ class _$InstanceMagnitudeImpl extends _InstanceMagnitude {
       required this.instanceId,
       required this.propertyName,
       this.dataType = AppTechnicalStrings.datatypeRealLower,
-      this.magnitudeValue = 0.0,
+      this.magnitudeValue,
       this.stringValue,
       this.unitSymbol})
       : super._();
@@ -208,8 +208,7 @@ class _$InstanceMagnitudeImpl extends _InstanceMagnitude {
   @JsonKey()
   final String dataType;
   @override
-  @JsonKey()
-  final double magnitudeValue;
+  final double? magnitudeValue;
   @override
   final String? stringValue;
   @override
@@ -268,7 +267,7 @@ abstract class _InstanceMagnitude extends InstanceMagnitude {
       required final String instanceId,
       required final String propertyName,
       final String dataType,
-      final double magnitudeValue,
+      final double? magnitudeValue,
       final String? stringValue,
       final String? unitSymbol}) = _$InstanceMagnitudeImpl;
   const _InstanceMagnitude._() : super._();
@@ -285,7 +284,7 @@ abstract class _InstanceMagnitude extends InstanceMagnitude {
   @override
   String get dataType;
   @override
-  double get magnitudeValue;
+  double? get magnitudeValue;
   @override
   String? get stringValue;
   @override

@@ -231,15 +231,18 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
           final ctrl = _magnitudeControllers[sm.propertyName];
           final rawText = ctrl?.text.trim() ?? AppTechnicalStrings.empty;
           final type = PropertyDataType.fromCode(sm.dataType);
-
-          double magVal = 0.0;
+          double? magVal;
           String? strVal;
 
           if (type.isNumeric) {
-            final parsedVal = double.tryParse(rawText) ?? 1.0;
-            magVal = parsedVal * addQty;
+            if (rawText.isNotEmpty) {
+              final parsedVal = double.tryParse(rawText);
+              if (parsedVal != null) {
+                magVal = parsedVal * addQty;
+              }
+            }
           } else {
-            strVal = rawText;
+            strVal = rawText.isNotEmpty ? rawText : null;
           }
 
           customInstanceMags.add(InstanceMagnitude(

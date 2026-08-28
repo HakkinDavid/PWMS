@@ -218,28 +218,38 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                   keyboardType: keyboardType,
                 );
 
-                if (enteredValue != null && enteredValue.isNotEmpty) {
-                  if (propType == PropertyDataType.string) {
+                if (enteredValue != null) {
+                  if (enteredValue.isEmpty) {
+                    newMag = InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: missingProp.propertyName,
+                      dataType: missingProp.dataType,
+                      magnitudeValue: null,
+                      stringValue: null,
+                      unitSymbol: missingProp.unitSymbol,
+                    );
+                  } else if (propType == PropertyDataType.string) {
                     newMag = InstanceMagnitude(
                       id: const Uuid().v4(),
                       instanceId: entity.id,
                       propertyName: missingProp.propertyName,
                       dataType: AppTechnicalStrings.datatypeStringLower,
                       stringValue: enteredValue,
-                      magnitudeValue: 0.0,
+                      magnitudeValue: null,
                     );
                   } else if (propType == PropertyDataType.integer) {
-                    final intVal = int.tryParse(enteredValue) ?? 0;
+                    final intVal = int.tryParse(enteredValue);
                     newMag = InstanceMagnitude(
                       id: const Uuid().v4(),
                       instanceId: entity.id,
                       propertyName: missingProp.propertyName,
                       dataType: AppTechnicalStrings.datatypeIntegerLower,
-                      magnitudeValue: intVal.toDouble(),
+                      magnitudeValue: intVal?.toDouble(),
                       unitSymbol: missingProp.unitSymbol,
                     );
                   } else {
-                    final numVal = double.tryParse(enteredValue) ?? 0.0;
+                    final numVal = double.tryParse(enteredValue);
                     newMag = InstanceMagnitude(
                       id: const Uuid().v4(),
                       instanceId: entity.id,
@@ -267,7 +277,11 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
 
                 await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(magnitudes: currentMags));
                 if (ctx.mounted) {
-                  AppToast.showSuccess(ctx, AppStrings.propertyRegisteredSuccess(missingProp.propertyName));
+                  if (newMag.magnitudeValue == null && newMag.stringValue == null) {
+                    AppToast.showSuccess(ctx, AppStrings.propertyMarkedAsUnknownSuccess);
+                  } else {
+                    AppToast.showSuccess(ctx, AppStrings.propertyRegisteredSuccess(missingProp.propertyName));
+                  }
                 }
                 return true;
               }
@@ -277,6 +291,7 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
         }
       }
     }
+
     return cards;
   }
 }
@@ -297,7 +312,9 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
 
     for (final entity in context.allEntities.take(20)) {
       final anomalousMags = entity.magnitudes.where((m) =>
-          m.magnitudeValue <= 0 && m.dataType == AppTechnicalStrings.datatypeRealLower).toList();
+          m.magnitudeValue != null &&
+          m.magnitudeValue! <= 0 &&
+          m.dataType == AppTechnicalStrings.datatypeRealLower).toList();
       for (final mag in anomalousMags) {
         final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
@@ -309,10 +326,10 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
           subtitle: AppStrings.anomalousMagnitudeSubtitle(
             displayName,
             mag.propertyName,
-            mag.magnitudeValue,
+            mag.magnitudeValue ?? 0.0,
             mag.unitSymbol ?? AppTechnicalStrings.empty,
           ),
-          question: AppStrings.anomalousMagnitudeQuestion(mag.propertyName, mag.magnitudeValue),
+          question: AppStrings.anomalousMagnitudeQuestion(mag.propertyName, mag.magnitudeValue ?? 0.0),
           icon: Icons.exposure_zero,
           themeColor: Colors.orange,
           entity: entity,
@@ -323,7 +340,7 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
               ctx,
               title: AppStrings.correctPropertyTitle(mag.propertyName),
               labelText: mag.propertyName,
-              initialValue: mag.magnitudeValue.toString(),
+              initialValue: mag.magnitudeValue?.toString() ?? AppTechnicalStrings.empty,
               suffixText: mag.unitSymbol,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
             );

@@ -333,7 +333,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             if (freshSpecies.magnitudes.isNotEmpty) {
               final List<InstanceMagnitude> customInstanceMags = [];
               for (final sm in freshSpecies.magnitudes) {
-                double val = 0.0;
+                double? val;
                 String? strVal;
                 String? unit = sm.unitSymbol;
 
@@ -343,6 +343,8 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                 } else if (sm.propertyName == AppStrings.mintagePropertyName) {
                   if (result.year != null && double.tryParse(result.year!) != null) {
                     val = double.parse(result.year!);
+                  } else {
+                    val = null;
                   }
                   unit = AppStrings.yearUnitSymbol;
                 } else if (sm.propertyName == AppStrings.currencyPropertyName) {

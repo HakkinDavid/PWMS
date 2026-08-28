@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/domain/domain_rules.dart';
+import '../../../core/domain/property_data_type.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../catalog/domain/catalog_item.dart';
@@ -259,7 +260,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
   Future<void> _editMagnitudeDialog(InstanceMagnitude mag) async {
     final valCtrl = TextEditingController(
       text: mag.type.isNumeric
-          ? mag.magnitudeValue.toString()
+          ? (mag.magnitudeValue != null
+              ? (mag.type == PropertyDataType.integer
+                  ? mag.magnitudeValue!.toInt().toString()
+                  : mag.magnitudeValue!.toString())
+              : AppTechnicalStrings.empty)
           : (mag.stringValue ?? AppTechnicalStrings.empty),
     );
 
@@ -293,10 +298,11 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             onPressed: () {
               final raw = valCtrl.text.trim();
               if (mag.type.isNumeric) {
-                final dVal = double.tryParse(raw) ?? mag.magnitudeValue;
+                final dVal = raw.isNotEmpty ? double.tryParse(raw) : null;
                 Navigator.pop(ctx, mag.copyWith(magnitudeValue: dVal));
               } else {
-                Navigator.pop(ctx, mag.copyWith(stringValue: raw));
+                final sVal = raw.isNotEmpty ? raw : null;
+                Navigator.pop(ctx, mag.copyWith(stringValue: sVal));
               }
             },
             child: const Text(AppStrings.save),
@@ -360,7 +366,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           instanceId: widget.entityId,
           propertyName: selectedMag.propertyName,
           dataType: selectedMag.dataType,
-          magnitudeValue: 0.0,
+          magnitudeValue: null,
           unitSymbol: selectedMag.unitSymbol,
         ));
       });

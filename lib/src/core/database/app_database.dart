@@ -85,7 +85,7 @@ class InstanceMagnitudesTable extends Table {
   TextColumn get instanceId => text().references(EntitiesTable, #id)();
   TextColumn get propertyName => text()(); // e.g. "Masa", "Volumen", "Material"
   TextColumn get dataType => text().withDefault(const Constant(AppTechnicalStrings.datatypeRealLower))(); // 'real', 'integer', 'string', 'boolean'
-  RealColumn get magnitudeValue => real().withDefault(const Constant(0.0))();
+  RealColumn get magnitudeValue => real().nullable()();
   TextColumn get stringValue => text().nullable()();
   TextColumn get unitSymbol => text().nullable()();
 
@@ -210,7 +210,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -231,6 +231,10 @@ class AppDatabase extends _$AppDatabase {
               // deben tener location_id NULL en entities_table y eliminarse de instance_locations_table.
               await customStatement(AppTechnicalStrings.sqlMigration3To4CleanInstanceLocations);
               await customStatement(AppTechnicalStrings.sqlMigration3To4CleanEntitiesLocation);
+            }
+            if (v == 4) {
+              // Migración 4 -> 5:
+              // magnitude_value en instance_magnitudes_table ahora es nullable en Drift y en el modelo de dominio.
             }
           }
         },

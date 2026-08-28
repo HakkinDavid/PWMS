@@ -2251,10 +2251,8 @@ class $InstanceMagnitudesTableTable extends InstanceMagnitudesTable
       const VerificationMeta('magnitudeValue');
   @override
   late final GeneratedColumn<double> magnitudeValue = GeneratedColumn<double>(
-      'magnitude_value', aliasedName, false,
-      type: DriftSqlType.double,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0.0));
+      'magnitude_value', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   static const VerificationMeta _stringValueMeta =
       const VerificationMeta('stringValue');
   @override
@@ -2349,8 +2347,8 @@ class $InstanceMagnitudesTableTable extends InstanceMagnitudesTable
           .read(DriftSqlType.string, data['${effectivePrefix}property_name'])!,
       dataType: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}data_type'])!,
-      magnitudeValue: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}magnitude_value'])!,
+      magnitudeValue: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}magnitude_value']),
       stringValue: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}string_value']),
       unitSymbol: attachedDatabase.typeMapping
@@ -2370,7 +2368,7 @@ class InstanceMagnitudesTableData extends DataClass
   final String instanceId;
   final String propertyName;
   final String dataType;
-  final double magnitudeValue;
+  final double? magnitudeValue;
   final String? stringValue;
   final String? unitSymbol;
   const InstanceMagnitudesTableData(
@@ -2378,7 +2376,7 @@ class InstanceMagnitudesTableData extends DataClass
       required this.instanceId,
       required this.propertyName,
       required this.dataType,
-      required this.magnitudeValue,
+      this.magnitudeValue,
       this.stringValue,
       this.unitSymbol});
   @override
@@ -2388,7 +2386,9 @@ class InstanceMagnitudesTableData extends DataClass
     map['instance_id'] = Variable<String>(instanceId);
     map['property_name'] = Variable<String>(propertyName);
     map['data_type'] = Variable<String>(dataType);
-    map['magnitude_value'] = Variable<double>(magnitudeValue);
+    if (!nullToAbsent || magnitudeValue != null) {
+      map['magnitude_value'] = Variable<double>(magnitudeValue);
+    }
     if (!nullToAbsent || stringValue != null) {
       map['string_value'] = Variable<String>(stringValue);
     }
@@ -2404,7 +2404,9 @@ class InstanceMagnitudesTableData extends DataClass
       instanceId: Value(instanceId),
       propertyName: Value(propertyName),
       dataType: Value(dataType),
-      magnitudeValue: Value(magnitudeValue),
+      magnitudeValue: magnitudeValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(magnitudeValue),
       stringValue: stringValue == null && nullToAbsent
           ? const Value.absent()
           : Value(stringValue),
@@ -2422,7 +2424,7 @@ class InstanceMagnitudesTableData extends DataClass
       instanceId: serializer.fromJson<String>(json['instanceId']),
       propertyName: serializer.fromJson<String>(json['propertyName']),
       dataType: serializer.fromJson<String>(json['dataType']),
-      magnitudeValue: serializer.fromJson<double>(json['magnitudeValue']),
+      magnitudeValue: serializer.fromJson<double?>(json['magnitudeValue']),
       stringValue: serializer.fromJson<String?>(json['stringValue']),
       unitSymbol: serializer.fromJson<String?>(json['unitSymbol']),
     );
@@ -2435,7 +2437,7 @@ class InstanceMagnitudesTableData extends DataClass
       'instanceId': serializer.toJson<String>(instanceId),
       'propertyName': serializer.toJson<String>(propertyName),
       'dataType': serializer.toJson<String>(dataType),
-      'magnitudeValue': serializer.toJson<double>(magnitudeValue),
+      'magnitudeValue': serializer.toJson<double?>(magnitudeValue),
       'stringValue': serializer.toJson<String?>(stringValue),
       'unitSymbol': serializer.toJson<String?>(unitSymbol),
     };
@@ -2446,7 +2448,7 @@ class InstanceMagnitudesTableData extends DataClass
           String? instanceId,
           String? propertyName,
           String? dataType,
-          double? magnitudeValue,
+          Value<double?> magnitudeValue = const Value.absent(),
           Value<String?> stringValue = const Value.absent(),
           Value<String?> unitSymbol = const Value.absent()}) =>
       InstanceMagnitudesTableData(
@@ -2454,7 +2456,8 @@ class InstanceMagnitudesTableData extends DataClass
         instanceId: instanceId ?? this.instanceId,
         propertyName: propertyName ?? this.propertyName,
         dataType: dataType ?? this.dataType,
-        magnitudeValue: magnitudeValue ?? this.magnitudeValue,
+        magnitudeValue:
+            magnitudeValue.present ? magnitudeValue.value : this.magnitudeValue,
         stringValue: stringValue.present ? stringValue.value : this.stringValue,
         unitSymbol: unitSymbol.present ? unitSymbol.value : this.unitSymbol,
       );
@@ -2514,7 +2517,7 @@ class InstanceMagnitudesTableCompanion
   final Value<String> instanceId;
   final Value<String> propertyName;
   final Value<String> dataType;
-  final Value<double> magnitudeValue;
+  final Value<double?> magnitudeValue;
   final Value<String?> stringValue;
   final Value<String?> unitSymbol;
   final Value<int> rowid;
@@ -2567,7 +2570,7 @@ class InstanceMagnitudesTableCompanion
       Value<String>? instanceId,
       Value<String>? propertyName,
       Value<String>? dataType,
-      Value<double>? magnitudeValue,
+      Value<double?>? magnitudeValue,
       Value<String?>? stringValue,
       Value<String?>? unitSymbol,
       Value<int>? rowid}) {
@@ -8153,7 +8156,7 @@ typedef $$InstanceMagnitudesTableTableCreateCompanionBuilder
   required String instanceId,
   required String propertyName,
   Value<String> dataType,
-  Value<double> magnitudeValue,
+  Value<double?> magnitudeValue,
   Value<String?> stringValue,
   Value<String?> unitSymbol,
   Value<int> rowid,
@@ -8164,7 +8167,7 @@ typedef $$InstanceMagnitudesTableTableUpdateCompanionBuilder
   Value<String> instanceId,
   Value<String> propertyName,
   Value<String> dataType,
-  Value<double> magnitudeValue,
+  Value<double?> magnitudeValue,
   Value<String?> stringValue,
   Value<String?> unitSymbol,
   Value<int> rowid,
@@ -8369,7 +8372,7 @@ class $$InstanceMagnitudesTableTableTableManager extends RootTableManager<
             Value<String> instanceId = const Value.absent(),
             Value<String> propertyName = const Value.absent(),
             Value<String> dataType = const Value.absent(),
-            Value<double> magnitudeValue = const Value.absent(),
+            Value<double?> magnitudeValue = const Value.absent(),
             Value<String?> stringValue = const Value.absent(),
             Value<String?> unitSymbol = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -8389,7 +8392,7 @@ class $$InstanceMagnitudesTableTableTableManager extends RootTableManager<
             required String instanceId,
             required String propertyName,
             Value<String> dataType = const Value.absent(),
-            Value<double> magnitudeValue = const Value.absent(),
+            Value<double?> magnitudeValue = const Value.absent(),
             Value<String?> stringValue = const Value.absent(),
             Value<String?> unitSymbol = const Value.absent(),
             Value<int> rowid = const Value.absent(),
