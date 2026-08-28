@@ -914,12 +914,15 @@ class AppStrings {
   static const unspecifiedPropertyPlaceholder = '—';
   static const markAsUnknownOrNotApplicable = 'Marcar como Desconocido / No aplica';
   static const propertyMarkedAsUnknownSuccess = 'Propiedad marcada como no disponible/desconocida.';
+  static const setNullAction = 'Establecer nulo';
+  static const enterValueAction = 'Ingresar valor';
 
   static const confirmDeleteConflictingRelationMessage = '¿Confirmas que deseas eliminar esta relación conflictiva?';
 
   static String keepSubspeciesPrompt(String name) => '¿Deseas mantener la subespecie "$name" en tu catálogo o eliminarla?';
   static String manageSpeciesTitle(String name) => 'Gestionar "$name"';
   static String assignPropertyTitle(String prop) => 'Asignar $prop';
+  static String resolveMissingPropertyPrompt(String prop) => '¿Cómo deseas registrar la propiedad "$prop"?';
   static String assignBooleanPrompt(String prop) => 'Selecciona el valor booleano para "$prop":';
   static String correctPropertyTitle(String prop) => 'Corregir $prop';
   static String syncInfoPrompt(String name, String msg) => 'Sincronizar información para "$name":\n\n$msg';

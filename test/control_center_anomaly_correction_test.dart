@@ -514,6 +514,11 @@ void main() {
       await tester.tap(fixButton);
       await tester.pumpAndSettle();
 
+      final enterValBtn = find.text('Ingresar valor');
+      expect(enterValBtn, findsOneWidget);
+      await tester.tap(enterValBtn);
+      await tester.pumpAndSettle();
+
       // Enter value in the dialog
       final textField = find.byType(TextField);
       expect(textField, findsOneWidget);
@@ -602,6 +607,11 @@ void main() {
       expect(find.text('Magnitud Faltante: Grasa'), findsOneWidget);
       final fixBtn2 = find.text('CORREGIR');
       await tester.tap(fixBtn2);
+      await tester.pumpAndSettle();
+
+      final enterValBtn2 = find.text('Ingresar valor');
+      expect(enterValBtn2, findsOneWidget);
+      await tester.tap(enterValBtn2);
       await tester.pumpAndSettle();
 
       // Enter 5.0 for Grasa

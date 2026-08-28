@@ -554,6 +554,8 @@ WHERE id IN (
   static const actionSubspecies = 'subspecies';
   static const actionRemoveUnit = 'remove_unit';
   static const actionChangeUnit = 'change_unit';
+  static const actionSetNull = 'set_null';
+  static const actionEnterValue = 'enter_value';
 
   // ---------------------------------------------------------------------------
   // Audit Card ID Prefixes

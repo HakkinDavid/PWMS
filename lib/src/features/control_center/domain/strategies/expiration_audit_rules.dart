@@ -168,96 +168,125 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
             confirmToastMessage: AppStrings.magnitudeSkipped,
             onFix: (ctx, ref) async {
               final propType = PropertyDataType.fromCode(missingProp.dataType);
+
+              final choice = await showDialog<String>(
+                context: ctx,
+                builder: (dialogCtx) => AlertDialog(
+                  title: Text(AppStrings.assignPropertyTitle(missingProp.propertyName)),
+                  content: Text(AppStrings.resolveMissingPropertyPrompt(missingProp.propertyName)),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                      child: const Text(AppStrings.cancel),
+                    ),
+                    OutlinedButton(
+                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionSetNull),
+                      child: const Text(AppStrings.setNullAction),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionEnterValue),
+                      child: const Text(AppStrings.enterValueAction),
+                    ),
+                  ],
+                ),
+              );
+
+              if (choice == null || choice == AppTechnicalStrings.actionCancel) {
+                return false;
+              }
+
               InstanceMagnitude? newMag;
 
-              if (propType == PropertyDataType.boolean) {
-                final boolVal = await showDialog<bool>(
-                  context: ctx,
-                  builder: (dialogCtx) => AlertDialog(
-                    title: Text(AppStrings.assignPropertyTitle(missingProp.propertyName)),
-                    content: Text(AppStrings.assignBooleanPrompt(missingProp.propertyName)),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(dialogCtx, null),
-                        child: const Text(AppStrings.cancel),
-                      ),
-                      OutlinedButton(
-                        onPressed: () => Navigator.pop(dialogCtx, false),
-                        child: const Text(AppStrings.booleanFalseAction),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(dialogCtx, true),
-                        child: const Text(AppStrings.booleanTrueAction),
-                      ),
-                    ],
-                  ),
+              if (choice == AppTechnicalStrings.actionSetNull) {
+                newMag = InstanceMagnitude(
+                  id: const Uuid().v4(),
+                  instanceId: entity.id,
+                  propertyName: missingProp.propertyName,
+                  dataType: missingProp.dataType,
+                  magnitudeValue: null,
+                  stringValue: null,
+                  unitSymbol: missingProp.unitSymbol,
                 );
-
-                if (boolVal != null) {
-                  newMag = InstanceMagnitude(
-                    id: const Uuid().v4(),
-                    instanceId: entity.id,
-                    propertyName: missingProp.propertyName,
-                    dataType: AppTechnicalStrings.datatypeBooleanLower,
-                    stringValue: boolVal ? AppTechnicalStrings.boolTrue : AppTechnicalStrings.boolFalse,
-                    magnitudeValue: boolVal ? 1.0 : 0.0,
+              } else if (choice == AppTechnicalStrings.actionEnterValue) {
+                if (propType == PropertyDataType.boolean) {
+                  final boolVal = await showDialog<bool>(
+                    context: ctx,
+                    builder: (dialogCtx) => AlertDialog(
+                      title: Text(AppStrings.assignPropertyTitle(missingProp.propertyName)),
+                      content: Text(AppStrings.assignBooleanPrompt(missingProp.propertyName)),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(dialogCtx, null),
+                          child: const Text(AppStrings.cancel),
+                        ),
+                        OutlinedButton(
+                          onPressed: () => Navigator.pop(dialogCtx, false),
+                          child: const Text(AppStrings.booleanFalseAction),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(dialogCtx, true),
+                          child: const Text(AppStrings.booleanTrueAction),
+                        ),
+                      ],
+                    ),
                   );
-                }
-              } else {
-                final keyboardType = propType == PropertyDataType.integer
-                    ? TextInputType.number
-                    : propType == PropertyDataType.string
-                        ? TextInputType.text
-                        : const TextInputType.numberWithOptions(decimal: true);
 
-                final enteredValue = await AuditRuleHelper.showTextInputDialog(
-                  ctx,
-                  title: AppStrings.assignPropertyTitle(missingProp.propertyName),
-                  labelText: missingProp.propertyName,
-                  suffixText: missingProp.unitSymbol,
-                  keyboardType: keyboardType,
-                );
+                  if (boolVal != null) {
+                    newMag = InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: entity.id,
+                      propertyName: missingProp.propertyName,
+                      dataType: AppTechnicalStrings.datatypeBooleanLower,
+                      stringValue: boolVal ? AppTechnicalStrings.boolTrue : AppTechnicalStrings.boolFalse,
+                      magnitudeValue: boolVal ? 1.0 : 0.0,
+                    );
+                  }
+                } else {
+                  final keyboardType = propType == PropertyDataType.integer
+                      ? TextInputType.number
+                      : propType == PropertyDataType.string
+                          ? TextInputType.text
+                          : const TextInputType.numberWithOptions(decimal: true);
 
-                if (enteredValue != null) {
-                  if (enteredValue.isEmpty) {
-                    newMag = InstanceMagnitude(
-                      id: const Uuid().v4(),
-                      instanceId: entity.id,
-                      propertyName: missingProp.propertyName,
-                      dataType: missingProp.dataType,
-                      magnitudeValue: null,
-                      stringValue: null,
-                      unitSymbol: missingProp.unitSymbol,
-                    );
-                  } else if (propType == PropertyDataType.string) {
-                    newMag = InstanceMagnitude(
-                      id: const Uuid().v4(),
-                      instanceId: entity.id,
-                      propertyName: missingProp.propertyName,
-                      dataType: AppTechnicalStrings.datatypeStringLower,
-                      stringValue: enteredValue,
-                      magnitudeValue: null,
-                    );
-                  } else if (propType == PropertyDataType.integer) {
-                    final intVal = int.tryParse(enteredValue);
-                    newMag = InstanceMagnitude(
-                      id: const Uuid().v4(),
-                      instanceId: entity.id,
-                      propertyName: missingProp.propertyName,
-                      dataType: AppTechnicalStrings.datatypeIntegerLower,
-                      magnitudeValue: intVal?.toDouble(),
-                      unitSymbol: missingProp.unitSymbol,
-                    );
-                  } else {
-                    final numVal = double.tryParse(enteredValue);
-                    newMag = InstanceMagnitude(
-                      id: const Uuid().v4(),
-                      instanceId: entity.id,
-                      propertyName: missingProp.propertyName,
-                      dataType: AppTechnicalStrings.datatypeRealLower,
-                      magnitudeValue: numVal,
-                      unitSymbol: missingProp.unitSymbol,
-                    );
+                  final enteredValue = await AuditRuleHelper.showTextInputDialog(
+                    ctx,
+                    title: AppStrings.assignPropertyTitle(missingProp.propertyName),
+                    labelText: missingProp.propertyName,
+                    suffixText: missingProp.unitSymbol,
+                    keyboardType: keyboardType,
+                  );
+
+                  if (enteredValue != null && enteredValue.isNotEmpty) {
+                    if (propType == PropertyDataType.string) {
+                      newMag = InstanceMagnitude(
+                        id: const Uuid().v4(),
+                        instanceId: entity.id,
+                        propertyName: missingProp.propertyName,
+                        dataType: AppTechnicalStrings.datatypeStringLower,
+                        stringValue: enteredValue,
+                        magnitudeValue: null,
+                      );
+                    } else if (propType == PropertyDataType.integer) {
+                      final intVal = int.tryParse(enteredValue);
+                      newMag = InstanceMagnitude(
+                        id: const Uuid().v4(),
+                        instanceId: entity.id,
+                        propertyName: missingProp.propertyName,
+                        dataType: AppTechnicalStrings.datatypeIntegerLower,
+                        magnitudeValue: intVal?.toDouble(),
+                        unitSymbol: missingProp.unitSymbol,
+                      );
+                    } else {
+                      final numVal = double.tryParse(enteredValue);
+                      newMag = InstanceMagnitude(
+                        id: const Uuid().v4(),
+                        instanceId: entity.id,
+                        propertyName: missingProp.propertyName,
+                        dataType: AppTechnicalStrings.datatypeRealLower,
+                        magnitudeValue: numVal,
+                        unitSymbol: missingProp.unitSymbol,
+                      );
+                    }
                   }
                 }
               }
