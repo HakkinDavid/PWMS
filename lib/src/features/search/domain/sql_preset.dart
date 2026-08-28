@@ -42,6 +42,12 @@ class SqlPreset {
   static const List<SqlPreset> defaultPresets = [
     // 1. Tablas Base
     SqlPreset(
+      id: AppTechnicalStrings.presetTableEntities,
+      title: AppStrings.sqlPresetInstances,
+      category: SqlPresetCategory.tables,
+      query: AppTechnicalStrings.sqlQueryPresetTableEntities,
+    ),
+    SqlPreset(
       id: AppTechnicalStrings.presetTableCatalog,
       title: AppStrings.tabCatalog,
       category: SqlPresetCategory.tables,
@@ -52,12 +58,6 @@ class SqlPreset {
       title: AppStrings.subspeciesCategory,
       category: SqlPresetCategory.tables,
       query: AppTechnicalStrings.sqlQueryPresetTableSubspecies,
-    ),
-    SqlPreset(
-      id: AppTechnicalStrings.presetTableEntities,
-      title: AppStrings.sqlPresetInstances,
-      category: SqlPresetCategory.tables,
-      query: AppTechnicalStrings.sqlQueryPresetTableEntities,
     ),
     SqlPreset(
       id: AppTechnicalStrings.presetTableLocations,

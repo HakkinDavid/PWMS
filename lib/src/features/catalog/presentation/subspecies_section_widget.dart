@@ -5,6 +5,7 @@ import 'package:platinum_world_management_system/src/core/constants/app_technica
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/subspecies.dart';
@@ -154,7 +155,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                 initiallyExpanded: false,
                 instances: widget.showInstances ? subInstances : null,
                 trailing: widget.isEditing
-                    ? PopupMenuButton<String>(
+                      ? PopupMenuButton<String>(
                         icon: const Icon(Icons.more_vert, size: 18),
                         onSelected: (val) async {
                           if (val == AppTechnicalStrings.actionEdit) {
@@ -165,20 +166,113 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                           } else if (val == AppTechnicalStrings.actionMove) {
                             await TaxonomyOperationsDialog.showMoveSubspeciesDialog(context, ref, sub);
                             if (mounted) _loadSubspecies();
-                          } else if (val == AppTechnicalStrings.actionDelete && canDelete) {
-                            final confirm = await AppConfirmationDialog.showDeleteConfirmation(
-                              context: context,
-                              title: AppStrings.confirmDeleteSubspeciesTitle,
-                              message: AppStrings.confirmDeleteSubspeciesNamed(sub.subspeciesName),
-                            );
-                            if (!confirm) return;
+                          } else if (val == AppTechnicalStrings.actionDelete) {
+                            final catalogRepo = ref.read(catalogRepositoryProvider);
+                            final entityRepo = ref.read(entityRepositoryProvider);
 
-                            try {
-                              final catalogRepo = ref.read(catalogRepositoryProvider);
-                              await catalogRepo.deleteSubspecies(sub.id);
-                              if (mounted) _loadSubspecies();
-                            } catch (e) {
-                              if (context.mounted) AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
+                            if (hasInstances) {
+                              final otherSubs = _subspeciesList.where((s) => s.id != sub.id).toList();
+
+                              final choice = await showDialog<String>(
+                                context: context,
+                                builder: (dialogCtx) => AlertDialog(
+                                  title: const Text(AppStrings.deleteSubspeciesWithInstancesTitle),
+                                  content: Text(AppStrings.deleteSubspeciesWithInstancesPrompt(sub.subspeciesName, subInstances.length)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                                      child: const Text(AppStrings.cancel),
+                                    ),
+                                    if (otherSubs.isNotEmpty)
+                                      OutlinedButton(
+                                        onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionReassign),
+                                        child: const Text(AppStrings.reassignInstancesAction),
+                                      ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCascadeDelete),
+                                      child: const Text(AppStrings.cascadeDeleteInstancesAction, style: TextStyle(color: Colors.white)),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (choice == AppTechnicalStrings.actionReassign) {
+                                if (!context.mounted) return;
+                                final targetSub = await AppWheelPicker.show<Subspecies>(
+                                  context,
+                                  items: otherSubs,
+                                  initialValue: otherSubs.first,
+                                  labelBuilder: (s) => s.subspeciesName,
+                                  title: AppStrings.selectTargetSubspeciesPrompt,
+                                );
+                                if (targetSub != null) {
+                                  await entityRepo.reassignEntitiesSubspecies(sub.id, targetSub.id);
+                                  await catalogRepo.deleteSubspecies(sub.id, allowOnlySubspecies: true);
+                                  ref.invalidate(entityListProvider);
+                                  ref.invalidate(subspeciesListProvider);
+                                  if (mounted) {
+                                    AppToast.showSuccess(context, AppStrings.instancesReassignedSuccess(subInstances.length, targetSub.subspeciesName));
+                                    _loadSubspecies();
+                                  }
+                                }
+                              } else if (choice == AppTechnicalStrings.actionCascadeDelete) {
+                                try {
+                                  await catalogRepo.deleteSubspecies(sub.id, cascadeEntities: true, allowOnlySubspecies: true);
+                                  ref.invalidate(entityListProvider);
+                                  ref.invalidate(subspeciesListProvider);
+                                  if (mounted) {
+                                    AppToast.showSuccess(context, AppStrings.speciesDeletedWithCascadeSuccess(subInstances.length));
+                                    _loadSubspecies();
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
+                                }
+                              }
+                            } else if (_subspeciesList.length <= 1) {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (dialogCtx) => AlertDialog(
+                                  title: const Text(AppStrings.deleteOnlySubspeciesTitle),
+                                  content: Text(AppStrings.deleteOnlySubspeciesPrompt(species?.name ?? AppStrings.unknownSpecies)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(dialogCtx, false),
+                                      child: const Text(AppStrings.cancel),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                                      onPressed: () => Navigator.pop(dialogCtx, true),
+                                      child: const Text(AppStrings.delete, style: TextStyle(color: Colors.white)),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirm == true) {
+                                try {
+                                  await catalogRepo.deleteSubspecies(sub.id, allowOnlySubspecies: true);
+                                  ref.invalidate(subspeciesListProvider);
+                                  if (mounted) _loadSubspecies();
+                                } catch (e) {
+                                  if (context.mounted) AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
+                                }
+                              }
+                            } else {
+                              final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                                context: context,
+                                title: AppStrings.confirmDeleteSubspeciesTitle,
+                                message: AppStrings.confirmDeleteSubspeciesNamed(sub.subspeciesName),
+                              );
+                              if (!confirm) return;
+
+                              try {
+                                await catalogRepo.deleteSubspecies(sub.id);
+                                ref.invalidate(subspeciesListProvider);
+                                if (mounted) _loadSubspecies();
+                              } catch (e) {
+                                if (context.mounted) AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
+                              }
                             }
                           }
                         },
@@ -186,8 +280,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                           const PopupMenuItem(value: AppTechnicalStrings.actionEdit, child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.edit))])),
                           const PopupMenuItem(value: AppTechnicalStrings.actionSeparate, child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.separateInNewSpeciesTitle))])),
                           const PopupMenuItem(value: AppTechnicalStrings.actionMove, child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.moveSubspeciesTitle))])),
-                          if (canDelete)
-                            const PopupMenuItem(value: AppTechnicalStrings.actionDelete, child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Expanded(child: Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)))]))
+                          const PopupMenuItem(value: AppTechnicalStrings.actionDelete, child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Expanded(child: Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)))]))
                         ],
                       )
                     : null,

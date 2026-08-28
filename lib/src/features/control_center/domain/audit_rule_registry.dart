@@ -1,6 +1,7 @@
 import 'audit_rule_strategy.dart';
 import 'strategies/catalog_audit_rules.dart';
 import 'strategies/expiration_audit_rules.dart';
+import 'strategies/governance_audit_rules.dart';
 import 'strategies/numismatic_audit_rules.dart';
 import 'strategies/relational_audit_rules.dart';
 import 'strategies/unit_magnitude_audit_rules.dart';
@@ -41,6 +42,12 @@ class AuditRuleRegistry {
           // 6. Periodic verification sampling
           OwnershipCheckStrategy(),
           LocationVerificationStrategy(),
+          // 7. Governance & catalog integrity rules
+          DuplicateSpeciesStrategy(),
+          DuplicatePhotoStrategy(),
+          SpeciesWithoutSubspeciesStrategy(),
+          UnlinkedInstancesStrategy(),
+          AnomalousExpirationStrategy(),
         ];
 
   List<IAuditRuleStrategy> get strategies => List.unmodifiable(_strategies);

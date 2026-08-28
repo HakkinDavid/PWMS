@@ -37,6 +37,11 @@ enum AuditCardType {
   nonNumericWithUnit,
   negativeMagnitudeViolation,
   propertyNameSuggestionIncongruity,
+  duplicateSpecies,
+  duplicatePhotoAudit,
+  speciesWithoutSubspecies,
+  unlinkedInstances,
+  anomalousExpiration,
 }
 
 class AuditCardData {
@@ -51,6 +56,7 @@ class AuditCardData {
   final CatalogItem? species;
   final Subspecies? subspecies;
   final WorldEntity? entity;
+  final int? totalDetectedCount;
   final Future<bool> Function(BuildContext context, WidgetRef ref) onConfirm;
   final Future<bool> Function(BuildContext context, WidgetRef ref) onFix;
 
@@ -66,6 +72,7 @@ class AuditCardData {
     this.species,
     this.subspecies,
     this.entity,
+    this.totalDetectedCount,
     required this.onConfirm,
     required this.onFix,
   });
@@ -90,10 +97,10 @@ class AuditEvaluationContext {
     required this.allSubspecies,
     required this.allRelations,
     required this.allLocations,
-    required this.allSpeciesMagnitudes,
-    required this.allInstanceMagnitudes,
-    required this.allRequirements,
-    required this.effectiveLocationMap,
+    this.allSpeciesMagnitudes = const [],
+    this.allInstanceMagnitudes = const [],
+    this.allRequirements = const [],
+    this.effectiveLocationMap = const {},
   });
 }
 

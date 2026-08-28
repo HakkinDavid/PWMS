@@ -534,6 +534,11 @@ WHERE id IN (
   static const ruleUnitNonNumericWithUnit = 'unit_non_numeric_with_unit';
   static const ruleUnitNegativeMagnitudeViolation = 'unit_negative_magnitude_violation';
   static const ruleUnitPropertyNameSuggestionIncongruity = 'unit_property_name_suggestion_incongruity';
+  static const ruleGovernanceDuplicateSpecies = 'governance_duplicate_species';
+  static const ruleGovernanceDuplicatePhoto = 'governance_duplicate_photo';
+  static const ruleGovernanceSpeciesWithoutSubspecies = 'governance_species_without_subspecies';
+  static const ruleGovernanceUnlinkedInstances = 'governance_unlinked_instances';
+  static const ruleGovernanceAnomalousExpiration = 'governance_anomalous_expiration';
 
   // ---------------------------------------------------------------------------
   // Action Identifiers & Dialog Returns
@@ -556,6 +561,9 @@ WHERE id IN (
   static const actionChangeUnit = 'change_unit';
   static const actionSetNull = 'set_null';
   static const actionEnterValue = 'enter_value';
+  static const actionMerge = 'merge';
+  static const actionCreateSeparate = 'create_separate';
+  static const actionCascadeDelete = 'cascade_delete';
 
   // ---------------------------------------------------------------------------
   // Audit Card ID Prefixes
@@ -586,6 +594,11 @@ WHERE id IN (
   static const prefixNonNumUnit = 'non_num_unit_';
   static const prefixNegMag = 'neg_mag_';
   static const prefixPropSug = 'prop_sug_';
+  static const prefixDupSp = 'dup_sp_';
+  static const prefixDupPhoto = 'dup_photo_';
+  static const prefixNoSub = 'no_sub_';
+  static const prefixUnlink = 'unlink_';
+  static const prefixAnomExp = 'anom_exp_';
 
   // ---------------------------------------------------------------------------
   // Lowercase Data Types & Technical Values

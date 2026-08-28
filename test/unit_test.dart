@@ -16,6 +16,8 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/sub
 import 'package:platinum_world_management_system/src/features/catalog/domain/species_requirement.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/effective_entity_group.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/entity_display_helper.dart';
+import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
+import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/governance_audit_rules.dart';
 
 void main() {
   late AppDatabase db;
@@ -363,13 +365,13 @@ void main() {
       expect(allGatos.length, equals(2));
     });
 
-    test('9. Single Subspecies Deletion Protection and Non-Object Brand/Barcode Stripping', () async {
+    test('9. Subspecies Deletion and Non-Object Brand/Barcode Handling', () async {
       final plantSpecies = await catalogRepo.getOrCreateSpecies('Planta Rosada', type: 'Ser Vivo', isUnique: false);
       final sub1 = Subspecies(
         id: 'sub-plant-1',
         speciesId: plantSpecies.id,
         subspeciesName: 'Orquídea',
-        brand: 'IllegalBrand',
+        brand: 'SpecialBrand',
         barcode: '123456',
         createdAt: DateTime.now(),
       );
@@ -382,12 +384,12 @@ void main() {
       await catalogRepo.saveSubspecies(sub1);
       await catalogRepo.saveSubspecies(sub2);
 
-      // Verify Brand and Barcode were stripped for Ser Vivo
+      // Verify Brand and Barcode are preserved
       final savedSub1 = await catalogRepo.getSubspeciesById(sub1.id);
-      expect(savedSub1?.brand, isNull);
-      expect(savedSub1?.barcode, isNull);
+      expect(savedSub1?.brand, equals('SpecialBrand'));
+      expect(savedSub1?.barcode, equals('123456'));
 
-      // Verify deletion protection for single subspecies
+      // Verify deletion
       final plantSubspecies = await catalogRepo.getSubspeciesForSpecies(plantSpecies.id);
       expect(plantSubspecies.length, equals(2)); // sub1 + sub2
 
@@ -395,12 +397,16 @@ void main() {
       await catalogRepo.deleteSubspecies(sub1.id);
       expect((await catalogRepo.getSubspeciesForSpecies(plantSpecies.id)).length, equals(1));
 
-      // Attempt deleting the last remaining subspecies (should throw)
+      // Attempt deleting the last remaining subspecies when allowOnlySubspecies is false (should throw)
       final lastSub = (await catalogRepo.getSubspeciesForSpecies(plantSpecies.id)).first;
       expect(
-        () async => await catalogRepo.deleteSubspecies(lastSub.id),
+        () async => await catalogRepo.deleteSubspecies(lastSub.id, allowOnlySubspecies: false),
         throwsA(isA<Exception>()),
       );
+
+      // Deleting last remaining subspecies when allowOnlySubspecies is true succeeds
+      await catalogRepo.deleteSubspecies(lastSub.id, allowOnlySubspecies: true);
+      expect((await catalogRepo.getSubspeciesForSpecies(plantSpecies.id)), isEmpty);
     });
 
     test('10. Deletion Protection for Species/Subspecies with Active Instances & SI Unit Property Name Prepopulation', () async {
@@ -504,7 +510,7 @@ void main() {
       expect(speciesSubspecies.any((s) => s.id == inst.subspeciesId), isTrue);
     });
 
-    test('13. Document Subgroup Allows Brand and Barcode on Subspecies', () async {
+    test('13. Subgroup Subspecies Preserves Brand and Barcode Data When Provided', () async {
       final docSpecies = await catalogRepo.getOrCreateSpecies('Manual de Usuario', type: 'Documento', isUnique: true);
       final docSub = Subspecies(
         id: 'sub-doc-manual-1',
@@ -521,13 +527,12 @@ void main() {
       expect(savedDocSub?.brand, equals('Editorial Tech'));
       expect(savedDocSub?.barcode, equals('9780123456789'));
 
-      // Verify that non-supported subgroups (e.g. Proyecto) still have brand/barcode stripped
       final projectSpecies = await catalogRepo.getOrCreateSpecies('Plan Maestro', type: 'Proyecto', isUnique: true);
       final projectSub = Subspecies(
         id: 'sub-proj-1',
         speciesId: projectSpecies.id,
         subspeciesName: 'Fase 1',
-        brand: 'ProhibitedBrand',
+        brand: 'CustomBrand',
         barcode: '999999',
         createdAt: DateTime.now(),
       );
@@ -535,8 +540,176 @@ void main() {
 
       final savedProjectSub = await catalogRepo.getSubspeciesById(projectSub.id);
       expect(savedProjectSub, isNotNull);
-      expect(savedProjectSub?.brand, isNull);
-      expect(savedProjectSub?.barcode, isNull);
+      expect(savedProjectSub?.brand, equals('CustomBrand'));
+      expect(savedProjectSub?.barcode, equals('999999'));
+    });
+
+    test('14. DuplicateSpeciesStrategy Detects Homonymous Species', () async {
+      final sp1 = CatalogItem(id: 'sp-dup-1', name: 'Tornillo M4', type: 'Objeto', createdAt: DateTime.now());
+      final sp2 = CatalogItem(id: 'sp-dup-2', name: 'tornillo m4 ', type: 'Objeto', createdAt: DateTime.now());
+      await catalogRepo.saveCatalogItem(sp1);
+      await catalogRepo.saveCatalogItem(sp2);
+
+      final allCatalog = await catalogRepo.getAllCatalogItems();
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: [],
+        allCatalog: allCatalog,
+        allSubspecies: [],
+        allLocations: [],
+        allRelations: [],
+      );
+
+      const strategy = DuplicateSpeciesStrategy();
+      final cards = await strategy.evaluate(context);
+      expect(cards.length, equals(1));
+      expect(cards.first.species?.name.toLowerCase(), contains('tornillo m4'));
+    });
+
+    test('15. DuplicatePhotoStrategy Detects Shared Species Photos', () async {
+      final sp1 = CatalogItem(id: 'sp-ph-1', name: 'Especie Foto 1', type: 'Objeto', mainPhotoPath: 'photos/shared.jpg', createdAt: DateTime.now());
+      final sp2 = CatalogItem(id: 'sp-ph-2', name: 'Especie Foto 2', type: 'Objeto', mainPhotoPath: 'photos/shared.jpg', createdAt: DateTime.now());
+      await catalogRepo.saveCatalogItem(sp1);
+      await catalogRepo.saveCatalogItem(sp2);
+
+      final allCatalog = await catalogRepo.getAllCatalogItems();
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: [],
+        allCatalog: allCatalog,
+        allSubspecies: [],
+        allLocations: [],
+        allRelations: [],
+      );
+
+      const strategy = DuplicatePhotoStrategy();
+      final cards = await strategy.evaluate(context);
+      expect(cards.length, equals(2));
+    });
+
+    test('16. SpeciesWithoutSubspeciesStrategy Detects Empty Species', () async {
+      final spEmpty = CatalogItem(id: 'sp-empty-1', name: 'Plantilla Vacía', type: 'Objeto', createdAt: DateTime.now());
+      await catalogRepo.saveCatalogItem(spEmpty);
+
+      final allCatalog = await catalogRepo.getAllCatalogItems();
+      final allSubs = await catalogRepo.getAllSubspecies();
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: [],
+        allCatalog: allCatalog,
+        allSubspecies: allSubs,
+        allLocations: [],
+        allRelations: [],
+      );
+
+      const strategy = SpeciesWithoutSubspeciesStrategy();
+      final cards = await strategy.evaluate(context);
+      expect(cards.any((c) => c.species?.id == spEmpty.id), isTrue);
+    });
+
+    test('17. UnlinkedInstancesStrategy Detects Instances Missing Valid Subspecies', () async {
+      final sp = await catalogRepo.getOrCreateSpecies('Laptop', type: 'Objeto');
+      final node = LocationNode(id: 'node-link-1', name: 'Oficina', createdAt: DateTime.now());
+      await locationRepo.saveNode(node);
+
+      final entity = await entityRepo.instantiateOrMerge(sp.id, node.id, 1);
+      // Update entity to have invalid subspeciesId
+      final invalidEntity = entity.copyWith(subspeciesId: 'invalid-sub-id');
+      await entityRepo.saveEntity(invalidEntity);
+
+      final allEntities = await entityRepo.getAllEntities();
+      final allCatalog = await catalogRepo.getAllCatalogItems();
+      final allSubs = await catalogRepo.getAllSubspecies();
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: allEntities,
+        allCatalog: allCatalog,
+        allSubspecies: allSubs,
+        allLocations: [node],
+        allRelations: [],
+      );
+
+      const strategy = UnlinkedInstancesStrategy();
+      final cards = await strategy.evaluate(context);
+      expect(cards.any((c) => c.entity?.id == entity.id), isTrue);
+    });
+
+    test('18. AnomalousExpirationStrategy Detects Incongruous Expiration Dates', () async {
+      final sp = await catalogRepo.getOrCreateSpecies('Leche Fresca', type: 'Objeto');
+      final node = LocationNode(id: 'node-exp-1', name: 'Cocina', createdAt: DateTime.now());
+      await locationRepo.saveNode(node);
+
+      final entityPast = (await entityRepo.instantiateOrMerge(sp.id, node.id, 1)).copyWith(
+        expirationDate: DateTime.now().subtract(const Duration(days: 365 * 3)),
+      );
+      await entityRepo.saveEntity(entityPast);
+
+      final entityFuture = (await entityRepo.instantiateOrMerge(sp.id, node.id, 1)).copyWith(
+        id: 'ent-future-exp',
+        expirationDate: DateTime.now().add(const Duration(days: 365 * 25)),
+      );
+      await entityRepo.saveEntity(entityFuture);
+
+      final allEntities = await entityRepo.getAllEntities();
+      final allCatalog = await catalogRepo.getAllCatalogItems();
+      final allSubs = await catalogRepo.getAllSubspecies();
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: allEntities,
+        allCatalog: allCatalog,
+        allSubspecies: allSubs,
+        allLocations: [node],
+        allRelations: [],
+      );
+
+      const strategy = AnomalousExpirationStrategy();
+      final cards = await strategy.evaluate(context);
+      expect(cards.length, equals(2));
+    });
+
+    test('19. Cascade Deletion of Species and Subspecies with Instances', () async {
+      final sp = await catalogRepo.getOrCreateSpecies('Monitor Gaming', type: 'Objeto');
+      final sub = Subspecies(id: 'sub-mon-1', speciesId: sp.id, subspeciesName: '240Hz', createdAt: DateTime.now());
+      await catalogRepo.saveSubspecies(sub);
+      final node = LocationNode(id: 'node-del-1', name: 'Escritorio', createdAt: DateTime.now());
+      await locationRepo.saveNode(node);
+      await entityRepo.instantiateOrMerge(sp.id, node.id, 2, subspeciesId: sub.id);
+
+      // Attempting delete without cascade throws exception
+      expect(() => catalogRepo.deleteCatalogItem(sp.id, cascadeEntities: false), throwsException);
+      expect(() => catalogRepo.deleteSubspecies(sub.id, cascadeEntities: false), throwsException);
+
+      // Deleting subspecies with cascadeEntities: true succeeds and removes entities
+      await catalogRepo.deleteSubspecies(sub.id, cascadeEntities: true, allowOnlySubspecies: true);
+      final remainingEntitiesAfterSub = await entityRepo.getAllEntities();
+      expect(remainingEntitiesAfterSub.where((e) => e.subspeciesId == sub.id), isEmpty);
+
+      // Create new sub and entity under sp
+      final sub2 = Subspecies(id: 'sub-mon-2', speciesId: sp.id, subspeciesName: '144Hz', createdAt: DateTime.now());
+      await catalogRepo.saveSubspecies(sub2);
+      await entityRepo.instantiateOrMerge(sp.id, node.id, 1, subspeciesId: sub2.id);
+
+      // Deleting species with cascadeEntities: true succeeds
+      await catalogRepo.deleteCatalogItem(sp.id, cascadeEntities: true);
+      final remainingSpecies = await catalogRepo.getCatalogItemById(sp.id);
+      expect(remainingSpecies, isNull);
+      final remainingEntitiesAfterSpecies = await entityRepo.getAllEntities();
+      expect(remainingEntitiesAfterSpecies.where((e) => e.speciesId == sp.id), isEmpty);
+    });
+
+    test('20. Separate and Move Subspecies Preserves Origin Species in Catalog', () async {
+      final spOrigin = await catalogRepo.getOrCreateSpecies('Herramienta Multifunción', type: 'Objeto');
+      final sub = Subspecies(id: 'sub-tool-1', speciesId: spOrigin.id, subspeciesName: 'Modelo A', createdAt: DateTime.now());
+      await catalogRepo.saveSubspecies(sub);
+
+      // Separate the only subspecies into a new species
+      final separatedSpecies = await catalogRepo.separateSubspecies(sub.id, 'Herramienta Nueva');
+      expect(separatedSpecies.name, equals('Herramienta Nueva'));
+
+      // Verify origin species was NOT deleted and remains as catalog template
+      final fetchedOrigin = await catalogRepo.getCatalogItemById(spOrigin.id);
+      expect(fetchedOrigin, isNotNull);
+      expect(fetchedOrigin?.name, equals('Herramienta Multifunción'));
     });
   });
 }

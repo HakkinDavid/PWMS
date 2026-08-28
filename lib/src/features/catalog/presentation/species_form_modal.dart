@@ -419,6 +419,121 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       );
     }
 
+    final allCatalog = await ref.read(catalogRepositoryProvider).getAllCatalogItems();
+    final existingWithSameName = allCatalog.where((c) => c.id != (widget.initialSpecies?.id ?? AppTechnicalStrings.empty) && c.name.toLowerCase() == name.toLowerCase()).firstOrNull;
+
+    if (existingWithSameName != null) {
+      final choice = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text(AppStrings.duplicateSpeciesDialogTitle),
+          content: Text(AppStrings.duplicateSpeciesPrompt(name)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, AppTechnicalStrings.actionCancel),
+              child: const Text(AppStrings.cancel),
+            ),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(ctx, AppTechnicalStrings.actionCreateSeparate),
+              child: const Text(AppStrings.createSeparateSpeciesAction),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, AppTechnicalStrings.actionMerge),
+              child: const Text(AppStrings.mergeWithExistingSpeciesAction),
+            ),
+          ],
+        ),
+      );
+
+      if (choice == null || choice == AppTechnicalStrings.actionCancel) {
+        return;
+      }
+
+      if (choice == AppTechnicalStrings.actionMerge) {
+        setState(() => _isSaving = true);
+        try {
+          final catalogRepo = ref.read(catalogRepositoryProvider);
+          for (final draft in subspeciesToSave) {
+            final sub = draft.copyWith(speciesId: existingWithSameName.id);
+            await catalogRepo.saveSubspecies(sub);
+          }
+          for (final mag in _magnitudes) {
+            await catalogRepo.addSpeciesMagnitude(
+              existingWithSameName.id,
+              mag.propertyName,
+              dataType: mag.dataType,
+              unitSymbol: mag.unitSymbol,
+            );
+          }
+          ref.invalidate(catalogListProvider);
+          ref.invalidate(subspeciesListProvider);
+          if (mounted) {
+            AppToast.showSuccess(context, AppStrings.duplicateSpeciesMergedSuccess);
+            _forceClose = true;
+            Navigator.pop(context, existingWithSameName);
+          }
+        } catch (e) {
+          if (mounted) {
+            AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
+          }
+        } finally {
+          if (mounted) setState(() => _isSaving = false);
+        }
+        return;
+      }
+    }
+
+    if (_speciesPhotoPath != null && _speciesPhotoPath!.isNotEmpty) {
+      final existingWithSamePhoto = allCatalog.where((c) => c.id != (widget.initialSpecies?.id ?? AppTechnicalStrings.empty) && c.mainPhotoPath == _speciesPhotoPath).firstOrNull;
+      if (existingWithSamePhoto != null && _selectedImage == null) {
+        final photoChoice = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text(AppStrings.duplicatePhotoDialogTitle),
+            content: Text(AppStrings.duplicatePhotoPrompt(existingWithSamePhoto.name)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text(AppStrings.changePhotoAction),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text(AppStrings.reusePhotoAction),
+              ),
+            ],
+          ),
+        );
+        if (photoChoice != true) {
+          return;
+        }
+      }
+    }
+
+    final hasBarcodeOrBrand = !EntityTemplateRegistry.hasBarcodeAndBrand(_selectedType) &&
+        subspeciesToSave.any((s) => (s.brand != null && s.brand!.isNotEmpty) || (s.barcode != null && s.barcode!.isNotEmpty));
+    if (hasBarcodeOrBrand) {
+      final subChoice = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text(AppStrings.subgroupDeviationTitle),
+          content: Text(AppStrings.subgroupDeviationPrompt(_selectedType, AppStrings.brandLabel)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text(AppStrings.correctDataAction),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text(AppStrings.confirmExceptionAction),
+            ),
+          ],
+        ),
+      );
+      if (subChoice != true) {
+        return;
+      }
+    }
+
     setState(() => _isSaving = true);
 
     try {

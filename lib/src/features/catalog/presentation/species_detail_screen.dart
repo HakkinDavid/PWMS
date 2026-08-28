@@ -7,6 +7,8 @@ import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../core/widgets/app_wheel_picker.dart';
+import '../domain/catalog_item.dart';
 import '../../entities/domain/attachment.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import 'species_detail_view.dart';
@@ -146,35 +148,91 @@ class _SpeciesDetailScreenState extends ConsumerState<SpeciesDetailScreen> {
                   ]
                 : [
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.delete_outline,
-                        color: hasExistingInstance ? Colors.grey.shade400 : Colors.redAccent,
+                        color: Colors.redAccent,
                       ),
-                      tooltip: hasExistingInstance
-                          ? AppStrings.cannotDeleteSpeciesWithInstancesError
-                          : AppStrings.delete,
-                      onPressed: hasExistingInstance
-                          ? () {
-                              AppToast.showRestriction(context, AppStrings.cannotDeleteSpeciesWithInstancesError);
-                            }
-                          : () async {
-                              final confirm = await AppConfirmationDialog.showDeleteConfirmation(
-                                context: context,
-                                title: AppStrings.deleteConfirmationTitle,
-                                message: AppStrings.confirmDeleteSpeciesNamed(species.name),
-                              );
+                      tooltip: AppStrings.delete,
+                      onPressed: () async {
+                        if (hasExistingInstance) {
+                          final allCatalog = ref.read(catalogListProvider).asData?.value ?? [];
+                          final otherSpecies = allCatalog.where((c) => c.id != species.id).toList();
 
-                              if (confirm == true) {
-                                try {
-                                  await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
-                                  if (context.mounted) context.pop();
-                                } catch (e) {
-                                  if (context.mounted) {
-                                    AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
-                                  }
-                                }
+                          final choice = await showDialog<String>(
+                            context: context,
+                            builder: (dialogCtx) => AlertDialog(
+                              title: const Text(AppStrings.deleteSpeciesWithInstancesTitle),
+                              content: Text(AppStrings.deleteSpeciesWithInstancesPrompt(species.name, instances.length)),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                                  child: const Text(AppStrings.cancel),
+                                ),
+                                if (otherSpecies.isNotEmpty)
+                                  OutlinedButton(
+                                    onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionReassign),
+                                    child: const Text(AppStrings.reassignInstancesAction),
+                                  ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                                  onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCascadeDelete),
+                                  child: const Text(AppStrings.cascadeDeleteInstancesAction, style: TextStyle(color: Colors.white)),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (choice == AppTechnicalStrings.actionReassign) {
+                            if (!context.mounted) return;
+                            final targetSpecies = await AppWheelPicker.show<CatalogItem>(
+                              context,
+                              items: otherSpecies,
+                              initialValue: otherSpecies.first,
+                              labelBuilder: (c) => c.name,
+                              title: AppStrings.selectTargetSpeciesPrompt,
+                            );
+                            if (targetSpecies != null) {
+                              await ref.read(entityRepositoryProvider).reassignEntitiesSpecies(species.id, targetSpecies.id);
+                              await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
+                              ref.invalidate(entityListProvider);
+                              if (context.mounted) {
+                                AppToast.showSuccess(context, AppStrings.instancesReassignedSuccess(instances.length, targetSpecies.name));
+                                context.pop();
                               }
-                            },
+                            }
+                          } else if (choice == AppTechnicalStrings.actionCascadeDelete) {
+                            try {
+                              await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id, cascadeEntities: true);
+                              ref.invalidate(entityListProvider);
+                              if (context.mounted) {
+                                AppToast.showSuccess(context, AppStrings.speciesDeletedWithCascadeSuccess(instances.length));
+                                context.pop();
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
+                              }
+                            }
+                          }
+                        } else {
+                          final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                            context: context,
+                            title: AppStrings.deleteConfirmationTitle,
+                            message: AppStrings.confirmDeleteSpeciesNamed(species.name),
+                          );
+
+                          if (confirm == true) {
+                            try {
+                              await ref.read(catalogListProvider.notifier).deleteCatalogItem(species.id);
+                              if (context.mounted) context.pop();
+                            } catch (e) {
+                              if (context.mounted) {
+                                AppToast.showError(context, e.toString().replaceAll(AppTechnicalStrings.exceptionPrefix, AppTechnicalStrings.empty));
+                              }
+                            }
+                          }
+                        }
+                      },
                     ),
                     IconButton(
                       icon: const Icon(Icons.check, color: Colors.green),

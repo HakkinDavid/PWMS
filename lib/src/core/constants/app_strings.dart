@@ -542,6 +542,7 @@ class AppStrings {
   static const sectionHistory = 'Historial de Actividad';
   static const sectionContainers = 'Contenedores';
   static const filterByType = 'Tipo';
+  static String filterByTypeWithValue(String type) => '$filterByType: $type';
   static const filterByCategory = 'Categoría';
   static const filterByDate = 'Fecha';
   static const customDateRange = 'Rango personalizado';
@@ -744,6 +745,11 @@ class AppStrings {
   static const subgroupRuleViolationAuditTitle = 'Violación de regla de subgrupo';
   static const missingMandatoryMagnitudesAuditTitle = 'Magnitudes obligatorias faltantes';
   static const anomalousMagnitudeAuditTitle = 'Magnitud anómala detectada';
+  static const duplicateSpeciesAuditTitle = 'Especies homónimas duplicadas';
+  static const duplicatePhotoAuditTitle = 'Fotografía compartida entre especies';
+  static const speciesWithoutSubspeciesAuditTitle = 'Especie sin subespecies';
+  static const unlinkedInstancesAuditTitle = 'Instancias desvinculadas';
+  static const anomalousExpirationAuditTitle = 'Fecha de caducidad anómala';
 
   // Constantes de Formularios Numismáticos
   static const noSelectionPrompt = 'Sin selección';
@@ -1448,6 +1454,50 @@ class AppStrings {
 
   // Attachment Helpers
   static String scanReverseFileName(String speciesName) => '${scanReverseTitle}_$speciesName${AppTechnicalStrings.extJpg}';
+
+  // Governance & Immediate Confirmation Helpers
+  static const duplicateSpeciesDialogTitle = 'Nombre de especie duplicado';
+  static String duplicateSpeciesPrompt(String name) => 'Ya existe una especie registrada con el nombre "$name". ¿Qué deseas hacer?';
+  static const createSeparateSpeciesAction = 'Crear Especie Separada';
+  static const mergeWithExistingSpeciesAction = 'Fusionar con Existente';
+  static const duplicatePhotoDialogTitle = 'Fotografía ya asignada';
+  static String duplicatePhotoPrompt(String speciesName) => 'Esta imagen ya está asignada a la especie "$speciesName". ¿Deseas vincular la misma fotografía o elegir otra?';
+  static const reusePhotoAction = 'Vincular Misma Foto';
+  static const deleteSpeciesWithInstancesTitle = 'Eliminar especie con instancias';
+  static String deleteSpeciesWithInstancesPrompt(String speciesName, int count) => 'La especie "$speciesName" tiene $count instancia(s) activa(s) en el mundo. ¿Qué acción deseas realizar?';
+  static const reassignInstancesAction = 'Reasignar Instancias';
+  static const cascadeDeleteInstancesAction = 'Eliminar Todo en Cascada';
+  static const deleteSubspeciesWithInstancesTitle = 'Eliminar subespecie con instancias';
+  static String deleteSubspeciesWithInstancesPrompt(String subName, int count) => 'La subespecie "$subName" tiene $count instancia(s) activa(s). ¿Qué acción deseas realizar?';
+  static const deleteOnlySubspeciesTitle = 'Eliminar única subespecie';
+  static String deleteOnlySubspeciesPrompt(String speciesName) => 'Esta es la única subespecie de "$speciesName". Si la eliminas, la especie quedará sin subespecies hasta que crees una nueva. ¿Deseas continuar?';
+  static const subgroupDeviationTitle = 'Excepción de regla de subgrupo';
+  static String subgroupDeviationPrompt(String type, String attribute) => 'El subgrupo "$type" habitualmente no utiliza $attribute. ¿Deseas guardar esta excepción o prefieres corregirla?';
+  static const confirmExceptionAction = 'Guardar Excepción';
+  static const correctDataAction = 'Corregir Datos';
+  static String originSpeciesLeftEmptyWarning(String speciesName) => 'La especie de origen "$speciesName" ha quedado sin subespecies y se conservará como plantilla vacía en el catálogo.';
+  static String instancesReassignedSuccess(int count, String target) => '$count instancia(s) reasignada(s) correctamente a "$target".';
+  static String speciesDeletedWithCascadeSuccess(int count) => 'Especie y $count instancia(s) eliminadas correctamente.';
+  static String duplicateSpeciesCardSubtitle(String name, int count) => '$count especies registradas con el nombre "$name".';
+  static String duplicateSpeciesQuestion(String name) => '¿Deseas fusionar las especies homónimas "$name" o renombrar alguna?';
+  static String duplicatePhotoCardSubtitle(String name, String other) => 'La especie "$name" comparte foto con "$other".';
+  static String duplicatePhotoQuestion(String name, String other) => '¿Deseas mantener la misma foto o asignar imágenes separadas para "$name" y "$other"?';
+  static String speciesWithoutSubspeciesSubtitle(String name) => 'La especie "$name" no tiene ninguna subespecie o variante registrada.';
+  static String speciesWithoutSubspeciesQuestion(String name) => '¿Deseas crear la subespecie "Genérica", agregar una nueva subespecie o eliminar "$name"?';
+  static const generateGenericSubspeciesAction = 'Crear "Genérica"';
+  static String unlinkedInstancesSubtitle(String displayName) => 'La instancia "$displayName" no tiene una subespecie válida asociada.';
+  static String unlinkedInstancesQuestion(String displayName) => '¿Deseas reasignar "$displayName" a una subespecie activa o darla de baja?';
+  static String anomalousExpirationSubtitle(String displayName, String date) => 'Fecha de caducidad registrada: $date.';
+  static String anomalousExpirationQuestion(String displayName) => 'La fecha de caducidad para "$displayName" parece incongruente. ¿Deseas ajustarla?';
+  static const reassignToSubspeciesTitle = 'Reasignar a Subespecie';
+  static const reassignToSpeciesTitle = 'Reasignar a Especie';
+  static const selectTargetSubspeciesPrompt = 'Selecciona la subespecie de destino:';
+  static const selectTargetSpeciesPrompt = 'Selecciona la especie de destino:';
+  static const duplicateSpeciesMergedSuccess = 'Especies homónimas fusionadas correctamente.';
+  static const speciesRenamedSuccess = 'Especie renombrada correctamente.';
+  static const photoDecoupledSuccess = 'Fotografía desacoplada para esta especie.';
+  static const genericSubspeciesGeneratedSuccess = 'Subespecie "Genérica" generada correctamente.';
+  static const instanceReassignedSuccess = 'Instancia reasignada correctamente.';
 }
 
 

@@ -192,8 +192,8 @@ class CatalogListNotifier extends StateNotifier<AsyncValue<List<CatalogItem>>> {
     await loadCatalog();
   }
 
-  Future<void> deleteCatalogItem(String id) async {
-    await _repository.deleteCatalogItem(id);
+  Future<void> deleteCatalogItem(String id, {bool cascadeEntities = false}) async {
+    await _repository.deleteCatalogItem(id, cascadeEntities: cascadeEntities);
     await loadCatalog();
   }
 }
@@ -229,9 +229,12 @@ final recentActivityProvider = FutureProvider<List<ActivityEvent>>((ref) async {
 final historySearchQueryProvider = StateProvider<String>((ref) => AppTechnicalStrings.empty);
 final historySelectedCategoryProvider = StateProvider<String>((ref) => AppTechnicalStrings.categoryAll);
 
-final allHistoryEventsStreamProvider = StreamProvider<List<ActivityEvent>>((ref) {
+final allHistoryEventsStreamProvider = FutureProvider<List<ActivityEvent>>((ref) async {
+  ref.watch(entityListProvider);
+  ref.watch(catalogListProvider);
+  ref.watch(locationNodeListProvider);
   final repo = ref.watch(historyRepositoryProvider);
-  return repo.watchAllEvents();
+  return repo.getAllEvents();
 });
 
 final filteredHistoryEventsProvider = Provider<AsyncValue<List<ActivityEvent>>>((ref) {

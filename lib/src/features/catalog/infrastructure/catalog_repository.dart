@@ -143,54 +143,7 @@ class CatalogRepository {
       }
     }
 
-    final nameDup = all.where((c) => c.id != item.id && c.name.toLowerCase() == item.name.trim().toLowerCase()).firstOrNull;
     final isNewSpecies = !all.any((c) => c.id == item.id);
-
-    if (nameDup != null) {
-      if (isNewSpecies) {
-        // Requisito 1: Si se intenta crear una especie existente, integrar subespecies y magnitudes a la especie existente
-        final targetSpeciesId = nameDup.id;
-
-        // Reasignar subespecies que hayan sido vinculadas al id temporal
-        await (_db.update(_db.subspeciesTable)..where((t) => t.speciesId.equals(item.id)))
-            .write(SubspeciesTableCompanion(speciesId: Value(targetSpeciesId)));
-
-        // Integrar magnitudes faltantes
-        final existingMags = nameDup.magnitudes;
-        for (final mag in item.magnitudes) {
-          final isDup = existingMags.any((m) =>
-              m.propertyName.toLowerCase() == mag.propertyName.toLowerCase() &&
-              m.unitSymbol == mag.unitSymbol);
-          if (!isDup) {
-            await addSpeciesMagnitude(
-              targetSpeciesId,
-              mag.propertyName,
-              dataType: mag.dataType,
-              unitSymbol: mag.unitSymbol,
-            );
-          }
-        }
-
-        // Actualizar foto principal o descripción si la existente no tenía
-        if ((nameDup.mainPhotoPath == null || nameDup.mainPhotoPath!.isEmpty) && item.mainPhotoPath != null) {
-          await (_db.update(_db.catalogTable)..where((t) => t.id.equals(targetSpeciesId)))
-              .write(CatalogTableCompanion(mainPhotoPath: Value(item.mainPhotoPath)));
-        }
-
-        final updated = await getCatalogItemById(targetSpeciesId);
-        return updated ?? nameDup;
-      } else {
-        throw Exception(AppStrings.duplicateSpeciesNameError);
-      }
-    }
-
-    if (item.mainPhotoPath != null && item.mainPhotoPath!.isNotEmpty) {
-      final photoDup = all.where((c) => c.id != item.id && c.mainPhotoPath == item.mainPhotoPath).firstOrNull;
-      if (photoDup != null) {
-        throw Exception(AppStrings.duplicatePhotoError);
-      }
-    }
-
     final finalName = item.name.trim();
     final finalType = item.type;
 
@@ -202,9 +155,9 @@ class CatalogRepository {
       mainPhotoPath: Value(item.mainPhotoPath),
       customAttributes: Value(jsonEncode(item.customAttributes)),
       isUnique: Value(item.isUnique),
-      isNonPerishable: Value(finalType == AppStrings.typeObject ? item.isNonPerishable : true),
-      defaultShelfLifeDays: Value(finalType == AppStrings.typeObject && !item.isNonPerishable ? item.defaultShelfLifeDays : null),
-      warningDaysBeforeExpiration: Value(finalType == AppStrings.typeObject && !item.isNonPerishable ? item.warningDaysBeforeExpiration : null),
+      isNonPerishable: Value(item.isNonPerishable),
+      defaultShelfLifeDays: Value(item.defaultShelfLifeDays),
+      warningDaysBeforeExpiration: Value(item.warningDaysBeforeExpiration),
       createdAt: Value(item.createdAt),
     );
     await _db.transaction(() async {
@@ -276,17 +229,30 @@ class CatalogRepository {
     }
   }
 
-  Future<void> deleteCatalogItem(String id) async {
+  Future<void> deleteCatalogItem(String id, {bool cascadeEntities = false}) async {
     final item = await getCatalogItemById(id);
     final entityRows = await (_db.select(_db.entitiesTable)..where((t) => t.speciesId.equals(id))).get();
-    if (entityRows.isNotEmpty) {
+    if (entityRows.isNotEmpty && !cascadeEntities) {
       throw Exception(AppStrings.cannotDeleteSpeciesWithInstancesError);
     }
 
-    await (_db.delete(_db.subspeciesTable)..where((t) => t.speciesId.equals(id))).go();
-    await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(id) | t.requiredSpeciesId.equals(id))).go();
-    await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(id))).go();
-    await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(id))).go();
+    final entityIds = entityRows.map((e) => e.id).toList();
+
+    await _db.transaction(() async {
+      if (cascadeEntities && entityIds.isNotEmpty) {
+        await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.isIn(entityIds))).go();
+        await (_db.delete(_db.relationsTable)..where((t) => t.sourceEntityId.isIn(entityIds) | t.targetEntityId.isIn(entityIds))).go();
+        await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.isIn(entityIds))).go();
+        await (_db.delete(_db.attachmentsTable)..where((t) => t.instanceId.isIn(entityIds))).go();
+        await (_db.delete(_db.entitiesTable)..where((t) => t.speciesId.equals(id))).go();
+      }
+
+      await (_db.delete(_db.subspeciesTable)..where((t) => t.speciesId.equals(id))).go();
+      await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(id) | t.requiredSpeciesId.equals(id))).go();
+      await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(id))).go();
+      await (_db.delete(_db.attachmentsTable)..where((t) => t.speciesId.equals(id) & t.instanceId.isNull())).go();
+      await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(id))).go();
+    });
 
     if (item != null) {
       await _activityLogger.logSpeciesDeleted(id, item.name);
@@ -330,7 +296,7 @@ class CatalogRepository {
     }
   }
 
-  /// Separar Subespecie de su especie original a una nueva especie (Requisitos 2b, 6a, 6b)
+  /// Separar Subespecie de su especie original a una nueva especie
   Future<CatalogItem> separateSubspecies(String subspeciesId, String newSpeciesName) async {
     final sub = await getSubspeciesById(subspeciesId);
     if (sub == null) throw Exception(AppStrings.subspeciesNotFoundError);
@@ -346,7 +312,7 @@ class CatalogRepository {
     );
 
     await _db.transaction(() async {
-      // 6.a: Si la especie de origen tiene la misma foto que la subespecie, limpiar foto de origen
+      // Si la especie de origen tiene la misma foto que la subespecie, limpiar foto de origen
       if (parentSpecies.mainPhotoPath != null && parentSpecies.mainPhotoPath == sub.photoPath) {
         await (_db.update(_db.catalogTable)..where((t) => t.id.equals(parentSpecies.id)))
             .write(const CatalogTableCompanion(mainPhotoPath: Value(null)));
@@ -359,21 +325,13 @@ class CatalogRepository {
       // Mover las entidades correspondientes a la nueva especie
       await (_db.update(_db.entitiesTable)..where((t) => t.subspeciesId.equals(subspeciesId)))
           .write(EntitiesTableCompanion(speciesId: Value(newSpecies.id)));
-
-      // 6.b: Si la especie de origen quedó sin subespecies, eliminarla
-      final remainingSubs = await (_db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(parentSpecies.id))).get();
-      if (remainingSubs.isEmpty) {
-        await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(parentSpecies.id) | t.requiredSpeciesId.equals(parentSpecies.id))).go();
-        await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(parentSpecies.id))).go();
-        await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(parentSpecies.id))).go();
-      }
     });
 
     await _activityLogger.logSubspeciesSeparated(sub.subspeciesName, newSpecies.name, newSpeciesId: newSpecies.id);
     return newSpecies;
   }
 
-  /// Mover Subespecie a otra especie existente (Requisitos 2c y 7)
+  /// Mover Subespecie a otra especie existente
   Future<void> moveSubspecies(String subspeciesId, String targetSpeciesId) async {
     final sub = await getSubspeciesById(subspeciesId);
     if (sub == null) throw Exception(AppStrings.subspeciesNotFoundError);
@@ -389,14 +347,6 @@ class CatalogRepository {
       // Reasignar entidades que pertenecen a esta subespecie
       await (_db.update(_db.entitiesTable)..where((t) => t.subspeciesId.equals(subspeciesId)))
           .write(EntitiesTableCompanion(speciesId: Value(targetSpeciesId)));
-
-      // 7: Si la especie de origen quedó sin subespecies, eliminarla
-      final remainingSubs = await (_db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(oldSpeciesId))).get();
-      if (remainingSubs.isEmpty) {
-        await (_db.delete(_db.speciesRequirementsTable)..where((t) => t.sourceId.equals(oldSpeciesId) | t.requiredSpeciesId.equals(oldSpeciesId))).go();
-        await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(oldSpeciesId))).go();
-        await (_db.delete(_db.catalogTable)..where((t) => t.id.equals(oldSpeciesId))).go();
-      }
     });
 
     if (targetSpecies != null) {
@@ -465,16 +415,8 @@ class CatalogRepository {
       }
     }
 
-    String? finalBrand = subspecies.brand?.trim();
-    String? finalBarcode = subspecies.barcode?.trim();
-
-    if (subspecies.speciesId.isNotEmpty) {
-      final species = await getCatalogItemById(subspecies.speciesId);
-      if (species != null && !EntityTemplateRegistry.hasBarcodeAndBrand(species.type)) {
-        finalBrand = null;
-        finalBarcode = null;
-      }
-    }
+    final finalBrand = subspecies.brand?.trim();
+    final finalBarcode = subspecies.barcode?.trim();
 
     final companion = SubspeciesTableCompanion(
       id: Value(subspecies.id),
@@ -499,9 +441,9 @@ class CatalogRepository {
     }
   }
 
-  Future<void> deleteSubspecies(String id) async {
+  Future<void> deleteSubspecies(String id, {bool cascadeEntities = false, bool allowOnlySubspecies = true}) async {
     final sub = await getSubspeciesById(id);
-    if (sub != null) {
+    if (sub != null && !allowOnlySubspecies) {
       final existingForSpecies = await getSubspeciesForSpecies(sub.speciesId);
       if (existingForSpecies.length <= 1) {
         throw Exception(AppStrings.cannotDeleteOnlySubspecies);
@@ -509,11 +451,24 @@ class CatalogRepository {
     }
 
     final entityRows = await (_db.select(_db.entitiesTable)..where((t) => t.subspeciesId.equals(id))).get();
-    if (entityRows.isNotEmpty) {
+    if (entityRows.isNotEmpty && !cascadeEntities) {
       throw Exception(AppStrings.cannotDeleteSubspeciesWithInstancesError);
     }
 
-    await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();
+    final entityIds = entityRows.map((e) => e.id).toList();
+
+    await _db.transaction(() async {
+      if (cascadeEntities && entityIds.isNotEmpty) {
+        await (_db.delete(_db.instanceLocationsTable)..where((t) => t.instanceId.isIn(entityIds))).go();
+        await (_db.delete(_db.relationsTable)..where((t) => t.sourceEntityId.isIn(entityIds) | t.targetEntityId.isIn(entityIds))).go();
+        await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.isIn(entityIds))).go();
+        await (_db.delete(_db.attachmentsTable)..where((t) => t.instanceId.isIn(entityIds))).go();
+        await (_db.delete(_db.entitiesTable)..where((t) => t.subspeciesId.equals(id))).go();
+      }
+
+      await (_db.delete(_db.subspeciesTable)..where((t) => t.id.equals(id))).go();
+    });
+
     if (sub != null) {
       await _activityLogger.logSubspeciesDeleted(sub.subspeciesName);
     }

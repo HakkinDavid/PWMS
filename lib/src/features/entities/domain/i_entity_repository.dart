@@ -37,6 +37,10 @@ abstract class IEntityRepository {
   });
   Future<void> deleteAttachment(String attachmentId);
 
+  // Reassignment for Governance & Cascade Operations
+  Future<int> reassignEntitiesSubspecies(String oldSubspeciesId, String targetSubspeciesId);
+  Future<int> reassignEntitiesSpecies(String oldSpeciesId, String targetSpeciesId);
+
   // Custom Templates
   Future<List<CustomTemplate>> getAllCustomTemplates();
   Future<void> saveCustomTemplate(CustomTemplate template);

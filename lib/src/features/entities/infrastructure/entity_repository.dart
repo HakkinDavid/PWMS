@@ -544,6 +544,24 @@ class EntityRepository implements IEntityRepository {
   }
 
   @override
+  Future<int> reassignEntitiesSubspecies(String oldSubspeciesId, String targetSubspeciesId) async {
+    return await (_db.update(_db.entitiesTable)..where((t) => t.subspeciesId.equals(oldSubspeciesId)))
+        .write(EntitiesTableCompanion(
+          subspeciesId: Value(targetSubspeciesId),
+          updatedAt: Value(DateTime.now()),
+        ));
+  }
+
+  @override
+  Future<int> reassignEntitiesSpecies(String oldSpeciesId, String targetSpeciesId) async {
+    return await (_db.update(_db.entitiesTable)..where((t) => t.speciesId.equals(oldSpeciesId)))
+        .write(EntitiesTableCompanion(
+          speciesId: Value(targetSpeciesId),
+          updatedAt: Value(DateTime.now()),
+        ));
+  }
+
+  @override
   Future<List<CustomTemplate>> getAllCustomTemplates() async {
     final rows = await _db.select(_db.customTemplatesTable).get();
     return rows.map((r) {

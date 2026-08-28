@@ -142,6 +142,36 @@ class _AddEditSubspeciesModalState extends ConsumerState<AddEditSubspeciesModal>
 
       final targetSpeciesId = widget.species?.id ?? widget.initialSubspecies?.speciesId ?? _selectedSpeciesId ?? AppTechnicalStrings.empty;
 
+      if (targetSpeciesId.isNotEmpty) {
+        final catalogRepo = ref.read(catalogRepositoryProvider);
+        final species = await catalogRepo.getCatalogItemById(targetSpeciesId);
+        if (species != null && !EntityTemplateRegistry.hasBarcodeAndBrand(species.type)) {
+          final hasBrandOrBarcode = _brandController.text.trim().isNotEmpty || _barcodeController.text.trim().isNotEmpty;
+          if (hasBrandOrBarcode) {
+            final subChoice = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text(AppStrings.subgroupDeviationTitle),
+                content: Text(AppStrings.subgroupDeviationPrompt(species.type, AppStrings.brandLabel)),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: const Text(AppStrings.correctDataAction),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text(AppStrings.confirmExceptionAction),
+                  ),
+                ],
+              ),
+            );
+            if (subChoice != true) {
+              return;
+            }
+          }
+        }
+      }
+
       final resultSubspecies = Subspecies(
         id: widget.initialSubspecies?.id ?? const Uuid().v4(),
         speciesId: targetSpeciesId,

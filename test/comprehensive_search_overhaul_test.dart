@@ -11,6 +11,7 @@ import 'package:platinum_world_management_system/src/features/catalog/presentati
 import 'package:platinum_world_management_system/src/features/catalog/presentation/subspecies_tile.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/entity_tile.dart';
 import 'package:platinum_world_management_system/src/features/locations/presentation/location_tile.dart';
+import 'package:platinum_world_management_system/src/features/search/domain/sql_preset.dart';
 import 'package:platinum_world_management_system/src/features/search/presentation/search_screen.dart';
 import 'package:platinum_world_management_system/src/features/search/presentation/sql_editor_full_screen_view.dart';
 
@@ -109,7 +110,7 @@ void main() {
             id: 'mag_val_1',
             instanceId: 'e_coin_1',
             propertyName: 'Valor Facial',
-            dataType: 'REAL',
+            dataType: const Value('REAL'),
             magnitudeValue: const Value(50.0),
             unitSymbol: const Value('MXN'),
           ),

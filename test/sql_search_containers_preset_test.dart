@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
+import 'package:platinum_world_management_system/src/features/entities/presentation/entity_tile.dart';
 import 'package:platinum_world_management_system/src/features/search/presentation/search_screen.dart';
 
 void main() {
@@ -166,7 +167,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify query result renders
-      expect(find.text('entity_backpack'), findsWidgets);
+      expect(find.byType(EntityTile), findsWidgets);
       expect(find.text('Mochila de Viaje'), findsWidgets);
     });
   });

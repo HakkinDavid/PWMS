@@ -875,33 +875,51 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton.icon(
+                  child: OutlinedButton(
                     onPressed: _pickSqlCategory,
-                    icon: const Icon(Icons.category_outlined, size: 16),
-                    label: Text(
-                      _selectedSqlCategory.displayName,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                      overflow: TextOverflow.ellipsis,
-                    ),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.category_outlined, size: 16),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            _selectedSqlCategory.displayName,
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: FilledButton.tonalIcon(
+                  child: FilledButton(
                     onPressed: _pickSqlPreset,
-                    icon: const Icon(Icons.bookmark_border, size: 16),
-                    label: Text(
-                      _selectedSqlPreset.title,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                      overflow: TextOverflow.ellipsis,
-                    ),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.bookmark_border, size: 16),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            _selectedSqlPreset.title,
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -957,18 +975,47 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _isExecutingSql ? null : _executeSqlQuery,
-                    icon: const Icon(Icons.play_arrow_rounded, size: 20),
-                    label: const Text(
-                      AppStrings.executeAction,
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  child: OutlinedButton(
+                    onPressed: _openFullScreenSqlEditor,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.fullscreen, size: 18),
+                        SizedBox(width: 8),
+                        Text(
+                          AppStrings.openSqlEditorAction,
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _isExecutingSql ? null : _executeSqlQuery,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.play_arrow_rounded, size: 20),
+                        SizedBox(width: 6),
+                        Text(
+                          AppStrings.executeAction,
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -1333,7 +1380,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     label: Text(
                       _selectedCatalogTypeFilter == AppStrings.all
                           ? AppStrings.selectTypeFilterPrompt
-                          : '${AppTechnicalStrings.labelWithColon(AppStrings.filterByType)}$_selectedCatalogTypeFilter',
+                          : AppStrings.filterByTypeWithValue(_selectedCatalogTypeFilter),
                       style: const TextStyle(fontSize: 12),
                     ),
                     style: OutlinedButton.styleFrom(

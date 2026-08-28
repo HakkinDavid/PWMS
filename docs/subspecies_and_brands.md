@@ -41,19 +41,19 @@ Subspecies are normalized in a dedicated 1:N relational table:
 
 ---
 
-## 3. Structural Constraints Across Entity Subgroups
+## 3. Structural Capabilities Across Entity Subgroups
 
-Brand and Barcode attributes are strictly constrained by entity subgroup type:
+Brand and Barcode attributes have subgroup-based recommendations:
 
 | Subgroup Type | Brand & Barcode Allowed | Multi-Unit Magnitudes | Always Unique |
 | :--- | :---: | :---: | :---: |
-| **Objeto** | ✅ Yes | ✅ Yes | Optional |
-| **Ser Vivo** | ❌ Stripped automatically | ✅ Yes | Optional |
-| **Documento** | ✅ Yes | ❌ No | ✅ Always Unique |
-| **Proyecto** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
-| **Recuerdo** | ❌ Stripped automatically | ❌ No | ✅ Always Unique |
+| **Objeto** | ✅ Standard | ✅ Yes | Optional |
+| **Ser Vivo** | ⚠️ Exception Confirmation | ✅ Yes | Optional |
+| **Documento** | ✅ Standard | ❌ No | ✅ Always Unique |
+| **Proyecto** | ⚠️ Exception Confirmation | ❌ No | ✅ Always Unique |
+| **Recuerdo** | ⚠️ Exception Confirmation | ❌ No | ✅ Always Unique |
 
-*When saving a subspecies for subgroups that do not support brand and barcode (`Ser Vivo`, `Proyecto`, `Recuerdo`), `saveSubspecies` automatically strips `brand` and `barcode` to `null`.*
+*If a brand or barcode is entered for subgroups that usually do not use them, the user is prompted with an interactive confirmation dialog in real-time (`confirmExceptionAction` vs `correctDataAction`), allowing intentional exceptions without silent nullification.*
 
 ---
 
@@ -93,9 +93,12 @@ To provide maximum clarity to the user, **subspecies information is presented as
 
 ---
 
-## 7. Deletion Protection Rules
+## 7. Deletion & Taxonomy Governance Rules
 
-1. **Subspecies with Active Instances**: A subspecies cannot be deleted if any `WorldEntity` references `subspeciesId == sub.id`.
-2. **Single Subspecies Rule**: The last remaining subspecies of a species cannot be deleted. Every species MUST maintain at least 1 valid subspecies.
-3. **Creation Fallback**: If a species is created without adding draft subspecies, the creation dialog asks for confirmation to include the default `"Genérica"` subspecies in the creation payload (never generated as a database trigger).
+1. **Subspecies with Active Instances**: When deleting a subspecies with active instances, an immediate resolution dialog offers:
+   - **Reassign Instances**: Move existing instances to another variant before deleting.
+   - **Cascade Delete**: Delete the variant and all associated instances in a single atomic transaction.
+2. **Single Subspecies Rule**: Deleting the only remaining subspecies is permitted with a dedicated confirmation warning, leaving the species available in the catalog as a clean template.
+3. **Creation Fallback**: If a species is created without adding draft subspecies, the creation dialog asks for confirmation to include the default `"Genérica"` subspecies in the creation payload.
+4. **Separation & Movement**: Moving or separating subspecies never automatically deletes the origin species; empty species remain preserved as templates in the catalog.
 

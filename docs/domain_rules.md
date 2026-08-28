@@ -33,15 +33,17 @@ The codebase and user interface strictly enforce unambiguous domain terms:
 
 ## 3. Subgroup Matrix & Capabilities
 
-Different entity subgroup types have strict structural constraints enforced across UI and repository logic:
+Entity subgroup types have standard recommended structural traits:
 
 | Subgroup | Barcode & Brand | Multi-Unit Magnitudes | Perishability Allowed | Always Unique |
 | :--- | :---: | :---: | :---: | :---: |
-| **Objeto** | ✅ Yes | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
-| **Ser Vivo** | ❌ Stripped automatically | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
-| **Documento** | ✅ Yes | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
-| **Proyecto** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
-| **Recuerdo** | ❌ Stripped automatically | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
+| **Objeto** | ✅ Standard | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
+| **Ser Vivo** | ⚠️ Exception Confirmation | ✅ Yes | ✅ Perishable or Non-Perishable | Optional |
+| **Documento** | ✅ Standard | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
+| **Proyecto** | ⚠️ Exception Confirmation | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
+| **Recuerdo** | ⚠️ Exception Confirmation | ❌ No | ❌ Non-Perishable only | ✅ Always Unique |
+
+*Deviations (e.g. assigning a brand to a `Ser Vivo` or `Proyecto`) are permitted if explicitly confirmed by the user in an immediate interactive confirmation dialog or audited via the Control Center (`SubgroupRuleViolationStrategy`).*
 
 ---
 
@@ -51,22 +53,28 @@ Different entity subgroup types have strict structural constraints enforced acro
    - Products marked as `isNonPerishable == true` ignore shelf life and do not accept expiration dates.
    - Perishable items (`isNonPerishable == false`) store `defaultShelfLifeDays` and `warningDaysBeforeExpiration`.
 2. **Instance Expiration Dates**:
-   - Instantiated entities of perishable species compute initial `expirationDate = createdAt + defaultShelfLifeDays`.
+   - Instantiated entities of perishable species compute initial suggested `expirationDate = createdAt + defaultShelfLifeDays` (editable by user).
    - Expiration dates can be adjusted per instance or per batch.
-3. **Automated Alert Triggers**:
+3. **Automated Alert Triggers & Audit Strategies**:
    - Entities whose `expirationDate` is past `DateTime.now()` generate `'expired'` alerts in `NotificationsTable`.
    - Entities whose remaining shelf life is within `warningDaysBeforeExpiration` generate `'expiring_soon'` alerts in `NotificationsTable`.
+   - Incongruous or anomalous dates (> 2 years in the past or > 20 years in the future) are audited via `AnomalousExpirationStrategy` in the Control Center.
 
 ---
 
-## 5. Deletion Protection Rules (Species & Subspecies)
+## 5. Deletion & Taxonomy Governance Rules (Species & Subspecies)
 
-1. **Active Instance Protection**:
-   - Neither a species nor a subspecies can be deleted if active instances exist in `EntitiesTable`.
-   - `CatalogRepository.deleteCatalogItem` and `CatalogRepository.deleteSubspecies` check for matching rows in `EntitiesTable` and throw an exception if present.
-   - UI action buttons in `SpeciesDetailScreen` and `SubspeciesSectionWidget` disable delete buttons when instances exist and display `AppToast.showRestriction`.
-2. **Single Subspecies Rule**:
-   - The last remaining subspecies of a species cannot be deleted.
+1. **Active Instance Resolution**:
+   - Deleting a species or subspecies that has active instances triggers an immediate interactive resolution dialog presenting 3 options:
+     1. **Cancel / Retract**: Abort deletion.
+     2. **Reassign Instances**: Select an existing target species or subspecies to transfer active instances before deletion.
+     3. **Cascade Delete**: Permanently delete the species/subspecies along with all associated instances, magnitudes, locations, attachments, and relations in a single atomic transaction (`cascadeEntities: true`).
+2. **Single Subspecies Resolution**:
+   - Deleting the only subspecies of a species is allowed after user confirmation (`deleteOnlySubspeciesTitle`), leaving the species as a clean template in the catalog until new variants are added or audited by `SpeciesWithoutSubspeciesStrategy`.
+3. **Taxonomy Separation & Movement**:
+   - When separating or moving all subspecies out of a species, the origin species is preserved in the catalog as a template, never silently deleted.
+4. **Homonyms & Shared Media Governance**:
+   - Creating homonymous species names or reusing photo paths presents immediate confirmation dialogs (Create Separate vs. Merge, Reuse Photo vs. Choose Another) and is audited in CC via `DuplicateSpeciesStrategy` and `DuplicatePhotoStrategy`.
 
 ---
 

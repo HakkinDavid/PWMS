@@ -244,18 +244,25 @@ class _SqlEditorFullScreenViewState extends State<SqlEditorFullScreenView> {
                 child: SizedBox(
                   width: double.infinity,
                   height: 52,
-                  child: ElevatedButton.icon(
+                  child: ElevatedButton(
                     onPressed: _executeAndReturn,
-                    icon: const Icon(Icons.play_arrow_rounded, size: 22),
-                    label: const Text(
-                      AppStrings.executeSqlAction,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.primary,
                       foregroundColor: Colors.white,
                       elevation: 4,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.play_arrow_rounded, size: 22),
+                        SizedBox(width: 8),
+                        Text(
+                          AppStrings.executeSqlAction,
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ),
                 ),
