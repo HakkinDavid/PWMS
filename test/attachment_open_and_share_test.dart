@@ -210,9 +210,9 @@ void main() {
     await tester.tap(moreVert);
     await tester.pumpAndSettle();
 
-    // Verify all options are present
-    expect(find.text(AppStrings.openExternallyAction), findsOneWidget);
-    expect(find.text(AppStrings.shareAction), findsOneWidget);
+    // Verify ONLY edit actions are present in edit mode (no open or share buttons)
+    expect(find.text(AppStrings.openExternallyAction), findsNothing);
+    expect(find.text(AppStrings.shareAction), findsNothing);
     expect(find.text(AppStrings.replaceFileAction), findsOneWidget);
     expect(find.text(AppStrings.renameAction), findsOneWidget);
     expect(find.text(AppStrings.delete), findsOneWidget);
@@ -275,9 +275,9 @@ void main() {
     await tester.tap(moreVert);
     await tester.pumpAndSettle();
 
-    // Verify edit actions are present in edit mode
-    expect(find.text(AppStrings.openExternallyAction), findsOneWidget);
-    expect(find.text(AppStrings.shareAction), findsOneWidget);
+    // Verify edit actions are present in edit mode (no open or share)
+    expect(find.text(AppStrings.openExternallyAction), findsNothing);
+    expect(find.text(AppStrings.shareAction), findsNothing);
     expect(find.text(AppStrings.replaceFileAction), findsOneWidget);
     expect(find.text(AppStrings.renameAction), findsOneWidget);
     expect(find.text(AppStrings.delete), findsOneWidget);

@@ -1231,28 +1231,29 @@ class _AttachmentListTileState extends ConsumerState<_AttachmentListTile> {
               }
             },
             itemBuilder: (ctx) => [
-              const PopupMenuItem(
-                value: AppTechnicalStrings.actionOpenExternally,
-                child: Row(
-                  children: [
-                    Icon(Icons.open_in_new, size: 16, color: Colors.blueAccent),
-                    SizedBox(width: 8),
-                    Text(AppStrings.openExternallyAction, style: TextStyle(fontSize: 12)),
-                  ],
+              if (!widget.isEditable) ...[
+                const PopupMenuItem(
+                  value: AppTechnicalStrings.actionOpenExternally,
+                  child: Row(
+                    children: [
+                      Icon(Icons.open_in_new, size: 16, color: Colors.blueAccent),
+                      SizedBox(width: 8),
+                      Text(AppStrings.openExternallyAction, style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuItem(
-                value: AppTechnicalStrings.actionShare,
-                child: Row(
-                  children: [
-                    Icon(Icons.share, size: 16, color: Colors.teal),
-                    SizedBox(width: 8),
-                    Text(AppStrings.shareAction, style: TextStyle(fontSize: 12)),
-                  ],
+                const PopupMenuItem(
+                  value: AppTechnicalStrings.actionShare,
+                  child: Row(
+                    children: [
+                      Icon(Icons.share, size: 16, color: Colors.teal),
+                      SizedBox(width: 8),
+                      Text(AppStrings.shareAction, style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
-              ),
+              ],
               if (widget.isEditable) ...[
-                const PopupMenuDivider(height: 1),
                 const PopupMenuItem(
                   value: AppTechnicalStrings.actionReplace,
                   child: Row(
