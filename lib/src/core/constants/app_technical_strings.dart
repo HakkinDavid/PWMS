@@ -266,6 +266,9 @@ WHERE id IN (
   static const sideAmbos = 'ambos';
   static const actionReplace = 'replace';
   static const actionRename = 'rename';
+  static const actionOpen = 'open';
+  static const actionOpenExternally = 'open_externally';
+  static const actionShare = 'share';
   static const genericSubspeciesLower = 'genérica';
   static const dbFileName = 'world_database.sqlite';
   static const backupManifestFile = 'manifest.json';

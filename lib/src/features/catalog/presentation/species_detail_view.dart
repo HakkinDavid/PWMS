@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
@@ -9,6 +10,7 @@ import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../entities/domain/attachment.dart';
+import '../../entities/domain/entity_photo_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/presentation/entity_photo_thumbnail.dart';
 import '../domain/catalog_item.dart';
@@ -369,6 +371,54 @@ class SpeciesDetailView extends ConsumerWidget {
     }
   }
 
+  Future<void> _openExternally(BuildContext context, WidgetRef ref, Attachment att) async {
+    final storage = ref.read(fileStorageServiceProvider);
+    final absPath = await storage.getAbsolutePath(att.filePath);
+    final file = File(absPath);
+
+    if (!file.existsSync()) {
+      if (context.mounted) {
+        AppToast.showError(context, AppStrings.physicalFileNotFoundInStorage);
+      }
+      return;
+    }
+
+    try {
+      final result = await OpenFilex.open(absPath);
+      if (result.type != ResultType.done && result.message.isNotEmpty && context.mounted) {
+        AppToast.showError(context, AppStrings.errorOpeningFile(result.message));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        AppToast.showError(context, AppStrings.errorOpeningFile(e.toString()));
+      }
+    }
+  }
+
+  Future<void> _shareAttachment(BuildContext context, WidgetRef ref, Attachment att) async {
+    final storage = ref.read(fileStorageServiceProvider);
+    final absPath = await storage.getAbsolutePath(att.filePath);
+    final file = File(absPath);
+
+    if (!file.existsSync()) {
+      if (context.mounted) {
+        AppToast.showError(context, AppStrings.physicalFileNotFoundInStorage);
+      }
+      return;
+    }
+
+    try {
+      await Share.shareXFiles(
+        [XFile(absPath, name: att.fileName)],
+        text: att.fileName,
+      );
+    } catch (e) {
+      if (context.mounted) {
+        AppToast.showError(context, AppStrings.errorSharingFile(e.toString()));
+      }
+    }
+  }
+
   Future<void> _openAttachment(BuildContext context, WidgetRef ref, Attachment att) async {
     final storage = ref.read(fileStorageServiceProvider);
     final absPath = await storage.getAbsolutePath(att.filePath);
@@ -412,11 +462,43 @@ class SpeciesDetailView extends ConsumerWidget {
                     ),
                   ),
                   Positioned(
-                    top: 16,
-                    left: 16,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 28),
-                      onPressed: () => Navigator.pop(ctx),
+                    top: 8,
+                    left: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white, size: 24),
+                            tooltip: AppStrings.close,
+                            onPressed: () => Navigator.pop(ctx),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              att.fileName,
+                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.open_in_new, color: Colors.white, size: 22),
+                            tooltip: AppStrings.openExternallyTooltip,
+                            onPressed: () => _openExternally(context, ref, att),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.share, color: Colors.white, size: 22),
+                            tooltip: AppStrings.shareAttachmentTooltip,
+                            onPressed: () => _shareAttachment(context, ref, att),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -426,7 +508,7 @@ class SpeciesDetailView extends ConsumerWidget {
         );
       }
     } else {
-      await OpenFilex.open(absPath);
+      await _openExternally(context, ref, att);
     }
   }
 
@@ -502,30 +584,132 @@ class SpeciesDetailView extends ConsumerWidget {
             children: [
               // Photo Box Preview Card with Subspecies Fallback to Species Photo / Instance Attachment
               Center(
-                child: Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: theme.dividerColor, width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(20),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: EntityPhotoThumbnail(
-                    species: species,
-                    subspecies: subspecies,
-                    instanceId: instanceId,
-                    size: 140,
-                    borderRadius: BorderRadius.circular(18),
-                    useTextBadgeFallback: false,
-                    fallbackIcon: template.icon,
-                    fit: BoxFit.contain,
+                child: InkWell(
+                  onTap: () async {
+                    final resolvedPhotoFuture = resolveEffectiveEntityPhotoPath(
+                      ref,
+                      subspecies: subspecies,
+                      species: species,
+                      instanceId: instanceId,
+                    );
+                    final relPath = await resolvedPhotoFuture;
+                    if (relPath != null && relPath.isNotEmpty && context.mounted) {
+                      final storage = ref.read(fileStorageServiceProvider);
+                      final absPath = await storage.getAbsolutePath(relPath);
+                      final file = File(absPath);
+                      if (file.existsSync() && context.mounted) {
+                        final photoTitle = subspecies?.subspeciesName ?? species.name;
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => Dialog(
+                            backgroundColor: Colors.black,
+                            insetPadding: EdgeInsets.zero,
+                            child: SafeArea(
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  InteractiveViewer(
+                                    child: Image.file(
+                                      file,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (_, __, ___) => const Center(
+                                        child: Icon(Icons.broken_image_outlined, color: Colors.white70, size: 48),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 8,
+                                    left: 8,
+                                    right: 8,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.close, color: Colors.white, size: 24),
+                                            tooltip: AppStrings.close,
+                                            onPressed: () => Navigator.pop(ctx),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              photoTitle,
+                                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.open_in_new, color: Colors.white, size: 22),
+                                            tooltip: AppStrings.openExternallyTooltip,
+                                            onPressed: () async {
+                                              try {
+                                                final res = await OpenFilex.open(absPath);
+                                                if (res.type != ResultType.done && res.message.isNotEmpty && context.mounted) {
+                                                  AppToast.showError(context, AppStrings.errorOpeningFile(res.message));
+                                                }
+                                              } catch (e) {
+                                                if (context.mounted) {
+                                                  AppToast.showError(context, AppStrings.errorOpeningFile(e.toString()));
+                                                }
+                                              }
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.share, color: Colors.white, size: 22),
+                                            tooltip: AppStrings.shareAttachmentTooltip,
+                                            onPressed: () async {
+                                              try {
+                                                await Share.shareXFiles([XFile(absPath, name: photoTitle)], text: photoTitle);
+                                              } catch (e) {
+                                                if (context.mounted) {
+                                                  AppToast.showError(context, AppStrings.errorSharingFile(e.toString()));
+                                                }
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    width: 140,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: theme.cardColor,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: theme.dividerColor, width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(20),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: EntityPhotoThumbnail(
+                      species: species,
+                      subspecies: subspecies,
+                      instanceId: instanceId,
+                      size: 140,
+                      borderRadius: BorderRadius.circular(18),
+                      useTextBadgeFallback: false,
+                      fallbackIcon: template.icon,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
@@ -679,6 +863,8 @@ class SpeciesDetailView extends ConsumerWidget {
                     currentAttachments: workingSpeciesAttachments ?? speciesAttachmentsAsync.asData?.value ?? [],
                   ),
                   onOpen: (att) => _openAttachment(context, ref, att),
+                  onOpenExternally: (att) => _openExternally(context, ref, att),
+                  onShare: (att) => _shareAttachment(context, ref, att),
                   onReplace: (att) => _handleReplaceAttachment(context, ref, att),
                   onRename: (att) => _handleRenameAttachment(context, ref, att),
                   onDelete: (att) => _confirmAndDeleteAttachment(context, ref, att),
@@ -719,6 +905,8 @@ class SpeciesDetailView extends ConsumerWidget {
         currentAttachments: instanceAtts,
       ),
       onOpen: (att) => _openAttachment(context, ref, att),
+      onOpenExternally: (att) => _openExternally(context, ref, att),
+      onShare: (att) => _shareAttachment(context, ref, att),
       onReplace: (att) => _handleReplaceAttachment(context, ref, att),
       onRename: (att) => _handleRenameAttachment(context, ref, att),
       onDelete: (att) => _confirmAndDeleteAttachment(context, ref, att),
@@ -733,6 +921,8 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
   final bool isInstanceView;
   final VoidCallback onAdd;
   final Function(Attachment) onOpen;
+  final Function(Attachment) onOpenExternally;
+  final Function(Attachment) onShare;
   final Function(Attachment) onReplace;
   final Function(Attachment) onRename;
   final Function(Attachment) onDelete;
@@ -744,6 +934,8 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
     required this.isInstanceView,
     required this.onAdd,
     required this.onOpen,
+    required this.onOpenExternally,
+    required this.onShare,
     required this.onReplace,
     required this.onRename,
     required this.onDelete,
@@ -845,165 +1037,258 @@ class _UnifiedAttachmentGroupWidget extends StatelessWidget {
                         AppTechnicalStrings.extBmp,
                       ].any((ext) => att.filePath.toLowerCase().endsWith(ext));
 
-                  return Consumer(
-                    builder: (context, ref, _) {
-                      return FutureBuilder<String>(
-                        future: ref.read(fileStorageServiceProvider).getAbsolutePath(att.filePath),
-                        builder: (context, snapshot) {
-                          final absPath = snapshot.data ?? AppTechnicalStrings.empty;
-                          final fileExists = absPath.isNotEmpty && File(absPath).existsSync();
-
-                          return ListTile(
-                            dense: true,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                            leading: Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                color: fileExists
-                                    ? (isImage ? Colors.blue.withAlpha(20) : Colors.amber.withAlpha(20))
-                                    : Colors.red.withAlpha(20),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: !fileExists
-                                    ? const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 20)
-                                    : (isImage
-                                        ? ClipRRect(
-                                            borderRadius: BorderRadius.circular(8),
-                                            child: Image.file(
-                                              File(absPath),
-                                              fit: BoxFit.cover,
-                                              width: 38,
-                                              height: 38,
-                                              errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 20, color: Colors.blue),
-                                            ),
-                                          )
-                                        : const Icon(Icons.picture_as_pdf, color: Colors.amber, size: 20)),
-                              ),
-                            ),
-                            title: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    att.fileName,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: fileExists ? null : Colors.red.shade700,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                if (isInstanceView) ...[
-                                  const SizedBox(width: 6),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                                    decoration: BoxDecoration(
-                                      color: isSpeciesLevel
-                                          ? theme.colorScheme.primary.withAlpha(25)
-                                          : Colors.teal.withAlpha(25),
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                        color: isSpeciesLevel
-                                            ? theme.colorScheme.primary.withAlpha(90)
-                                            : Colors.teal.withAlpha(90),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      isSpeciesLevel ? AppStrings.speciesLabel : AppStrings.instanceLabel,
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.bold,
-                                        color: isSpeciesLevel ? theme.colorScheme.primary : Colors.teal.shade800,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                            subtitle: fileExists
-                                ? Text(
-                                    att.createdAt.toString().split(AppTechnicalStrings.dot).first,
-                                    style: const TextStyle(fontSize: 10, color: Colors.grey),
-                                  )
-                                : const Text(
-                                    AppStrings.physicalFileNotFound,
-                                    style: TextStyle(fontSize: 11, color: Colors.redAccent, fontWeight: FontWeight.bold),
-                                  ),
-                            onTap: () => onOpen(att),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.open_in_new, size: 18),
-                                  tooltip: AppStrings.openAttachmentTooltip,
-                                  onPressed: () => onOpen(att),
-                                ),
-                                if (isEditable) ...[
-                                  PopupMenuButton<String>(
-                                    icon: const Icon(Icons.more_vert, size: 18),
-                                    tooltip: AppStrings.attachmentOptionsTooltip,
-                                    onSelected: (value) {
-                                      switch (value) {
-                                        case AppTechnicalStrings.actionReplace:
-                                          onReplace(att);
-                                          break;
-                                        case AppTechnicalStrings.actionRename:
-                                          onRename(att);
-                                          break;
-                                        case AppTechnicalStrings.actionDelete:
-                                          onDelete(att);
-                                          break;
-                                      }
-                                    },
-                                    itemBuilder: (ctx) => [
-                                      const PopupMenuItem(
-                                        value: AppTechnicalStrings.actionReplace,
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.sync, size: 16, color: Colors.blue),
-                                            SizedBox(width: 8),
-                                            Text(AppStrings.replaceFileAction, style: TextStyle(fontSize: 12)),
-                                          ],
-                                        ),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: AppTechnicalStrings.actionRename,
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.edit_outlined, size: 16, color: Colors.amber),
-                                            SizedBox(width: 8),
-                                            Text(AppStrings.renameAction, style: TextStyle(fontSize: 12)),
-                                          ],
-                                        ),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: AppTechnicalStrings.actionDelete,
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
-                                            SizedBox(width: 8),
-                                            Text(AppStrings.delete, style: TextStyle(fontSize: 12, color: Colors.redAccent)),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
+                  return _AttachmentListTile(
+                    attachment: att,
+                    isInstanceView: isInstanceView,
+                    isEditable: isEditable,
+                    isImage: isImage,
+                    onOpen: () => onOpen(att),
+                    onOpenExternally: () => onOpenExternally(att),
+                    onShare: () => onShare(att),
+                    onReplace: () => onReplace(att),
+                    onRename: () => onRename(att),
+                    onDelete: () => onDelete(att),
                   );
                 },
               ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AttachmentListTile extends ConsumerStatefulWidget {
+  final Attachment attachment;
+  final bool isInstanceView;
+  final bool isEditable;
+  final bool isImage;
+  final VoidCallback onOpen;
+  final VoidCallback onOpenExternally;
+  final VoidCallback onShare;
+  final VoidCallback onReplace;
+  final VoidCallback onRename;
+  final VoidCallback onDelete;
+
+  const _AttachmentListTile({
+    required this.attachment,
+    required this.isInstanceView,
+    required this.isEditable,
+    required this.isImage,
+    required this.onOpen,
+    required this.onOpenExternally,
+    required this.onShare,
+    required this.onReplace,
+    required this.onRename,
+    required this.onDelete,
+  });
+
+  @override
+  ConsumerState<_AttachmentListTile> createState() => _AttachmentListTileState();
+}
+
+class _AttachmentListTileState extends ConsumerState<_AttachmentListTile> {
+  late Future<String> _absPathFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _absPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(widget.attachment.filePath);
+  }
+
+  @override
+  void didUpdateWidget(covariant _AttachmentListTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.attachment.filePath != widget.attachment.filePath) {
+      _absPathFuture = ref.read(fileStorageServiceProvider).getAbsolutePath(widget.attachment.filePath);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final att = widget.attachment;
+    final isSpeciesLevel = att.instanceId == null || att.instanceId!.isEmpty;
+
+    return FutureBuilder<String>(
+      future: _absPathFuture,
+      builder: (context, snapshot) {
+        final absPath = snapshot.data ?? AppTechnicalStrings.empty;
+        final fileExists = absPath.isNotEmpty && File(absPath).existsSync();
+
+        return ListTile(
+          dense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          leading: Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: fileExists
+                  ? (widget.isImage ? Colors.blue.withAlpha(20) : Colors.amber.withAlpha(20))
+                  : Colors.red.withAlpha(20),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: !fileExists
+                  ? const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 20)
+                  : (widget.isImage
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            File(absPath),
+                            fit: BoxFit.cover,
+                            width: 38,
+                            height: 38,
+                            errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 20, color: Colors.blue),
+                          ),
+                        )
+                      : const Icon(Icons.picture_as_pdf, color: Colors.amber, size: 20)),
+            ),
+          ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  att.fileName,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: fileExists ? null : Colors.red.shade700,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (widget.isInstanceView) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: isSpeciesLevel
+                        ? theme.colorScheme.primary.withAlpha(25)
+                        : Colors.teal.withAlpha(25),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: isSpeciesLevel
+                          ? theme.colorScheme.primary.withAlpha(90)
+                          : Colors.teal.withAlpha(90),
+                    ),
+                  ),
+                  child: Text(
+                    isSpeciesLevel ? AppStrings.speciesLabel : AppStrings.instanceLabel,
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      color: isSpeciesLevel ? theme.colorScheme.primary : Colors.teal.shade800,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          subtitle: fileExists
+              ? Text(
+                  att.createdAt.toString().split(AppTechnicalStrings.dot).first,
+                  style: const TextStyle(fontSize: 10, color: Colors.grey),
+                )
+              : const Text(
+                  AppStrings.physicalFileNotFound,
+                  style: TextStyle(fontSize: 11, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                ),
+          onTap: widget.onOpen,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.share_outlined, size: 18),
+                tooltip: AppStrings.shareAttachmentTooltip,
+                onPressed: widget.onShare,
+              ),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, size: 18),
+                tooltip: AppStrings.attachmentOptionsTooltip,
+                onSelected: (value) {
+                  switch (value) {
+                    case AppTechnicalStrings.actionOpen:
+                      widget.onOpen();
+                      break;
+                    case AppTechnicalStrings.actionOpenExternally:
+                      widget.onOpenExternally();
+                      break;
+                    case AppTechnicalStrings.actionShare:
+                      widget.onShare();
+                      break;
+                    case AppTechnicalStrings.actionReplace:
+                      widget.onReplace();
+                      break;
+                    case AppTechnicalStrings.actionRename:
+                      widget.onRename();
+                      break;
+                    case AppTechnicalStrings.actionDelete:
+                      widget.onDelete();
+                      break;
+                  }
+                },
+                itemBuilder: (ctx) => [
+                  const PopupMenuItem(
+                    value: AppTechnicalStrings.actionOpenExternally,
+                    child: Row(
+                      children: [
+                        Icon(Icons.open_in_new, size: 16, color: Colors.blueAccent),
+                        SizedBox(width: 8),
+                        Text(AppStrings.openExternallyAction, style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: AppTechnicalStrings.actionShare,
+                    child: Row(
+                      children: [
+                        Icon(Icons.share, size: 16, color: Colors.teal),
+                        SizedBox(width: 8),
+                        Text(AppStrings.shareAction, style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  if (widget.isEditable) ...[
+                    const PopupMenuDivider(height: 1),
+                    const PopupMenuItem(
+                      value: AppTechnicalStrings.actionReplace,
+                      child: Row(
+                        children: [
+                          Icon(Icons.sync, size: 16, color: Colors.blue),
+                          SizedBox(width: 8),
+                          Text(AppStrings.replaceFileAction, style: TextStyle(fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: AppTechnicalStrings.actionRename,
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit_outlined, size: 16, color: Colors.amber),
+                          SizedBox(width: 8),
+                          Text(AppStrings.renameAction, style: TextStyle(fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: AppTechnicalStrings.actionDelete,
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
+                          SizedBox(width: 8),
+                          Text(AppStrings.delete, style: TextStyle(fontSize: 12, color: Colors.redAccent)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -11,7 +11,7 @@ import '../domain/entity_photo_helper.dart';
 
 /// Unified widget for resolving, caching, and displaying entity, subspecies, and species photos
 /// with consistent fallback avatars and error handling.
-class EntityPhotoThumbnail extends ConsumerWidget {
+class EntityPhotoThumbnail extends ConsumerStatefulWidget {
   final CatalogItem? species;
   final Subspecies? subspecies;
   final String? subspeciesId;
@@ -46,86 +46,89 @@ class EntityPhotoThumbnail extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final effectiveWidth = width ?? size;
-    final effectiveHeight = height ?? size;
-    final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(12);
-    final speciesName = species?.name ?? AppStrings.typeObject;
+  ConsumerState<EntityPhotoThumbnail> createState() => _EntityPhotoThumbnailState();
+}
 
-    // 1. Resolve subspecies if not directly provided
-    final effectiveSubspecies = subspecies ??
-        (subspeciesId != null
-            ? (ref.watch(subspeciesListProvider).asData?.value.where((s) => s.id == subspeciesId).firstOrNull)
-            : null);
+class _EntityPhotoThumbnailState extends ConsumerState<EntityPhotoThumbnail> {
+  Future<String?>? _photoPathFuture;
 
-    final resolvedSubspeciesFuture = (subspecies == null && effectiveSubspecies == null && subspeciesId != null)
-        ? ref.read(catalogRepositoryProvider).getSubspeciesById(subspeciesId!)
-        : Future.value(effectiveSubspecies);
+  @override
+  void initState() {
+    super.initState();
+    _loadPhotoPath();
+  }
 
-    // 2. Watch instance attachments if instanceId is present for reactive updates
-    final attachmentsState = (instanceId != null && instanceId!.isNotEmpty)
-        ? ref.watch(instanceAttachmentsProvider(instanceId!))
-        : null;
+  @override
+  void didUpdateWidget(covariant EntityPhotoThumbnail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.species?.id != widget.species?.id ||
+        oldWidget.subspecies?.id != widget.subspecies?.id ||
+        oldWidget.subspeciesId != widget.subspeciesId ||
+        oldWidget.instanceId != widget.instanceId ||
+        oldWidget.photoPath != widget.photoPath) {
+      _loadPhotoPath();
+    }
+  }
 
-    final attachedImagePath = attachmentsState?.asData?.value.where((a) {
-      if (a.fileType == AppTechnicalStrings.fileTypeImage) return true;
-      final path = a.filePath.toLowerCase();
-      return path.endsWith(AppTechnicalStrings.extJpg) ||
-          path.endsWith(AppTechnicalStrings.extJpeg) ||
-          path.endsWith(AppTechnicalStrings.extPng) ||
-          path.endsWith(AppTechnicalStrings.extWebp) ||
-          path.endsWith(AppTechnicalStrings.extHeic) ||
-          path.endsWith(AppTechnicalStrings.extBmp);
-    }).firstOrNull?.filePath;
+  void _loadPhotoPath() {
+    _photoPathFuture = _resolvePath();
+  }
+
+  Future<String?> _resolvePath() async {
+    if (widget.photoPath != null && widget.photoPath!.isNotEmpty) {
+      final storage = ref.read(fileStorageServiceProvider);
+      return storage.getAbsolutePath(widget.photoPath!);
+    }
+
+    Subspecies? targetSub = widget.subspecies;
+    if (targetSub == null && widget.subspeciesId != null) {
+      final subList = ref.read(subspeciesListProvider).asData?.value;
+      targetSub = subList?.where((s) => s.id == widget.subspeciesId).firstOrNull;
+      if (targetSub == null) {
+        targetSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(widget.subspeciesId!);
+      }
+    }
+
+    final relPath = await resolveEffectiveEntityPhotoPath(
+      ref,
+      subspecies: targetSub,
+      species: widget.species,
+      instanceId: widget.instanceId,
+    );
+
+    if (relPath != null && relPath.isNotEmpty) {
+      final storage = ref.read(fileStorageServiceProvider);
+      return storage.getAbsolutePath(relPath);
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveWidth = widget.width ?? widget.size;
+    final effectiveHeight = widget.height ?? widget.size;
+    final effectiveBorderRadius = widget.borderRadius ?? BorderRadius.circular(12);
+    final speciesName = widget.species?.name ?? AppStrings.typeObject;
 
     return ClipRRect(
       borderRadius: effectiveBorderRadius,
       child: SizedBox(
         width: effectiveWidth,
         height: effectiveHeight,
-        child: FutureBuilder<Subspecies?>(
-          future: resolvedSubspeciesFuture,
-          builder: (context, subSnapshot) {
-            final currentSub = subSnapshot.data ?? effectiveSubspecies;
-
-            final effectivePhotoFuture = (photoPath != null && photoPath!.isNotEmpty)
-                ? Future.value(photoPath)
-                : (attachedImagePath != null && attachedImagePath.isNotEmpty)
-                    ? Future.value(attachedImagePath)
-                    : resolveEffectiveEntityPhotoPath(
-                        ref,
-                        subspecies: currentSub,
-                        species: species,
-                        instanceId: instanceId,
-                      );
-
-            return FutureBuilder<String?>(
-              future: effectivePhotoFuture,
-              builder: (context, photoSnapshot) {
-                final relPath = photoSnapshot.data;
-
-                if (relPath != null && relPath.isNotEmpty) {
-                  return FutureBuilder<String>(
-                    future: ref.read(fileStorageServiceProvider).getAbsolutePath(relPath),
-                    builder: (context, absSnapshot) {
-                      final absPath = absSnapshot.data ?? AppTechnicalStrings.empty;
-                      if (absPath.isNotEmpty && File(absPath).existsSync()) {
-                        return Image.file(
-                          File(absPath),
-                          width: effectiveWidth,
-                          height: effectiveHeight,
-                          fit: fit,
-                          errorBuilder: (_, __, ___) => _buildFallback(context, speciesName, effectiveWidth, effectiveHeight),
-                        );
-                      }
-                      return _buildFallback(context, speciesName, effectiveWidth, effectiveHeight);
-                    },
-                  );
-                }
-
-                return _buildFallback(context, speciesName, effectiveWidth, effectiveHeight);
-              },
-            );
+        child: FutureBuilder<String?>(
+          future: _photoPathFuture,
+          builder: (context, snapshot) {
+            final absPath = snapshot.data;
+            if (absPath != null && absPath.isNotEmpty && File(absPath).existsSync()) {
+              return Image.file(
+                File(absPath),
+                width: effectiveWidth,
+                height: effectiveHeight,
+                fit: widget.fit,
+                errorBuilder: (_, __, ___) => _buildFallback(context, speciesName, effectiveWidth, effectiveHeight),
+              );
+            }
+            return _buildFallback(context, speciesName, effectiveWidth, effectiveHeight);
           },
         ),
       ),
@@ -135,22 +138,22 @@ class EntityPhotoThumbnail extends ConsumerWidget {
   Widget _buildFallback(BuildContext context, String speciesName, double w, double h) {
     final theme = Theme.of(context);
 
-    if (useTextBadgeFallback && speciesName.isNotEmpty) {
+    if (widget.useTextBadgeFallback && speciesName.isNotEmpty) {
       return SpeciesTextBadgeAvatar(
         speciesName: speciesName,
-        size: size,
+        size: widget.size,
       );
     }
 
     return Container(
       width: w,
       height: h,
-      color: backgroundColor ?? theme.colorScheme.surfaceContainerHighest.withAlpha(120),
+      color: widget.backgroundColor ?? theme.colorScheme.surfaceContainerHighest.withAlpha(120),
       child: Center(
         child: Icon(
-          fallbackIcon,
-          size: (size * 0.6).clamp(16.0, 48.0),
-          color: iconColor ?? theme.colorScheme.primary,
+          widget.fallbackIcon,
+          size: (widget.size * 0.6).clamp(16.0, 48.0),
+          color: widget.iconColor ?? theme.colorScheme.primary,
         ),
       ),
     );

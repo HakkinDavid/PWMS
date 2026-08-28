@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../domain/world_entity.dart';
 
@@ -63,6 +65,26 @@ class PhotoViewerDialog extends StatelessWidget {
                 onPressed: () => Navigator.pop(context),
               ),
             ),
+            if (File(imagePath).existsSync())
+              Positioned(
+                top: 16,
+                right: 16,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.open_in_new, color: Colors.white, size: 24),
+                      tooltip: AppStrings.openExternallyTooltip,
+                      onPressed: () => OpenFilex.open(imagePath),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.share, color: Colors.white, size: 24),
+                      tooltip: AppStrings.shareAttachmentTooltip,
+                      onPressed: () => Share.shareXFiles([XFile(imagePath)]),
+                    ),
+                  ],
+                ),
+              ),
             Positioned(
               bottom: 20,
               left: 20,

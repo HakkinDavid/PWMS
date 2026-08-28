@@ -825,7 +825,13 @@ class AppStrings {
   static const renameAction = 'Renombrar';
   static const deleteAttachmentAction = 'Eliminar adjunto';
   static const openAttachmentTooltip = 'Abrir adjunto';
+  static const openExternallyAction = 'Abrir externamente';
+  static const openExternallyTooltip = 'Abrir con aplicación externa';
+  static const shareAction = 'Compartir';
+  static const shareAttachmentTooltip = 'Compartir archivo';
   static const attachmentOptionsTooltip = 'Opciones de adjunto';
+  static const errorOpeningFilePrefix = 'Error al abrir archivo: ';
+  static const errorSharingFilePrefix = 'Error al compartir archivo: ';
   static String replaceAttachmentTitle(String name) => 'Reemplazar Adjunto ($name)';
 
   // Multimedia, Escáner y Llenado Rápido
@@ -1181,6 +1187,8 @@ class AppStrings {
   static String downloadOrAssignImageError(String err) => 'Error al descargar/asignar la imagen: $err';
   static String saveSubspeciesError(String err) => 'Error al guardar subespecie: $err';
   static String replaceAttachmentError(String err) => 'Error al reemplazar adjunto: $err';
+  static String errorOpeningFile(Object err) => '$errorOpeningFilePrefix$err';
+  static String errorSharingFile(Object err) => '$errorSharingFilePrefix$err';
   static String renameError(String err) => 'Error al renombrar: $err';
   static String deleteError(String err) => 'Error al eliminar: $err';
   static String mergeSpeciesError(String err) => 'Error al unir especies: $err';
