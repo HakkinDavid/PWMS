@@ -1,16 +1,17 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
+import '../../../core/widgets/standard_item_card.dart';
+import '../../entities/presentation/entity_photo_thumbnail.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../domain/catalog_item.dart';
-import 'species_form_modal.dart';
 import 'species_quick_actions_sheet.dart';
-import 'species_text_badge_avatar.dart';
 
+/// Presentation card tile for a species in list view.
+/// Adapts [CatalogItem] domain data into the shared [StandardItemCard] layout.
 class SpeciesTile extends ConsumerWidget {
   final CatalogItem species;
   final VoidCallback? onInstantiate;
@@ -40,89 +41,48 @@ class SpeciesTile extends ConsumerWidget {
 
     final showInstantiateButton = !(species.isUnique && hasInstance);
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 6),
-      child: InkWell(
-        onLongPress: () => _showQuickActionsMenu(context, ref),
-        onTap: onTap ?? () => context.pushSpeciesDetail(species.id),
+    return StandardItemCard(
+      onTap: onTap ?? () => context.pushSpeciesDetail(species.id),
+      onLongPress: () => _showQuickActionsMenu(context, ref),
+      leading: EntityPhotoThumbnail(
+        species: species,
+        size: 48,
         borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: FutureBuilder<String>(
-                    future: species.mainPhotoPath != null
-                        ? ref.read(fileStorageServiceProvider).getAbsolutePath(species.mainPhotoPath!)
-                        : Future.value(AppTechnicalStrings.empty),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data!.isNotEmpty && File(snapshot.data!).existsSync()) {
-                        return Image.file(
-                          File(snapshot.data!),
-                          fit: BoxFit.contain, // Transparent PNG support
-                          errorBuilder: (_, __, ___) => SpeciesTextBadgeAvatar(
-                            speciesName: species.name,
-                            size: 44,
-                          ),
-                        );
-                      }
-                      return SpeciesTextBadgeAvatar(
-                        speciesName: species.name,
-                        size: 44,
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      species.name,
-                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            species.type,
-                            style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (species.isUnique) ...[
-                          const Text(AppTechnicalStrings.bulletSeparator, style: TextStyle(fontSize: 11)),
-                          const Text(AppStrings.isUniqueLabel, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              if (showInstantiateButton)
-                IconButton(
-                  icon: const Icon(Icons.add, size: 20),
-                  tooltip: AppStrings.instantiateAction,
-                  onPressed: onInstantiate ??
-                      () {
-                        InstantiateSpeciesSheet.show(context, species: species);
-                      },
-                ),
-            ],
-          ),
-        ),
+        useTextBadgeFallback: true,
+        fit: BoxFit.cover,
       ),
+      title: Text(
+        species.name,
+        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Row(
+        children: [
+          Flexible(
+            child: Text(
+              species.type,
+              style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (species.isUnique) ...[
+            const Text(AppTechnicalStrings.bulletSeparator, style: TextStyle(fontSize: 11)),
+            const Text(AppStrings.isUniqueLabel, style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),
+          ],
+        ],
+      ),
+      trailing: showInstantiateButton
+          ? IconButton(
+              icon: const Icon(Icons.add, size: 20),
+              tooltip: AppStrings.instantiateAction,
+              onPressed: onInstantiate ??
+                  () {
+                    InstantiateSpeciesSheet.show(context, species: species);
+                  },
+            )
+          : null,
     );
   }
 }
