@@ -17,6 +17,7 @@ class UnitsRegistry {
 
   static const Map<String, SIUnitDefinition> definitions = AppTechnicalUnits.definitions;
 
+  static const List<String> discreteUnits = AppTechnicalUnits.discreteUnits;
   static const List<String> massUnits = AppTechnicalUnits.massUnits;
   static const List<String> lengthUnits = AppTechnicalUnits.lengthUnits;
   static const List<String> volumeUnits = AppTechnicalUnits.volumeUnits;

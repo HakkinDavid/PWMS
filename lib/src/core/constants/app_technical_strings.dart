@@ -1301,8 +1301,12 @@ abstract final class AppTechnicalUnits {
   static const unitMxn = AppTechnicalStrings.unitMxn;
   static const unitEur = AppTechnicalStrings.unitEur;
   static const unitEsp = AppTechnicalStrings.unitEsp;
+  static const unitUnidad = AppTechnicalStrings.unitUnidad;
 
   static const Map<String, SIUnitDefinition> definitions = {
+    // Conteo Discreto
+    unitUnidad: SIUnitDefinition(symbol: unitUnidad, allowDecimals: false),
+
     // Masa
     unitTonne: SIUnitDefinition(symbol: unitTonne, allowDecimals: true),
     unitKg: SIUnitDefinition(symbol: unitKg, allowDecimals: true),
@@ -1383,6 +1387,7 @@ abstract final class AppTechnicalUnits {
     unitEsp: SIUnitDefinition(symbol: unitEsp, allowDecimals: true),
   };
 
+  static const List<String> discreteUnits = [unitUnidad];
   static const List<String> massUnits = [unitTonne, unitKg, unitGram, unitMg];
   static const List<String> lengthUnits = [unitKm, unitMeter, unitCm, unitMm];
   static const List<String> volumeUnits = [unitCubicMeter, unitCubicCm, unitLiter, unitMl];
@@ -1397,6 +1402,7 @@ abstract final class AppTechnicalUnits {
   static const List<String> financialUnits = [unitDollar, unitUsd, unitMxn, unitEur, unitEsp];
 
   static List<String> get allSiUnits => [
+        ...discreteUnits,
         ...massUnits,
         ...lengthUnits,
         ...volumeUnits,

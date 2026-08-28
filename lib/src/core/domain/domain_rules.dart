@@ -1,6 +1,7 @@
 import '../constants/units_registry.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'property_data_type.dart';
 
 class DomainRules {
   DomainRules._();
@@ -17,6 +18,14 @@ class DomainRules {
   static bool isIntegerUnit(String? unitSymbol) {
     if (unitSymbol == null || unitSymbol.isEmpty) return false;
     return !UnitsRegistry.allowsDecimals(unitSymbol);
+  }
+
+  /// Suggest default primitive data type for a unit symbol
+  static PropertyDataType suggestDataTypeForUnit(String unitSymbol) {
+    if (isIntegerUnit(unitSymbol)) {
+      return PropertyDataType.integer;
+    }
+    return PropertyDataType.real;
   }
 
   /// Check if a unit symbol is allowed for species

@@ -40,11 +40,13 @@ void main() {
   group('PWMS 4NF Database & Single Source of Truth Rules Tests', () {
     test('1. DomainRules Single Source of Truth & Integer Formatting Enforcement', () {
       expect(DomainRules.isIntegerUnit('kg'), isFalse);
+      expect(DomainRules.isIntegerUnit('unidad'), isTrue);
 
       // Integer Formatting without .0 for whole numbers
       expect(DomainRules.formatMagnitude(5.0, 'kg'), equals('5'));
       expect(DomainRules.formatMagnitude(0.0, 'kg'), equals('0'));
       expect(DomainRules.formatMagnitude(2.5, 'kg'), equals('2.5'));
+      expect(DomainRules.formatMagnitude(10.0, 'unidad'), equals('10'));
     });
 
     test('2. 4NF Species & Instance Magnitudes Normalization & Empty Default Test', () async {
@@ -436,6 +438,7 @@ void main() {
       expect(DomainRules.suggestPropertyNameForUnit('A'), equals('Corriente eléctrica'));
       expect(DomainRules.suggestPropertyNameForUnit('V'), equals('Voltaje'));
       expect(DomainRules.suggestPropertyNameForUnit('\$'), equals('Precio'));
+      expect(DomainRules.suggestPropertyNameForUnit('unidad'), equals('Cantidad'));
     });
 
     test('11. EntityDisplayHelper Specific Subspecies Resolution Test', () async {

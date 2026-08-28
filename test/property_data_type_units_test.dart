@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/core/constants/units_registry.dart';
+import 'package:platinum_world_management_system/src/core/domain/domain_rules.dart';
 import 'package:platinum_world_management_system/src/core/domain/property_data_type.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 
@@ -9,6 +10,8 @@ void main() {
       expect(UnitsRegistry.isKnownUnit('kg'), isTrue);
       expect(UnitsRegistry.isKnownUnit('MXN'), isTrue);
       expect(UnitsRegistry.isKnownUnit('EUR'), isTrue);
+      expect(UnitsRegistry.isKnownUnit('unidad'), isTrue);
+      expect(UnitsRegistry.allowsDecimals('unidad'), isFalse);
 
       // Verify string types / property values are NOT registered as units
       expect(UnitsRegistry.isKnownUnit('string'), isFalse);
@@ -92,6 +95,28 @@ void main() {
         unitSymbol: null,
       );
       expect(boolMag.displayValue, equals('Sí'));
+
+      final unidadMag = InstanceMagnitude(
+        id: '6',
+        instanceId: 'inst1',
+        propertyName: 'Cantidad',
+        dataType: 'integer',
+        magnitudeValue: 12.0,
+        unitSymbol: 'unidad',
+      );
+      expect(unidadMag.displayValue, equals('12 unidad'));
+    });
+
+    test('DomainRules suggests correct PropertyDataType and property names for units', () {
+      expect(DomainRules.suggestDataTypeForUnit('unidad'), PropertyDataType.integer);
+      expect(DomainRules.suggestDataTypeForUnit('año'), PropertyDataType.integer);
+      expect(DomainRules.suggestDataTypeForUnit('kg'), PropertyDataType.real);
+      expect(DomainRules.suggestDataTypeForUnit('m'), PropertyDataType.real);
+      expect(DomainRules.suggestDataTypeForUnit('USD'), PropertyDataType.real);
+
+      expect(DomainRules.suggestPropertyNameForUnit('unidad'), equals('Cantidad'));
+      expect(DomainRules.suggestPropertyNameForUnit('kg'), equals('Masa'));
+      expect(DomainRules.suggestPropertyNameForUnit('año'), equals('Año'));
     });
   });
 }

@@ -237,7 +237,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
   void _addMagnitudeRow() async {
     final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
     String chosenUnit = allowedUnits.first;
-    PropertyDataType chosenType = PropertyDataType.real;
+    PropertyDataType chosenType = DomainRules.suggestDataTypeForUnit(chosenUnit);
     final propCtrl = TextEditingController(text: DomainRules.suggestPropertyNameForUnit(chosenUnit));
 
     final result = await showDialog<SpeciesMagnitude>(
@@ -285,6 +285,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                       if (picked != null) {
                         setStateDialog(() {
                           chosenUnit = picked;
+                          chosenType = DomainRules.suggestDataTypeForUnit(picked);
                           propCtrl.text = DomainRules.suggestPropertyNameForUnit(picked);
                         });
                       }
