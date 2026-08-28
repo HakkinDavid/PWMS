@@ -1201,6 +1201,7 @@ class AppStrings {
   static const numisErrorCapture = 'Error en captura: ';
   static String numisErrorCaptureMsg(Object e) => 'Error en captura: $e';
   static const numisCameraIlluminationTip2 = 'Tip: Activa la linterna y ajusta el zoom para encuadrar los relieves.';
+  static const numisVolumeShutterTip = 'Dispara con el obturador o con los botones de volumen (+ / -)';
 
   // Numismatic Audit Message Builders
   static String numisAuditTitleMismatch(String actual, String canonical) =>

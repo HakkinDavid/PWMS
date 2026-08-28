@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
@@ -95,7 +96,24 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
   void initState() {
     super.initState();
     _activeSide = widget.targetSide.toLowerCase();
+    HardwareKeyboard.instance.addHandler(_handleHardwareKeyEvent);
     _loadSettingsAndInitCamera();
+  }
+
+  bool _handleHardwareKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      final key = event.logicalKey;
+      if (key == LogicalKeyboardKey.audioVolumeUp ||
+          key == LogicalKeyboardKey.audioVolumeDown ||
+          key == LogicalKeyboardKey.audioVolumeMute ||
+          key == LogicalKeyboardKey.camera) {
+        if (!_isProcessing && mounted && !_isDisposed && _isCameraInitialized) {
+          _capturePhoto();
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> _loadSettingsAndInitCamera() async {
@@ -157,6 +175,7 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
 
   @override
   void dispose() {
+    HardwareKeyboard.instance.removeHandler(_handleHardwareKeyEvent);
     _isDisposed = true;
     final controller = _cameraController;
     _cameraController = null;
@@ -257,6 +276,8 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
       return;
     }
 
+    HapticFeedback.mediumImpact();
+
     setState(() {
       _isProcessing = true;
       _statusMessage = AppStrings.numisCapturingHD;
@@ -293,271 +314,332 @@ class _NumismaticCameraCaptureViewState extends ConsumerState<NumismaticCameraCa
     final isObverseActive = _activeSide == AppTechnicalStrings.anversoLower;
     const activeGuideColor = Colors.amber;
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          // Live Camera Preview with Custom Overlays
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              AspectRatio(
-                aspectRatio: 1.0,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    color: Colors.black,
-                    child: _isCameraInitialized && _cameraController != null
-                        ? LayoutBuilder(
-                            builder: (context, constraints) {
-                              return GestureDetector(
-                                onTapDown: (details) => _handleTapToFocus(details, constraints),
-                                child: FittedBox(
-                                  fit: BoxFit.cover,
-                                  child: SizedBox(
-                                    width: 1080,
-                                    height: 1080 * _cameraController!.value.aspectRatio,
-                                    child: CameraPreview(_cameraController!),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  // Live Camera Preview with Custom Overlays
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 1.0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            color: Colors.black,
+                            child: _isCameraInitialized && _cameraController != null
+                                ? LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      return GestureDetector(
+                                        onTapDown: (details) => _handleTapToFocus(details, constraints),
+                                        child: FittedBox(
+                                          fit: BoxFit.cover,
+                                          child: SizedBox(
+                                            width: 1080,
+                                            height: 1080 * _cameraController!.value.aspectRatio,
+                                            child: CameraPreview(_cameraController!),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.photo_camera, color: Colors.white38, size: 40),
+                                        SizedBox(height: 10),
+                                        SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.amber),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          )
-                        : const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.photo_camera, color: Colors.white38, size: 40),
-                                SizedBox(height: 10),
-                                SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.amber),
-                                ),
-                              ],
-                            ),
                           ),
-                  ),
-                ),
-              ),
-
-              // Frame overlay
-              AspectRatio(
-                aspectRatio: 1.0,
-                child: IgnorePointer(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.amber.withAlpha(120),
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Target Overlay (Circle for Coin, Rectangle for Banknote)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: _buildTargetOverlay(activeGuideColor),
-                ),
-              ),
-
-              // Active Side Indicator Banner
-              Positioned(
-                top: 12,
-                left: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.camera_alt,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        AppStrings.numisActiveSideLabel(_activeSide.toUpperCase()),
-                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Torch / Flash button (Macro Illumination)
-              Positioned(
-                top: 10,
-                right: 12,
-                child: Material(
-                  color: _isTorchOn ? Colors.amber.shade700 : Colors.black54,
-                  shape: const CircleBorder(),
-                  child: IconButton(
-                    iconSize: 20,
-                    tooltip: _isTorchOn ? AppStrings.disableTorchTooltip : AppStrings.enableTorchTooltip,
-                    icon: Icon(
-                      _isTorchOn ? Icons.flash_on : Icons.flash_off,
-                      color: _isTorchOn ? Colors.white : Colors.white70,
-                    ),
-                    onPressed: _toggleTorch,
-                  ),
-                ),
-              ),
-
-              // Tap to Focus Reticle Animation
-              if (_tapFocusPoint != null)
-                Positioned(
-                  left: _tapFocusPoint!.dx - 24,
-                  top: _tapFocusPoint!.dy - 24,
-                  child: IgnorePointer(
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.amber, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.center_focus_strong, color: Colors.amber, size: 20),
-                      ),
-                    ),
-                  ),
-                )
-              else
-                const IgnorePointer(
-                  child: Icon(Icons.center_focus_weak, color: Colors.white54, size: 36),
-                ),
-
-              // Zoom Controller Slider Overlay
-              Positioned(
-                bottom: 12,
-                left: 16,
-                right: 16,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.zoom_out, color: Colors.white, size: 14),
-                      Expanded(
-                        child: Slider(
-                          value: _currentZoom,
-                          min: _minZoom,
-                          max: _maxZoom,
-                          onChanged: _adjustZoom,
-                          activeColor: Colors.amber,
-                          inactiveColor: Colors.white24,
                         ),
                       ),
-                      const Icon(Icons.zoom_in, color: Colors.white, size: 14),
-                      const SizedBox(width: 4),
-                      Text(
-                        AppStrings.zoomLevelDisplay(_currentZoom),
-                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+
+                      // Frame overlay
+                      AspectRatio(
+                        aspectRatio: 1.0,
+                        child: IgnorePointer(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Colors.amber.withAlpha(120),
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Target Overlay (Circle for Coin, Rectangle for Banknote)
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: _buildTargetOverlay(activeGuideColor),
+                        ),
+                      ),
+
+                      // Active Side Indicator Banner
+                      Positioned(
+                        top: 12,
+                        left: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.camera_alt,
+                                color: Colors.amber,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                AppStrings.numisActiveSideLabel(_activeSide.toUpperCase()),
+                                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Torch / Flash button (Macro Illumination)
+                      Positioned(
+                        top: 10,
+                        right: 12,
+                        child: Material(
+                          color: _isTorchOn ? Colors.amber.shade700 : Colors.black54,
+                          shape: const CircleBorder(),
+                          child: IconButton(
+                            iconSize: 20,
+                            tooltip: _isTorchOn ? AppStrings.disableTorchTooltip : AppStrings.enableTorchTooltip,
+                            icon: Icon(
+                              _isTorchOn ? Icons.flash_on : Icons.flash_off,
+                              color: _isTorchOn ? Colors.white : Colors.white70,
+                            ),
+                            onPressed: _toggleTorch,
+                          ),
+                        ),
+                      ),
+
+                      // Tap to Focus Reticle Animation
+                      if (_tapFocusPoint != null)
+                        Positioned(
+                          left: _tapFocusPoint!.dx - 24,
+                          top: _tapFocusPoint!.dy - 24,
+                          child: IgnorePointer(
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.amber, width: 2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Center(
+                                child: Icon(Icons.center_focus_strong, color: Colors.amber, size: 20),
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        const IgnorePointer(
+                          child: Icon(Icons.center_focus_weak, color: Colors.white54, size: 36),
+                        ),
+
+                      // Zoom Controller Slider Overlay
+                      Positioned(
+                        bottom: 12,
+                        left: 16,
+                        right: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.zoom_out, color: Colors.white, size: 14),
+                              Expanded(
+                                child: Slider(
+                                  value: _currentZoom,
+                                  min: _minZoom,
+                                  max: _maxZoom,
+                                  onChanged: _adjustZoom,
+                                  activeColor: Colors.amber,
+                                  inactiveColor: Colors.white24,
+                                ),
+                              ),
+                              const Icon(Icons.zoom_in, color: Colors.white, size: 14),
+                              const SizedBox(width: 4),
+                              Text(
+                                AppStrings.zoomLevelDisplay(_currentZoom),
+                                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
+
+                  if (!widget.hideSideSelector) ...[
+                    const SizedBox(height: 10),
+
+                    // Side selection / Greyed-out indicator
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildSideCard(
+                          sideLabel: AppStrings.numisAnversoSideLabel,
+                          isActive: isObverseActive,
+                          existingFile: widget.existingObverseFile,
+                          onTap: isObverseActive ? null : () => setState(() => _activeSide = AppTechnicalStrings.anversoLower),
+                        ),
+                        const SizedBox(width: 14),
+                        _buildSideCard(
+                          sideLabel: AppStrings.numisReversoSideLabel,
+                          isActive: !isObverseActive,
+                          existingFile: widget.existingReverseFile,
+                          onTap: !isObverseActive ? null : () => setState(() => _activeSide = AppTechnicalStrings.reversoLower),
+                        ),
+                      ],
+                    ),
+                  ],
+
+                  const SizedBox(height: 8),
+
+                  // Tip banner
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.lightbulb_outline, size: 14, color: Colors.amber.shade700),
+                        const SizedBox(width: 4),
+                        const Flexible(
+                          child: Text(
+                            AppStrings.numisCameraIlluminationTip2,
+                            style: TextStyle(fontSize: 11, color: Colors.white70),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  if (_statusMessage != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      _statusMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                  ],
+
+                  // Pushes shutter to the bottom of the viewport
+                  const Spacer(),
+
+                  // Bottom Area: Enormous Shutter Button & Volume Tip
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12, bottom: 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildEnormousShutterButton(),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.volume_up_outlined, size: 13, color: Colors.white.withAlpha(160)),
+                            const SizedBox(width: 5),
+                            Text(
+                              AppStrings.numisVolumeShutterTip,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.white.withAlpha(160),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEnormousShutterButton() {
+    return Material(
+      color: Colors.transparent,
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: _isProcessing ? null : _capturePhoto,
+        customBorder: const CircleBorder(),
+        splashColor: Colors.amber.withAlpha(80),
+        highlightColor: Colors.amber.withAlpha(40),
+        child: Container(
+          width: 88,
+          height: 88,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.amber, width: 4),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.amber.withAlpha(60),
+                blurRadius: 14,
+                spreadRadius: 1,
               ),
             ],
           ),
-
-          if (!widget.hideSideSelector) ...[
-            const SizedBox(height: 12),
-
-            // Side selection / Greyed-out indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildSideCard(
-                  sideLabel: AppStrings.numisAnversoSideLabel,
-                  isActive: isObverseActive,
-                  existingFile: widget.existingObverseFile,
-                  onTap: isObverseActive ? null : () => setState(() => _activeSide = AppTechnicalStrings.anversoLower),
-                ),
-                const SizedBox(width: 14),
-                _buildSideCard(
-                  sideLabel: AppStrings.numisReversoSideLabel,
-                  isActive: !isObverseActive,
-                  existingFile: widget.existingReverseFile,
-                  onTap: !isObverseActive ? null : () => setState(() => _activeSide = AppTechnicalStrings.reversoLower),
-                ),
-              ],
+          padding: const EdgeInsets.all(4),
+          child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.amber,
             ),
-          ],
-
-          const SizedBox(height: 8),
-
-          // Tip banner
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.lightbulb_outline, size: 14, color: Colors.amber.shade700),
-                const SizedBox(width: 4),
-                const Flexible(
-                  child: Text(
-                    AppStrings.numisCameraIlluminationTip2,
-                    style: TextStyle(fontSize: 11, color: Colors.white70),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          if (_statusMessage != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              _statusMessage!,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 12),
-            ),
-          ],
-
-          const SizedBox(height: 14),
-
-          // Shutter Button
-          GestureDetector(
-            onTap: _isProcessing ? null : _capturePhoto,
-            child: Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.amber, width: 3),
-                color: Colors.transparent,
-              ),
-              padding: const EdgeInsets.all(3),
-              child: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.amber,
-                ),
-                child: _isProcessing
-                    ? const Center(child: CircularProgressIndicator(color: Colors.black, strokeWidth: 3))
-                    : Icon(
-                        widget.isCoin ? Icons.camera_alt : Icons.crop_free,
+            child: _isProcessing
+                ? const Center(
+                    child: SizedBox(
+                      width: 34,
+                      height: 34,
+                      child: CircularProgressIndicator(
                         color: Colors.black,
-                        size: 30,
+                        strokeWidth: 3.5,
                       ),
-              ),
-            ),
+                    ),
+                  )
+                : Icon(
+                    widget.isCoin ? Icons.camera_alt : Icons.crop_free,
+                    color: Colors.black,
+                    size: 40,
+                  ),
           ),
-
-          const SizedBox(height: 20),
-        ],
+        ),
       ),
     );
   }
