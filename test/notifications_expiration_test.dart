@@ -181,11 +181,14 @@ void main() {
             ),
           );
 
+      final expiredDate = now.subtract(const Duration(days: 2));
+      final formattedExpiredDate = AppStrings.formatDateDMY(expiredDate);
+
       await db.into(db.entitiesTable).insert(
             EntitiesTableCompanion.insert(
               id: 'e_milk_1',
               speciesId: 'sp_milk',
-              expirationDate: Value(now.subtract(const Duration(days: 2))),
+              expirationDate: Value(expiredDate),
               createdAt: now,
               updatedAt: now,
             ),
@@ -197,7 +200,7 @@ void main() {
               id: 'notif_expired',
               type: AppTechnicalNotifications.notifTypeExpired,
               title: AppStrings.expiredItemTitle,
-              message: AppStrings.notifMessageExpired('26/08/2026'),
+              message: AppStrings.notifMessageExpired(formattedExpiredDate),
               targetId: 'e_milk_1',
               targetType: AppTechnicalNotifications.notifTargetTypeEntity,
               status: const Value(AppTechnicalNotifications.notifStatusActive),
@@ -238,7 +241,7 @@ void main() {
       expect(find.text(AppStrings.unsatisfiedNeedTitle), findsOneWidget);
 
       // Check messages without species name are rendered
-      expect(find.text(AppStrings.notifMessageExpired('26/08/2026')), findsOneWidget);
+      expect(find.text(AppStrings.notifMessageExpired(formattedExpiredDate)), findsOneWidget);
       expect(find.text(AppStrings.notifMessageUnsatisfiedNeed('1', 0, 1)), findsOneWidget);
 
       // Check standardized tiles are rendered

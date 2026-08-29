@@ -185,5 +185,74 @@ void main() {
       expect(relations.first.targetEntityId, equals('e_chest'));
       expect(relations.first.relationType, equals('GUARDADO_EN'));
     });
+
+    testWidgets('LocationOrContainerCorrectionSheet batch moves multiple entities to container and physical location', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_box2', name: 'Caja Fuerte 2', type: const Value('Contenedor'), createdAt: now),
+          );
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_item', name: 'Moneda Oro', type: const Value('Numismática'), createdAt: now),
+          );
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_shelf', name: 'Estante A', createdAt: now),
+          );
+
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_box2', speciesId: 'sp_box2', createdAt: now, updatedAt: now),
+          );
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_coin1', speciesId: 'sp_item', createdAt: now, updatedAt: now),
+          );
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_coin2', speciesId: 'sp_item', createdAt: now, updatedAt: now),
+          );
+
+      final coin1 = WorldEntity(id: 'e_coin1', speciesId: 'sp_item', createdAt: now, updatedAt: now);
+      final coin2 = WorldEntity(id: 'e_coin2', speciesId: 'sp_item', createdAt: now, updatedAt: now);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: LocationOrContainerCorrectionSheet(entities: [coin1, coin2]),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Title should show multi-item title
+      expect(find.text(AppStrings.moveSelectedCountTitle(2)), findsOneWidget);
+
+      // Switch to 'Guardado en contenedor' mode
+      await tester.tap(find.text(AppStrings.savedInContainer));
+      await tester.pumpAndSettle();
+
+      // Tap to open ContainerEntityPicker bottom sheet
+      await tester.tap(find.text(AppStrings.selectContainerObject));
+      await tester.pumpAndSettle();
+
+      // Select 'Caja Fuerte 2'
+      expect(find.text('Caja Fuerte 2'), findsWidgets);
+      await tester.tap(find.text('Caja Fuerte 2').first);
+      await tester.pumpAndSettle();
+
+      // Apply correction
+      await tester.tap(find.text(AppStrings.applyCorrectionAction));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 4));
+
+      // Verify GUARDADO_EN relations exist for both coin1 and coin2
+      final relations = await db.select(db.relationsTable).get();
+      final coinRels = relations.where((r) => r.targetEntityId == 'e_box2' && r.relationType == 'GUARDADO_EN').toList();
+      expect(coinRels.length, equals(2));
+      expect(coinRels.map((r) => r.sourceEntityId).toSet(), equals({'e_coin1', 'e_coin2'}));
+    });
   });
 }

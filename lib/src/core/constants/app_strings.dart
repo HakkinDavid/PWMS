@@ -1348,6 +1348,7 @@ class AppStrings {
   static String objectsInLocationAndSublocations(int count) => '$count objetos contenidos';
   static String locationCorrectionError(String err) => 'Error al corregir ubicación: $err';
   static String correctLocationTitle(String entityName) => 'Corregir ubicación de "$entityName"';
+  static String moveSelectedCountTitle(int count) => 'Mover $count elementos seleccionados';
 
   // Domain Rules Property Name Suggestions
   static const propMass = 'Masa';

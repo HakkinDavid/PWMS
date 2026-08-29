@@ -18,23 +18,37 @@ import 'location_tree_picker.dart';
 enum LocationCorrectionMode { physicalNode, containerEntity }
 
 class LocationOrContainerCorrectionSheet extends ConsumerStatefulWidget {
-  final WorldEntity entity;
+  final WorldEntity? entity;
+  final List<WorldEntity>? entities;
 
   const LocationOrContainerCorrectionSheet({
     super.key,
-    required this.entity,
-  });
+    this.entity,
+    this.entities,
+  }) : assert(entity != null || (entities != null && entities.length > 0));
+
+  List<WorldEntity> get targetEntities =>
+      entities ?? (entity != null ? [entity!] : const <WorldEntity>[]);
 
   /// Shows the correction sheet and returns `true` if a location/container correction was saved,
   /// or `false` if cancelled.
-  static Future<bool> show(BuildContext context, {required WorldEntity entity}) async {
+  static Future<bool> show(
+    BuildContext context, {
+    WorldEntity? entity,
+    List<WorldEntity>? entities,
+  }) async {
+    final list = entities ?? (entity != null ? [entity] : <WorldEntity>[]);
+    if (list.isEmpty) return false;
     final result = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => LocationOrContainerCorrectionSheet(entity: entity),
+      builder: (_) => LocationOrContainerCorrectionSheet(
+        entity: entity,
+        entities: list,
+      ),
     );
     return result ?? false;
   }
@@ -50,8 +64,15 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
   bool _isSaving = false;
   bool _forceClose = false;
 
+  List<WorldEntity> get _targetEntities => widget.targetEntities;
+
   bool _hasUnsavedChanges() {
-    if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != widget.entity.locationId) return true;
+    if (_targetEntities.length == 1) {
+      if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != _targetEntities.first.locationId) return true;
+      if (_mode == LocationCorrectionMode.containerEntity && _selectedContainerEntityId != null) return true;
+      return false;
+    }
+    if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != null) return true;
     if (_mode == LocationCorrectionMode.containerEntity && _selectedContainerEntityId != null) return true;
     return false;
   }
@@ -68,22 +89,65 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
   @override
   void initState() {
     super.initState();
-    _selectedLocationId = widget.entity.locationId;
-    _initCurrentRelation();
+    if (_targetEntities.length == 1) {
+      _selectedLocationId = _targetEntities.first.locationId;
+      _initCurrentRelation();
+    } else {
+      final firstLoc = _targetEntities.first.locationId;
+      if (_targetEntities.every((e) => e.locationId == firstLoc)) {
+        _selectedLocationId = firstLoc;
+      }
+      _initCurrentRelationsMultiple();
+    }
   }
 
   Future<void> _initCurrentRelation() async {
     try {
       final relationRepo = ref.read(relationRepositoryProvider);
-      final relations = await relationRepo.getRelationsForEntity(widget.entity.id);
+      final relations = await relationRepo.getRelationsForEntity(_targetEntities.first.id);
       final existingContainerRel = relations.where((r) =>
-        r.sourceEntityId == widget.entity.id && r.relationType == AppTechnicalStrings.relGuardadoEn
+        r.sourceEntityId == _targetEntities.first.id && r.relationType == AppTechnicalStrings.relGuardadoEn
       ).firstOrNull;
 
       if (existingContainerRel != null) {
         setState(() {
           _mode = LocationCorrectionMode.containerEntity;
           _selectedContainerEntityId = existingContainerRel.targetEntityId;
+        });
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _initCurrentRelationsMultiple() async {
+    try {
+      final relationRepo = ref.read(relationRepositoryProvider);
+      String? commonContainerId;
+      bool allShareSameContainer = true;
+
+      for (int i = 0; i < _targetEntities.length; i++) {
+        final rels = await relationRepo.getRelationsForEntity(_targetEntities[i].id);
+        final cRel = rels.where((r) =>
+          r.sourceEntityId == _targetEntities[i].id && r.relationType == AppTechnicalStrings.relGuardadoEn
+        ).firstOrNull;
+
+        if (i == 0) {
+          if (cRel == null) {
+            allShareSameContainer = false;
+            break;
+          }
+          commonContainerId = cRel.targetEntityId;
+        } else {
+          if (cRel == null || cRel.targetEntityId != commonContainerId) {
+            allShareSameContainer = false;
+            break;
+          }
+        }
+      }
+
+      if (allShareSameContainer && commonContainerId != null) {
+        setState(() {
+          _mode = LocationCorrectionMode.containerEntity;
+          _selectedContainerEntityId = commonContainerId;
         });
       }
     } catch (_) {}
@@ -99,10 +163,11 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
   }
 
   Future<void> _pickContainerFromPicker() async {
+    final excludedIds = _targetEntities.map((e) => e.id).toSet();
     final result = await ContainerEntityPicker.show(
       context,
       initialSelectedId: _selectedContainerEntityId,
-      excludeEntityId: widget.entity.id,
+      excludeEntityIds: excludedIds,
     );
     if (result != null) {
       setState(() {
@@ -117,22 +182,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
       final relationRepo = ref.read(relationRepositoryProvider);
       final eRepo = ref.read(entityRepositoryProvider);
 
-      // Clean up previous GUARDADO_EN relations for this source entity
-      final existingRelations = await relationRepo.getRelationsForEntity(widget.entity.id);
-      for (final rel in existingRelations) {
-        if (rel.sourceEntityId == widget.entity.id && rel.relationType == AppTechnicalStrings.relGuardadoEn) {
-          await relationRepo.deleteRelation(rel.id);
-        }
-      }
-
-      final freshEntity = await eRepo.getEntityById(widget.entity.id) ?? widget.entity;
-
-      if (_mode == LocationCorrectionMode.physicalNode) {
-        // Save physical location node
-        final updatedEntity = freshEntity.copyWith(locationId: _selectedLocationId);
-        await eRepo.saveEntity(updatedEntity);
-      } else {
-        // Container mode selected
+      if (_mode == LocationCorrectionMode.containerEntity) {
         if (_selectedContainerEntityId == null || _selectedContainerEntityId!.isEmpty) {
           if (mounted) {
             AppToast.showRestriction(context, AppStrings.selectValidContainerPrompt);
@@ -140,32 +190,56 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
           }
           return;
         }
+      }
 
-        // Clear physical location and save GUARDADO_EN relation
-        final updatedEntity = freshEntity.copyWith(locationId: null);
-        await eRepo.saveEntity(updatedEntity);
+      for (final entity in _targetEntities) {
+        // Clean up previous GUARDADO_EN relations for this source entity
+        final existingRelations = await relationRepo.getRelationsForEntity(entity.id);
+        for (final rel in existingRelations) {
+          if (rel.sourceEntityId == entity.id &&
+              (rel.relationType == AppTechnicalStrings.relGuardadoEn || rel.relationType == AppTechnicalStrings.relParteDe)) {
+            await relationRepo.deleteRelation(rel.id);
+          }
+        }
 
-        final newRelation = EntityRelation(
-          id: const Uuid().v4(),
-          sourceEntityId: widget.entity.id,
-          targetEntityId: _selectedContainerEntityId!,
-          relationType: AppTechnicalStrings.relGuardadoEn,
-          createdAt: DateTime.now(),
-        );
-        await relationRepo.addRelation(newRelation);
+        final freshEntity = await eRepo.getEntityById(entity.id) ?? entity;
+
+        if (_mode == LocationCorrectionMode.physicalNode) {
+          // Save physical location node
+          final updatedEntity = freshEntity.copyWith(locationId: _selectedLocationId);
+          await eRepo.saveEntity(updatedEntity);
+        } else {
+          // Clear physical location and save GUARDADO_EN relation
+          final updatedEntity = freshEntity.copyWith(locationId: null);
+          await eRepo.saveEntity(updatedEntity);
+
+          final newRelation = EntityRelation(
+            id: const Uuid().v4(),
+            sourceEntityId: entity.id,
+            targetEntityId: _selectedContainerEntityId!,
+            relationType: AppTechnicalStrings.relGuardadoEn,
+            createdAt: DateTime.now(),
+          );
+          await relationRepo.addRelation(newRelation);
+        }
       }
 
       ref.invalidate(entityListProvider);
       ref.invalidate(relationListProvider);
-      ref.invalidate(entityDetailProvider(widget.entity.id));
-      ref.invalidate(entityRelationsProvider(widget.entity.id));
+      for (final entity in _targetEntities) {
+        ref.invalidate(entityDetailProvider(entity.id));
+        ref.invalidate(entityRelationsProvider(entity.id));
+      }
       if (_selectedContainerEntityId != null) {
         ref.invalidate(entityRelationsProvider(_selectedContainerEntityId!));
       }
 
       if (mounted) {
         _forceClose = true;
-        AppToast.showSuccess(context, AppStrings.locationCorrectedSuccess);
+        AppToast.showSuccess(
+          context,
+          _targetEntities.length > 1 ? AppStrings.itemsMovedSuccess : AppStrings.locationCorrectedSuccess,
+        );
         Navigator.pop(context, true);
       }
     } catch (e) {
@@ -190,11 +264,17 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
     final entities = entitiesState.asData?.value ?? [];
     final subspeciesList = subspeciesState.asData?.value ?? [];
 
-    final entityName = EntityDisplayHelper.getDisplayName(
-      entity: widget.entity,
-      catalogItems: catalogItems,
-      subspeciesList: subspeciesList,
-    );
+    final String titleText;
+    if (_targetEntities.length == 1) {
+      final entityName = EntityDisplayHelper.getDisplayName(
+        entity: _targetEntities.first,
+        catalogItems: catalogItems,
+        subspeciesList: subspeciesList,
+      );
+      titleText = AppStrings.correctLocationTitle(entityName);
+    } else {
+      titleText = AppStrings.moveSelectedCountTitle(_targetEntities.length);
+    }
 
     // Current location display text
     final locationDisplayName = LocationPathHelper.buildBreadcrumbPath(
@@ -202,8 +282,9 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
       locations,
     ).fullPath;
 
-    // Candidates for container: excluding the entity itself
-    final candidateContainers = entities.where((e) => e.id != widget.entity.id).toList();
+    // Candidates for container: excluding all target entities
+    final excludedIds = _targetEntities.map((e) => e.id).toSet();
+    final candidateContainers = entities.where((e) => !excludedIds.contains(e.id)).toList();
 
     final mediaQuery = MediaQuery.of(context);
     final bottomPadding = mediaQuery.viewInsets.bottom > 0
@@ -251,7 +332,7 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
                 children: [
                   Expanded(
                     child: Text(
-                      AppStrings.correctLocationTitle(entityName),
+                      titleText,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

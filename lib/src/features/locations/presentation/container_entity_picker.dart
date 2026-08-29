@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
@@ -9,12 +10,14 @@ import '../../entities/presentation/instance_preview_card.dart';
 class ContainerEntityPicker extends ConsumerStatefulWidget {
   final String? initialSelectedId;
   final String? excludeEntityId;
+  final Set<String>? excludeEntityIds;
   final ValueChanged<WorldEntity> onSelected;
 
   const ContainerEntityPicker({
     super.key,
     this.initialSelectedId,
     this.excludeEntityId,
+    this.excludeEntityIds,
     required this.onSelected,
   });
 
@@ -24,6 +27,7 @@ class ContainerEntityPicker extends ConsumerStatefulWidget {
     BuildContext context, {
     String? initialSelectedId,
     String? excludeEntityId,
+    Set<String>? excludeEntityIds,
   }) {
     return showModalBottomSheet<WorldEntity?>(
       context: context,
@@ -56,6 +60,7 @@ class ContainerEntityPicker extends ConsumerStatefulWidget {
             child: ContainerEntityPicker(
               initialSelectedId: initialSelectedId,
               excludeEntityId: excludeEntityId,
+              excludeEntityIds: excludeEntityIds,
               onSelected: (entity) {
                 Navigator.pop(ctx, entity);
               },
@@ -73,7 +78,7 @@ class ContainerEntityPicker extends ConsumerStatefulWidget {
 class _ContainerEntityPickerState extends ConsumerState<ContainerEntityPicker> {
   String? _selectedId;
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  String _searchQuery = AppTechnicalStrings.empty;
 
   @override
   void initState() {
@@ -98,7 +103,12 @@ class _ContainerEntityPickerState extends ConsumerState<ContainerEntityPicker> {
     final catalogItems = catalogState.asData?.value ?? [];
     final subspeciesList = subspeciesState.asData?.value ?? [];
 
-    final candidateContainers = allEntities.where((e) => e.id != widget.excludeEntityId).toList();
+    final candidateContainers = allEntities.where((e) {
+      if (widget.excludeEntityIds != null) {
+        return !widget.excludeEntityIds!.contains(e.id);
+      }
+      return e.id != widget.excludeEntityId;
+    }).toList();
 
     final query = _searchQuery.trim().toLowerCase();
     final filteredContainers = candidateContainers.where((e) {
@@ -120,11 +130,11 @@ class _ContainerEntityPickerState extends ConsumerState<ContainerEntityPicker> {
       final subspecies = subspeciesList.where((s) => s.id == e.subspeciesId).firstOrNull;
       if (subspecies != null) {
         if (subspecies.subspeciesName.toLowerCase().contains(query)) return true;
-        if ((subspecies.brand ?? '').toLowerCase().contains(query)) return true;
-        if ((subspecies.barcode ?? '').toLowerCase().contains(query)) return true;
+        if ((subspecies.brand ?? AppTechnicalStrings.empty).toLowerCase().contains(query)) return true;
+        if ((subspecies.barcode ?? AppTechnicalStrings.empty).toLowerCase().contains(query)) return true;
       }
 
-      if ((e.notes ?? '').toLowerCase().contains(query)) return true;
+      if ((e.notes ?? AppTechnicalStrings.empty).toLowerCase().contains(query)) return true;
       if (e.magnitudes.any((m) => m.propertyName.toLowerCase().contains(query) || m.displayValue.toLowerCase().contains(query))) {
         return true;
       }
@@ -175,7 +185,7 @@ class _ContainerEntityPickerState extends ConsumerState<ContainerEntityPicker> {
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _searchController.clear();
-                      setState(() => _searchQuery = '');
+                      setState(() => _searchQuery = AppTechnicalStrings.empty);
                     },
                   )
                 : null,

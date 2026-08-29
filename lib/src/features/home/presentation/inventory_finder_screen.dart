@@ -14,6 +14,7 @@ import '../../entities/presentation/effective_group_tile.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
 import '../../locations/presentation/location_tile.dart';
 import '../../locations/presentation/location_tree_picker.dart';
+import '../../locations/presentation/location_or_container_correction_sheet.dart';
 import 'inventory_breadcrumb_bar.dart';
 import 'inventory_item_interaction_wrapper.dart';
 
@@ -852,9 +853,20 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                             icon: const Icon(Icons.drive_file_move_outlined),
                             tooltip: AppStrings.moveSelectionAction,
                             onPressed: () async {
-                              final res = await LocationTreePicker.show(context);
-                              if (res != null) {
-                                await _moveEntitiesToLocation(_selectedEntityIds.toList(), res.locationId);
+                              final allEntities = ref.read(entityListProvider).asData?.value ?? [];
+                              final selectedEntities = allEntities.where((e) => _selectedEntityIds.contains(e.id)).toList();
+                              if (selectedEntities.isEmpty) return;
+
+                              final changed = await LocationOrContainerCorrectionSheet.show(
+                                context,
+                                entities: selectedEntities,
+                              );
+                              if (changed == true && mounted) {
+                                _refreshAllState();
+                                setState(() {
+                                  _selectedEntityIds.clear();
+                                  _isSelectionMode = false;
+                                });
                               }
                             },
                           ),
