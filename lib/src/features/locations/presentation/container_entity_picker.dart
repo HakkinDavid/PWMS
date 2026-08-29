@@ -183,6 +183,7 @@ class _ContainerEntityPickerState extends ConsumerState<ContainerEntityPicker> {
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
                     icon: const Icon(Icons.clear),
+                    tooltip: AppStrings.cancel,
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _searchQuery = AppTechnicalStrings.empty);

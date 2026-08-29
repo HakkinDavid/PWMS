@@ -9,8 +9,12 @@ import 'package:platinum_world_management_system/src/core/database/app_database.
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/species_tile.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/subspecies_tile.dart';
+import 'package:platinum_world_management_system/src/features/catalog/presentation/web_image_picker_dialog.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/entity_tile.dart';
+import 'package:platinum_world_management_system/src/features/history/presentation/history_screen.dart';
 import 'package:platinum_world_management_system/src/features/locations/presentation/location_tile.dart';
+import 'package:platinum_world_management_system/src/features/relations/presentation/create_relation_modal.dart';
 import 'package:platinum_world_management_system/src/features/search/domain/sql_preset.dart';
 import 'package:platinum_world_management_system/src/features/search/presentation/search_screen.dart';
 import 'package:platinum_world_management_system/src/features/search/presentation/sql_editor_full_screen_view.dart';
@@ -362,6 +366,147 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(EntityTile), findsWidgets);
+    });
+
+    testWidgets('SearchScreen: Clear button is internal to TextField and clears controller and provider without actions resize',
+        (WidgetTester tester) async {
+      await seedDatabase(db);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: SearchScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final textFieldFinder = find.byType(TextField);
+      expect(textFieldFinder, findsOneWidget);
+
+      // Initially no clear button
+      expect(find.byIcon(Icons.clear), findsNothing);
+
+      // Enter search text
+      await tester.enterText(textFieldFinder, 'Moneda');
+      await tester.pumpAndSettle();
+
+      // Clear button appears inside suffixIcon
+      expect(find.byIcon(Icons.clear), findsOneWidget);
+      final textField = tester.widget<TextField>(textFieldFinder);
+      expect(textField.controller?.text, 'Moneda');
+
+      // Tap clear button
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pumpAndSettle();
+
+      // Text is cleared and clear icon disappears
+      expect(textField.controller?.text, isEmpty);
+      expect(find.byIcon(Icons.clear), findsNothing);
+    });
+
+    testWidgets('HistoryScreen: Clear button clears text and provider', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: HistoryScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final textFieldFinder = find.byType(TextField);
+      expect(textFieldFinder, findsOneWidget);
+      expect(find.byIcon(Icons.clear), findsNothing);
+
+      await tester.enterText(textFieldFinder, 'Creación');
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.clear), findsOneWidget);
+      final textField = tester.widget<TextField>(textFieldFinder);
+      expect(textField.controller?.text, 'Creación');
+
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pumpAndSettle();
+
+      expect(textField.controller?.text, isEmpty);
+      expect(find.byIcon(Icons.clear), findsNothing);
+    });
+
+    testWidgets('CreateRelationModal: Clear button clears search input', (WidgetTester tester) async {
+      final dummyEntity = WorldEntity(
+        id: 'src_1',
+        speciesId: 'sp_coin',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: CreateRelationModal(
+                sourceEntity: dummyEntity,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final textFieldFinder = find.byType(TextField);
+      expect(textFieldFinder, findsOneWidget);
+      expect(find.byIcon(Icons.clear), findsNothing);
+
+      await tester.enterText(textFieldFinder, 'Cofre');
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.clear), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pumpAndSettle();
+
+      final textField = tester.widget<TextField>(textFieldFinder);
+      expect(textField.controller?.text, isEmpty);
+      expect(find.byIcon(Icons.clear), findsNothing);
+    });
+
+    testWidgets('WebImagePickerDialog: Clear button clears search query', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: WebImagePickerDialog(
+                searchQuery: 'Moneda',
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final textFieldFinder = find.byType(TextField);
+      expect(textFieldFinder, findsOneWidget);
+      expect(find.byIcon(Icons.clear), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pumpAndSettle();
+
+      final textField = tester.widget<TextField>(textFieldFinder);
+      expect(textField.controller?.text, isEmpty);
+      expect(find.byIcon(Icons.clear), findsNothing);
     });
   });
 }

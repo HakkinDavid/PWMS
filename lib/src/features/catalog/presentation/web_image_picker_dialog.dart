@@ -173,11 +173,22 @@ class _WebImagePickerDialogState extends ConsumerState<WebImagePickerDialog> {
                 Expanded(
                   child: TextField(
                     controller: _searchCtrl,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: AppStrings.productOrSpeciesSearchHint,
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _searchCtrl.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              tooltip: AppStrings.cancel,
+                              onPressed: () {
+                                _searchCtrl.clear();
+                                setState(() {});
+                              },
+                            )
+                          : null,
                       isDense: true,
                     ),
+                    onChanged: (_) => setState(() {}),
                     onSubmitted: (_) => _performSearch(),
                   ),
                 ),

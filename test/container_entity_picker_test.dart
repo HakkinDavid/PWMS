@@ -254,5 +254,39 @@ void main() {
       expect(coinRels.length, equals(2));
       expect(coinRels.map((r) => r.sourceEntityId).toSet(), equals({'e_coin1', 'e_coin2'}));
     });
+
+    testWidgets('ContainerEntityPicker clear button clears input text and resets search', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: ContainerEntityPicker(
+                onSelected: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final textFieldFinder = find.byType(TextField);
+      expect(textFieldFinder, findsOneWidget);
+      expect(find.byIcon(Icons.clear), findsNothing);
+
+      await tester.enterText(textFieldFinder, 'Mochila');
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.clear), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pumpAndSettle();
+
+      final textField = tester.widget<TextField>(textFieldFinder);
+      expect(textField.controller?.text, isEmpty);
+      expect(find.byIcon(Icons.clear), findsNothing);
+    });
   });
 }

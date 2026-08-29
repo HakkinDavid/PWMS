@@ -248,9 +248,19 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
             // Search Target Entity
             TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: AppStrings.searchTargetEntityLabel,
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        tooltip: AppStrings.cancel,
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() => _searchQuery = AppTechnicalStrings.empty);
+                        },
+                      )
+                    : null,
               ),
               onChanged: (val) => setState(() => _searchQuery = val),
             ),

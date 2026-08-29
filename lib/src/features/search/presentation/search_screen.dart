@@ -100,6 +100,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   SqlPresetCategory _selectedSqlCategory = SqlPresetCategory.all;
   late SqlPreset _selectedSqlPreset;
   SqlResultViewMode _viewMode = SqlResultViewMode.tiles; // Default to Tiles / Tarjetas (Item j)
+  late final TextEditingController _searchController;
   late final TextEditingController _sqlController;
 
   bool _isExecutingSql = false;
@@ -146,6 +147,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    final initialQueryText = widget.initialQuery ?? ref.read(searchQueryProvider);
+    _searchController = TextEditingController(text: initialQueryText);
     _selectedSqlPreset = SqlPreset.defaultPresets.first;
     _sqlController = TextEditingController(text: _selectedSqlPreset.query);
 
@@ -187,6 +190,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
     }
     if (widget.initialQuery != null && widget.initialQuery != oldWidget.initialQuery) {
+      _searchController.text = widget.initialQuery!;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           ref.read(searchQueryProvider.notifier).state = widget.initialQuery!;
@@ -197,6 +201,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void dispose() {
+    _searchController.dispose();
     _sqlController.dispose();
     super.dispose();
   }
@@ -783,24 +788,28 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         title: isSqlMode
             ? const Text(AppStrings.arbitrarySqlConsoleTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
             : TextField(
+                controller: _searchController,
                 autofocus: true,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: AppStrings.searchDetailedHint,
                   border: InputBorder.none,
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          tooltip: AppStrings.cancel,
+                          onPressed: () {
+                            _searchController.clear();
+                            ref.read(searchQueryProvider.notifier).state = AppTechnicalStrings.empty;
+                            setState(() {});
+                          },
+                        )
+                      : null,
                 ),
                 onChanged: (val) {
                   ref.read(searchQueryProvider.notifier).state = val;
+                  setState(() {});
                 },
               ),
-        actions: [
-          if (!isSqlMode && query.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                ref.read(searchQueryProvider.notifier).state = AppTechnicalStrings.empty;
-              },
-            ),
-        ],
       ),
       body: Column(
         children: [

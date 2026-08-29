@@ -353,9 +353,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear),
+                        tooltip: AppStrings.cancel,
                         onPressed: () {
                           _searchController.clear();
                           ref.read(historySearchQueryProvider.notifier).state = AppTechnicalStrings.empty;
+                          setState(() {});
                         },
                       )
                     : null,
