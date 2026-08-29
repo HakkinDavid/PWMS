@@ -144,6 +144,9 @@ class AppStrings {
   static const noContainerObjectsAvailable = 'Sin objetos contenedores disponibles.';
   static const selectContainerObject = 'Selecciona objeto contenedor';
   static const containerObjectLabel = 'Objeto contenedor';
+  static const searchContainerHint = 'Buscar por nombre, especie, marca...';
+  static const changeContainerAction = 'Cambiar contenedor';
+  static String noContainersFoundForQuery(String query) => 'No se encontraron contenedores para "$query".';
   static const magnitudesAndSpecificProps = 'Magnitudes y propiedades:';
   static const subspeciesOrBrandCommercialLabel = 'Subespecie';
   static const selectSubspeciesOrBrandPrompt = 'Selecciona subespecie';

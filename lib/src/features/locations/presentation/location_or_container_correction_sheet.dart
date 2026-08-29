@@ -7,11 +7,12 @@ import 'package:platinum_world_management_system/src/core/constants/app_technica
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../core/widgets/app_toast.dart';
-import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
+import '../../entities/presentation/instance_preview_card.dart';
 import '../../relations/domain/entity_relation.dart';
 import '../domain/location_path_helper.dart';
+import 'container_entity_picker.dart';
 import 'location_tree_picker.dart';
 
 enum LocationCorrectionMode { physicalNode, containerEntity }
@@ -93,6 +94,19 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
     if (result != null) {
       setState(() {
         _selectedLocationId = result.locationId;
+      });
+    }
+  }
+
+  Future<void> _pickContainerFromPicker() async {
+    final result = await ContainerEntityPicker.show(
+      context,
+      initialSelectedId: _selectedContainerEntityId,
+      excludeEntityId: widget.entity.id,
+    );
+    if (result != null) {
+      setState(() {
+        _selectedContainerEntityId = result.id;
       });
     }
   }
@@ -310,26 +324,64 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
               const SizedBox(height: 8),
               if (candidateContainers.isEmpty)
                 const Text(AppStrings.noContainerObjectsAvailable)
-              else
-                AppWheelPickerField<String>(
-                  value: _selectedContainerEntityId,
-                  items: candidateContainers.map((e) => e.id).toList(),
-                  labelBuilder: (id) {
-                    final e = candidateContainers.where((e) => e.id == id).firstOrNull;
-                    if (e == null) return id;
-                    return EntityDisplayHelper.getDisplayName(
-                      entity: e,
-                      catalogItems: catalogItems,
-                      subspeciesList: subspeciesList,
+              else if (_selectedContainerEntityId != null &&
+                  candidateContainers.any((e) => e.id == _selectedContainerEntityId)) ...[
+                Builder(
+                  builder: (context) {
+                    final selectedContainer = candidateContainers.firstWhere(
+                      (e) => e.id == _selectedContainerEntityId,
+                    );
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InstancePreviewCard(
+                          entity: selectedContainer,
+                          onTap: _pickContainerFromPicker,
+                          trailing: IconButton(
+                            icon: const Icon(Icons.swap_horiz),
+                            tooltip: AppStrings.changeContainerAction,
+                            onPressed: _pickContainerFromPicker,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton.icon(
+                            onPressed: _pickContainerFromPicker,
+                            icon: const Icon(Icons.search, size: 16),
+                            label: const Text(AppStrings.changeContainerAction),
+                          ),
+                        ),
+                      ],
                     );
                   },
-                  title: AppStrings.selectContainerObject,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.inventory_2_outlined),
-                    hintText: AppStrings.selectContainerObject,
-                  ),
-                  onChanged: (val) => setState(() => _selectedContainerEntityId = val),
                 ),
+              ] else ...[
+                InkWell(
+                  onTap: _pickContainerFromPicker,
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: theme.dividerColor),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.inventory_2_outlined),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            AppStrings.selectContainerObject,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Icon(Icons.search),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ],
             const SizedBox(height: 24),
 
