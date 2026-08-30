@@ -247,7 +247,7 @@ void main() {
   });
 
   group('4. Inventory Navigation and Back Button Tests', () {
-    testWidgets('PopScope in InventoryFinderScreen manages back navigation hierarchy', (tester) async {
+    testWidgets('PopScope in InventoryFinderScreen manages back navigation hierarchy for locations', (tester) async {
       final loc = LocationNode(
         id: 'loc-1',
         name: 'Estante A',
@@ -270,6 +270,137 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should return to root Mundo (no back button in AppBar)
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+    });
+
+    testWidgets('System back button cancels selection mode', (tester) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          const InventoryFinderScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Enter selection mode by tapping select all icon
+      expect(find.byIcon(Icons.select_all), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.select_all));
+      await tester.pumpAndSettle();
+
+      // Check that selection mode is active (icon changes to check_box)
+      expect(find.byIcon(Icons.check_box), findsOneWidget);
+
+      // Trigger system back button (e.g. Android navbar)
+      await WidgetsBinding.instance.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Selection mode should be cancelled (icon returns to select_all)
+      expect(find.byIcon(Icons.select_all), findsOneWidget);
+      expect(find.byIcon(Icons.check_box), findsNothing);
+    });
+
+    testWidgets('System back button collapses curtain when open', (tester) async {
+      final loc = LocationNode(
+        id: 'loc-1',
+        name: 'Estante A',
+        createdAt: DateTime.now(),
+      );
+      await locationRepo.saveNode(loc);
+
+      await tester.pumpWidget(
+        createTestWidget(
+          const InventoryFinderScreen(startWithCurtainOpen: true),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Curtain is open, back button in AppBar is present
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+
+      // Trigger system back
+      await WidgetsBinding.instance.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Curtain should be collapsed and back button in AppBar gone since at root
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+    });
+
+    testWidgets('System back button collapses expanded stacks', (tester) async {
+      final sp = CatalogItem(
+        id: 'sp_coin',
+        name: 'Moneda de Oro',
+        type: AppStrings.typeObject,
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveCatalogItem(sp);
+
+      await entityRepo.saveEntity(WorldEntity(
+        id: 'e_coin_1',
+        speciesId: 'sp_coin',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ));
+      await entityRepo.saveEntity(WorldEntity(
+        id: 'e_coin_2',
+        speciesId: 'sp_coin',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ));
+
+      await tester.pumpWidget(
+        createTestWidget(
+          const InventoryFinderScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Tap stack tile to expand
+      expect(find.text('Moneda de Oro'), findsWidgets);
+      await tester.tap(find.text('Moneda de Oro').first);
+      await tester.pumpAndSettle();
+
+      // Stack expanded, back button in AppBar should be visible
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+
+      // Press system back button
+      await WidgetsBinding.instance.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Stack should collapse, back button in AppBar should be gone
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+    });
+
+    testWidgets('System back button unrolls nested container hierarchy', (tester) async {
+      final contSp = CatalogItem(
+        id: 'sp_box',
+        name: 'Caja',
+        type: AppStrings.typeObject,
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveCatalogItem(contSp);
+
+      final boxEntity = WorldEntity(
+        id: 'e_box_1',
+        speciesId: 'sp_box',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await entityRepo.saveEntity(boxEntity);
+
+      await tester.pumpWidget(
+        createTestWidget(
+          const InventoryFinderScreen(initialContainerId: 'e_box_1'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Back button in AppBar is present inside container
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+
+      // Trigger system back
+      await WidgetsBinding.instance.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Should step out of container back to root
       expect(find.byIcon(Icons.arrow_back), findsNothing);
     });
   });

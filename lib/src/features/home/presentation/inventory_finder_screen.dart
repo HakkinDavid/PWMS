@@ -329,7 +329,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   }
 
   void _handleLocationSelected(String? newLocId) {
-    if (newLocId == _selectedLocationId) return;
+    if (newLocId == _selectedLocationId && _containerPath.isEmpty) return;
     _stopAutoScroll();
     _saveCurrentScrollOffset();
     if (_selectedLocationId != null || _locationHistory.isNotEmpty) {
@@ -340,6 +340,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     }
     setState(() {
       _selectedLocationId = newLocId;
+      _containerPath.clear();
       _expandedStackKeys.clear();
     });
     _restoreScrollOffsetForCurrentLevel();
@@ -355,6 +356,10 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     } else if (_isCurtainExpanded || _breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
       _breadcrumbBarKey.currentState?.collapseCurtain();
       setState(() => _isCurtainExpanded = false);
+    } else if (_expandedStackKeys.isNotEmpty) {
+      setState(() {
+        _expandedStackKeys.clear();
+      });
     } else if (_containerPath.isNotEmpty) {
       _saveCurrentScrollOffset();
       setState(() {
@@ -377,7 +382,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       });
       _restoreScrollOffsetForCurrentLevel();
     } else {
-      context.goToHome();
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      } else {
+        context.goToHome();
+      }
     }
   }
 
@@ -428,6 +437,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       });
 
       if (hasAssignedSource) {
+        if (!mounted) return;
         final confirm = await AppConfirmationDialog.show(
           context: context,
           title: AppStrings.moveToWorldConfirmationTitle,
@@ -675,11 +685,16 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       childLocations = [];
     }
 
-    final bool canGoBack = _containerPath.isNotEmpty || _selectedLocationId != null || _locationHistory.isNotEmpty;
+    final bool canGoBack = _containerPath.isNotEmpty ||
+        _selectedLocationId != null ||
+        _locationHistory.isNotEmpty ||
+        _isSelectionMode ||
+        _isCurtainExpanded ||
+        _expandedStackKeys.isNotEmpty;
     final viewMode = ref.watch(inventoryViewModeProvider);
 
     return PopScope(
-      canPop: !canGoBack && !_isSelectionMode && !_isCurtainExpanded && _breadcrumbBarKey.currentState?.isCurtainExpanded != true,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         _handleBackNavigation();
