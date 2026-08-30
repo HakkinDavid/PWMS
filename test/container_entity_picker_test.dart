@@ -171,7 +171,7 @@ void main() {
 
       // Now back in correction sheet, the InstancePreviewCard of 'Cofre de Roble' should be displayed
       expect(find.text('Cofre de Roble'), findsWidgets);
-      expect(find.text(AppStrings.changeContainerAction), findsOneWidget);
+      expect(find.byTooltip(AppStrings.changeContainerAction), findsOneWidget);
 
       // Tap 'Aplicar corrección'
       await tester.tap(find.text(AppStrings.applyCorrectionAction));

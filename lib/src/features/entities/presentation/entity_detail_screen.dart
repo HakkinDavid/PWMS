@@ -439,11 +439,18 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
         final allRelations = ref.watch(relationListProvider).asData?.value ?? [];
         final subspeciesList = ref.watch(subspeciesListProvider).asData?.value ?? [];
 
+        final effectiveRelations = _isEditingInPlace
+            ? [
+                ...allRelations.where((r) => r.sourceEntityId != entity.id && r.targetEntityId != entity.id),
+                ..._workingRelations,
+              ]
+            : allRelations;
+
         final breadcrumb = LocationPathHelper.buildEffectiveBreadcrumb(
           entityId: entity.id,
           effectiveLocationId: _selectedLocationId,
           allEntities: allEntities,
-          allRelations: allRelations,
+          allRelations: effectiveRelations,
           allNodes: locationNodes,
           catalogItems: catalogItems,
           subspeciesList: subspeciesList,
@@ -548,21 +555,40 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               InkWell(
                 onTap: () async {
                   if (_isEditingInPlace) {
-                    final changed = await LocationOrContainerCorrectionSheet.show(
+                    final result = await LocationOrContainerCorrectionSheet.show(
                       context,
                       entity: entity,
+                      returnResultOnly: true,
+                      initialLocationId: _selectedLocationId,
+                      initialRelations: _workingRelations,
                     );
-                    if (changed == true && mounted) {
-                      ref.invalidate(entityDetailProvider(widget.entityId));
-                      ref.invalidate(entityRelationsProvider(widget.entityId));
-                      ref.invalidate(relationListProvider);
-                      ref.invalidate(entityListProvider);
-                      final refreshedEntity = await ref.read(entityRepositoryProvider).getEntityById(widget.entityId);
-                      if (refreshedEntity != null && mounted) {
-                        setState(() {
-                          _selectedLocationId = refreshedEntity.locationId;
-                        });
-                      }
+                    if (result is LocationCorrectionResult && mounted) {
+                      setState(() {
+                        if (result.mode == LocationCorrectionMode.physicalNode) {
+                          _selectedLocationId = result.locationId;
+                          _workingRelations.removeWhere((r) =>
+                            r.sourceEntityId == widget.entityId &&
+                            (r.relationType == AppTechnicalStrings.relGuardadoEn ||
+                             r.relationType == AppTechnicalStrings.relParteDe)
+                          );
+                        } else if (result.mode == LocationCorrectionMode.containerEntity) {
+                          _selectedLocationId = null;
+                          _workingRelations.removeWhere((r) =>
+                            r.sourceEntityId == widget.entityId &&
+                            (r.relationType == AppTechnicalStrings.relGuardadoEn ||
+                             r.relationType == AppTechnicalStrings.relParteDe)
+                          );
+                          if (result.containerEntityId != null) {
+                            _workingRelations.add(EntityRelation(
+                              id: const Uuid().v4(),
+                              sourceEntityId: widget.entityId,
+                              targetEntityId: result.containerEntityId!,
+                              relationType: AppTechnicalStrings.relGuardadoEn,
+                              createdAt: DateTime.now(),
+                            ));
+                          }
+                        }
+                      });
                     }
                   } else {
                     final containerRel = allRelations.where((r) =>

@@ -17,29 +17,52 @@ import 'location_tree_picker.dart';
 
 enum LocationCorrectionMode { physicalNode, containerEntity }
 
+class LocationCorrectionResult {
+  final LocationCorrectionMode mode;
+  final String? locationId;
+  final String? containerEntityId;
+
+  const LocationCorrectionResult.physicalNode(this.locationId)
+      : mode = LocationCorrectionMode.physicalNode,
+        containerEntityId = null;
+
+  const LocationCorrectionResult.containerEntity(this.containerEntityId)
+      : mode = LocationCorrectionMode.containerEntity,
+        locationId = null;
+}
+
 class LocationOrContainerCorrectionSheet extends ConsumerStatefulWidget {
   final WorldEntity? entity;
   final List<WorldEntity>? entities;
+  final bool returnResultOnly;
+  final String? initialLocationId;
+  final List<EntityRelation>? initialRelations;
 
   const LocationOrContainerCorrectionSheet({
     super.key,
     this.entity,
     this.entities,
+    this.returnResultOnly = false,
+    this.initialLocationId,
+    this.initialRelations,
   }) : assert(entity != null || (entities != null && entities.length > 0));
 
   List<WorldEntity> get targetEntities =>
       entities ?? (entity != null ? [entity!] : const <WorldEntity>[]);
 
   /// Shows the correction sheet and returns `true` if a location/container correction was saved,
-  /// or `false` if cancelled.
-  static Future<bool> show(
+  /// or a [LocationCorrectionResult] if `returnResultOnly` is true, or `false`/`null` if cancelled.
+  static Future<dynamic> show(
     BuildContext context, {
     WorldEntity? entity,
     List<WorldEntity>? entities,
+    bool returnResultOnly = false,
+    String? initialLocationId,
+    List<EntityRelation>? initialRelations,
   }) async {
     final list = entities ?? (entity != null ? [entity] : <WorldEntity>[]);
-    if (list.isEmpty) return false;
-    final result = await showModalBottomSheet<bool>(
+    if (list.isEmpty) return returnResultOnly ? null : false;
+    final result = await showModalBottomSheet<dynamic>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
@@ -48,8 +71,14 @@ class LocationOrContainerCorrectionSheet extends ConsumerStatefulWidget {
       builder: (_) => LocationOrContainerCorrectionSheet(
         entity: entity,
         entities: list,
+        returnResultOnly: returnResultOnly,
+        initialLocationId: initialLocationId,
+        initialRelations: initialRelations,
       ),
     );
+    if (returnResultOnly) {
+      return result is LocationCorrectionResult ? result : null;
+    }
     return result ?? false;
   }
 
@@ -64,16 +93,22 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
   bool _isSaving = false;
   bool _forceClose = false;
 
+  LocationCorrectionMode _initialMode = LocationCorrectionMode.physicalNode;
+  String? _initialLocationId;
+  String? _initialContainerEntityId;
+
   List<WorldEntity> get _targetEntities => widget.targetEntities;
 
   bool _hasUnsavedChanges() {
     if (_targetEntities.length == 1) {
-      if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != _targetEntities.first.locationId) return true;
-      if (_mode == LocationCorrectionMode.containerEntity && _selectedContainerEntityId != null) return true;
+      if (_mode != _initialMode) return true;
+      if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != _initialLocationId) return true;
+      if (_mode == LocationCorrectionMode.containerEntity && _selectedContainerEntityId != _initialContainerEntityId) return true;
       return false;
     }
-    if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != null) return true;
-    if (_mode == LocationCorrectionMode.containerEntity && _selectedContainerEntityId != null) return true;
+    if (_mode != _initialMode) return true;
+    if (_mode == LocationCorrectionMode.physicalNode && _selectedLocationId != _initialLocationId) return true;
+    if (_mode == LocationCorrectionMode.containerEntity && _selectedContainerEntityId != _initialContainerEntityId) return true;
     return false;
   }
 
@@ -90,12 +125,34 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
   void initState() {
     super.initState();
     if (_targetEntities.length == 1) {
-      _selectedLocationId = _targetEntities.first.locationId;
-      _initCurrentRelation();
+      final target = _targetEntities.first;
+      if (widget.initialRelations != null) {
+        final existingContainerRel = widget.initialRelations!.where((r) =>
+          r.sourceEntityId == target.id && r.relationType == AppTechnicalStrings.relGuardadoEn
+        ).firstOrNull;
+
+        if (existingContainerRel != null) {
+          _mode = LocationCorrectionMode.containerEntity;
+          _selectedContainerEntityId = existingContainerRel.targetEntityId;
+          _selectedLocationId = null;
+        } else {
+          _mode = LocationCorrectionMode.physicalNode;
+          _selectedLocationId = widget.initialLocationId ?? target.locationId;
+          _selectedContainerEntityId = null;
+        }
+        _initialMode = _mode;
+        _initialLocationId = _selectedLocationId;
+        _initialContainerEntityId = _selectedContainerEntityId;
+      } else {
+        _selectedLocationId = widget.initialLocationId ?? target.locationId;
+        _initialLocationId = _selectedLocationId;
+        _initCurrentRelation();
+      }
     } else {
-      final firstLoc = _targetEntities.first.locationId;
+      final firstLoc = widget.initialLocationId ?? _targetEntities.first.locationId;
       if (_targetEntities.every((e) => e.locationId == firstLoc)) {
         _selectedLocationId = firstLoc;
+        _initialLocationId = firstLoc;
       }
       _initCurrentRelationsMultiple();
     }
@@ -109,10 +166,14 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
         r.sourceEntityId == _targetEntities.first.id && r.relationType == AppTechnicalStrings.relGuardadoEn
       ).firstOrNull;
 
-      if (existingContainerRel != null) {
+      if (existingContainerRel != null && mounted) {
         setState(() {
           _mode = LocationCorrectionMode.containerEntity;
           _selectedContainerEntityId = existingContainerRel.targetEntityId;
+          _selectedLocationId = null;
+          _initialMode = _mode;
+          _initialContainerEntityId = _selectedContainerEntityId;
+          _initialLocationId = null;
         });
       }
     } catch (_) {}
@@ -144,10 +205,14 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
         }
       }
 
-      if (allShareSameContainer && commonContainerId != null) {
+      if (allShareSameContainer && commonContainerId != null && mounted) {
         setState(() {
           _mode = LocationCorrectionMode.containerEntity;
           _selectedContainerEntityId = commonContainerId;
+          _selectedLocationId = null;
+          _initialMode = _mode;
+          _initialContainerEntityId = _selectedContainerEntityId;
+          _initialLocationId = null;
         });
       }
     } catch (_) {}
@@ -177,20 +242,28 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
   }
 
   Future<void> _saveCorrection() async {
+    if (_mode == LocationCorrectionMode.containerEntity) {
+      if (_selectedContainerEntityId == null || _selectedContainerEntityId!.isEmpty) {
+        if (mounted) {
+          AppToast.showRestriction(context, AppStrings.selectValidContainerPrompt);
+        }
+        return;
+      }
+    }
+
+    if (widget.returnResultOnly) {
+      final result = _mode == LocationCorrectionMode.physicalNode
+          ? LocationCorrectionResult.physicalNode(_selectedLocationId)
+          : LocationCorrectionResult.containerEntity(_selectedContainerEntityId);
+      _forceClose = true;
+      Navigator.pop(context, result);
+      return;
+    }
+
     setState(() => _isSaving = true);
     try {
       final relationRepo = ref.read(relationRepositoryProvider);
       final eRepo = ref.read(entityRepositoryProvider);
-
-      if (_mode == LocationCorrectionMode.containerEntity) {
-        if (_selectedContainerEntityId == null || _selectedContainerEntityId!.isEmpty) {
-          if (mounted) {
-            AppToast.showRestriction(context, AppStrings.selectValidContainerPrompt);
-            setState(() => _isSaving = false);
-          }
-          return;
-        }
-      }
 
       for (final entity in _targetEntities) {
         // Clean up previous GUARDADO_EN relations for this source entity

@@ -238,13 +238,9 @@ void main() {
       await tester.enterText(notesField, 'Nota Modificada sin Guardar');
       await tester.pumpAndSettle();
 
-      // Scroll until Discard changes button is visible
-      final discardBtn = find.text(AppStrings.discardChangesAction);
-      await tester.scrollUntilVisible(discardBtn, 200.0, scrollable: find.byType(Scrollable).first);
-      await tester.pumpAndSettle();
-
-      // Tap Discard changes button in footer
-      await tester.tap(discardBtn);
+      // Tap Cancel (X) in top AppBar
+      final cancelBtn = find.byTooltip(AppStrings.cancel);
+      await tester.tap(cancelBtn);
       await tester.pumpAndSettle();
 
       // Discard confirmation dialog should appear
