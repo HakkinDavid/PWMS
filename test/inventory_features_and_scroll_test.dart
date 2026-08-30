@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -272,4 +273,148 @@ void main() {
       expect(find.byIcon(Icons.arrow_back), findsNothing);
     });
   });
+
+  group('5. Inventory Autoscroll over Tiles Tests', () {
+    testWidgets('Autoscroll occurs when dragging pointer over tiles near the bottom and top edge zones', (tester) async {
+      // Create 30 items to ensure a long scrollable inventory
+      for (int i = 0; i < 30; i++) {
+        final species = CatalogItem(
+          id: 'sp-$i',
+          name: 'Item $i',
+          type: AppStrings.typeObject,
+          createdAt: DateTime.now(),
+        );
+        await catalogRepo.saveCatalogItem(species);
+
+        final entity = WorldEntity(
+          id: 'ent-$i',
+          speciesId: 'sp-$i',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        await entityRepo.saveEntity(entity);
+      }
+
+      await tester.pumpWidget(
+        createTestWidget(
+          const InventoryFinderScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final listViewFinder = find.byType(ListView);
+      expect(listViewFinder, findsOneWidget);
+
+      final scrollable = tester.widget<ScrollView>(listViewFinder);
+      final scrollController = scrollable.controller!;
+      expect(scrollController.offset, 0.0);
+
+      // Start drag on the first tile
+      final firstTileFinder = find.text('Item 0').first;
+      final gesture = await tester.startGesture(tester.getCenter(firstTileFinder));
+      await tester.pump(kLongPressTimeout + const Duration(milliseconds: 100));
+
+      final canvasRect = tester.getRect(listViewFinder);
+
+      // Move drag pointer directly over tiles located in the bottom edge zone (60px threshold)
+      final bottomEdgePoint = Offset(canvasRect.center.dx, canvasRect.bottom - 20.0);
+      await gesture.moveTo(bottomEdgePoint);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Scroll offset should increase due to autoscroll over tiles
+      expect(scrollController.offset, greaterThan(0.0));
+      final scrolledOffset = scrollController.offset;
+
+      // Move drag pointer directly over tiles in the top edge zone
+      final topEdgePoint = Offset(canvasRect.center.dx, canvasRect.top + 20.0);
+      await gesture.moveTo(topEdgePoint);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Scroll offset should have decreased back towards top
+      expect(scrollController.offset, lessThan(scrolledOffset));
+
+      // Lift pointer to finish drag
+      await gesture.up();
+      await tester.pump(const Duration(milliseconds: 50));
+      final stoppedOffset = scrollController.offset;
+
+      // Verify scrolling stopped
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(scrollController.offset, equals(stoppedOffset));
+    });
+
+    testWidgets('Autoscroll occurs when dragging pointer over tiles in Minecraft Grid mode', (tester) async {
+      await settingsRepo.setInventoryViewMode(ItemViewMode.minecraftGrid);
+
+      // Create 40 items for grid mode scrolling
+      for (int i = 0; i < 40; i++) {
+        final species = CatalogItem(
+          id: 'sp-grid-$i',
+          name: 'GridItem $i',
+          type: AppStrings.typeObject,
+          createdAt: DateTime.now(),
+        );
+        await catalogRepo.saveCatalogItem(species);
+
+        final entity = WorldEntity(
+          id: 'ent-grid-$i',
+          speciesId: 'sp-grid-$i',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        await entityRepo.saveEntity(entity);
+      }
+
+      await tester.pumpWidget(
+        createTestWidget(
+          const InventoryFinderScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final gridViewFinder = find.byType(GridView);
+      expect(gridViewFinder, findsOneWidget);
+
+      final scrollable = tester.widget<ScrollView>(gridViewFinder);
+      final scrollController = scrollable.controller!;
+      expect(scrollController.offset, 0.0);
+
+      // Start drag on the first grid tile
+      final firstTileFinder = find.byType(MinecraftTileWidget).first;
+      final gesture = await tester.startGesture(tester.getCenter(firstTileFinder));
+      await tester.pump(kLongPressTimeout + const Duration(milliseconds: 100));
+
+      final canvasRect = tester.getRect(gridViewFinder);
+
+      // Move drag pointer directly over tiles in the bottom edge zone
+      final bottomEdgePoint = Offset(canvasRect.center.dx, canvasRect.bottom - 20.0);
+      await gesture.moveTo(bottomEdgePoint);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Scroll offset should increase due to autoscroll over tiles
+      expect(scrollController.offset, greaterThan(0.0));
+      final scrolledOffset = scrollController.offset;
+
+      // Move drag pointer directly over tiles in the top edge zone
+      final topEdgePoint = Offset(canvasRect.center.dx, canvasRect.top + 20.0);
+      await gesture.moveTo(topEdgePoint);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Scroll offset should have decreased back towards top
+      expect(scrollController.offset, lessThan(scrolledOffset));
+
+      // Lift pointer to finish drag
+      await gesture.up();
+      await tester.pump(const Duration(milliseconds: 50));
+      final stoppedOffset = scrollController.offset;
+
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(scrollController.offset, equals(stoppedOffset));
+    });
+  });
 }
+

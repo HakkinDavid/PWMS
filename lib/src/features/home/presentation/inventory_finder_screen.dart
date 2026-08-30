@@ -56,6 +56,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   List<String> _containerPath = [];
 
+  final GlobalKey _inventoryCanvasKey = GlobalKey();
   bool _isDragging = false;
   bool _dragHasNavigated = false;
   bool _isCurtainExpanded = false;
@@ -66,13 +67,16 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   late final ScrollController _scrollController;
   Timer? _autoScrollTimer;
+  double _autoScrollStep = 0.0;
 
   void _handleDragStarted() {
+    _stopAutoScroll();
     _isDragging = true;
     _dragHasNavigated = false;
   }
 
   void _handleDragEnd() {
+    _stopAutoScroll();
     _isDragging = false;
     _dragHasNavigated = false;
   }
@@ -250,18 +254,60 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   void _stopAutoScroll() {
     _autoScrollTimer?.cancel();
     _autoScrollTimer = null;
+    _autoScrollStep = 0.0;
   }
 
   void _startAutoScroll(double step) {
+    _autoScrollStep = step;
     if (_autoScrollTimer != null && _autoScrollTimer!.isActive) return;
     _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 20), (_) {
       if (!_scrollController.hasClients) return;
-      final target = (_scrollController.offset + step).clamp(
+      final target = (_scrollController.offset + _autoScrollStep).clamp(
         0.0,
         _scrollController.position.maxScrollExtent,
       );
       _scrollController.jumpTo(target);
     });
+  }
+
+  void _handlePointerAutoScroll(Offset globalPosition) {
+    if (!_isDragging) return;
+
+    if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
+      _breadcrumbBarKey.currentState?.collapseCurtain();
+    }
+
+    final RenderBox? box = _inventoryCanvasKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize || !_scrollController.hasClients) {
+      _stopAutoScroll();
+      return;
+    }
+
+    final boxOffset = box.localToGlobal(Offset.zero);
+    final topEdge = boxOffset.dy;
+    final bottomEdge = boxOffset.dy + box.size.height;
+    final pointerY = globalPosition.dy;
+    final pointerX = globalPosition.dx;
+
+    // Boundary check for horizontal axis
+    if (pointerX < boxOffset.dx || pointerX > boxOffset.dx + box.size.width) {
+      _stopAutoScroll();
+      return;
+    }
+
+    const double threshold = 60.0;
+
+    if (pointerY >= topEdge && pointerY <= topEdge + threshold) {
+      final ratio = 1.0 - ((pointerY - topEdge) / threshold).clamp(0.0, 1.0);
+      final step = -(8.0 + ratio * 16.0);
+      _startAutoScroll(step);
+    } else if (pointerY <= bottomEdge && pointerY >= bottomEdge - threshold) {
+      final ratio = 1.0 - ((bottomEdge - pointerY) / threshold).clamp(0.0, 1.0);
+      final step = (8.0 + ratio * 16.0);
+      _startAutoScroll(step);
+    } else {
+      _stopAutoScroll();
+    }
   }
 
   final List<String> _filters = [
@@ -284,6 +330,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
 
   void _handleLocationSelected(String? newLocId) {
     if (newLocId == _selectedLocationId) return;
+    _stopAutoScroll();
     _saveCurrentScrollOffset();
     if (_selectedLocationId != null || _locationHistory.isNotEmpty) {
       _locationHistory.add(_selectedLocationId);
@@ -299,6 +346,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   }
 
   void _handleBackNavigation() {
+    _stopAutoScroll();
     if (_isSelectionMode) {
       setState(() {
         _isSelectionMode = false;
@@ -665,223 +713,208 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
           ],
         ),
 
-        body: Column(
-          children: [
-            // Unified Navigation Bar (Breadcrumbs, Location Curtain, Container Path & Hero Tile)
-            InventoryBreadcrumbBar(
-              key: _breadcrumbBarKey,
-              allLocations: locationNodes,
-              selectedLocationId: _selectedLocationId,
-              containerPath: _containerPath,
-              catalogMap: catalogMap,
-              allEntitiesMap: allEntitiesMap,
-              allRelations: relations,
-              initiallyExpanded: widget.startWithCurtainOpen,
-              onCurtainExpandedChanged: (expanded) {
-                setState(() => _isCurtainExpanded = expanded);
-              },
-              onLocationSelected: _handleLocationSelected,
-              onDropOnLocation: (payload, targetLocId) {
-                final ids = _extractPayloadIds(payload);
-                if (ids.isNotEmpty) {
-                  _moveEntitiesToLocation(ids, targetLocId);
-                }
-              },
-              onDropIntoContainer: (payload, targetContainerId) {
-                final ids = _extractPayloadIds(payload);
-                if (ids.isNotEmpty) {
-                  _moveEntitiesToContainer(ids, targetContainerId);
-                }
-              },
-              onNavigateToContainerIndex: (idx) {
-                if (_isDragging) _dragHasNavigated = true;
-                _saveCurrentScrollOffset();
-                setState(() {
-                  _containerPath.removeRange(idx + 1, _containerPath.length);
-                });
-                _restoreScrollOffsetForCurrentLevel();
-              },
-              onExitContainersToRoot: () {
-                if (_isDragging) _dragHasNavigated = true;
-                _saveCurrentScrollOffset();
-                setState(() {
-                  _containerPath.clear();
-                  _selectedLocationId = null;
-                  _locationHistory.clear();
-                });
-                _restoreScrollOffsetForCurrentLevel();
-              },
-            ),
-
-            // Filter Chips Row
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              child: Row(
-                children: _filters.map((f) {
-                  final isSel = _selectedTypeFilter == f;
-                  return Padding(
-                     padding: const EdgeInsets.only(right: 6),
-                     child: FilterChip(
-                       label: Text(f, style: const TextStyle(fontSize: 11)),
-                       selected: isSel,
-                       onSelected: (val) {
-                         if (val) setState(() => _selectedTypeFilter = f);
-                       },
-                     ),
-                  );
-                }).toList(),
-              ),
-            ),
-            const Divider(height: 1),
-
-            // Main Inventory Content (Root or Contained items) wrapped in canvas DragTarget with edge autoscroll
-            Expanded(
-              child: Builder(
-                builder: (canvasContext) {
-                  return DragTarget<Object>(
-                    onWillAcceptWithDetails: (details) => true,
-                    onMove: (details) {
-                      if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
-                        _breadcrumbBarKey.currentState?.collapseCurtain();
-                      }
-                      final RenderBox? box = canvasContext.findRenderObject() as RenderBox?;
-                      if (box == null || !box.hasSize || !_scrollController.hasClients) return;
-                      final boxOffset = box.localToGlobal(Offset.zero);
-                      final topEdge = boxOffset.dy;
-                      final bottomEdge = boxOffset.dy + box.size.height;
-                      final pointerY = details.offset.dy;
-
-                      const double threshold = 60.0;
-
-                      if (pointerY >= topEdge && pointerY <= topEdge + threshold) {
-                        final ratio = 1.0 - ((pointerY - topEdge) / threshold).clamp(0.0, 1.0);
-                        final step = -(8.0 + ratio * 16.0);
-                        _startAutoScroll(step);
-                      } else if (pointerY <= bottomEdge && pointerY >= bottomEdge - threshold) {
-                        final ratio = 1.0 - ((bottomEdge - pointerY) / threshold).clamp(0.0, 1.0);
-                        final step = (8.0 + ratio * 16.0);
-                        _startAutoScroll(step);
-                      } else {
-                        _stopAutoScroll();
-                      }
-                    },
-                    onLeave: (_) => _stopAutoScroll(),
-                    onAcceptWithDetails: (details) {
-                      _stopAutoScroll();
-                      if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
-                        _breadcrumbBarKey.currentState?.collapseCurtain();
-                      }
-                      final ids = _extractPayloadIds(details.data);
-                      if (ids.isEmpty) {
-                        _handleDragEnd();
-                        return;
-                      }
-
-                      // Si se soltó en el canvas de la misma vista sin haber navegado, descartar
-                      if (!_dragHasNavigated) {
-                        if (_containerPath.isEmpty && _selectedLocationId == null) {
-                          _handleDragEnd();
-                          return;
-                        }
-                      }
-
-                      if (_containerPath.isNotEmpty) {
-                        _moveEntitiesToContainer(ids, _containerPath.last);
-                      } else {
-                        _moveEntitiesToLocation(ids, _selectedLocationId);
-                      }
-
-                      _handleDragEnd();
-                    },
-                    builder: (context, candidateData, rejectedData) {
-                      final isHovered = candidateData.isNotEmpty;
-
-                      return Container(
-                        color: isHovered ? theme.colorScheme.primary.withAlpha(15) : Colors.transparent,
-                        child: (currentGroups.isEmpty && childLocations.isEmpty)
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      _containerPath.isNotEmpty
-                                          ? AppStrings.emptyContainerPrompt
-                                          : AppStrings.emptyLocationPrompt,
-                                      textAlign: TextAlign.center,
-                                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : _buildInventoryContent(
-                                currentGroups,
-                                childLocations,
-                                locationNodes,
-                                catalogMap,
-                                containerChildrenMap,
-                                allEntities,
-                                effectiveLocationsMap,
-                                viewMode,
-                              ),
-                      );
-                    },
-                  );
+        body: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerMove: (event) => _handlePointerAutoScroll(event.position),
+          onPointerUp: (_) => _stopAutoScroll(),
+          onPointerCancel: (_) => _stopAutoScroll(),
+          child: Column(
+            children: [
+              // Unified Navigation Bar (Breadcrumbs, Location Curtain, Container Path & Hero Tile)
+              InventoryBreadcrumbBar(
+                key: _breadcrumbBarKey,
+                allLocations: locationNodes,
+                selectedLocationId: _selectedLocationId,
+                containerPath: _containerPath,
+                catalogMap: catalogMap,
+                allEntitiesMap: allEntitiesMap,
+                allRelations: relations,
+                initiallyExpanded: widget.startWithCurtainOpen,
+                onCurtainExpandedChanged: (expanded) {
+                  setState(() => _isCurtainExpanded = expanded);
+                },
+                onLocationSelected: _handleLocationSelected,
+                onDropOnLocation: (payload, targetLocId) {
+                  final ids = _extractPayloadIds(payload);
+                  if (ids.isNotEmpty) {
+                    _moveEntitiesToLocation(ids, targetLocId);
+                  }
+                },
+                onDropIntoContainer: (payload, targetContainerId) {
+                  final ids = _extractPayloadIds(payload);
+                  if (ids.isNotEmpty) {
+                    _moveEntitiesToContainer(ids, targetContainerId);
+                  }
+                },
+                onNavigateToContainerIndex: (idx) {
+                  _stopAutoScroll();
+                  if (_isDragging) _dragHasNavigated = true;
+                  _saveCurrentScrollOffset();
+                  setState(() {
+                    _containerPath.removeRange(idx + 1, _containerPath.length);
+                  });
+                  _restoreScrollOffsetForCurrentLevel();
+                },
+                onExitContainersToRoot: () {
+                  _stopAutoScroll();
+                  if (_isDragging) _dragHasNavigated = true;
+                  _saveCurrentScrollOffset();
+                  setState(() {
+                    _containerPath.clear();
+                    _selectedLocationId = null;
+                    _locationHistory.clear();
+                  });
+                  _restoreScrollOffsetForCurrentLevel();
                 },
               ),
-            ),
 
-            // Floating Bulk Actions Bar
-            if (_isSelectionMode && _selectedEntityIds.isNotEmpty)
-              SafeArea(
-                top: false,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  color: theme.colorScheme.primaryContainer,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        AppStrings.selectedCount(_selectedEntityIds.length),
-                        style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.drive_file_move_outlined),
-                            tooltip: AppStrings.moveSelectionAction,
-                            onPressed: () async {
-                              final allEntities = ref.read(entityListProvider).asData?.value ?? [];
-                              final selectedEntities = allEntities.where((e) => _selectedEntityIds.contains(e.id)).toList();
-                              if (selectedEntities.isEmpty) return;
-
-                              final changed = await LocationOrContainerCorrectionSheet.show(
-                                context,
-                                entities: selectedEntities,
-                              );
-                              if (changed == true && mounted) {
-                                _refreshAllState();
-                                setState(() {
-                                  _selectedEntityIds.clear();
-                                  _isSelectionMode = false;
-                                });
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            tooltip: AppStrings.deleteSelectionAction,
-                            onPressed: _deleteSelectedEntities,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              // Filter Chips Row
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: Row(
+                  children: _filters.map((f) {
+                    final isSel = _selectedTypeFilter == f;
+                    return Padding(
+                       padding: const EdgeInsets.only(right: 6),
+                       child: FilterChip(
+                         label: Text(f, style: const TextStyle(fontSize: 11)),
+                         selected: isSel,
+                         onSelected: (val) {
+                           if (val) setState(() => _selectedTypeFilter = f);
+                         },
+                       ),
+                    );
+                  }).toList(),
                 ),
               ),
-          ],
+              const Divider(height: 1),
+
+              // Main Inventory Content (Root or Contained items) wrapped in canvas DragTarget with edge autoscroll
+              Expanded(
+                child: Builder(
+                  builder: (canvasContext) {
+                    return Container(
+                      key: _inventoryCanvasKey,
+                      child: DragTarget<Object>(
+                        onWillAcceptWithDetails: (details) => true,
+                        onAcceptWithDetails: (details) {
+                          _stopAutoScroll();
+                          if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
+                            _breadcrumbBarKey.currentState?.collapseCurtain();
+                          }
+                          final ids = _extractPayloadIds(details.data);
+                          if (ids.isEmpty) {
+                            _handleDragEnd();
+                            return;
+                          }
+
+                          // Si se soltó en el canvas de la misma vista sin haber navegado, descartar
+                          if (!_dragHasNavigated) {
+                            if (_containerPath.isEmpty && _selectedLocationId == null) {
+                              _handleDragEnd();
+                              return;
+                            }
+                          }
+
+                          if (_containerPath.isNotEmpty) {
+                            _moveEntitiesToContainer(ids, _containerPath.last);
+                          } else {
+                            _moveEntitiesToLocation(ids, _selectedLocationId);
+                          }
+
+                          _handleDragEnd();
+                        },
+                        builder: (context, candidateData, rejectedData) {
+                          final isHovered = candidateData.isNotEmpty;
+
+                          return Container(
+                            color: isHovered ? theme.colorScheme.primary.withAlpha(15) : Colors.transparent,
+                            child: (currentGroups.isEmpty && childLocations.isEmpty)
+                                ? Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.primary.withAlpha(100)),
+                                        const SizedBox(height: 12),
+                                        Text(
+                                          _containerPath.isNotEmpty
+                                              ? AppStrings.emptyContainerPrompt
+                                              : AppStrings.emptyLocationPrompt,
+                                          textAlign: TextAlign.center,
+                                          style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : _buildInventoryContent(
+                                    currentGroups,
+                                    childLocations,
+                                    locationNodes,
+                                    catalogMap,
+                                    containerChildrenMap,
+                                    allEntities,
+                                    effectiveLocationsMap,
+                                    viewMode,
+                                  ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Floating Bulk Actions Bar
+              if (_isSelectionMode && _selectedEntityIds.isNotEmpty)
+                SafeArea(
+                  top: false,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    color: theme.colorScheme.primaryContainer,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppStrings.selectedCount(_selectedEntityIds.length),
+                          style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimaryContainer),
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.drive_file_move_outlined),
+                              tooltip: AppStrings.moveSelectionAction,
+                              onPressed: () async {
+                                final allEntities = ref.read(entityListProvider).asData?.value ?? [];
+                                final selectedEntities = allEntities.where((e) => _selectedEntityIds.contains(e.id)).toList();
+                                if (selectedEntities.isEmpty) return;
+
+                                final changed = await LocationOrContainerCorrectionSheet.show(
+                                  context,
+                                  entities: selectedEntities,
+                                );
+                                if (changed == true && mounted) {
+                                  _refreshAllState();
+                                  setState(() {
+                                    _selectedEntityIds.clear();
+                                    _isSelectionMode = false;
+                                  });
+                                }
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              tooltip: AppStrings.deleteSelectionAction,
+                              onPressed: _deleteSelectedEntities,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -994,6 +1027,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               onDragStarted: _handleDragStarted,
               onDragEnd: _handleDragEnd,
               onHoverSpringLoaded: (targetKey) {
+                _stopAutoScroll();
                 if (activeStackKeys.contains(targetKey)) {
                   if (_isDragging) _dragHasNavigated = true;
                   setState(() => _expandedStackKeys.add(targetKey));
@@ -1066,6 +1100,7 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
               onDragStarted: _handleDragStarted,
               onDragEnd: _handleDragEnd,
               onHoverSpringLoaded: (targetKey) {
+                _stopAutoScroll();
                 if (activeStackKeys.contains(targetKey)) {
                   if (_isDragging) _dragHasNavigated = true;
                   setState(() => _expandedStackKeys.add(targetKey));
