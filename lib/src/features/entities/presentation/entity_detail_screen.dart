@@ -846,38 +846,6 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
-                    if (_isEditingInPlace) ...[
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => _handleCancelEditing(entity),
-                              icon: const Icon(Icons.close, size: 18),
-                              label: const Text(AppStrings.discardChangesAction),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () => _saveEntityChanges(entity),
-                              icon: const Icon(Icons.check, size: 18),
-                              label: const Text(AppStrings.saveChangesAction),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                backgroundColor: theme.colorScheme.primary,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                   ],
                 )
               : null;

@@ -424,15 +424,6 @@ class _LocationOrContainerCorrectionSheetState extends ConsumerState<LocationOrC
                             onPressed: _pickContainerFromPicker,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton.icon(
-                            onPressed: _pickContainerFromPicker,
-                            icon: const Icon(Icons.search, size: 16),
-                            label: const Text(AppStrings.changeContainerAction),
-                          ),
-                        ),
                       ],
                     );
                   },
