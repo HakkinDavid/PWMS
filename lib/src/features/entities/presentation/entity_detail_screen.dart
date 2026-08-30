@@ -23,6 +23,7 @@ import '../../catalog/domain/species_magnitude.dart';
 import '../../catalog/domain/species_requirement.dart';
 import '../../relations/domain/entity_relation.dart';
 import '../domain/attachment.dart';
+import '../domain/entity_display_helper.dart';
 import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
 
@@ -915,6 +916,16 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
             ];
           }
 
+          final effectiveInstanceName = _isEditingInPlace
+              ? _workingMagnitudes.where((m) {
+                  final p = m.propertyName.trim().toLowerCase();
+                  return p == AppTechnicalStrings.propNombreLower || p == AppTechnicalStrings.propNameLower;
+                }).map((m) => m.stringValue?.trim()).firstOrNull
+              : EntityDisplayHelper.getInstanceCustomName(entity);
+          final customInstanceTitle = (effectiveInstanceName != null && effectiveInstanceName.isNotEmpty)
+              ? effectiveInstanceName
+              : null;
+
           Widget currentDetailView;
           if (entity.subspeciesId != null && entity.subspeciesId!.isNotEmpty) {
             currentDetailView = FutureBuilder<Subspecies?>(
@@ -923,6 +934,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                 return SpeciesDetailView(
                   species: species,
                   subspecies: subSnapshot.data,
+                  customTitle: customInstanceTitle,
                   instanceId: entity.id,
                   showAttachmentAction: _isEditingInPlace,
                   workingInstanceAttachments: _isEditingInPlace ? _workingAttachments : null,
@@ -938,6 +950,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
           } else {
             currentDetailView = SpeciesDetailView(
               species: species,
+              customTitle: customInstanceTitle,
               instanceId: entity.id,
               showAttachmentAction: _isEditingInPlace,
               workingInstanceAttachments: _isEditingInPlace ? _workingAttachments : null,

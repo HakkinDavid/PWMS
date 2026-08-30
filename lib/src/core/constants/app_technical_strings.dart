@@ -618,6 +618,8 @@ WHERE id IN (
   static const datatypeStringLower = 'string';
   static const datatypeIntegerLower = 'integer';
   static const datatypeRealLower = 'real';
+  static const propNombreLower = 'nombre';
+  static const propNameLower = 'name';
   static const boolTrue = 'true';
   static const boolFalse = 'false';
   static const valZero = '0';

@@ -555,9 +555,14 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                     children: _selectedSpecies!.magnitudes.map((sm) {
                       final ctrl = _magnitudeControllers[sm.propertyName];
                       final type = PropertyDataType.fromCode(sm.dataType);
-                      final labelText = (sm.unitSymbol != null && sm.unitSymbol!.trim().isNotEmpty)
-                          ? AppStrings.propertyWithUnitOrType(sm.propertyName, sm.unitSymbol!)
-                          : AppStrings.propertyWithUnitOrType(sm.propertyName, sm.dataType);
+                      final isNameProp = sm.propertyName.trim().toLowerCase() == AppTechnicalStrings.propNombreLower ||
+                          sm.propertyName.trim().toLowerCase() == AppTechnicalStrings.propNameLower;
+                      final labelText = isNameProp
+                          ? AppStrings.instanceNameOptionalLabel
+                          : ((sm.unitSymbol != null && sm.unitSymbol!.trim().isNotEmpty)
+                              ? AppStrings.propertyWithUnitOrType(sm.propertyName, sm.unitSymbol!)
+                              : AppStrings.propertyWithUnitOrType(sm.propertyName, sm.dataType));
+                      final hintText = isNameProp ? AppStrings.instanceNameHint : null;
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
@@ -568,7 +573,12 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                               : TextInputType.text,
                           decoration: InputDecoration(
                             labelText: labelText,
-                            prefixIcon: Icon(type.isNumeric ? Icons.straighten : Icons.text_fields),
+                            hintText: hintText,
+                            prefixIcon: Icon(
+                              isNameProp
+                                  ? Icons.badge_outlined
+                                  : (type.isNumeric ? Icons.straighten : Icons.text_fields),
+                            ),
                           ),
                         ),
                       );

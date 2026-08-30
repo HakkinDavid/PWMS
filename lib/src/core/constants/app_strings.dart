@@ -444,6 +444,11 @@ class AppStrings {
   static const fileAttachedToSpeciesSuffix = '" adjuntado a la especie.';
   static const addPropertyOrMagnitudeTitle = 'Añadir propiedad o magnitud';
   static const primitiveDataTypeLabel = 'Tipo de dato primitivo:';
+  static const presetNamePropertyLabel = 'Habilitar nombre para instancias';
+  static const presetNamePropertyDescription = 'Permite asignar un nombre o apodo individual a cada instancia creada.';
+  static const instanceNameOptionalLabel = 'Nombre (opcional)';
+  static const instanceNameHint = 'Ej. Mi objeto favorito, Reloj del abuelo, etc.';
+  static const propertyNameNombre = 'Nombre';
   static const enterNameForImageSearchError = 'Ingresa un nombre para buscar imagen.';
 
   static const instanceSpecificAttachment = 'Adjunto propio de la instancia';

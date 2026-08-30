@@ -78,6 +78,7 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
   // Multiplicity of Units & Magnitudes
   final List<SpeciesMagnitude> _magnitudes = [];
+  bool _hasNameProperty = false;
 
   final List<String> _entityTypes = [
     AppStrings.typeObject,
@@ -103,6 +104,11 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       _isNonPerishable = s.isNonPerishable;
       _speciesPhotoPath = s.mainPhotoPath;
       _magnitudes.addAll(s.magnitudes);
+      _hasNameProperty = _magnitudes.any((m) {
+        final p = m.propertyName.trim().toLowerCase();
+        return (p == AppTechnicalStrings.propNombreLower || p == AppTechnicalStrings.propNameLower) &&
+            m.dataType == AppTechnicalStrings.datatypeStringLower;
+      });
     } else if (widget.scannedResult != null) {
       final res = widget.scannedResult;
       final genName = res.generalSpeciesName?.toString() ?? AppTechnicalStrings.empty;
@@ -234,6 +240,38 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
 
   final List<Subspecies> _draftSubspecies = [];
 
+  void _toggleNameProperty(bool value) {
+    setState(() {
+      _hasNameProperty = value;
+      if (value) {
+        final alreadyHas = _magnitudes.any((m) {
+          final p = m.propertyName.trim().toLowerCase();
+          return (p == AppTechnicalStrings.propNombreLower || p == AppTechnicalStrings.propNameLower) &&
+              m.dataType == AppTechnicalStrings.datatypeStringLower;
+        });
+        if (!alreadyHas) {
+          _magnitudes.insert(
+            0,
+            SpeciesMagnitude(
+              id: const Uuid().v4(),
+              speciesId: widget.initialSpecies?.id ?? AppTechnicalStrings.empty,
+              propertyName: AppStrings.propertyNameNombre,
+              dataType: AppTechnicalStrings.datatypeStringLower,
+              unitSymbol: null,
+              createdAt: DateTime.now(),
+            ),
+          );
+        }
+      } else {
+        _magnitudes.removeWhere((m) {
+          final p = m.propertyName.trim().toLowerCase();
+          return (p == AppTechnicalStrings.propNombreLower || p == AppTechnicalStrings.propNameLower) &&
+              m.dataType == AppTechnicalStrings.datatypeStringLower;
+        });
+      }
+    });
+  }
+
   void _addMagnitudeRow() async {
     final allowedUnits = DomainRules.getAllowedUnitsForSpecies(isUnique: _isUnique);
     String chosenUnit = allowedUnits.first;
@@ -339,7 +377,14 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
     );
 
     if (result != null) {
-      setState(() => _magnitudes.add(result));
+      setState(() {
+        _magnitudes.add(result);
+        _hasNameProperty = _magnitudes.any((m) {
+          final p = m.propertyName.trim().toLowerCase();
+          return (p == AppTechnicalStrings.propNombreLower || p == AppTechnicalStrings.propNameLower) &&
+              m.dataType == AppTechnicalStrings.datatypeStringLower;
+        });
+      });
     }
   }
 
@@ -351,7 +396,14 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
       message: AppStrings.confirmDeletePropertyNamed(mag.propertyName),
     );
     if (confirm && mounted) {
-      setState(() => _magnitudes.removeAt(index));
+      setState(() {
+        _magnitudes.removeAt(index);
+        _hasNameProperty = _magnitudes.any((m) {
+          final p = m.propertyName.trim().toLowerCase();
+          return (p == AppTechnicalStrings.propNombreLower || p == AppTechnicalStrings.propNameLower) &&
+              m.dataType == AppTechnicalStrings.datatypeStringLower;
+        });
+      });
     }
   }
 
@@ -876,70 +928,76 @@ class _SpeciesFormModalState extends ConsumerState<SpeciesFormModal> {
                     ],
 
                     // Multiplicidad de Unidades y Magnitudes (+ / - Controls)
-                    if (template.hasQuantity && !template.isAlwaysUnique) ...[
-                      Card(
-                        margin: EdgeInsets.zero,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      AppStrings.unitsAndMagnitudesTitle,
-                                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
+                    Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SwitchListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: const Text(AppStrings.presetNamePropertyLabel, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                              subtitle: const Text(AppStrings.presetNamePropertyDescription, style: TextStyle(fontSize: 11, color: Colors.grey)),
+                              value: _hasNameProperty,
+                              onChanged: _toggleNameProperty,
+                            ),
+                            const Divider(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppStrings.unitsAndMagnitudesTitle,
+                                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
-                                  TextButton.icon(
-                                    onPressed: _addMagnitudeRow,
-                                    icon: const Icon(Icons.add, size: 16),
-                                    label: const Text(AppStrings.addUnitAction, style: TextStyle(fontSize: 12)),
-                                  ),
-                                ],
-                              ),
-                              if (_magnitudes.isEmpty)
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 6.0),
-                                  child: Text(AppStrings.noAdditionalUnitsAdded, style: TextStyle(color: Colors.grey, fontSize: 12)),
-                                )
-                              else
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: _magnitudes.length,
-                                  itemBuilder: (ctx, idx) {
-                                    final mag = _magnitudes[idx];
-                                    return ListTile(
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Text(
-                                        AppStrings.propertyWithUnitOrType(
-                                          mag.propertyName,
-                                          mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
-                                              ? mag.unitSymbol!
-                                              : mag.dataType,
-                                        ),
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
-                                        tooltip: AppStrings.removeUnitAction,
-                                        onPressed: () => _removeMagnitudeRow(idx),
-                                      ),
-                                    );
-                                  },
                                 ),
-                            ],
-                          ),
+                                TextButton.icon(
+                                  onPressed: _addMagnitudeRow,
+                                  icon: const Icon(Icons.add, size: 16),
+                                  label: const Text(AppStrings.addUnitAction, style: TextStyle(fontSize: 12)),
+                                ),
+                              ],
+                            ),
+                            if (_magnitudes.isEmpty)
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 6.0),
+                                child: Text(AppStrings.noAdditionalUnitsAdded, style: TextStyle(color: Colors.grey, fontSize: 12)),
+                              )
+                            else
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: _magnitudes.length,
+                                itemBuilder: (ctx, idx) {
+                                  final mag = _magnitudes[idx];
+                                  return ListTile(
+                                    dense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    title: Text(
+                                      AppStrings.propertyWithUnitOrType(
+                                        mag.propertyName,
+                                        mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
+                                            ? mag.unitSymbol!
+                                            : mag.dataType,
+                                      ),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent, size: 20),
+                                      tooltip: AppStrings.removeUnitAction,
+                                      onPressed: () => _removeMagnitudeRow(idx),
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
+                    const SizedBox(height: 10),
                     // Draft Subspecies / Brand Variants (Create Mode)
                     if (!_isEditMode) ...[
                       Card(

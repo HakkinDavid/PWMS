@@ -22,6 +22,7 @@ import 'standard_media_picker_sheet.dart';
 class SpeciesDetailView extends ConsumerWidget {
   final CatalogItem species;
   final Subspecies? subspecies;
+  final String? customTitle;
   final String? instanceId;
   final Widget? instanceSpecificsHeader;
   final Widget? instanceSpecificsFooter;
@@ -37,6 +38,7 @@ class SpeciesDetailView extends ConsumerWidget {
     super.key,
     required this.species,
     this.subspecies,
+    this.customTitle,
     this.instanceId,
     this.instanceSpecificsHeader,
     this.instanceSpecificsFooter,
@@ -561,9 +563,9 @@ class SpeciesDetailView extends ConsumerWidget {
 
     final isCustomSubspecies = subspecies != null && subspecies!.subspeciesName.toLowerCase() != AppTechnicalStrings.genericSubspeciesLower;
 
-    final headerTitle = isCustomSubspecies
+    final headerTitle = customTitle ?? (isCustomSubspecies
         ? AppStrings.subspeciesNameWithBrand(subspecies!.subspeciesName, subspecies!.brand)
-        : species.name;
+        : species.name);
 
     final bottomPadding = MediaQuery.paddingOf(context).bottom + (floatingActionButton != null ? 88.0 : 28.0);
 

@@ -9,6 +9,7 @@ import '../../../core/widgets/standard_item_card.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../domain/effective_entity_group.dart';
+import '../domain/entity_display_helper.dart';
 import '../domain/world_entity.dart';
 import 'entity_photo_thumbnail.dart';
 
@@ -74,11 +75,20 @@ class InstancePreviewCard extends ConsumerWidget {
       builder: (context, subSnapshot) {
         final subspecies = subSnapshot.data;
 
+        final customInstanceName = EntityDisplayHelper.getInstanceCustomName(targetEntity);
         final isCustomSub = subspecies != null && subspecies.subspeciesName.toLowerCase() != AppTechnicalStrings.genericSubspeciesLower;
         final String primaryTitle;
         final String typeAndSpeciesText;
 
-        if (isCustomSub) {
+        if (customInstanceName != null && customInstanceName.isNotEmpty) {
+          primaryTitle = customInstanceName;
+          if (isCustomSub) {
+            final subText = AppStrings.subspeciesNameWithBrand(subspecies.subspeciesName, subspecies.brand);
+            typeAndSpeciesText = AppStrings.speciesTypeWithSpeciesNamePrefix(speciesType, subText);
+          } else {
+            typeAndSpeciesText = AppStrings.speciesTypeWithSpeciesNamePrefix(speciesType, speciesName);
+          }
+        } else if (isCustomSub) {
           primaryTitle = AppStrings.subspeciesNameWithBrand(subspecies.subspeciesName, subspecies.brand);
           typeAndSpeciesText = AppStrings.speciesTypeWithSpeciesNamePrefix(speciesType, speciesName);
         } else {
