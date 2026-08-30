@@ -46,7 +46,6 @@ final appRouter = GoRouter(
                 final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
                 final targetEntityId = state.uri.queryParameters[AppTechnicalRoutes.paramTargetEntityId];
                 return InventoryFinderScreen(
-                  key: inventoryFinderKey,
                   initialLocationId: locId,
                   initialContainerId: containerId,
                   initialTargetEntityId: targetEntityId,
@@ -60,7 +59,6 @@ final appRouter = GoRouter(
                 final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
                 final targetEntityId = state.uri.queryParameters[AppTechnicalRoutes.paramTargetEntityId];
                 return InventoryFinderScreen(
-                  key: inventoryFinderKey,
                   initialLocationId: locId,
                   initialContainerId: containerId,
                   initialTargetEntityId: targetEntityId,
@@ -74,7 +72,6 @@ final appRouter = GoRouter(
                 final containerId = state.uri.queryParameters[AppTechnicalRoutes.paramContainerId];
                 final targetEntityId = state.uri.queryParameters[AppTechnicalRoutes.paramTargetEntityId];
                 return InventoryFinderScreen(
-                  key: inventoryFinderKey,
                   initialLocationId: locId,
                   initialContainerId: containerId,
                   initialTargetEntityId: targetEntityId,

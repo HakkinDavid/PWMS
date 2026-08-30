@@ -27,8 +27,6 @@ import '../../../core/widgets/view_mode_toggle_button.dart';
 
 typedef FinderViewMode = ItemViewMode;
 
-final GlobalKey<InventoryFinderScreenState> inventoryFinderKey = GlobalKey<InventoryFinderScreenState>();
-
 class InventoryFinderScreen extends ConsumerStatefulWidget {
   final String? initialLocationId;
   final String? initialContainerId;
@@ -44,10 +42,10 @@ class InventoryFinderScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<InventoryFinderScreen> createState() => InventoryFinderScreenState();
+  ConsumerState<InventoryFinderScreen> createState() => _InventoryFinderScreenState();
 }
 
-class InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
+class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   final GlobalKey<InventoryBreadcrumbBarState> _breadcrumbBarKey = GlobalKey();
   String? _selectedLocationId; // Null means "Todas las Ubicaciones"
   final List<String?> _locationHistory = [];
@@ -344,23 +342,20 @@ class InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
     _restoreScrollOffsetForCurrentLevel();
   }
 
-  bool handleBackNavigation() {
+  void _handleBackNavigation() {
     _stopAutoScroll();
     if (_isSelectionMode) {
       setState(() {
         _isSelectionMode = false;
         _selectedEntityIds.clear();
       });
-      return true;
     } else if (_isCurtainExpanded || _breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
       _breadcrumbBarKey.currentState?.collapseCurtain();
       setState(() => _isCurtainExpanded = false);
-      return true;
     } else if (_expandedStackKeys.isNotEmpty) {
       setState(() {
         _expandedStackKeys.clear();
       });
-      return true;
     } else if (_containerPath.isNotEmpty) {
       _saveCurrentScrollOffset();
       setState(() {
@@ -368,7 +363,6 @@ class InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         _expandedStackKeys.clear();
       });
       _restoreScrollOffsetForCurrentLevel();
-      return true;
     } else if (_locationHistory.isNotEmpty) {
       _saveCurrentScrollOffset();
       setState(() {
@@ -376,7 +370,6 @@ class InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         _expandedStackKeys.clear();
       });
       _restoreScrollOffsetForCurrentLevel();
-      return true;
     } else if (_selectedLocationId != null) {
       _saveCurrentScrollOffset();
       setState(() {
@@ -384,9 +377,9 @@ class InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         _expandedStackKeys.clear();
       });
       _restoreScrollOffsetForCurrentLevel();
-      return true;
+    } else {
+      context.goToHome();
     }
-    return false;
   }
 
   void _refreshAllState() {
@@ -692,16 +685,22 @@ class InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         _expandedStackKeys.isNotEmpty;
     final viewMode = ref.watch(inventoryViewModeProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_containerPath.isNotEmpty ? (activeContainerSpecies?.name ?? AppStrings.containerLabel) : AppStrings.inventoryTitle),
-        leading: canGoBack
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                tooltip: AppStrings.goBackAction,
-                onPressed: handleBackNavigation,
-              )
-            : null,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleBackNavigation();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_containerPath.isNotEmpty ? (activeContainerSpecies?.name ?? AppStrings.containerLabel) : AppStrings.inventoryTitle),
+          leading: canGoBack
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  tooltip: AppStrings.goBackAction,
+                  onPressed: _handleBackNavigation,
+                )
+              : null,
           actions: [
             // 2-Way View Mode Switcher (Persisted independently)
             ViewModeToggleButton(
@@ -924,7 +923,8 @@ class InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   List<String> _extractPayloadIds(Object? payload) {
