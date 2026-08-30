@@ -1,5 +1,6 @@
 import 'attachment.dart';
 import 'custom_template.dart';
+import 'instance_magnitude.dart';
 import 'world_entity.dart';
 
 abstract class IEntityRepository {
@@ -17,6 +18,16 @@ abstract class IEntityRepository {
     String? notes,
     String? unit,
     Map<String, double?>? customMagnitudeValues,
+    DateTime? expirationDate,
+  });
+  Future<List<WorldEntity>> instantiateEntities(
+    String speciesId,
+    String? locationId,
+    int quantity, {
+    String? subspeciesId,
+    String? notes,
+    String? unit,
+    List<InstanceMagnitude>? customMagnitudes,
     DateTime? expirationDate,
   });
   Future<void> moveEntity(String entityId, String? newLocationId);

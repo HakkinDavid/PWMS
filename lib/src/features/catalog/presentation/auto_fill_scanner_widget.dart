@@ -174,6 +174,8 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
     ref.invalidate(entityListProvider);
     ref.invalidate(catalogListProvider);
     ref.invalidate(subspeciesListProvider);
+    ref.invalidate(relationListProvider);
+    ref.invalidate(recentEntitiesProvider);
   }
 
   void _showFeedback(String message, {bool isError = false}) {

@@ -207,26 +207,20 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       }
     }
 
-    final double addQty = double.tryParse(_qtyController.text.trim()) ?? 1.0;
+    final int qty = (double.tryParse(_qtyController.text.trim()) ?? 1.0).toInt().clamp(1, 99999);
     setState(() => _isSaving = true);
 
     try {
       final entityRepo = ref.read(entityRepositoryProvider);
       final relationRepo = ref.read(relationRepositoryProvider);
+      final catalogRepo = ref.read(catalogRepositoryProvider);
+      final activityLogger = ref.read(activityLoggerServiceProvider);
 
       final targetPhysicalLoc = _locationMode == InstantiationLocationMode.physicalNode ? _selectedLocationId : null;
 
-      final result = await entityRepo.instantiateOrMerge(
-        species.id,
-        targetPhysicalLoc,
-        addQty,
-        subspeciesId: _selectedSubspecies?.id,
-        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-      );
-
-      // Build specific instance magnitudes with explicit property names & primitive data types
+      // Build specific instance magnitudes template with explicit property names & primitive data types
+      final List<InstanceMagnitude> customInstanceMags = [];
       if (species.magnitudes.isNotEmpty) {
-        final List<InstanceMagnitude> customInstanceMags = [];
         for (final sm in species.magnitudes) {
           final ctrl = _magnitudeControllers[sm.propertyName];
           final rawText = ctrl?.text.trim() ?? AppTechnicalStrings.empty;
@@ -236,10 +230,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
           if (type.isNumeric) {
             if (rawText.isNotEmpty) {
-              final parsedVal = double.tryParse(rawText);
-              if (parsedVal != null) {
-                magVal = parsedVal * addQty;
-              }
+              magVal = double.tryParse(rawText);
             }
           } else {
             strVal = rawText.isNotEmpty ? rawText : null;
@@ -247,7 +238,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
 
           customInstanceMags.add(InstanceMagnitude(
             id: const Uuid().v4(),
-            instanceId: result.id,
+            instanceId: AppTechnicalStrings.empty,
             propertyName: sm.propertyName,
             dataType: sm.dataType,
             magnitudeValue: magVal,
@@ -255,44 +246,59 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
             unitSymbol: type.isNumeric ? sm.unitSymbol : null,
           ));
         }
+      }
 
-        final updatedWithMags = result.copyWith(magnitudes: customInstanceMags);
-        await entityRepo.saveEntity(updatedWithMags);
+      final createdEntities = await entityRepo.instantiateEntities(
+        species.id,
+        targetPhysicalLoc,
+        qty,
+        subspeciesId: _selectedSubspecies?.id,
+        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+        customMagnitudes: customInstanceMags,
+        expirationDate: _expirationDate,
+      );
+
+      for (final entity in createdEntities) {
+        // If secondary photo is present, attach to each instance
+        if (widget.secondaryPhotoPath != null && widget.secondaryPhotoPath!.isNotEmpty) {
+          await catalogRepo.addAttachment(
+            speciesId: species.id,
+            instanceId: entity.id,
+            filePath: widget.secondaryPhotoPath!,
+            fileName: AppStrings.scanReverseFileName(species.name),
+            fileType: AppTechnicalStrings.fileTypeImage,
+          );
+          ref.invalidate(instanceAttachmentsProvider(entity.id));
+        }
+
+        // If container mode is selected, create GUARDADO_EN relation for each instance
+        if (_locationMode == InstantiationLocationMode.containerEntity && _selectedContainerEntityId != null) {
+          final rel = EntityRelation(
+            id: const Uuid().v4(),
+            sourceEntityId: entity.id,
+            targetEntityId: _selectedContainerEntityId!,
+            relationType: AppTechnicalStrings.relGuardadoEn,
+            createdAt: DateTime.now(),
+          );
+          await relationRepo.addRelation(rel);
+        }
+
+        await activityLogger.logEntityCreated(entity.id, species.name, species.type);
       }
 
       if (widget.secondaryPhotoPath != null && widget.secondaryPhotoPath!.isNotEmpty) {
-        final catalogRepo = ref.read(catalogRepositoryProvider);
-        await catalogRepo.addAttachment(
-          speciesId: species.id,
-          instanceId: result.id,
-          filePath: widget.secondaryPhotoPath!,
-          fileName: AppStrings.scanReverseFileName(species.name),
-          fileType: AppTechnicalStrings.fileTypeImage,
-        );
-        ref.invalidate(instanceAttachmentsProvider(result.id));
         ref.invalidate(speciesAttachmentsProvider(species.id));
       }
 
-      if (_expirationDate != null) {
-        final currentEntity = await entityRepo.getEntityById(result.id) ?? result;
-        final updatedWithExp = currentEntity.copyWith(expirationDate: _expirationDate);
-        await entityRepo.saveEntity(updatedWithExp);
-      }
-
-      // If container mode is selected, create GUARDADO_EN relation
-      if (_locationMode == InstantiationLocationMode.containerEntity && _selectedContainerEntityId != null) {
-        final rel = EntityRelation(
-          id: const Uuid().v4(),
-          sourceEntityId: result.id,
-          targetEntityId: _selectedContainerEntityId!,
-          relationType: AppTechnicalStrings.relGuardadoEn,
-          createdAt: DateTime.now(),
-        );
-        await relationRepo.addRelation(rel);
-      }
-
       ref.read(entityListProvider.notifier).loadEntities();
-      await ref.read(activityLoggerServiceProvider).logEntityCreated(result.id, species.name, species.type);
+      ref.read(relationListProvider.notifier).loadRelations();
+      ref.invalidate(relationListProvider);
+      ref.invalidate(recentEntitiesProvider);
+      ref.invalidate(allHistoryEventsStreamProvider);
+      ref.invalidate(notificationListProvider);
+      if (_selectedContainerEntityId != null) {
+        ref.invalidate(entityRelationsProvider(_selectedContainerEntityId!));
+      }
 
       if (mounted) {
         _forceClose = true;

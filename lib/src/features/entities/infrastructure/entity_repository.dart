@@ -12,6 +12,7 @@ import '../domain/world_entity.dart';
 
 import '../../../core/storage/file_storage_service.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';
 import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
 
@@ -330,6 +331,78 @@ class EntityRepository implements IEntityRepository {
   }
 
   @override
+  Future<List<WorldEntity>> instantiateEntities(
+    String speciesId,
+    String? locationId,
+    int quantity, {
+    String? subspeciesId,
+    String? notes,
+    String? unit,
+    List<InstanceMagnitude>? customMagnitudes,
+    DateTime? expirationDate,
+  }) async {
+    final count = quantity > 0 ? quantity : 1;
+
+    String? resolvedSubspeciesId = subspeciesId;
+    if (resolvedSubspeciesId == null || resolvedSubspeciesId.trim().isEmpty) {
+      final subRows = await (_db.select(_db.subspeciesTable)..where((t) => t.speciesId.equals(speciesId))).get();
+      if (subRows.isNotEmpty) {
+        resolvedSubspeciesId = subRows.first.id;
+      }
+    }
+
+    final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
+
+    final List<WorldEntity> createdEntities = [];
+
+    for (int i = 0; i < count; i++) {
+      final newId = const Uuid().v4();
+      final List<InstanceMagnitude> initialMags;
+
+      if (customMagnitudes != null && customMagnitudes.isNotEmpty) {
+        initialMags = customMagnitudes.map((m) => InstanceMagnitude(
+          id: const Uuid().v4(),
+          instanceId: newId,
+          propertyName: m.propertyName,
+          dataType: m.dataType,
+          magnitudeValue: m.magnitudeValue,
+          stringValue: m.stringValue,
+          unitSymbol: m.unitSymbol,
+        )).toList();
+      } else {
+        initialMags = speciesMagRows.map((sm) {
+          return InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: newId,
+            propertyName: sm.propertyName,
+            dataType: sm.dataType,
+            magnitudeValue: null,
+            stringValue: null,
+            unitSymbol: sm.unitSymbol,
+          );
+        }).toList();
+      }
+
+      final newEntity = WorldEntity(
+        id: newId,
+        speciesId: speciesId,
+        subspeciesId: resolvedSubspeciesId,
+        locationId: locationId,
+        magnitudes: initialMags,
+        expirationDate: expirationDate,
+        notes: notes,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await saveEntity(newEntity);
+      createdEntities.add(newEntity);
+    }
+
+    return createdEntities;
+  }
+
+  @override
   Future<WorldEntity> instantiateOrMerge(
     String speciesId,
     String? locationId,
@@ -370,41 +443,32 @@ class EntityRepository implements IEntityRepository {
       }
     }
 
-    WorldEntity? primaryEntity;
-
-    for (int i = 0; i < count; i++) {
-      final newId = const Uuid().v4();
-      final initialMags = speciesMagRows.map((sm) {
-        final val = effectiveMagnitudeValues.containsKey(sm.propertyName)
-            ? effectiveMagnitudeValues[sm.propertyName]
-            : null;
-        return InstanceMagnitude(
-          id: const Uuid().v4(),
-          instanceId: newId,
-          propertyName: sm.propertyName,
-          dataType: sm.dataType,
-          magnitudeValue: val,
-          unitSymbol: sm.unitSymbol,
-        );
-      }).toList();
-
-      final newEntity = WorldEntity(
-        id: newId,
-        speciesId: speciesId,
-        subspeciesId: resolvedSubspeciesId,
-        locationId: locationId,
-        magnitudes: initialMags,
-        expirationDate: expirationDate,
-        notes: notes,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+    final List<InstanceMagnitude> initialMags = speciesMagRows.map((sm) {
+      final val = effectiveMagnitudeValues.containsKey(sm.propertyName)
+          ? effectiveMagnitudeValues[sm.propertyName]
+          : null;
+      return InstanceMagnitude(
+        id: const Uuid().v4(),
+        instanceId: AppTechnicalStrings.empty,
+        propertyName: sm.propertyName,
+        dataType: sm.dataType,
+        magnitudeValue: val,
+        unitSymbol: sm.unitSymbol,
       );
+    }).toList();
 
-      await saveEntity(newEntity);
-      primaryEntity ??= newEntity;
-    }
+    final createdList = await instantiateEntities(
+      speciesId,
+      locationId,
+      count,
+      subspeciesId: resolvedSubspeciesId,
+      notes: notes,
+      unit: unit,
+      customMagnitudes: initialMags,
+      expirationDate: expirationDate,
+    );
 
-    return primaryEntity!;
+    return createdList.first;
   }
 
   @override
