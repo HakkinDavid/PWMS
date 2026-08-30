@@ -134,6 +134,8 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
         data: dragData,
         onDragStarted: widget.onDragStarted,
         onDragEnd: (_) => widget.onDragEnd?.call(),
+        onDragCompleted: () => widget.onDragEnd?.call(),
+        onDraggableCanceled: (_, __) => widget.onDragEnd?.call(),
         feedback: Material(
           elevation: 10,
           borderRadius: BorderRadius.circular(16),
@@ -169,6 +171,8 @@ class _InventoryItemInteractionWrapperState extends State<InventoryItemInteracti
         data: widget.selectedEntityIds.toList(),
         onDragStarted: widget.onDragStarted,
         onDragEnd: (_) => widget.onDragEnd?.call(),
+        onDragCompleted: () => widget.onDragEnd?.call(),
+        onDraggableCanceled: (_, __) => widget.onDragEnd?.call(),
         feedback: Material(
           elevation: 10,
           borderRadius: BorderRadius.circular(16),

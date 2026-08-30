@@ -273,10 +273,6 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
   void _handlePointerAutoScroll(Offset globalPosition) {
     if (!_isDragging) return;
 
-    if (_breadcrumbBarKey.currentState?.isCurtainExpanded == true) {
-      _breadcrumbBarKey.currentState?.collapseCurtain();
-    }
-
     final RenderBox? box = _inventoryCanvasKey.currentContext?.findRenderObject() as RenderBox?;
     if (box == null || !box.hasSize || !_scrollController.hasClients) {
       _stopAutoScroll();
@@ -731,8 +727,8 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
         body: Listener(
           behavior: HitTestBehavior.translucent,
           onPointerMove: (event) => _handlePointerAutoScroll(event.position),
-          onPointerUp: (_) => _stopAutoScroll(),
-          onPointerCancel: (_) => _stopAutoScroll(),
+          onPointerUp: (_) => _handleDragEnd(),
+          onPointerCancel: (_) => _handleDragEnd(),
           child: Column(
             children: [
               // Unified Navigation Bar (Breadcrumbs, Location Curtain, Container Path & Hero Tile)

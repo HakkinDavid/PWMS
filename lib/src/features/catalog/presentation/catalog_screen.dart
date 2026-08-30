@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/domain/item_view_mode.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/minecraft_grid_view.dart';
 import '../../../core/widgets/view_mode_toggle_button.dart';
 
@@ -62,28 +63,34 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
     final theme = Theme.of(context);
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.catalogTitle),
-        actions: [
-          ViewModeToggleButton(
-            viewMode: viewMode,
-            onChanged: (mode) => ref.read(catalogViewModeProvider.notifier).setMode(mode),
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Filter Chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: _filters.map((filter) {
-                final isSelected = _selectedTypeFilter == filter;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        context.goToHome();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(AppStrings.catalogTitle),
+          actions: [
+            ViewModeToggleButton(
+              viewMode: viewMode,
+              onChanged: (mode) => ref.read(catalogViewModeProvider.notifier).setMode(mode),
+            ),
+          ],
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Filter Chips
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: _filters.map((filter) {
+                  final isSelected = _selectedTypeFilter == filter;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
                   child: FilterChip(
                     label: Text(filter),
                     selected: isSelected,
@@ -170,6 +177,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 }
