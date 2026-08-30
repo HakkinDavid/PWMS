@@ -63,34 +63,28 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
     final theme = Theme.of(context);
     final bottomClearance = MediaQuery.paddingOf(context).bottom + 84;
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        context.goToHome();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(AppStrings.catalogTitle),
-          actions: [
-            ViewModeToggleButton(
-              viewMode: viewMode,
-              onChanged: (mode) => ref.read(catalogViewModeProvider.notifier).setMode(mode),
-            ),
-          ],
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Filter Chips
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: _filters.map((filter) {
-                  final isSelected = _selectedTypeFilter == filter;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppStrings.catalogTitle),
+        actions: [
+          ViewModeToggleButton(
+            viewMode: viewMode,
+            onChanged: (mode) => ref.read(catalogViewModeProvider.notifier).setMode(mode),
+          ),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Filter Chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: _filters.map((filter) {
+                final isSelected = _selectedTypeFilter == filter;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
                   child: FilterChip(
                     label: Text(filter),
                     selected: isSelected,
@@ -177,7 +171,6 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
           ),
         ],
       ),
-    ),
     );
   }
 }
