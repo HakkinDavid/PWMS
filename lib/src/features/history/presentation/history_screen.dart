@@ -5,7 +5,10 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/router/app_navigation_extension.dart';
+import '../../../core/theme/app_theme.dart';
+import '../application/activity_heatmap_providers.dart';
 import '../domain/activity_event.dart';
+import 'activity_heatmap_widget.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -318,7 +321,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final selectedCategory = ref.watch(historySelectedCategoryProvider);
-    final historyEventsAsync = ref.watch(filteredHistoryEventsProvider);
+    final selectedDate = ref.watch(historySelectedDateFilterProvider);
+    final historyEventsAsync = ref.watch(comprehensiveHistoryEventsProvider);
+    final heatmapData = ref.watch(activityHeatmapFullYearProvider);
 
     final categories = [
       (AppTechnicalStrings.categoryAll, AppStrings.categoryFilterAll),
@@ -344,7 +349,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         children: [
           // Search Bar
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -380,22 +385,125 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Row(
-              children: categories.map((cat) {
-                final isSelected = selectedCategory == cat.$1;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: FilterChip(
-                    label: Text(cat.$2),
-                    selected: isSelected,
-                    onSelected: (_) {
-                      ref.read(historySelectedCategoryProvider.notifier).state = cat.$1;
-                    },
-                  ),
-                );
-              }).toList(),
+              children: [
+                ...categories.map((cat) {
+                  final isSelected = selectedCategory == cat.$1;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: FilterChip(
+                      label: Text(cat.$2),
+                      selected: isSelected,
+                      onSelected: (_) {
+                        ref.read(historySelectedCategoryProvider.notifier).state = cat.$1;
+                      },
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
-          const Divider(height: 16),
+
+          // Active Date Filter Chip (if selected from Heatmap)
+          if (selectedDate != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryAccent.withAlpha(40),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppTheme.primaryAccent.withAlpha(100)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.calendar_today, size: 13, color: AppTheme.primaryAccent),
+                        const SizedBox(width: 6),
+                        Text(
+                          AppStrings.filteringByDate(
+                            AppStrings.formatDateDMY(selectedDate),
+                          ),
+                          style: const TextStyle(
+                            color: AppTheme.primaryAccent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: () {
+                            ref.read(historySelectedDateFilterProvider.notifier).state = null;
+                          },
+                          child: const Icon(Icons.close, size: 15, color: AppTheme.primaryAccent),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // Collapsible/Full-Year Heatmap & Chroma Bar Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: ExpansionTile(
+              initiallyExpanded: false,
+              tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+                side: BorderSide(color: theme.dividerColor),
+              ),
+              collapsedShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+                side: BorderSide(color: theme.dividerColor),
+              ),
+              backgroundColor: theme.cardColor,
+              collapsedBackgroundColor: theme.cardColor,
+              leading: const Icon(Icons.bar_chart_rounded, color: AppTheme.secondaryAccent, size: 20),
+              title: const Text(
+                AppStrings.activityHeatmapTitle,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              ),
+              subtitle: Text(
+                AppStrings.heatmapHeaderStats(heatmapData.currentStreak, heatmapData.totalEventsInPeriod),
+                style: TextStyle(color: theme.textTheme.bodySmall?.color, fontSize: 11),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Barra de Espectro Cromático
+                      _ChromaSpectrumBar(categoryCounts: heatmapData.categoryCounts),
+                      const SizedBox(height: 12),
+                      // Heatmap a año completo
+                      ActivityHeatmapWidget(
+                        showHeader: false,
+                        isCompact: false,
+                        selectedDay: selectedDate,
+                        onDaySelected: (day) {
+                          final current = ref.read(historySelectedDateFilterProvider);
+                          if (current != null &&
+                              current.year == day.year &&
+                              current.month == day.month &&
+                              current.day == day.day) {
+                            ref.read(historySelectedDateFilterProvider.notifier).state = null;
+                          } else {
+                            ref.read(historySelectedDateFilterProvider.notifier).state = day;
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(height: 12),
 
           // Events List
           Expanded(
@@ -456,12 +564,16 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: theme.dividerColor.withAlpha(50),
+                                color: color.withAlpha(40),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 event.category,
-                                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: color,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -484,6 +596,49 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ChromaSpectrumBar extends StatelessWidget {
+  final Map<String, int> categoryCounts;
+
+  const _ChromaSpectrumBar({required this.categoryCounts});
+
+  @override
+  Widget build(BuildContext context) {
+    final total = categoryCounts.values.fold(0, (sum, c) => sum + c);
+    if (total == 0) return const SizedBox.shrink();
+
+    final colors = {
+      AppTechnicalStrings.categoryEntity: Colors.green,
+      AppTechnicalStrings.categorySpecies: Colors.amber.shade700,
+      AppTechnicalStrings.categoryLocation: Colors.blue.shade700,
+      AppTechnicalStrings.categoryRelation: Colors.teal,
+      AppTechnicalStrings.categoryBackup: Colors.indigo,
+      AppTechnicalStrings.categorySystem: Colors.purple,
+    };
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: SizedBox(
+            height: 6,
+            child: Row(
+              children: categoryCounts.entries.map((entry) {
+                final ratio = entry.value / total;
+                final color = colors[entry.key] ?? Colors.grey;
+                return Expanded(
+                  flex: (ratio * 1000).toInt().clamp(1, 1000),
+                  child: Container(color: color),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

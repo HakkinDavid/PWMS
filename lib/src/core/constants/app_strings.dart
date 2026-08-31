@@ -1603,6 +1603,75 @@ class AppStrings {
   static const photoDecoupledSuccess = 'Fotografía desacoplada para esta especie.';
   static const genericSubspeciesGeneratedSuccess = 'Subespecie "Genérica" generada correctamente.';
   static const instanceReassignedSuccess = 'Instancia reasignada correctamente.';
+
+  // Radar y Calendario de Vencimientos
+  static const expirationsRadarTitle = 'Próximos vencimientos';
+  static const expirationsCalendarTitle = 'Calendario de vencimientos';
+  static const expirationsViewAll = 'Ver todo';
+  static const expirationsEmpty = 'Sin vencimientos registrados';
+  static const expirationsEmptySubtitle = 'Las instancias con fecha de caducidad aparecerán aquí';
+  static const urgencyExpired = 'Vencido';
+  static const urgencyCritical = 'Crítico';
+  static const urgencyWarning = 'Por vencer';
+  static const urgencyUpcoming = 'En observación';
+  static const urgencySafe = 'A salvo';
+  static String statusExpiredCount(int count) => '$count vencido(s)';
+  static String statusExpiringSoonCount(int count) => '$count por vencer';
+  static String daysAgoExpired(int days) => 'Venció hace $days d';
+  static const expiredToday = 'Vence hoy';
+  static const expiredYesterday = 'Venció ayer';
+  static const expiresTomorrow = 'Vence mañana';
+  static String daysLeftExpiring(int days) => 'Vence en $days d';
+  static String monthsLeftExpiring(int months) => 'Vence en $months m';
+  static const sectionExpired = 'Ya vencidos';
+  static const sectionToday = 'Hoy';
+  static const sectionThisWeek = 'Esta semana';
+  static const sectionThisMonth = 'Este mes';
+  static const sectionFuture = 'Próximos meses';
+  static const viewModeMonthly = 'Mensual';
+  static const viewModeAgenda = 'Agenda';
+  static const actionConsume = 'Consumir';
+  static const actionConsumeConfirmTitle = 'Consumir instancia';
+  static String actionConsumeConfirmMessage(String name) => '¿Confirmas el consumo o uso de "$name"? Se dará de baja y quedará registrado en el historial.';
+  static const actionExtendExpiration = 'Modificar fecha';
+  static const actionLocateInInventory = 'Localizar';
+  static const instanceConsumedSuccess = 'Instancia consumida y registrada en el historial.';
+  static const filterAllUrgencies = 'Todas las urgencias';
+  static const filterOnlyExpired = 'Solo vencidos';
+  static const filterOnlyExpiringSoon = 'Por vencer (< 7 días)';
+  static const searchExpirationsHint = 'Buscar por nombre o especie...';
+  static const noExpirationsForDate = 'Sin vencimientos en este día.';
+
+  // Mapa de Actividad y Heatmap GitHub
+  static const activityHeatmapTitle = 'Actividad del sistema';
+  static const activityHeatmapSubtitle = 'Frecuencia de interacción diaria';
+  static const currentStreakLabel = 'Racha activa';
+  static const maxStreakLabel = 'Racha récord';
+  static String streakDaysCount(int count) => '$count d';
+  static String totalEventsThisMonth(int count) => '$count acciones este mes';
+  static String totalEventsInYear(int count) => '$count acciones en el año';
+  static const heatmapLess = 'Menos';
+  static const heatmapMore = 'Más';
+  static String heatmapActivityCount(int count, String date) => '$count acción(es) el $date';
+  static String filteringByDate(String date) => 'Filtrando por fecha: $date';
+  static const clearDateFilter = 'Quitar filtro';
+  static const chromaDistributionTitle = 'Distribución cromática de actividad';
+
+  // Curva de Vida Útil
+  static const shelfLifeTitle = 'Curva de vida útil';
+  static String shelfLifeConsumedRatio(int percent) => '$percent% consumida';
+  static String shelfLifeRemaining(int days) => '$days días restantes';
+  static String shelfLifeStartPrefix(String dateStr) => 'Inicio: $dateStr';
+  static String shelfLifeEndPrefix(String dateStr) => 'Vence: $dateStr';
+  static String consumedEventDescription(String name) => 'Se consumió/utilizó la instancia "$name".';
+  static String labelWithCount(String label, int count) => '$label ($count)';
+  static String itemsCount(int count) => '$count ítem(s)';
+  static String dateWithRelativeTime(String dateStr, String relativeStr) => '$dateStr ($relativeStr)';
+  static const currentStreakWithColon = 'Racha activa: ';
+  static String streakWithFlame(int count) => '🔥 ${streakDaysCount(count)}';
+  static String streakWithTrophy(int count) => '· 🏆 ${streakDaysCount(count)}';
+  static String heatmapHeaderStats(int streak, int total) => '🔥 $streak d racha · $total acciones en el año';
+  static const weekdayShortLetters = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 }
 
 

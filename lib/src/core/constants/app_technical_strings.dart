@@ -32,6 +32,7 @@ class AppTechnicalStrings {
   static const inventory = '/inventory';
   static const notifications = '/notifications';
   static const history = '/history';
+  static const expirations = '/expirations';
   static const paramId = 'id';
   static const paramFocusNodeId = 'focusNodeId';
   static const paramLocationId = 'locationId';
@@ -44,6 +45,10 @@ class AppTechnicalStrings {
   static const paramInitialLocationId = 'initialLocationId';
   static const paramTargetEntityId = 'targetEntityId';
   static const currencyMxn = 'MXN';
+  static const localeEs = 'es';
+  static const dateFormatMonthYear = 'MMMM yyyy';
+  static const dateFormatFullDate = 'EEEE, d MMMM yyyy';
+  static const keyConsumedAt = 'consumedAt';
   static const sourceTypeEntity = 'entity';
   static const sourceTypeSpecies = 'species';
   static const sourceTypeSubspecies = 'subspecies';
@@ -1053,6 +1058,7 @@ abstract final class AppTechnicalRoutes {
   static const inventory = AppTechnicalStrings.inventory;
   static const notifications = AppTechnicalStrings.notifications;
   static const history = AppTechnicalStrings.history;
+  static const expirations = AppTechnicalStrings.expirations;
   static const paramId = AppTechnicalStrings.paramId;
   static const paramFocusNodeId = AppTechnicalStrings.paramFocusNodeId;
   static const paramLocationId = AppTechnicalStrings.paramLocationId;

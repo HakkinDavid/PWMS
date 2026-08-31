@@ -9,6 +9,8 @@ import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../entities/presentation/entity_photo_thumbnail.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
+import '../../expirations/presentation/expiration_radar_widget.dart';
+import '../../history/presentation/activity_heatmap_widget.dart';
 import '../../locations/infrastructure/location_repository.dart';
 import '../../locations/presentation/location_tile.dart';
 
@@ -139,6 +141,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
+
+            // Radar de Vencimientos
+            const SliverToBoxAdapter(
+              child: ExpirationRadarWidget(),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
             // Section 1: Objetos recientes
             SliverToBoxAdapter(
@@ -406,7 +414,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const ActivityHeatmapWidget(
+                      showHeader: false,
+                      isCompact: true,
+                    ),
+                    const SizedBox(height: 14),
                     activityAsync.when(
                       data: (events) {
                         if (events.isEmpty) {

@@ -113,4 +113,7 @@ extension AppNavigationExtension on BuildContext {
 
   /// Empuja el Historial Completo de Actividad.
   void pushHistory() => push(AppTechnicalRoutes.history);
+
+  /// Empuja el Calendario Maestro de Vencimientos.
+  void pushExpirationsCalendar() => push(AppTechnicalRoutes.expirations);
 }

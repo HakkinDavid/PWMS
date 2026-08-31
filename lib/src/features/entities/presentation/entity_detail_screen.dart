@@ -26,6 +26,7 @@ import '../domain/attachment.dart';
 import '../domain/entity_display_helper.dart';
 import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
+import 'shelf_life_gauge_widget.dart';
 
 
 class EntityDetailScreen extends ConsumerStatefulWidget {
@@ -718,6 +719,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                   ),
                 ),
               ),
+
+              // Curva de Vida Útil (Shelf-Life Gauge)
+              ShelfLifeGaugeWidget(entity: entity),
               const SizedBox(height: 14),
 
               // Interactive Directed Entity Relations Graph (Passes isEditing mode and draft state!)
