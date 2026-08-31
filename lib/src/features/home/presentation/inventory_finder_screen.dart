@@ -378,7 +378,11 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
       });
       _restoreScrollOffsetForCurrentLevel();
     } else {
-      context.goToHome();
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      } else {
+        context.goToHome();
+      }
     }
   }
 

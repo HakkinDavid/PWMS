@@ -783,94 +783,87 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final isSqlMode = _selectedScope == AppStrings.arbitrarySqlQueryLabel;
     final theme = Theme.of(context);
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        context.goToHome();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: isSqlMode
-              ? const Text(AppStrings.arbitrarySqlConsoleTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
-              : TextField(
-                  controller: _searchController,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    hintText: AppStrings.searchDetailedHint,
-                    border: InputBorder.none,
-                    suffixIcon: _searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            tooltip: AppStrings.cancel,
-                            onPressed: () {
-                              _searchController.clear();
-                              ref.read(searchQueryProvider.notifier).state = AppTechnicalStrings.empty;
-                              setState(() {});
-                            },
-                          )
-                        : null,
-                  ),
-                  onChanged: (val) {
-                    ref.read(searchQueryProvider.notifier).state = val;
-                    setState(() {});
-                  },
+    return Scaffold(
+      appBar: AppBar(
+        title: isSqlMode
+            ? const Text(AppStrings.arbitrarySqlConsoleTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+            : TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: AppStrings.searchDetailedHint,
+                  border: InputBorder.none,
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          tooltip: AppStrings.cancel,
+                          onPressed: () {
+                            _searchController.clear();
+                            ref.read(searchQueryProvider.notifier).state = AppTechnicalStrings.empty;
+                            setState(() {});
+                          },
+                        )
+                      : null,
                 ),
-        ),
-        body: Column(
-          children: [
-            // Top Scope Selector using AppWheelPicker (Item h)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                border: Border(bottom: BorderSide(color: theme.dividerColor.withAlpha(60))),
+                onChanged: (val) {
+                  ref.read(searchQueryProvider.notifier).state = val;
+                  setState(() {});
+                },
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: _pickScope,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer.withAlpha(70),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: theme.colorScheme.primary.withAlpha(80)),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(_getScopeIcon(_selectedScope), size: 18, color: theme.colorScheme.primary),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                AppStrings.scopeWithPrefix(_selectedScope),
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.onPrimaryContainer,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+      ),
+      body: Column(
+        children: [
+          // Top Scope Selector using AppWheelPicker (Item h)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              border: Border(bottom: BorderSide(color: theme.dividerColor.withAlpha(60))),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: _pickScope,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer.withAlpha(70),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.colorScheme.primary.withAlpha(80)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(_getScopeIcon(_selectedScope), size: 18, color: theme.colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              AppStrings.scopeWithPrefix(_selectedScope),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.onPrimaryContainer,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Icon(Icons.unfold_more, size: 18, color: theme.colorScheme.primary),
-                          ],
-                        ),
+                          ),
+                          Icon(Icons.unfold_more, size: 18, color: theme.colorScheme.primary),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
 
-            Expanded(
-              child: isSqlMode
-                  ? _buildSqlRunnerView(context)
-                  : _buildSearchResults(context, ref, query),
-            ),
-          ],
-        ),
+          Expanded(
+            child: isSqlMode
+                ? _buildSqlRunnerView(context)
+                : _buildSearchResults(context, ref, query),
+          ),
+        ],
       ),
     );
   }
