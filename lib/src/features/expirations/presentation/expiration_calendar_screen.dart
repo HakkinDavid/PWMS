@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/router/app_navigation_extension.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_confirmation_dialog.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
-import '../../entities/presentation/entity_photo_thumbnail.dart';
+import '../../entities/presentation/instance_preview_card.dart';
 import '../../history/domain/activity_event.dart';
 import '../application/expiration_providers.dart';
 import '../domain/expiration_item.dart';
@@ -243,8 +242,7 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
 
   Widget _buildMonthlyView(BuildContext context, ExpirationSummary summary, DateTime selectedDate) {
     final theme = Theme.of(context);
-    final monthName = DateFormat(AppTechnicalStrings.dateFormatMonthYear, AppTechnicalStrings.localeEs).format(_currentMonth);
-    final capitalizedMonth = monthName[0].toUpperCase() + monthName.substring(1);
+    final capitalizedMonth = AppStrings.formatMonthYear(_currentMonth);
 
     // Calcular días del mes actual
     final firstDayOfMonth = _currentMonth;
@@ -401,7 +399,7 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                DateFormat(AppTechnicalStrings.dateFormatFullDate, AppTechnicalStrings.localeEs).format(selectedDayNormalized),
+                AppStrings.formatFullDate(selectedDayNormalized),
                 style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
@@ -426,11 +424,7 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
                   separatorBuilder: (_, __) => const SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     final item = itemsForSelectedDay[index];
-                    return _ExpirationCard(
-                      item: item,
-                      onConsume: () => _handleConsume(item),
-                      onEditDate: () => _handleEditDate(item),
-                    );
+                    return _buildExpirationTile(item);
                   },
                 ),
         ),
@@ -479,38 +473,22 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
       children: [
         if (expired.isNotEmpty) ...[
           _buildAgendaSectionHeader(AppStrings.sectionExpired, Colors.redAccent, expired.length),
-          ...expired.map((i) => _ExpirationCard(
-                item: i,
-                onConsume: () => _handleConsume(i),
-                onEditDate: () => _handleEditDate(i),
-              )),
+          ...expired.map((i) => _buildExpirationTile(i)),
           const SizedBox(height: 16),
         ],
         if (criticalAndWarning.isNotEmpty) ...[
           _buildAgendaSectionHeader(AppStrings.sectionThisWeek, Colors.amberAccent, criticalAndWarning.length),
-          ...criticalAndWarning.map((i) => _ExpirationCard(
-                item: i,
-                onConsume: () => _handleConsume(i),
-                onEditDate: () => _handleEditDate(i),
-              )),
+          ...criticalAndWarning.map((i) => _buildExpirationTile(i)),
           const SizedBox(height: 16),
         ],
         if (upcoming.isNotEmpty) ...[
           _buildAgendaSectionHeader(AppStrings.sectionThisMonth, const Color(0xFF38BDF8), upcoming.length),
-          ...upcoming.map((i) => _ExpirationCard(
-                item: i,
-                onConsume: () => _handleConsume(i),
-                onEditDate: () => _handleEditDate(i),
-              )),
+          ...upcoming.map((i) => _buildExpirationTile(i)),
           const SizedBox(height: 16),
         ],
         if (safe.isNotEmpty) ...[
           _buildAgendaSectionHeader(AppStrings.sectionFuture, Colors.greenAccent, safe.length),
-          ...safe.map((i) => _ExpirationCard(
-                item: i,
-                onConsume: () => _handleConsume(i),
-                onEditDate: () => _handleEditDate(i),
-              )),
+          ...safe.map((i) => _buildExpirationTile(i)),
         ],
       ],
     );
@@ -547,140 +525,57 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
       ),
     );
   }
-}
 
-class _ExpirationCard extends StatelessWidget {
-  final ExpirationItem item;
-  final VoidCallback onConsume;
-  final VoidCallback onEditDate;
-
-  const _ExpirationCard({
-    required this.item,
-    required this.onConsume,
-    required this.onEditDate,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildExpirationTile(ExpirationItem item) {
     final theme = Theme.of(context);
-    final urgencyColor = item.urgency.color;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: item.urgency == ExpirationUrgency.expired
-              ? Colors.redAccent.withAlpha(100)
-              : theme.dividerColor,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: () => context.pushEntityDetail(item.entity.id),
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return InstancePreviewCard(
+      entity: item.entity,
+      onTap: () => context.pushEntityDetail(item.entity.id),
+      trailing: PopupMenuButton<String>(
+        icon: const Icon(Icons.more_vert, size: 20),
+        tooltip: AppStrings.moreOptionsTooltip,
+        onSelected: (value) {
+          if (value == AppTechnicalStrings.actionKeyConsume) {
+            _handleConsume(item);
+          } else if (value == AppTechnicalStrings.actionKeyEditDate) {
+            _handleEditDate(item);
+          } else if (value == AppTechnicalStrings.actionKeyLocate && item.entity.locationId != null) {
+            context.goToInventory(focusNodeId: item.entity.locationId);
+          }
+        },
+        itemBuilder: (ctx) => [
+          PopupMenuItem(
+            value: AppTechnicalStrings.actionKeyConsume,
+            child: Row(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    EntityPhotoThumbnail(
-                      species: item.species,
-                      subspecies: item.subspecies,
-                      instanceId: item.entity.id,
-                      size: 46,
-                      borderRadius: BorderRadius.circular(10),
-                      useTextBadgeFallback: true,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.displayName,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-                          if (item.locationBreadcrumb != null)
-                            Text(
-                              item.locationBreadcrumb!,
-                              style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Icon(item.urgency.icon, size: 12, color: urgencyColor),
-                              const SizedBox(width: 4),
-                              Text(
-                                AppStrings.dateWithRelativeTime(AppStrings.formatDateDMY(item.expirationDate), item.relativeTimeText),
-                                style: TextStyle(
-                                  color: urgencyColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                const Divider(height: 1),
-                const SizedBox(height: 6),
-
-                // Barra de Acciones Rápidas
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (item.entity.locationId != null)
-                      TextButton.icon(
-                        icon: const Icon(Icons.location_on_outlined, size: 15),
-                        label: const Text(AppStrings.actionLocateInInventory, style: TextStyle(fontSize: 11)),
-                        onPressed: () => context.goToInventory(focusNodeId: item.entity.locationId),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                      ),
-                    TextButton.icon(
-                      icon: const Icon(Icons.edit_calendar_outlined, size: 15),
-                      label: const Text(AppStrings.actionExtendExpiration, style: TextStyle(fontSize: 11)),
-                      onPressed: onEditDate,
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.restaurant_outlined, size: 15),
-                      label: const Text(AppStrings.actionConsume, style: TextStyle(fontSize: 11)),
-                      onPressed: onConsume,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ),
-                  ],
-                ),
+                Icon(Icons.restaurant_outlined, size: 18, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                const Text(AppStrings.actionConsume),
               ],
             ),
           ),
-        ),
+          const PopupMenuItem(
+            value: AppTechnicalStrings.actionKeyEditDate,
+            child: Row(
+              children: [
+                Icon(Icons.edit_calendar_outlined, size: 18),
+                SizedBox(width: 8),
+                Text(AppStrings.actionExtendExpiration),
+              ],
+            ),
+          ),
+          if (item.entity.locationId != null)
+            const PopupMenuItem(
+              value: AppTechnicalStrings.actionKeyLocate,
+              child: Row(
+                children: [
+                  Icon(Icons.location_on_outlined, size: 18),
+                  SizedBox(width: 8),
+                  Text(AppStrings.actionLocateInInventory),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -848,6 +848,7 @@ class AppStrings {
   static const shareAction = 'Compartir';
   static const shareAttachmentTooltip = 'Compartir archivo';
   static const attachmentOptionsTooltip = 'Opciones de adjunto';
+  static const moreOptionsTooltip = 'Más opciones';
   static const errorOpeningFilePrefix = 'Error al abrir archivo: ';
   static const errorSharingFilePrefix = 'Error al compartir archivo: ';
   static String replaceAttachmentTitle(String name) => 'Reemplazar Adjunto ($name)';
@@ -1422,6 +1423,14 @@ class AppStrings {
 
   // Date Formatting
   static const _zeroPad = '0';
+  static const spanishMonthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  static const spanishWeekdayNames = [
+    'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
+  ];
+
   static String formatDateDMY(DateTime? dt) {
     if (dt == null) return AppTechnicalStrings.empty;
     final d = dt.day.toString().padLeft(2, _zeroPad);
@@ -1437,6 +1446,17 @@ class AppStrings {
     final hh = dt.hour.toString().padLeft(2, _zeroPad);
     final mm = dt.minute.toString().padLeft(2, _zeroPad);
     return '$d/$m/$y $hh:$mm';
+  }
+
+  static String formatMonthYear(DateTime dt) {
+    final monthName = spanishMonthNames[dt.month - 1];
+    return '$monthName ${dt.year}';
+  }
+
+  static String formatFullDate(DateTime dt) {
+    final weekdayName = spanishWeekdayNames[dt.weekday - 1];
+    final monthName = spanishMonthNames[dt.month - 1];
+    return '$weekdayName, ${dt.day} de $monthName de ${dt.year}';
   }
 
   static const infoUpdated = 'Información actualizada';

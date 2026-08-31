@@ -49,6 +49,9 @@ class AppTechnicalStrings {
   static const dateFormatMonthYear = 'MMMM yyyy';
   static const dateFormatFullDate = 'EEEE, d MMMM yyyy';
   static const keyConsumedAt = 'consumedAt';
+  static const actionKeyConsume = 'consume';
+  static const actionKeyEditDate = 'editDate';
+  static const actionKeyLocate = 'locate';
   static const sourceTypeEntity = 'entity';
   static const sourceTypeSpecies = 'species';
   static const sourceTypeSubspecies = 'subspecies';

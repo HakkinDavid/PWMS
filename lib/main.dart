@@ -5,9 +5,12 @@ import 'src/core/router/app_router.dart';
 import 'src/core/theme/app_theme.dart';
 
 import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting(AppTechnicalStrings.localeEs, null);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
