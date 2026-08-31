@@ -12,8 +12,6 @@ import '../application/expiration_providers.dart';
 import '../domain/expiration_item.dart';
 import '../domain/expiration_summary.dart';
 
-enum ExpirationViewMode { monthly, agenda }
-
 class ExpirationCalendarScreen extends ConsumerStatefulWidget {
   const ExpirationCalendarScreen({super.key});
 
@@ -22,8 +20,6 @@ class ExpirationCalendarScreen extends ConsumerStatefulWidget {
 }
 
 class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScreen> {
-  ExpirationViewMode _viewMode = ExpirationViewMode.monthly;
-  DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
   late final TextEditingController _searchController;
 
   @override
@@ -40,18 +36,6 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
     super.dispose();
   }
 
-  void _previousMonth() {
-    setState(() {
-      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1, 1);
-    });
-  }
-
-  void _nextMonth() {
-    setState(() {
-      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 1);
-    });
-  }
-
   Future<void> _handleConsume(ExpirationItem item) async {
     final confirmed = await AppConfirmationDialog.show(
       context: context,
@@ -63,7 +47,6 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
 
     if (confirmed == true && mounted) {
       final now = DateTime.now();
-      // Registrar evento de consumo explícito
       final event = ActivityEvent(
         id: UniqueKey().toString(),
         entityId: item.entity.id,
@@ -109,42 +92,12 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final summary = ref.watch(expirationSummaryProvider);
-    final selectedDate = ref.watch(expirationCalendarSelectedDateProvider);
     final selectedUrgency = ref.watch(expirationUrgencyFilterProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.expirationsCalendarTitle),
-        actions: [
-          // Toggle entre vista mensual y vista agenda
-          SegmentedButton<ExpirationViewMode>(
-            segments: const [
-              ButtonSegment(
-                value: ExpirationViewMode.monthly,
-                icon: Icon(Icons.calendar_month_outlined, size: 18),
-                label: Text(AppStrings.viewModeMonthly, style: TextStyle(fontSize: 12)),
-              ),
-              ButtonSegment(
-                value: ExpirationViewMode.agenda,
-                icon: Icon(Icons.view_agenda_outlined, size: 18),
-                label: Text(AppStrings.viewModeAgenda, style: TextStyle(fontSize: 12)),
-              ),
-            ],
-            selected: {_viewMode},
-            onSelectionChanged: (set) {
-              setState(() {
-                _viewMode = set.first;
-              });
-            },
-            style: SegmentedButton.styleFrom(
-              visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
       ),
       body: Column(
         children: [
@@ -229,206 +182,12 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
           ),
           const Divider(height: 1),
 
-          // Contenido principal según el modo seleccionado
+          // Contenido de Agenda
           Expanded(
-            child: _viewMode == ExpirationViewMode.monthly
-                ? _buildMonthlyView(context, summary, selectedDate)
-                : _buildAgendaView(context),
+            child: _buildAgendaView(context),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildMonthlyView(BuildContext context, ExpirationSummary summary, DateTime selectedDate) {
-    final theme = Theme.of(context);
-    final capitalizedMonth = AppStrings.formatMonthYear(_currentMonth);
-
-    // Calcular días del mes actual
-    final firstDayOfMonth = _currentMonth;
-    final daysInMonth = DateUtils.getDaysInMonth(_currentMonth.year, _currentMonth.month);
-    final firstWeekday = firstDayOfMonth.weekday; // 1 = Lunes, 7 = Domingo
-
-    // Obtener ítems del día seleccionado
-    final selectedDayNormalized = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
-    final itemsForSelectedDay = summary.itemsByDate[selectedDayNormalized] ?? [];
-
-    return Column(
-      children: [
-        // Selector de mes (< Mes Año >)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.chevron_left),
-                onPressed: _previousMonth,
-              ),
-              Text(
-                capitalizedMonth,
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              IconButton(
-                icon: const Icon(Icons.chevron_right),
-                onPressed: _nextMonth,
-              ),
-            ],
-          ),
-        ),
-
-        // Cabecera de días de la semana
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: AppStrings.weekdayShortLetters.map((d) {
-              return SizedBox(
-                width: 38,
-                child: Text(
-                  d,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        const SizedBox(height: 6),
-
-        // Cuadrícula de días
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
-              crossAxisSpacing: 4,
-              mainAxisSpacing: 4,
-              childAspectRatio: 1.1,
-            ),
-            itemCount: 42, // 6 semanas
-            itemBuilder: (context, index) {
-              final dayOffset = index - (firstWeekday - 1);
-              if (dayOffset < 0 || dayOffset >= daysInMonth) {
-                return const SizedBox.shrink();
-              }
-
-              final dayNumber = dayOffset + 1;
-              final cellDate = DateTime(_currentMonth.year, _currentMonth.month, dayNumber);
-              final isSelected = cellDate.year == selectedDate.year &&
-                  cellDate.month == selectedDate.month &&
-                  cellDate.day == selectedDate.day;
-
-              final today = DateTime.now();
-              final isToday = cellDate.year == today.year &&
-                  cellDate.month == today.month &&
-                  cellDate.day == today.day;
-
-              final dayItems = summary.itemsByDate[cellDate] ?? [];
-              final hasExpired = dayItems.any((i) => i.urgency == ExpirationUrgency.expired);
-              final hasWarning = dayItems.any((i) =>
-                  i.urgency == ExpirationUrgency.critical || i.urgency == ExpirationUrgency.warning);
-
-              return InkWell(
-                onTap: () {
-                  ref.read(expirationCalendarSelectedDateProvider.notifier).state = cellDate;
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? theme.colorScheme.primary.withAlpha(50)
-                        : (isToday ? theme.dividerColor.withAlpha(40) : Colors.transparent),
-                    borderRadius: BorderRadius.circular(8),
-                    border: isSelected
-                        ? Border.all(color: theme.colorScheme.primary, width: 1.5)
-                        : (isToday ? Border.all(color: Colors.grey.shade600, width: 1) : null),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        dayNumber.toString(),
-                        style: TextStyle(
-                          fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? theme.colorScheme.primary : Colors.white,
-                          fontSize: 13,
-                        ),
-                      ),
-                      if (dayItems.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 5,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                color: hasExpired
-                                    ? Colors.redAccent
-                                    : (hasWarning ? Colors.amberAccent : Colors.greenAccent),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            if (dayItems.length > 1) ...[
-                              const SizedBox(width: 2),
-                              Text(
-                                dayItems.length.toString(),
-                                style: const TextStyle(fontSize: 8, color: Colors.grey, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-
-        const Divider(height: 16),
-
-        // Lista de ítems del día seleccionado
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                AppStrings.formatFullDate(selectedDayNormalized),
-                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                AppStrings.itemsCount(itemsForSelectedDay.length),
-                style: TextStyle(color: theme.textTheme.bodySmall?.color, fontSize: 12),
-              ),
-            ],
-          ),
-        ),
-
-        Expanded(
-          child: itemsForSelectedDay.isEmpty
-              ? Center(
-                  child: Text(
-                    AppStrings.noExpirationsForDate,
-                    style: TextStyle(color: Colors.grey.shade500),
-                  ),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: itemsForSelectedDay.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final item = itemsForSelectedDay[index];
-                    return _buildExpirationTile(item);
-                  },
-                ),
-        ),
-      ],
     );
   }
 
