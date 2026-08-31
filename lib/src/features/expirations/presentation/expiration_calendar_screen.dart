@@ -36,39 +36,6 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
     super.dispose();
   }
 
-  Future<void> _handleConsume(ExpirationItem item) async {
-    final confirmed = await AppConfirmationDialog.show(
-      context: context,
-      title: AppStrings.actionConsumeConfirmTitle,
-      message: AppStrings.actionConsumeConfirmMessage(item.displayName),
-      confirmLabel: AppStrings.actionConsume,
-      isDestructive: true,
-    );
-
-    if (confirmed == true && mounted) {
-      final now = DateTime.now();
-      final event = ActivityEvent(
-        id: UniqueKey().toString(),
-        entityId: item.entity.id,
-        eventType: AppTechnicalStrings.eventTypeConsumption,
-        description: AppStrings.consumedEventDescription(item.displayName),
-        metadata: {
-          AppTechnicalStrings.keySpeciesId: item.entity.speciesId,
-          AppTechnicalStrings.keyCategory: AppTechnicalStrings.categoryEntity,
-          AppTechnicalStrings.keyTargetType: AppTechnicalStrings.notifTargetTypeEntity,
-          AppTechnicalStrings.keyTargetId: item.entity.id,
-          AppTechnicalStrings.keyConsumedAt: now.toIso8601String(),
-        },
-        timestamp: now,
-      );
-      await ref.read(historyRepositoryProvider).logEvent(event);
-      await ref.read(entityRepositoryProvider).deleteEntity(item.entity.id);
-      if (mounted) {
-        AppToast.show(context, message: AppStrings.instanceConsumedSuccess, type: ToastType.success);
-      }
-    }
-  }
-
   Future<void> _handleEditDate(ExpirationItem item) async {
     final initialDate = item.expirationDate;
     final picked = await showDatePicker(
@@ -294,25 +261,13 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
         icon: const Icon(Icons.more_vert, size: 20),
         tooltip: AppStrings.moreOptionsTooltip,
         onSelected: (value) {
-          if (value == AppTechnicalStrings.actionKeyConsume) {
-            _handleConsume(item);
-          } else if (value == AppTechnicalStrings.actionKeyEditDate) {
+          if (value == AppTechnicalStrings.actionKeyEditDate) {
             _handleEditDate(item);
           } else if (value == AppTechnicalStrings.actionKeyLocate && item.entity.locationId != null) {
             context.goToInventory(focusNodeId: item.entity.locationId);
           }
         },
         itemBuilder: (ctx) => [
-          PopupMenuItem(
-            value: AppTechnicalStrings.actionKeyConsume,
-            child: Row(
-              children: [
-                Icon(Icons.restaurant_outlined, size: 18, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                const Text(AppStrings.actionConsume),
-              ],
-            ),
-          ),
           const PopupMenuItem(
             value: AppTechnicalStrings.actionKeyEditDate,
             child: Row(

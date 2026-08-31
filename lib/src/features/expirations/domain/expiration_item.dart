@@ -108,6 +108,34 @@ class ExpirationItem {
     }
   }
 
+  int get warningDays => species?.warningDaysBeforeExpiration ?? 7;
+
+  DateTime get warningStartDate {
+    final exp = DateTime(expirationDate.year, expirationDate.month, expirationDate.day);
+    return exp.subtract(Duration(days: warningDays));
+  }
+
+  bool isActiveOnDay(DateTime day, DateTime today) {
+    final target = DateTime(day.year, day.month, day.day);
+    final exp = DateTime(expirationDate.year, expirationDate.month, expirationDate.day);
+    final current = DateTime(today.year, today.month, today.day);
+
+    if (exp.isBefore(current)) {
+      // Overdue range: [exp, current]
+      return (target.isAtSameMomentAs(exp) || target.isAfter(exp)) &&
+          (target.isAtSameMomentAs(current) || target.isBefore(current));
+    } else if (urgency == ExpirationUrgency.critical || urgency == ExpirationUrgency.warning) {
+      // Warning / Soon range: [max(current, warningStartDate), exp] or [warningStartDate, exp]
+      final warnStart = warningStartDate;
+      final effectiveStart = warnStart.isBefore(current) ? current : warnStart;
+      return (target.isAtSameMomentAs(effectiveStart) || target.isAfter(effectiveStart)) &&
+          (target.isAtSameMomentAs(exp) || target.isBefore(exp));
+    } else {
+      // Future / safe: exact day
+      return target.isAtSameMomentAs(exp);
+    }
+  }
+
   static ExpirationUrgency calculateUrgency({
     required DateTime expirationDate,
     required DateTime now,

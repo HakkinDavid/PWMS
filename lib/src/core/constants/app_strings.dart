@@ -1650,9 +1650,6 @@ class AppStrings {
   static const sectionFuture = 'Próximos meses';
   static const viewModeMonthly = 'Mensual';
   static const viewModeAgenda = 'Agenda';
-  static const actionConsume = 'Consumir';
-  static const actionConsumeConfirmTitle = 'Consumir instancia';
-  static String actionConsumeConfirmMessage(String name) => '¿Confirmas el consumo o uso de "$name"? Se dará de baja y quedará registrado en el historial.';
   static const actionExtendExpiration = 'Modificar fecha';
   static const actionLocateInInventory = 'Localizar';
   static const instanceConsumedSuccess = 'Instancia consumida y registrada en el historial.';
@@ -1692,6 +1689,7 @@ class AppStrings {
   static String streakWithTrophy(int count) => '· 🏆 ${streakDaysCount(count)}';
   static String heatmapHeaderStats(int streak, int total) => '🔥 $streak d racha · $total acciones en el año';
   static const weekdayShortLetters = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  static const weekdayShortLettersSundayFirst = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
 }
 
 
