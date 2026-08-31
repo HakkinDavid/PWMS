@@ -1625,7 +1625,7 @@ class AppStrings {
   static const instanceReassignedSuccess = 'Instancia reasignada correctamente.';
 
   // Radar y Calendario de Vencimientos
-  static const expirationsRadarTitle = 'Próximos vencimientos';
+  static const expirationsRadarTitle = 'Agenda';
   static const expirationsCalendarTitle = 'Calendario de vencimientos';
   static const expirationsViewAll = 'Ver todo';
   static const expirationsEmpty = 'Sin vencimientos registrados';
