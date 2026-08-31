@@ -4,10 +4,8 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/router/app_navigation_extension.dart';
-import 'package:platinum_world_management_system/src/core/widgets/app_confirmation_dialog.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import '../../entities/presentation/instance_preview_card.dart';
-import '../../history/domain/activity_event.dart';
 import '../application/expiration_providers.dart';
 import '../domain/expiration_item.dart';
 import '../domain/expiration_summary.dart';
@@ -33,39 +31,6 @@ class _ExpirationRadarWidgetState extends ConsumerState<ExpirationRadarWidget> {
     setState(() {
       _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 1);
     });
-  }
-
-  Future<void> _handleConsume(ExpirationItem item) async {
-    final confirmed = await AppConfirmationDialog.show(
-      context: context,
-      title: AppStrings.actionConsumeConfirmTitle,
-      message: AppStrings.actionConsumeConfirmMessage(item.displayName),
-      confirmLabel: AppStrings.actionConsume,
-      isDestructive: true,
-    );
-
-    if (confirmed == true && mounted) {
-      final now = DateTime.now();
-      final event = ActivityEvent(
-        id: UniqueKey().toString(),
-        entityId: item.entity.id,
-        eventType: AppTechnicalStrings.eventTypeConsumption,
-        description: AppStrings.consumedEventDescription(item.displayName),
-        metadata: {
-          AppTechnicalStrings.keySpeciesId: item.entity.speciesId,
-          AppTechnicalStrings.keyCategory: AppTechnicalStrings.categoryEntity,
-          AppTechnicalStrings.keyTargetType: AppTechnicalStrings.notifTargetTypeEntity,
-          AppTechnicalStrings.keyTargetId: item.entity.id,
-          AppTechnicalStrings.keyConsumedAt: now.toIso8601String(),
-        },
-        timestamp: now,
-      );
-      await ref.read(historyRepositoryProvider).logEvent(event);
-      await ref.read(entityRepositoryProvider).deleteEntity(item.entity.id);
-      if (mounted) {
-        AppToast.show(context, message: AppStrings.instanceConsumedSuccess, type: ToastType.success);
-      }
-    }
   }
 
   Future<void> _handleEditDate(ExpirationItem item) async {
@@ -299,8 +264,25 @@ class _ExpirationRadarWidgetState extends ConsumerState<ExpirationRadarWidget> {
                             (i.urgency == ExpirationUrgency.critical || i.urgency == ExpirationUrgency.warning) &&
                             i.isActiveOnDay(cellDate, today),
                       );
-                      final hasExactExpiration = summary.allItems.any(
+
+                      // El punto únicamente va al inicio del "evento"
+                      final isExpiredEventStart = summary.allItems.any(
                         (i) =>
+                            i.urgency == ExpirationUrgency.expired &&
+                            i.expirationDate.year == cellDate.year &&
+                            i.expirationDate.month == cellDate.month &&
+                            i.expirationDate.day == cellDate.day,
+                      );
+                      final isWarningEventStart = summary.allItems.any(
+                        (i) =>
+                            (i.urgency == ExpirationUrgency.critical || i.urgency == ExpirationUrgency.warning) &&
+                            i.warningStartDate.year == cellDate.year &&
+                            i.warningStartDate.month == cellDate.month &&
+                            i.warningStartDate.day == cellDate.day,
+                      );
+                      final isSafeExpirationStart = summary.allItems.any(
+                        (i) =>
+                            (i.urgency == ExpirationUrgency.upcoming || i.urgency == ExpirationUrgency.safe) &&
                             i.expirationDate.year == cellDate.year &&
                             i.expirationDate.month == cellDate.month &&
                             i.expirationDate.day == cellDate.day,
@@ -312,6 +294,8 @@ class _ExpirationRadarWidgetState extends ConsumerState<ExpirationRadarWidget> {
                       } else if (hasWarningSpan) {
                         spanColor = Colors.amberAccent.withAlpha(55);
                       }
+
+                      final isEventStart = isExpiredEventStart || isWarningEventStart || isSafeExpirationStart;
 
                       return InkWell(
                         onTap: () {
@@ -334,14 +318,14 @@ class _ExpirationRadarWidgetState extends ConsumerState<ExpirationRadarWidget> {
                               Text(
                                 dayNumber.toString(),
                                 style: TextStyle(
-                                  fontWeight: isSelected || isToday || hasExactExpiration
+                                  fontWeight: isSelected || isToday || isEventStart
                                       ? FontWeight.bold
                                       : FontWeight.normal,
                                   color: isSelected ? theme.colorScheme.primary : Colors.white,
                                   fontSize: 11,
                                 ),
                               ),
-                              if (hasExactExpiration) ...[
+                              if (isExpiredEventStart) ...[
                                 const SizedBox(height: 1),
                                 Container(
                                   width: 4.5,
@@ -351,15 +335,23 @@ class _ExpirationRadarWidgetState extends ConsumerState<ExpirationRadarWidget> {
                                     shape: BoxShape.circle,
                                   ),
                                 ),
-                              ] else if (hasExpiredSpan || hasWarningSpan) ...[
+                              ] else if (isWarningEventStart) ...[
                                 const SizedBox(height: 1),
                                 Container(
-                                  width: 3.5,
-                                  height: 3.5,
-                                  decoration: BoxDecoration(
-                                    color: hasExpiredSpan
-                                        ? Colors.redAccent.withAlpha(160)
-                                        : Colors.amberAccent.withAlpha(180),
+                                  width: 4.5,
+                                  height: 4.5,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.amberAccent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ] else if (isSafeExpirationStart) ...[
+                                const SizedBox(height: 1),
+                                Container(
+                                  width: 4.5,
+                                  height: 4.5,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.greenAccent,
                                     shape: BoxShape.circle,
                                   ),
                                 ),
@@ -425,25 +417,13 @@ class _ExpirationRadarWidgetState extends ConsumerState<ExpirationRadarWidget> {
         icon: const Icon(Icons.more_vert, size: 20),
         tooltip: AppStrings.moreOptionsTooltip,
         onSelected: (value) {
-          if (value == AppTechnicalStrings.actionKeyConsume) {
-            _handleConsume(item);
-          } else if (value == AppTechnicalStrings.actionKeyEditDate) {
+          if (value == AppTechnicalStrings.actionKeyEditDate) {
             _handleEditDate(item);
           } else if (value == AppTechnicalStrings.actionKeyLocate && item.entity.locationId != null) {
             context.goToInventory(focusNodeId: item.entity.locationId);
           }
         },
         itemBuilder: (ctx) => [
-          PopupMenuItem(
-            value: AppTechnicalStrings.actionKeyConsume,
-            child: Row(
-              children: [
-                Icon(Icons.restaurant_outlined, size: 18, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                const Text(AppStrings.actionConsume),
-              ],
-            ),
-          ),
           const PopupMenuItem(
             value: AppTechnicalStrings.actionKeyEditDate,
             child: Row(
