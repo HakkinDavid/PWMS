@@ -266,7 +266,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SliverToBoxAdapter(
               child: ExpirationRadarWidget(),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
             // Section 2: Ubicaciones con más objetos (Most populated location nodes)
             SliverToBoxAdapter(

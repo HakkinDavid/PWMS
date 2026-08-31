@@ -165,12 +165,45 @@ void main() {
       expect(summary.criticalCount, equals(1));
       expect(summary.warningCount, equals(0));
       expect(summary.futureItems.length, equals(1));
-      expect(summary.hasUrgentAlerts, isTrue);
-
       final expItem = summary.expiredItems.first;
       expect(expItem.displayName, contains('1 Litro'));
       expect(expItem.displayName, contains('Alpura'));
       expect(expItem.locationName, equals('Refrigerador'));
+    });
+
+    test('ExpirationSummary.hasUrgentAlerts is false when only far future items exist', () {
+      final catalog = {
+        'spec-perishable': CatalogItem(
+          id: 'spec-perishable',
+          name: 'Arroz',
+          isNonPerishable: false,
+          warningDaysBeforeExpiration: 7,
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      };
+
+      final entities = [
+        WorldEntity(
+          id: 'e1',
+          speciesId: 'spec-perishable',
+          expirationDate: DateTime(2026, 12, 1), // > 90 days
+          createdAt: DateTime(2026, 8, 1),
+          updatedAt: DateTime(2026, 8, 1),
+        ),
+      ];
+
+      final summary = ExpirationSummary.fromEntities(
+        entities: entities,
+        catalogMap: catalog,
+        subspeciesMap: const {},
+        locations: const [],
+        now: now,
+      );
+
+      expect(summary.totalCount, equals(1));
+      expect(summary.expiredCount, equals(0));
+      expect(summary.expiringSoonCount, equals(0));
+      expect(summary.hasUrgentAlerts, isFalse);
     });
   });
 
