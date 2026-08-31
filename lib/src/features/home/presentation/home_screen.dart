@@ -142,12 +142,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // Radar de Vencimientos
-            const SliverToBoxAdapter(
-              child: ExpirationRadarWidget(),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
-
             // Section 1: Objetos recientes
             SliverToBoxAdapter(
               child: Column(
@@ -267,6 +261,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 28)),
+
+            // Radar de Vencimientos
+            const SliverToBoxAdapter(
+              child: ExpirationRadarWidget(),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
             // Section 2: Ubicaciones con más objetos (Most populated location nodes)
             SliverToBoxAdapter(
