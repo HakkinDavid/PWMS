@@ -6,8 +6,10 @@ import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/minecraft_grid_cell.dart';
 import '../../../core/widgets/standard_item_card.dart';
+import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../locations/domain/location_path_helper.dart';
+import '../../relations/domain/entity_relation.dart';
 import '../domain/effective_entity_group.dart';
 import '../domain/entity_display_helper.dart';
 import '../domain/world_entity.dart';
@@ -275,7 +277,7 @@ class InstancePreviewCard extends ConsumerWidget {
 
   Widget _buildBadges({
     required CatalogItem? species,
-    required List<dynamic> allRelations,
+    required List<EntityRelation> allRelations,
     required WorldEntity targetEntity,
     required WorldEntity? entity,
     required EffectiveEntityGroup? group,
