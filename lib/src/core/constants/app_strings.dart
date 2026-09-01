@@ -923,6 +923,7 @@ class AppStrings {
   static const propertyNameSuggestionIncongruityTitle = 'Nombre de Propiedad Sugerido';
 
   static const correctLocationOrContainerAction = 'Corregir Ubicación / Contenedor';
+  static const selectLocationOrContainerPrompt = 'Seleccionar Ubicación o Contenedor';
   static const deleteFromInventoryAction = 'Eliminar de Inventario';
   static const deregisterInstanceAction = 'Eliminar Instancia';
   static const deleteRelationActionLabel = 'Eliminar Relación';

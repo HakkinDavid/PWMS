@@ -16,7 +16,7 @@ import 'package:platinum_world_management_system/src/features/entities/domain/wo
 import 'package:platinum_world_management_system/src/features/home/presentation/inventory_finder_screen.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_path_helper.dart';
-import 'package:platinum_world_management_system/src/features/locations/presentation/location_or_container_correction_sheet.dart';
+import 'package:platinum_world_management_system/src/features/locations/presentation/location_or_container_selection_sheet.dart';
 import 'package:platinum_world_management_system/src/features/relations/domain/entity_relation.dart';
 import 'package:platinum_world_management_system/src/features/relations/presentation/interactive_entity_graph_widget.dart';
 
@@ -206,7 +206,7 @@ void main() {
       expect(find.text('Caja'), findsNothing);
     });
 
-    testWidgets('LocationOrContainerCorrectionSheet correctly switches to physical location', (WidgetTester tester) async {
+    testWidgets('LocationOrContainerSelectionSheet correctly displays physical and container options', (WidgetTester tester) async {
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
@@ -219,8 +219,6 @@ void main() {
             EntitiesTableCompanion.insert(id: 'e_wallet', speciesId: 'sp_wallet', createdAt: now, updatedAt: now),
           );
 
-      final entity = WorldEntity(id: 'e_wallet', speciesId: 'sp_wallet', locationId: null, createdAt: now, updatedAt: now);
-
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -228,7 +226,9 @@ void main() {
           ],
           child: MaterialApp(
             home: Scaffold(
-              body: LocationOrContainerCorrectionSheet(entity: entity),
+              body: LocationOrContainerSelectionSheet(
+                title: AppStrings.correctLocationTitle('Cartera'),
+              ),
             ),
           ),
         ),
@@ -236,7 +236,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.correctLocationTitlePrefix + 'Cartera' + AppStrings.correctLocationTitleSuffix), findsOneWidget);
+      expect(find.text(AppStrings.correctLocationTitle('Cartera')), findsOneWidget);
       expect(find.text(AppStrings.physicalLocation), findsOneWidget);
       expect(find.text(AppStrings.savedInContainer), findsOneWidget);
     });

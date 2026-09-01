@@ -10,12 +10,14 @@ import '../../../core/widgets/app_wheel_picker.dart';
 import '../../../core/widgets/integer_wheel_picker.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
-import '../../locations/presentation/location_tree_picker.dart';
+import '../../locations/domain/location_path_helper.dart';
+import '../../locations/presentation/location_or_container_selection_sheet.dart';
 import '../../relations/domain/entity_relation.dart';
 import '../domain/entity_display_helper.dart';
 import '../domain/entity_template.dart';
 import '../../../core/domain/property_data_type.dart';
 import '../domain/instance_magnitude.dart';
+import 'instance_preview_card.dart';
 
 class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
   final CatalogItem? species;
@@ -65,8 +67,6 @@ class InstantiateSpeciesSheet extends ConsumerStatefulWidget {
   ConsumerState<InstantiateSpeciesSheet> createState() => _InstantiateSpeciesSheetState();
 }
 
-enum InstantiationLocationMode { physicalNode, containerEntity }
-
 class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesSheet> {
   final _qtyController = TextEditingController(text: AppTechnicalStrings.valOne);
   final _notesController = TextEditingController();
@@ -76,9 +76,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   Subspecies? _selectedSubspecies;
   List<Subspecies> _availableSubspecies = [];
 
-  InstantiationLocationMode _locationMode = InstantiationLocationMode.physicalNode;
-  String? _selectedLocationId;
-  String? _selectedContainerEntityId;
+  late LocationOrContainerSelection _selection;
   DateTime? _expirationDate;
   bool _isSaving = false;
   bool _forceClose = false;
@@ -86,8 +84,8 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   bool _hasUnsavedChanges() {
     if (_notesController.text.trim().isNotEmpty && _notesController.text.trim() != (widget.initialNotes ?? AppTechnicalStrings.empty).trim()) return true;
     if (_qtyController.text.trim() != AppTechnicalStrings.valOne && _qtyController.text.trim().isNotEmpty) return true;
-    if (_selectedLocationId != widget.initialLocationId) return true;
-    if (_selectedContainerEntityId != null) return true;
+    final initialSel = LocationOrContainerSelection.physicalNode(widget.initialLocationId);
+    if (_selection != initialSel) return true;
     if (_selectedSpecies != null && widget.species == null) return true;
     for (final entry in _magnitudeControllers.entries) {
       if (entry.value.text.trim().isNotEmpty) return true;
@@ -107,7 +105,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
   @override
   void initState() {
     super.initState();
-    _selectedLocationId = widget.initialLocationId;
+    _selection = LocationOrContainerSelection.physicalNode(widget.initialLocationId);
     if (widget.initialNotes != null && widget.initialNotes!.isNotEmpty) {
       _notesController.text = widget.initialNotes!;
     }
@@ -171,11 +169,14 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
     super.dispose();
   }
 
-  Future<void> _pickLocationFromTree() async {
-    final result = await LocationTreePicker.show(context, initialSelectedId: _selectedLocationId);
-    if (result != null) {
+  Future<void> _pickLocationOrContainer() async {
+    final result = await LocationOrContainerSelectionSheet.show(
+      context,
+      initialSelection: _selection,
+    );
+    if (result != null && mounted) {
       setState(() {
-        _selectedLocationId = result.locationId;
+        _selection = result;
       });
     }
   }
@@ -216,7 +217,7 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       final catalogRepo = ref.read(catalogRepositoryProvider);
       final activityLogger = ref.read(activityLoggerServiceProvider);
 
-      final targetPhysicalLoc = _locationMode == InstantiationLocationMode.physicalNode ? _selectedLocationId : null;
+      final targetPhysicalLoc = _selection.isPhysicalNode ? _selection.locationId : null;
 
       // Build specific instance magnitudes template with explicit property names & primitive data types
       final List<InstanceMagnitude> customInstanceMags = [];
@@ -272,11 +273,11 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         }
 
         // If container mode is selected, create GUARDADO_EN relation for each instance
-        if (_locationMode == InstantiationLocationMode.containerEntity && _selectedContainerEntityId != null) {
+        if (_selection.isContainerEntity && _selection.containerEntityId != null) {
           final rel = EntityRelation(
             id: const Uuid().v4(),
             sourceEntityId: entity.id,
-            targetEntityId: _selectedContainerEntityId!,
+            targetEntityId: _selection.containerEntityId!,
             relationType: AppTechnicalStrings.relGuardadoEn,
             createdAt: DateTime.now(),
           );
@@ -296,8 +297,8 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
       ref.invalidate(recentEntitiesProvider);
       ref.invalidate(allHistoryEventsStreamProvider);
       ref.invalidate(notificationListProvider);
-      if (_selectedContainerEntityId != null) {
-        ref.invalidate(entityRelationsProvider(_selectedContainerEntityId!));
+      if (_selection.containerEntityId != null) {
+        ref.invalidate(entityRelationsProvider(_selection.containerEntityId!));
       }
 
       if (mounted) {
@@ -328,13 +329,11 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
         ? EntityTemplateRegistry.getTemplate(_selectedSpecies!.type)
         : EntityTemplateRegistry.getTemplate(AppStrings.typeObject);
 
-    String locationDisplayName = AppStrings.rootLocationName;
-    if (_selectedLocationId != null) {
-      locationsState.whenData((nodes) {
-        final found = nodes.where((n) => n.id == _selectedLocationId).firstOrNull;
-        if (found != null) locationDisplayName = found.name;
-      });
-    }
+    final locations = locationsState.asData?.value ?? [];
+    final locationDisplayName = LocationPathHelper.buildBreadcrumbPath(
+      _selection.locationId,
+      locations,
+    ).fullPath;
 
     final mediaQuery = MediaQuery.of(context);
     final bottomPadding = mediaQuery.viewInsets.bottom > 0
@@ -458,32 +457,12 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
               const SizedBox(height: 16),
             ],
 
-            // 3. Segmented Choice: Physical Node vs Container Entity
-            SegmentedButton<InstantiationLocationMode>(
-              segments: const [
-                ButtonSegment(
-                  value: InstantiationLocationMode.physicalNode,
-                  label: Text(AppStrings.physicalLocation),
-                  icon: Icon(Icons.account_tree_outlined),
-                ),
-                ButtonSegment(
-                  value: InstantiationLocationMode.containerEntity,
-                  label: Text(AppStrings.savedInContainer),
-                  icon: Icon(Icons.inventory_2_outlined),
-                ),
-              ],
-              selected: {_locationMode},
-              onSelectionChanged: (set) {
-                setState(() => _locationMode = set.first);
-              },
-            ),
-            const SizedBox(height: 16),
-
-            if (_locationMode == InstantiationLocationMode.physicalNode) ...[
-              Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
-              const SizedBox(height: 8),
+            // 3. Selector de Ubicación o Contenedor (LocationOrContainerSelectionSheet)
+            Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
+            const SizedBox(height: 8),
+            if (_selection.isPhysicalNode) ...[
               InkWell(
-                onTap: _pickLocationFromTree,
+                onTap: _pickLocationOrContainer,
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -496,9 +475,19 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                       const Icon(Icons.account_tree_outlined),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(
-                          locationDisplayName,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              AppStrings.physicalLocation,
+                              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                            ),
+                            Text(
+                              locationDisplayName,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ),
                       const Icon(Icons.chevron_right),
@@ -507,36 +496,62 @@ class _InstantiateSpeciesSheetState extends ConsumerState<InstantiateSpeciesShee
                 ),
               ),
             ] else ...[
-              Text(AppStrings.selectContainerPrompt, style: theme.textTheme.labelLarge),
-              const SizedBox(height: 8),
               Consumer(
                 builder: (context, ref, _) {
                   final entitiesState = ref.watch(entityListProvider);
-                  final subspeciesState = ref.watch(subspeciesListProvider);
                   final entities = entitiesState.asData?.value ?? [];
-                  final subspeciesList = subspeciesState.asData?.value ?? [];
+                  final selectedContainer = entities.where((e) => e.id == _selection.containerEntityId).firstOrNull;
 
-                  if (entities.isEmpty) {
-                    return const Text(AppStrings.noContainerObjectsAvailable);
+                  if (selectedContainer != null) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InstancePreviewCard(
+                          entity: selectedContainer,
+                          onTap: _pickLocationOrContainer,
+                          trailing: IconButton(
+                            icon: const Icon(Icons.swap_horiz),
+                            tooltip: AppStrings.changeContainerAction,
+                            onPressed: _pickLocationOrContainer,
+                          ),
+                        ),
+                      ],
+                    );
                   }
-                  return AppWheelPickerField<String>(
-                    value: _selectedContainerEntityId,
-                    items: entities.map((e) => e.id).toList(),
-                    labelBuilder: (id) {
-                      final e = entities.where((e) => e.id == id).firstOrNull;
-                      if (e == null) return id;
-                      return EntityDisplayHelper.getDisplayName(
-                        entity: e,
-                        catalogItems: catalogItems,
-                        subspeciesList: subspeciesList,
-                      );
-                    },
-                    title: AppStrings.selectContainerObject,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.inventory_2_outlined),
-                      hintText: AppStrings.selectContainerObject,
+
+                  return InkWell(
+                    onTap: _pickLocationOrContainer,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: theme.dividerColor),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.inventory_2_outlined),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppStrings.savedInContainer,
+                                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                                ),
+                                const Text(
+                                  AppStrings.selectContainerObject,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right),
+                        ],
+                      ),
                     ),
-                    onChanged: (val) => setState(() => _selectedContainerEntityId = val),
                   );
                 },
               ),

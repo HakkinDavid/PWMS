@@ -4,6 +4,7 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../locations/domain/location_node.dart';
+import 'entity_tile.dart';
 
 class ContainerContentsView extends ConsumerWidget {
   final LocationNode location;
@@ -16,7 +17,6 @@ class ContainerContentsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entitiesState = ref.watch(entityListProvider);
-    final catalogState = ref.watch(catalogListProvider);
     final theme = Theme.of(context);
 
     return entitiesState.when(
@@ -43,33 +43,12 @@ class ContainerContentsView extends ConsumerWidget {
           );
         }
 
-        final catalogItems = catalogState.asData?.value ?? [];
-
         return ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: children.length,
           itemBuilder: (context, index) {
             final child = children[index];
-            final species = catalogItems.where((c) => c.id == child.speciesId).firstOrNull;
-            final name = species?.name ?? AppStrings.typeObject;
-            final type = species?.type ?? AppStrings.typeObject;
-
-            final firstMag = child.magnitudes.isNotEmpty ? child.magnitudes.first : null;
-            final subtitleText = firstMag != null
-                ? AppStrings.typeWithPropertyAndValue(type, firstMag.propertyName, firstMag.displayValue)
-                : type;
-
-            return Card(
-              child: ListTile(
-                leading: const Icon(Icons.inventory_2),
-                title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(subtitleText),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  context.pushEntityDetail(child.id);
-                },
-              ),
-            );
+            return EntityTile(entity: child);
           },
         );
       },

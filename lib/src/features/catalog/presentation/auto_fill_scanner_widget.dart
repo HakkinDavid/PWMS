@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
+import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../infrastructure/product_lookup_service.dart';
 
 class AutoFillScannerWidget extends ConsumerStatefulWidget {
@@ -76,15 +77,14 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
 
       if (existingSub != null) {
         final species = await catalogRepo.getCatalogItemById(existingSub.speciesId);
-        if (species != null) {
-          await entityRepo.instantiateOrMerge(
-            species.id,
-            widget.initialLocationId,
-            1.0,
-            subspeciesId: existingSub.id,
-          );
+        if (species != null && mounted) {
           _refreshState();
-          _showFeedback(AppStrings.autoInstantiatedFeedback(existingSub.subspeciesName, species.name));
+          await InstantiateSpeciesSheet.show(
+            context,
+            species: species,
+            initialSubspecies: existingSub,
+            initialLocationId: widget.initialLocationId,
+          );
           return;
         }
       }

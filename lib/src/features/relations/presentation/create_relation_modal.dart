@@ -10,6 +10,7 @@ import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/entity_template.dart';
 import '../../entities/domain/world_entity.dart';
+import '../../entities/presentation/instance_preview_card.dart';
 import '../domain/entity_relation.dart';
 
 class CreateRelationModal extends ConsumerStatefulWidget {
@@ -274,28 +275,15 @@ class _CreateRelationModalState extends ConsumerState<CreateRelationModal> {
                       itemCount: availableTargets.length,
                       itemBuilder: (ctx, idx) {
                         final target = availableTargets[idx];
-                        final targetDisplayName = EntityDisplayHelper.getDisplayName(
-                          entity: target,
-                          catalogItems: catalogItems,
-                          subspeciesList: subspeciesList,
-                        );
-                        final targetSpecies = catalogItems.where((c) => c.id == target.speciesId).firstOrNull;
                         final isSelected = _selectedTargetEntity?.id == target.id;
 
-                        return Card(
-                          color: isSelected ? theme.colorScheme.primary.withAlpha(30) : null,
-                          child: ListTile(
-                            dense: true,
-                            leading: Icon(
-                              isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-                              color: isSelected ? theme.colorScheme.primary : Colors.grey,
-                            ),
-                            title: Text(targetDisplayName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                            subtitle: Text(targetSpecies?.type ?? AppStrings.typeObject),
-                            onTap: () {
-                              setState(() => _selectedTargetEntity = target);
-                            },
-                          ),
+                        return InstancePreviewCard(
+                          entity: target,
+                          isSelected: isSelected,
+                          isSelectionMode: true,
+                          onTap: () {
+                            setState(() => _selectedTargetEntity = target);
+                          },
                         );
                       },
                     ),

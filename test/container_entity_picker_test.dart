@@ -13,7 +13,7 @@ import 'package:platinum_world_management_system/src/core/providers/providers.da
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/instance_preview_card.dart';
 import 'package:platinum_world_management_system/src/features/locations/presentation/container_entity_picker.dart';
-import 'package:platinum_world_management_system/src/features/locations/presentation/location_or_container_correction_sheet.dart';
+import 'package:platinum_world_management_system/src/features/locations/presentation/location_or_container_selection_sheet.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform
     with MockPlatformInterfaceMixin {
@@ -51,7 +51,7 @@ void main() {
     }
   });
 
-  group('ContainerEntityPicker & LocationOrContainerCorrectionSheet Tests', () {
+  group('ContainerEntityPicker & LocationOrContainerSelectionSheet Tests', () {
     testWidgets('ContainerEntityPicker searches and filters entities by name and selects with tile tap', (WidgetTester tester) async {
       final now = DateTime.now();
 
@@ -119,7 +119,7 @@ void main() {
       expect(selectedResult!.id, equals('e_backpack'));
     });
 
-    testWidgets('LocationOrContainerCorrectionSheet selects container and saves GUARDADO_EN relation', (WidgetTester tester) async {
+    testWidgets('LocationOrContainerSelectionSheet selects container and saves GUARDADO_EN relation', (WidgetTester tester) async {
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
@@ -137,6 +137,7 @@ void main() {
           );
 
       final gemEntity = WorldEntity(id: 'e_gem', speciesId: 'sp_gem', locationId: null, createdAt: now, updatedAt: now);
+      LocationOrContainerSelection? selectedResult;
 
       await tester.pumpWidget(
         ProviderScope(
@@ -145,12 +146,31 @@ void main() {
           ],
           child: MaterialApp(
             home: Scaffold(
-              body: LocationOrContainerCorrectionSheet(entity: gemEntity),
+              body: Consumer(
+                builder: (context, ref, _) => ElevatedButton(
+                  onPressed: () async {
+                    selectedResult = await LocationOrContainerSelectionSheet.show(
+                      context,
+                      excludedContainerIds: {gemEntity.id},
+                    );
+                    if (selectedResult != null) {
+                      await LocationOrContainerSelectionSheet.applyRelocation(
+                        ref: ref,
+                        entityIds: [gemEntity.id],
+                        selection: selectedResult!,
+                      );
+                    }
+                  },
+                  child: const Text('Open Sheet'),
+                ),
+              ),
             ),
           ),
         ),
       );
 
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Open Sheet'));
       await tester.pumpAndSettle();
 
       // Switch to 'Guardado en contenedor' mode
@@ -169,14 +189,17 @@ void main() {
       await tester.tap(find.text('Cofre de Roble').first);
       await tester.pumpAndSettle();
 
-      // Now back in correction sheet, the InstancePreviewCard of 'Cofre de Roble' should be displayed
+      // Now back in selection sheet, the InstancePreviewCard of 'Cofre de Roble' should be displayed
       expect(find.text('Cofre de Roble'), findsWidgets);
       expect(find.byTooltip(AppStrings.changeContainerAction), findsOneWidget);
 
-      // Tap 'Aplicar corrección'
-      await tester.tap(find.text(AppStrings.applyCorrectionAction));
+      // Tap 'Confirmar'
+      await tester.tap(find.text(AppStrings.confirm));
       await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 4));
+
+      expect(selectedResult, isNotNull);
+      expect(selectedResult!.isContainerEntity, isTrue);
+      expect(selectedResult!.containerEntityId, equals('e_chest'));
 
       // Verify GUARDADO_EN relation exists in database
       final relations = await db.select(db.relationsTable).get();
@@ -186,7 +209,7 @@ void main() {
       expect(relations.first.relationType, equals('GUARDADO_EN'));
     });
 
-    testWidgets('LocationOrContainerCorrectionSheet batch moves multiple entities to container and physical location', (WidgetTester tester) async {
+    testWidgets('LocationOrContainerSelectionSheet batch moves multiple entities to container', (WidgetTester tester) async {
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
@@ -211,6 +234,7 @@ void main() {
 
       final coin1 = WorldEntity(id: 'e_coin1', speciesId: 'sp_item', createdAt: now, updatedAt: now);
       final coin2 = WorldEntity(id: 'e_coin2', speciesId: 'sp_item', createdAt: now, updatedAt: now);
+      LocationOrContainerSelection? selectedResult;
 
       await tester.pumpWidget(
         ProviderScope(
@@ -219,15 +243,35 @@ void main() {
           ],
           child: MaterialApp(
             home: Scaffold(
-              body: LocationOrContainerCorrectionSheet(entities: [coin1, coin2]),
+              body: Consumer(
+                builder: (context, ref, _) => ElevatedButton(
+                  onPressed: () async {
+                    selectedResult = await LocationOrContainerSelectionSheet.show(
+                      context,
+                      title: AppStrings.moveSelectedCountTitle(2),
+                      excludedContainerIds: {coin1.id, coin2.id},
+                    );
+                    if (selectedResult != null) {
+                      await LocationOrContainerSelectionSheet.applyRelocation(
+                        ref: ref,
+                        entityIds: [coin1.id, coin2.id],
+                        selection: selectedResult!,
+                      );
+                    }
+                  },
+                  child: const Text('Open Sheet'),
+                ),
+              ),
             ),
           ),
         ),
       );
 
       await tester.pumpAndSettle();
+      await tester.tap(find.text('Open Sheet'));
+      await tester.pumpAndSettle();
 
-      // Title should show multi-item title
+      // Title should show custom title
       expect(find.text(AppStrings.moveSelectedCountTitle(2)), findsOneWidget);
 
       // Switch to 'Guardado en contenedor' mode
@@ -243,10 +287,9 @@ void main() {
       await tester.tap(find.text('Caja Fuerte 2').first);
       await tester.pumpAndSettle();
 
-      // Apply correction
-      await tester.tap(find.text(AppStrings.applyCorrectionAction));
+      // Confirm
+      await tester.tap(find.text(AppStrings.confirm));
       await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 4));
 
       // Verify GUARDADO_EN relations exist for both coin1 and coin2
       final relations = await db.select(db.relationsTable).get();

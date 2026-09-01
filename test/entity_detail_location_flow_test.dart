@@ -13,7 +13,7 @@ import 'package:platinum_world_management_system/src/core/database/app_database.
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/entity_detail_screen.dart';
-import 'package:platinum_world_management_system/src/features/locations/presentation/location_or_container_correction_sheet.dart';
+import 'package:platinum_world_management_system/src/features/locations/presentation/location_or_container_selection_sheet.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform
     with MockPlatformInterfaceMixin {
@@ -49,8 +49,8 @@ void main() {
     }
   });
 
-  group('LocationOrContainerCorrectionSheet returnResultOnly & EntityDetailScreen Discard/Save flow', () {
-    testWidgets('LocationOrContainerCorrectionSheet returnResultOnly returns LocationCorrectionResult without mutating database', (WidgetTester tester) async {
+  group('LocationOrContainerSelectionSheet & EntityDetailScreen Discard/Save flow', () {
+    testWidgets('LocationOrContainerSelectionSheet returns LocationOrContainerSelection without mutating database', (WidgetTester tester) async {
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
@@ -83,10 +83,10 @@ void main() {
               body: Builder(
                 builder: (context) => ElevatedButton(
                   onPressed: () async {
-                    returnedResult = await LocationOrContainerCorrectionSheet.show(
+                    returnedResult = await LocationOrContainerSelectionSheet.show(
                       context,
-                      entity: itemEntity,
-                      returnResultOnly: true,
+                      initialSelection: const LocationOrContainerSelection.physicalNode(null),
+                      excludedContainerIds: {itemEntity.id},
                     );
                   },
                   child: const Text('Open Sheet'),
@@ -116,14 +116,14 @@ void main() {
       await tester.tap(find.text('Caja Test').first);
       await tester.pumpAndSettle();
 
-      // Apply correction
-      await tester.tap(find.text(AppStrings.applyCorrectionAction));
+      // Confirm selection
+      await tester.tap(find.text(AppStrings.confirm));
       await tester.pumpAndSettle();
 
       // Check returned result
-      expect(returnedResult, isA<LocationCorrectionResult>());
-      final correction = returnedResult as LocationCorrectionResult;
-      expect(correction.mode, equals(LocationCorrectionMode.containerEntity));
+      expect(returnedResult, isA<LocationOrContainerSelection>());
+      final correction = returnedResult as LocationOrContainerSelection;
+      expect(correction.isContainerEntity, isTrue);
       expect(correction.containerEntityId, equals('e_box'));
 
       // Check database was NOT modified
@@ -170,7 +170,7 @@ void main() {
       await tester.tap(find.byTooltip(AppStrings.edit));
       await tester.pumpAndSettle();
 
-      // Tap location card to open LocationOrContainerCorrectionSheet
+      // Tap location card to open LocationOrContainerSelectionSheet
       await tester.tap(find.byIcon(Icons.edit_location));
       await tester.pumpAndSettle();
 
@@ -183,8 +183,8 @@ void main() {
       await tester.tap(find.text('Estante B'));
       await tester.pumpAndSettle();
 
-      // Apply correction in sheet
-      await tester.tap(find.text(AppStrings.applyCorrectionAction));
+      // Confirm in sheet
+      await tester.tap(find.text(AppStrings.confirm));
       await tester.pumpAndSettle();
 
       // In EntityDetailScreen, working breadcrumb now shows 'Estante B'
@@ -259,8 +259,8 @@ void main() {
       await tester.tap(find.text('Cofre').first);
       await tester.pumpAndSettle();
 
-      // Apply correction
-      await tester.tap(find.text(AppStrings.applyCorrectionAction));
+      // Confirm
+      await tester.tap(find.text(AppStrings.confirm));
       await tester.pumpAndSettle();
 
       // Save changes in EntityDetailScreen

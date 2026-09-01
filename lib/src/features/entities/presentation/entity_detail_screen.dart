@@ -12,7 +12,7 @@ import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_detail_view.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/domain/location_resolver.dart';
-import '../../locations/presentation/location_or_container_correction_sheet.dart';
+import '../../locations/presentation/location_or_container_selection_sheet.dart';
 import '../../relations/presentation/create_relation_modal.dart';
 import '../../relations/presentation/interactive_entity_graph_widget.dart';
 import '../../catalog/presentation/requirements_section_widget.dart';
@@ -556,23 +556,29 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
               InkWell(
                 onTap: () async {
                   if (_isEditingInPlace) {
-                    final result = await LocationOrContainerCorrectionSheet.show(
+                    final existingContainerRel = _workingRelations.where((r) =>
+                      r.sourceEntityId == widget.entityId && r.relationType == AppTechnicalStrings.relGuardadoEn
+                    ).firstOrNull;
+
+                    final currentSelection = existingContainerRel != null
+                        ? LocationOrContainerSelection.containerEntity(existingContainerRel.targetEntityId)
+                        : LocationOrContainerSelection.physicalNode(_selectedLocationId);
+
+                    final result = await LocationOrContainerSelectionSheet.show(
                       context,
-                      entity: entity,
-                      returnResultOnly: true,
-                      initialLocationId: _selectedLocationId,
-                      initialRelations: _workingRelations,
+                      initialSelection: currentSelection,
+                      excludedContainerIds: {widget.entityId},
                     );
-                    if (result is LocationCorrectionResult && mounted) {
+                    if (result != null && mounted) {
                       setState(() {
-                        if (result.mode == LocationCorrectionMode.physicalNode) {
+                        if (result.isPhysicalNode) {
                           _selectedLocationId = result.locationId;
                           _workingRelations.removeWhere((r) =>
                             r.sourceEntityId == widget.entityId &&
                             (r.relationType == AppTechnicalStrings.relGuardadoEn ||
                              r.relationType == AppTechnicalStrings.relParteDe)
                           );
-                        } else if (result.mode == LocationCorrectionMode.containerEntity) {
+                        } else if (result.isContainerEntity) {
                           _selectedLocationId = null;
                           _workingRelations.removeWhere((r) =>
                             r.sourceEntityId == widget.entityId &&

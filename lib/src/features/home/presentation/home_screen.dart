@@ -5,9 +5,8 @@ import 'package:platinum_world_management_system/src/core/constants/app_technica
 import '../../../core/providers/providers.dart';
 import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/updater/presentation/update_prompt_dialog.dart';
-import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
-import '../../entities/presentation/entity_photo_thumbnail.dart';
+import '../../entities/presentation/instance_preview_card.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
 import '../../expirations/presentation/expiration_radar_widget.dart';
 import '../../history/presentation/activity_heatmap_widget.dart';
@@ -174,80 +173,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       }
 
                       return SizedBox(
-                        height: 170,
+                        height: 180,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           itemCount: entities.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: 14),
+                          separatorBuilder: (_, __) => const SizedBox(width: 12),
                           itemBuilder: (context, index) {
                             final entity = entities[index];
-                            return InkWell(
-                              onTap: () => context.pushEntityDetail(entity.id),
-                              borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                width: 140,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: theme.cardColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: theme.dividerColor),
-                                ),
-                                child: Consumer(
-                                  builder: (context, ref, _) {
-                                    final catalogItems = catalogAsync.asData?.value ?? [];
-                                    final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
-                                    final speciesType = species?.type ?? AppStrings.typeObject;
-                                    return FutureBuilder<Subspecies?>(
-                                      future: entity.subspeciesId != null
-                                          ? ref.read(catalogRepositoryProvider).getSubspeciesById(entity.subspeciesId!)
-                                          : Future.value(null),
-                                      builder: (context, subSnapshot) {
-                                        final subspecies = subSnapshot.data;
-                                        final isCustomSubspecies = subspecies != null && subspecies.subspeciesName.toLowerCase() != AppStrings.genericSubspeciesNameLower;
-                                        final primaryTitle = isCustomSubspecies
-                                            ? AppStrings.subspeciesNameWithBrand(subspecies.subspeciesName, subspecies.brand)
-                                            : (species?.name ?? AppStrings.typeObject);
-
-                                        return Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Center(
-                                                child: EntityPhotoThumbnail(
-                                                  species: species,
-                                                  subspecies: subspecies,
-                                                  instanceId: entity.id,
-                                                  size: 80,
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                  borderRadius: BorderRadius.circular(14),
-                                                  useTextBadgeFallback: true,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Text(
-                                              primaryTitle,
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              isCustomSubspecies ? AppStrings.speciesTypeWithBullet(speciesType, species?.name) : speciesType,
-                                              style: TextStyle(color: theme.colorScheme.secondary, fontSize: 11),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
+                            return InstancePreviewCard(
+                              entity: entity,
+                              layout: InstanceCardLayout.compactCard,
                             );
                           },
                         ),

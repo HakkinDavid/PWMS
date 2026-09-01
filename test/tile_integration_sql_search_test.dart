@@ -7,8 +7,10 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
+import 'package:platinum_world_management_system/src/features/entities/presentation/container_contents_view.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/entity_tile.dart';
 import 'package:platinum_world_management_system/src/features/entities/presentation/instance_preview_card.dart';
+import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 import 'package:platinum_world_management_system/src/features/search/presentation/search_screen.dart';
 
 void main() {
@@ -255,6 +257,84 @@ void main() {
       // In Table view mode, DataTable is rendered
       expect(find.byType(DataTable), findsOneWidget);
       expect(find.text('e_dremel'), findsOneWidget);
+    });
+
+    testWidgets('InstancePreviewCard with InstanceCardLayout.compactCard renders correctly',
+        (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_camera', name: 'Cámara Réflex', createdAt: now),
+          );
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_camera_1', speciesId: 'sp_camera', createdAt: now, updatedAt: now),
+          );
+
+      final entity = WorldEntity(
+        id: 'e_camera_1',
+        speciesId: 'sp_camera',
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: InstancePreviewCard(
+                entity: entity,
+                layout: InstanceCardLayout.compactCard,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Cámara Réflex'), findsOneWidget);
+    });
+
+    testWidgets('ContainerContentsView renders EntityTile for child entities',
+        (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_drawer', name: 'Cajón', createdAt: now),
+          );
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_notebook', name: 'Cuaderno', createdAt: now),
+          );
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_note_1', speciesId: 'sp_notebook', locationId: const Value('loc_drawer'), createdAt: now, updatedAt: now),
+          );
+
+      final location = LocationNode(
+        id: 'loc_drawer',
+        name: 'Cajón',
+        createdAt: now,
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: ContainerContentsView(location: location),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EntityTile), findsOneWidget);
+      expect(find.text('Cuaderno'), findsOneWidget);
     });
   });
 }

@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
@@ -7,6 +10,7 @@ import 'package:platinum_world_management_system/src/features/expirations/domain
 import 'package:platinum_world_management_system/src/features/expirations/domain/expiration_summary.dart';
 import 'package:platinum_world_management_system/src/features/history/domain/activity_event.dart';
 import 'package:platinum_world_management_system/src/features/history/domain/activity_heatmap_data.dart';
+import 'package:platinum_world_management_system/src/features/history/presentation/activity_heatmap_widget.dart';
 import 'package:platinum_world_management_system/src/features/locations/domain/location_node.dart';
 
 void main() {
@@ -343,6 +347,32 @@ void main() {
       expect(heatmap.getLevel(3), equals(2));
       expect(heatmap.getLevel(7), equals(3));
       expect(heatmap.getLevel(12), equals(4));
+    });
+
+    testWidgets('ActivityHeatmapWidget displays Sunday-first day labels [D, L, M, X, J, V, S]', (tester) async {
+      final heatmapData = ActivityHeatmapData.fromEvents(
+        [],
+        daysRange: 28,
+        referenceNow: DateTime(2026, 8, 30),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ActivityHeatmapWidget(
+              data: heatmapData,
+              showHeader: false,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify Sunday-first day labels
+      for (final label in AppStrings.weekdayShortLettersSundayFirst) {
+        expect(find.text(label), findsWidgets);
+      }
     });
   });
 }

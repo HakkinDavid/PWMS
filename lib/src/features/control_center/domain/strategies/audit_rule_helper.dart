@@ -13,7 +13,7 @@ import '../../../entities/domain/entity_display_helper.dart';
 import '../../../entities/domain/world_entity.dart';
 import '../../../entities/presentation/instance_preview_card.dart';
 import '../../../locations/domain/location_path_helper.dart';
-import '../../../locations/presentation/location_or_container_correction_sheet.dart';
+import '../../../locations/presentation/location_or_container_selection_sheet.dart';
 import '../audit_rule_strategy.dart';
 
 /// Helper utility for creating [AuditCardData] instances and handling common
@@ -53,7 +53,7 @@ class AuditRuleHelper {
     );
   }
 
-  /// Shows the location or container correction sheet for an entity.
+  /// Shows the location or container selection sheet for an entity and applies relocation.
   static Future<bool> openLocationCorrection(
     BuildContext ctx,
     WidgetRef ref, {
@@ -62,7 +62,30 @@ class AuditRuleHelper {
   }) async {
     final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entityId) ?? fallback;
     if (freshEntity == null) return false;
-    return await LocationOrContainerCorrectionSheet.show(ctx, entity: freshEntity);
+
+    final relations = await ref.read(relationRepositoryProvider).getRelationsForEntity(entityId);
+    final containerRel = relations.where((r) =>
+      r.sourceEntityId == entityId && r.relationType == AppTechnicalStrings.relGuardadoEn
+    ).firstOrNull;
+
+    final initialSelection = containerRel != null
+        ? LocationOrContainerSelection.containerEntity(containerRel.targetEntityId)
+        : LocationOrContainerSelection.physicalNode(freshEntity.locationId);
+
+    final selection = await LocationOrContainerSelectionSheet.show(
+      ctx,
+      initialSelection: initialSelection,
+      excludedContainerIds: {entityId},
+    );
+
+    if (selection == null) return false;
+
+    await LocationOrContainerSelectionSheet.applyRelocation(
+      ref: ref,
+      entityIds: [entityId],
+      selection: selection,
+    );
+    return true;
   }
 
   /// Helper to create an [AuditCardData] for an entity.

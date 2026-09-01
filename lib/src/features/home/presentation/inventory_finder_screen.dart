@@ -14,7 +14,7 @@ import '../../entities/presentation/effective_group_tile.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
 import '../../locations/presentation/location_tile.dart';
 import '../../locations/presentation/location_tree_picker.dart';
-import '../../locations/presentation/location_or_container_correction_sheet.dart';
+import '../../locations/presentation/location_or_container_selection_sheet.dart';
 import 'inventory_breadcrumb_bar.dart';
 import 'inventory_item_interaction_wrapper.dart';
 
@@ -900,16 +900,25 @@ class _InventoryFinderScreenState extends ConsumerState<InventoryFinderScreen> {
                                 final selectedEntities = allEntities.where((e) => _selectedEntityIds.contains(e.id)).toList();
                                 if (selectedEntities.isEmpty) return;
 
-                                final changed = await LocationOrContainerCorrectionSheet.show(
+                                final selection = await LocationOrContainerSelectionSheet.show(
                                   context,
-                                  entities: selectedEntities,
+                                  title: AppStrings.moveSelectedCountTitle(selectedEntities.length),
+                                  excludedContainerIds: _selectedEntityIds,
                                 );
-                                if (changed == true && mounted) {
+                                if (selection != null && mounted) {
+                                  await LocationOrContainerSelectionSheet.applyRelocation(
+                                    ref: ref,
+                                    entityIds: _selectedEntityIds.toList(),
+                                    selection: selection,
+                                  );
                                   _refreshAllState();
                                   setState(() {
                                     _selectedEntityIds.clear();
                                     _isSelectionMode = false;
                                   });
+                                  if (mounted) {
+                                    AppToast.showSuccess(context, AppStrings.itemsMovedSuccess);
+                                  }
                                 }
                               },
                             ),

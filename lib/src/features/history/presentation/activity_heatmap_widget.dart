@@ -250,18 +250,18 @@ class _HeatmapMatrixGridState extends State<_HeatmapMatrixGrid> {
     final start = widget.data.startDate;
     final end = widget.data.endDate;
 
-    // Calcular el lunes de la primera semana
-    // DateTime.weekday: 1 = Lunes, 7 = Domingo
-    final startMonday = start.subtract(Duration(days: start.weekday - 1));
-    final totalDays = end.difference(startMonday).inDays + 1;
+    // Calcular el domingo de la primera semana
+    // DateTime.weekday: 1 = Lunes, ..., 6 = Sábado, 7 = Domingo
+    final startSunday = start.subtract(Duration(days: start.weekday % 7));
+    final totalDays = end.difference(startSunday).inDays + 1;
     final totalWeeks = (totalDays / 7).ceil();
 
-    final dayLabels = AppStrings.weekdayShortLetters;
+    final dayLabels = AppStrings.weekdayShortLettersSundayFirst;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Etiquetas de días de la semana (L, M, X, J, V, S, D)
+        // Etiquetas de días de la semana (D, L, M, X, J, V, S)
         Column(
           children: List.generate(7, (index) {
             return Container(
@@ -288,7 +288,7 @@ class _HeatmapMatrixGridState extends State<_HeatmapMatrixGrid> {
                 return Column(
                   children: List.generate(7, (dayOfWeekIndex) {
                     final dayOffset = (weekIndex * 7) + dayOfWeekIndex;
-                    final cellDate = startMonday.add(Duration(days: dayOffset));
+                    final cellDate = startSunday.add(Duration(days: dayOffset));
                     final isFuture = cellDate.isAfter(end);
 
                     if (isFuture) {

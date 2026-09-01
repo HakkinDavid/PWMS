@@ -8,8 +8,9 @@ import '../../../core/providers/providers.dart';
 import '../../../core/storage/app_settings_repository.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../../entities/domain/entity_display_helper.dart';
-import '../../entities/presentation/instantiate_species_sheet.dart';
-import '../../locations/presentation/location_tree_picker.dart';
+import '../../entities/presentation/instance_preview_card.dart';
+import '../../locations/domain/location_path_helper.dart';
+import '../../locations/presentation/location_or_container_selection_sheet.dart';
 import '../domain/numismatic_recognition_models.dart';
 import '../domain/numismatic_data_helper.dart';
 
@@ -65,9 +66,7 @@ class NumismaticQuickFillSheet extends ConsumerStatefulWidget {
 
   @visibleForTesting
   static void resetStaticCache() {
-    _NumismaticQuickFillSheetState._lastUsedLocationMode = null;
-    _NumismaticQuickFillSheetState._lastUsedLocationId = null;
-    _NumismaticQuickFillSheetState._lastUsedContainerEntityId = null;
+    _NumismaticQuickFillSheetState._lastUsedSelection = null;
   }
 
   @override
@@ -87,21 +86,15 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   static List<String> get _specialEditionReasons => NumismaticDataHelper.specialEditionReasons;
 
   // Static memory cache for auto-fill in active session
-  static InstantiationLocationMode? _lastUsedLocationMode;
-  static String? _lastUsedLocationId;
-  static String? _lastUsedContainerEntityId;
+  static LocationOrContainerSelection? _lastUsedSelection;
 
   @visibleForTesting
   static void resetStaticCache() {
-    _lastUsedLocationMode = null;
-    _lastUsedLocationId = null;
-    _lastUsedContainerEntityId = null;
+    _lastUsedSelection = null;
   }
 
   // Location / Container selection
-  InstantiationLocationMode _locationMode = InstantiationLocationMode.physicalNode;
-  String? _selectedLocationId;
-  String? _selectedContainerEntityId;
+  LocationOrContainerSelection _selection = const LocationOrContainerSelection.physicalNode(null);
 
   // Default values set to empty / unselected (null)
   String? _country;
@@ -125,15 +118,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   void initState() {
     super.initState();
     if (widget.initialContainerEntityId != null) {
-      _locationMode = InstantiationLocationMode.containerEntity;
-      _selectedContainerEntityId = widget.initialContainerEntityId;
+      _selection = LocationOrContainerSelection.containerEntity(widget.initialContainerEntityId);
     } else if (widget.initialLocationId != null) {
-      _locationMode = InstantiationLocationMode.physicalNode;
-      _selectedLocationId = widget.initialLocationId;
-    } else if (_lastUsedLocationMode != null) {
-      _locationMode = _lastUsedLocationMode!;
-      _selectedLocationId = _lastUsedLocationId;
-      _selectedContainerEntityId = _lastUsedContainerEntityId;
+      _selection = LocationOrContainerSelection.physicalNode(widget.initialLocationId);
+    } else if (_lastUsedSelection != null) {
+      _selection = _lastUsedSelection!;
     } else {
       _loadLastUsedLocation();
     }
@@ -157,16 +146,12 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       if (!mounted) return;
 
       setState(() {
-        if (savedModeStr != null) {
-          _locationMode = savedModeStr == InstantiationLocationMode.containerEntity.name
-              ? InstantiationLocationMode.containerEntity
-              : InstantiationLocationMode.physicalNode;
-          _lastUsedLocationMode = _locationMode;
+        if (savedModeStr == LocationSelectionMode.containerEntity.name && savedContainerId != null) {
+          _selection = LocationOrContainerSelection.containerEntity(savedContainerId);
+        } else {
+          _selection = LocationOrContainerSelection.physicalNode(savedLocId);
         }
-        _selectedLocationId = savedLocId;
-        _lastUsedLocationId = savedLocId;
-        _selectedContainerEntityId = savedContainerId;
-        _lastUsedContainerEntityId = savedContainerId;
+        _lastUsedSelection = _selection;
       });
     } catch (_) {}
   }
@@ -179,11 +164,14 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     super.dispose();
   }
 
-  Future<void> _pickLocationFromTree() async {
-    final result = await LocationTreePicker.show(context, initialSelectedId: _selectedLocationId);
-    if (result != null) {
+  Future<void> _pickLocationOrContainer() async {
+    final result = await LocationOrContainerSelectionSheet.show(
+      context,
+      initialSelection: _selection,
+    );
+    if (result != null && mounted) {
       setState(() {
-        _selectedLocationId = result.locationId;
+        _selection = result;
       });
     }
   }
@@ -205,8 +193,8 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       return;
     }
 
-    if (_locationMode == InstantiationLocationMode.containerEntity &&
-        (_selectedContainerEntityId == null || _selectedContainerEntityId!.isEmpty)) {
+    if (_selection.isContainerEntity &&
+        (_selection.containerEntityId == null || _selection.containerEntityId!.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(AppStrings.selectValidContainerPrompt),
@@ -218,18 +206,16 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     }
 
     // Save as last used in memory and persistent storage
-    _lastUsedLocationMode = _locationMode;
-    _lastUsedLocationId = _selectedLocationId;
-    _lastUsedContainerEntityId = _selectedContainerEntityId;
+    _lastUsedSelection = _selection;
 
     try {
       final settingsRepo = ref.read(appSettingsRepositoryProvider);
-      settingsRepo.setLastNumismaticLocationMode(_locationMode.name).catchError((_) {});
-      if (_selectedLocationId != null) {
-        settingsRepo.setLastNumismaticLocationId(_selectedLocationId!).catchError((_) {});
+      settingsRepo.setLastNumismaticLocationMode(_selection.mode.name).catchError((_) {});
+      if (_selection.locationId != null) {
+        settingsRepo.setLastNumismaticLocationId(_selection.locationId!).catchError((_) {});
       }
-      if (_selectedContainerEntityId != null) {
-        settingsRepo.setLastNumismaticContainerEntityId(_selectedContainerEntityId!).catchError((_) {});
+      if (_selection.containerEntityId != null) {
+        settingsRepo.setLastNumismaticContainerEntityId(_selection.containerEntityId!).catchError((_) {});
       }
     } catch (_) {}
 
@@ -272,9 +258,9 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       obversePhotoPath: widget.obversePhoto.path,
       reversePhotoPath: widget.reversePhoto?.path,
       sourceEngine: AppStrings.inAppQuickFillSourceEngine,
-      locationId: _locationMode == InstantiationLocationMode.physicalNode ? _selectedLocationId : null,
-      containerEntityId: _locationMode == InstantiationLocationMode.containerEntity ? _selectedContainerEntityId : null,
-      isContainer: _locationMode == InstantiationLocationMode.containerEntity,
+      locationId: _selection.isPhysicalNode ? _selection.locationId : null,
+      containerEntityId: _selection.isContainerEntity ? _selection.containerEntityId : null,
+      isContainer: _selection.isContainerEntity,
     );
 
     if (widget.onResultSubmitted != null) {
@@ -297,14 +283,12 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     final catalogItems = catalogState.asData?.value ?? [];
     final entities = entitiesState.asData?.value ?? [];
     final subspeciesList = subspeciesState.asData?.value ?? [];
+    final locations = locationsState.asData?.value ?? [];
 
-    String locationDisplayName = AppStrings.rootLocationName;
-    if (_selectedLocationId != null) {
-      locationsState.whenData((nodes) {
-        final found = nodes.where((n) => n.id == _selectedLocationId).firstOrNull;
-        if (found != null) locationDisplayName = found.name;
-      });
-    }
+    final locationDisplayName = LocationPathHelper.buildBreadcrumbPath(
+      _selection.locationId,
+      locations,
+    ).fullPath;
 
     return Container(
       decoration: BoxDecoration(
@@ -518,32 +502,12 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 const SizedBox(height: 14),
               ],
 
-              // 7. Selector de Ubicación / Contenedor
-              SegmentedButton<InstantiationLocationMode>(
-                segments: const [
-                  ButtonSegment(
-                    value: InstantiationLocationMode.physicalNode,
-                    label: Text(AppStrings.physicalLocation),
-                    icon: Icon(Icons.account_tree_outlined),
-                  ),
-                  ButtonSegment(
-                    value: InstantiationLocationMode.containerEntity,
-                    label: Text(AppStrings.savedInContainer),
-                    icon: Icon(Icons.inventory_2_outlined),
-                  ),
-                ],
-                selected: {_locationMode},
-                onSelectionChanged: (set) {
-                  setState(() => _locationMode = set.first);
-                },
-              ),
-              const SizedBox(height: 12),
-
-              if (_locationMode == InstantiationLocationMode.physicalNode) ...[
-                Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
-                const SizedBox(height: 8),
+              // 7. Selector de Ubicación / Contenedor (LocationOrContainerSelectionSheet)
+              Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
+              const SizedBox(height: 8),
+              if (_selection.isPhysicalNode) ...[
                 InkWell(
-                  onTap: _pickLocationFromTree,
+                  onTap: _pickLocationOrContainer,
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -556,9 +520,19 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                         const Icon(Icons.account_tree_outlined),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text(
-                            locationDisplayName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                AppStrings.physicalLocation,
+                                style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                              ),
+                              Text(
+                                locationDisplayName,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
                         ),
                         const Icon(Icons.chevron_right),
@@ -567,37 +541,62 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   ),
                 ),
               ] else ...[
-                Text(AppStrings.selectContainerPrompt, style: theme.textTheme.labelLarge),
-                const SizedBox(height: 8),
-                if (entities.isEmpty)
-                  const Text(AppStrings.noContainerObjectsAvailable)
-                else
-                  AppWheelPickerField<String>(
-                    value: _selectedContainerEntityId,
-                    items: entities.map((e) => e.id).toList(),
-                    labelBuilder: (id) {
-                      final e = entities.where((e) => e.id == id).firstOrNull;
-                      if (e == null) return id;
-                      return EntityDisplayHelper.getDisplayName(
-                        entity: e,
-                        catalogItems: catalogItems,
-                        subspeciesList: subspeciesList,
+                Builder(
+                  builder: (context) {
+                    final selectedContainer = entities.where((e) => e.id == _selection.containerEntityId).firstOrNull;
+                    if (selectedContainer != null) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InstancePreviewCard(
+                            entity: selectedContainer,
+                            onTap: _pickLocationOrContainer,
+                            trailing: IconButton(
+                              icon: const Icon(Icons.swap_horiz),
+                              tooltip: AppStrings.changeContainerAction,
+                              onPressed: _pickLocationOrContainer,
+                            ),
+                          ),
+                        ],
                       );
-                    },
-                    title: AppStrings.selectContainerObject,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.inventory_2_outlined),
-                      hintText: AppStrings.selectContainerObject,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                    ),
-                    validator: (val) {
-                      if (_locationMode == InstantiationLocationMode.containerEntity && val == null) {
-                        return AppStrings.selectValidContainerPrompt;
-                      }
-                      return null;
-                    },
-                    onChanged: (val) => setState(() => _selectedContainerEntityId = val),
-                  ),
+                    }
+
+                    return InkWell(
+                      onTap: _pickLocationOrContainer,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.dividerColor),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.inventory_2_outlined),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    AppStrings.savedInContainer,
+                                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                                  ),
+                                  const Text(
+                                    AppStrings.selectContainerObject,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(Icons.chevron_right),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
               const SizedBox(height: 14),
 
