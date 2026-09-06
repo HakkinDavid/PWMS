@@ -4736,10 +4736,11 @@ abstract final class AppTechnicalNumismatics {
       maxYear: 1791,
       validCurrencies: ['USC', 'USD'],
       defaultCurrency: 'USC',
-      denominations: ['1/6', '1/3', '1/2', '1', '2', '3', '4', '5', '8', '20'],
+      denominations: ['0.01', '1', '8'],
       denominationMaterials: {
-        '1': 'Plata',
-        '8': 'Plata',
+        '0.01': 'Cobre',  // Fugio Cent (1787)
+        '1': 'Plata',     // Continental Dollar (1776 plata/peltre)
+        '8': 'Plata',     // Spanish Milled Dollar (8 Reales de curso legal en EE.UU.)
       },
     ),
 
