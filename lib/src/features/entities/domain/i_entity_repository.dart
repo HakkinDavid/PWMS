@@ -50,6 +50,7 @@ abstract class IEntityRepository {
 
   // Reassignment for Governance & Cascade Operations
   Future<int> reassignEntitiesSubspecies(String oldSubspeciesId, String targetSubspeciesId);
+  Future<int> moveEntitiesToSubspecies(List<String> entityIds, String targetSubspeciesId);
   Future<int> reassignEntitiesSpecies(String oldSpeciesId, String targetSpeciesId);
 
   // Custom Templates

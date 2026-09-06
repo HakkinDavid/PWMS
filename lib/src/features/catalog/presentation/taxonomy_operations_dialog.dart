@@ -6,6 +6,7 @@ import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
 import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
+import 'split_subspecies_modal.dart';
 
 class TaxonomyOperationsDialog {
   TaxonomyOperationsDialog._();
@@ -204,5 +205,18 @@ class TaxonomyOperationsDialog {
         if (context.mounted) AppToast.showError(context, AppStrings.moveSubspeciesError(e));
       }
     }
+  }
+
+  /// 2d. Dividir Subespecie creando una copia modificada y transfiriendo instancias deseadas
+  static Future<Subspecies?> showSplitSubspeciesDialog(BuildContext context, WidgetRef ref, Subspecies subspecies) async {
+    final catalogRepo = ref.read(catalogRepositoryProvider);
+    final species = await catalogRepo.getCatalogItemById(subspecies.speciesId);
+    if (!context.mounted) return null;
+
+    return await SplitSubspeciesModal.show(
+      context,
+      species: species,
+      sourceSubspecies: subspecies,
+    );
   }
 }

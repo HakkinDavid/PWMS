@@ -435,6 +435,15 @@ class AppStrings {
   static const speciesMergedSuccessPrefix = 'Especie "';
   static const speciesMergedSuccessMiddle = '" unida exitosamente en "';
   static const separateInNewSpeciesTitle = 'Separar en nueva especie';
+  static const splitSubspeciesAction = 'Dividir subespecie';
+  static const splitSubspeciesTitle = 'Dividir subespecie';
+  static const splitSubspeciesSuccessPrefix = 'Subespecie "';
+  static const splitSubspeciesSuccessMiddle = '" creada con éxito (';
+  static const splitSubspeciesSuccessSuffix = ' instancias transferidas).';
+  static const splitSubspeciesErrorPrefix = 'Error al dividir subespecie: ';
+  static const noInstancesToTransferNotice = 'Esta subespecie no tiene instancias asociadas. Se creará la nueva subespecie sin transferir instancias.';
+  static const selectAllAction = 'Seleccionar todas';
+  static const deselectAllAction = 'Deseleccionar todas';
   static const specialEditionTitle = 'Edición especial';
   static const specialEditionCheckSubtitle = 'Indica si la pieza posee particularidades.';
   static const specialEditionReasonLabel = 'Razón de edición especial';
@@ -849,6 +858,7 @@ class AppStrings {
   static const targetSpeciesFormLabel = 'Especie Destino';
   static const separateInNewSpeciesDialogTitle = 'Separar en Nueva Especie';
   static const newSpeciesNameFormLabel = 'Nombre de la Nueva Especie';
+  static const splitSubspeciesDialogTitle = 'Dividir Subespecie';
 
   // Gestión de Adjuntos en Vista Detallada
   static const renameAttachmentTitle = 'Renombrar adjunto';
@@ -1209,7 +1219,10 @@ class AppStrings {
   static String speciesMergedSuccess(String source, String target) => 'Especie "$source" unida exitosamente en "$target".';
   static String separateSubspeciesDescription(String subName) => 'La subespecie "$subName" se promoverá a una especie independiente.';
   static String moveSubspeciesDescription(String subName) => 'Se moverá la subespecie "$subName" y sus instancias a la especie seleccionada.';
+  static String splitSubspeciesDescription(String subName) => 'Crea una nueva subespecie copia a partir de "$subName" con datos modificados y transfiere las instancias seleccionadas a ella.';
   static String newSpeciesDefaultName(String subName) => '$subName (Especie)';
+  static String splitSubspeciesDefaultName(String subName) => '$subName (Copia)';
+  static String instancesToTransferTitle(int selected, int total) => 'Instancias a transferir ($selected de $total)';
   static String numismaticObverseSubtitle(String itemType) => 'Retícula guiada, corrección de exposición y recorte centrado para anverso de $itemType.';
   static String numismaticReverseSubtitle(String itemType) => 'Retícula guiada, corrección de exposición y recorte centrado para reverso de $itemType.';
   static String suggestedSearchQuery(String query) => 'Búsqueda sugerida: "$query"';
@@ -1331,6 +1344,7 @@ class AppStrings {
   static String activitySubspeciesSeparated(String subName, String newSpecies) => 'Subespecie "$subName" separada a especie "$newSpecies"';
   static String activitySubspeciesMoved(String subName, String targetSpecies) => 'Subespecie "$subName" trasladada a "$targetSpecies"';
   static String activitySubspeciesDeleted(String subName) => 'Subespecie eliminada: "$subName"';
+  static String activitySubspeciesSplit(String origName, String newName, int count) => 'Subespecie "$origName" dividida en "$newName" ($count instancias transferidas)';
   static String activityLocationCreated(String name) => 'Nueva ubicación registrada: "$name"';
   static String activityLocationEdited(String name) => 'Ubicación modificada: "$name"';
   static String activityLocationMoved(String name, String? parent) => parent != null ? 'Ubicación "$name" trasladada a "$parent"' : 'Ubicación "$name" convertida en principal';
@@ -1570,6 +1584,8 @@ class AppStrings {
   static String separateSubspeciesError(Object e) => '$separateSubspeciesErrorPrefix$e';
   static String subspeciesMovedSuccess(String targetName) => '$subspeciesMovedSuccessPrefix"$targetName".';
   static String moveSubspeciesError(Object e) => '$moveSubspeciesErrorPrefix$e';
+  static String subspeciesSplitSuccess(String newName, int count) => '$splitSubspeciesSuccessPrefix$newName$splitSubspeciesSuccessMiddle$count$splitSubspeciesSuccessSuffix';
+  static String splitSubspeciesError(Object e) => '$splitSubspeciesErrorPrefix$e';
 
   // Entity Display Helpers
   static String speciesWithSubspeciesDisplay(String speciesName, String subspeciesWithBrand) => '$speciesName - $subspeciesWithBrand';

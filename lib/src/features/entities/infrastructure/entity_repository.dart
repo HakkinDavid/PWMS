@@ -617,6 +617,16 @@ class EntityRepository implements IEntityRepository {
   }
 
   @override
+  Future<int> moveEntitiesToSubspecies(List<String> entityIds, String targetSubspeciesId) async {
+    if (entityIds.isEmpty) return 0;
+    return await (_db.update(_db.entitiesTable)..where((t) => t.id.isIn(entityIds)))
+        .write(EntitiesTableCompanion(
+          subspeciesId: Value(targetSubspeciesId),
+          updatedAt: Value(DateTime.now()),
+        ));
+  }
+
+  @override
   Future<int> reassignEntitiesSpecies(String oldSpeciesId, String targetSpeciesId) async {
     return await (_db.update(_db.entitiesTable)..where((t) => t.speciesId.equals(oldSpeciesId)))
         .write(EntitiesTableCompanion(

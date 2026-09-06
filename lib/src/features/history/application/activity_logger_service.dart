@@ -252,6 +252,31 @@ class ActivityLoggerService {
     await _historyRepository.logEvent(event);
   }
 
+  Future<void> logSubspeciesSplit(
+    String originalSubName,
+    String newSubName,
+    int movedCount, {
+    String? newSubspeciesId,
+    String? speciesId,
+  }) async {
+    final event = ActivityEvent(
+      id: const Uuid().v4(),
+      entityId: null,
+      eventType: AppTechnicalStrings.eventTypeSubspeciesSplit,
+      description: AppStrings.activitySubspeciesSplit(originalSubName, newSubName, movedCount),
+      metadata: {
+        AppTechnicalStrings.keyCategory: AppTechnicalStrings.categorySpecies,
+        AppTechnicalStrings.keyOriginalName: originalSubName,
+        AppTechnicalStrings.colName: newSubName,
+        AppTechnicalStrings.keyMovedCount: movedCount,
+        if (newSubspeciesId != null) AppTechnicalStrings.keySubspeciesId: newSubspeciesId,
+        if (speciesId != null) AppTechnicalStrings.colSpeciesId: speciesId,
+      },
+      timestamp: DateTime.now(),
+    );
+    await _historyRepository.logEvent(event);
+  }
+
   Future<void> logSubspeciesDeleted(String subName) async {
     final event = ActivityEvent(
       id: const Uuid().v4(),

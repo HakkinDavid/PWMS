@@ -354,6 +354,33 @@ class CatalogRepository {
     }
   }
 
+  /// Dividir una Subespecie creando una nueva subespecie y transfiriendo las entidades seleccionadas.
+  Future<Subspecies> splitSubspecies({
+    required Subspecies sourceSubspecies,
+    required Subspecies newSubspecies,
+    List<String> entityIdsToMove = const [],
+  }) async {
+    await saveSubspecies(newSubspecies);
+
+    if (entityIdsToMove.isNotEmpty) {
+      await (_db.update(_db.entitiesTable)..where((t) => t.id.isIn(entityIdsToMove)))
+          .write(EntitiesTableCompanion(
+            subspeciesId: Value(newSubspecies.id),
+            updatedAt: Value(DateTime.now()),
+          ));
+    }
+
+    await _activityLogger.logSubspeciesSplit(
+      sourceSubspecies.subspeciesName,
+      newSubspecies.subspeciesName,
+      entityIdsToMove.length,
+      newSubspeciesId: newSubspecies.id,
+      speciesId: newSubspecies.speciesId,
+    );
+
+    return newSubspecies;
+  }
+
   // --- SUBSPECIES CRUD ---
 
   Future<List<Subspecies>> getAllSubspecies() async {

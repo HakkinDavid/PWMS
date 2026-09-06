@@ -160,6 +160,9 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                         onSelected: (val) async {
                           if (val == AppTechnicalStrings.actionEdit) {
                             _addOrEditSubspeciesModal(initial: sub);
+                          } else if (val == AppTechnicalStrings.actionSplit) {
+                            await TaxonomyOperationsDialog.showSplitSubspeciesDialog(context, ref, sub);
+                            if (mounted) _loadSubspecies();
                           } else if (val == AppTechnicalStrings.actionSeparate) {
                             await TaxonomyOperationsDialog.showSeparateSubspeciesDialog(context, ref, sub);
                             if (mounted) _loadSubspecies();
@@ -278,7 +281,8 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
                         },
                         itemBuilder: (ctx) => [
                           const PopupMenuItem(value: AppTechnicalStrings.actionEdit, child: Row(children: [Icon(Icons.edit_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.edit))])),
-                          const PopupMenuItem(value: AppTechnicalStrings.actionSeparate, child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.separateInNewSpeciesTitle))])),
+                          const PopupMenuItem(value: AppTechnicalStrings.actionSplit, child: Row(children: [Icon(Icons.call_split, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.splitSubspeciesAction))])),
+                          const PopupMenuItem(value: AppTechnicalStrings.actionSeparate, child: Row(children: [Icon(Icons.open_in_new, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.separateInNewSpeciesTitle))])),
                           const PopupMenuItem(value: AppTechnicalStrings.actionMove, child: Row(children: [Icon(Icons.drive_file_move_outlined, size: 16), SizedBox(width: 8), Expanded(child: Text(AppStrings.moveSubspeciesTitle))])),
                           const PopupMenuItem(value: AppTechnicalStrings.actionDelete, child: Row(children: [Icon(Icons.delete_outline, size: 16, color: Colors.redAccent), SizedBox(width: 8), Expanded(child: Text(AppStrings.delete, style: TextStyle(color: Colors.redAccent)))]))
                         ],

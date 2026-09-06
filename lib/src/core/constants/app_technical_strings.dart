@@ -567,6 +567,7 @@ WHERE id IN (
   static const actionDelete = 'delete';
   static const actionEdit = 'edit';
   static const actionSeparate = 'separate';
+  static const actionSplit = 'split';
   static const actionMove = 'move';
   static const actionMakeNotUnique = 'make_not_unique';
   static const actionDeleteDuplicates = 'delete_duplicates';
@@ -687,6 +688,7 @@ WHERE id IN (
   static const eventTypeSubspeciesSeparation = 'subspecies_separation';
   static const eventTypeSubspeciesMovement = 'subspecies_movement';
   static const eventTypeSubspeciesDeletion = 'subspecies_deletion';
+  static const eventTypeSubspeciesSplit = 'subspecies_split';
   static const eventTypeLocationCreation = 'location_creation';
   static const eventTypeLocationEdition = 'location_edition';
   static const eventTypeLocationMovement = 'location_movement';
@@ -932,6 +934,8 @@ WHERE id IN (
   static const keyQuery = 'query';
   static const keyPages = 'pages';
   static const keyOriginal = 'original';
+  static const keyOriginalName = 'original_name';
+  static const keyMovedCount = 'moved_count';
   static const prefixIsbnKey = 'ISBN:';
 
   static const tokenVqd = 'vqd';
