@@ -7,8 +7,11 @@ void main() {
       final inferredCurr = NumismaticDataHelper.inferCurrency(country: 'México', year: 1982);
       expect(inferredCurr, equals('MXP'));
 
-      final denoms = NumismaticDataHelper.getDenominationsForCountry(country: 'México', year: 1982, currencyCode: 'MXP');
-      expect(denoms, containsAll(['1', '5', '10', '20', '50', '100', '200', '500', '1000', '5000', 'Otro']));
+      final denoms1982 = NumismaticDataHelper.getDenominationsForCountry(country: 'México', year: 1982, currencyCode: 'MXP');
+      expect(denoms1982, containsAll(['1', '5', '10', '20', '50', '100', 'Otro']));
+
+      final denoms1988 = NumismaticDataHelper.getDenominationsForCountry(country: 'México', year: 1988, currencyCode: 'MXP');
+      expect(denoms1988, containsAll(['50', '100', '500', '1000', '5000', 'Otro']));
 
       final mat50 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1982, currencyCode: 'MXP', denomination: '50');
       expect(mat50, equals('Cuproníquel'));
