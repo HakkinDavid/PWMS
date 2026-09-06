@@ -11,6 +11,7 @@ import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
 import '../../catalog/presentation/species_tile.dart';
 import '../../catalog/presentation/subspecies_tile.dart';
+import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/entity_tile.dart';
 import '../../entities/presentation/instantiate_species_sheet.dart';
@@ -478,6 +479,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     // Notes
     if (e.notes?.toLowerCase().contains(cleanQuery) ?? false) return true;
+
+    // Derived or custom instance name
+    final customName = EntityDisplayHelper.getInstanceCustomName(e, species);
+    if (customName != null && customName.toLowerCase().contains(cleanQuery)) return true;
 
     // Expiration date
     if (e.expirationDate != null) {

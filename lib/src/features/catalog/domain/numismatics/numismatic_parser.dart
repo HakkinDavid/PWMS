@@ -43,7 +43,7 @@ class NumismaticParser {
       var result = text;
       for (final entry in _sortedSingularReplacements) {
         result = result.replaceAll(
-          RegExp('\\b${RegExp.escape(entry.key)}\\b', caseSensitive: false),
+          RegExp(AppTechnicalStrings.regexWordBoundary + RegExp.escape(entry.key) + AppTechnicalStrings.regexWordBoundary, caseSensitive: false),
           entry.value,
         );
       }
@@ -60,20 +60,18 @@ class NumismaticParser {
 
     for (final entry in _sortedSingularReplacements) {
       result = result.replaceAll(
-        RegExp('\\b${RegExp.escape(entry.key)}\\b', caseSensitive: false),
+        RegExp(AppTechnicalStrings.regexWordBoundary + RegExp.escape(entry.key) + AppTechnicalStrings.regexWordBoundary, caseSensitive: false),
         entry.value,
       );
     }
 
-    return result
-        .toLowerCase()
-        .replaceAll('á', 'a')
-        .replaceAll('é', 'e')
-        .replaceAll('í', 'i')
-        .replaceAll('ó', 'o')
-        .replaceAll('ú', 'u')
-        .replaceAll('ü', 'u')
-        .replaceAll(RegExp(r'\s+'), ' ')
+    var lower = result.toLowerCase();
+    for (final entry in AppTechnicalBrands.accentReplacements.entries) {
+      lower = lower.replaceAll(entry.key.toLowerCase(), entry.value.toLowerCase());
+    }
+
+    return lower
+        .replaceAll(RegExp(AppTechnicalStrings.regexMultipleSpaces), AppTechnicalStrings.space)
         .trim();
   }
 
@@ -349,6 +347,7 @@ class NumismaticParser {
   /// Extracts numismatic attributes from an instance's magnitudes.
   static NumismaticAttributes extractAttributesFromInstance(WorldEntity entity) {
     double? faceVal;
+    String? faceValStr;
     String? year;
     String? currency;
     String? material;
@@ -359,30 +358,57 @@ class NumismaticParser {
 
     for (final mag in entity.magnitudes) {
       final pName = mag.propertyName.trim().toLowerCase();
-      if (pName == AppStrings.magValorNominal.toLowerCase()) {
+      if (pName == AppStrings.magValorNominal.toLowerCase() ||
+          pName == AppStrings.nominalValuePropertyName.toLowerCase() ||
+          pName == AppTechnicalStrings.magValorFacialLower ||
+          pName == AppTechnicalStrings.magValorNominalLower) {
         faceVal = mag.magnitudeValue;
-      } else if (pName == AppStrings.magAcunacion.toLowerCase()) {
+        if (faceVal == null && mag.stringValue != null && mag.stringValue!.isNotEmpty) {
+          faceVal = double.tryParse(mag.stringValue!);
+          faceValStr = mag.stringValue!.trim();
+        }
+      } else if (pName == AppStrings.magAcunacion.toLowerCase() ||
+          pName == AppStrings.mintagePropertyName.toLowerCase() ||
+          pName == AppStrings.mintageYearLabel.toLowerCase() ||
+          pName == AppTechnicalStrings.magAcunacionWithAccentLower ||
+          pName == AppTechnicalStrings.magAcunacionWithoutAccentLower ||
+          pName == AppTechnicalStrings.magAnoWithAccentLower ||
+          pName == AppTechnicalStrings.magAnoWithoutAccentLower ||
+          pName == AppTechnicalStrings.magAnoDeAcunacionLower ||
+          pName == AppTechnicalStrings.magMintageLower) {
         if (mag.magnitudeValue != null && mag.magnitudeValue! > 0) {
           year = mag.magnitudeValue!.toInt().toString();
         } else if (mag.stringValue != null && mag.stringValue!.isNotEmpty) {
-          year = mag.stringValue;
+          year = mag.stringValue!.trim();
         }
-      } else if (pName == AppStrings.magDivisa.toLowerCase()) {
-        currency = mag.stringValue;
-      } else if (pName == AppStrings.magMaterial.toLowerCase()) {
-        material = mag.stringValue;
-      } else if (pName == AppStrings.magGrado.toLowerCase()) {
-        grade = mag.stringValue;
+      } else if (pName == AppStrings.magDivisa.toLowerCase() ||
+          pName == AppStrings.currencyPropertyName.toLowerCase() ||
+          pName == AppTechnicalStrings.magDivisaLower ||
+          pName == AppTechnicalStrings.magMonedaLower) {
+        currency = mag.stringValue?.trim();
+      } else if (pName == AppStrings.magMaterial.toLowerCase() ||
+          pName == AppStrings.materialPropertyName.toLowerCase() ||
+          pName == AppTechnicalStrings.magMaterialLower ||
+          pName == AppTechnicalStrings.magMetalLower) {
+        material = mag.stringValue?.trim();
+      } else if (pName == AppStrings.magGrado.toLowerCase() ||
+          pName == AppStrings.gradePropertyName.toLowerCase() ||
+          pName == AppTechnicalStrings.magGradoLower ||
+          pName == AppTechnicalStrings.magConservacionWithAccentLower ||
+          pName == AppTechnicalStrings.magConservacionWithoutAccentLower) {
+        grade = mag.stringValue?.trim();
       } else if (pName == AppStrings.magEmisor.toLowerCase() ||
+          pName == AppStrings.issuerPropertyName.toLowerCase() ||
           pName == AppTechnicalStrings.magPaisLower ||
-          pName == AppTechnicalStrings.magPaisWithoutAccentLower) {
-        country = mag.stringValue;
+          pName == AppTechnicalStrings.magPaisWithoutAccentLower ||
+          pName == AppTechnicalStrings.magEmisorLower) {
+        country = mag.stringValue?.trim();
       } else if (pName == AppStrings.specialEditionTitle.toLowerCase()) {
         isSpecialEdition = mag.stringValue == AppTechnicalStrings.boolTrue ||
             mag.stringValue == AppTechnicalStrings.valOne ||
             mag.magnitudeValue == 1.0;
       } else if (pName == AppStrings.specialEditionReasonLabel.toLowerCase()) {
-        specialReason = mag.stringValue;
+        specialReason = mag.stringValue?.trim();
       }
     }
 
@@ -400,6 +426,7 @@ class NumismaticParser {
 
     return NumismaticAttributes(
       faceValueNumber: faceVal,
+      faceValueStr: faceValStr,
       currencyName: currency,
       country: country,
       year: year,
@@ -408,6 +435,29 @@ class NumismaticParser {
       isSpecialEdition: isSpecialEdition,
       specialEditionReason: specialReason,
     );
+  }
+
+  /// Derives the canonical display name for an instance of Moneda or Billete.
+  static String deriveInstanceName(WorldEntity entity, {String? defaultSpeciesName}) {
+    final attrs = extractAttributesFromInstance(entity);
+    return buildInstanceDisplayName(attrs, defaultSpeciesName: defaultSpeciesName);
+  }
+
+  /// Checks if an entity is a numismatic piece (Moneda / Billete), based on species or instance magnitudes.
+  static bool isNumismaticEntity(WorldEntity entity, [CatalogItem? species]) {
+    if (species != null) {
+      return isNumismaticSpecies(species);
+    }
+    return entity.magnitudes.any((m) {
+      final p = m.propertyName.trim().toLowerCase();
+      return p == AppStrings.magValorNominal.toLowerCase() ||
+          p == AppStrings.nominalValuePropertyName.toLowerCase() ||
+          p == AppStrings.currencyPropertyName.toLowerCase() ||
+          p == AppStrings.mintagePropertyName.toLowerCase() ||
+          p == AppStrings.issuerPropertyName.toLowerCase() ||
+          p == AppTechnicalStrings.magValorFacialLower ||
+          p == AppTechnicalStrings.magDivisaLower;
+    });
   }
 
   /// Parses subspecies title to extract denomination, currency, country, year.

@@ -9,6 +9,8 @@ import '../domain/custom_template.dart';
 import '../domain/i_entity_repository.dart';
 import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
+import '../domain/entity_display_helper.dart';
+import '../../catalog/domain/numismatic_data_helper.dart';
 
 import '../../../core/storage/file_storage_service.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
@@ -48,6 +50,57 @@ class EntityRepository implements IEntityRepository {
     return magMap;
   }
 
+  List<InstanceMagnitude> _ensureDynamicNombreMagnitude(
+    String instanceId,
+    List<InstanceMagnitude> mags, {
+    String? notes,
+  }) {
+    final tempEntity = WorldEntity(
+      id: instanceId,
+      speciesId: AppTechnicalStrings.empty,
+      magnitudes: mags,
+      notes: notes,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    if (NumismaticDataHelper.isNumismaticInstance(tempEntity)) {
+      final derivedName = NumismaticDataHelper.deriveInstanceName(tempEntity);
+      if (derivedName.isNotEmpty && derivedName != AppStrings.defaultNumismaticPiece) {
+        final existingIdx = mags.indexWhere((m) {
+          final p = m.propertyName.trim().toLowerCase();
+          return p == AppTechnicalStrings.propNombreLower || p == AppTechnicalStrings.propNameLower;
+        });
+
+        if (existingIdx != -1) {
+          final existing = mags[existingIdx];
+          final updated = existing.copyWith(
+            propertyName: AppStrings.propertyNameNombre,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: derivedName,
+            unitSymbol: null,
+            magnitudeValue: null,
+          );
+          final result = List<InstanceMagnitude>.from(mags);
+          result[existingIdx] = updated;
+          return result;
+        } else {
+          final newNameMag = InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instanceId,
+            propertyName: AppStrings.propertyNameNombre,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: derivedName,
+            unitSymbol: null,
+          );
+          return [newNameMag, ...mags];
+        }
+      }
+    }
+
+    return mags;
+  }
+
   WorldEntity _mapToDomainSync(
     EntitiesTableData row, {
     Map<String, String?>? resolvedLocations,
@@ -57,12 +110,14 @@ class EntityRepository implements IEntityRepository {
         ? resolvedLocations[row.id]
         : row.locationId;
 
+    final effectiveMags = _ensureDynamicNombreMagnitude(row.id, magnitudes, notes: row.notes);
+
     return WorldEntity(
       id: row.id,
       speciesId: row.speciesId,
       subspeciesId: row.subspeciesId,
       locationId: effectiveLocation,
-      magnitudes: magnitudes,
+      magnitudes: effectiveMags,
       expirationDate: row.expirationDate,
       notes: row.notes,
       createdAt: row.createdAt,
@@ -231,6 +286,10 @@ class EntityRepository implements IEntityRepository {
 
       if (e.notes?.toLowerCase().contains(cleanQuery) ?? false) return true;
 
+      if (EntityDisplayHelper.getInstanceCustomName(e)?.toLowerCase().contains(cleanQuery) ?? false) {
+        return true;
+      }
+
       for (final mag in e.magnitudes) {
         if (mag.propertyName.toLowerCase().contains(cleanQuery) ||
             (mag.unitSymbol?.toLowerCase().contains(cleanQuery) ?? false) ||
@@ -285,8 +344,9 @@ class EntityRepository implements IEntityRepository {
       }
 
       // Persist 4NF Instance Magnitudes (1:N)
+      final effectiveMags = _ensureDynamicNombreMagnitude(entity.id, entity.magnitudes, notes: entity.notes);
       await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(entity.id))).go();
-      for (final mag in entity.magnitudes) {
+      for (final mag in effectiveMags) {
         await _db.into(_db.instanceMagnitudesTable).insert(InstanceMagnitudesTableCompanion(
           id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
           instanceId: Value(entity.id),

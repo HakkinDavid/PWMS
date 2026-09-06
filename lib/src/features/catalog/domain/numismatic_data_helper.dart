@@ -1,4 +1,5 @@
 import '../../../core/constants/app_technical_strings.dart';
+import '../../../core/database/app_database.dart';
 import 'catalog_item.dart';
 import 'subspecies.dart';
 import '../../entities/domain/world_entity.dart';
@@ -208,6 +209,15 @@ class NumismaticDataHelper {
         subspecies: subspecies,
         instance: instance,
       );
+
+  static String deriveInstanceName(WorldEntity entity, {String? defaultSpeciesName}) =>
+      NumismaticParser.deriveInstanceName(entity, defaultSpeciesName: defaultSpeciesName);
+
+  static bool isNumismaticInstance(WorldEntity entity, [CatalogItem? species]) =>
+      NumismaticParser.isNumismaticEntity(entity, species);
+
+  static Future<void> repairAndStandardizeImportedData(AppDatabase db) =>
+      NumismaticDomainRules.repairAndStandardizeImportedData(db);
 
   static List<NumismaticEmissionOutlier> checkEmissionOutliers({
     required WorldEntity instance,
