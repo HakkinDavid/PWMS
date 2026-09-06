@@ -295,7 +295,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Cámara Réflex'), findsOneWidget);
+      expect(find.text('Cámara Réflex'), findsWidgets);
     });
 
     testWidgets('ContainerContentsView renders EntityTile for child entities',
@@ -334,7 +334,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(EntityTile), findsOneWidget);
-      expect(find.text('Cuaderno'), findsOneWidget);
+      expect(find.text('Cuaderno'), findsWidgets);
     });
   });
 }

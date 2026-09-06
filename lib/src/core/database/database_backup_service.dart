@@ -659,6 +659,9 @@ class DatabaseBackupService {
               }
             }
           }
+          if (strVal != null && strVal.isNotEmpty) {
+            strVal = NumismaticDataHelper.resolveCurrencyIsoCode(strVal);
+          }
         } else if (propName == AppStrings.materialPropertyName) {
           dt = AppTechnicalStrings.datatypeStringLower;
           unit = null;
@@ -688,6 +691,18 @@ class DatabaseBackupService {
               final g = gradeMatch.group(1)?.trim();
               if (g != null && g != AppStrings.unspecifiedGrade && g.isNotEmpty) {
                 strVal = g;
+              }
+            }
+          }
+        } else if (propName == AppStrings.issuerPropertyName || propName == AppTechnicalStrings.magPaisWithAccent || propName == AppTechnicalStrings.magPaisWithoutAccent) {
+          dt = AppTechnicalStrings.datatypeStringLower;
+          unit = null;
+          if (strVal == null || strVal.trim().isEmpty) {
+            if (subspecies != null) {
+              final subName = subspecies[AppTechnicalJsonKeys.keySubspeciesName]?.toString() ?? AppTechnicalStrings.empty;
+              if (subName.isNotEmpty && subName != AppStrings.genericSubspeciesName) {
+                final parsed = NumismaticDataHelper.parseSubspeciesName(subName);
+                strVal = parsed.country;
               }
             }
           }

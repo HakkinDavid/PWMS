@@ -87,6 +87,9 @@ class NumismaticDataHelper {
   static String sanitizeFileName(String text) =>
       NumismaticParser.sanitizeFileName(text);
 
+  static String buildInstanceDisplayName(NumismaticAttributes attrs, {String? defaultSpeciesName}) =>
+      NumismaticParser.buildInstanceDisplayName(attrs, defaultSpeciesName: defaultSpeciesName);
+
   static String buildAttachmentFileName({
     required String subspeciesName,
     required String instanceId,

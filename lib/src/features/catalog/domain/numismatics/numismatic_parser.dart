@@ -297,6 +297,22 @@ class NumismaticParser {
         ext;
   }
 
+  /// Builds a deterministic instance display name from its attributes.
+  static String buildInstanceDisplayName(NumismaticAttributes attrs, {String? defaultSpeciesName}) {
+    final title = buildSubspeciesName(
+      faceValueNumber: attrs.faceValueNumber,
+      faceValueStr: attrs.faceValueStr,
+      currencyName: attrs.currencyName,
+      currencyCode: attrs.currencyCode,
+      country: attrs.country,
+      year: attrs.year,
+    );
+    if (title == AppStrings.defaultNumismaticPiece && defaultSpeciesName != null && defaultSpeciesName.isNotEmpty) {
+      return defaultSpeciesName;
+    }
+    return title;
+  }
+
   /// Extracts numismatic attributes from an instance's magnitudes.
   static NumismaticAttributes extractAttributesFromInstance(WorldEntity entity) {
     double? faceVal;
@@ -304,28 +320,35 @@ class NumismaticParser {
     String? currency;
     String? material;
     String? grade;
+    String? country;
 
     for (final mag in entity.magnitudes) {
-      if (mag.propertyName == AppStrings.magValorNominal) {
+      final pName = mag.propertyName.trim().toLowerCase();
+      if (pName == AppStrings.magValorNominal.toLowerCase()) {
         faceVal = mag.magnitudeValue;
-      } else if (mag.propertyName == AppStrings.magAcunacion) {
+      } else if (pName == AppStrings.magAcunacion.toLowerCase()) {
         if (mag.magnitudeValue != null && mag.magnitudeValue! > 0) {
           year = mag.magnitudeValue!.toInt().toString();
         } else if (mag.stringValue != null && mag.stringValue!.isNotEmpty) {
           year = mag.stringValue;
         }
-      } else if (mag.propertyName == AppStrings.magDivisa) {
+      } else if (pName == AppStrings.magDivisa.toLowerCase()) {
         currency = mag.stringValue;
-      } else if (mag.propertyName == AppStrings.magMaterial) {
+      } else if (pName == AppStrings.magMaterial.toLowerCase()) {
         material = mag.stringValue;
-      } else if (mag.propertyName == AppStrings.magGrado) {
+      } else if (pName == AppStrings.magGrado.toLowerCase()) {
         grade = mag.stringValue;
+      } else if (pName == AppStrings.magEmisor.toLowerCase() ||
+          pName == AppTechnicalStrings.magPaisLower ||
+          pName == AppTechnicalStrings.magPaisWithoutAccentLower) {
+        country = mag.stringValue;
       }
     }
 
     return NumismaticAttributes(
       faceValueNumber: faceVal,
       currencyName: currency,
+      country: country,
       year: year,
       material: material,
       grade: grade,

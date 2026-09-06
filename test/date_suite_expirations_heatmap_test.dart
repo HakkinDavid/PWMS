@@ -8,6 +8,7 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/sub
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/expirations/domain/expiration_item.dart';
 import 'package:platinum_world_management_system/src/features/expirations/domain/expiration_summary.dart';
+import 'package:platinum_world_management_system/src/features/history/application/activity_heatmap_providers.dart';
 import 'package:platinum_world_management_system/src/features/history/domain/activity_event.dart';
 import 'package:platinum_world_management_system/src/features/history/domain/activity_heatmap_data.dart';
 import 'package:platinum_world_management_system/src/features/history/presentation/activity_heatmap_widget.dart';
@@ -357,11 +358,15 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ActivityHeatmapWidget(
-              data: heatmapData,
-              showHeader: false,
+        ProviderScope(
+          overrides: [
+            activityHeatmap16WeeksProvider.overrideWithValue(heatmapData),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: ActivityHeatmapWidget(
+                showHeader: false,
+              ),
             ),
           ),
         ),

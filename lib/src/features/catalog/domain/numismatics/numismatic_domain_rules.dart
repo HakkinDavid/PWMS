@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import '../subspecies.dart';
+import '../../../entities/domain/instance_magnitude.dart';
 import '../../../entities/domain/world_entity.dart';
 import '../../../entities/domain/i_entity_repository.dart';
 import '../../../entities/infrastructure/entity_repository.dart';
@@ -12,7 +14,7 @@ import 'numismatic_parser.dart';
 class NumismaticCongruenceIssue {
   final String subspeciesId;
   final String? instanceId;
-  final String issueType; // 'magnitude_mismatch', 'duplicate_subspecies', 'attachment_mismatch', 'missing_magnitudes'
+  final String issueType; // 'currency_mismatch', 'duplicate_subspecies', 'attachment_mismatch', 'missing_magnitudes'
   final String description;
   final NumismaticAttributes expectedAttributes;
   final NumismaticAttributes? foundAttributes;
@@ -30,51 +32,42 @@ class NumismaticCongruenceIssue {
 class NumismaticDomainRules {
   NumismaticDomainRules._();
 
-  /// Checks if instance magnitudes and subspecies title follow the strict canonical pattern.
+  /// Checks if instance magnitudes match the currency subspecies and canonical standardization.
   static String? checkInstanceSubspeciesCongruence({
     required Subspecies subspecies,
     required WorldEntity instance,
   }) {
     final instAttrs = NumismaticParser.extractAttributesFromInstance(instance);
-    final subAttrs = NumismaticParser.parseSubspeciesName(subspecies.subspeciesName);
-
     final mismatches = <String>[];
 
-    // 1. Strict subspecies title pattern check
-    final canonicalTitle = NumismaticParser.buildSubspeciesName(
-      faceValueNumber: instAttrs.faceValueNumber ?? subAttrs.faceValueNumber,
-      currencyName: instAttrs.currencyName ?? subAttrs.currencyName,
-      country: subAttrs.country,
-      year: instAttrs.year ?? subAttrs.year,
-    );
+    final parsedSub = NumismaticParser.parseSubspeciesName(subspecies.subspeciesName);
+    final subCurrency = (parsedSub.currencyName != null && parsedSub.currencyName!.isNotEmpty)
+        ? parsedSub.currencyName!
+        : subspecies.subspeciesName;
 
-    if (subspecies.subspeciesName.trim() != canonicalTitle.trim()) {
-      mismatches.add(AppStrings.numisAuditTitleMismatch(subspecies.subspeciesName, canonicalTitle));
+    // 1. Currency congruence check between instance and subspecies
+    if (instAttrs.currencyName != null && instAttrs.currencyName!.isNotEmpty) {
+      final isEquivalent = NumismaticParser.areCurrenciesEquivalent(
+        instAttrs.currencyName,
+        subCurrency,
+      );
+      if (!isEquivalent) {
+        final expectedCurr = NumismaticParser.resolveCurrencyName(subCurrency);
+        mismatches.add(
+          AppStrings.numisAuditCurrencyMismatch(instAttrs.currencyName!, expectedCurr),
+        );
+      }
     }
 
-    // 2. Year check
-    if (instAttrs.year != null &&
-        subAttrs.year != null &&
-        instAttrs.year != subAttrs.year) {
-      mismatches.add(AppStrings.numisAuditYearMismatch(instAttrs.year!, subAttrs.year!));
-    }
-
-    // 3. Face value check
-    if (instAttrs.faceValueNumber != null &&
-        subAttrs.faceValueNumber != null &&
-        (instAttrs.faceValueNumber! - subAttrs.faceValueNumber!).abs() > 0.001) {
-      mismatches.add(AppStrings.numisAuditFaceValueMismatch(instAttrs.faceValueNumber!, subAttrs.faceValueNumber!));
-    }
-
-    // 4. Instance magnitude currency standardization check (must be ISO code)
-    if (instAttrs.currencyName != null) {
+    // 2. Instance magnitude currency standardization check (must be ISO code)
+    if (instAttrs.currencyName != null && instAttrs.currencyName!.isNotEmpty) {
       final isoCode = NumismaticParser.resolveCurrencyIsoCode(instAttrs.currencyName!);
       if (instAttrs.currencyName!.trim().toUpperCase() != isoCode) {
         mismatches.add(AppStrings.numisAuditCurrencyNotIso(instAttrs.currencyName!, isoCode));
       }
     }
 
-    // 5. Instance magnitude grade standardization check
+    // 3. Instance magnitude grade standardization check
     if (instAttrs.grade != null && instAttrs.grade!.isNotEmpty) {
       final stdGrade = NumismaticParser.resolveGrade(instAttrs.grade!);
       if (instAttrs.grade!.trim() != stdGrade) {
@@ -82,7 +75,7 @@ class NumismaticDomainRules {
       }
     }
 
-    // 6. Instance magnitude material standardization check
+    // 4. Instance magnitude material standardization check
     if (instAttrs.material != null && instAttrs.material!.isNotEmpty) {
       final stdMat = NumismaticParser.resolveMaterial(instAttrs.material!);
       if (instAttrs.material!.trim() != stdMat) {
@@ -97,7 +90,7 @@ class NumismaticDomainRules {
     return null;
   }
 
-  /// Identifies duplicate subspecies under the same species (same canonical title).
+  /// Identifies duplicate currency subspecies under the same species (e.g. 'MXN' and 'Pesos Mexicanos').
   static Map<String, List<Subspecies>> findDuplicateSubspeciesGroups(
       List<Subspecies> subspeciesList) {
     final Map<String, List<Subspecies>> grouped = {};
@@ -105,15 +98,14 @@ class NumismaticDomainRules {
     for (final sub in subspeciesList) {
       if (sub.subspeciesName.toLowerCase() == AppTechnicalStrings.numisGenericSubspeciesKind) continue;
 
+      // Extract canonical currency name (handles both granular legacy titles and currency-only titles)
       final parsed = NumismaticParser.parseSubspeciesName(sub.subspeciesName);
-      final normTitle = NumismaticParser.buildSubspeciesName(
-        faceValueNumber: parsed.faceValueNumber,
-        currencyName: parsed.currencyName,
-        country: parsed.country,
-        year: parsed.year,
-      );
+      final rawCurr = (parsed.currencyName != null && parsed.currencyName!.isNotEmpty)
+          ? parsed.currencyName!
+          : sub.subspeciesName;
+      final canonicalCurrency = NumismaticParser.resolveCurrencyName(rawCurr);
 
-      final key = AppTechnicalStrings.numisSubspeciesKey(sub.speciesId, normTitle.trim().toLowerCase());
+      final key = AppTechnicalStrings.numisSubspeciesKey(sub.speciesId, canonicalCurrency.trim().toLowerCase());
       grouped.putIfAbsent(key, () => []).add(sub);
     }
 
@@ -121,7 +113,7 @@ class NumismaticDomainRules {
     return grouped;
   }
 
-  /// Repairs subspecies title, notes, instance magnitudes & attachment file names to strict canonical standards.
+  /// Repairs subspecies title, instance magnitudes & attachment file names to strict canonical standards.
   static Future<Subspecies> repairSubspeciesFromInstance({
     required CatalogRepository catalogRepo,
     required IEntityRepository entityRepo,
@@ -129,47 +121,62 @@ class NumismaticDomainRules {
     required WorldEntity instance,
   }) async {
     final instAttrs = NumismaticParser.extractAttributesFromInstance(instance);
-    final subAttrs = NumismaticParser.parseSubspeciesName(subspecies.subspeciesName);
+    final parsedOld = NumismaticParser.parseSubspeciesName(subspecies.subspeciesName);
 
-    final canonicalTitle = NumismaticParser.buildSubspeciesName(
-      faceValueNumber: instAttrs.faceValueNumber ?? subAttrs.faceValueNumber,
-      currencyName: instAttrs.currencyName ?? subAttrs.currencyName,
-      country: subAttrs.country,
-      year: instAttrs.year ?? subAttrs.year,
-    );
+    // Resolve canonical currency name for the subspecies
+    final rawCurr = (instAttrs.currencyName != null && instAttrs.currencyName!.isNotEmpty)
+        ? instAttrs.currencyName!
+        : (parsedOld.currencyName ?? subspecies.subspeciesName);
+    final canonicalCurrency = NumismaticParser.resolveCurrencyName(rawCurr);
 
     final canonicalNotes = NumismaticParser.buildSubspeciesNotes(
-      currencyName: instAttrs.currencyName ?? subAttrs.currencyName,
-      year: instAttrs.year ?? subAttrs.year,
-      composition: instAttrs.material != null ? NumismaticParser.resolveMaterial(instAttrs.material!) : null,
+      currencyName: canonicalCurrency,
     );
 
     final updatedSub = subspecies.copyWith(
-      subspeciesName: canonicalTitle,
+      subspeciesName: canonicalCurrency,
       notes: canonicalNotes.isNotEmpty ? canonicalNotes : subspecies.notes,
     );
 
     await catalogRepo.saveSubspecies(updatedSub);
 
-    // Standardize instance magnitudes ('Divisa', 'Grado', 'Material') if present
-    final updatedMags = instance.magnitudes.map((m) {
-      if (m.propertyName == AppStrings.magDivisa && m.stringValue != null) {
+    // Standardize instance magnitudes ('Divisa', 'Grado', 'Material', 'Emisor') if present
+    final List<InstanceMagnitude> updatedMags = instance.magnitudes.map((m) {
+      final pName = m.propertyName.trim().toLowerCase();
+      if (pName == AppStrings.magDivisa.toLowerCase() && m.stringValue != null) {
         final iso = NumismaticParser.resolveCurrencyIsoCode(m.stringValue!);
         return m.copyWith(stringValue: iso);
       }
-      if (m.propertyName == AppStrings.magGrado && m.stringValue != null) {
+      if (pName == AppStrings.magGrado.toLowerCase() && m.stringValue != null) {
         return m.copyWith(stringValue: NumismaticParser.resolveGrade(m.stringValue!));
       }
-      if (m.propertyName == AppStrings.magMaterial && m.stringValue != null) {
+      if (pName == AppStrings.magMaterial.toLowerCase() && m.stringValue != null) {
         return m.copyWith(stringValue: NumismaticParser.resolveMaterial(m.stringValue!));
       }
       return m;
     }).toList();
 
+    // Backfill Emisor from legacy subspecies name if missing on instance
+    final hasEmisor = updatedMags.any((m) {
+      final pName = m.propertyName.trim().toLowerCase();
+      return pName == AppStrings.magEmisor.toLowerCase() ||
+          pName == AppTechnicalStrings.magPaisLower ||
+          pName == AppTechnicalStrings.magPaisWithoutAccentLower;
+    });
+    if (!hasEmisor && parsedOld.country != null && parsedOld.country!.trim().isNotEmpty) {
+      updatedMags.add(InstanceMagnitude(
+        id: const Uuid().v4(),
+        instanceId: instance.id,
+        propertyName: AppStrings.issuerPropertyName,
+        dataType: AppTechnicalStrings.datatypeStringLower,
+        stringValue: parsedOld.country!.trim(),
+      ));
+    }
+
     final updatedInstance = instance.copyWith(magnitudes: updatedMags);
     await entityRepo.saveEntity(updatedInstance);
 
-    // Standardize attachment file names
+    // Standardize attachment file names using instance derived title
     await repairAttachmentFileNames(
       catalogRepo: catalogRepo,
       entityRepo: entityRepo,
@@ -204,13 +211,31 @@ class NumismaticDomainRules {
     }
   }
 
-  /// Renames attachment files and updates database records to match current canonical subspecies name.
+  /// Renames attachment files and updates database records to match current canonical instance derived name.
   static Future<void> repairAttachmentFileNames({
     required CatalogRepository catalogRepo,
     required IEntityRepository entityRepo,
     required Subspecies subspecies,
     required WorldEntity instance,
   }) async {
+    final instAttrs = NumismaticParser.extractAttributesFromInstance(instance);
+    var pieceDisplayName = NumismaticParser.buildInstanceDisplayName(instAttrs);
+    if (pieceDisplayName == AppStrings.defaultNumismaticPiece) {
+      final parsedSub = NumismaticParser.parseSubspeciesName(subspecies.subspeciesName);
+      if (parsedSub.currencyName != null || parsedSub.faceValueNumber != null) {
+        pieceDisplayName = NumismaticParser.buildSubspeciesName(
+          faceValueNumber: parsedSub.faceValueNumber,
+          faceValueStr: parsedSub.faceValueStr,
+          currencyName: parsedSub.currencyName,
+          country: parsedSub.country,
+          year: parsedSub.year,
+        );
+      }
+      if (pieceDisplayName == AppStrings.defaultNumismaticPiece) {
+        pieceDisplayName = subspecies.subspeciesName;
+      }
+    }
+
     final attachments = await entityRepo.getAttachmentsForInstance(instance.id);
     for (final att in attachments) {
       final isObverse = att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoParensLower) ||
@@ -225,7 +250,7 @@ class NumismaticDomainRules {
               : AppTechnicalStrings.empty);
 
       final expectedName = NumismaticParser.buildAttachmentFileName(
-        subspeciesName: subspecies.subspeciesName,
+        subspeciesName: pieceDisplayName,
         instanceId: instance.id,
         side: side,
         extension: ext,
@@ -253,7 +278,7 @@ class NumismaticDomainRules {
     }
   }
 
-  /// Repairs and standardizes numismatic records in bulk after database import or migration.
+  /// Repairs, consolidates and standardizes numismatic records in bulk after database import or migration.
   static Future<void> repairAndStandardizeImportedData(AppDatabase db) async {
     final catalogRepo = CatalogRepository(db);
     final entityRepo = EntityRepository(db);
@@ -266,19 +291,118 @@ class NumismaticDomainRules {
       final subspeciesList = await catalogRepo.getSubspeciesForSpecies(species.id);
       final instances = allEntities.where((e) => e.speciesId == species.id).toList();
 
+      // Ensure species has required standard magnitudes registered
+      await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.nominalValuePropertyName, dataType: AppTechnicalStrings.datatypeRealLower);
+      await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.mintagePropertyName, dataType: AppTechnicalStrings.datatypeIntegerLower, unitSymbol: AppStrings.yearUnitSymbol);
+      await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.currencyPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+      await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.materialPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+      await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.gradePropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+      await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.issuerPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+
+      final Map<String, Subspecies> currencySubspeciesMap = {};
+
       for (final sub in subspeciesList) {
+        final parsedOld = NumismaticParser.parseSubspeciesName(sub.subspeciesName);
+        final rawCurr = (parsedOld.currencyName != null && parsedOld.currencyName!.isNotEmpty)
+            ? parsedOld.currencyName!
+            : sub.subspeciesName;
+        final canonicalCurrency = NumismaticParser.resolveCurrencyName(rawCurr);
+
+        // Find or create currency subspecies
+        Subspecies? targetCurrencySub = currencySubspeciesMap[canonicalCurrency.toLowerCase()];
+        if (targetCurrencySub == null) {
+          final existing = subspeciesList.where(
+            (s) => s.subspeciesName.trim().toLowerCase() == canonicalCurrency.toLowerCase(),
+          ).firstOrNull;
+
+          if (existing != null) {
+            targetCurrencySub = existing;
+          } else {
+            targetCurrencySub = sub.copyWith(
+              subspeciesName: canonicalCurrency,
+              notes: NumismaticParser.buildSubspeciesNotes(currencyName: canonicalCurrency),
+            );
+            await catalogRepo.saveSubspecies(targetCurrencySub);
+          }
+          currencySubspeciesMap[canonicalCurrency.toLowerCase()] = targetCurrencySub;
+        }
+
+        // Migrate instances under this sub
         final subInstances = instances.where((e) => e.subspeciesId == sub.id).toList();
-        if (subInstances.isNotEmpty) {
-          await repairSubspeciesFromInstance(
+        for (final inst in subInstances) {
+          final instAttrs = NumismaticParser.extractAttributesFromInstance(inst);
+          final List<InstanceMagnitude> customMags = List.from(inst.magnitudes);
+
+          // Backfill missing magnitudes from parsedOld title if missing
+          if (instAttrs.faceValueNumber == null && parsedOld.faceValueNumber != null) {
+            customMags.add(InstanceMagnitude(
+              id: const Uuid().v4(),
+              instanceId: inst.id,
+              propertyName: AppStrings.nominalValuePropertyName,
+              dataType: AppTechnicalStrings.datatypeRealLower,
+              magnitudeValue: parsedOld.faceValueNumber,
+            ));
+          }
+
+          if (instAttrs.year == null && parsedOld.year != null && double.tryParse(parsedOld.year!) != null) {
+            customMags.add(InstanceMagnitude(
+              id: const Uuid().v4(),
+              instanceId: inst.id,
+              propertyName: AppStrings.mintagePropertyName,
+              dataType: AppTechnicalStrings.datatypeIntegerLower,
+              magnitudeValue: double.parse(parsedOld.year!),
+              unitSymbol: AppStrings.yearUnitSymbol,
+            ));
+          }
+
+          if (instAttrs.currencyName == null) {
+            final iso = NumismaticParser.resolveCurrencyIsoCode(canonicalCurrency);
+            customMags.add(InstanceMagnitude(
+              id: const Uuid().v4(),
+              instanceId: inst.id,
+              propertyName: AppStrings.currencyPropertyName,
+              dataType: AppTechnicalStrings.datatypeStringLower,
+              stringValue: iso,
+            ));
+          }
+
+          final hasEmisor = customMags.any((m) {
+            final p = m.propertyName.trim().toLowerCase();
+            return p == AppStrings.magEmisor.toLowerCase() ||
+                p == AppTechnicalStrings.magPaisLower ||
+                p == AppTechnicalStrings.magPaisWithoutAccentLower;
+          });
+          if (!hasEmisor && parsedOld.country != null && parsedOld.country!.isNotEmpty) {
+            customMags.add(InstanceMagnitude(
+              id: const Uuid().v4(),
+              instanceId: inst.id,
+              propertyName: AppStrings.issuerPropertyName,
+              dataType: AppTechnicalStrings.datatypeStringLower,
+              stringValue: parsedOld.country,
+            ));
+          }
+
+          final updatedInst = inst.copyWith(
+            subspeciesId: targetCurrencySub.id,
+            magnitudes: customMags,
+          );
+          await entityRepo.saveEntity(updatedInst);
+
+          await repairAttachmentFileNames(
             catalogRepo: catalogRepo,
             entityRepo: entityRepo,
-            subspecies: sub,
-            instance: subInstances.first,
+            subspecies: targetCurrencySub,
+            instance: updatedInst,
           );
+        }
+
+        // If this old subspecies is not the targetCurrencySub, delete it
+        if (sub.id != targetCurrencySub.id) {
+          await catalogRepo.deleteSubspecies(sub.id);
         }
       }
 
-      // Merge duplicate subspecies
+      // Merge any duplicate currency subspecies
       final refreshedSubs = await catalogRepo.getSubspeciesForSpecies(species.id);
       final dupGroups = findDuplicateSubspeciesGroups(refreshedSubs);
       for (final group in dupGroups.values) {

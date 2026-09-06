@@ -1,6 +1,7 @@
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/numismatic_data_helper.dart';
 import '../../catalog/domain/subspecies.dart';
 import 'world_entity.dart';
 
@@ -22,10 +23,10 @@ class EntityDisplayHelper {
 
   /// Resolves the specific display name for a WorldEntity.
   /// 1. If the entity has a custom instance name (property 'Nombre' or 'Name'), returns it.
-  /// 2. If the entity has a valid, non-generic Subspecies assigned, returns the specific subspecies name
-  ///    (with brand if present). If the subspecies name does not contain the species name,
-  ///    prepends the species name for context (e.g. "Refresco - Coca Cola Zero (Coca Cola)").
-  /// 3. Otherwise, falls back to the general species name.
+  /// 2. If the entity belongs to a numismatic species, computes the descriptive name from instance magnitudes.
+  /// 3. If the entity has a valid, non-generic Subspecies assigned, returns the specific subspecies name
+  ///    (with brand if present).
+  /// 4. Otherwise, falls back to the general species name.
   static String getDisplayName({
     required WorldEntity entity,
     required List<CatalogItem> catalogItems,
@@ -38,6 +39,15 @@ class EntityDisplayHelper {
 
     final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
     final speciesName = species?.name ?? AppStrings.containerObjectLabel;
+
+    // Numismatic dynamic title resolution from instance attributes (SSOT)
+    if (species != null && NumismaticDataHelper.isNumismaticSpecies(species)) {
+      final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+      final derivedTitle = NumismaticDataHelper.buildInstanceDisplayName(attrs, defaultSpeciesName: speciesName);
+      if (derivedTitle != AppStrings.defaultNumismaticPiece && derivedTitle != speciesName) {
+        return derivedTitle;
+      }
+    }
 
     if (entity.subspeciesId != null && subspeciesList != null && subspeciesList.isNotEmpty) {
       final sub = subspeciesList.where((s) => s.id == entity.subspeciesId).firstOrNull;

@@ -61,7 +61,7 @@ void main() {
         description: 'Categoría numismática (Moneda)',
       );
 
-      // Create subspecies with outdated year 2020
+      // Create subspecies with legacy granular name
       final subspecies = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -71,7 +71,7 @@ void main() {
       );
       await catalogRepo.saveSubspecies(subspecies);
 
-      // Create instance with actual corrected year 2022 in magnitude
+      // Create instance with actual corrected year 2022 and non-ISO currency in magnitude
       final instance = await entityRepo.instantiateOrMerge(
         species.id,
         null,
@@ -101,19 +101,19 @@ void main() {
             instanceId: instance.id,
             propertyName: 'Divisa',
             dataType: 'string',
-            stringValue: 'MXN',
+            stringValue: 'Pesos Mexicanos',
           ),
         ],
       );
       await entityRepo.saveEntity(updatedInstance);
 
-      // Verify incongruence detected
+      // Verify incongruence detected due to non-ISO currency code on instance
       final issueBefore = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
         subspecies: subspecies,
         instance: updatedInstance,
       );
       expect(issueBefore, isNotNull);
-      expect(issueBefore, contains('Año'));
+      expect(issueBefore, contains('ISO'));
 
       // Perform repair
       final repairedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
@@ -123,12 +123,20 @@ void main() {
         instance: updatedInstance,
       );
 
-      expect(repairedSub.subspeciesName, equals('5 Pesos Mexicanos - México (2022)'));
-      expect(repairedSub.notes, contains('2022'));
+      expect(repairedSub.subspeciesName, equals('Pesos Mexicanos'));
+      expect(repairedSub.notes, contains('Pesos Mexicanos'));
+
+      // Verify instance magnitudes were standardized (Divisa -> MXN, Emisor backfilled)
+      final reloadedEntity = await entityRepo.getEntityById(instance.id);
+      final divisaMag = reloadedEntity!.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
+      expect(divisaMag.stringValue, equals('MXN'));
+
+      final emisorMag = reloadedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Emisor');
+      expect(emisorMag.stringValue, equals('México'));
 
       final issueAfter = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
         subspecies: repairedSub,
-        instance: updatedInstance,
+        instance: reloadedEntity,
       );
       expect(issueAfter, isNull);
     });
@@ -139,7 +147,7 @@ void main() {
       final subCanonical = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
-        subspeciesName: '100 Pesos Sor Juana - México (2021)',
+        subspeciesName: 'Pesos Mexicanos',
         createdAt: DateTime.now(),
       );
       await catalogRepo.saveSubspecies(subCanonical);
@@ -147,7 +155,7 @@ void main() {
       final subDuplicate = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
-        subspeciesName: '100 Pesos Sor Juana - México (2021)',
+        subspeciesName: 'MXN',
         createdAt: DateTime.now(),
       );
       await catalogRepo.saveSubspecies(subDuplicate);
@@ -183,17 +191,51 @@ void main() {
       expect(movedEntity!.subspeciesId, equals(subCanonical.id));
     });
 
-    test('Repair attachment file names synchronizes attachment filename with updated subspecies name', () async {
+    test('Repair attachment file names synchronizes attachment filename with updated instance derived title', () async {
       final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
-        subspeciesName: '20 Pesos Conmemorativa - México (2023)',
+        subspeciesName: 'Pesos Mexicanos',
         createdAt: DateTime.now(),
       );
       await catalogRepo.saveSubspecies(sub);
 
       final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final updatedInstance = instance.copyWith(
+        magnitudes: [
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Valor nominal',
+            dataType: 'real',
+            magnitudeValue: 20.0,
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Acuñación',
+            dataType: 'integer',
+            magnitudeValue: 2023.0,
+            unitSymbol: 'año',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Divisa',
+            dataType: 'string',
+            stringValue: 'MXN',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Emisor',
+            dataType: 'string',
+            stringValue: 'México',
+          ),
+        ],
+      );
+      await entityRepo.saveEntity(updatedInstance);
 
       final oldFileName = 'Old Name (${instance.id}) (anverso).png';
       await catalogRepo.addAttachment(
@@ -208,14 +250,19 @@ void main() {
         catalogRepo: catalogRepo,
         entityRepo: entityRepo,
         subspecies: sub,
-        instance: instance,
+        instance: updatedInstance,
       );
 
       final attachments = await entityRepo.getAttachmentsForInstance(instance.id);
       expect(attachments.length, equals(1));
 
+      final expectedDisplayName = NumismaticDataHelper.buildInstanceDisplayName(
+        NumismaticDataHelper.extractAttributesFromInstance(updatedInstance),
+      );
+      expect(expectedDisplayName, equals('20 Pesos Mexicanos - México (2023)'));
+
       final expectedFileName = NumismaticDataHelper.buildAttachmentFileName(
-        subspeciesName: sub.subspeciesName,
+        subspeciesName: expectedDisplayName,
         instanceId: instance.id,
         side: 'anverso',
         extension: 'png',

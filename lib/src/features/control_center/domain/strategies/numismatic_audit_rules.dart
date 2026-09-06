@@ -209,6 +209,9 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
         if (sub != null) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
+          final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+          final pieceDisplayName = NumismaticDataHelper.buildInstanceDisplayName(instAttrs);
+
           final instanceAttachments = (context.db != null)
               ? await EntityRepository(context.db).getAttachmentsForInstance(entity.id)
               : <Attachment>[];
@@ -224,7 +227,7 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
                     : AppTechnicalStrings.empty);
 
             final expectedName = NumismaticDataHelper.buildAttachmentFileName(
-              subspeciesName: sub.subspeciesName,
+              subspeciesName: pieceDisplayName,
               instanceId: entity.id,
               side: side,
               extension: ext,
@@ -238,7 +241,7 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
                 subtitle: AppStrings.desyncedAttachmentNameSubtitle(displayName, att.fileName),
                 question: AppStrings.desyncedAttachmentNameQuestion(
                   att.fileName,
-                  sub.subspeciesName,
+                  pieceDisplayName,
                   expectedName,
                 ),
                 icon: Icons.attachment,
@@ -351,13 +354,25 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
                   ));
                 }
 
-                if (parsedSub.currencyName != null && freshInstAttrs.currencyName == null) {
+                if (freshInstAttrs.currencyName == null) {
+                  final currToUse = parsedSub.currencyName ?? sub.subspeciesName;
+                  final iso = NumismaticDataHelper.resolveCurrencyIsoCode(currToUse);
                   currentMags.add(InstanceMagnitude(
                     id: const Uuid().v4(),
                     instanceId: freshEntity.id,
                     propertyName: AppStrings.currencyPropertyName,
                     dataType: AppTechnicalStrings.datatypeStringLower,
-                    stringValue: parsedSub.currencyName,
+                    stringValue: iso,
+                  ));
+                }
+
+                if (parsedSub.country != null && parsedSub.country!.isNotEmpty && freshInstAttrs.country == null) {
+                  currentMags.add(InstanceMagnitude(
+                    id: const Uuid().v4(),
+                    instanceId: freshEntity.id,
+                    propertyName: AppStrings.issuerPropertyName,
+                    dataType: AppTechnicalStrings.datatypeStringLower,
+                    stringValue: parsedSub.country!,
                   ));
                 }
 

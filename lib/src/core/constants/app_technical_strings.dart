@@ -868,6 +868,10 @@ WHERE id IN (
   static const numisCoinKeyword = 'moneda';
   static const numisBanknoteKeyword = 'billete';
   static const numisNumismaticKeyword = 'numismátic';
+  static const magPaisWithAccent = 'País';
+  static const magPaisWithoutAccent = 'Pais';
+  static const magPaisLower = 'país';
+  static const magPaisWithoutAccentLower = 'pais';
   static const regexIllegalFileNameChars = r'[\\/:*?"<>|]';
   static const regexParenthesizedEndYear = r'\(([^)]+)\)\s*$';
   static const regexSpaceMexicanos = r'\s+mexicanos?';

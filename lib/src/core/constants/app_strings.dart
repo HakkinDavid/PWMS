@@ -510,6 +510,7 @@ class AppStrings {
   static const currencyPropertyName = 'Divisa';
   static const materialPropertyName = 'Material';
   static const gradePropertyName = 'Grado';
+  static const issuerPropertyName = 'Emisor';
   static const currencyNotePrefix = 'Moneda: ';
   static const yearNotePrefix = 'Año: ';
   static const materialNotePrefix = 'Material: ';
@@ -1419,6 +1420,7 @@ class AppStrings {
   static const magDivisa = 'Divisa';
   static const magMaterial = 'Material';
   static const magGrado = 'Grado';
+  static const magEmisor = 'Emisor';
 
   // Taxonomy & Product Defaults
   static const speciesBook = 'Libro';
@@ -1516,6 +1518,8 @@ class AppStrings {
       'Año (Instancia: $inst vs Subespecie: $sub)';
   static String numisAuditFaceValueMismatch(Object inst, Object sub) =>
       'Valor Nominal (Instancia: $inst vs Subespecie: $sub)';
+  static String numisAuditCurrencyMismatch(String instCurrency, String subCurrency) =>
+      'Divisa de instancia ("$instCurrency") no coincide con la subespecie ("$subCurrency")';
   static String numisAuditCurrencyNotIso(String actual, String iso) =>
       'Divisa de instancia no es código ISO (Actual: "$actual" vs Código ISO: "$iso")';
   static String numisAuditGradeMismatch(String actual, String std) =>

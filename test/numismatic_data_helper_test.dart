@@ -81,7 +81,7 @@ void main() {
       final sub = Subspecies(
         id: 'sub-1',
         speciesId: 'sp-1',
-        subspeciesName: '5 Pesos Mexicanos - México (2020)',
+        subspeciesName: 'Pesos Mexicanos',
         createdAt: DateTime.now(),
       );
 
@@ -100,7 +100,7 @@ void main() {
 
       expect(NumismaticDataHelper.checkInstanceSubspeciesCongruence(subspecies: sub, instance: instanceConforming), isNull);
 
-      final instanceMismatchYear = WorldEntity(
+      final instanceMismatchCurrency = WorldEntity(
         id: 'inst-2',
         speciesId: 'sp-1',
         subspeciesId: 'sub-1',
@@ -109,13 +109,13 @@ void main() {
         magnitudes: const [
           InstanceMagnitude(id: 'm1', instanceId: 'inst-2', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 5.0),
           InstanceMagnitude(id: 'm2', instanceId: 'inst-2', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2024.0, unitSymbol: 'año'),
-          InstanceMagnitude(id: 'm3', instanceId: 'inst-2', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-2', propertyName: 'Divisa', dataType: 'string', stringValue: 'USD'),
         ],
       );
 
-      final issue = NumismaticDataHelper.checkInstanceSubspeciesCongruence(subspecies: sub, instance: instanceMismatchYear);
+      final issue = NumismaticDataHelper.checkInstanceSubspeciesCongruence(subspecies: sub, instance: instanceMismatchCurrency);
       expect(issue, isNotNull);
-      expect(issue, contains('Año'));
+      expect(issue, contains('Divisa'));
     });
 
     test('areCurrenciesEquivalent matches codes, full names, and plurals robustly', () {
@@ -207,9 +207,9 @@ void main() {
 
     test('findDuplicateSubspeciesGroups finds duplicate subspecies titles', () {
       final list = [
-        Subspecies(id: 's1', speciesId: 'sp1', subspeciesName: '5 Pesos Mexicanos - México (2022)', createdAt: DateTime.now()),
-        Subspecies(id: 's2', speciesId: 'sp1', subspeciesName: '5 Pesos Mexicanos - México (2022)', createdAt: DateTime.now()),
-        Subspecies(id: 's3', speciesId: 'sp1', subspeciesName: '10 Pesos Mexicanos - México (2020)', createdAt: DateTime.now()),
+        Subspecies(id: 's1', speciesId: 'sp1', subspeciesName: 'Pesos Mexicanos', createdAt: DateTime.now()),
+        Subspecies(id: 's2', speciesId: 'sp1', subspeciesName: 'MXN', createdAt: DateTime.now()),
+        Subspecies(id: 's3', speciesId: 'sp1', subspeciesName: 'Dólares Estadounidenses', createdAt: DateTime.now()),
       ];
       final dups = NumismaticDataHelper.findDuplicateSubspeciesGroups(list);
       expect(dups.length, equals(1));

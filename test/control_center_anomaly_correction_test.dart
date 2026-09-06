@@ -752,11 +752,11 @@ void main() {
           );
       await db.into(db.instanceMagnitudesTable).insert(
             InstanceMagnitudesTableCompanion.insert(
-              id: 'mag_grade',
+              id: 'mag_emisor',
               instanceId: 'e_coin',
-              propertyName: 'Grado',
+              propertyName: 'Emisor',
               dataType: const Value('string'),
-              stringValue: const Value('Sin circular'),
+              stringValue: const Value('México'),
             ),
           );
       await db.into(db.attachmentsTable).insert(

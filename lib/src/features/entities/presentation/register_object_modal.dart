@@ -248,18 +248,23 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.currencyPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.materialPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.gradePropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.issuerPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
 
             if (!mounted) return;
             ref.invalidate(catalogListProvider);
 
             final freshSpecies = await catalogRepo.getCatalogItemById(matchingSpecies.id) ?? matchingSpecies;
 
-            // 1. Reutilizar subespecie existente si coincide el nombre (ej: "5 Pesos Mexicanos - México (2022)")
+            // 1. Reutilizar o crear subespecie por DIVISA (ej: "Pesos Mexicanos", "Dólares Estadounidenses")
+            final canonicalCurrency = NumismaticDataHelper.resolveCurrencyName(
+              result.currencyName ?? result.currencyCode ?? currencyUnit,
+            );
+
             final existingSubspeciesList = await catalogRepo.getSubspeciesForSpecies(freshSpecies.id);
             Subspecies? targetSubspecies;
 
             for (final sub in existingSubspeciesList) {
-              if (sub.subspeciesName.trim().toLowerCase() == result.subspeciesName.trim().toLowerCase()) {
+              if (sub.subspeciesName.trim().toLowerCase() == canonicalCurrency.trim().toLowerCase()) {
                 targetSubspecies = sub;
                 break;
               }
@@ -267,15 +272,13 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
             if (targetSubspecies == null) {
               final notesStr = NumismaticDataHelper.buildSubspeciesNotes(
-                currencyName: result.currencyName ?? result.currencyCode,
-                year: result.year,
-                composition: result.composition,
+                currencyName: canonicalCurrency,
               );
 
               targetSubspecies = Subspecies(
                 id: const Uuid().v4(),
                 speciesId: freshSpecies.id,
-                subspeciesName: result.subspeciesName,
+                subspeciesName: canonicalCurrency,
                 photoPath: null,
                 notes: notesStr.isNotEmpty ? notesStr : null,
                 createdAt: DateTime.now(),
@@ -329,7 +332,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               await relationRepo.addRelation(rel);
             }
 
-            // 4. Guardar magnitudes 4NF relacionales en la instancia
+            // 4. Guardar magnitudes 4NF relacionales en la instancia (SSOT)
             if (freshSpecies.magnitudes.isNotEmpty) {
               final List<InstanceMagnitude> customInstanceMags = [];
               for (final sm in freshSpecies.magnitudes) {
@@ -348,13 +351,16 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   }
                   unit = AppStrings.yearUnitSymbol;
                 } else if (sm.propertyName == AppStrings.currencyPropertyName) {
-                  strVal = currencyUnit;
+                  strVal = NumismaticDataHelper.resolveCurrencyIsoCode(currencyUnit);
                   unit = null;
                 } else if (sm.propertyName == AppStrings.materialPropertyName) {
-                  strVal = result.composition;
+                  strVal = result.composition != null ? NumismaticDataHelper.resolveMaterial(result.composition!) : null;
                   unit = null;
                 } else if (sm.propertyName == AppStrings.gradePropertyName) {
-                  strVal = result.grade;
+                  strVal = result.grade != null ? NumismaticDataHelper.resolveGrade(result.grade!) : null;
+                  unit = null;
+                } else if (sm.propertyName == AppStrings.issuerPropertyName) {
+                  strVal = result.country;
                   unit = null;
                 }
 
@@ -373,12 +379,16 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               await entityRepo.saveEntity(updatedWithMags);
             }
 
-            // 5. Adjuntos de Anverso y Reverso por instancia (sin stitching)
+            // 5. Adjuntos de Anverso y Reverso por instancia (nombrados descriptivamente)
+            final pieceDisplayName = result.subspeciesName.trim().isNotEmpty
+                ? result.subspeciesName.trim()
+                : targetSubspecies.subspeciesName;
+
             final obverseFile = File(result.obversePhotoPath);
             if (await obverseFile.exists()) {
               final ext = obverseFile.path.contains(AppTechnicalStrings.dot) ? obverseFile.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgClean;
               final obverseFileName = NumismaticDataHelper.buildAttachmentFileName(
-                subspeciesName: targetSubspecies.subspeciesName,
+                subspeciesName: pieceDisplayName,
                 instanceId: createdInstance.id,
                 side: AppTechnicalStrings.anversoLower,
                 extension: ext,
@@ -397,7 +407,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               if (await reverseFile.exists()) {
                 final ext = reverseFile.path.contains(AppTechnicalStrings.dot) ? reverseFile.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgClean;
                 final reverseFileName = NumismaticDataHelper.buildAttachmentFileName(
-                  subspeciesName: targetSubspecies.subspeciesName,
+                  subspeciesName: pieceDisplayName,
                   instanceId: createdInstance.id,
                   side: AppTechnicalStrings.reversoLower,
                   extension: ext,

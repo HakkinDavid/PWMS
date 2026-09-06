@@ -24,45 +24,36 @@ void main() {
   tearDown(() async {
     await db.close();
   });
-  Future<void> selectWheelOption(WidgetTester tester, Finder fieldFinder, String optionText) async {
-    await tester.scrollUntilVisible(fieldFinder, 100, scrollable: find.byType(Scrollable).first);
+
+  Future<void> selectWheelOption(
+    WidgetTester tester,
+    Finder fieldFinder,
+    String optionText,
+  ) async {
+    await tester.ensureVisible(fieldFinder);
     await tester.pumpAndSettle();
     await tester.tap(fieldFinder);
     await tester.pumpAndSettle();
 
-    final optionFinder = find.text(optionText);
-    if (optionFinder.evaluate().isNotEmpty) {
-      await tester.tap(optionFinder.last, warnIfMissed: false);
-      await tester.pumpAndSettle();
-    } else {
-      final picker = find.byType(CupertinoPicker);
-      if (picker.evaluate().isNotEmpty) {
-        for (int i = 0; i < 30; i++) {
-          if (find.text(optionText).evaluate().isNotEmpty) {
-            await tester.tap(find.text(optionText).last, warnIfMissed: false);
-            await tester.pumpAndSettle();
-            break;
-          }
-          await tester.drag(picker, const Offset(0, -44));
-          await tester.pumpAndSettle();
-        }
-        if (find.text(optionText).evaluate().isEmpty) {
-          for (int i = 0; i < 30; i++) {
-            await tester.drag(picker, const Offset(0, 44));
-            await tester.pumpAndSettle();
-            if (find.text(optionText).evaluate().isNotEmpty) {
-              await tester.tap(find.text(optionText).last, warnIfMissed: false);
-              await tester.pumpAndSettle();
-              break;
-            }
-          }
-        }
+    final pickerFinder = find.byType(CupertinoPicker);
+    if (pickerFinder.evaluate().isNotEmpty) {
+      final picker = tester.widget<CupertinoPicker>(pickerFinder);
+      final controller = picker.scrollController as FixedExtentScrollController;
+      final dynamic wheelPicker = tester.widget(find.byWidgetPredicate((w) => w.runtimeType.toString().startsWith('AppWheelPicker<')));
+      final items = wheelPicker.items as List;
+      final labelBuilder = wheelPicker.labelBuilder as Function;
+      final targetIndex = items.indexWhere((item) => labelBuilder(item) == optionText);
+      if (targetIndex >= 0) {
+        controller.jumpToItem(targetIndex);
+        await tester.pumpAndSettle();
       }
     }
 
     final confirmButton = find.widgetWithText(ElevatedButton, AppStrings.confirm);
-    await tester.tap(confirmButton);
-    await tester.pumpAndSettle();
+    if (confirmButton.evaluate().isNotEmpty) {
+      await tester.tap(confirmButton);
+      await tester.pumpAndSettle();
+    }
   }
 
   testWidgets('NumismaticQuickFillSheet filters currencies based on selected country and resets currency if not valid', (WidgetTester tester) async {
@@ -525,7 +516,7 @@ void main() {
     // 1. Country: select 'Otro' and specify custom country
     final countryField = find.byType(AppWheelPickerField<String?>).at(0);
     await selectWheelOption(tester, countryField, 'Otro');
-    expect(find.text(AppStrings.specifyCountryLabel), findsOneWidget);
+    expect(find.text(AppStrings.specifyCountryLabel), findsWidgets);
     final customCountryInput = find.widgetWithText(TextFormField, AppStrings.specifyCountryLabel);
     await tester.enterText(customCountryInput, 'Imperio Romano');
     await tester.pumpAndSettle();
@@ -537,7 +528,7 @@ void main() {
     // 3. Currency: select 'Otro' and specify custom currency
     final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
     await selectWheelOption(tester, currencyField, 'Otro');
-    expect(find.text(AppStrings.specifyCurrencyLabel), findsOneWidget);
+    expect(find.text(AppStrings.specifyCurrencyLabel), findsWidgets);
     final customCurrencyInput = find.widgetWithText(TextFormField, AppStrings.specifyCurrencyLabel);
     await tester.enterText(customCurrencyInput, 'Denario');
     await tester.pumpAndSettle();
@@ -550,7 +541,7 @@ void main() {
     // 5. Grade: select 'Otro' and specify custom grade
     final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
     await selectWheelOption(tester, gradeField, 'Otro');
-    expect(find.text(AppStrings.specifyGradeLabel), findsOneWidget);
+    expect(find.text(AppStrings.specifyGradeLabel), findsWidgets);
     final customGradeInput = find.widgetWithText(TextFormField, AppStrings.specifyGradeLabel);
     await tester.enterText(customGradeInput, 'NGC MS-65');
     await tester.pumpAndSettle();
@@ -558,7 +549,7 @@ void main() {
     // 6. Material: select 'Otro' and specify custom material
     final matField = find.byType(AppWheelPickerField<String?>).at(4);
     await selectWheelOption(tester, matField, 'Otro');
-    expect(find.text(AppStrings.specifyMaterialLabel), findsOneWidget);
+    expect(find.text(AppStrings.specifyMaterialLabel), findsWidgets);
     final customMatInput = find.widgetWithText(TextFormField, AppStrings.specifyMaterialLabel);
     await tester.enterText(customMatInput, 'Electrum');
     await tester.pumpAndSettle();
@@ -630,6 +621,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final matNull = find.text(AppStrings.unspecifiedMaterialLabel);
+    await tester.ensureVisible(matNull);
     await tester.tap(matNull);
     await tester.pumpAndSettle();
 

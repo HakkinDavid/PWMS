@@ -113,10 +113,21 @@ class SpeciesDetailView extends ConsumerWidget {
           final side = result.fileName.toLowerCase().contains(AppTechnicalStrings.sideReverso) || (!showObverseScan && showReverseScan)
               ? AppTechnicalStrings.sideReverso
               : AppTechnicalStrings.sideAnverso;
+          String pieceTitle = subspecies?.subspeciesName ?? species.name;
+          final entities = ref.read(entityListProvider).asData?.value ?? [];
+          final targetEntity = entities.where((e) => e.id == instanceId).firstOrNull;
+          if (targetEntity != null) {
+            final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(targetEntity);
+            final dynamicTitle = NumismaticDataHelper.buildInstanceDisplayName(instAttrs, defaultSpeciesName: pieceTitle);
+            if (dynamicTitle != AppStrings.defaultNumismaticPiece) {
+              pieceTitle = dynamicTitle;
+            }
+          }
+
           final ext = result.file!.path.contains(AppTechnicalStrings.dot) ? result.file!.path.split(AppTechnicalStrings.dot).last : AppTechnicalStrings.extJpgClean;
 
           finalFileName = NumismaticDataHelper.buildAttachmentFileName(
-            subspeciesName: subspecies?.subspeciesName ?? species.name,
+            subspeciesName: pieceTitle,
             instanceId: instanceId,
             side: side,
             extension: ext,
