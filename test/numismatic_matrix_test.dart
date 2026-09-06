@@ -26,17 +26,18 @@ void main() {
       expect(mat100AlBr, equals('Bronce de aluminio'));
     });
 
-    test('Mexico 1993 infers MXN Nuevos Pesos, bimetallics, and commemorative flags', () {
+    test('Mexico 1993 infers MXN Nuevos Pesos, bimetallics for standard circulation', () {
       final inferredCurr = NumismaticDataHelper.inferCurrency(country: 'México', year: 1993);
       expect(inferredCurr, equals('MXN'));
 
       final mat10 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '10');
       expect(mat10, equals('Bimetálica'));
 
-      final special20 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '20');
-      expect(special20, isNotNull);
-      expect(special20!.isSpecial, isTrue);
-      expect(special20.reason, equals('Emisión de cambio de régimen'));
+      final mat2 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
+      expect(mat2, equals('Bimetálica'));
+
+      final special2 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
+      expect(special2, isNull);
     });
 
     test('Mexico 1947 Centenario infers Oro for 50 Pesos', () {
@@ -88,21 +89,37 @@ void main() {
       expect(matEuro1, equals('Bimetálica'));
     });
 
-    test('Mexico 1992 physical stamped year infers MXN Nuevos Pesos and regime change', () {
-      final inferredCurr = NumismaticDataHelper.inferCurrency(country: 'México', year: 1992);
-      expect(inferredCurr, isNotNull);
-      // Stamped 1992 matches Mexico Nuevos Pesos rule (1992-1995) or 1970-1992 transition
-      final rule1992 = NumismaticDataHelper.findRule('México', 1992);
-      expect(rule1992, isNotNull);
-      expect(rule1992!.minYear <= 1992 && rule1992.maxYear >= 1992, isTrue);
+    test('Mexico 1992 transition supports both MXP (old pesos) and MXN (Nuevos Pesos)', () {
+      final rules1992 = NumismaticDataHelper.findRules('México', 1992);
+      expect(rules1992.length, greaterThanOrEqualTo(2));
 
-      final mat10 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1994, currencyCode: 'MXN', denomination: '10');
-      expect(mat10, equals('Bimetálica'));
+      // MXP check (1988-1992)
+      final ruleMxp = NumismaticDataHelper.findRule('México', 1992, currencyCode: 'MXP');
+      expect(ruleMxp, isNotNull);
+      expect(ruleMxp!.validCurrencies, contains('MXP'));
+      final matMxp1000 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXP', denomination: '1000');
+      expect(matMxp1000, equals('Bronce de aluminio'));
 
-      final special50 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '50');
-      expect(special50, isNotNull);
-      expect(special50!.isSpecial, isTrue);
-      expect(special50.reason, equals('Emisión de cambio de régimen'));
+      // MXN check (1992-1995 N$)
+      final ruleMxn = NumismaticDataHelper.findRule('México', 1992, currencyCode: 'MXN');
+      expect(ruleMxn, isNotNull);
+      expect(ruleMxn!.validCurrencies, contains('MXN'));
+      final matMxn2 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
+      expect(matMxn2, equals('Bimetálica'));
+
+      final special2 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
+      expect(special2, isNull);
+    });
+
+    test('Brasil 2017 1 Real is standard circulation BRL bimetallic and not commemorative', () {
+      final curr2017 = NumismaticDataHelper.inferCurrency(country: 'Brasil', year: 2017);
+      expect(curr2017, equals('BRL'));
+
+      final mat1Real = NumismaticDataHelper.inferMaterial(country: 'Brasil', year: 2017, denomination: '1');
+      expect(mat1Real, equals('Bimetálica'));
+
+      final special1Real = NumismaticDataHelper.checkSpecialEdition(country: 'Brasil', year: 2017, denomination: '1');
+      expect(special1Real, isNull);
     });
 
     test('Spain 1999 physical stamped year on Euro coins infers EUR and modern alloys', () {
@@ -116,10 +133,14 @@ void main() {
       final matEuro2 = NumismaticDataHelper.inferMaterial(country: 'España', year: 2002, denomination: '2');
       expect(matEuro2, equals('Bimetálica'));
 
+      // Standard circulating 2 Euro is not forced as commemorative
       final special2Euro = NumismaticDataHelper.checkSpecialEdition(country: 'España', year: 2005, denomination: '2');
-      expect(special2Euro, isNotNull);
-      expect(special2Euro!.isSpecial, isTrue);
-      expect(special2Euro.reason, equals('Conmemorativa'));
+      expect(special2Euro, isNull);
+
+      // Spain 1989 2000 Pesetas is a commemorative plata coin
+      final special2000Ptas = NumismaticDataHelper.checkSpecialEdition(country: 'España', year: 1995, denomination: '2000');
+      expect(special2000Ptas, isNotNull);
+      expect(special2000Ptas!.isSpecial, isTrue);
     });
 
     test('Modern commemorative editions for Mexico, Canada, and Colombia', () {
@@ -145,6 +166,112 @@ void main() {
 
       final matCol1000 = NumismaticDataHelper.inferMaterial(country: 'Colombia', year: 2015, denomination: '1000');
       expect(matCol1000, equals('Bimetálica'));
+    });
+
+    test('Decimal coin denominations (0.1, 0.2, 0.5) match 0.10, 0.20, 0.50 and infer correct materials', () {
+      // 10 centavos 1992 N$ (Acero inoxidable)
+      final mat10c = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '0.1');
+      expect(mat10c, equals('Acero inoxidable'));
+
+      final mat10cFull = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '0.10');
+      expect(mat10cFull, equals('Acero inoxidable'));
+
+      // 20 centavos 1992 N$ (Bronce de aluminio)
+      final mat20c = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '0.2');
+      expect(mat20c, equals('Bronce de aluminio'));
+
+      final mat20cFull = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '0.20');
+      expect(mat20cFull, equals('Bronce de aluminio'));
+
+      // 50 centavos 1992 N$ (Bronce de aluminio)
+      final mat50c = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '0.5');
+      expect(mat50c, equals('Bronce de aluminio'));
+
+      final mat50cFull = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '0.50');
+      expect(mat50cFull, equals('Bronce de aluminio'));
+    });
+
+    test('Banknote rules (isBanknote: true) correctly infer banknote denominations and materials', () {
+      // Mexico Familia G 2020 $100 (Sor Juana) -> Polímero
+      final matMex100Note = NumismaticDataHelper.inferMaterial(
+        country: 'México',
+        year: 2020,
+        currencyCode: 'MXN',
+        denomination: '100',
+        isBanknote: true,
+      );
+      expect(matMex100Note, equals('Polímero'));
+
+      // Mexico Familia G 2021 $20 (Bicentenario) -> Polímero
+      final matMex20Note = NumismaticDataHelper.inferMaterial(
+        country: 'México',
+        year: 2021,
+        currencyCode: 'MXN',
+        denomination: '20',
+        isBanknote: true,
+      );
+      expect(matMex20Note, equals('Polímero'));
+
+      // Mexico Familia G 2020 $500 (Benito Juárez) -> Papel de algodón
+      final matMex500Note = NumismaticDataHelper.inferMaterial(
+        country: 'México',
+        year: 2020,
+        currencyCode: 'MXN',
+        denomination: '500',
+        isBanknote: true,
+      );
+      expect(matMex500Note, equals('Papel de algodón'));
+
+      // Mexico Familia AA 1978 $100 (Hidalgo) -> Papel de algodón
+      final matMex1978Note = NumismaticDataHelper.inferMaterial(
+        country: 'México',
+        year: 1978,
+        currencyCode: 'MXP',
+        denomination: '100',
+        isBanknote: true,
+      );
+      expect(matMex1978Note, equals('Papel de algodón'));
+
+      // US 2013 $100 Federal Reserve Note -> Papel de algodón
+      final matUs100Note = NumismaticDataHelper.inferMaterial(
+        country: 'Estados Unidos',
+        year: 2013,
+        currencyCode: 'USD',
+        denomination: '100',
+        isBanknote: true,
+      );
+      expect(matUs100Note, equals('Papel de algodón'));
+
+      // Euro 2002 500 Euro Note -> Papel de algodón
+      final matEuro500Note = NumismaticDataHelper.inferMaterial(
+        country: 'España',
+        year: 2002,
+        currencyCode: 'EUR',
+        denomination: '500',
+        isBanknote: true,
+      );
+      expect(matEuro500Note, equals('Papel de algodón'));
+    });
+
+    test('Coin vs Banknote rules separation (Mexico 2020)', () {
+      // For coins (isBanknote: false), 100 is not a regular circulating denomination
+      final coinDenoms = NumismaticDataHelper.getDenominationsForCountry(
+        country: 'México',
+        year: 2020,
+        currencyCode: 'MXN',
+        isBanknote: false,
+      );
+      expect(coinDenoms, containsAll(['0.10', '0.20', '0.50', '1', '2', '5', '10', '20']));
+      expect(coinDenoms, isNot(contains('100')));
+
+      // For banknotes (isBanknote: true), 100 is a standard denomination
+      final noteDenoms = NumismaticDataHelper.getDenominationsForCountry(
+        country: 'México',
+        year: 2020,
+        currencyCode: 'MXN',
+        isBanknote: true,
+      );
+      expect(noteDenoms, containsAll(['20', '50', '100', '200', '500', '1000']));
     });
 
     test('Fallback gracefully when country or year is unspecified or unlisted', () {

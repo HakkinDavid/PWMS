@@ -30,11 +30,11 @@ class NumismaticDataHelper {
   static const List<String> coinMaterials = NumismaticDictionary.coinMaterials;
   static const List<String> specialEditionReasons = NumismaticDictionary.specialEditionReasons;
 
-  static List<String> getCurrenciesForCountry(String? country, {int? year}) =>
-      NumismaticMatrix.getCurrencies(country: country, year: year);
+  static List<String> getCurrenciesForCountry(String? country, {int? year, bool? isBanknote}) =>
+      NumismaticMatrix.getCurrencies(country: country, year: year, isBanknote: isBanknote ?? false);
 
-  static Map<String, String> getCurrencyMapForCountry(String? country, {int? year}) {
-    final codes = getCurrenciesForCountry(country, year: year);
+  static Map<String, String> getCurrencyMapForCountry(String? country, {int? year, bool? isBanknote}) {
+    final codes = getCurrenciesForCountry(country, year: year, isBanknote: isBanknote);
     final result = <String, String>{};
     for (final code in codes) {
       if (currencyMap.containsKey(code)) {
@@ -44,26 +44,53 @@ class NumismaticDataHelper {
     return result;
   }
 
-  static NumismaticEmissionRuleData? findRule(String? country, int? year) =>
-      NumismaticMatrix.findRule(country, year);
+  static List<NumismaticEmissionRuleData> findRules(String? country, int? year, {bool? isBanknote}) =>
+      NumismaticMatrix.findRules(country, year, isBanknote: isBanknote ?? false);
 
-  static String? inferCurrency({String? country, int? year}) =>
-      NumismaticMatrix.inferCurrency(country: country, year: year);
+  static NumismaticEmissionRuleData? findRule(
+    String? country,
+    int? year, {
+    String? currencyCode,
+    String? denomination,
+    bool? isBanknote,
+  }) =>
+      NumismaticMatrix.findRule(
+        country,
+        year,
+        currencyCode: currencyCode,
+        denomination: denomination,
+        isBanknote: isBanknote ?? false,
+      );
 
-  static List<String> getDenominationsForCountry({String? country, int? year, String? currencyCode}) =>
-      NumismaticMatrix.getDenominations(country: country, year: year, currencyCode: currencyCode);
+  static String? inferCurrency({String? country, int? year, bool? isBanknote}) =>
+      NumismaticMatrix.inferCurrency(country: country, year: year, isBanknote: isBanknote ?? false);
+
+  static List<String> getDenominationsForCountry({
+    String? country,
+    int? year,
+    String? currencyCode,
+    bool? isBanknote,
+  }) =>
+      NumismaticMatrix.getDenominations(
+        country: country,
+        year: year,
+        currencyCode: currencyCode,
+        isBanknote: isBanknote ?? false,
+      );
 
   static String? inferMaterial({
     String? country,
     int? year,
     String? currencyCode,
     String? denomination,
+    bool? isBanknote,
   }) =>
       NumismaticMatrix.inferMaterial(
         country: country,
         year: year,
         currencyCode: currencyCode,
         denomination: denomination,
+        isBanknote: isBanknote ?? false,
       );
 
   static ({bool isSpecial, String? reason})? checkSpecialEdition({
@@ -71,13 +98,18 @@ class NumismaticDataHelper {
     int? year,
     String? currencyCode,
     String? denomination,
+    bool? isBanknote,
   }) =>
       NumismaticMatrix.checkSpecialEdition(
         country: country,
         year: year,
         currencyCode: currencyCode,
         denomination: denomination,
+        isBanknote: isBanknote ?? false,
       );
+
+  static bool matchesDenomination(String d1, String d2) =>
+      NumismaticMatrix.matchesDenomination(d1, d2);
 
   // Parsing methods from NumismaticParser
   static String resolveCurrencyIsoCode(String codeOrName) =>
@@ -101,6 +133,32 @@ class NumismaticDataHelper {
 
   static bool isCoin(CatalogItem species) =>
       NumismaticParser.isCoinSpecies(species);
+
+  static bool isBanknotePiece({
+    CatalogItem? species,
+    WorldEntity? instance,
+    String? material,
+    String? subspeciesName,
+  }) =>
+      NumismaticParser.isBanknotePiece(
+        species: species,
+        instance: instance,
+        material: material,
+        subspeciesName: subspeciesName,
+      );
+
+  static bool isCoinPiece({
+    CatalogItem? species,
+    WorldEntity? instance,
+    String? material,
+    String? subspeciesName,
+  }) =>
+      NumismaticParser.isCoinPiece(
+        species: species,
+        instance: instance,
+        material: material,
+        subspeciesName: subspeciesName,
+      );
 
   static String buildSubspeciesName({
     double? faceValueNumber,

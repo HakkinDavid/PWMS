@@ -218,8 +218,74 @@ class NumismaticParser {
     final nameLower = species.name.trim().toLowerCase();
     final typeLower = species.type.trim().toLowerCase();
     return !nameLower.contains(AppTechnicalStrings.numisBanknoteKeyword) &&
-        !typeLower.contains(AppTechnicalStrings.numisBanknoteKeyword);
+        !typeLower.contains(AppTechnicalStrings.numisBanknoteKeyword) &&
+        !nameLower.contains('papel moneda') &&
+        !typeLower.contains('papel moneda') &&
+        !nameLower.contains('notafilia') &&
+        !typeLower.contains('notafilia');
   }
+
+  /// Checks if an entity is a banknote (vs coin) based on species, instance attributes, material, or title.
+  static bool isBanknotePiece({
+    CatalogItem? species,
+    WorldEntity? instance,
+    String? material,
+    String? subspeciesName,
+  }) {
+    if (species != null) {
+      if (!isCoinSpecies(species)) return true;
+    }
+
+    if (material != null && material.trim().isNotEmpty) {
+      final matLower = material.trim().toLowerCase();
+      if (matLower == 'papel' ||
+          matLower == 'papel de algodón' ||
+          matLower == 'papel de algodon' ||
+          matLower == 'polímero' ||
+          matLower == 'polimero' ||
+          matLower == 'cotton paper') {
+        return true;
+      }
+    }
+
+    if (instance != null) {
+      final attrs = extractAttributesFromInstance(instance);
+      if (attrs.material != null && attrs.material!.trim().isNotEmpty) {
+        final matLower = attrs.material!.trim().toLowerCase();
+        if (matLower == 'papel' ||
+            matLower == 'papel de algodón' ||
+            matLower == 'papel de algodon' ||
+            matLower == 'polímero' ||
+            matLower == 'polimero' ||
+            matLower == 'cotton paper') {
+          return true;
+        }
+      }
+    }
+
+    if (subspeciesName != null && subspeciesName.trim().isNotEmpty) {
+      final subLower = subspeciesName.toLowerCase();
+      if (subLower.contains('billete') || subLower.contains('papel moneda')) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /// Checks if an entity is a coin (vs banknote).
+  static bool isCoinPiece({
+    CatalogItem? species,
+    WorldEntity? instance,
+    String? material,
+    String? subspeciesName,
+  }) =>
+      !isBanknotePiece(
+        species: species,
+        instance: instance,
+        material: material,
+        subspeciesName: subspeciesName,
+      );
 
   /// Builds a deterministic subspecies title for coins or banknotes.
   /// Format: [Denominación] [Divisa Estándar] - [País] ([Año])

@@ -559,10 +559,16 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                 if (outlier.type == NumismaticEmissionOutlierType.denominationAnomaly) {
                   final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
                   final yearInt = attrs.year != null ? int.tryParse(attrs.year!) : null;
+                  final isBanknote = NumismaticDataHelper.isBanknotePiece(
+                    species: species,
+                    instance: entity,
+                    material: attrs.material,
+                  );
                   final availableDenoms = NumismaticDataHelper.getDenominationsForCountry(
                     country: attrs.country,
                     year: yearInt,
                     currencyCode: attrs.currencyName,
+                    isBanknote: isBanknote,
                   ).where((d) => d != AppStrings.otherSpecifyOption).toList();
 
                   if (availableDenoms.isNotEmpty) {

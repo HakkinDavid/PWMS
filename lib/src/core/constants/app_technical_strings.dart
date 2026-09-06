@@ -3701,8 +3701,9 @@ abstract final class AppTechnicalNumismatics {
     // Composiciones bimetálicas y trimetálicas
     'Bimetálica',
     'Trimetálica',
-    // Materiales de necesidad, emergencia, Notgeld y polímeros
+    // Materiales de necesidad, emergencia, Notgeld, papel moneda y polímeros
     'Papel',
+    'Papel de algodón',
     'Cartón',
     'Porcelana',
     'Cerámica',
@@ -4148,6 +4149,10 @@ abstract final class AppTechnicalNumismatics {
     'trimetallic': 'Trimetálica',
     'papel': 'Papel',
     'paper': 'Papel',
+    'papel de algodón': 'Papel de algodón',
+    'papel de algodon': 'Papel de algodón',
+    'cotton paper': 'Papel de algodón',
+    'papel moneda': 'Papel de algodón',
     'cartón': 'Cartón',
     'carton': 'Cartón',
     'porcelana': 'Porcelana',
@@ -4486,8 +4491,6 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Oro',
         '10': 'Oro',
       },
-      commemorativeDenominations: {'1'},
-      defaultCommemorativeReason: 'Centenario de la Independencia (1910)',
     ),
 
     // 1.14 México - Período Revolucionario / Constitucionalista (1915–1919)
@@ -4543,8 +4546,6 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Oro',
         '50': 'Oro',
       },
-      commemorativeDenominations: {'50'},
-      defaultCommemorativeReason: 'Centenario de la Independencia (1921)',
     ),
 
     // 1.16 México - Segunda Guerra y Postguerra (1943–1949)
@@ -4570,8 +4571,6 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Plata',
         '50': 'Oro',
       },
-      commemorativeDenominations: {'5'},
-      defaultCommemorativeReason: 'Cuauhtémoc (1947-1948)',
     ),
 
     // 1.17 México - Década de 1950 (1950–1956)
@@ -4597,8 +4596,6 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Plata',
         '10': 'Plata',
       },
-      commemorativeDenominations: {'5', '10'},
-      defaultCommemorativeReason: 'Ferrocarril del Sureste / Bicentenario Hidalgo',
     ),
 
     // 1.18 México - Período de los Tepalcates y Conmemorativas (1957–1969)
@@ -4746,8 +4743,6 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Bimetálica',
         '50': 'Bimetálica',
       },
-      commemorativeDenominations: {'0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50'},
-      defaultCommemorativeReason: 'Emisión de cambio de régimen',
     ),
 
     // 1.24 México - Familia C Primer Período (1996–2007)
@@ -4823,7 +4818,7 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Bimetálica',
         '20': 'Bimetálica',
       },
-      commemorativeDenominations: {'10', '20'},
+      commemorativeDenominations: {'20'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
@@ -4958,8 +4953,6 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Oro',
         '50': 'Oro',
       },
-      commemorativeDenominations: {'0.50', '1', '2.5', '50'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 2.5 Estados Unidos - Pre-Clad Estándar Plata .900 (1934–1964)
@@ -4979,8 +4972,6 @@ abstract final class AppTechnicalNumismatics {
         '0.25': 'Plata',
         '0.50': 'Plata',
       },
-      commemorativeDenominations: {'0.50'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 2.6 Estados Unidos - Transición Clad & Kennedy Half Dollar 40% Plata (1965–1970)
@@ -5020,8 +5011,6 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Cuproníquel',
         '1': 'Cuproníquel',
       },
-      commemorativeDenominations: {'0.25', '0.50', '1'},
-      defaultCommemorativeReason: 'Bicentenario de los Estados Unidos (1776-1976)',
     ),
 
     // 2.8 Estados Unidos - Centavos de Zinc y 50 State Quarters (1982–1999)
@@ -5042,8 +5031,6 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Cuproníquel',
         '1': 'Cuproníquel',
       },
-      commemorativeDenominations: {'0.25'},
-      defaultCommemorativeReason: '50 State Quarters',
     ),
 
     // 2.9 Estados Unidos - Golden Dollar y Programas Modernos (2000–presente)
@@ -5064,8 +5051,6 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Cuproníquel',
         '1': 'Latón',
       },
-      commemorativeDenominations: {'0.25', '1'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // =========================================================================
@@ -5175,7 +5160,7 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Bronce de aluminio',
         '2000': 'Plata',
       },
-      commemorativeDenominations: {'25', '50', '100', '200', '500', '2000'},
+      commemorativeDenominations: {'2000'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
@@ -5208,7 +5193,7 @@ abstract final class AppTechnicalNumismatics {
         '30': 'Plata',
         '40': 'Plata',
       },
-      commemorativeDenominations: {'2', '10', '12', '20', '30', '40'},
+      commemorativeDenominations: {'10', '12', '20', '30', '40'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
@@ -5234,8 +5219,6 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Bimetálica',
         '2': 'Bimetálica',
       },
-      commemorativeDenominations: {'2'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // =========================================================================
@@ -5333,8 +5316,6 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Latón',
         '1': 'Latón',
       },
-      commemorativeDenominations: {'1'},
-      defaultCommemorativeReason: 'Moneda de la Paz (1999+)',
     ),
 
     // =========================================================================
@@ -5437,8 +5418,6 @@ abstract final class AppTechnicalNumismatics {
         '200': 'Cuproníquel',
         '500': 'Bimetálica',
       },
-      commemorativeDenominations: {'500'},
-      defaultCommemorativeReason: 'Árbol de Guacarí',
     ),
 
     // 5.5 Colombia - Familia Biodiversidad de Colombia (2012–presente)
@@ -5458,8 +5437,6 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Bimetálica',
         '1000': 'Bimetálica',
       },
-      commemorativeDenominations: {'1000'},
-      defaultCommemorativeReason: 'Tortuga Caguama',
     ),
 
     // =========================================================================
@@ -5510,8 +5487,6 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Plata',
         '1': 'Plata',
       },
-      commemorativeDenominations: {'1'},
-      defaultCommemorativeReason: 'Centennial de Canadá (1967)',
     ),
 
     // 6.3 Canadá - Transición Níquel Puro Pre-Loonie (1968–1986)
@@ -5553,8 +5528,6 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Acero bañado en latón',
         '2': 'Bimetálica',
       },
-      commemorativeDenominations: {'0.25', '1', '2'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 6.5 Canadá - Época Multi-Ply Plated Steel (2000–presente)
@@ -5576,8 +5549,6 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Acero bañado en latón',
         '2': 'Bimetálica',
       },
-      commemorativeDenominations: {'0.25', '1', '2'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // =========================================================================
@@ -5609,8 +5580,6 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Oro',
         '20': 'Oro',
       },
-      commemorativeDenominations: {'1'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 7.2 Cuba - Período Socialista Pre-CUC (1962–1993)
@@ -5633,8 +5602,6 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Cuproníquel',
         '3': 'Cuproníquel',
       },
-      commemorativeDenominations: {'3'},
-      defaultCommemorativeReason: 'Ernesto Che Guevara',
     ),
 
     // 7.3 Cuba - Régimen Dual CUP / CUC (1994–2020)
@@ -5657,8 +5624,6 @@ abstract final class AppTechnicalNumismatics {
         '3': 'Cuproníquel',
         '5': 'Bimetálica',
       },
-      commemorativeDenominations: {'3', '5'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 7.4 Cuba - Unificación Monetaria (2021–presente)
@@ -5677,8 +5642,6 @@ abstract final class AppTechnicalNumismatics {
         '3': 'Acero bañado en níquel',
         '5': 'Acero bañado en latón',
       },
-      commemorativeDenominations: {'3', '5'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // =========================================================================
@@ -5827,8 +5790,6 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Bimetálica',
         '2': 'Bimetálica',
       },
-      commemorativeDenominations: {'1', '2'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 8.7 Argentina - Serie "Árboles de la República Argentina" (2017–presente)
@@ -5968,8 +5929,6 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Cuproníquel',
         '1': 'Bimetálica',
       },
-      commemorativeDenominations: {'1'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // =========================================================================
@@ -6071,8 +6030,6 @@ abstract final class AppTechnicalNumismatics {
         '100': 'Bimetálica',
         '500': 'Bimetálica',
       },
-      commemorativeDenominations: {'100', '500'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // =========================================================================
@@ -6172,8 +6129,6 @@ abstract final class AppTechnicalNumismatics {
         '2': 'Bimetálica',
         '5': 'Bimetálica',
       },
-      commemorativeDenominations: {'1'},
-      defaultCommemorativeReason: 'Riqueza y Orgullo del Perú / Serie Numismática',
     ),
 
     // =========================================================================
@@ -6226,8 +6181,6 @@ abstract final class AppTechnicalNumismatics {
         '2': 'Bimetálica',
         '5': 'Cuproníquel',
       },
-      commemorativeDenominations: {'0.50', '2', '5'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 12.3 Reino Unido - Sistema Decimal 2ª Fase Dodecagonal (2017–presente)
@@ -6250,8 +6203,6 @@ abstract final class AppTechnicalNumismatics {
         '2': 'Bimetálica',
         '5': 'Cuproníquel',
       },
-      commemorativeDenominations: {'0.50', '2', '5'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // =========================================================================
@@ -6335,7 +6286,7 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Plata',
         '100': 'Plata',
       },
-      commemorativeDenominations: {'10', '20', '50', '100'},
+      commemorativeDenominations: {'50', '100'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
@@ -6392,8 +6343,6 @@ abstract final class AppTechnicalNumismatics {
         '3': 'Plata',
         '5': 'Plata',
       },
-      commemorativeDenominations: {'3', '5'},
-      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
     // 14.3 Alemania - Deutsche Mark 1ª Era (1948–1974)
@@ -6418,7 +6367,7 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Plata',
         '10': 'Plata',
       },
-      commemorativeDenominations: {'5', '10'},
+      commemorativeDenominations: {'10'},
       defaultCommemorativeReason: 'Juegos Olímpicos Múnich 1972 / Conmemorativa',
     ),
 
@@ -6500,8 +6449,6 @@ abstract final class AppTechnicalNumismatics {
         '200': 'Bronce de aluminio',
         '500': 'Plata',
       },
-      commemorativeDenominations: {'500'},
-      defaultCommemorativeReason: '500 Lire Caravelle de Plata (1958-1967)',
     ),
 
     // 15.3 Italia - República Italiana 2ª Era Bimetálicas (1982–2001)
@@ -6527,13 +6474,690 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Bimetálica',
         '1000': 'Bimetálica',
       },
-      commemorativeDenominations: {'500', '1000'},
-      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // NOTAFILIA: BILLETES Y PAPEL MONEDA (isBanknote: true)
+    // =========================================================================
+
+    // B1.1 México Billetes - Época Revolucionaria y Pre-Banco de México (1823–1924)
+    // Ref: Banco de México - Historia del billete mexicano:
+    // https://www.banxico.org.mx/billetes-y-monedas/historia-billete-banco-mexico.html
+    // Ref: Numista - Mexican Banknotes: https://en.numista.com/catalogue/mexico-banknotes-1.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1823,
+      maxYear: 1924,
+      validCurrencies: ['MXP'],
+      defaultCurrency: 'MXP',
+      denominations: ['0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100', '500', '1000'],
+      denominationMaterials: {
+        '0.05': 'Papel',
+        '0.10': 'Papel',
+        '0.20': 'Papel',
+        '0.50': 'Papel',
+        '1': 'Papel',
+        '2': 'Papel',
+        '5': 'Papel',
+        '10': 'Papel',
+        '20': 'Papel',
+        '50': 'Papel',
+        '100': 'Papel',
+        '500': 'Papel',
+        '1000': 'Papel',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.2 México Billetes - Primeras Emisiones Banco de México / ABNC (1925–1978)
+    // Ref: Banco de México - Billetes impresos por American Bank Note Company (ABNC):
+    // https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
+    // Ref: Numista - Mexico - Banknotes (1925-1978):
+    // https://en.numista.com/catalogue/mexico-banknotes-2.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1925,
+      maxYear: 1978,
+      validCurrencies: ['MXP'],
+      defaultCurrency: 'MXP',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '500', '1000', '5000', '10000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.3 México Billetes - Familia AA Fábrica de Billetes Banxico (1969–1992)
+    // Ref: Banco de México - Billetes de la Familia AA desmonetizados:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1969,
+      maxYear: 1992,
+      validCurrencies: ['MXP'],
+      defaultCurrency: 'MXP',
+      denominations: ['5', '10', '20', '50', '100', '500', '1000'],
+      denominationMaterials: {
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.4 México Billetes - Familia A Altas Denominaciones Inflacionarias (1979–1992)
+    // Ref: Banco de México - Billetes de la Familia A desmonetizados:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1979,
+      maxYear: 1992,
+      validCurrencies: ['MXP'],
+      defaultCurrency: 'MXP',
+      denominations: ['2000', '5000', '10000', '20000', '50000', '100000'],
+      denominationMaterials: {
+        '2000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+        '20000': 'Papel de algodón',
+        '50000': 'Papel de algodón',
+        '100000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.5 México Billetes - Familia B Nuevos Pesos N$ (1993–1995)
+    // Ref: Banco de México - Billetes de la Familia B en proceso de retiro:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1993,
+      maxYear: 1995,
+      validCurrencies: ['MXN'],
+      defaultCurrency: 'MXN',
+      denominations: ['10', '20', '50', '100'],
+      denominationMaterials: {
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.6 México Billetes - Familia C (1994–2001)
+    // Ref: Banco de México - Billetes de la Familia C en proceso de retiro:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1994,
+      maxYear: 2001,
+      validCurrencies: ['MXN'],
+      defaultCurrency: 'MXN',
+      denominations: ['10', '20', '50', '100', '200', '500'],
+      denominationMaterials: {
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.7 México Billetes - Familia D y D1 Introducción de Polímero (2002–2007)
+    // Ref: Banco de México - Billetes de las Familias D y D1:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 2002,
+      maxYear: 2007,
+      validCurrencies: ['MXN'],
+      defaultCurrency: 'MXN',
+      denominations: ['10', '20', '50', '100', '200', '500'],
+      denominationMaterials: {
+        '10': 'Papel de algodón',
+        '20': 'Polímero',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.8 México Billetes - Familia F y Conmemorativos del Centenario/Bicentenario (2006–2017)
+    // Ref: Banco de México - Billetes de la Familia F en circulación:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 2006,
+      maxYear: 2017,
+      validCurrencies: ['MXN'],
+      defaultCurrency: 'MXN',
+      denominations: ['20', '50', '100', '200', '500', '1000'],
+      denominationMaterials: {
+        '20': 'Polímero',
+        '50': 'Polímero',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B1.9 México Billetes - Familia G en Circulación y Polímeros de Vanguardia (2018–presente)
+    // Ref: Banco de México - Billetes de la Familia G:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 2018,
+      maxYear: 2100,
+      validCurrencies: ['MXN'],
+      defaultCurrency: 'MXN',
+      denominations: ['20', '50', '100', '200', '500', '1000'],
+      denominationMaterials: {
+        '20': 'Polímero',
+        '50': 'Polímero',
+        '100': 'Polímero',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B2.1 Estados Unidos Billetes - Large Size Notes (1861–1927)
+    // Ref: US Bureau of Engraving and Printing - Large Size Currency: https://www.bep.gov
+    // Ref: Numista - United States - Banknotes: https://en.numista.com/catalogue/united-states-banknotes-1.html
+    NumismaticEmissionRuleData(
+      country: 'Estados Unidos',
+      minYear: 1861,
+      maxYear: 1927,
+      validCurrencies: ['USD'],
+      defaultCurrency: 'USD',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '500', '1000', '5000', '10000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B2.2 Estados Unidos Billetes - Small Size Federal Reserve Notes (1928–presente)
+    // Ref: US Bureau of Engraving and Printing - Currency Denominations: https://www.bep.gov
+    // Ref: US Federal Reserve - Currency: https://www.federalreserve.gov
+    NumismaticEmissionRuleData(
+      country: 'Estados Unidos',
+      minYear: 1928,
+      maxYear: 2100,
+      validCurrencies: ['USD'],
+      defaultCurrency: 'USD',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '500', '1000', '5000', '10000', '100000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+        '100000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B3.1 España Billetes - Era de la Peseta (1874–2001)
+    // Ref: Banco de España - Billetes en pesetas:
+    // https://www.bde.es/wbe/es/para-ciudadanos/billetes-y-monedas/pesetas/
+    NumismaticEmissionRuleData(
+      country: 'España',
+      minYear: 1874,
+      maxYear: 2001,
+      validCurrencies: ['ESP'],
+      defaultCurrency: 'ESP',
+      denominations: ['1', '2', '5', '10', '25', '50', '100', '200', '500', '1000', '2000', '5000', '10000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '25': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+        '2000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B3.2 España & Unión Europea Billetes - Era del Euro (2002–presente)
+    // Ref: Banco Central Europeo - Billetes en euros (Series 2002 y Europa):
+    // https://www.ecb.europa.eu/euro/banknotes/html/index.es.html
+    NumismaticEmissionRuleData(
+      country: 'España',
+      minYear: 2002,
+      maxYear: 2100,
+      validCurrencies: ['EUR'],
+      defaultCurrency: 'EUR',
+      denominations: ['5', '10', '20', '50', '100', '200', '500'],
+      denominationMaterials: {
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Unión Europea',
+      minYear: 2002,
+      maxYear: 2100,
+      validCurrencies: ['EUR'],
+      defaultCurrency: 'EUR',
+      denominations: ['5', '10', '20', '50', '100', '200', '500'],
+      denominationMaterials: {
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B4.1 Guatemala Billetes - Quetzales Clásicos y Modernos (1948–2006)
+    // Ref: Banco de Guatemala - Historia de los Billetes de Quetzal: https://www.banguat.gob.gt
+    NumismaticEmissionRuleData(
+      country: 'Guatemala',
+      minYear: 1948,
+      maxYear: 2006,
+      validCurrencies: ['GTQ'],
+      defaultCurrency: 'GTQ',
+      denominations: ['0.50', '1', '5', '10', '20', '50', '100', '200'],
+      denominationMaterials: {
+        '0.50': 'Papel de algodón',
+        '1': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B4.2 Guatemala Billetes - Era de Polímero y Familias Actuales (2007–presente)
+    // Ref: Banco de Guatemala - Billetes de 1 y 5 Quetzales en Polímero: https://www.banguat.gob.gt
+    NumismaticEmissionRuleData(
+      country: 'Guatemala',
+      minYear: 2007,
+      maxYear: 2100,
+      validCurrencies: ['GTQ'],
+      defaultCurrency: 'GTQ',
+      denominations: ['1', '5', '10', '20', '50', '100', '200'],
+      denominationMaterials: {
+        '1': 'Polímero',
+        '5': 'Polímero',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B5.1 Colombia Billetes - Pesos Oro (1960–1993)
+    // Ref: Banco de la República - Billetes antiguos colombianos: https://www.banrep.gov.co
+    NumismaticEmissionRuleData(
+      country: 'Colombia',
+      minYear: 1960,
+      maxYear: 1993,
+      validCurrencies: ['COP'],
+      defaultCurrency: 'COP',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '200', '500', '1000', '2000', '5000', '10000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+        '2000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B5.2 Colombia Billetes - Pesos y Nueva Familia de Billetes (1994–presente)
+    // Ref: Banco de la República - Nueva Familia de Billetes: https://www.banrep.gov.co/es/billetes-monedas/billetes-circulacion
+    NumismaticEmissionRuleData(
+      country: 'Colombia',
+      minYear: 1994,
+      maxYear: 2100,
+      validCurrencies: ['COP'],
+      defaultCurrency: 'COP',
+      denominations: ['1000', '2000', '5000', '10000', '20000', '50000', '100000'],
+      denominationMaterials: {
+        '1000': 'Papel de algodón',
+        '2000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+        '20000': 'Papel de algodón',
+        '50000': 'Papel de algodón',
+        '100000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B6.1 Canadá Billetes - Scenes of Canada, Birds & Journey Series (1935–2010)
+    // Ref: Bank of Canada - Bank Note Series: https://www.bankofcanada.ca/banknotes/bank-note-series/
+    NumismaticEmissionRuleData(
+      country: 'Canadá',
+      minYear: 1935,
+      maxYear: 2010,
+      validCurrencies: ['CAD'],
+      defaultCurrency: 'CAD',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '1000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B6.2 Canadá Billetes - Frontier Polymer Series (2011–presente)
+    // Ref: Bank of Canada - Polymer Series: https://www.bankofcanada.ca/banknotes/bank-note-series/polymer-series/
+    NumismaticEmissionRuleData(
+      country: 'Canadá',
+      minYear: 2011,
+      maxYear: 2100,
+      validCurrencies: ['CAD'],
+      defaultCurrency: 'CAD',
+      denominations: ['5', '10', '20', '50', '100'],
+      denominationMaterials: {
+        '5': 'Polímero',
+        '10': 'Polímero',
+        '20': 'Polímero',
+        '50': 'Polímero',
+        '100': 'Polímero',
+      },
+      isBanknote: true,
+    ),
+
+    // B7.1 Cuba Billetes - Período Socialista y Régimen Dual (1961–2020)
+    // Ref: Banco Central de Cuba - Billetes Históricos: https://www.bc.gob.cu
+    NumismaticEmissionRuleData(
+      country: 'Cuba',
+      minYear: 1961,
+      maxYear: 2020,
+      validCurrencies: ['CUP', 'CUC'],
+      defaultCurrency: 'CUP',
+      denominations: ['1', '3', '5', '10', '20', '50', '100', '200', '500', '1000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '3': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B7.2 Cuba Billetes - Unificación Monetaria (2021–presente)
+    // Ref: Banco Central de Cuba - Ordenamiento Monetario: https://www.bc.gob.cu
+    NumismaticEmissionRuleData(
+      country: 'Cuba',
+      minYear: 2021,
+      maxYear: 2100,
+      validCurrencies: ['CUP'],
+      defaultCurrency: 'CUP',
+      denominations: ['1', '3', '5', '10', '20', '50', '100', '200', '500', '1000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '3': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B8.1 Argentina Billetes - Peso Convertible y Emisiones Modernas (1992–presente)
+    // Ref: Banco Central de la República Argentina - Billetes en circulación: https://www.bcra.gob.ar
+    NumismaticEmissionRuleData(
+      country: 'Argentina',
+      minYear: 1992,
+      maxYear: 2100,
+      validCurrencies: ['ARS'],
+      defaultCurrency: 'ARS',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '200', '500', '1000', '2000', '10000', '20000'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+        '2000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+        '20000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B9.1 Brasil Billetes - Real 1ª y 2ª Familia (1994–presente)
+    // Ref: Banco Central do Brasil - Cédulas do Real: https://www.bcb.gov.br/cedulasemoedas/cedulasreal
+    NumismaticEmissionRuleData(
+      country: 'Brasil',
+      minYear: 1994,
+      maxYear: 2100,
+      validCurrencies: ['BRL'],
+      defaultCurrency: 'BRL',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '200'],
+      denominationMaterials: {
+        '1': 'Papel de algodón',
+        '2': 'Papel de algodón',
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B10.1 Chile Billetes - Peso Chileno y Familias Bicentenario (1975–presente)
+    // Ref: Banco Central de Chile - Billetes en circulación: https://www.bcentral.cl/billetes-y-monedas/billetes
+    NumismaticEmissionRuleData(
+      country: 'Chile',
+      minYear: 1975,
+      maxYear: 2100,
+      validCurrencies: ['CLP'],
+      defaultCurrency: 'CLP',
+      denominations: ['500', '1000', '2000', '5000', '10000', '20000'],
+      denominationMaterials: {
+        '500': 'Papel de algodón',
+        '1000': 'Polímero',
+        '2000': 'Polímero',
+        '5000': 'Polímero',
+        '10000': 'Papel de algodón',
+        '20000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B11.1 Perú Billetes - Nuevo Sol y Familias Bicentenario (1991–presente)
+    // Ref: Banco Central de Reserva del Perú - Billetes en circulación: https://www.bcrp.gob.pe
+    NumismaticEmissionRuleData(
+      country: 'Perú',
+      minYear: 1991,
+      maxYear: 2100,
+      validCurrencies: ['PEN'],
+      defaultCurrency: 'PEN',
+      denominations: ['10', '20', '50', '100', '200'],
+      denominationMaterials: {
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B12.1 Reino Unido Billetes - Series D, E, F y Polymer Series (1970–presente)
+    // Ref: Bank of England - Current Banknotes & Polymer Series: https://www.bankofengland.co.uk/banknotes
+    NumismaticEmissionRuleData(
+      country: 'Reino Unido',
+      minYear: 1970,
+      maxYear: 2100,
+      validCurrencies: ['GBP'],
+      defaultCurrency: 'GBP',
+      denominations: ['5', '10', '20', '50'],
+      denominationMaterials: {
+        '5': 'Polímero',
+        '10': 'Polímero',
+        '20': 'Polímero',
+        '50': 'Polímero',
+      },
+      isBanknote: true,
+    ),
+
+    // B13.1 Francia Billetes - Nouveau Franc (1960–2001)
+    // Ref: Banque de France - Histoire des billets: https://www.banque-france.fr
+    NumismaticEmissionRuleData(
+      country: 'Francia',
+      minYear: 1960,
+      maxYear: 2001,
+      validCurrencies: ['FRF'],
+      defaultCurrency: 'FRF',
+      denominations: ['5', '10', '20', '50', '100', '200', '500'],
+      denominationMaterials: {
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B14.1 Alemania Billetes - Deutsche Mark Series (1948–2001)
+    // Ref: Deutsche Bundesbank - DM-Banknoten: https://www.bundesbank.de
+    NumismaticEmissionRuleData(
+      country: 'Alemania',
+      minYear: 1948,
+      maxYear: 2001,
+      validCurrencies: ['DEM', 'DDM'],
+      defaultCurrency: 'DEM',
+      denominations: ['5', '10', '20', '50', '100', '200', '500', '1000'],
+      denominationMaterials: {
+        '5': 'Papel de algodón',
+        '10': 'Papel de algodón',
+        '20': 'Papel de algodón',
+        '50': 'Papel de algodón',
+        '100': 'Papel de algodón',
+        '200': 'Papel de algodón',
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+      },
+      isBanknote: true,
+    ),
+
+    // B15.1 Italia Billetes - Lira Italiana (1946–2001)
+    // Ref: Banca d'Italia - Banconote della Lira: https://www.bancaditalia.it
+    NumismaticEmissionRuleData(
+      country: 'Italia',
+      minYear: 1946,
+      maxYear: 2001,
+      validCurrencies: ['ITL'],
+      defaultCurrency: 'ITL',
+      denominations: ['500', '1000', '2000', '5000', '10000', '50000', '100000', '500000'],
+      denominationMaterials: {
+        '500': 'Papel de algodón',
+        '1000': 'Papel de algodón',
+        '2000': 'Papel de algodón',
+        '5000': 'Papel de algodón',
+        '10000': 'Papel de algodón',
+        '50000': 'Papel de algodón',
+        '100000': 'Papel de algodón',
+        '500000': 'Papel de algodón',
+      },
+      isBanknote: true,
     ),
   ];
 }
 
-/// Metadata record representing a country's currency epoch emission rules.
+/// Metadata record representing a country's currency epoch emission rules (Coins or Banknotes).
 class NumismaticEmissionRuleData {
   final String country;
   final int minYear;
@@ -6544,6 +7168,7 @@ class NumismaticEmissionRuleData {
   final Map<String, String> denominationMaterials;
   final Set<String> commemorativeDenominations;
   final String? defaultCommemorativeReason;
+  final bool isBanknote;
 
   const NumismaticEmissionRuleData({
     required this.country,
@@ -6555,11 +7180,61 @@ class NumismaticEmissionRuleData {
     this.denominationMaterials = const {},
     this.commemorativeDenominations = const {},
     this.defaultCommemorativeReason,
+    this.isBanknote = false,
   });
 
-  bool matches(String targetCountry, int year) {
+  bool matches(String targetCountry, int year, {bool isBanknote = false}) {
     if (country.toLowerCase() != targetCountry.trim().toLowerCase()) return false;
+    if (this.isBanknote != isBanknote) return false;
     return year >= minYear && year <= maxYear;
+  }
+
+  bool hasDenomination(String targetDenom) {
+    return denominations.any((d) => matchesDenomination(d, targetDenom));
+  }
+
+  String? getMaterialForDenomination(String targetDenom) {
+    if (denominationMaterials.containsKey(targetDenom)) {
+      return denominationMaterials[targetDenom];
+    }
+    for (final entry in denominationMaterials.entries) {
+      if (matchesDenomination(entry.key, targetDenom)) {
+        return entry.value;
+      }
+    }
+    return null;
+  }
+
+  bool isCommemorativeDenomination(String targetDenom) {
+    return commemorativeDenominations.any((d) => matchesDenomination(d, targetDenom));
+  }
+
+  static bool matchesDenomination(String d1, String d2) {
+    final s1 = d1.trim().toLowerCase();
+    final s2 = d2.trim().toLowerCase();
+    if (s1 == s2) return true;
+    final num1 = _parseDenominationNumber(s1);
+    final num2 = _parseDenominationNumber(s2);
+    if (num1 != null && num2 != null) {
+      return (num1 - num2).abs() < 0.0001;
+    }
+    return false;
+  }
+
+  static double? _parseDenominationNumber(String val) {
+    final direct = double.tryParse(val);
+    if (direct != null) return direct;
+    if (val.contains('/')) {
+      final parts = val.split('/');
+      if (parts.length == 2) {
+        final numerator = double.tryParse(parts[0].trim());
+        final denominator = double.tryParse(parts[1].trim());
+        if (numerator != null && denominator != null && denominator != 0) {
+          return numerator / denominator;
+        }
+      }
+    }
+    return null;
   }
 }
 

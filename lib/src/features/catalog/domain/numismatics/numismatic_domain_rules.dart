@@ -780,6 +780,12 @@ class NumismaticDomainRules {
     final isSpecial = attrs.isSpecialEdition;
     final specialReason = attrs.specialEditionReason?.trim();
 
+    final isBanknote = NumismaticParser.isBanknotePiece(
+      species: species,
+      instance: instance,
+      material: material,
+    );
+
     String? denomStr = attrs.faceValueStr?.trim();
     if (denomStr == null && attrs.faceValueNumber != null) {
       final numVal = attrs.faceValueNumber!;
@@ -809,13 +815,14 @@ class NumismaticDomainRules {
 
     // 2. Emission matrix matching
     if (year != null && year >= 1500 && year <= DateTime.now().year + 1) {
-      final rule = NumismaticMatrix.findRule(country, year);
-      if (rule != null) {
+      final allRules = NumismaticMatrix.findRules(country, year, isBanknote: isBanknote);
+      if (allRules.isNotEmpty) {
         // A. Currency anachronism check
         if (currency != null && currency.isNotEmpty) {
           final iso = NumismaticParser.resolveCurrencyIsoCode(currency);
-          if (!rule.validCurrencies.contains(iso)) {
-            final expectedIso = rule.defaultCurrency ?? rule.validCurrencies.first;
+          final allValidCurrencies = allRules.expand((r) => r.validCurrencies).toSet();
+          if (!allValidCurrencies.contains(iso)) {
+            final expectedIso = allRules.first.defaultCurrency ?? allRules.first.validCurrencies.first;
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.currencyAnachronism,
               title: AppStrings.numismaticEmissionOutlierCardTitle,
@@ -828,12 +835,22 @@ class NumismaticDomainRules {
           }
         }
 
+        final rule = NumismaticMatrix.findRule(
+          country,
+          year,
+          currencyCode: currency,
+          denomination: denomStr,
+          isBanknote: isBanknote,
+        ) ?? allRules.first;
+
         // B. Material contradiction check
         if (denomStr != null && denomStr.isNotEmpty && material != null && material.isNotEmpty) {
           final expectedMat = NumismaticMatrix.inferMaterial(
             country: country,
             year: year,
+            currencyCode: currency,
             denomination: denomStr,
+            isBanknote: isBanknote,
           );
           if (expectedMat != null) {
             final resolvedFoundMat = NumismaticParser.resolveMaterial(material);
@@ -856,7 +873,9 @@ class NumismaticDomainRules {
           final specialInfo = NumismaticMatrix.checkSpecialEdition(
             country: country,
             year: year,
+            currencyCode: currency,
             denomination: denomStr,
+            isBanknote: isBanknote,
           );
           if (specialInfo != null && specialInfo.isSpecial) {
             final expectedReason = specialInfo.reason ?? AppTechnicalNumismatics.specialEditionReasons.first;
@@ -878,9 +897,7 @@ class NumismaticDomainRules {
 
         // D. Denomination anomaly check
         if (denomStr != null && denomStr.isNotEmpty) {
-          final numVal = double.tryParse(denomStr);
-          final matchesDenom = rule.denominations.contains(denomStr) ||
-              (numVal != null && rule.denominations.any((d) => double.tryParse(d) == numVal));
+          final matchesDenom = allRules.any((r) => r.hasDenomination(denomStr!));
           if (!matchesDenom) {
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.denominationAnomaly,

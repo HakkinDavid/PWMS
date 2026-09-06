@@ -519,17 +519,17 @@ void main() {
       expect(reloadedMat.stringValue, equals('Cuproníquel'));
     });
 
-    test('NumismaticEmissionOutlierStrategy detects missing regime change special edition for 1993 Mexico and repairs it', () async {
+    test('NumismaticEmissionOutlierStrategy detects missing commemorative special edition for 2008 Mexico and repairs it', () async {
       final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
-        subspeciesName: 'Nuevos Pesos',
+        subspeciesName: '5 Pesos Bicentenario',
         createdAt: DateTime.now(),
       );
       await catalogRepo.saveSubspecies(sub);
 
-      // Create Mexico 1993 10 N$ coin without special edition flag
+      // Create Mexico 2008 5 Pesos coin without special edition flag
       final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
         magnitudes: [
@@ -538,14 +538,14 @@ void main() {
             instanceId: instance.id,
             propertyName: 'Valor nominal',
             dataType: 'real',
-            magnitudeValue: 10.0,
+            magnitudeValue: 5.0,
           ),
           InstanceMagnitude(
             id: const Uuid().v4(),
             instanceId: instance.id,
             propertyName: 'Acuñación',
             dataType: 'integer',
-            magnitudeValue: 1993.0,
+            magnitudeValue: 2008.0,
             unitSymbol: 'año',
           ),
           InstanceMagnitude(
@@ -576,7 +576,7 @@ void main() {
       final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
       expect(outliers.first.type, equals(NumismaticEmissionOutlierType.specialEditionMismatch));
-      expect(outliers.first.expectedValue, equals('Emisión de cambio de régimen'));
+      expect(outliers.first.expectedValue, equals('Conmemorativa'));
 
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
         entityRepo: entityRepo,
@@ -589,7 +589,7 @@ void main() {
       expect(reloadedSpecial.stringValue, equals('true'));
 
       final reloadedReason = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Razón de edición especial');
-      expect(reloadedReason.stringValue, equals('Emisión de cambio de régimen'));
+      expect(reloadedReason.stringValue, equals('Conmemorativa'));
     });
 
     test('repairAndStandardizeImportedData groups singular and plural pieces into single canonical subspecies', () async {
