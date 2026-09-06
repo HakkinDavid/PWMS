@@ -49,7 +49,9 @@ void main() {
       createdAt: DateTime.now(),
     );
 
-    test('derives full canonical name from nominal value, currency, country, and year', () {
+    test('derives full canonical name from nominal value, currency, country, and year', () async {
+      await catalogRepo.saveCatalogItem(monedaSpecies);
+
       final coinEntity = WorldEntity(
         id: 'coin_1',
         speciesId: monedaSpecies.id,
@@ -88,11 +90,20 @@ void main() {
         updatedAt: DateTime.now(),
       );
 
-      final customName = EntityDisplayHelper.getInstanceCustomName(coinEntity, monedaSpecies);
+      // Direct derivation test
+      final derivedName = NumismaticDataHelper.deriveInstanceName(coinEntity);
+      expect(derivedName, equals('5 Pesos Mexicanos - México (1985)'));
+
+      // Persisted test
+      await entityRepo.saveEntity(coinEntity);
+      final loaded = await entityRepo.getEntityById('coin_1');
+      expect(loaded, isNotNull);
+
+      final customName = EntityDisplayHelper.getInstanceCustomName(loaded!, monedaSpecies);
       expect(customName, equals('5 Pesos Mexicanos - México (1985)'));
 
       final displayName = EntityDisplayHelper.getDisplayName(
-        entity: coinEntity,
+        entity: loaded,
         catalogItems: [monedaSpecies],
       );
       expect(displayName, equals('5 Pesos Mexicanos - México (1985)'));
@@ -147,11 +158,11 @@ void main() {
       );
 
       expect(
-        EntityDisplayHelper.getInstanceCustomName(singleDollar, billeteSpecies),
+        NumismaticDataHelper.deriveInstanceName(singleDollar),
         equals('1 Dólar Estadounidense - Estados Unidos (2020)'),
       );
       expect(
-        EntityDisplayHelper.getInstanceCustomName(twentyDollars, billeteSpecies),
+        NumismaticDataHelper.deriveInstanceName(twentyDollars),
         equals('20 Dólares Estadounidenses - Estados Unidos (2020)'),
       );
     });
@@ -211,11 +222,11 @@ void main() {
       );
 
       expect(
-        EntityDisplayHelper.getInstanceCustomName(coinWithoutYear, monedaSpecies),
+        NumismaticDataHelper.deriveInstanceName(coinWithoutYear),
         equals('10 Euros - España'),
       );
       expect(
-        EntityDisplayHelper.getInstanceCustomName(coinOnlyDenom, monedaSpecies),
+        NumismaticDataHelper.deriveInstanceName(coinOnlyDenom),
         equals('50 Centavos'),
       );
     });

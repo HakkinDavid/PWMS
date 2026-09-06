@@ -110,14 +110,12 @@ class EntityRepository implements IEntityRepository {
         ? resolvedLocations[row.id]
         : row.locationId;
 
-    final effectiveMags = _ensureDynamicNombreMagnitude(row.id, magnitudes, notes: row.notes);
-
     return WorldEntity(
       id: row.id,
       speciesId: row.speciesId,
       subspeciesId: row.subspeciesId,
       locationId: effectiveLocation,
-      magnitudes: effectiveMags,
+      magnitudes: magnitudes,
       expirationDate: row.expirationDate,
       notes: row.notes,
       createdAt: row.createdAt,
