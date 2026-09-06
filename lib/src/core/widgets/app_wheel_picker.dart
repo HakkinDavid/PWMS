@@ -131,7 +131,7 @@ class _AppWheelPickerState<T> extends State<AppWheelPicker<T>> {
             Expanded(
               child: CupertinoPicker(
                 scrollController: _scrollController,
-                itemExtent: 44,
+                itemExtent: 52,
                 onSelectedItemChanged: (index) {
                   setState(() => _selectedIndex = index);
                 },
@@ -150,15 +150,18 @@ class _AppWheelPickerState<T> extends State<AppWheelPicker<T>> {
                       setState(() => _selectedIndex = index);
                     },
                     child: Center(
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            color: isSelected ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
+                          ),
+                          textAlign: TextAlign.center,
+                          softWrap: true,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   );

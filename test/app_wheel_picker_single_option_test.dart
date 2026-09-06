@@ -134,6 +134,44 @@ void main() {
       expect(selectedValue, 'Opción 1');
       expect(find.byType(AppWheelPicker<String>), findsNothing);
     });
+
+    testWidgets('AppWheelPicker options wrap long text without ellipsis', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () async {
+                  await AppWheelPicker.show<String>(
+                    context,
+                    items: [
+                      'Esta es una opción con un texto bastante largo que debe hacer wrap en el wheel picker',
+                      'Segunda opción también suficientemente extensa para requerir varias líneas de texto',
+                    ],
+                    labelBuilder: (item) => item,
+                  );
+                },
+                child: const Text('Abrir Picker'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Abrir Picker'));
+      await tester.pumpAndSettle();
+
+      final textWidgets = tester.widgetList<Text>(find.byType(Text));
+      final optionTexts = textWidgets.where((t) => t.data?.contains('Esta es una opción') ?? false).toList();
+      expect(optionTexts, isNotEmpty);
+      final optionText = optionTexts.first;
+
+      // Ensure maxLines is not restricted to 1 and overflow is not ellipsis
+      expect(optionText.maxLines, isNull);
+      expect(optionText.overflow, isNull);
+      expect(optionText.softWrap, isTrue);
+      expect(optionText.textAlign, TextAlign.center);
+    });
   });
 
   group('CCC Single Option Auto-Apply Integration Test', () {
