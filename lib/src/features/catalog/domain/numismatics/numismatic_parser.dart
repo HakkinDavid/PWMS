@@ -488,19 +488,6 @@ class NumismaticParser {
       }
     }
 
-    if ((motif == null || motif.isEmpty) && entity.notes != null) {
-      if (entity.notes!.contains(AppStrings.specialEditionNotePrefix)) {
-        isSpecialEdition = true;
-        final notePart = entity.notes!.split(AppStrings.specialEditionNotePrefix).last;
-        final endIdx = notePart.indexOf(AppTechnicalStrings.pipe);
-        final rawReason = endIdx >= 0 ? notePart.substring(0, endIdx).trim() : notePart.trim();
-        if (rawReason.isNotEmpty) {
-          specialReason = rawReason;
-          motif = rawReason;
-        }
-      }
-    }
-
     return NumismaticAttributes(
       faceValueNumber: faceVal,
       faceValueStr: faceValStr,

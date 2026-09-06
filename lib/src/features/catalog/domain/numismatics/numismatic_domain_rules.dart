@@ -571,6 +571,27 @@ class NumismaticDomainRules {
                 magnitudeValue: numVal,
                 unitSymbol: null,
               ));
+            } else if (pName == AppStrings.motifPropertyName.toLowerCase() ||
+                pName == 'motivo' ||
+                pName == AppStrings.specialEditionReasonLabel.toLowerCase()) {
+              var motifVal = m.stringValue?.trim();
+              if (motifVal != null && motifVal.isNotEmpty) {
+                customMags.add(m.copyWith(
+                  propertyName: AppStrings.motifPropertyName,
+                  dataType: AppTechnicalStrings.datatypeStringLower,
+                  stringValue: motifVal,
+                  unitSymbol: null,
+                  magnitudeValue: null,
+                ));
+              }
+            } else if (pName == AppStrings.specialEditionTitle.toLowerCase()) {
+              customMags.add(m.copyWith(
+                propertyName: AppStrings.specialEditionTitle,
+                dataType: AppTechnicalStrings.datatypeBooleanLower,
+                stringValue: m.stringValue ?? AppTechnicalStrings.boolTrue,
+                unitSymbol: null,
+                magnitudeValue: null,
+              ));
             } else {
               customMags.add(m);
             }
@@ -714,6 +735,62 @@ class NumismaticDomainRules {
             }
           }
 
+          // Extract special edition / motif from legacy notes if not present in magnitudes, and clean notes
+          String? cleanedNotes = inst.notes;
+          String? extractedMotifFromNotes;
+          if (inst.notes != null && inst.notes!.isNotEmpty) {
+            final lowerNotes = inst.notes!.toLowerCase();
+            if (lowerNotes.contains('edición especial') || lowerNotes.contains('edicion especial')) {
+              final matchWithPrefix = RegExp(r'(?:\[\s*)?Edici(?:ó|o)n\s+especial\s*:\s*([^\]|\n]+)(?:\])?', caseSensitive: false).firstMatch(inst.notes!);
+              if (matchWithPrefix != null) {
+                final raw = matchWithPrefix.group(1)?.trim();
+                if (raw != null && raw.isNotEmpty) {
+                  extractedMotifFromNotes = raw;
+                }
+                cleanedNotes = inst.notes!.replaceAll(matchWithPrefix.group(0)!, '').trim();
+                cleanedNotes = cleanedNotes.replaceAll(RegExp(r'^[|\s]+|[|\s]+$'), '').replaceAll(RegExp(r'\s*\|\s*\|\s*'), ' | ').trim();
+                if (cleanedNotes.isEmpty) {
+                  cleanedNotes = null;
+                }
+              }
+            }
+          }
+
+          final hasMotif = customMags.any((m) {
+            final p = m.propertyName.trim().toLowerCase();
+            return (p == AppStrings.motifPropertyName.toLowerCase() || p == 'motivo') &&
+                m.stringValue != null &&
+                m.stringValue!.trim().isNotEmpty;
+          });
+          if (!hasMotif && extractedMotifFromNotes != null && extractedMotifFromNotes.isNotEmpty) {
+            customMags.add(InstanceMagnitude(
+              id: const Uuid().v4(),
+              instanceId: inst.id,
+              propertyName: AppStrings.motifPropertyName,
+              dataType: AppTechnicalStrings.datatypeStringLower,
+              stringValue: extractedMotifFromNotes,
+            ));
+          }
+
+          final hasAnyMotif = customMags.any((m) {
+            final p = m.propertyName.trim().toLowerCase();
+            return (p == AppStrings.motifPropertyName.toLowerCase() || p == 'motivo') &&
+                m.stringValue != null &&
+                m.stringValue!.trim().isNotEmpty;
+          });
+          if (hasAnyMotif) {
+            final hasSpecialBool = customMags.any((m) => m.propertyName.trim().toLowerCase() == AppStrings.specialEditionTitle.toLowerCase());
+            if (!hasSpecialBool) {
+              customMags.add(InstanceMagnitude(
+                id: const Uuid().v4(),
+                instanceId: inst.id,
+                propertyName: AppStrings.specialEditionTitle,
+                dataType: AppTechnicalStrings.datatypeBooleanLower,
+                stringValue: AppTechnicalStrings.boolTrue,
+              ));
+            }
+          }
+
           // Deduplicate customMags by normalized propertyName (keep best value)
           final Map<String, InstanceMagnitude> deduped = {};
           for (final mag in customMags) {
@@ -732,6 +809,7 @@ class NumismaticDomainRules {
 
           final updatedInst = inst.copyWith(
             subspeciesId: targetCurrencySub.id,
+            notes: cleanedNotes,
             magnitudes: deduped.values.toList(),
           );
           await entityRepo.saveEntity(updatedInst);

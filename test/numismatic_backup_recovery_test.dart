@@ -252,6 +252,17 @@ void main() {
       final billAcunacion = billMags.firstWhere((m) => m.propertyName == 'Acuñación');
       expect(billAcunacion.dataType, equals('integer'));
       expect(billAcunacion.magnitudeValue, equals(2020.0));
+
+      final billMotivo = billMags.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(billMotivo.dataType, equals('string'));
+      expect(billMotivo.stringValue, equals('Aniversario'));
+
+      final billSpecial = billMags.firstWhere((m) => m.propertyName == 'Edición especial');
+      expect(billSpecial.dataType, equals('boolean'));
+      expect(billSpecial.stringValue, equals('true'));
+
+      final entBill1 = await (db.select(db.entitiesTable)..where((t) => t.id.equals('ent-bill-1'))).getSingle();
+      expect(entBill1.notes, isNull);
     });
 
     test('Imports actual pwms_backup_2026-08-10T01-49-21-034660.zip and restores all 34 numismatic pieces with zero errors', () async {
@@ -563,6 +574,46 @@ void main() {
 
       await dbHot.close();
       await dbImported.close();
+    });
+
+    test('NumismaticMigrationPostProcessor extracts legacy special edition notes into Motivo magnitude and cleans notes', () async {
+      final catRepo = CatalogRepository(db);
+      final entRepo = EntityRepository(db);
+
+      final species = await catRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = await catRepo.getOrCreateSubspecies(species.id, '200 Pesos Mexicanos Antiguos - México (1985)');
+
+      final instance = await entRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final updatedInstance = instance.copyWith(
+        notes: 'Edición especial: 175 Aniversario de la Independencia | Guardado en álbum rojo',
+        magnitudes: [
+          InstanceMagnitude(id: 'm1', instanceId: instance.id, propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 200.0),
+          InstanceMagnitude(id: 'm2', instanceId: instance.id, propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1985.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: instance.id, propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: instance.id, propertyName: 'Emisor', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm5', instanceId: instance.id, propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
+        ],
+      );
+      await entRepo.saveEntity(updatedInstance);
+
+      // Run post-processor
+      await const NumismaticMigrationPostProcessor().process(db);
+
+      final reloaded = await entRepo.getEntityById(instance.id);
+      expect(reloaded, isNotNull);
+
+      // Notes must be cleaned of the metadata prefix
+      expect(reloaded!.notes, equals('Guardado en álbum rojo'));
+
+      // Motivo magnitude must exist with exact extracted motif
+      final motifMag = reloaded.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(motifMag.stringValue, equals('175 Aniversario de la Independencia'));
+      expect(motifMag.dataType, equals('string'));
+
+      // Edición especial magnitude must exist
+      final specialMag = reloaded.magnitudes.firstWhere((m) => m.propertyName == 'Edición especial');
+      expect(specialMag.stringValue, equals('true'));
+      expect(specialMag.dataType, equals('boolean'));
     });
   });
 }
