@@ -18,9 +18,10 @@ void main() {
       for (final file in dartFiles) {
         final normalizedPath = file.path.replaceAll(r'\', '/');
 
-        // Skip constants definition files and generated files
+        // Skip constants definition files, domain data datasets, and generated files
         if (normalizedPath.endsWith('lib/src/core/constants/app_strings.dart') ||
             normalizedPath.endsWith('lib/src/core/constants/app_technical_strings.dart') ||
+            normalizedPath.contains('lib/src/features/catalog/domain/numismatics/data/') ||
             normalizedPath.endsWith('.g.dart') ||
             normalizedPath.endsWith('.freezed.dart')) {
           continue;

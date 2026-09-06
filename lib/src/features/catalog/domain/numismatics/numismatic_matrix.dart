@@ -1,5 +1,6 @@
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
-import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'data/numismatic_rules_registry.dart';
+import 'models/numismatic_models.dart';
 import 'numismatic_dictionary.dart';
 import 'numismatic_parser.dart';
 
@@ -7,7 +8,7 @@ import 'numismatic_parser.dart';
 class NumismaticMatrix {
   NumismaticMatrix._();
 
-  static List<NumismaticEmissionRuleData> get _emissionRules => AppTechnicalNumismatics.emissionRules;
+  static List<NumismaticEmissionRuleData> get _emissionRules => NumismaticRulesRegistry.allRules;
 
   /// Exposes numeric and fractional denomination comparator.
   static bool matchesDenomination(String d1, String d2) =>
@@ -24,10 +25,7 @@ class NumismaticMatrix {
     }
     if (year == null) return const [];
 
-    final trimmedCountry = country.trim();
-    return _emissionRules
-        .where((rule) => rule.matches(trimmedCountry, year, isBanknote: isBanknote))
-        .toList();
+    return NumismaticRulesRegistry.findRules(country, year, isBanknote: isBanknote);
   }
 
   /// Finds the best matching emission rule for given country, year, and optional currency/denomination/isBanknote.
