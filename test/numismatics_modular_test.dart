@@ -7,21 +7,35 @@ void main() {
       expect(NumismaticDictionary.currencyMap['MXN'], 'Pesos Mexicanos');
       expect(NumismaticDictionary.currencyMap['USD'], 'Dólares Estadounidenses');
       expect(NumismaticDictionary.currencyMap['EUR'], 'Euros');
+      expect(NumismaticDictionary.currencyMap['REAL'], 'Reales Españoles');
+      expect(NumismaticDictionary.currencyMap['GTH'], 'Táleros Germánicos (Thaler)');
+      expect(NumismaticDictionary.currencyMap['IND_MUG'], 'Mohurs y Rupias del Imperio Mogol');
 
       final mxCurrencies = NumismaticDictionary.getCurrenciesForCountry('México');
-      expect(mxCurrencies, contains('MXN'));
-      expect(mxCurrencies, contains('MXP'));
+      expect(mxCurrencies, containsAll(['MXN', 'MXP', 'MXR', 'MXE']));
+
+      final nuevaEspanaCurrencies = NumismaticDictionary.getCurrenciesForCountry('Virreinato de Nueva España');
+      expect(nuevaEspanaCurrencies, containsAll(['REAL', 'ESC', 'MRV', 'MXR', 'MXE']));
+
+      final sacroImperioCurrencies = NumismaticDictionary.getCurrenciesForCountry('Sacro Imperio Romano Germánico');
+      expect(sacroImperioCurrencies, containsAll(['GTH', 'GGL', 'ATH', 'ATG']));
     });
 
     test('NumismaticParser resolves ISO codes and singular/plural names', () {
       expect(NumismaticParser.resolveCurrencyIsoCode('Pesos Mexicanos'), 'MXN');
       expect(NumismaticParser.resolveCurrencyIsoCode('dólares estadounidenses'), 'USD');
       expect(NumismaticParser.resolveCurrencyIsoCode('EUR'), 'EUR');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Reales Españoles'), 'REAL');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Táleros Germánicos (Thaler)'), 'GTH');
 
       expect(NumismaticParser.resolveCurrencyName('MXN', count: 1), 'Peso Mexicano');
       expect(NumismaticParser.resolveCurrencyName('MXN', count: 5), 'Pesos Mexicanos');
       expect(NumismaticParser.resolveCurrencyName('USD', count: 1), 'Dólar Estadounidense');
       expect(NumismaticParser.resolveCurrencyName('USD', count: 20), 'Dólares Estadounidenses');
+      expect(NumismaticParser.resolveCurrencyName('REAL', count: 1), 'Real Español');
+      expect(NumismaticParser.resolveCurrencyName('REAL', count: 8), 'Reales Españoles');
+      expect(NumismaticParser.resolveCurrencyName('GTH', count: 1), 'Tálero Germánico (Thaler)');
+      expect(NumismaticParser.resolveCurrencyName('GTH', count: 2), 'Táleros Germánicos (Thaler)');
     });
 
     test('NumismaticParser standardizes grades, materials, and builds titles', () {
@@ -32,6 +46,11 @@ void main() {
       expect(NumismaticParser.resolveMaterial('cu-ni'), 'Cuproníquel');
       expect(NumismaticParser.resolveMaterial('Silver'), 'Plata');
       expect(NumismaticParser.resolveMaterial('Gold'), 'Oro');
+      expect(NumismaticParser.resolveMaterial('electrum'), 'Electro (Electrum)');
+      expect(NumismaticParser.resolveMaterial('billon'), 'Billón (Vellón)');
+      expect(NumismaticParser.resolveMaterial('german silver'), 'Alpaca (Plata alemana)');
+      expect(NumismaticParser.resolveMaterial('nordic gold'), 'Oro nórdico');
+      expect(NumismaticParser.resolveMaterial('porcelain'), 'Porcelana / Cerámica');
 
       final title = NumismaticParser.buildSubspeciesName(
         faceValueNumber: 10,
@@ -40,6 +59,14 @@ void main() {
         year: '2021',
       );
       expect(title, '10 Pesos Mexicanos - México (2021)');
+
+      final realTitle = NumismaticParser.buildSubspeciesName(
+        faceValueNumber: 8,
+        currencyCode: 'REAL',
+        country: 'Virreinato de Nueva España',
+        year: '1735',
+      );
+      expect(realTitle, '8 Reales Españoles - Virreinato de Nueva España (1735)');
     });
 
     test('NumismaticParser parses subspecies title accurately', () {
@@ -48,6 +75,12 @@ void main() {
       expect(parsed.currencyName, 'Pesos Mexicanos');
       expect(parsed.country, 'México');
       expect(parsed.year, '1985');
+
+      final parsedColonial = NumismaticParser.parseSubspeciesName('8 Reales Españoles - Virreinato de Nueva España (1780)');
+      expect(parsedColonial.faceValueNumber, 8.0);
+      expect(parsedColonial.currencyName, 'Reales Españoles');
+      expect(parsedColonial.country, 'Virreinato de Nueva España');
+      expect(parsedColonial.year, '1780');
     });
 
     test('NumismaticDataHelper Facade delegates transparently', () {
@@ -59,6 +92,12 @@ void main() {
         country: 'Estados Unidos',
         year: '1921',
       ), '1 Dólar Estadounidense - Estados Unidos (1921)');
+      expect(NumismaticDataHelper.buildSubspeciesName(
+        faceValueNumber: 1,
+        currencyCode: 'REAL',
+        country: 'Corona de Castilla',
+        year: '1556',
+      ), '1 Real Español - Corona de Castilla (1556)');
     });
   });
 }

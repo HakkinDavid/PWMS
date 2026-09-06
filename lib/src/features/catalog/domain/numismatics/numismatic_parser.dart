@@ -110,7 +110,13 @@ class NumismaticParser {
     if (NumismaticDictionary.grades.contains(clean)) return clean;
 
     final lower = clean.toLowerCase();
-    for (final entry in AppTechnicalNumismatics.gradeKeywords.entries) {
+    if (AppTechnicalNumismatics.gradeKeywords.containsKey(lower)) {
+      return NumismaticDictionary.grades[AppTechnicalNumismatics.gradeKeywords[lower]!];
+    }
+    // Check longer keywords first to avoid subword collisions
+    final sortedEntries = AppTechnicalNumismatics.gradeKeywords.entries.toList()
+      ..sort((a, b) => b.key.length.compareTo(a.key.length));
+    for (final entry in sortedEntries) {
       if (lower.contains(entry.key)) {
         return NumismaticDictionary.grades[entry.value];
       }
@@ -126,7 +132,13 @@ class NumismaticParser {
     if (NumismaticDictionary.coinMaterials.contains(clean)) return clean;
 
     final lower = clean.toLowerCase();
-    for (final entry in AppTechnicalNumismatics.materialKeywords.entries) {
+    if (AppTechnicalNumismatics.materialKeywords.containsKey(lower)) {
+      return AppTechnicalNumismatics.materialKeywords[lower]!;
+    }
+    // Check longer keywords first to prioritize compound phrases (e.g. 'german silver', 'oro nórdico') over base words
+    final sortedEntries = AppTechnicalNumismatics.materialKeywords.entries.toList()
+      ..sort((a, b) => b.key.length.compareTo(a.key.length));
+    for (final entry in sortedEntries) {
       if (lower.contains(entry.key)) {
         return entry.value;
       }
@@ -142,7 +154,12 @@ class NumismaticParser {
     if (NumismaticDictionary.specialEditionReasons.contains(clean)) return clean;
 
     final lower = clean.toLowerCase();
-    for (final entry in AppTechnicalNumismatics.specialEditionKeywords.entries) {
+    if (AppTechnicalNumismatics.specialEditionKeywords.containsKey(lower)) {
+      return NumismaticDictionary.specialEditionReasons[AppTechnicalNumismatics.specialEditionKeywords[lower]!];
+    }
+    final sortedEntries = AppTechnicalNumismatics.specialEditionKeywords.entries.toList()
+      ..sort((a, b) => b.key.length.compareTo(a.key.length));
+    for (final entry in sortedEntries) {
       if (lower.contains(entry.key)) {
         return NumismaticDictionary.specialEditionReasons[entry.value];
       }

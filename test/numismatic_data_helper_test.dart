@@ -218,14 +218,17 @@ void main() {
 
     test('getCurrenciesForCountry filters currencies by country correctly', () {
       final mexicoCurrencies = NumismaticDataHelper.getCurrenciesForCountry('México');
-      expect(mexicoCurrencies, containsAll(['MXN', 'MXP']));
-      expect(mexicoCurrencies.length, equals(2));
+      expect(mexicoCurrencies, containsAll(['MXN', 'MXP', 'MXR', 'MXE']));
+      expect(mexicoCurrencies.length, equals(4));
 
       final usaCurrencies = NumismaticDataHelper.getCurrenciesForCountry('Estados Unidos');
-      expect(usaCurrencies, equals(['USD']));
+      expect(usaCurrencies, containsAll(['USD', 'USC']));
 
       final spainCurrencies = NumismaticDataHelper.getCurrenciesForCountry('España');
-      expect(spainCurrencies, containsAll(['EUR', 'ESP']));
+      expect(spainCurrencies, containsAll(['EUR', 'ESP', 'REAL', 'ESC', 'MRV', 'RDV']));
+
+      final nuevaEspanaCurrencies = NumismaticDataHelper.getCurrenciesForCountry('Virreinato de Nueva España');
+      expect(nuevaEspanaCurrencies, containsAll(['REAL', 'ESC', 'MRV', 'MXR', 'MXE']));
 
       // Null, empty, or 'Otro' should return all currencies
       final allCurrencies = NumismaticDataHelper.currencyMap.keys.toList();
@@ -236,13 +239,15 @@ void main() {
 
     test('getCurrencyMapForCountry returns mapped dictionary for country', () {
       final mexicoMap = NumismaticDataHelper.getCurrencyMapForCountry('México');
-      expect(mexicoMap.keys, containsAll(['MXN', 'MXP']));
+      expect(mexicoMap.keys, containsAll(['MXN', 'MXP', 'MXR', 'MXE']));
       expect(mexicoMap['MXN'], equals('Pesos Mexicanos'));
       expect(mexicoMap['MXP'], equals('Pesos Mexicanos Antiguos'));
+      expect(mexicoMap['MXR'], equals('Reales Mexicanos Coloniales e Imperiales'));
 
       final usaMap = NumismaticDataHelper.getCurrencyMapForCountry('Estados Unidos');
-      expect(usaMap.keys, equals(['USD']));
+      expect(usaMap.keys, containsAll(['USD', 'USC']));
       expect(usaMap['USD'], equals('Dólares Estadounidenses'));
+      expect(usaMap['USC'], equals('Dólares Continentales de EE.UU.'));
     });
   });
 }
