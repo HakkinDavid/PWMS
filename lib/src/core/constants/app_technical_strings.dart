@@ -3677,6 +3677,7 @@ abstract final class AppTechnicalNumismatics {
     'Oro nórdico',
     'Billón (Vellón)',
     'Zinc',
+    'Zinc bañado en cobre',
     'Zamak',
     'Plomo',
     'Estaño',
@@ -4056,6 +4057,10 @@ abstract final class AppTechnicalNumismatics {
     'níquel-latón': 'Níquel-Latón',
     'niquel-laton': 'Níquel-Latón',
     'nickel-brass': 'Níquel-Latón',
+    'latón de níquel': 'Níquel-Latón',
+    'laton de niquel': 'Níquel-Latón',
+    'níquel latón': 'Níquel-Latón',
+    'niquel laton': 'Níquel-Latón',
     'tombac': 'Latón dorado (Tombac)',
     'tombak': 'Latón dorado (Tombac)',
     'latón dorado': 'Latón dorado (Tombac)',
@@ -4079,6 +4084,9 @@ abstract final class AppTechnicalNumismatics {
     'zinc': 'Zinc',
     'cinc': 'Zinc',
     'zn': 'Zinc',
+    'zinc bañado en cobre': 'Zinc bañado en cobre',
+    'copper-plated zinc': 'Zinc bañado en cobre',
+    'zinc electrodepositado con cobre': 'Zinc bañado en cobre',
     'zamak': 'Zamak',
     'zamac': 'Zamak',
     'plomo': 'Plomo',
@@ -4099,10 +4107,16 @@ abstract final class AppTechnicalNumismatics {
     'stainless steel': 'Acero inoxidable',
     'acero bañado en cobre': 'Acero bañado en cobre',
     'copper-plated steel': 'Acero bañado en cobre',
+    'acero cobreado': 'Acero bañado en cobre',
+    'acero electrodepositado con cobre': 'Acero bañado en cobre',
     'acero bañado en níquel': 'Acero bañado en níquel',
     'nickel-plated steel': 'Acero bañado en níquel',
+    'acero niquelado': 'Acero bañado en níquel',
+    'acero electrodepositado con níquel': 'Acero bañado en níquel',
     'acero bañado en latón': 'Acero bañado en latón',
     'brass-plated steel': 'Acero bañado en latón',
+    'acero latonado': 'Acero bañado en latón',
+    'acero electrodepositado con latón': 'Acero bañado en latón',
     'acero bañado en bronce': 'Acero bañado en bronce',
     'bronze-plated steel': 'Acero bañado en bronce',
     'acero bañado en zinc': 'Acero bañado en zinc',
@@ -4614,7 +4628,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: 'Constitución / Carranza / Independencia / Olimpiadas México 68',
     ),
 
-    // 1.19 México - Devaluación Cuproníquel / Bronce (1970–1983)
+    // 1.19 México - Transición Pirámide de Bronce y Monedas de Cuproníquel (1970–1973)
     // Ref: Banco de México - Monedas metálicas desmonetizadas de la unidad anterior:
     // https://www.banxico.org.mx/billetes-y-monedas/monedas-desmonetizadas-unida.html
     // Ref: Numista - Mexico (1970-1992):
@@ -4622,6 +4636,27 @@ abstract final class AppTechnicalNumismatics {
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 1970,
+      maxYear: 1973,
+      validCurrencies: ['MXP'],
+      defaultCurrency: 'MXP',
+      denominations: ['0.05', '0.20', '0.50', '1', '5'],
+      denominationMaterials: {
+        '0.05': 'Latón',
+        '0.20': 'Bronce',
+        '0.50': 'Cuproníquel',
+        '1': 'Cuproníquel',
+        '5': 'Cuproníquel',
+      },
+    ),
+
+    // 1.20 México - Serie Numismática Cuproníquel, Latón y Plata (1974–1983)
+    // Ref: Banco de México - Monedas metálicas desmonetizadas de la unidad anterior:
+    // https://www.banxico.org.mx/billetes-y-monedas/monedas-desmonetizadas-unida.html
+    // Ref: Numista - Mexico (1970-1992):
+    // https://en.numista.com/catalogue/mexico-united-states-1905-2.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1974,
       maxYear: 1983,
       validCurrencies: ['MXP'],
       defaultCurrency: 'MXP',
@@ -4629,18 +4664,20 @@ abstract final class AppTechnicalNumismatics {
       denominationMaterials: {
         '0.05': 'Latón',
         '0.10': 'Cuproníquel',
-        '0.20': 'Bronce',
+        '0.20': 'Latón',
         '0.50': 'Cuproníquel',
         '1': 'Cuproníquel',
         '5': 'Cuproníquel',
         '10': 'Cuproníquel',
         '20': 'Cuproníquel',
         '50': 'Cuproníquel',
-        '100': 'Bronce de aluminio',
+        '100': 'Plata',
       },
+      commemorativeDenominations: {'100'},
+      defaultCommemorativeReason: 'Morelos Plata Ley .720 (1977-1979)',
     ),
 
-    // 1.20 México - Acero Inoxidable, Latón y Valores Medios (1984–1987)
+    // 1.21 México - Acero Inoxidable, Latón y Valores Medios (1984–1987)
     // Ref: Banco de México - Monedas metálicas desmonetizadas:
     // https://www.banxico.org.mx/billetes-y-monedas/monedas-desmonetizadas-unida.html
     NumismaticEmissionRuleData(
@@ -4664,7 +4701,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: '175 Aniv Independencia / 75 Aniv Revolución / Copa Mundial FIFA 1986',
     ),
 
-    // 1.21 México - Grandes Valores de Inflación Pre-N$ (1988–1992)
+    // 1.22 México - Grandes Valores de Inflación Pre-N$ (1988–1992)
     // Ref: Banco de México - Monedas metálicas desmonetizadas:
     // https://www.banxico.org.mx/billetes-y-monedas/monedas-desmonetizadas-unida.html
     NumismaticEmissionRuleData(
@@ -4685,7 +4722,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: 'Cincuentenario de la Expropiación Petrolera (1988)',
     ),
 
-    // 1.22 México - Nuevos Pesos (N$ grabados físicamente 1992–1995)
+    // 1.23 México - Nuevos Pesos (N$ grabados físicamente 1992–1995)
     // Ref: Banco de México - Familia B (Nuevos Pesos en proceso de retiro):
     // https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
     // Ref: Numista - Mexico Nuevos Pesos (1992-1995):
@@ -4713,7 +4750,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: 'Emisión de cambio de régimen',
     ),
 
-    // 1.23 México - Familia C Primer Período (1996–2007)
+    // 1.24 México - Familia C Primer Período (1996–2007)
     // Ref: Banco de México - Familia C en circulación:
     // https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
     // Ref: Numista - Mexico Modern Pesos (1996-date):
@@ -4741,7 +4778,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 1.24 México - Familia C Bicentenario y Centenario (2008–2010)
+    // 1.25 México - Familia C Bicentenario y Centenario (2008–2010)
     // Ref: Banco de México - Monedas de 5 pesos conmemorativas:
     // https://www.banxico.org.mx/billetes-y-monedas/monedas-5-pesos-conmemorativ.html
     NumismaticEmissionRuleData(
@@ -4766,7 +4803,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 1.25 México - Familia C Fraccionarias Acero Inoxidable (2011–2019)
+    // 1.26 México - Familia C Fraccionarias Acero Inoxidable (2011–2019)
     // Ref: Banco de México - Monedas conmemorativas de 20 pesos Familia C:
     // https://www.banxico.org.mx/billetes-y-monedas/monedas-20-pesos-conmemorati.html
     NumismaticEmissionRuleData(
@@ -4790,7 +4827,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 1.26 México - Familia C1 Dodecagonal (2020–presente)
+    // 1.27 México - Familia C1 Dodecagonal (2020–presente)
     // Ref: Banco de México - Monedas de 20 pesos conmemorativas Familia C1:
     // https://www.banxico.org.mx/billetes-y-monedas/monedas-20-pesos-conmemorati.html
     NumismaticEmissionRuleData(
@@ -4957,7 +4994,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'USD',
       denominations: ['0.01', '0.05', '0.10', '0.25', '0.50'],
       denominationMaterials: {
-        '0.01': 'Bronce',
+        '0.01': 'Latón',        // 95% Cobre, 5% Zinc (Gilding metal / Latón rojo sin estaño desde 1962)
         '0.05': 'Cuproníquel',
         '0.10': 'Cuproníquel',
         '0.25': 'Cuproníquel',
@@ -4976,7 +5013,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'USD',
       denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
       denominationMaterials: {
-        '0.01': 'Bronce',
+        '0.01': 'Latón',        // 95% Cobre, 5% Zinc (Gilding metal / Latón rojo)
         '0.05': 'Cuproníquel',
         '0.10': 'Cuproníquel',
         '0.25': 'Cuproníquel',
@@ -4998,7 +5035,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'USD',
       denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
       denominationMaterials: {
-        '0.01': 'Zinc',
+        '0.01': 'Zinc bañado en cobre',
         '0.05': 'Cuproníquel',
         '0.10': 'Cuproníquel',
         '0.25': 'Cuproníquel',
@@ -5020,7 +5057,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'USD',
       denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
       denominationMaterials: {
-        '0.01': 'Zinc',
+        '0.01': 'Zinc bañado en cobre',
         '0.05': 'Cuproníquel',
         '0.10': 'Cuproníquel',
         '0.25': 'Cuproníquel',
@@ -5396,7 +5433,7 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Cuproníquel',
         '20': 'Cuproníquel',
         '50': 'Acero inoxidable',
-        '100': 'Acero latonado',
+        '100': 'Bronce de aluminio',
         '200': 'Cuproníquel',
         '500': 'Bimetálica',
       },
@@ -5415,7 +5452,7 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'COP',
       denominations: ['50', '100', '200', '500', '1000'],
       denominationMaterials: {
-        '50': 'Acero niquelado',
+        '50': 'Acero bañado en níquel',
         '100': 'Bronce de aluminio',
         '200': 'Cuproníquel',
         '500': 'Bimetálica',
@@ -5613,7 +5650,7 @@ abstract final class AppTechnicalNumismatics {
         '0.01': 'Aluminio',
         '0.02': 'Aluminio',
         '0.05': 'Aluminio',
-        '0.10': 'Acero niquelado',
+        '0.10': 'Acero bañado en níquel',
         '0.25': 'Cuproníquel',
         '0.50': 'Cuproníquel',
         '1': 'Cuproníquel',
@@ -5635,10 +5672,10 @@ abstract final class AppTechnicalNumismatics {
       denominations: ['0.05', '0.20', '1', '3', '5'],
       denominationMaterials: {
         '0.05': 'Aluminio',
-        '0.20': 'Acero latonado',
-        '1': 'Acero niquelado',
-        '3': 'Acero niquelado',
-        '5': 'Acero latonado',
+        '0.20': 'Acero bañado en latón',
+        '1': 'Acero bañado en níquel',
+        '3': 'Acero bañado en níquel',
+        '5': 'Acero bañado en latón',
       },
       commemorativeDenominations: {'3', '5'},
       defaultCommemorativeReason: 'Conmemorativa',
@@ -5804,9 +5841,9 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'ARS',
       denominations: ['1', '2', '5', '10'],
       denominationMaterials: {
-        '1': 'Acero electrodepositado con cobre',
-        '2': 'Acero electrodepositado con latón',
-        '5': 'Acero electrodepositado con níquel',
+        '1': 'Acero bañado en cobre',
+        '2': 'Acero bañado en latón',
+        '5': 'Acero bañado en níquel',
         '10': 'Alpaca (Plata alemana)',
       },
     ),
@@ -6185,7 +6222,7 @@ abstract final class AppTechnicalNumismatics {
         '0.10': 'Acero bañado en níquel',
         '0.20': 'Cuproníquel',
         '0.50': 'Cuproníquel',
-        '1': 'Latón de níquel',
+        '1': 'Níquel-Latón',
         '2': 'Bimetálica',
         '5': 'Cuproníquel',
       },

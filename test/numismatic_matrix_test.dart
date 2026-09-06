@@ -16,8 +16,14 @@ void main() {
       final mat50 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1982, currencyCode: 'MXP', denomination: '50');
       expect(mat50, equals('Cuproníquel'));
 
-      final mat100 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1982, currencyCode: 'MXP', denomination: '100');
-      expect(mat100, equals('Bronce de aluminio'));
+      final mat20c = NumismaticDataHelper.inferMaterial(country: 'México', year: 1982, currencyCode: 'MXP', denomination: '0.20');
+      expect(mat20c, equals('Latón'));
+
+      final mat100Plata = NumismaticDataHelper.inferMaterial(country: 'México', year: 1978, currencyCode: 'MXP', denomination: '100');
+      expect(mat100Plata, equals('Plata'));
+
+      final mat100AlBr = NumismaticDataHelper.inferMaterial(country: 'México', year: 1985, currencyCode: 'MXP', denomination: '100');
+      expect(mat100AlBr, equals('Bronce de aluminio'));
     });
 
     test('Mexico 1993 infers MXN Nuevos Pesos, bimetallics, and commemorative flags', () {
@@ -52,7 +58,7 @@ void main() {
       expect(mat116, equals('Cobre'));
     });
 
-    test('USA Silver vs Clad era transition (1964 vs 1970)', () {
+    test('USA Silver vs Clad vs Alloy transitions (1964 vs 1970 vs 1980 vs 1985)', () {
       final curr1964 = NumismaticDataHelper.inferCurrency(country: 'Estados Unidos', year: 1964);
       expect(curr1964, equals('USD'));
 
@@ -61,6 +67,14 @@ void main() {
 
       final mat1970Quarter = NumismaticDataHelper.inferMaterial(country: 'Estados Unidos', year: 1970, denomination: '0.25');
       expect(mat1970Quarter, equals('Cuproníquel'));
+
+      // US Cent 1980 is Red Brass / Gilding Metal (Latón: 95% Cu, 5% Zn)
+      final mat1980Cent = NumismaticDataHelper.inferMaterial(country: 'Estados Unidos', year: 1980, denomination: '0.01');
+      expect(mat1980Cent, equals('Latón'));
+
+      // US Cent 1985 is Copper-plated Zinc (Zinc bañado en cobre)
+      final mat1985Cent = NumismaticDataHelper.inferMaterial(country: 'Estados Unidos', year: 1985, denomination: '0.01');
+      expect(mat1985Cent, equals('Zinc bañado en cobre'));
     });
 
     test('Spain Pesetas vs Euro transition (1975 vs 2005)', () {
