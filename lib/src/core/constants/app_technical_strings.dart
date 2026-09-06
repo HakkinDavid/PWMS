@@ -4911,7 +4911,10 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Cuproníquel',
         '100': 'Plata',
       },
-                                              commemorativeDenominations: {'100'},
+      denominationAllowedMaterials: {
+        '0.20': ['Latón', 'Cuproníquel'],
+      },
+      commemorativeDenominations: {'100'},
       commemorativeMotifsByDenomination: {
         '50': [
           NumismaticMotifRule('Coyolxauhqui - Templo Mayor (1982-1984)', 1982, 1984),
@@ -4923,7 +4926,7 @@ abstract final class AppTechnicalNumismatics {
       commemorativeReasons: [
         'Morelos Plata Ley .720 (1977-1979)',
       ],
-),
+    ),
 
     // 1.21 México - Acero Inoxidable, Latón y Valores Medios (1984–1987)
     // Ref General: Banco de México - Monedas metálicas desmonetizadas:
@@ -5252,7 +5255,7 @@ abstract final class AppTechnicalNumismatics {
           NumismaticMotifRule('Centenario de la Fuerza Aérea Mexicana (2015)', 2015),
           NumismaticMotifRule('Bicentenario Luctuoso del Generalísimo José María Morelos y Pavón (2015)', 2015),
           NumismaticMotifRule('Cincuenta Aniversario de la Aplicación del Plan DN-III-E (2016)', 2016),
-          NumismaticMotifRule('Centenario de la Promulgación de la Constitución Política (2017)', 2017),
+          NumismaticMotifRule('Centenario de la Promulgación de la Constitución Política de 1917 (2017)', 2017),
           NumismaticMotifRule('50 Aniversario de la Aplicación del Plan Marina (2018)', 2018),
           NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (2019)', 2019),
           NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (2019)', 2019),
@@ -5267,12 +5270,14 @@ abstract final class AppTechnicalNumismatics {
         'Centenario de la Fuerza Aérea Mexicana (2015)',
         'Bicentenario Luctuoso de Morelos (2015)',
         'Plan DN-III-E (2016)',
+        'Centenario de la Promulgación de la Constitución Política de 1917 (2017)',
+        'Centenario de la Constitución Política de 1917 (2017)',
         'Centenario de la Constitución (2017)',
         'Plan Marina (2018)',
         '500 Años del Puerto de Veracruz (2019)',
         'Emiliano Zapata (2019)',
       ],
-),
+    ),
 
     // 1.27 México - Familia C1 Dodecagonal (2020–presente)
     // Ref General: Banco de México - Monedas de 20 pesos conmemorativas Familia C1:
@@ -5298,7 +5303,7 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Bimetálica',
         '20': 'Bimetálica',
       },
-                                              commemorativeDenominations: {'20'},
+      commemorativeDenominations: {'20'},
       commemorativeMotifsByDenomination: {
         '20': [
           NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)', 2020),
@@ -5306,8 +5311,8 @@ abstract final class AppTechnicalNumismatics {
           NumismaticMotifRule('700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)', 2021),
           NumismaticMotifRule('500 Años de Memoria Histórica de México-Tenochtitlan (2021)', 2021),
           NumismaticMotifRule('Bicentenario de la Independencia Nacional (2021)', 2021),
+          NumismaticMotifRule('Bicentenario de la Marina-Armada de México (2021-2022)', 2021, 2022),
           NumismaticMotifRule('Cien Años de la Llegada de los Menonitas a México (2022)', 2022),
-          NumismaticMotifRule('Bicentenario de la Marina-Armada de México (2022)', 2022),
           NumismaticMotifRule('Bicentenario del Heroico Colegio Militar (2023)', 2023),
           NumismaticMotifRule('Doscientos Años de Relaciones Diplomáticas México-Estados Unidos (2023)', 2023),
           NumismaticMotifRule('500 Años de la Fundación de la Villa de Colima (2023)', 2023),
@@ -5319,15 +5324,19 @@ abstract final class AppTechnicalNumismatics {
         'Fundación Lunar de Tenochtitlan (2021)',
         'Memoria Histórica de Tenochtitlan (2021)',
         'Bicentenario de la Independencia (2021)',
-        'Llegada de los Menonitas a México (2022)',
+        'Bicentenario de la Marina-Armada de México (2021-2022)',
+        'Bicentenario de la Marina-Armada (1821-2021)',
+        'Bicentenario de la Marina-Armada de México (2021)',
+        'Marina-Armada de México / Fuerza Armada (2021)',
         'Bicentenario de la Marina-Armada (2022)',
+        'Llegada de los Menonitas a México (2022)',
         'Bicentenario del Heroico Colegio Militar (2023)',
         'Relaciones Diplomáticas México-EE.UU. (2023)',
         'Villa de Colima (2023)',
         'Instauración del Senado de la República (2024)',
         'Heroico Batallón de Infantería de Marina (2024)',
       ],
-),
+    ),
 
     // =========================================================================
     // 2. ESTADOS UNIDOS DE AMÉRICA
@@ -8931,22 +8940,24 @@ abstract final class AppTechnicalNumismatics {
         '100': ['Papel de algodón', 'Polímero'],
       },
                   isBanknote: true,
-                            commemorativeDenominations: {'100', '200'},
+      commemorativeDenominations: {'100', '200'},
       commemorativeMotifsByDenomination: {
         '100': [
-          NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2010),
-          NumismaticMotifRule('Centenario de la Constitución Política (2017)', 2017),
+          NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2009, 2010),
+          NumismaticMotifRule('Centenario de la Constitución Política de 1917 (2017)', 2016, 2017),
         ],
         '200': [
-          NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2009, 2010),
         ],
       },
       commemorativeReasons: [
         'Centenario de la Revolución Mexicana (2010)',
+        'Centenario de la Constitución Política de 1917 (2017)',
         'Centenario de la Constitución Política (2017)',
+        'Centenario de la Constitución Política de 1917',
         'Bicentenario de la Independencia de México (2010)',
       ],
-),
+    ),
 
     // B1.9 México Billetes - Familia G en Circulación y Polímeros de Vanguardia (2020–presente)
     // Ref General: Banco de México - Billetes de la Familia G:
@@ -8985,7 +8996,7 @@ abstract final class AppTechnicalNumismatics {
       commemorativeReasons: [
         'Bicentenario de la Independencia Nacional (2021)',
       ],
-),
+    ),
 
     // B2.1 Estados Unidos Billetes - Large Size Notes (1861–1927)
     // Ref General: US Bureau of Engraving and Printing - Large Size Currency: https://www.bep.gov
@@ -9014,7 +9025,7 @@ abstract final class AppTechnicalNumismatics {
         '10000': 'Papel de algodón',
       },
       isBanknote: true,
-                      ),
+    ),
 
     // B2.2 Estados Unidos Billetes - Small Size Federal Reserve Notes (1928–presente)
     // Ref General: US Bureau of Engraving and Printing - Currency Denominations:
@@ -9051,22 +9062,7 @@ abstract final class AppTechnicalNumismatics {
         '100000': 'Papel de algodón',
       },
       isBanknote: true,
-          commemorativeDenominations: {'100', '200'},
-      commemorativeMotifsByDenomination: {
-        '100': [
-          NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2010),
-          NumismaticMotifRule('Centenario de la Constitución Política (2017)', 2017),
-        ],
-        '200': [
-          NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2010),
-        ],
-      },
-      commemorativeReasons: [
-        'Centenario de la Revolución Mexicana (2010)',
-        'Centenario de la Constitución Política (2017)',
-        'Bicentenario de la Independencia de México (2010)',
-      ],
-),
+    ),
 
     // B3.1 España Billetes - Era de la Peseta (1874–2001)
     // Ref General: Banco de España - Billetes en pesetas:
@@ -9722,11 +9718,19 @@ class NumismaticEmissionRuleData {
   bool isMotifValidForDenomination(String targetDenom, String targetMotif, {int? year}) {
     final motifs = getCommemorativeMotifsForDenomination(targetDenom, year: year);
     if (motifs.isEmpty) return true;
-    final clean = targetMotif.trim().toLowerCase();
-    return motifs.any((m) {
-      final mClean = m.trim().toLowerCase();
-      return mClean == clean || mClean.contains(clean) || clean.contains(mClean);
-    });
+    return motifs.any((m) => matchesMotif(m, targetMotif));
+  }
+
+  static bool matchesMotif(String motif1, String motif2) {
+    final c1 = motif1.trim().toLowerCase();
+    final c2 = motif2.trim().toLowerCase();
+    if (c1 == c2 || c1.contains(c2) || c2.contains(c1)) return true;
+    final b1 = c1.replaceAll(RegExp(r'\s*\([\d\s\-–—/]+\)\s*$'), '').trim();
+    final b2 = c2.replaceAll(RegExp(r'\s*\([\d\s\-–—/]+\)\s*$'), '').trim();
+    if (b1.isNotEmpty && b2.isNotEmpty) {
+      if (b1 == b2 || b1.contains(b2) || b2.contains(b1)) return true;
+    }
+    return false;
   }
 
   static bool matchesDenomination(String d1, String d2) {

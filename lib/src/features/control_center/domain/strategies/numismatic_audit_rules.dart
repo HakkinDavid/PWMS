@@ -651,60 +651,15 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                   );
 
                   if (availableMotifs.isNotEmpty) {
-                    final items = [...availableMotifs, AppStrings.customMotifOption];
-                    final picked = await AppWheelPicker.show<String>(
+                    customValue = await AppWheelPicker.show<String>(
                       ctx,
-                      items: items,
-                      initialValue: items.first,
+                      items: availableMotifs,
+                      initialValue: availableMotifs.first,
                       labelBuilder: (m) => m,
                       title: AppStrings.motifLabel,
                     );
-                    if (picked == null || picked.isEmpty) {
+                    if (customValue == null || customValue.isEmpty) {
                       return false;
-                    }
-                    if (picked == AppStrings.customMotifOption) {
-                      final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);
-                      final formKey = GlobalKey<FormState>();
-                      final confirmed = await showDialog<bool>(
-                        context: ctx,
-                        builder: (dialogCtx) => AlertDialog(
-                          title: const Text(AppStrings.motifLabel),
-                          content: Form(
-                            key: formKey,
-                            child: TextFormField(
-                              controller: textCtrl,
-                              decoration: const InputDecoration(labelText: AppStrings.motifLabel),
-                              validator: (val) {
-                                if (val == null || val.trim().isEmpty) {
-                                  return AppStrings.selectMotifPrompt;
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(dialogCtx, false),
-                              child: const Text(AppStrings.cancel),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                if (formKey.currentState?.validate() ?? false) {
-                                  Navigator.pop(dialogCtx, true);
-                                }
-                              },
-                              child: const Text(AppStrings.confirm),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirmed == true && textCtrl.text.trim().isNotEmpty) {
-                        customValue = textCtrl.text.trim();
-                      } else {
-                        return false;
-                      }
-                    } else {
-                      customValue = picked;
                     }
                   } else {
                     final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);

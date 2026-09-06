@@ -1154,14 +1154,18 @@ class AppStrings {
       '$displayName • $anomalyDescription';
   static String numismaticEmissionOutlierQuestion(String anomalyDetail, String suggestedFix) =>
       '$anomalyDetail ¿Deseas aplicar la corrección recomendada: $suggestedFix?';
-  static String numismaticMagnitudeNotAmongExpectedDesc(String magnitudeName) =>
-      'La magnitud $magnitudeName no posee un valor de los esperados para este espécimen';
+  static String numismaticMagnitudeNotAmongExpectedDesc(String magnitudeName, {String? currentValue}) =>
+      currentValue != null && currentValue.trim().isNotEmpty
+          ? 'La magnitud $magnitudeName (actual: "$currentValue") no posee un valor de los esperados para este espécimen'
+          : 'La magnitud $magnitudeName no posee un valor de los esperados para este espécimen';
   static String numismaticCurrencyAnachronismDesc(String foundIso, String expectedIso, int year, String country) =>
       'Divisa $foundIso no válida para $country ($year). Esperada: $expectedIso';
   static String numismaticMaterialContradictionDesc(String foundMat, String expectedMat, String denom) =>
       'Material "$foundMat" incongruente con emisión para $denom. Esperado: "$expectedMat"';
-  static String numismaticMotifMismatchDesc(String denom, String motif) =>
-      'Emisión de $denom corresponde al motivo conmemorativo "$motif", pero no coincide';
+  static String numismaticMotifMismatchDesc(String denom, String motif, {String? currentMotif}) =>
+      currentMotif != null && currentMotif.trim().isNotEmpty
+          ? 'Motivo actual "$currentMotif" incongruente con emisión para $denom. Esperado: "$motif"'
+          : 'Emisión de $denom corresponde al motivo conmemorativo "$motif", pero no coincide';
   static String numismaticDenominationAnomalyDesc(String denom, String country, int year) =>
       'Denominación "$denom" no pertenece a las emisiones oficiales de $country ($year)';
   static String numismaticYearOutOfRangeDesc(int year, String country) =>

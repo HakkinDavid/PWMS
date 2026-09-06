@@ -939,7 +939,7 @@ class NumismaticDomainRules {
           if (!allValidCurrencies.contains(iso)) {
             final expectedIso = allRules.first.defaultCurrency ?? allRules.first.validCurrencies.first;
             final desc = allValidCurrencies.length > 1
-                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.currencyPropertyName)
+                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.currencyPropertyName, currentValue: currency)
                 : AppStrings.numismaticCurrencyAnachronismDesc(iso, expectedIso, year, country);
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.currencyAnachronism,
@@ -980,7 +980,7 @@ class NumismaticDomainRules {
             if (!isValid) {
               final expectedMat = validMaterials.first;
               final desc = validMaterials.length > 1
-                  ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.materialPropertyName)
+                  ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.materialPropertyName, currentValue: material)
                   : AppStrings.numismaticMaterialContradictionDesc(material, expectedMat, denomStr);
               outliers.add(NumismaticEmissionOutlier(
                 type: NumismaticEmissionOutlierType.materialContradiction,
@@ -1010,11 +1010,7 @@ class NumismaticDomainRules {
           bool isMotifMismatch = false;
           if (effectiveMotif != null && effectiveMotif.trim().isNotEmpty) {
             if (motifs.isNotEmpty) {
-              final cleanFound = effectiveMotif.trim().toLowerCase();
-              final matchesAny = motifs.any((m) {
-                final cleanM = m.trim().toLowerCase();
-                return cleanM == cleanFound || cleanM.contains(cleanFound) || cleanFound.contains(cleanM);
-              });
+              final matchesAny = motifs.any((m) => NumismaticEmissionRuleData.matchesMotif(m, effectiveMotif));
               if (!matchesAny) {
                 isMotifMismatch = true;
               }
@@ -1028,8 +1024,8 @@ class NumismaticDomainRules {
           if (isMotifMismatch) {
             final expectedMotif = motifs.isNotEmpty ? motifs.first : AppStrings.motifPropertyName;
             final desc = motifs.length > 1
-                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.motifPropertyName)
-                : AppStrings.numismaticMotifMismatchDesc(denomStr, expectedMotif);
+                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.motifPropertyName, currentValue: effectiveMotif)
+                : AppStrings.numismaticMotifMismatchDesc(denomStr, expectedMotif, currentMotif: effectiveMotif);
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.motifMismatch,
               title: AppStrings.numismaticEmissionOutlierCardTitle,
@@ -1048,7 +1044,7 @@ class NumismaticDomainRules {
           if (!matchesDenom) {
             final allDenoms = allRules.expand((r) => r.denominations).toSet();
             final desc = allDenoms.length > 1
-                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.nominalValuePropertyName)
+                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.nominalValuePropertyName, currentValue: denomStr)
                 : AppStrings.numismaticDenominationAnomalyDesc(denomStr, country, year);
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.denominationAnomaly,

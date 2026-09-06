@@ -16,6 +16,7 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/num
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/governance_audit_rules.dart';
+import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/numismatic_audit_rules.dart';
 import 'package:platinum_world_management_system/src/features/control_center/presentation/control_center_screen.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
@@ -356,11 +357,11 @@ void main() {
       // Must NOT contain "Esperado" or "Esperada"
       expect(matOutlier.description.contains('Esperado'), isFalse);
       expect(matOutlier.description.contains('Esperada'), isFalse);
-      // Must contain the expected phrasing
-      expect(matOutlier.description, 'La magnitud Material no posee un valor de los esperados para este espécimen');
+      // Must contain the expected phrasing with current value
+      expect(matOutlier.description, 'La magnitud Material (actual: "Oro") no posee un valor de los esperados para este espécimen');
     });
 
-    test('When only 1 material is valid, text specifies the single expected material', () {
+    test('When only 1 material is valid, text specifies the single expected material and current value', () {
       // Mexico 1980 5 Pesos has only Cuproníquel
       final instance = WorldEntity(
         id: 'inst_mex_5',
@@ -385,8 +386,180 @@ void main() {
       final matOutlier = outliers.first;
       expect(matOutlier.type, NumismaticEmissionOutlierType.materialContradiction);
 
-      // Should contain "Esperado:" for 1 option
+      // Should contain "Esperado:" and current material for 1 option
       expect(matOutlier.description.contains('Esperado: "Cuproníquel"'), isTrue);
+      expect(matOutlier.description.contains('Material "Oro"'), isTrue);
+    });
+
+    test('When motif does not match single commemorative option, description indicates current and expected motif', () {
+      // Mexico 1993 10 Nuevos Pesos has only Piedra del Sol
+      final instance = WorldEntity(
+        id: 'inst_mex_n10',
+        speciesId: 'sp_coin',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: [
+          InstanceMagnitude(id: '1', instanceId: 'inst_mex_n10', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+          InstanceMagnitude(id: '2', instanceId: 'inst_mex_n10', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
+          InstanceMagnitude(id: '3', instanceId: 'inst_mex_n10', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
+          InstanceMagnitude(id: '4', instanceId: 'inst_mex_n10', propertyName: 'Valor nominal', stringValue: '10', dataType: 'string'),
+          InstanceMagnitude(id: '5', instanceId: 'inst_mex_n10', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
+          InstanceMagnitude(id: '6', instanceId: 'inst_mex_n10', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
+        ],
+      );
+
+      final outliers = NumismaticDomainRules.checkEmissionOutliers(
+        instance: instance,
+        species: coinSpecies,
+      );
+
+      expect(outliers.length, 1);
+      final motifOutlier = outliers.first;
+      expect(motifOutlier.type, NumismaticEmissionOutlierType.motifMismatch);
+      expect(motifOutlier.description, contains('Motivo actual "Emisión de cambio de régimen"'));
+      expect(motifOutlier.description, contains('Esperado: "Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)"'));
+    });
+
+    testWidgets('NumismaticEmissionOutlierStrategy motif onFix returns immediately without modal or dialog for single motif option', (WidgetTester tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(
+              id: 'sp_coin_n10',
+              name: 'Moneda Numismática',
+              mainPhotoPath: const Value('local/coin.jpg'),
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.subspeciesTable).insert(
+            SubspeciesTableCompanion.insert(
+              id: 'sub_n10',
+              speciesId: 'sp_coin_n10',
+              subspeciesName: '10 Nuevos Pesos 1993',
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(
+              id: 'e_n10',
+              speciesId: 'sp_coin_n10',
+              subspeciesId: const Value('sub_n10'),
+              locationId: const Value('loc_1'),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+
+      // Add magnitudes for Mexico 1993 10 MXN coin with incorrect motif
+      final mags = [
+        InstanceMagnitude(id: 'm1', instanceId: 'e_n10', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+        InstanceMagnitude(id: 'm2', instanceId: 'e_n10', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
+        InstanceMagnitude(id: 'm3', instanceId: 'e_n10', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
+        InstanceMagnitude(id: 'm4', instanceId: 'e_n10', propertyName: 'Valor nominal', stringValue: '10', dataType: 'string'),
+        InstanceMagnitude(id: 'm5', instanceId: 'e_n10', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
+        InstanceMagnitude(id: 'm6', instanceId: 'e_n10', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
+      ];
+
+      for (final m in mags) {
+        await db.into(db.instanceMagnitudesTable).insert(
+              InstanceMagnitudesTableCompanion.insert(
+                id: m.id,
+                instanceId: m.instanceId,
+                propertyName: m.propertyName,
+                dataType: Value(m.dataType),
+                stringValue: Value(m.stringValue),
+                magnitudeValue: Value(m.magnitudeValue),
+              ),
+            );
+      }
+
+      final species = CatalogItem(
+        id: 'sp_coin_n10',
+        name: 'Moneda Numismática',
+        type: 'Moneda',
+        mainPhotoPath: 'local/coin.jpg',
+        createdAt: now,
+      );
+      final sub = Subspecies(
+        id: 'sub_n10',
+        speciesId: 'sp_coin_n10',
+        subspeciesName: '10 Nuevos Pesos 1993',
+        createdAt: now,
+      );
+      final entity = WorldEntity(
+        id: 'e_n10',
+        speciesId: 'sp_coin_n10',
+        subspeciesId: 'sub_n10',
+        locationId: 'loc_1',
+        createdAt: now,
+        updatedAt: now,
+        magnitudes: mags,
+      );
+
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: [entity],
+        allCatalog: [species],
+        allSubspecies: [sub],
+        allLocations: const [],
+        allRelations: const [],
+        allSpeciesMagnitudes: const [],
+        allInstanceMagnitudes: mags,
+        allRequirements: const [],
+        effectiveLocationMap: const {},
+      );
+
+      const strategy = NumismaticEmissionOutlierStrategy();
+      final cards = await strategy.evaluate(context);
+      expect(cards.length, 1);
+      final card = cards.first;
+      expect(card.type, AuditCardType.numismaticEmissionOutlier);
+
+      late BuildContext buildCtx;
+      late WidgetRef widgetRef;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Consumer(
+                builder: (ctx, ref, _) {
+                  buildCtx = ctx;
+                  widgetRef = ref;
+                  return const SizedBox();
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Trigger onFix
+      bool? fixResult;
+      card.onFix(buildCtx, widgetRef).then((res) => fixResult = res);
+      await tester.pumpAndSettle();
+
+      // Should NOT open any dialog or AppWheelPicker because there is only 1 canonical motif
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(AppWheelPicker<String>), findsNothing);
+      expect(fixResult, isTrue);
+
+      // Verify the entity was updated with the canonical motif in the database
+      final updatedMags = await (db.select(db.instanceMagnitudesTable)..where((tbl) => tbl.instanceId.equals('e_n10'))).get();
+      final motifMag = updatedMags.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(motifMag.stringValue, 'Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)');
+
+      // Allow AppToast timer to complete
+      await tester.pump(const Duration(seconds: 4));
     });
   });
 }

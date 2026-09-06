@@ -555,6 +555,91 @@ void main() {
         'Juegos Olímpicos México 68 - Tipo 1 (Aros rectos / alineados)',
         'Juegos Olímpicos México 68 - Tipo 2 (Aros caídos / desiguales)',
       ]));
+
+      // 7. Mexico 100 MXN Banknote Centenario de la Constitución Política de 1917 (2016-2017)
+      final note100_2016 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2016,
+        currencyCode: 'MXN',
+        denomination: '100',
+        isBanknote: true,
+      );
+      expect(note100_2016, contains('Centenario de la Constitución Política de 1917 (2017)'));
+
+      final note100_2017 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2017,
+        currencyCode: 'MXN',
+        denomination: '100',
+        isBanknote: true,
+      );
+      expect(note100_2017, contains('Centenario de la Constitución Política de 1917 (2017)'));
+
+      // 8. Mexico 20 MXN Coin Marina-Armada / Fuerza Armada (2021-2022)
+      final coin20_2021 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2021,
+        currencyCode: 'MXN',
+        denomination: '20',
+        isBanknote: false,
+      );
+      expect(coin20_2021, contains('Bicentenario de la Marina-Armada de México (2021-2022)'));
+
+      final coin20_2022 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2022,
+        currencyCode: 'MXN',
+        denomination: '20',
+        isBanknote: false,
+      );
+      expect(coin20_2022, contains('Bicentenario de la Marina-Armada de México (2021-2022)'));
+
+      // 9. Mexico 20 Centavos Madero (1974-1983) Cuproníquel & Latón
+      final madero1983Materials = NumismaticDataHelper.getValidMaterialsForCountry(
+        country: 'México',
+        year: 1983,
+        currencyCode: 'MXP',
+        denomination: '0.20',
+      );
+      expect(madero1983Materials, containsAll(['Latón', 'Cuproníquel']));
+
+      final madero1974Materials = NumismaticDataHelper.getValidMaterialsForCountry(
+        country: 'México',
+        year: 1974,
+        currencyCode: 'MXP',
+        denomination: '0.20',
+      );
+      expect(madero1974Materials, containsAll(['Latón', 'Cuproníquel']));
+
+      // 10. Robust motif matching
+      expect(
+        NumismaticEmissionRuleData.matchesMotif(
+          'Centenario de la Constitución Política de 1917 (2017)',
+          'Centenario de la Constitución Política de 1917',
+        ),
+        isTrue,
+      );
+      expect(
+        NumismaticEmissionRuleData.matchesMotif(
+          'Centenario de la Constitución Política de 1917 (2017)',
+          'Centenario de la Constitución Política (2017)',
+        ),
+        isTrue,
+      );
+      expect(
+        NumismaticEmissionRuleData.matchesMotif(
+          'Bicentenario de la Marina-Armada de México (2021-2022)',
+          'Bicentenario de la Marina-Armada de México (2021)',
+        ),
+        isTrue,
+      );
+      expect(
+        NumismaticEmissionRuleData.matchesMotif(
+          'Marina-Armada de México / Fuerza Armada (2021)',
+          'Fuerza Armada',
+        ),
+        isTrue,
+      );
     });
   });
 }

@@ -875,6 +875,105 @@ void main() {
       expect(motifMag.stringValue, equals('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)'));
       expect(reloaded.notes, isNot(contains('Emisión de cambio de régimen')));
     });
+
+    test('Audit detects no outliers for valid 1983 Cuproníquel 20 Centavos Madero coin', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final instance = WorldEntity(
+        id: 'madero-1983-cupro',
+        speciesId: species.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: [
+          InstanceMagnitude(id: 'm1', instanceId: 'madero-1983-cupro', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'madero-1983-cupro', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1983.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'madero-1983-cupro', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'madero-1983-cupro', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 0.20),
+          InstanceMagnitude(id: 'm5', instanceId: 'madero-1983-cupro', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
+        ],
+      );
+
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(
+        instance: instance,
+        species: species,
+      );
+      expect(outliers, isEmpty);
+    });
+
+    test('Audit detects no outliers for 100 MXN Banknote Constitución 1917 (2016-2017)', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
+      final instance2016 = WorldEntity(
+        id: 'note-100-const-2016',
+        speciesId: species.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: [
+          InstanceMagnitude(id: 'm1', instanceId: 'note-100-const-2016', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'note-100-const-2016', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2016.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'note-100-const-2016', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'note-100-const-2016', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'note-100-const-2016', propertyName: 'Material', dataType: 'string', stringValue: 'Papel de algodón'),
+          InstanceMagnitude(id: 'm6', instanceId: 'note-100-const-2016', propertyName: 'Motivo', dataType: 'string', stringValue: 'Centenario de la Constitución Política de 1917'),
+        ],
+      );
+
+      final outliers2016 = NumismaticDataHelper.checkEmissionOutliers(
+        instance: instance2016,
+        species: species,
+      );
+      expect(outliers2016, isEmpty);
+
+      final instance2017 = instance2016.copyWith(
+        id: 'note-100-const-2017',
+        magnitudes: [
+          ...instance2016.magnitudes.where((m) => m.propertyName != 'Acuñación'),
+          InstanceMagnitude(id: 'm2-2017', instanceId: 'note-100-const-2017', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2017.0, unitSymbol: 'año'),
+        ],
+      );
+
+      final outliers2017 = NumismaticDataHelper.checkEmissionOutliers(
+        instance: instance2017,
+        species: species,
+      );
+      expect(outliers2017, isEmpty);
+    });
+
+    test('Audit detects no outliers for 20 MXN Coin Marina-Armada / Fuerza Armada in 2021 and 2022', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final coin2021 = WorldEntity(
+        id: 'coin-marina-2021',
+        speciesId: species.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: [
+          InstanceMagnitude(id: 'm1', instanceId: 'coin-marina-2021', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'coin-marina-2021', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2021.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'coin-marina-2021', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'coin-marina-2021', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 20.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'coin-marina-2021', propertyName: 'Material', dataType: 'string', stringValue: 'Bimetálica'),
+          InstanceMagnitude(id: 'm6', instanceId: 'coin-marina-2021', propertyName: 'Motivo', dataType: 'string', stringValue: 'Bicentenario de la Marina-Armada de México'),
+        ],
+      );
+
+      final outliers2021 = NumismaticDataHelper.checkEmissionOutliers(
+        instance: coin2021,
+        species: species,
+      );
+      expect(outliers2021, isEmpty);
+
+      final coin2022 = coin2021.copyWith(
+        id: 'coin-marina-2022',
+        magnitudes: [
+          ...coin2021.magnitudes.where((m) => m.propertyName != 'Acuñación'),
+          InstanceMagnitude(id: 'm2-2022', instanceId: 'coin-marina-2022', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2022.0, unitSymbol: 'año'),
+        ],
+      );
+
+      final outliers2022 = NumismaticDataHelper.checkEmissionOutliers(
+        instance: coin2022,
+        species: species,
+      );
+      expect(outliers2022, isEmpty);
+    });
   });
 }
 
