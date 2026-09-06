@@ -205,15 +205,17 @@ void main() {
       expect(issue, contains('Grado de conservación no estandarizado'));
     });
 
-    test('findDuplicateSubspeciesGroups finds duplicate subspecies titles', () {
+    test('findDuplicateSubspeciesGroups finds duplicate subspecies titles including singular and plural', () {
       final list = [
         Subspecies(id: 's1', speciesId: 'sp1', subspeciesName: 'Pesos Mexicanos', createdAt: DateTime.now()),
         Subspecies(id: 's2', speciesId: 'sp1', subspeciesName: 'MXN', createdAt: DateTime.now()),
         Subspecies(id: 's3', speciesId: 'sp1', subspeciesName: 'Dólares Estadounidenses', createdAt: DateTime.now()),
+        Subspecies(id: 's4', speciesId: 'sp1', subspeciesName: 'Franco Francés', createdAt: DateTime.now()),
+        Subspecies(id: 's5', speciesId: 'sp1', subspeciesName: 'Francos Franceses', createdAt: DateTime.now()),
       ];
       final dups = NumismaticDataHelper.findDuplicateSubspeciesGroups(list);
-      expect(dups.length, equals(1));
-      expect(dups.values.first.length, equals(2));
+      expect(dups.length, equals(2));
+      expect(dups.values.any((group) => group.any((s) => s.subspeciesName == 'Franco Francés')), isTrue);
     });
 
     test('getCurrenciesForCountry filters currencies by country correctly', () {

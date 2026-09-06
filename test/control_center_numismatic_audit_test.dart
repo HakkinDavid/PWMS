@@ -591,6 +591,66 @@ void main() {
       final reloadedReason = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Razón de edición especial');
       expect(reloadedReason.stringValue, equals('Emisión de cambio de régimen'));
     });
+
+    test('repairAndStandardizeImportedData groups singular and plural pieces into single canonical subspecies', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+
+      // Create two legacy subspecies: 1 Franco Francés (singular) and 5 Francos Franceses (plural)
+      final sub1 = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: '1 Franco Francés - Francia (1960)',
+        notes: 'Moneda: Franco Francés | Año: 1960',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub1);
+
+      final sub5 = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: '5 Francos Franceses - Francia (1960)',
+        notes: 'Moneda: Francos Franceses | Año: 1960',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub5);
+
+      final inst1 = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub1.id);
+      final inst5 = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub5.id);
+
+      // Run bulk repair and standardize
+      await NumismaticDataHelper.repairAndStandardizeImportedData(db);
+
+      // Verify that there is ONLY ONE subspecies in total for FRF, named 'Francos Franceses'
+      final allSubs = await catalogRepo.getSubspeciesForSpecies(species.id);
+      expect(allSubs.length, equals(1));
+      expect(allSubs.first.subspeciesName, equals('Francos Franceses'));
+
+      // Verify instances are assigned to the single canonical subspecies and have Divisa FRF
+      final reloadedInst1 = await entityRepo.getEntityById(inst1.id);
+      final reloadedInst5 = await entityRepo.getEntityById(inst5.id);
+
+      expect(reloadedInst1!.subspeciesId, equals(allSubs.first.id));
+      expect(reloadedInst5!.subspeciesId, equals(allSubs.first.id));
+
+      final divisa1 = reloadedInst1.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
+      expect(divisa1.stringValue, equals('FRF'));
+
+      final divisa5 = reloadedInst5.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
+      expect(divisa5.stringValue, equals('FRF'));
+
+      // Verify NO incongruence in CCC
+      final issue1 = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
+        subspecies: allSubs.first,
+        instance: reloadedInst1,
+      );
+      expect(issue1, isNull);
+
+      final issue5 = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
+        subspecies: allSubs.first,
+        instance: reloadedInst5,
+      );
+      expect(issue5, isNull);
+    });
   });
 }
 

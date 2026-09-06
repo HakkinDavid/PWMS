@@ -27,6 +27,15 @@ void main() {
       expect(NumismaticParser.resolveCurrencyIsoCode('EUR'), 'EUR');
       expect(NumismaticParser.resolveCurrencyIsoCode('Reales Españoles'), 'REAL');
       expect(NumismaticParser.resolveCurrencyIsoCode('Táleros Germánicos (Thaler)'), 'GTH');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Francos Franceses'), 'FRF');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Franco Francés'), 'FRF');
+      expect(NumismaticParser.resolveCurrencyIsoCode('franco frances'), 'FRF');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Libra Esterlina'), 'GBP');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Libras Esterlinas'), 'GBP');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Marco Alemán'), 'DEM');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Marcos Alemanes'), 'DEM');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Lira Italiana'), 'ITL');
+      expect(NumismaticParser.resolveCurrencyIsoCode('Liras Italianas'), 'ITL');
 
       expect(NumismaticParser.resolveCurrencyName('MXN', count: 1), 'Peso Mexicano');
       expect(NumismaticParser.resolveCurrencyName('MXN', count: 5), 'Pesos Mexicanos');
@@ -36,6 +45,15 @@ void main() {
       expect(NumismaticParser.resolveCurrencyName('REAL', count: 8), 'Reales Españoles');
       expect(NumismaticParser.resolveCurrencyName('GTH', count: 1), 'Tálero Germánico (Thaler)');
       expect(NumismaticParser.resolveCurrencyName('GTH', count: 2), 'Táleros Germánicos (Thaler)');
+      expect(NumismaticParser.resolveCurrencyName('FRF', count: 1), 'Franco Francés');
+      expect(NumismaticParser.resolveCurrencyName('FRF', count: 5), 'Francos Franceses');
+      expect(NumismaticParser.resolveCurrencyName('Franco Francés'), 'Francos Franceses');
+      expect(NumismaticParser.resolveCurrencyName('franco frances'), 'Francos Franceses');
+
+      expect(NumismaticParser.areCurrenciesEquivalent('FRF', 'Franco Francés'), isTrue);
+      expect(NumismaticParser.areCurrenciesEquivalent('FRF', 'Francos Franceses'), isTrue);
+      expect(NumismaticParser.areCurrenciesEquivalent('FRF', 'franco frances'), isTrue);
+      expect(NumismaticParser.areCurrenciesEquivalent('Franco Francés', 'Francos Franceses'), isTrue);
     });
 
     test('NumismaticParser standardizes grades, materials, and builds titles', () {

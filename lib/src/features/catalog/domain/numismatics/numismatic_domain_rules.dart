@@ -136,7 +136,10 @@ class NumismaticDomainRules {
           : sub.subspeciesName;
       final canonicalCurrency = NumismaticParser.resolveCurrencyName(rawCurr);
 
-      final key = AppTechnicalStrings.numisSubspeciesKey(sub.speciesId, canonicalCurrency.trim().toLowerCase());
+      final key = AppTechnicalStrings.numisSubspeciesKey(
+        sub.speciesId,
+        NumismaticParser.normalizeCurrencyText(canonicalCurrency),
+      );
       grouped.putIfAbsent(key, () => []).add(sub);
     }
 
@@ -396,16 +399,24 @@ class NumismaticDomainRules {
             ? parsedOld.currencyName!
             : sub.subspeciesName;
         final canonicalCurrency = NumismaticParser.resolveCurrencyName(rawCurr);
+        final normKey = NumismaticParser.normalizeCurrencyText(canonicalCurrency);
 
         // Find or create currency subspecies
-        Subspecies? targetCurrencySub = currencySubspeciesMap[canonicalCurrency.toLowerCase()];
+        Subspecies? targetCurrencySub = currencySubspeciesMap[normKey];
         if (targetCurrencySub == null) {
           final existing = subspeciesList.where(
-            (s) => s.subspeciesName.trim().toLowerCase() == canonicalCurrency.toLowerCase(),
+            (s) => NumismaticParser.areCurrenciesEquivalent(s.subspeciesName, canonicalCurrency),
           ).firstOrNull;
 
           if (existing != null) {
             targetCurrencySub = existing;
+            if (existing.subspeciesName != canonicalCurrency) {
+              targetCurrencySub = existing.copyWith(
+                subspeciesName: canonicalCurrency,
+                notes: NumismaticParser.buildSubspeciesNotes(currencyName: canonicalCurrency),
+              );
+              await catalogRepo.saveSubspecies(targetCurrencySub);
+            }
           } else {
             targetCurrencySub = sub.copyWith(
               subspeciesName: canonicalCurrency,
@@ -413,7 +424,7 @@ class NumismaticDomainRules {
             );
             await catalogRepo.saveSubspecies(targetCurrencySub);
           }
-          currencySubspeciesMap[canonicalCurrency.toLowerCase()] = targetCurrencySub;
+          currencySubspeciesMap[normKey] = targetCurrencySub;
         }
 
         // Migrate instances under this sub

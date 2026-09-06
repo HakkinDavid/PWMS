@@ -33,16 +33,48 @@ class NumismaticAttributes {
 class NumismaticParser {
   NumismaticParser._();
 
+  static final List<MapEntry<String, String>> _sortedSingularReplacements =
+      AppTechnicalNumismatics.currencySingularReplacements.entries.toList()
+        ..sort((a, b) => b.key.length.compareTo(a.key.length));
+
   /// Helper to convert plural currency name to singular if count == 1.
   static String adjustSingularPlural(String text, double? count) {
     if (count == 1 || count == 1.0) {
       var result = text;
-      for (final entry in AppTechnicalNumismatics.currencySingularReplacements.entries) {
-        result = result.replaceAll(entry.key, entry.value);
+      for (final entry in _sortedSingularReplacements) {
+        result = result.replaceAll(
+          RegExp('\\b${RegExp.escape(entry.key)}\\b', caseSensitive: false),
+          entry.value,
+        );
       }
       return result.trim();
     }
     return text;
+  }
+
+  /// Normalizes any currency name or string to a canonical lowercase representation without accents
+  /// and with all plural terms converted to singular, enabling consistent comparison and ISO resolution.
+  static String normalizeCurrencyText(String text) {
+    var result = text.trim();
+    if (result.isEmpty) return result;
+
+    for (final entry in _sortedSingularReplacements) {
+      result = result.replaceAll(
+        RegExp('\\b${RegExp.escape(entry.key)}\\b', caseSensitive: false),
+        entry.value,
+      );
+    }
+
+    return result
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
   }
 
   /// Resolves any currency string (code or name) to its ISO 4217 code (e.g. MXN).
@@ -55,20 +87,9 @@ class NumismaticParser {
       return upper;
     }
 
-    String normalize(String text) {
-      var result = text.toLowerCase();
-      for (final entry in AppTechnicalNumismatics.normalizeCurrencyReplacements.entries) {
-        result = result.replaceAll(entry.key, entry.value);
-      }
-      for (final entry in AppTechnicalNumismatics.regexNationalityReplacements.entries) {
-        result = result.replaceAll(RegExp(entry.key), entry.value);
-      }
-      return result.trim();
-    }
-
-    final normClean = normalize(clean);
+    final normClean = normalizeCurrencyText(clean);
     for (final entry in NumismaticDictionary.currencyMap.entries) {
-      if (normalize(entry.value) == normClean) {
+      if (normalizeCurrencyText(entry.value) == normClean) {
         return entry.key;
       }
     }
@@ -86,20 +107,9 @@ class NumismaticParser {
       return adjustSingularPlural(NumismaticDictionary.currencyMap[upperCode]!, count);
     }
 
-    String normalize(String text) {
-      var result = text.toLowerCase();
-      for (final entry in AppTechnicalNumismatics.normalizeCurrencyReplacements.entries) {
-        result = result.replaceAll(entry.key, entry.value);
-      }
-      for (final entry in AppTechnicalNumismatics.regexNationalityReplacements.entries) {
-        result = result.replaceAll(RegExp(entry.key), entry.value);
-      }
-      return result.trim();
-    }
-
-    final normClean = normalize(clean);
+    final normClean = normalizeCurrencyText(clean);
     for (final entry in NumismaticDictionary.currencyMap.entries) {
-      if (normalize(entry.value) == normClean) {
+      if (normalizeCurrencyText(entry.value) == normClean) {
         return adjustSingularPlural(entry.value, count);
       }
     }
@@ -180,7 +190,9 @@ class NumismaticParser {
     final r1 = resolveCurrencyName(c1, count: count);
     final r2 = resolveCurrencyName(c2, count: count);
 
-    return r1.toLowerCase() == r2.toLowerCase();
+    if (r1.toLowerCase() == r2.toLowerCase()) return true;
+
+    return normalizeCurrencyText(r1) == normalizeCurrencyText(r2);
   }
 
   /// Checks if a catalog species is a numismatic species (Moneda or Billete).
