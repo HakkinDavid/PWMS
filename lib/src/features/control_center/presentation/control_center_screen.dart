@@ -3,8 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_technical_strings.dart';
+import '../../../core/database/app_database.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/subspecies.dart';
+import '../../entities/domain/attachment.dart';
+import '../../entities/domain/world_entity.dart';
+import '../../locations/domain/location_node.dart';
+import '../../relations/domain/entity_relation.dart';
 import '../domain/audit_rule_registry.dart';
 import '../domain/audit_rule_strategy.dart';
 
@@ -53,14 +60,43 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
       final locationRepo = ref.read(locationRepositoryProvider);
       final relationRepo = ref.read(relationRepositoryProvider);
 
-      final locRows = await db.select(db.instanceLocationsTable).get();
-      final directLocMap = {for (var r in locRows) r.instanceId: r.locationId};
+      final results = await Future.wait([
+        catalogRepo.getAllCatalogItems(),
+        catalogRepo.getAllSubspecies(),
+        entityRepo.getAllEntities(),
+        locationRepo.getAllNodes(),
+        relationRepo.getAllRelations(),
+        db.select(db.instanceLocationsTable).get(),
+        db.select(db.attachmentsTable).get(),
+        db.getAllIgnoredAuditCards(),
+      ]);
 
-      final speciesList = await catalogRepo.getAllCatalogItems();
-      final subspeciesList = await catalogRepo.getAllSubspecies();
-      final entitiesList = await entityRepo.getAllEntities();
-      final locationNodes = await locationRepo.getAllNodes();
-      final relationsList = await relationRepo.getAllRelations();
+      final speciesList = results[0] as List<CatalogItem>;
+      final subspeciesList = results[1] as List<Subspecies>;
+      final entitiesList = results[2] as List<WorldEntity>;
+      final locationNodes = results[3] as List<LocationNode>;
+      final relationsList = results[4] as List<EntityRelation>;
+      final locRows = results[5] as List<InstanceLocationsTableData>;
+      final attRows = results[6] as List<AttachmentsTableData>;
+      final ignoredRows = results[7] as List<IgnoredAuditCardsTableData>;
+
+      final directLocMap = {for (var r in locRows) r.instanceId: r.locationId};
+      final ignoredIds = {for (var r in ignoredRows) r.cardId};
+
+      final attachmentsByInstanceId = <String, List<Attachment>>{};
+      for (final r in attRows) {
+        if (r.instanceId != null) {
+          (attachmentsByInstanceId[r.instanceId!] ??= []).add(Attachment(
+            id: r.id,
+            speciesId: r.speciesId,
+            instanceId: r.instanceId,
+            filePath: r.filePath,
+            fileName: r.fileName,
+            fileType: r.fileType,
+            createdAt: r.createdAt,
+          ));
+        }
+      }
 
       final evalContext = AuditEvaluationContext(
         db: db,
@@ -73,11 +109,10 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
         allInstanceMagnitudes: entitiesList.expand((e) => e.magnitudes).toList(),
         allRequirements: const [],
         effectiveLocationMap: directLocMap,
+        attachmentsByInstanceId: attachmentsByInstanceId,
       );
 
       final allCards = await _registry.evaluateAll(evalContext);
-      final ignoredRows = await db.getAllIgnoredAuditCards();
-      final ignoredIds = {for (var r in ignoredRows) r.cardId};
 
       final integrityCards = allCards.where((c) => c.category == AuditCategory.integrity && !ignoredIds.contains(c.id)).toList();
       final routineCards = allCards.where((c) => c.category == AuditCategory.routine && !ignoredIds.contains(c.id)).toList();

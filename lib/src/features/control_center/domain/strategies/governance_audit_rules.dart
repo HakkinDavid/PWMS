@@ -225,7 +225,7 @@ class SpeciesWithoutSubspeciesStrategy implements IAuditRuleStrategy {
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final emptySpecies = context.allCatalog.where((sp) {
-      return !context.allSubspecies.any((sub) => sub.speciesId == sp.id);
+      return !context.subspeciesBySpeciesId.containsKey(sp.id);
     }).toList();
 
     final cards = <AuditCardData>[];
@@ -327,14 +327,14 @@ class UnlinkedInstancesStrategy implements IAuditRuleStrategy {
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final unlinkedEntities = context.allEntities.where((e) {
-      final hasSpecies = context.allCatalog.any((c) => c.id == e.speciesId);
-      final hasSubspecies = e.subspeciesId != null && context.allSubspecies.any((s) => s.id == e.subspeciesId);
+      final hasSpecies = context.speciesById.containsKey(e.speciesId);
+      final hasSubspecies = e.subspeciesId != null && context.subspeciesById.containsKey(e.subspeciesId);
       return !hasSpecies || !hasSubspecies;
     }).toList();
 
     final cards = <AuditCardData>[];
     for (final entity in unlinkedEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
@@ -375,7 +375,7 @@ class UnlinkedInstancesStrategy implements IAuditRuleStrategy {
           );
 
           if (choice == AppTechnicalStrings.actionReassign && species != null) {
-            final subs = context.allSubspecies.where((s) => s.speciesId == species.id).toList();
+            final subs = context.subspeciesBySpeciesId[species.id] ?? const <Subspecies>[];
             if (subs.isEmpty) {
               // Create generic subspecies and reassign
               final genericSub = Subspecies(
@@ -449,7 +449,7 @@ class AnomalousExpirationStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final entity in anomalousEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
       final formattedDate = entity.expirationDate.toString().substring(0, 10);
 

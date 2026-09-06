@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:archive/archive.dart';
 import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
@@ -299,50 +300,69 @@ class DatabaseBackupService {
         (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B);
 
     if (isZip) {
-      final archive = ZipDecoder().decodeBytes(bytes);
-      String? jsonContent;
-
       final docsDir = await getApplicationDocumentsDirectory();
       final mediaDir = Directory(p.join(docsDir.path, AppTechnicalStorage.dirMedia));
       if (!await mediaDir.exists()) {
         await mediaDir.create(recursive: true);
       }
-      final prodDir = Directory(p.join(docsDir.path, AppTechnicalStorage.dirProductImages));
-      if (!await prodDir.exists()) {
-        await prodDir.create(recursive: true);
-      }
 
-      for (final archiveFile in archive) {
-        if (!archiveFile.isFile) continue;
-
-        final name = archiveFile.name;
-        final baseName = p.basename(name);
-
-        // Ignorar carpetas/archivos de metadatos del sistema de macOS (__MACOSX, ._*, .DS_Store)
-        if (name.contains(AppTechnicalStrings.macOsMetadataDir) || baseName.startsWith(AppTechnicalStrings.dotUnderscore) || baseName.startsWith(AppTechnicalDelimiters.dot)) {
-          continue;
-        }
-
-        if (baseName == AppTechnicalStorage.backupDatabaseFileName || (jsonContent == null && baseName.endsWith(AppTechnicalStorage.extJson))) {
-          jsonContent = utf8.decode(archiveFile.content as List<int>);
-        } else if (name.startsWith(AppTechnicalStrings.dirFilesPrefix) || name.contains(AppTechnicalStrings.slashFilesPrefix)) {
-          if (baseName.isNotEmpty) {
-            final content = archiveFile.content as List<int>;
-            await File(p.join(mediaDir.path, baseName)).writeAsBytes(content);
-            await File(p.join(prodDir.path, baseName)).writeAsBytes(content);
-          }
-        }
-      }
-
-      if (jsonContent == null) {
-        throw Exception(AppStrings.backupZipMissingDatabaseJsonError);
-      }
+      // Descompresión y extracción de archivos en Isolate secundario para no congelar la UI
+      final mediaDirPath = mediaDir.path;
+      final jsonContent = await Isolate.run(() => _extractZipArchive(
+        zipBytes: bytes,
+        mediaDirPath: mediaDirPath,
+      ));
 
       await importDatabaseFromJsonString(jsonContent);
     } else {
       final jsonStr = utf8.decode(bytes);
       await importDatabaseFromJsonString(jsonStr);
     }
+  }
+
+  /// Descomprime los archivos multimedia y extrae el JSON en un isolate en segundo plano
+  static String _extractZipArchive({
+    required List<int> zipBytes,
+    required String mediaDirPath,
+  }) {
+    final archive = ZipDecoder().decodeBytes(zipBytes);
+    String? jsonContent;
+
+    final mediaDir = Directory(mediaDirPath);
+    if (!mediaDir.existsSync()) {
+      mediaDir.createSync(recursive: true);
+    }
+
+    for (final archiveFile in archive) {
+      if (!archiveFile.isFile) continue;
+
+      final name = archiveFile.name;
+      final baseName = p.basename(name);
+
+      // Ignorar carpetas/archivos de metadatos del sistema de macOS (__MACOSX, ._*, .DS_Store)
+      if (name.contains(AppTechnicalStrings.macOsMetadataDir) ||
+          baseName.startsWith(AppTechnicalStrings.dotUnderscore) ||
+          baseName.startsWith(AppTechnicalDelimiters.dot)) {
+        continue;
+      }
+
+      if (baseName == AppTechnicalStorage.backupDatabaseFileName ||
+          (jsonContent == null && baseName.endsWith(AppTechnicalStorage.extJson))) {
+        jsonContent = utf8.decode(archiveFile.content as List<int>);
+      } else if (name.startsWith(AppTechnicalStrings.dirFilesPrefix) ||
+          name.contains(AppTechnicalStrings.slashFilesPrefix)) {
+        if (baseName.isNotEmpty) {
+          final content = archiveFile.content as List<int>;
+          File(p.join(mediaDirPath, baseName)).writeAsBytesSync(content);
+        }
+      }
+    }
+
+    if (jsonContent == null) {
+      throw Exception(AppStrings.backupZipMissingDatabaseJsonError);
+    }
+
+    return jsonContent;
   }
 
   /// Realiza la migración secuencial paso a paso de los datos JSON importados
@@ -761,218 +781,293 @@ class DatabaseBackupService {
       await _db.delete(_db.catalogTable).go();
       await _db.delete(_db.locationsTable).go();
 
-      // Restaurar Ubicaciones
-      final locs = (tables[AppTechnicalDb.tableLocations] as List? ?? []);
-      for (final r in locs) {
-        await _db.into(_db.locationsTable).insert(LocationsTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          name: r[AppTechnicalDb.colName],
-          parentLocationId: Value(r[AppTechnicalJsonKeys.keyParentLocationId]),
-          description: Value(r[AppTechnicalDb.colDescription]),
-          icon: Value(r[AppTechnicalJsonKeys.keyIcon]),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Catálogo
-      final cat = (tables[AppTechnicalStrings.tableCatalog] as List? ?? []);
-      for (final r in cat) {
-        await _db.into(_db.catalogTable).insert(CatalogTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          name: r[AppTechnicalDb.colName],
-          type: Value(r[AppTechnicalDb.colType] ?? AppStrings.typeObject),
-          description: Value(r[AppTechnicalDb.colDescription]),
-          mainPhotoPath: Value(r[AppTechnicalJsonKeys.keyMainPhotoPath]),
-          customAttributes: Value(r[AppTechnicalJsonKeys.keyCustomAttributes] ?? AppTechnicalStrings.emptyJsonMap),
-          isUnique: Value(r[AppTechnicalJsonKeys.keyIsUnique] ?? false),
-          isNonPerishable: Value(r[AppTechnicalJsonKeys.keyIsNonPerishable] ?? true),
-          defaultShelfLifeDays: Value(r[AppTechnicalJsonKeys.keyDefaultShelfLifeDays]),
-          warningDaysBeforeExpiration: Value(r[AppTechnicalJsonKeys.keyWarningDaysBeforeExpiration]),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Subespecies
-      final sub = (tables[AppTechnicalDb.tableSubspecies] as List? ?? []);
-      for (final r in sub) {
-        await _db.into(_db.subspeciesTable).insert(SubspeciesTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
-          subspeciesName: r[AppTechnicalJsonKeys.keySubspeciesName],
-          brand: Value(r[AppTechnicalJsonKeys.keyBrand]),
-          barcode: Value(r[AppTechnicalJsonKeys.keyBarcode]),
-          photoPath: Value(r[AppTechnicalJsonKeys.keyPhotoPath]),
-          notes: Value(r[AppTechnicalDb.colNotes]),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Magnitudes de Especie
-      final sm = (tables[AppTechnicalDb.tableSpeciesMagnitudes] as List? ?? []);
-      for (final r in sm) {
-        await _db.into(_db.speciesMagnitudesTable).insert(SpeciesMagnitudesTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
-          propertyName: r[AppTechnicalJsonKeys.keyPropertyName],
-          dataType: Value(r[AppTechnicalJsonKeys.keyDataType] ?? AppTechnicalStrings.datatypeRealLower),
-          unitSymbol: Value(r[AppTechnicalJsonKeys.keyUnitSymbol]),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Instancias / Entidades
-      final ent = (tables[AppTechnicalDb.tableEntities] as List? ?? []);
-      for (final r in ent) {
-        await _db.into(_db.entitiesTable).insert(EntitiesTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
-          subspeciesId: Value(r[AppTechnicalJsonKeys.keySubspeciesId]),
-          locationId: Value(r[AppTechnicalJsonKeys.keyLocationId]),
-          expirationDate: Value(r[AppTechnicalJsonKeys.keyExpirationDate] != null ? DateTime.parse(r[AppTechnicalJsonKeys.keyExpirationDate]) : null),
-          notes: Value(r[AppTechnicalDb.colNotes]),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-          updatedAt: DateTime.parse(r[AppTechnicalJsonKeys.keyUpdatedAt]),
-        ));
-      }
-
-      // Restaurar Magnitudes de Instancia
-      final im = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
-      for (final r in im) {
-        await _db.into(_db.instanceMagnitudesTable).insert(InstanceMagnitudesTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          instanceId: r[AppTechnicalJsonKeys.keyInstanceId],
-          propertyName: r[AppTechnicalJsonKeys.keyPropertyName],
-          dataType: Value(r[AppTechnicalJsonKeys.keyDataType] ?? AppTechnicalStrings.datatypeRealLower),
-          magnitudeValue: Value((r[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble()),
-          stringValue: Value(r[AppTechnicalJsonKeys.keyStringValue]),
-          unitSymbol: Value(r[AppTechnicalJsonKeys.keyUnitSymbol]),
-        ));
-      }
-
-      // Restaurar Ubicaciones de Instancia
-      final il = (tables[AppTechnicalDb.tableInstanceLocations] as List? ?? []);
-      for (final r in il) {
-        await _db.into(_db.instanceLocationsTable).insert(InstanceLocationsTableCompanion.insert(
-          instanceId: r[AppTechnicalJsonKeys.keyInstanceId],
-          locationId: r[AppTechnicalJsonKeys.keyLocationId],
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Relaciones
-      final rel = (tables[AppTechnicalDb.tableRelations] as List? ?? []);
-      for (final r in rel) {
-        await _db.into(_db.relationsTable).insert(RelationsTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          sourceEntityId: r[AppTechnicalJsonKeys.keySourceEntityId],
-          targetEntityId: r[AppTechnicalJsonKeys.keyTargetEntityId],
-          relationType: r[AppTechnicalJsonKeys.keyRelationType],
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Adjuntos
-      final att = (tables[AppTechnicalDb.tableAttachments] as List? ?? []);
-      for (final r in att) {
-        await _db.into(_db.attachmentsTable).insert(AttachmentsTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
-          instanceId: Value(r[AppTechnicalJsonKeys.keyInstanceId]),
-          filePath: r[AppTechnicalJsonKeys.keyFilePath],
-          fileName: r[AppTechnicalJsonKeys.keyFileName],
-          fileType: r[AppTechnicalJsonKeys.keyFileType],
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Eventos de Historial
-      final he = (tables[AppTechnicalDb.tableHistoryEvents] as List? ?? []);
-      for (final r in he) {
-        await _db.into(_db.historyEventsTable).insert(HistoryEventsTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          entityId: Value(r[AppTechnicalJsonKeys.keyEntityId]),
-          eventType: r[AppTechnicalJsonKeys.keyEventType],
-          description: r[AppTechnicalDb.colDescription],
-          metadata: Value(r[AppTechnicalJsonKeys.keyMetadata]),
-          timestamp: DateTime.parse(r[AppTechnicalJsonKeys.keyTimestamp]),
-        ));
-      }
-
-      // Restaurar Plantillas Personalizadas
-      final ct = (tables[AppTechnicalDb.tableCustomTemplates] as List? ?? []);
-      for (final r in ct) {
-        await _db.into(_db.customTemplatesTable).insert(CustomTemplatesTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          typeName: r[AppTechnicalJsonKeys.keyTypeName],
-          iconName: r[AppTechnicalJsonKeys.keyIconName],
-          commonUnits: Value(r[AppTechnicalJsonKeys.keyCommonUnits] ?? AppTechnicalStrings.emptyJsonList),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Requerimientos
-      final sr = (tables[AppTechnicalDb.tableRequirements] as List? ?? []);
-      for (final r in sr) {
-        await _db.into(_db.speciesRequirementsTable).insert(SpeciesRequirementsTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          sourceId: r[AppTechnicalJsonKeys.keySourceId],
-          sourceType: Value(r[AppTechnicalJsonKeys.keySourceType] ?? AppTechnicalStrings.sourceTypeSpecies),
-          requiredSpeciesId: r[AppTechnicalJsonKeys.keyRequiredSpeciesId],
-          requiredQuantity: Value((r[AppTechnicalJsonKeys.keyRequiredQuantity] as num? ?? 1.0).toDouble()),
-          notes: Value(r[AppTechnicalDb.colNotes]),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-        ));
-      }
-
-      // Restaurar Notificaciones
-      final notif = (tables[AppTechnicalDb.tableNotifications] as List? ?? []);
-      for (final r in notif) {
-        await _db.into(_db.notificationsTable).insert(NotificationsTableCompanion.insert(
-          id: r[AppTechnicalDb.colId],
-          type: r[AppTechnicalDb.colType],
-          title: r[AppTechnicalJsonKeys.keyTitle],
-          message: r[AppTechnicalJsonKeys.keyMessage],
-          targetId: r[AppTechnicalJsonKeys.keyTargetId],
-          targetType: r[AppTechnicalJsonKeys.keyTargetType],
-          status: Value(r[AppTechnicalJsonKeys.keyStatus] ?? AppTechnicalNotifications.notifStatusActive),
-          snoozedUntil: Value(r[AppTechnicalJsonKeys.keySnoozedUntil] != null ? DateTime.parse(r[AppTechnicalJsonKeys.keySnoozedUntil]) : null),
-          createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
-          updatedAt: DateTime.parse(r[AppTechnicalJsonKeys.keyUpdatedAt]),
-        ));
-      }
-
-      // Restaurar Configuraciones de la App
-      final appSettings = (tables[AppTechnicalDb.tableAppSettings] as List? ?? []);
-      for (final r in appSettings) {
-        if (r is Map && r[AppTechnicalJsonKeys.keyKey] != null && r[AppTechnicalJsonKeys.keyValue] != null) {
-          await _db.into(_db.appSettingsTable).insert(AppSettingsTableCompanion.insert(
-            key: r[AppTechnicalJsonKeys.keyKey].toString(),
-            value: r[AppTechnicalJsonKeys.keyValue].toString(),
-          ));
+      await _db.batch((batch) {
+        // Restaurar Ubicaciones
+        final locs = (tables[AppTechnicalDb.tableLocations] as List? ?? []);
+        for (final r in locs) {
+          batch.insert(
+            _db.locationsTable,
+            LocationsTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              name: r[AppTechnicalDb.colName],
+              parentLocationId: Value(r[AppTechnicalJsonKeys.keyParentLocationId]),
+              description: Value(r[AppTechnicalDb.colDescription]),
+              icon: Value(r[AppTechnicalJsonKeys.keyIcon]),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
         }
-      }
 
-      // Restaurar Tarjetas de Auditoría Omitidas
-      final ignored = (tables[AppTechnicalDb.tableIgnoredAuditCards] as List? ?? []);
-      for (final r in ignored) {
-        if (r is Map && r[AppTechnicalJsonKeys.keyCardId] != null) {
-          await _db.into(_db.ignoredAuditCardsTable).insert(IgnoredAuditCardsTableCompanion.insert(
-            cardId: r[AppTechnicalJsonKeys.keyCardId].toString(),
-            ruleId: Value(r[AppTechnicalJsonKeys.keyRuleId]?.toString()),
-            targetId: Value(r[AppTechnicalJsonKeys.keyTargetId]?.toString()),
-            targetType: Value(r[AppTechnicalJsonKeys.keyTargetType]?.toString()),
-            title: r[AppTechnicalJsonKeys.keyTitle]?.toString() ?? AppTechnicalStrings.empty,
-            subtitle: Value(r[AppTechnicalJsonKeys.keySubtitle]?.toString()),
-            createdAt: r[AppTechnicalJsonKeys.keyCreatedAt] != null
-                ? DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt].toString())
-                : DateTime.now(),
-          ));
+        // Restaurar Catálogo
+        final cat = (tables[AppTechnicalStrings.tableCatalog] as List? ?? []);
+        for (final r in cat) {
+          batch.insert(
+            _db.catalogTable,
+            CatalogTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              name: r[AppTechnicalDb.colName],
+              type: Value(r[AppTechnicalDb.colType] ?? AppStrings.typeObject),
+              description: Value(r[AppTechnicalDb.colDescription]),
+              mainPhotoPath: Value(r[AppTechnicalJsonKeys.keyMainPhotoPath]),
+              customAttributes: Value(r[AppTechnicalJsonKeys.keyCustomAttributes] ?? AppTechnicalStrings.emptyJsonMap),
+              isUnique: Value(r[AppTechnicalJsonKeys.keyIsUnique] ?? false),
+              isNonPerishable: Value(r[AppTechnicalJsonKeys.keyIsNonPerishable] ?? true),
+              defaultShelfLifeDays: Value(r[AppTechnicalJsonKeys.keyDefaultShelfLifeDays]),
+              warningDaysBeforeExpiration: Value(r[AppTechnicalJsonKeys.keyWarningDaysBeforeExpiration]),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
         }
-      }
+
+        // Restaurar Subespecies
+        final sub = (tables[AppTechnicalDb.tableSubspecies] as List? ?? []);
+        for (final r in sub) {
+          batch.insert(
+            _db.subspeciesTable,
+            SubspeciesTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
+              subspeciesName: r[AppTechnicalJsonKeys.keySubspeciesName],
+              brand: Value(r[AppTechnicalJsonKeys.keyBrand]),
+              barcode: Value(r[AppTechnicalJsonKeys.keyBarcode]),
+              photoPath: Value(r[AppTechnicalJsonKeys.keyPhotoPath]),
+              notes: Value(r[AppTechnicalDb.colNotes]),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Magnitudes de Especie
+        final sm = (tables[AppTechnicalDb.tableSpeciesMagnitudes] as List? ?? []);
+        for (final r in sm) {
+          batch.insert(
+            _db.speciesMagnitudesTable,
+            SpeciesMagnitudesTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
+              propertyName: r[AppTechnicalJsonKeys.keyPropertyName],
+              dataType: Value(r[AppTechnicalJsonKeys.keyDataType] ?? AppTechnicalStrings.datatypeRealLower),
+              unitSymbol: Value(r[AppTechnicalJsonKeys.keyUnitSymbol]),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Instancias / Entidades
+        final ent = (tables[AppTechnicalDb.tableEntities] as List? ?? []);
+        for (final r in ent) {
+          batch.insert(
+            _db.entitiesTable,
+            EntitiesTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
+              subspeciesId: Value(r[AppTechnicalJsonKeys.keySubspeciesId]),
+              locationId: Value(r[AppTechnicalJsonKeys.keyLocationId]),
+              expirationDate: Value(r[AppTechnicalJsonKeys.keyExpirationDate] != null ? DateTime.parse(r[AppTechnicalJsonKeys.keyExpirationDate]) : null),
+              notes: Value(r[AppTechnicalDb.colNotes]),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+              updatedAt: DateTime.parse(r[AppTechnicalJsonKeys.keyUpdatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Magnitudes de Instancia
+        final im = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
+        for (final r in im) {
+          batch.insert(
+            _db.instanceMagnitudesTable,
+            InstanceMagnitudesTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              instanceId: r[AppTechnicalJsonKeys.keyInstanceId],
+              propertyName: r[AppTechnicalJsonKeys.keyPropertyName],
+              dataType: Value(r[AppTechnicalJsonKeys.keyDataType] ?? AppTechnicalStrings.datatypeRealLower),
+              magnitudeValue: Value((r[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble()),
+              stringValue: Value(r[AppTechnicalJsonKeys.keyStringValue]),
+              unitSymbol: Value(r[AppTechnicalJsonKeys.keyUnitSymbol]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Ubicaciones de Instancia
+        final il = (tables[AppTechnicalDb.tableInstanceLocations] as List? ?? []);
+        for (final r in il) {
+          batch.insert(
+            _db.instanceLocationsTable,
+            InstanceLocationsTableCompanion.insert(
+              instanceId: r[AppTechnicalJsonKeys.keyInstanceId],
+              locationId: r[AppTechnicalJsonKeys.keyLocationId],
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Relaciones
+        final rel = (tables[AppTechnicalDb.tableRelations] as List? ?? []);
+        for (final r in rel) {
+          batch.insert(
+            _db.relationsTable,
+            RelationsTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              sourceEntityId: r[AppTechnicalJsonKeys.keySourceEntityId],
+              targetEntityId: r[AppTechnicalJsonKeys.keyTargetEntityId],
+              relationType: r[AppTechnicalJsonKeys.keyRelationType],
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Adjuntos
+        final att = (tables[AppTechnicalDb.tableAttachments] as List? ?? []);
+        for (final r in att) {
+          batch.insert(
+            _db.attachmentsTable,
+            AttachmentsTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              speciesId: r[AppTechnicalJsonKeys.keySpeciesId],
+              instanceId: Value(r[AppTechnicalJsonKeys.keyInstanceId]),
+              filePath: r[AppTechnicalJsonKeys.keyFilePath],
+              fileName: r[AppTechnicalJsonKeys.keyFileName],
+              fileType: r[AppTechnicalJsonKeys.keyFileType],
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Eventos de Historial
+        final he = (tables[AppTechnicalDb.tableHistoryEvents] as List? ?? []);
+        for (final r in he) {
+          batch.insert(
+            _db.historyEventsTable,
+            HistoryEventsTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              entityId: Value(r[AppTechnicalJsonKeys.keyEntityId]),
+              eventType: r[AppTechnicalJsonKeys.keyEventType],
+              description: r[AppTechnicalDb.colDescription],
+              metadata: Value(r[AppTechnicalJsonKeys.keyMetadata]),
+              timestamp: DateTime.parse(r[AppTechnicalJsonKeys.keyTimestamp]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Plantillas Personalizadas
+        final ct = (tables[AppTechnicalDb.tableCustomTemplates] as List? ?? []);
+        for (final r in ct) {
+          batch.insert(
+            _db.customTemplatesTable,
+            CustomTemplatesTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              typeName: r[AppTechnicalJsonKeys.keyTypeName],
+              iconName: r[AppTechnicalJsonKeys.keyIconName],
+              commonUnits: Value(r[AppTechnicalJsonKeys.keyCommonUnits] ?? AppTechnicalStrings.emptyJsonList),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Requerimientos
+        final sr = (tables[AppTechnicalDb.tableRequirements] as List? ?? []);
+        for (final r in sr) {
+          batch.insert(
+            _db.speciesRequirementsTable,
+            SpeciesRequirementsTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              sourceId: r[AppTechnicalJsonKeys.keySourceId],
+              sourceType: Value(r[AppTechnicalJsonKeys.keySourceType] ?? AppTechnicalStrings.sourceTypeSpecies),
+              requiredSpeciesId: r[AppTechnicalJsonKeys.keyRequiredSpeciesId],
+              requiredQuantity: Value((r[AppTechnicalJsonKeys.keyRequiredQuantity] as num? ?? 1.0).toDouble()),
+              notes: Value(r[AppTechnicalDb.colNotes]),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Notificaciones
+        final notif = (tables[AppTechnicalDb.tableNotifications] as List? ?? []);
+        for (final r in notif) {
+          batch.insert(
+            _db.notificationsTable,
+            NotificationsTableCompanion.insert(
+              id: r[AppTechnicalDb.colId],
+              type: r[AppTechnicalDb.colType],
+              title: r[AppTechnicalJsonKeys.keyTitle],
+              message: r[AppTechnicalJsonKeys.keyMessage],
+              targetId: r[AppTechnicalJsonKeys.keyTargetId],
+              targetType: r[AppTechnicalJsonKeys.keyTargetType],
+              status: Value(r[AppTechnicalJsonKeys.keyStatus] ?? AppTechnicalNotifications.notifStatusActive),
+              snoozedUntil: Value(r[AppTechnicalJsonKeys.keySnoozedUntil] != null ? DateTime.parse(r[AppTechnicalJsonKeys.keySnoozedUntil]) : null),
+              createdAt: DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt]),
+              updatedAt: DateTime.parse(r[AppTechnicalJsonKeys.keyUpdatedAt]),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+
+        // Restaurar Configuraciones de la App
+        final appSettings = (tables[AppTechnicalDb.tableAppSettings] as List? ?? []);
+        for (final r in appSettings) {
+          if (r is Map && r[AppTechnicalJsonKeys.keyKey] != null && r[AppTechnicalJsonKeys.keyValue] != null) {
+            batch.insert(
+              _db.appSettingsTable,
+              AppSettingsTableCompanion.insert(
+                key: r[AppTechnicalJsonKeys.keyKey].toString(),
+                value: r[AppTechnicalJsonKeys.keyValue].toString(),
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+          }
+        }
+
+        // Restaurar Tarjetas de Auditoría Omitidas
+        final ignored = (tables[AppTechnicalDb.tableIgnoredAuditCards] as List? ?? []);
+        for (final r in ignored) {
+          if (r is Map && r[AppTechnicalJsonKeys.keyCardId] != null) {
+            batch.insert(
+              _db.ignoredAuditCardsTable,
+              IgnoredAuditCardsTableCompanion.insert(
+                cardId: r[AppTechnicalJsonKeys.keyCardId].toString(),
+                ruleId: Value(r[AppTechnicalJsonKeys.keyRuleId]?.toString()),
+                targetId: Value(r[AppTechnicalJsonKeys.keyTargetId]?.toString()),
+                targetType: Value(r[AppTechnicalJsonKeys.keyTargetType]?.toString()),
+                title: r[AppTechnicalJsonKeys.keyTitle]?.toString() ?? AppTechnicalStrings.empty,
+                subtitle: Value(r[AppTechnicalJsonKeys.keySubtitle]?.toString()),
+                createdAt: r[AppTechnicalJsonKeys.keyCreatedAt] != null
+                    ? DateTime.parse(r[AppTechnicalJsonKeys.keyCreatedAt].toString())
+                    : DateTime.now(),
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+          }
+        }
+      });
     });
 
     // Execute decoupled migration post-processors (e.g. Numismatic standardization, History backfill)
-    await DataMigrationRegistry.runAll(_db, _postProcessors);
+    // Only needed if the imported backup is from an older schema version
+    final rawVersion = rawData[AppTechnicalJsonKeys.keyVersion] ?? rawData[AppTechnicalJsonKeys.keySchemaVersion] ?? rawData[AppTechnicalJsonKeys.keyVersionCheck] ?? 1;
+    int importedVer = 1;
+    if (rawVersion is int) {
+      importedVer = rawVersion;
+    } else if (rawVersion is num) {
+      importedVer = rawVersion.floor();
+    } else if (rawVersion is String) {
+      importedVer = double.tryParse(rawVersion)?.floor() ?? 1;
+    }
+
+    if (importedVer < _db.schemaVersion) {
+      await DataMigrationRegistry.runAll(_db, _postProcessors);
+    }
 
     // Log backup restore event
     int totalImportedRecords = 0;

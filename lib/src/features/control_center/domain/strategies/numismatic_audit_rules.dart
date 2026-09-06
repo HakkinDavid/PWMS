@@ -33,7 +33,7 @@ class NumismaticDuplicateSubspeciesStrategy implements IAuditRuleStrategy {
 
     for (final entry in duplicateSubGroups.entries) {
       final canonicalSub = entry.value.first;
-      final parentSpecies = context.allCatalog.where((c) => c.id == canonicalSub.speciesId).firstOrNull;
+      final parentSpecies = context.speciesById[canonicalSub.speciesId];
       if (parentSpecies != null && NumismaticDataHelper.isNumismaticSpecies(parentSpecies)) {
         final dupCount = entry.value.length;
         cards.add(AuditRuleHelper.forSubspecies(
@@ -106,9 +106,9 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
-        final sub = context.allSubspecies.where((s) => s.id == entity.subspeciesId).firstOrNull;
+        final sub = context.subspeciesById[entity.subspeciesId];
         if (sub != null) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -203,18 +203,16 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
-        final sub = context.allSubspecies.where((s) => s.id == entity.subspeciesId).firstOrNull;
+        final sub = context.subspeciesById[entity.subspeciesId];
         if (sub != null) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
           final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
           final pieceDisplayName = NumismaticDataHelper.buildInstanceDisplayName(instAttrs);
 
-          final instanceAttachments = (context.db != null)
-              ? await EntityRepository(context.db).getAttachmentsForInstance(entity.id)
-              : <Attachment>[];
+          final instanceAttachments = context.attachmentsByInstanceId[entity.id] ?? const <Attachment>[];
           for (final att in instanceAttachments) {
             final isObverse = att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoParensLower) ||
                 att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoLower);
@@ -294,9 +292,9 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
-        final sub = context.allSubspecies.where((s) => s.id == entity.subspeciesId).firstOrNull;
+        final sub = context.subspeciesById[entity.subspeciesId];
         if (sub != null) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -411,9 +409,9 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
-        final sub = context.allSubspecies.where((s) => s.id == entity.subspeciesId).firstOrNull;
+        final sub = context.subspeciesById[entity.subspeciesId];
         if (sub != null) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -500,9 +498,9 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
-        final sub = context.allSubspecies.where((s) => s.id == entity.subspeciesId).firstOrNull;
+        final sub = context.subspeciesById[entity.subspeciesId];
         if (sub != null) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
           final outliers = NumismaticDataHelper.checkEmissionOutliers(

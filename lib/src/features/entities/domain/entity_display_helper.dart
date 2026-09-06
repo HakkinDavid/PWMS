@@ -21,6 +21,38 @@ class EntityDisplayHelper {
     return null;
   }
 
+  /// Resolves the specific display name for a WorldEntity using pre-looked up species and subspecies.
+  static String getDisplayNameWithLookups({
+    required WorldEntity entity,
+    CatalogItem? species,
+    Subspecies? subspecies,
+  }) {
+    final customName = getInstanceCustomName(entity, species);
+    if (customName != null) {
+      return customName;
+    }
+
+    final speciesName = species?.name ?? AppStrings.containerObjectLabel;
+
+    if (entity.subspeciesId != null && subspecies != null) {
+      final subNameTrimmed = subspecies.subspeciesName.trim();
+      final isGeneric = subNameTrimmed.isEmpty ||
+          subNameTrimmed.toLowerCase() == AppStrings.defaultSubspeciesName.toLowerCase();
+
+      if (!isGeneric) {
+        final subWithBrand = AppStrings.subspeciesNameWithBrand(subNameTrimmed, subspecies.brand?.trim());
+        final hasSpeciesInSub = subNameTrimmed.toLowerCase().contains(speciesName.toLowerCase());
+        if (hasSpeciesInSub) {
+          return subWithBrand;
+        } else {
+          return AppStrings.speciesWithSubspeciesDisplay(speciesName, subWithBrand);
+        }
+      }
+    }
+
+    return speciesName;
+  }
+
   /// Resolves the specific display name for a WorldEntity.
   /// 1. If the entity has a custom instance name (property 'Nombre' or 'Name'), returns it.
   /// 2. If the entity has a valid, non-generic Subspecies assigned, returns the specific subspecies name
@@ -32,32 +64,14 @@ class EntityDisplayHelper {
     List<Subspecies>? subspeciesList,
   }) {
     final species = catalogItems.where((c) => c.id == entity.speciesId).firstOrNull;
-    final customName = getInstanceCustomName(entity, species);
-    if (customName != null) {
-      return customName;
-    }
+    final sub = (entity.subspeciesId != null && subspeciesList != null && subspeciesList.isNotEmpty)
+        ? subspeciesList.where((s) => s.id == entity.subspeciesId).firstOrNull
+        : null;
 
-    final speciesName = species?.name ?? AppStrings.containerObjectLabel;
-
-    if (entity.subspeciesId != null && subspeciesList != null && subspeciesList.isNotEmpty) {
-      final sub = subspeciesList.where((s) => s.id == entity.subspeciesId).firstOrNull;
-      if (sub != null) {
-        final subNameTrimmed = sub.subspeciesName.trim();
-        final isGeneric = subNameTrimmed.isEmpty ||
-            subNameTrimmed.toLowerCase() == AppStrings.defaultSubspeciesName.toLowerCase();
-
-        if (!isGeneric) {
-          final subWithBrand = AppStrings.subspeciesNameWithBrand(subNameTrimmed, sub.brand?.trim());
-          final hasSpeciesInSub = subNameTrimmed.toLowerCase().contains(speciesName.toLowerCase());
-          if (hasSpeciesInSub) {
-            return subWithBrand;
-          } else {
-            return AppStrings.speciesWithSubspeciesDisplay(speciesName, subWithBrand);
-          }
-        }
-      }
-    }
-
-    return speciesName;
+    return getDisplayNameWithLookups(
+      entity: entity,
+      species: species,
+      subspecies: sub,
+    );
   }
 }

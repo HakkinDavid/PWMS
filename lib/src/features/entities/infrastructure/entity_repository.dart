@@ -170,12 +170,20 @@ class EntityRepository implements IEntityRepository {
       createdAt: r.createdAt,
     )).toList();
 
+    final Map<String, String> parentContainerMap = {};
+    for (final r in allRels) {
+      if (LocationResolver.locationInheritingTypes.contains(r.relationType)) {
+        parentContainerMap[r.sourceEntityId] = r.targetEntityId;
+      }
+    }
+
     final Map<String, String?> effectiveLocs = {};
     for (final e in entityRows) {
       effectiveLocs[e.id] = LocationResolver.getEffectiveLocationId(
         entityId: e.id,
         directLocations: directLocs,
         relations: allRels,
+        parentContainerMap: parentContainerMap,
       );
     }
 
@@ -204,8 +212,7 @@ class EntityRepository implements IEntityRepository {
     final row = await query.getSingleOrNull();
     if (row == null) return null;
 
-    final allRows = await _db.select(_db.entitiesTable).get();
-    final effectiveLocs = await _getEffectiveLocationMap(allRows);
+    final effectiveLocs = await _getEffectiveLocationMap([row]);
     return await _mapToDomain(row, resolvedLocations: effectiveLocs);
   }
 

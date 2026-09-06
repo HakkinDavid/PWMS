@@ -258,7 +258,9 @@ class AppDatabase extends _$AppDatabase {
           }
         },
         beforeOpen: (details) async {
-          await DataMigrationRegistry.runAll(this);
+          if (details.wasCreated || details.hadUpgrade) {
+            await DataMigrationRegistry.runAll(this);
+          }
         },
       );
 

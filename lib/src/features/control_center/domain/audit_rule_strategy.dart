@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/species_magnitude.dart';
 import '../../catalog/domain/species_requirement.dart';
 import '../../catalog/domain/subspecies.dart';
+import '../../entities/domain/attachment.dart';
 import '../../entities/domain/instance_magnitude.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../locations/domain/location_node.dart';
@@ -106,8 +108,9 @@ class AuditEvaluationContext {
   final List<InstanceMagnitude> allInstanceMagnitudes;
   final List<SpeciesRequirement> allRequirements;
   final Map<String, String?> effectiveLocationMap;
+  final Map<String, List<Attachment>> attachmentsByInstanceId;
 
-  const AuditEvaluationContext({
+  AuditEvaluationContext({
     required this.db,
     required this.allEntities,
     required this.allCatalog,
@@ -118,7 +121,53 @@ class AuditEvaluationContext {
     this.allInstanceMagnitudes = const [],
     this.allRequirements = const [],
     this.effectiveLocationMap = const {},
+    this.attachmentsByInstanceId = const {},
   });
+
+  late final Map<String, CatalogItem> speciesById = {for (final s in allCatalog) s.id: s};
+  late final Map<String, Subspecies> subspeciesById = {for (final s in allSubspecies) s.id: s};
+  late final Map<String, LocationNode> locationById = {for (final l in allLocations) l.id: l};
+  late final Map<String, WorldEntity> entityById = {for (final e in allEntities) e.id: e};
+
+  late final Map<String, List<WorldEntity>> entitiesBySubspeciesId = () {
+    final map = <String, List<WorldEntity>>{};
+    for (final e in allEntities) {
+      if (e.subspeciesId != null) {
+        (map[e.subspeciesId!] ??= []).add(e);
+      }
+    }
+    return map;
+  }();
+
+  late final Map<String, List<WorldEntity>> entitiesBySpeciesId = () {
+    final map = <String, List<WorldEntity>>{};
+    for (final e in allEntities) {
+      (map[e.speciesId] ??= []).add(e);
+    }
+    return map;
+  }();
+
+  late final Set<String> instantiatedSubspeciesIds = {
+    for (final e in allEntities)
+      if (e.subspeciesId != null) e.subspeciesId!,
+  };
+
+  late final Set<String> instantiatedSpeciesIds = {
+    for (final e in allEntities) e.speciesId,
+  };
+
+  late final Map<String, List<Subspecies>> subspeciesBySpeciesId = () {
+    final map = <String, List<Subspecies>>{};
+    for (final s in allSubspecies) {
+      (map[s.speciesId] ??= []).add(s);
+    }
+    return map;
+  }();
+
+  late final Set<String> containedEntityIds = {
+    for (final r in allRelations)
+      if (r.relationType == AppTechnicalStrings.relGuardadoEn) r.sourceEntityId,
+  };
 }
 
 abstract class IAuditRuleStrategy {

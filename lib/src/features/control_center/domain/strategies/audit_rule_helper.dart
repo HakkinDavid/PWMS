@@ -33,10 +33,10 @@ class AuditRuleHelper {
 
   /// Builds a standard display name for an entity using evaluation context.
   static String getEntityDisplayName(AuditEvaluationContext context, WorldEntity entity) {
-    return EntityDisplayHelper.getDisplayName(
+    return EntityDisplayHelper.getDisplayNameWithLookups(
       entity: entity,
-      catalogItems: context.allCatalog,
-      subspeciesList: context.allSubspecies,
+      species: context.speciesById[entity.speciesId],
+      subspecies: entity.subspeciesId != null ? context.subspeciesById[entity.subspeciesId] : null,
     );
   }
 

@@ -91,7 +91,7 @@ class InvalidUnitSymbolStrategy implements IAuditRuleStrategy {
           !UnitsRegistry.isKnownUnit(im.unitSymbol)).toList();
 
       for (final im in invalidEntityMags) {
-        final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+        final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
         cards.add(AuditRuleHelper.forEntity(
@@ -221,7 +221,7 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
       }).toList();
 
       for (final im in incongruousEntityMags) {
-        final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+        final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
         cards.add(AuditRuleHelper.forEntity(
@@ -329,7 +329,7 @@ class NonNumericWithUnitStrategy implements IAuditRuleStrategy {
           im.unitSymbol!.trim().isNotEmpty).toList();
 
       for (final im in nonNumericWithUnitMags) {
-        final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+        final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
         cards.add(AuditRuleHelper.forEntity(
@@ -394,7 +394,7 @@ class NegativeMagnitudeViolationStrategy implements IAuditRuleStrategy {
       }).toList();
 
       for (final im in negativeMags) {
-        final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+        final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
         cards.add(AuditRuleHelper.forEntity(

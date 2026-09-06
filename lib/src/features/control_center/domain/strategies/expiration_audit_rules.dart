@@ -25,13 +25,13 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final perishableMissingExp = context.allEntities.where((e) {
-      final sp = context.allCatalog.where((c) => c.id == e.speciesId).firstOrNull;
+      final sp = context.speciesById[e.speciesId];
       return (sp != null && !sp.isNonPerishable && e.expirationDate == null);
     }).take(8);
 
     final cards = <AuditCardData>[];
     for (final entity in perishableMissingExp) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
@@ -97,13 +97,13 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final nonPerishableWithExp = context.allEntities.where((e) {
-      final sp = context.allCatalog.where((c) => c.id == e.speciesId).firstOrNull;
+      final sp = context.speciesById[e.speciesId];
       return (sp != null && sp.isNonPerishable && e.expirationDate != null);
     }).take(8);
 
     final cards = <AuditCardData>[];
     for (final entity in nonPerishableWithExp) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
       cards.add(AuditRuleHelper.forEntity(
@@ -157,12 +157,14 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      if (cards.length >= 10) break;
+      final species = context.speciesById[entity.speciesId];
       if (species != null && species.magnitudes.isNotEmpty) {
         final missingMags = species.magnitudes.where((sm) =>
             !entity.magnitudes.any((im) => im.propertyName.trim().toLowerCase() == sm.propertyName.trim().toLowerCase())).toList();
 
         for (final missingProp in missingMags) {
+          if (cards.length >= 10) break;
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
           final unitSuffix = (missingProp.unitSymbol != null && missingProp.unitSymbol!.isNotEmpty)
               ? AppStrings.unitSymbolParentheses(missingProp.unitSymbol!)
@@ -363,7 +365,7 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
           m.magnitudeValue! <= 0 &&
           m.dataType == AppTechnicalStrings.datatypeRealLower).toList();
       for (final mag in anomalousMags) {
-        final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+        final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
         cards.add(AuditRuleHelper.forEntity(

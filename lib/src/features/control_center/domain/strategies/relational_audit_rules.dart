@@ -24,12 +24,12 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final orphanEntities = context.allEntities.where((e) =>
       e.locationId == null &&
-      !context.allRelations.any((r) => r.sourceEntityId == e.id && r.relationType == AppTechnicalStrings.relGuardadoEn)
+      !context.containedEntityIds.contains(e.id)
     ).take(10);
 
     final cards = <AuditCardData>[];
     for (final entity in orphanEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
       final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
@@ -70,18 +70,18 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final conflictEntities = context.allEntities.where((e) {
       if (!context.effectiveLocationMap.containsKey(e.id)) return false;
-      return context.allRelations.any((r) => r.sourceEntityId == e.id && r.relationType == AppTechnicalStrings.relGuardadoEn);
+      return context.containedEntityIds.contains(e.id);
     }).take(8);
 
     final cards = <AuditCardData>[];
     for (final entity in conflictEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final containerRel = context.allRelations.where((r) => r.sourceEntityId == entity.id && r.relationType == AppTechnicalStrings.relGuardadoEn).first;
-      final containerEntity = context.allEntities.where((e) => e.id == containerRel.targetEntityId).firstOrNull;
-      final containerSpecies = context.allCatalog.where((c) => c.id == containerEntity?.speciesId).firstOrNull;
+      final containerEntity = context.entityById[containerRel.targetEntityId];
+      final containerSpecies = containerEntity != null ? context.speciesById[containerEntity.speciesId] : null;
       final containerName = containerSpecies?.name ?? AppStrings.containerFallback;
       final directLocId = context.effectiveLocationMap[entity.id];
-      final directLoc = context.allLocations.where((l) => l.id == directLocId).firstOrNull;
+      final directLoc = directLocId != null ? context.locationById[directLocId] : null;
       final directLocName = directLoc?.name ?? AppStrings.directLocationFallback;
 
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
@@ -180,10 +180,10 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final rel in circularRels) {
-      final sourceEnt = context.allEntities.where((e) => e.id == rel.sourceEntityId).firstOrNull;
-      final targetEnt = context.allEntities.where((e) => e.id == rel.targetEntityId).firstOrNull;
-      final sourceSp = context.allCatalog.where((c) => c.id == sourceEnt?.speciesId).firstOrNull;
-      final targetSp = context.allCatalog.where((c) => c.id == targetEnt?.speciesId).firstOrNull;
+      final sourceEnt = context.entityById[rel.sourceEntityId];
+      final targetEnt = context.entityById[rel.targetEntityId];
+      final sourceSp = sourceEnt != null ? context.speciesById[sourceEnt.speciesId] : null;
+      final targetSp = targetEnt != null ? context.speciesById[targetEnt.speciesId] : null;
 
       cards.add(AuditRuleHelper.createCard(
         id: AppTechnicalStrings.prefixCirc + rel.id,

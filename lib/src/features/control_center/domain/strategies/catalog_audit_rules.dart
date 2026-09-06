@@ -3,8 +3,10 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
+import '../../../catalog/domain/subspecies.dart';
 import '../../../catalog/presentation/species_form_modal.dart';
 import '../../../entities/domain/entity_template.dart';
+import '../../../entities/domain/world_entity.dart';
 import '../../../entities/presentation/instantiate_species_sheet.dart';
 import '../audit_rule_strategy.dart';
 import 'audit_rule_helper.dart';
@@ -27,9 +29,9 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final sub in context.allSubspecies) {
-      final instanceCount = context.allEntities.where((e) => e.subspeciesId == sub.id).length;
-      if (instanceCount == 0 && sub.subspeciesName.toLowerCase() != AppStrings.genericSubspeciesNameLower) {
-        final parentSpecies = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
+      final isInstantiated = context.instantiatedSubspeciesIds.contains(sub.id);
+      if (!isInstantiated && sub.subspeciesName.toLowerCase() != AppStrings.genericSubspeciesNameLower) {
+        final parentSpecies = context.speciesById[sub.speciesId];
         final subNameStr = AppStrings.subspeciesNameWithBrand(sub.subspeciesName, sub.brand);
 
         cards.add(AuditRuleHelper.forSubspecies(
@@ -140,9 +142,9 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final sp in context.allCatalog.where((c) => c.isUnique)) {
-      final spSubspecies = context.allSubspecies.where((s) => s.speciesId == sp.id).toList();
+      final spSubspecies = context.subspeciesBySpeciesId[sp.id] ?? const <Subspecies>[];
       for (final sub in spSubspecies) {
-        final matchingInstances = context.allEntities.where((e) => e.speciesId == sp.id && e.subspeciesId == sub.id).toList();
+        final matchingInstances = context.entitiesBySubspeciesId[sub.id] ?? const <WorldEntity>[];
         if (matchingInstances.length > 1) {
           cards.add(AuditRuleHelper.forSubspecies(
             id: AppTechnicalStrings.prefixUniqViol + sub.id,
@@ -239,7 +241,7 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final invalidSubspecies = context.allSubspecies.where((sub) {
-      final sp = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
+      final sp = context.speciesById[sub.speciesId];
       return sp != null &&
           !EntityTemplateRegistry.hasBarcodeAndBrand(sp.type) &&
           ((sub.brand != null && sub.brand!.isNotEmpty) || (sub.barcode != null && sub.barcode!.isNotEmpty));
@@ -247,7 +249,7 @@ class SubgroupRuleViolationStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final sub in invalidSubspecies) {
-      final sp = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
+      final sp = context.speciesById[sub.speciesId];
 
       cards.add(AuditRuleHelper.forSubspecies(
         id: AppTechnicalStrings.prefixSubgroupViol + sub.id,
@@ -296,7 +298,7 @@ class UninstantiatedSpeciesStrategy implements IAuditRuleStrategy {
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final uninstantiatedSpecies = context.allCatalog.where((sp) {
-      return !context.allEntities.any((e) => e.speciesId == sp.id);
+      return !context.instantiatedSpeciesIds.contains(sp.id);
     }).take(8);
 
     final cards = <AuditCardData>[];
@@ -471,7 +473,7 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
        s.photoPath!.startsWith(AppTechnicalStrings.schemeHttps))
     );
     for (final sub in remoteImageSubspecies) {
-      final parentSpecies = context.allCatalog.where((c) => c.id == sub.speciesId).firstOrNull;
+      final parentSpecies = context.speciesById[sub.speciesId];
       cards.add(AuditRuleHelper.forSubspecies(
         id: AppTechnicalStrings.prefixSubRemote + sub.id,
         type: AuditCardType.remoteImageAudit,

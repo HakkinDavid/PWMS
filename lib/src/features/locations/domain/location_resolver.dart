@@ -15,27 +15,33 @@ class LocationResolver {
   /// 
   /// - [directLocations]: Map of entityId -> direct locationId (from InstanceLocationsTable)
   /// - [relations]: List of all entity relations
+  /// Resolves the effective location ID for [entityId] by inspecting relations and direct locations.
+  /// 
+  /// - [directLocations]: Map of entityId -> direct locationId (from InstanceLocationsTable)
+  /// - [relations]: List of all entity relations
+  /// - [parentContainerMap]: Optional pre-indexed map of sourceEntityId -> targetEntityId for O(1) lookups
   static String? getEffectiveLocationId({
     required String entityId,
     required Map<String, String?> directLocations,
     required List<EntityRelation> relations,
+    Map<String, String>? parentContainerMap,
   }) {
+    final parentMap = parentContainerMap ?? {
+      for (final r in relations)
+        if (locationInheritingTypes.contains(r.relationType))
+          r.sourceEntityId: r.targetEntityId,
+    };
+
     final Set<String> visited = {entityId};
     String currentId = entityId;
 
     while (true) {
-      // Find active location-inheriting relation where currentId is the source (contained item)
-      final parentRel = relations.where((r) =>
-        r.sourceEntityId == currentId &&
-        locationInheritingTypes.contains(r.relationType)
-      ).firstOrNull;
+      final targetId = parentMap[currentId];
 
-      if (parentRel == null) {
+      if (targetId == null) {
         // Not contained in any entity -> return its direct physical location
         return directLocations[currentId];
       }
-
-      final targetId = parentRel.targetEntityId;
 
       // Cycle detection
       if (visited.contains(targetId)) {
@@ -54,12 +60,19 @@ class LocationResolver {
     required Map<String, String?> directLocations,
     required List<EntityRelation> relations,
   }) {
+    final parentMap = {
+      for (final r in relations)
+        if (locationInheritingTypes.contains(r.relationType))
+          r.sourceEntityId: r.targetEntityId,
+    };
+
     final Map<String, String?> result = {};
     for (final entity in entities) {
       result[entity.id] = getEffectiveLocationId(
         entityId: entity.id,
         directLocations: directLocations,
         relations: relations,
+        parentContainerMap: parentMap,
       );
     }
     return result;
@@ -74,20 +87,20 @@ class LocationResolver {
   }) {
     if (sourceId == targetId) return true;
 
+    final parentMap = {
+      for (final r in relations)
+        if (locationInheritingTypes.contains(r.relationType))
+          r.sourceEntityId: r.targetEntityId,
+    };
+
     final Set<String> visited = {targetId};
     String currentId = targetId;
 
     while (true) {
       if (currentId == sourceId) return true;
 
-      final parentRel = relations.where((r) =>
-        r.sourceEntityId == currentId &&
-        locationInheritingTypes.contains(r.relationType)
-      ).firstOrNull;
-
-      if (parentRel == null) return false;
-
-      final nextTarget = parentRel.targetEntityId;
+      final nextTarget = parentMap[currentId];
+      if (nextTarget == null) return false;
       if (visited.contains(nextTarget)) return true;
 
       visited.add(nextTarget);
@@ -100,21 +113,24 @@ class LocationResolver {
     required String containerId,
     required List<EntityRelation> relations,
   }) {
+    final Map<String, List<String>> childrenByContainer = {};
+    for (final r in relations) {
+      if (locationInheritingTypes.contains(r.relationType)) {
+        childrenByContainer.putIfAbsent(r.targetEntityId, () => []).add(r.sourceEntityId);
+      }
+    }
+
     final Set<String> containedIds = {};
     final List<String> queue = [containerId];
 
     while (queue.isNotEmpty) {
       final currentContainer = queue.removeAt(0);
+      final children = childrenByContainer[currentContainer] ?? const [];
 
-      final childRels = relations.where((r) =>
-        r.targetEntityId == currentContainer &&
-        locationInheritingTypes.contains(r.relationType)
-      );
-
-      for (final rel in childRels) {
-        if (!containedIds.contains(rel.sourceEntityId)) {
-          containedIds.add(rel.sourceEntityId);
-          queue.add(rel.sourceEntityId);
+      for (final childId in children) {
+        if (!containedIds.contains(childId)) {
+          containedIds.add(childId);
+          queue.add(childId);
         }
       }
     }
