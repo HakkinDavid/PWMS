@@ -1,13 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
+import 'package:platinum_world_management_system/src/core/database/data_migration_post_processor.dart';
 import 'package:platinum_world_management_system/src/core/database/database_backup_service.dart';
+import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
+import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_registry.dart';
+import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
+import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform
     with MockPlatformInterfaceMixin {
@@ -305,6 +311,258 @@ void main() {
         expect(yearMag.dataType, equals('integer'));
         expect(yearMag.unitSymbol, equals('año'));
       }
+    });
+
+    test('Hot pre-existing data vs Imported data produces identical Control Center alert counts and standardized state', () async {
+      // 1. Populate raw legacy data into a SQLite database without running import
+      final rawExecutor = NativeDatabase.memory();
+      final dbHot = AppDatabase(rawExecutor);
+
+      // Populate unmigrated legacy numismatic structure
+      await dbHot.into(dbHot.catalogTable).insert(
+        CatalogTableCompanion.insert(
+          id: 'species-moneda',
+          name: 'Moneda',
+          type: const Value('Objeto'),
+          description: const Value('Especie numismática (Moneda)'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+
+      await dbHot.into(dbHot.catalogTable).insert(
+        CatalogTableCompanion.insert(
+          id: 'species-billete',
+          name: 'Billete',
+          type: const Value('Objeto'),
+          description: const Value('Especie numismática (Billete)'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+
+      // Old species magnitudes with legacy 'real' dataTypes
+      await dbHot.into(dbHot.speciesMagnitudesTable).insert(
+        SpeciesMagnitudesTableCompanion.insert(
+          id: 'sm-divisa',
+          speciesId: 'species-moneda',
+          propertyName: 'Divisa',
+          dataType: const Value('real'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+      await dbHot.into(dbHot.speciesMagnitudesTable).insert(
+        SpeciesMagnitudesTableCompanion.insert(
+          id: 'sm-mat',
+          speciesId: 'species-moneda',
+          propertyName: 'Material',
+          dataType: const Value('real'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+      await dbHot.into(dbHot.speciesMagnitudesTable).insert(
+        SpeciesMagnitudesTableCompanion.insert(
+          id: 'sm-grado',
+          speciesId: 'species-moneda',
+          propertyName: 'Grado',
+          dataType: const Value('real'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+      await dbHot.into(dbHot.speciesMagnitudesTable).insert(
+        SpeciesMagnitudesTableCompanion.insert(
+          id: 'sm-acunacion',
+          speciesId: 'species-moneda',
+          propertyName: 'Acuñación',
+          dataType: const Value('real'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+
+      // Granular legacy subspecies
+      await dbHot.into(dbHot.subspeciesTable).insert(
+        SubspeciesTableCompanion.insert(
+          id: 'sub-coin-1',
+          speciesId: 'species-moneda',
+          subspeciesName: '10 Pesos Mexicanos - México (2023)',
+          notes: const Value('Moneda: Pesos Mexicanos | Año: 2023 | Material: Bimetálica'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+      await dbHot.into(dbHot.subspeciesTable).insert(
+        SubspeciesTableCompanion.insert(
+          id: 'sub-coin-2',
+          speciesId: 'species-moneda',
+          subspeciesName: '5 Pesos Mexicanos - México (2020)',
+          notes: const Value('Moneda: Pesos Mexicanos | Año: 2020 | Material: Bimetálica'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+      await dbHot.into(dbHot.subspeciesTable).insert(
+        SubspeciesTableCompanion.insert(
+          id: 'sub-bill-1',
+          speciesId: 'species-billete',
+          subspeciesName: '100 Pesos Mexicanos - México (2020)',
+          notes: const Value('Moneda: Pesos Mexicanos | Año: 2020 | Material: Papel'),
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+
+      // Entities under granular subspecies
+      await dbHot.into(dbHot.entitiesTable).insert(
+        EntitiesTableCompanion.insert(
+          id: 'ent-1',
+          speciesId: 'species-moneda',
+          subspeciesId: const Value('sub-coin-1'),
+          notes: const Value('Grado: Sin circular (UNC)'),
+          createdAt: DateTime(2026, 1, 1),
+          updatedAt: DateTime(2026, 1, 1),
+        ),
+      );
+      await dbHot.into(dbHot.entitiesTable).insert(
+        EntitiesTableCompanion.insert(
+          id: 'ent-2',
+          speciesId: 'species-moneda',
+          subspeciesId: const Value('sub-coin-2'),
+          notes: const Value('Grado: Excelente buena conservación (EBC)'),
+          createdAt: DateTime(2026, 1, 1),
+          updatedAt: DateTime(2026, 1, 1),
+        ),
+      );
+      await dbHot.into(dbHot.entitiesTable).insert(
+        EntitiesTableCompanion.insert(
+          id: 'ent-3',
+          speciesId: 'species-billete',
+          subspeciesId: const Value('sub-bill-1'),
+          createdAt: DateTime(2026, 1, 1),
+          updatedAt: DateTime(2026, 1, 1),
+        ),
+      );
+
+      // Legacy unstandardized instance magnitudes (e.g. Divisa with 'Pesos Mexicanos' instead of 'MXN', 'País' instead of 'Emisor')
+      await dbHot.into(dbHot.instanceMagnitudesTable).insert(
+        InstanceMagnitudesTableCompanion.insert(
+          id: 'im-1-divisa',
+          instanceId: 'ent-1',
+          propertyName: 'Divisa',
+          dataType: const Value('real'),
+          magnitudeValue: const Value(0.0),
+          stringValue: const Value('Pesos Mexicanos'),
+        ),
+      );
+      await dbHot.into(dbHot.instanceMagnitudesTable).insert(
+        InstanceMagnitudesTableCompanion.insert(
+          id: 'im-1-pais',
+          instanceId: 'ent-1',
+          propertyName: 'País',
+          dataType: const Value('string'),
+          stringValue: const Value('México'),
+        ),
+      );
+
+      // Attachments with legacy unstandardized filename
+      await dbHot.into(dbHot.attachmentsTable).insert(
+        AttachmentsTableCompanion.insert(
+          id: 'att-1',
+          speciesId: 'species-moneda',
+          instanceId: const Value('ent-1'),
+          filePath: '/tmp/test_anverso.png',
+          fileName: 'Legacy Name (ent-1) (anverso).png',
+          fileType: 'image',
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
+
+      // 2. Trigger centralized post-processor migration (as happens in beforeOpen when opening DB)
+      await DataMigrationRegistry.runAll(dbHot);
+
+      Future<AuditEvaluationContext> buildEvaluationContext(AppDatabase targetDb) async {
+        final catRepo = CatalogRepository(targetDb);
+        final entRepo = EntityRepository(targetDb);
+
+        final allCatalog = await catRepo.getAllCatalogItems();
+        final allEntities = await entRepo.getAllEntities();
+        final allSubspecies = await catRepo.getAllSubspecies();
+
+        return AuditEvaluationContext(
+          db: targetDb,
+          allEntities: allEntities,
+          allCatalog: allCatalog,
+          allSubspecies: allSubspecies,
+          allRelations: const [],
+          allLocations: const [],
+          allSpeciesMagnitudes: const [],
+          allInstanceMagnitudes: const [],
+          allRequirements: const [],
+          effectiveLocationMap: const {},
+        );
+      }
+
+      // 3. Evaluate Control Center on hot migrated database
+      final registry = AuditRuleRegistry();
+      final evalContextHot = await buildEvaluationContext(dbHot);
+      final cardsHot = await registry.evaluateAll(evalContextHot);
+
+      // 4. Export the database to JSON map
+      final backupService = DatabaseBackupService(dbHot);
+      final exportedMap = await backupService.exportDatabaseToJsonMap();
+      final jsonString = jsonEncode(exportedMap);
+
+      // 5. Import into a separate fresh database
+      final dbImported = AppDatabase(NativeDatabase.memory());
+      final importBackupService = DatabaseBackupService(dbImported);
+      await importBackupService.importDatabaseFromJsonString(jsonString);
+
+      // 6. Evaluate Control Center on imported database
+      final evalContextImported = await buildEvaluationContext(dbImported);
+      final cardsImported = await registry.evaluateAll(evalContextImported);
+
+      // 7. Verify PARITY: both have exact same card count and types
+      expect(cardsHot.length, equals(cardsImported.length));
+      expect(cardsHot.map((c) => c.type).toList(), equals(cardsImported.map((c) => c.type).toList()));
+
+      // 8. Verify detailed state parity
+      final subsHot = await dbHot.select(dbHot.subspeciesTable).get();
+      final subsImported = await dbImported.select(dbImported.subspeciesTable).get();
+      expect(subsHot.length, equals(subsImported.length));
+      expect(subsHot.map((s) => s.subspeciesName).toSet(), equals(subsImported.map((s) => s.subspeciesName).toSet()));
+
+      // Check all pieces point to canonical currency subspecies
+      expect(subsHot.any((s) => s.subspeciesName == 'Pesos Mexicanos'), isTrue);
+
+      // Check species magnitudes repaired to correct types in both
+      final smHot = await dbHot.select(dbHot.speciesMagnitudesTable).get();
+      final smDivisaHot = smHot.firstWhere((s) => s.propertyName == 'Divisa' && s.speciesId == 'species-moneda');
+      expect(smDivisaHot.dataType, equals('string'));
+
+      final smAcunacionHot = smHot.firstWhere((s) => s.propertyName == 'Acuñación' && s.speciesId == 'species-moneda');
+      expect(smAcunacionHot.dataType, equals('integer'));
+      expect(smAcunacionHot.unitSymbol, equals('año'));
+
+      // Check instance magnitudes on ent-1: Divisa is 'MXN', Material is 'Bimetálica', Grado is 'Sin circular (UNC)', Emisor is 'México'
+      final imEnt1Hot = await (dbHot.select(dbHot.instanceMagnitudesTable)..where((t) => t.instanceId.equals('ent-1'))).get();
+      final divisaEnt1 = imEnt1Hot.firstWhere((m) => m.propertyName == 'Divisa');
+      expect(divisaEnt1.stringValue, equals('MXN'));
+      expect(divisaEnt1.dataType, equals('string'));
+      expect(divisaEnt1.magnitudeValue, isNull);
+
+      final matEnt1 = imEnt1Hot.firstWhere((m) => m.propertyName == 'Material');
+      expect(matEnt1.stringValue, equals('Bimetálica'));
+
+      final gradoEnt1 = imEnt1Hot.firstWhere((m) => m.propertyName == 'Grado');
+      expect(gradoEnt1.stringValue, equals('Sin circular'));
+
+      final emisorEnt1 = imEnt1Hot.firstWhere((m) => m.propertyName == 'Emisor');
+      expect(emisorEnt1.stringValue, equals('México'));
+
+      final acunacionEnt1 = imEnt1Hot.firstWhere((m) => m.propertyName == 'Acuñación');
+      expect(acunacionEnt1.magnitudeValue, equals(2023.0));
+      expect(acunacionEnt1.dataType, equals('integer'));
+
+      final valorEnt1 = imEnt1Hot.firstWhere((m) => m.propertyName == 'Valor nominal');
+      expect(valorEnt1.magnitudeValue, equals(10.0));
+      expect(valorEnt1.dataType, equals('real'));
+
+      await dbHot.close();
+      await dbImported.close();
     });
   });
 }

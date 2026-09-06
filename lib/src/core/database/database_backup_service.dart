@@ -603,9 +603,9 @@ class DatabaseBackupService {
     for (final item in speciesMagnitudes) {
       if (item is Map) {
         final m = Map<String, dynamic>.from(item);
-        final specId = m[AppTechnicalJsonKeys.keySpeciesId]?.toString() ?? '';
+        final specId = m[AppTechnicalJsonKeys.keySpeciesId]?.toString() ?? AppTechnicalStrings.empty;
         final propName = (m[AppTechnicalJsonKeys.keyPropertyName] ?? AppTechnicalStrings.empty).toString().trim();
-        final dedupKey = '$specId:${propName.toLowerCase()}';
+        final dedupKey = AppTechnicalStrings.compositeKey(specId, propName.toLowerCase());
         if (seenSmKeys.contains(dedupKey)) {
           continue;
         }

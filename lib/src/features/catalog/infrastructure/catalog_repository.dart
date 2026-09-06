@@ -590,17 +590,10 @@ class CatalogRepository {
     final cleanUnit = unitSymbol?.trim();
 
     final query = _db.select(_db.speciesMagnitudesTable)
-      ..where((t) {
-        final nameCond = t.speciesId.equals(speciesId) & t.propertyName.equals(cleanName);
-        if (cleanUnit != null && cleanUnit.isNotEmpty) {
-          return nameCond & t.unitSymbol.equals(cleanUnit);
-        } else {
-          return nameCond & (t.unitSymbol.isNull() | t.unitSymbol.equals(AppTechnicalStrings.empty));
-        }
-      });
-    final existing = await query.getSingleOrNull();
+      ..where((t) => t.speciesId.equals(speciesId) & t.propertyName.equals(cleanName));
+    final existingList = await query.get();
 
-    if (existing == null) {
+    if (existingList.isEmpty) {
       await _db.into(_db.speciesMagnitudesTable).insert(
         SpeciesMagnitudesTableCompanion(
           id: Value(const Uuid().v4()),
@@ -611,6 +604,19 @@ class CatalogRepository {
           createdAt: Value(DateTime.now()),
         ),
       );
+    } else {
+      final primary = existingList.first;
+      await (_db.update(_db.speciesMagnitudesTable)..where((t) => t.id.equals(primary.id))).write(
+        SpeciesMagnitudesTableCompanion(
+          dataType: Value(dataType),
+          unitSymbol: Value(cleanUnit ?? primary.unitSymbol),
+        ),
+      );
+      if (existingList.length > 1) {
+        for (var i = 1; i < existingList.length; i++) {
+          await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.id.equals(existingList[i].id))).go();
+        }
+      }
     }
   }
 }
