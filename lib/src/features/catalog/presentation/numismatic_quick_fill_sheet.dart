@@ -351,6 +351,101 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     }
   }
 
+  int? get _parsedYear => _isYearNull ? null : int.tryParse(_yearController.text.trim());
+
+  void _onCountryChanged(String? val) {
+    setState(() {
+      _country = val;
+      _recalculateInferences();
+    });
+  }
+
+  void _onYearChanged() {
+    setState(() {
+      _recalculateInferences();
+    });
+  }
+
+  void _onCurrencyChanged(String? val) {
+    setState(() {
+      _currencyCode = val;
+      _recalculateInferences(preserveCurrency: true);
+    });
+  }
+
+  void _onDenominationChanged(String? val) {
+    setState(() {
+      _denomination = val;
+      _recalculateInferences(preserveCurrency: true, preserveDenomination: true);
+    });
+  }
+
+  void _recalculateInferences({
+    bool preserveCurrency = false,
+    bool preserveDenomination = false,
+  }) {
+    final effectiveCountry = _country == AppStrings.otherSpecifyOption ? null : _country;
+    final year = _parsedYear;
+
+    // 1. Currency inference / validation
+    final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(effectiveCountry, year: year);
+    if (!_isCurrencyNull && !preserveCurrency) {
+      final inferredCurrency = NumismaticDataHelper.inferCurrency(country: effectiveCountry, year: year);
+      if (inferredCurrency != null) {
+        _currencyCode = inferredCurrency;
+      } else if (_currencyCode != null &&
+          _currencyCode != AppStrings.otherSpecifyOption &&
+          !availableCurrencies.contains(_currencyCode)) {
+        _currencyCode = null;
+      }
+    } else if (_currencyCode != null &&
+        _currencyCode != AppStrings.otherSpecifyOption &&
+        !availableCurrencies.contains(_currencyCode)) {
+      _currencyCode = null;
+    }
+
+    // 2. Denomination validation
+    final currCode = _currencyCode == AppStrings.otherSpecifyOption ? null : _currencyCode;
+    final availableDenominations = NumismaticDataHelper.getDenominationsForCountry(
+      country: effectiveCountry,
+      year: year,
+      currencyCode: currCode,
+    );
+    if (!_isDenominationNull && !preserveDenomination) {
+      if (_denomination != null &&
+          _denomination != AppStrings.otherSpecifyOption &&
+          !availableDenominations.contains(_denomination)) {
+        _denomination = null;
+      }
+    }
+
+    // 3. Material inference (for coins)
+    final denom = _denomination == AppStrings.otherSpecifyOption ? null : _denomination;
+    if (widget.isCoin && !_isCompositionNull) {
+      final inferredMat = NumismaticDataHelper.inferMaterial(
+        country: effectiveCountry,
+        year: year,
+        currencyCode: currCode,
+        denomination: denom,
+      );
+      if (inferredMat != null) {
+        _composition = inferredMat;
+      }
+    }
+
+    // 4. Special Edition auto-check
+    final specialCheck = NumismaticDataHelper.checkSpecialEdition(
+      country: effectiveCountry,
+      year: year,
+      currencyCode: currCode,
+      denomination: denom,
+    );
+    if (specialCheck != null) {
+      _isSpecialEdition = true;
+      _specialReason = specialCheck.reason;
+    }
+  }
+
   Widget _buildFieldHeader({
     required String title,
     required bool isNull,
@@ -494,6 +589,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       _country = null;
                       _customCountryController.clear();
                     }
+                    _recalculateInferences();
                   });
                 },
               ),
@@ -513,15 +609,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   if (_isCountryNull) return null;
                   return val == null ? AppStrings.selectCountryPrompt : null;
                 },
-                onChanged: (val) {
-                  setState(() {
-                    _country = val;
-                    final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(_country == AppStrings.otherSpecifyOption ? null : _country);
-                    if (_currencyCode != null && _currencyCode != AppStrings.otherSpecifyOption && !availableCurrencies.contains(_currencyCode)) {
-                      _currencyCode = null;
-                    }
-                  });
-                },
+                onChanged: _onCountryChanged,
               ),
               if (!_isCountryNull && _country == AppStrings.otherSpecifyOption) ...[
                 const SizedBox(height: 10),
@@ -544,7 +632,115 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               ],
               const SizedBox(height: 14),
 
-              // 2. Denominación Dropdown (1 campo por fila)
+              // 2. Año TextField (1 campo por fila - ahora inmediatamente después de País)
+              _buildFieldHeader(
+                title: AppStrings.mintageYearLabel,
+                isNull: _isYearNull,
+                nullLabel: AppStrings.unspecifiedYearLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isYearNull = val ?? false;
+                    if (_isYearNull) {
+                      _yearController.clear();
+                    }
+                    _onYearChanged();
+                  });
+                },
+              ),
+              TextFormField(
+                controller: _yearController,
+                enabled: !_isYearNull,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: AppStrings.mintageYearLabel,
+                  hintText: _isYearNull ? AppStrings.unspecifiedYearLabel : AppStrings.exampleYearHint,
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                onChanged: (_) => _onYearChanged(),
+                validator: (val) {
+                  if (_isYearNull) return null;
+                  if (val == null || val.trim().isEmpty) {
+                    return AppStrings.enterMintageYearPrompt;
+                  }
+                  final yearNum = int.tryParse(val.trim());
+                  if (yearNum == null || yearNum < 500 || yearNum > 2100) {
+                    return AppStrings.enterValidMintageYearPrompt;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 14),
+
+              // 3. Divisa Dropdown (1 campo por fila) - Filtrado por País y Año seleccionados
+              _buildFieldHeader(
+                title: AppStrings.currencyLabel,
+                isNull: _isCurrencyNull,
+                nullLabel: AppStrings.unspecifiedCurrencyLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isCurrencyNull = val ?? false;
+                    if (_isCurrencyNull) {
+                      _currencyCode = null;
+                      _customCurrencyController.clear();
+                    }
+                    _recalculateInferences(preserveCurrency: true);
+                  });
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  final availableCurrencies = NumismaticDataHelper.getCurrencyMapForCountry(
+                    _country == AppStrings.otherSpecifyOption ? null : _country,
+                    year: _parsedYear,
+                  );
+                  return AppWheelPickerField<String?>(
+                    value: _currencyCode,
+                    enabled: !_isCurrencyNull,
+                    items: [null, ...availableCurrencies.keys, AppStrings.otherSpecifyOption],
+                    labelBuilder: (code) {
+                      if (code == null) return AppStrings.noSelectionPrompt;
+                      if (code == AppStrings.otherSpecifyOption) return AppStrings.otherSpecifyOption;
+                      final name = availableCurrencies[code] ?? _currencyMap[code] ?? code;
+                      return AppStrings.currencyCodeWithName(code, name);
+                    },
+                    title: AppStrings.currencyLabel,
+                    decoration: InputDecoration(
+                      labelText: AppStrings.currencyLabel,
+                      hintText: _isCurrencyNull ? AppStrings.unspecifiedCurrencyLabel : AppStrings.noSelectionPrompt,
+                      prefixIcon: const Icon(Icons.monetization_on),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    validator: (val) {
+                      if (_isCurrencyNull) return null;
+                      return val == null ? AppStrings.selectCurrencyPrompt : null;
+                    },
+                    onChanged: _onCurrencyChanged,
+                  );
+                },
+              ),
+              if (!_isCurrencyNull && _currencyCode == AppStrings.otherSpecifyOption) ...[
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _customCurrencyController,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.specifyCurrencyLabel,
+                    hintText: AppStrings.specifyCurrencyLabel,
+                    prefixIcon: const Icon(Icons.monetization_on_outlined),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  validator: (val) {
+                    if (_isCurrencyNull) return null;
+                    if (_currencyCode == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
+                      return AppStrings.specifyCurrencyPrompt;
+                    }
+                    return null;
+                  },
+                ),
+              ],
+              const SizedBox(height: 14),
+
+              // 4. Denominación Dropdown (1 campo por fila) - Filtrado por País, Año y Divisa
               _buildFieldHeader(
                 title: AppStrings.denominationLabel,
                 isNull: _isDenominationNull,
@@ -556,26 +752,36 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       _denomination = null;
                       _customDenominationController.clear();
                     }
+                    _recalculateInferences(preserveCurrency: true, preserveDenomination: true);
                   });
                 },
               ),
-              AppWheelPickerField<String?>(
-                value: _denomination,
-                enabled: !_isDenominationNull,
-                items: [null, ..._denominations],
-                labelBuilder: (d) => d ?? AppStrings.noSelectionPrompt,
-                title: AppStrings.denominationLabel,
-                decoration: InputDecoration(
-                  labelText: AppStrings.denominationLabel,
-                  hintText: _isDenominationNull ? AppStrings.unspecifiedDenominationLabel : AppStrings.noSelectionPrompt,
-                  prefixIcon: const Icon(Icons.numbers),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-                validator: (val) {
-                  if (_isDenominationNull) return null;
-                  return val == null ? AppStrings.selectDenominationPrompt : null;
+              Builder(
+                builder: (context) {
+                  final availableDenoms = NumismaticDataHelper.getDenominationsForCountry(
+                    country: _country == AppStrings.otherSpecifyOption ? null : _country,
+                    year: _parsedYear,
+                    currencyCode: _currencyCode == AppStrings.otherSpecifyOption ? null : _currencyCode,
+                  );
+                  return AppWheelPickerField<String?>(
+                    value: _denomination,
+                    enabled: !_isDenominationNull,
+                    items: [null, ...availableDenoms],
+                    labelBuilder: (d) => d ?? AppStrings.noSelectionPrompt,
+                    title: AppStrings.denominationLabel,
+                    decoration: InputDecoration(
+                      labelText: AppStrings.denominationLabel,
+                      hintText: _isDenominationNull ? AppStrings.unspecifiedDenominationLabel : AppStrings.noSelectionPrompt,
+                      prefixIcon: const Icon(Icons.numbers),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    validator: (val) {
+                      if (_isDenominationNull) return null;
+                      return val == null ? AppStrings.selectDenominationPrompt : null;
+                    },
+                    onChanged: _onDenominationChanged,
+                  );
                 },
-                onChanged: (val) => setState(() => _denomination = val),
               ),
               if (!_isDenominationNull && _denomination == AppStrings.otherSpecifyOption) ...[
                 const SizedBox(height: 10),
@@ -608,163 +814,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               ],
               const SizedBox(height: 14),
 
-              // 3. Divisa Dropdown (1 campo por fila) - Filtrado por País seleccionado
-              _buildFieldHeader(
-                title: AppStrings.currencyLabel,
-                isNull: _isCurrencyNull,
-                nullLabel: AppStrings.unspecifiedCurrencyLabel,
-                onNullChanged: (val) {
-                  setState(() {
-                    _isCurrencyNull = val ?? false;
-                    if (_isCurrencyNull) {
-                      _currencyCode = null;
-                      _customCurrencyController.clear();
-                    }
-                  });
-                },
-              ),
-              Builder(
-                builder: (context) {
-                  final availableCurrencies = NumismaticDataHelper.getCurrencyMapForCountry(_country == AppStrings.otherSpecifyOption ? null : _country);
-                  return AppWheelPickerField<String?>(
-                    value: _currencyCode,
-                    enabled: !_isCurrencyNull,
-                    items: [null, ...availableCurrencies.keys, AppStrings.otherSpecifyOption],
-                    labelBuilder: (code) {
-                      if (code == null) return AppStrings.noSelectionPrompt;
-                      if (code == AppStrings.otherSpecifyOption) return AppStrings.otherSpecifyOption;
-                      final name = availableCurrencies[code] ?? _currencyMap[code] ?? code;
-                      return AppStrings.currencyCodeWithName(code, name);
-                    },
-                    title: AppStrings.currencyLabel,
-                    decoration: InputDecoration(
-                      labelText: AppStrings.currencyLabel,
-                      hintText: _isCurrencyNull ? AppStrings.unspecifiedCurrencyLabel : AppStrings.noSelectionPrompt,
-                      prefixIcon: const Icon(Icons.monetization_on),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                    ),
-                    validator: (val) {
-                      if (_isCurrencyNull) return null;
-                      return val == null ? AppStrings.selectCurrencyPrompt : null;
-                    },
-                    onChanged: (val) => setState(() => _currencyCode = val),
-                  );
-                },
-              ),
-              if (!_isCurrencyNull && _currencyCode == AppStrings.otherSpecifyOption) ...[
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _customCurrencyController,
-                  decoration: InputDecoration(
-                    labelText: AppStrings.specifyCurrencyLabel,
-                    hintText: AppStrings.specifyCurrencyLabel,
-                    prefixIcon: const Icon(Icons.monetization_on_outlined),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                  validator: (val) {
-                    if (_isCurrencyNull) return null;
-                    if (_currencyCode == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
-                      return AppStrings.specifyCurrencyPrompt;
-                    }
-                    return null;
-                  },
-                ),
-              ],
-              const SizedBox(height: 14),
-
-              // 4. Año TextField (1 campo por fila)
-              _buildFieldHeader(
-                title: AppStrings.mintageYearLabel,
-                isNull: _isYearNull,
-                nullLabel: AppStrings.unspecifiedYearLabel,
-                onNullChanged: (val) {
-                  setState(() {
-                    _isYearNull = val ?? false;
-                    if (_isYearNull) {
-                      _yearController.clear();
-                    }
-                  });
-                },
-              ),
-              TextFormField(
-                controller: _yearController,
-                enabled: !_isYearNull,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: AppStrings.mintageYearLabel,
-                  hintText: _isYearNull ? AppStrings.unspecifiedYearLabel : AppStrings.exampleYearHint,
-                  prefixIcon: const Icon(Icons.calendar_today),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-                validator: (val) {
-                  if (_isYearNull) return null;
-                  if (val == null || val.trim().isEmpty) {
-                    return AppStrings.enterMintageYearPrompt;
-                  }
-                  final yearNum = int.tryParse(val.trim());
-                  if (yearNum == null || yearNum < 500 || yearNum > 2100) {
-                    return AppStrings.enterValidMintageYearPrompt;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 14),
-
-              // 5. Conservación Dropdown (1 campo por fila)
-              _buildFieldHeader(
-                title: AppStrings.gradePropertyName,
-                isNull: _isGradeNull,
-                nullLabel: AppStrings.unspecifiedGradeLabel,
-                onNullChanged: (val) {
-                  setState(() {
-                    _isGradeNull = val ?? false;
-                    if (_isGradeNull) {
-                      _grade = null;
-                      _customGradeController.clear();
-                    }
-                  });
-                },
-              ),
-              AppWheelPickerField<String?>(
-                value: _grade,
-                enabled: !_isGradeNull,
-                items: [null, ..._grades],
-                labelBuilder: (g) => g ?? AppStrings.noSelectionPrompt,
-                title: AppStrings.gradePropertyName,
-                decoration: InputDecoration(
-                  labelText: AppStrings.gradePropertyName,
-                  hintText: _isGradeNull ? AppStrings.unspecifiedGradeLabel : AppStrings.noSelectionPrompt,
-                  prefixIcon: const Icon(Icons.grade),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-                validator: (val) {
-                  if (_isGradeNull) return null;
-                  return val == null ? AppStrings.selectGradePrompt : null;
-                },
-                onChanged: (val) => setState(() => _grade = val),
-              ),
-              if (!_isGradeNull && _grade == AppStrings.otherSpecifyOption) ...[
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _customGradeController,
-                  decoration: InputDecoration(
-                    labelText: AppStrings.specifyGradeLabel,
-                    hintText: AppStrings.specifyGradeLabel,
-                    prefixIcon: const Icon(Icons.stars_outlined),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                  validator: (val) {
-                    if (_isGradeNull) return null;
-                    if (_grade == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
-                      return AppStrings.specifyGradePrompt;
-                    }
-                    return null;
-                  },
-                ),
-              ],
-              const SizedBox(height: 14),
-
-              // 6. Material / Composición Dropdown (1 campo por fila, sólo para monedas)
+              // 5. Material / Composición Dropdown (1 campo por fila, sólo para monedas) - Inferencia automática con override manual
               if (widget.isCoin) ...[
                 _buildFieldHeader(
                   title: AppStrings.materialPropertyName,
@@ -819,6 +869,60 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 ],
                 const SizedBox(height: 14),
               ],
+
+              // 6. Conservación Dropdown (1 campo por fila)
+              _buildFieldHeader(
+                title: AppStrings.gradePropertyName,
+                isNull: _isGradeNull,
+                nullLabel: AppStrings.unspecifiedGradeLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isGradeNull = val ?? false;
+                    if (_isGradeNull) {
+                      _grade = null;
+                      _customGradeController.clear();
+                    }
+                  });
+                },
+              ),
+              AppWheelPickerField<String?>(
+                value: _grade,
+                enabled: !_isGradeNull,
+                items: [null, ..._grades],
+                labelBuilder: (g) => g ?? AppStrings.noSelectionPrompt,
+                title: AppStrings.gradePropertyName,
+                decoration: InputDecoration(
+                  labelText: AppStrings.gradePropertyName,
+                  hintText: _isGradeNull ? AppStrings.unspecifiedGradeLabel : AppStrings.noSelectionPrompt,
+                  prefixIcon: const Icon(Icons.grade),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                validator: (val) {
+                  if (_isGradeNull) return null;
+                  return val == null ? AppStrings.selectGradePrompt : null;
+                },
+                onChanged: (val) => setState(() => _grade = val),
+              ),
+              if (!_isGradeNull && _grade == AppStrings.otherSpecifyOption) ...[
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _customGradeController,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.specifyGradeLabel,
+                    hintText: AppStrings.specifyGradeLabel,
+                    prefixIcon: const Icon(Icons.stars_outlined),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  validator: (val) {
+                    if (_isGradeNull) return null;
+                    if (_grade == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
+                      return AppStrings.specifyGradePrompt;
+                    }
+                    return null;
+                  },
+                ),
+              ],
+              const SizedBox(height: 14),
 
               // 7. Selector de Ubicación / Contenedor (LocationOrContainerSelectionSheet)
               Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),

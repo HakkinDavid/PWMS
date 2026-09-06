@@ -85,8 +85,8 @@ void main() {
     final countryField = find.byType(AppWheelPickerField<String?>).at(0);
     await selectWheelOption(tester, countryField, 'Estados Unidos');
 
-    // 2. Select Currency USD
-    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
+    // 2. Select Currency USD (at index 1)
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(1);
     await selectWheelOption(tester, currencyField, 'USD (Dólares Estadounidenses)');
 
     // 3. Change Country to 'México'
@@ -128,7 +128,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify all wheel picker fields display 'Sin selección' as default value
-    expect(find.text('Sin selección'), findsNWidgets(5)); // País, Denominación, Divisa, Conservación, Material
+    expect(find.text('Sin selección'), findsNWidgets(5)); // País, Divisa, Denominación, Material, Conservación
 
     // Tap submit button with null fields
     final submitText = find.text(AppStrings.confirmAndRegisterPieceAction);
@@ -174,26 +174,26 @@ void main() {
     final countryField = find.byType(AppWheelPickerField<String?>).at(0);
     await selectWheelOption(tester, countryField, 'México');
 
-    // 2. Select Denomination (5)
-    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
-    await selectWheelOption(tester, denomField, '5');
-
-    // 3. Select Currency (MXN)
-    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
-    await selectWheelOption(tester, currencyField, 'MXN (Pesos Mexicanos)');
-
-    // 4. Enter Year (1982)
-    final yearField = find.byType(TextFormField);
+    // 2. Enter Year (1982)
+    final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
     await tester.enterText(yearField, '1982');
     await tester.pumpAndSettle();
 
-    // 5. Select Grade (MBC / VF (Muy Buena))
-    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
-    await selectWheelOption(tester, gradeField, 'Muy buena');
+    // 3. Select Currency (MXP)
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(1);
+    await selectWheelOption(tester, currencyField, 'MXP (Pesos Mexicanos Antiguos)');
 
-    // 6. Select Material (Cuproníquel)
-    final matField = find.byType(AppWheelPickerField<String?>).at(4);
+    // 4. Select Denomination (5)
+    final denomField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, denomField, '5');
+
+    // 5. Select Material (Cuproníquel)
+    final matField = find.byType(AppWheelPickerField<String?>).at(3);
     await selectWheelOption(tester, matField, 'Cuproníquel');
+
+    // 6. Select Grade (Muy buena)
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, gradeField, 'Muy buena');
 
     // Submit
     final submitText = find.text(AppStrings.confirmAndRegisterPieceAction);
@@ -203,13 +203,82 @@ void main() {
 
     expect(submittedResult, isNotNull);
     expect(submittedResult!.country, equals('México'));
-    expect(submittedResult!.currencyCode, equals('MXN'));
-    expect(submittedResult!.currencyName, equals('Pesos Mexicanos'));
+    expect(submittedResult!.currencyCode, equals('MXP'));
+    expect(submittedResult!.currencyName, equals('Pesos Mexicanos Antiguos'));
     expect(submittedResult!.faceValueNumber, equals(5.0));
     expect(submittedResult!.year, equals('1982'));
     expect(submittedResult!.grade, equals('Muy buena'));
     expect(submittedResult!.composition, equals('Cuproníquel'));
-    expect(submittedResult!.subspeciesName, equals('5 Pesos Mexicanos - México (1982)'));
+    expect(submittedResult!.subspeciesName, equals('5 Pesos Mexicanos Antiguos - México (1982)'));
+  });
+
+  testWidgets('NumismaticQuickFillSheet auto-infers Currency and Material for Mexico 1982 50 Pesos', (WidgetTester tester) async {
+    NumismaticScanResult? submittedResult;
+
+    final dummyObverse = File('/tmp/obverse.jpg');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+        ],
+        child: MaterialApp(
+          key: UniqueKey(),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: NumismaticQuickFillSheet(
+                obversePhoto: dummyObverse,
+                isCoin: true,
+                onResultSubmitted: (result) {
+                  submittedResult = result;
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // 1. Select Country (México)
+    final countryField = find.byType(AppWheelPickerField<String?>).at(0);
+    await selectWheelOption(tester, countryField, 'México');
+
+    // 2. Enter Year (1982)
+    final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
+    await tester.enterText(yearField, '1982');
+    await tester.pumpAndSettle();
+
+    // Verify Currency was auto-inferred as MXP (Pesos Mexicanos Antiguos)
+    expect(find.text('MXP (Pesos Mexicanos Antiguos)'), findsOneWidget);
+
+    // 3. Select Denomination (50)
+    final denomField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, denomField, '50');
+
+    // Verify Material was auto-inferred as Cuproníquel (Coyolxauhqui)
+    expect(find.text('Cuproníquel'), findsWidgets);
+
+    // 4. Select Grade (Excelente)
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, gradeField, 'Excelente');
+
+    // Submit
+    final submitButton = find.text(AppStrings.confirmAndRegisterPieceAction);
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
+    await tester.pumpAndSettle();
+
+    expect(submittedResult, isNotNull);
+    expect(submittedResult!.country, equals('México'));
+    expect(submittedResult!.currencyCode, equals('MXP'));
+    expect(submittedResult!.currencyName, equals('Pesos Mexicanos Antiguos'));
+    expect(submittedResult!.faceValueNumber, equals(50.0));
+    expect(submittedResult!.year, equals('1982'));
+    expect(submittedResult!.composition, equals('Cuproníquel'));
+    expect(submittedResult!.grade, equals('Excelente'));
+    expect(submittedResult!.subspeciesName, equals('50 Pesos Mexicanos Antiguos - México (1982)'));
   });
 
   testWidgets('NumismaticQuickFillSheet summons numeric decimal text entry when denomination is Otro and validates properly', (WidgetTester tester) async {
@@ -245,29 +314,29 @@ void main() {
     final countryField = find.byType(AppWheelPickerField<String?>).at(0);
     await selectWheelOption(tester, countryField, 'México');
 
-    // 2. Select Denomination ("Otro")
-    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
+    // 2. Enter Year (1975)
+    final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
+    await tester.enterText(yearField, '1975');
+    await tester.pumpAndSettle();
+
+    // 3. Select Currency (MXP)
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(1);
+    await selectWheelOption(tester, currencyField, 'MXP (Pesos Mexicanos Antiguos)');
+
+    // 4. Select Denomination ("Otro")
+    final denomField = find.byType(AppWheelPickerField<String?>).at(2);
     await selectWheelOption(tester, denomField, 'Otro');
 
     // Verify the custom denomination text field is summoned
     expect(find.text(AppStrings.denominationNumberLabel), findsOneWidget);
 
-    // 3. Select Currency (MXN)
-    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
-    await selectWheelOption(tester, currencyField, 'MXN (Pesos Mexicanos)');
-
-    // 4. Enter Year (1975)
-    final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
-    await tester.enterText(yearField, '1975');
-    await tester.pumpAndSettle();
-
-    // 5. Select Grade (Sin circular)
-    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
-    await selectWheelOption(tester, gradeField, 'Sin circular');
-
-    // 6. Select Material (Plata)
-    final matField = find.byType(AppWheelPickerField<String?>).at(4);
+    // 5. Select Material (Plata)
+    final matField = find.byType(AppWheelPickerField<String?>).at(3);
     await selectWheelOption(tester, matField, 'Plata');
+
+    // 6. Select Grade (Sin circular)
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, gradeField, 'Sin circular');
 
     // Try to submit with empty custom denomination -> should fail
     final submitButton = find.text(AppStrings.confirmAndRegisterPieceAction);
@@ -294,9 +363,9 @@ void main() {
 
     expect(submittedResult, isNotNull);
     expect(submittedResult!.faceValueNumber, equals(0.5));
-    expect(submittedResult!.subspeciesName, equals('0.50 Pesos Mexicanos - México (1975)'));
+    expect(submittedResult!.subspeciesName, equals('0.50 Pesos Mexicanos Antiguos - México (1975)'));
     expect(submittedResult!.country, equals('México'));
-    expect(submittedResult!.currencyCode, equals('MXN'));
+    expect(submittedResult!.currencyCode, equals('MXP'));
   });
 
   testWidgets('NumismaticQuickFillSheet handles Special Edition Otro option with summoned notes', (WidgetTester tester) async {
@@ -332,28 +401,28 @@ void main() {
     final countryField = find.byType(AppWheelPickerField<String?>).at(0);
     await selectWheelOption(tester, countryField, 'México');
 
-    // 2. Select Denomination (20)
-    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
-    await selectWheelOption(tester, denomField, '20');
-
-    // 3. Select Currency (MXN)
-    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
-    await selectWheelOption(tester, currencyField, 'MXN (Pesos Mexicanos)');
-
-    // 4. Enter Year (2021)
+    // 2. Enter Year (1975 - non-commemorative piece)
     final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
-    await tester.enterText(yearField, '2021');
+    await tester.enterText(yearField, '1975');
     await tester.pumpAndSettle();
 
-    // 5. Select Grade (Sin circular)
-    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
+    // 3. Select Currency (MXP)
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(1);
+    await selectWheelOption(tester, currencyField, 'MXP (Pesos Mexicanos Antiguos)');
+
+    // 4. Select Denomination (1)
+    final denomField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, denomField, '1');
+
+    // 5. Select Material (Cuproníquel)
+    final matField = find.byType(AppWheelPickerField<String?>).at(3);
+    await selectWheelOption(tester, matField, 'Cuproníquel');
+
+    // 6. Select Grade (Sin circular)
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(4);
     await selectWheelOption(tester, gradeField, 'Sin circular');
 
-    // 6. Select Material (Bimetálica)
-    final matField = find.byType(AppWheelPickerField<String?>).at(4);
-    await selectWheelOption(tester, matField, 'Bimetálica');
-
-    // 7. Check Special Edition
+    // 7. Check Special Edition manually
     final checkbox = find.byType(CheckboxListTile);
     await tester.ensureVisible(checkbox);
     await tester.tap(checkbox);
@@ -369,7 +438,7 @@ void main() {
     // Enter notes
     final notesField = find.widgetWithText(TextFormField, AppStrings.specialEditionNotesLabel);
     await tester.ensureVisible(notesField);
-    await tester.enterText(notesField, 'Bicentenario de la Independencia');
+    await tester.enterText(notesField, 'Prueba de cuño conmemorativo');
     await tester.pumpAndSettle();
 
     // Submit
@@ -381,7 +450,7 @@ void main() {
     expect(submittedResult, isNotNull);
     expect(submittedResult!.isSpecialEdition, isTrue);
     expect(submittedResult!.specialEditionReason, equals('Otro'));
-    expect(submittedResult!.specialEditionNotes, equals('Bicentenario de la Independencia'));
+    expect(submittedResult!.specialEditionNotes, equals('Prueba de cuño conmemorativo'));
   });
 
   testWidgets('NumismaticQuickFillSheet does not pop navigator when onResultSubmitted is provided', (WidgetTester tester) async {
@@ -425,11 +494,11 @@ void main() {
 
     // Populate required fields
     await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(0), 'México');
-    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(1), '5');
-    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(2), 'MXN (Pesos Mexicanos)');
-    await tester.enterText(find.byType(TextFormField), '1982');
-    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(3), 'Muy buena');
-    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(4), 'Cuproníquel');
+    await tester.enterText(find.widgetWithText(TextFormField, AppStrings.mintageYearLabel), '1982');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(1), 'MXP (Pesos Mexicanos Antiguos)');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(2), '5');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(3), 'Cuproníquel');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(4), 'Muy buena');
 
     final submitText = find.text(AppStrings.confirmAndRegisterPieceAction);
     await tester.ensureVisible(submitText);
@@ -521,37 +590,37 @@ void main() {
     await tester.enterText(customCountryInput, 'Imperio Romano');
     await tester.pumpAndSettle();
 
-    // 2. Denomination: select '1'
-    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
-    await selectWheelOption(tester, denomField, '1');
+    // 2. Year: 1920
+    final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
+    await tester.enterText(yearField, '1920');
+    await tester.pumpAndSettle();
 
     // 3. Currency: select 'Otro' and specify custom currency
-    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(1);
     await selectWheelOption(tester, currencyField, 'Otro');
     expect(find.text(AppStrings.specifyCurrencyLabel), findsWidgets);
     final customCurrencyInput = find.widgetWithText(TextFormField, AppStrings.specifyCurrencyLabel);
     await tester.enterText(customCurrencyInput, 'Denario');
     await tester.pumpAndSettle();
 
-    // 4. Year: 120
-    final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
-    await tester.enterText(yearField, '1920');
-    await tester.pumpAndSettle();
+    // 4. Denomination: select '1'
+    final denomField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, denomField, '1');
 
-    // 5. Grade: select 'Otro' and specify custom grade
-    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
-    await selectWheelOption(tester, gradeField, 'Otro');
-    expect(find.text(AppStrings.specifyGradeLabel), findsWidgets);
-    final customGradeInput = find.widgetWithText(TextFormField, AppStrings.specifyGradeLabel);
-    await tester.enterText(customGradeInput, 'NGC MS-65');
-    await tester.pumpAndSettle();
-
-    // 6. Material: select 'Otro' and specify custom material
-    final matField = find.byType(AppWheelPickerField<String?>).at(4);
+    // 5. Material: select 'Otro' and specify custom material
+    final matField = find.byType(AppWheelPickerField<String?>).at(3);
     await selectWheelOption(tester, matField, 'Otro');
     expect(find.text(AppStrings.specifyMaterialLabel), findsWidgets);
     final customMatInput = find.widgetWithText(TextFormField, AppStrings.specifyMaterialLabel);
     await tester.enterText(customMatInput, 'Electrum');
+    await tester.pumpAndSettle();
+
+    // 6. Grade: select 'Otro' and specify custom grade
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, gradeField, 'Otro');
+    expect(find.text(AppStrings.specifyGradeLabel), findsWidgets);
+    final customGradeInput = find.widgetWithText(TextFormField, AppStrings.specifyGradeLabel);
+    await tester.enterText(customGradeInput, 'NGC MS-65');
     await tester.pumpAndSettle();
 
     // Submit
@@ -599,30 +668,35 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // Toggle all null checkmarks
+    // Toggle all null checkmarks with ensureVisible
     final countryNull = find.text(AppStrings.unspecifiedCountryLabel);
+    await tester.ensureVisible(countryNull);
     await tester.tap(countryNull);
     await tester.pumpAndSettle();
 
-    final denomNull = find.text(AppStrings.unspecifiedDenominationLabel);
-    await tester.tap(denomNull);
-    await tester.pumpAndSettle();
-
-    final currNull = find.text(AppStrings.unspecifiedCurrencyLabel);
-    await tester.tap(currNull);
-    await tester.pumpAndSettle();
-
     final yearNull = find.text(AppStrings.unspecifiedYearLabel);
+    await tester.ensureVisible(yearNull);
     await tester.tap(yearNull);
     await tester.pumpAndSettle();
 
-    final gradeNull = find.text(AppStrings.unspecifiedGradeLabel);
-    await tester.tap(gradeNull);
+    final currNull = find.text(AppStrings.unspecifiedCurrencyLabel);
+    await tester.ensureVisible(currNull);
+    await tester.tap(currNull);
+    await tester.pumpAndSettle();
+
+    final denomNull = find.text(AppStrings.unspecifiedDenominationLabel);
+    await tester.ensureVisible(denomNull);
+    await tester.tap(denomNull);
     await tester.pumpAndSettle();
 
     final matNull = find.text(AppStrings.unspecifiedMaterialLabel);
     await tester.ensureVisible(matNull);
     await tester.tap(matNull);
+    await tester.pumpAndSettle();
+
+    final gradeNull = find.text(AppStrings.unspecifiedGradeLabel);
+    await tester.ensureVisible(gradeNull);
+    await tester.tap(gradeNull);
     await tester.pumpAndSettle();
 
     // Submit form with all fields null
@@ -642,4 +716,3 @@ void main() {
     expect(submittedResult!.subspeciesName, equals(AppStrings.defaultNumismaticPiece));
   });
 }
-

@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
+import '../catalog_item.dart';
 import '../subspecies.dart';
 import '../../../entities/domain/instance_magnitude.dart';
 import '../../../entities/domain/world_entity.dart';
@@ -10,6 +11,35 @@ import '../../../entities/domain/i_entity_repository.dart';
 import '../../../entities/infrastructure/entity_repository.dart';
 import '../../infrastructure/catalog_repository.dart';
 import 'numismatic_parser.dart';
+import 'numismatic_matrix.dart';
+
+enum NumismaticEmissionOutlierType {
+  currencyAnachronism,
+  materialContradiction,
+  specialEditionMismatch,
+  denominationAnomaly,
+  yearOutOfRange,
+}
+
+class NumismaticEmissionOutlier {
+  final NumismaticEmissionOutlierType type;
+  final String title;
+  final String description;
+  final String suggestedFixDescription;
+  final String? expectedValue;
+  final String? foundValue;
+  final String? targetPropertyName;
+
+  const NumismaticEmissionOutlier({
+    required this.type,
+    required this.title,
+    required this.description,
+    required this.suggestedFixDescription,
+    this.expectedValue,
+    this.foundValue,
+    this.targetPropertyName,
+  });
+}
 
 class NumismaticCongruenceIssue {
   final String subspeciesId;
@@ -415,5 +445,265 @@ class NumismaticDomainRules {
         );
       }
     }
+  }
+
+  /// Analyzes an instance against historical emission matrix rules and returns detected outliers.
+  static List<NumismaticEmissionOutlier> checkEmissionOutliers({
+    required WorldEntity instance,
+    CatalogItem? species,
+  }) {
+    if (species != null && !NumismaticParser.isNumismaticSpecies(species)) {
+      return const [];
+    }
+
+    final attrs = NumismaticParser.extractAttributesFromInstance(instance);
+    final country = attrs.country?.trim();
+    final yearStr = attrs.year?.trim();
+    final year = yearStr != null ? int.tryParse(yearStr) : null;
+    final currency = attrs.currencyName?.trim();
+    final material = attrs.material?.trim();
+    final isSpecial = attrs.isSpecialEdition;
+    final specialReason = attrs.specialEditionReason?.trim();
+
+    String? denomStr = attrs.faceValueStr?.trim();
+    if (denomStr == null && attrs.faceValueNumber != null) {
+      final numVal = attrs.faceValueNumber!;
+      denomStr = (numVal == numVal.toInt()) ? numVal.toInt().toString() : numVal.toString();
+    }
+
+    final outliers = <NumismaticEmissionOutlier>[];
+
+    if (country == null || country.isEmpty || country == AppStrings.otherSpecifyOption) {
+      return outliers;
+    }
+
+    // 1. Year Outlier / Chronological range check
+    if (year != null) {
+      final currentYear = DateTime.now().year;
+      if (year < 1500 || year > currentYear + 1) {
+        outliers.add(NumismaticEmissionOutlier(
+          type: NumismaticEmissionOutlierType.yearOutOfRange,
+          title: AppStrings.numismaticEmissionOutlierCardTitle,
+          description: AppStrings.numismaticYearOutOfRangeDesc(year, country),
+          suggestedFixDescription: AppStrings.fixCorrectYearAction,
+          foundValue: year.toString(),
+          targetPropertyName: AppStrings.mintagePropertyName,
+        ));
+      }
+    }
+
+    // 2. Emission matrix matching
+    if (year != null && year >= 1500 && year <= DateTime.now().year + 1) {
+      final rule = NumismaticMatrix.findRule(country, year);
+      if (rule != null) {
+        // A. Currency anachronism check
+        if (currency != null && currency.isNotEmpty) {
+          final iso = NumismaticParser.resolveCurrencyIsoCode(currency);
+          if (!rule.validCurrencies.contains(iso)) {
+            final expectedIso = rule.defaultCurrency ?? rule.validCurrencies.first;
+            outliers.add(NumismaticEmissionOutlier(
+              type: NumismaticEmissionOutlierType.currencyAnachronism,
+              title: AppStrings.numismaticEmissionOutlierCardTitle,
+              description: AppStrings.numismaticCurrencyAnachronismDesc(iso, expectedIso, year, country),
+              suggestedFixDescription: AppStrings.fixCorrectCurrencyAction,
+              expectedValue: expectedIso,
+              foundValue: iso,
+              targetPropertyName: AppStrings.currencyPropertyName,
+            ));
+          }
+        }
+
+        // B. Material contradiction check
+        if (denomStr != null && denomStr.isNotEmpty && material != null && material.isNotEmpty) {
+          final expectedMat = NumismaticMatrix.inferMaterial(
+            country: country,
+            year: year,
+            denomination: denomStr,
+          );
+          if (expectedMat != null) {
+            final resolvedFoundMat = NumismaticParser.resolveMaterial(material);
+            if (resolvedFoundMat.toLowerCase() != expectedMat.toLowerCase()) {
+              outliers.add(NumismaticEmissionOutlier(
+                type: NumismaticEmissionOutlierType.materialContradiction,
+                title: AppStrings.numismaticEmissionOutlierCardTitle,
+                description: AppStrings.numismaticMaterialContradictionDesc(material, expectedMat, denomStr),
+                suggestedFixDescription: AppStrings.fixCorrectMaterialAction,
+                expectedValue: expectedMat,
+                foundValue: material,
+                targetPropertyName: AppStrings.materialPropertyName,
+              ));
+            }
+          }
+        }
+
+        // C. Special edition / Regime change check
+        if (denomStr != null && denomStr.isNotEmpty) {
+          final specialInfo = NumismaticMatrix.checkSpecialEdition(
+            country: country,
+            year: year,
+            denomination: denomStr,
+          );
+          if (specialInfo != null && specialInfo.isSpecial) {
+            final expectedReason = specialInfo.reason ?? AppTechnicalNumismatics.specialEditionReasons.first;
+            final isMissingFlag = isSpecial != true;
+            final isReasonMismatch = specialReason != null && specialReason.toLowerCase() != expectedReason.toLowerCase();
+            if (isMissingFlag || isReasonMismatch) {
+              outliers.add(NumismaticEmissionOutlier(
+                type: NumismaticEmissionOutlierType.specialEditionMismatch,
+                title: AppStrings.numismaticEmissionOutlierCardTitle,
+                description: AppStrings.numismaticSpecialEditionMismatchDesc(denomStr, expectedReason),
+                suggestedFixDescription: AppStrings.fixSetSpecialEditionAction,
+                expectedValue: expectedReason,
+                foundValue: specialReason,
+                targetPropertyName: AppStrings.specialEditionTitle,
+              ));
+            }
+          }
+        }
+
+        // D. Denomination anomaly check
+        if (denomStr != null && denomStr.isNotEmpty) {
+          final numVal = double.tryParse(denomStr);
+          final matchesDenom = rule.denominations.contains(denomStr) ||
+              (numVal != null && rule.denominations.any((d) => double.tryParse(d) == numVal));
+          if (!matchesDenom) {
+            outliers.add(NumismaticEmissionOutlier(
+              type: NumismaticEmissionOutlierType.denominationAnomaly,
+              title: AppStrings.numismaticEmissionOutlierCardTitle,
+              description: AppStrings.numismaticDenominationAnomalyDesc(denomStr, country, year),
+              suggestedFixDescription: AppStrings.fixPickDenominationAction,
+              expectedValue: rule.denominations.first,
+              foundValue: denomStr,
+              targetPropertyName: AppStrings.nominalValuePropertyName,
+            ));
+          }
+        }
+      }
+    }
+
+    return outliers;
+  }
+
+  /// Repairs a detected emission outlier on an instance entity and updates repository.
+  static Future<WorldEntity> repairEmissionOutlier({
+    required IEntityRepository entityRepo,
+    required CatalogRepository catalogRepo,
+    required WorldEntity instance,
+    required NumismaticEmissionOutlier outlier,
+    String? customValue,
+  }) async {
+    final List<InstanceMagnitude> mags = List.from(instance.magnitudes);
+
+    void setOrUpdateMagnitude({
+      required String propertyName,
+      required String dataType,
+      String? stringValue,
+      double? magnitudeValue,
+      String? unitSymbol,
+    }) {
+      final idx = mags.indexWhere((m) => m.propertyName.trim().toLowerCase() == propertyName.trim().toLowerCase());
+      if (idx >= 0) {
+        mags[idx] = mags[idx].copyWith(
+          dataType: dataType,
+          stringValue: stringValue,
+          magnitudeValue: magnitudeValue ?? 0.0,
+          unitSymbol: unitSymbol,
+        );
+      } else {
+        mags.add(InstanceMagnitude(
+          id: const Uuid().v4(),
+          instanceId: instance.id,
+          propertyName: propertyName,
+          dataType: dataType,
+          stringValue: stringValue,
+          magnitudeValue: magnitudeValue ?? 0.0,
+          unitSymbol: unitSymbol,
+        ));
+      }
+    }
+
+    switch (outlier.type) {
+      case NumismaticEmissionOutlierType.currencyAnachronism:
+        final targetCurr = customValue ?? outlier.expectedValue;
+        if (targetCurr != null && targetCurr.isNotEmpty) {
+          setOrUpdateMagnitude(
+            propertyName: AppStrings.currencyPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: targetCurr,
+          );
+        }
+        break;
+
+      case NumismaticEmissionOutlierType.materialContradiction:
+        final targetMat = customValue ?? outlier.expectedValue;
+        if (targetMat != null && targetMat.isNotEmpty) {
+          setOrUpdateMagnitude(
+            propertyName: AppStrings.materialPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: targetMat,
+          );
+        }
+        break;
+
+      case NumismaticEmissionOutlierType.specialEditionMismatch:
+        final targetReason = customValue ?? outlier.expectedValue ?? AppTechnicalNumismatics.specialEditionReasons.first;
+        setOrUpdateMagnitude(
+          propertyName: AppStrings.specialEditionTitle,
+          dataType: AppTechnicalStrings.datatypeStringLower,
+          stringValue: AppTechnicalStrings.boolTrue,
+        );
+        setOrUpdateMagnitude(
+          propertyName: AppStrings.specialEditionReasonLabel,
+          dataType: AppTechnicalStrings.datatypeStringLower,
+          stringValue: targetReason,
+        );
+        break;
+
+      case NumismaticEmissionOutlierType.denominationAnomaly:
+        final targetDenomStr = customValue ?? outlier.expectedValue;
+        if (targetDenomStr != null) {
+          final parsedNum = double.tryParse(targetDenomStr);
+          if (parsedNum != null) {
+            setOrUpdateMagnitude(
+              propertyName: AppStrings.nominalValuePropertyName,
+              dataType: AppTechnicalStrings.datatypeRealLower,
+              magnitudeValue: parsedNum,
+            );
+          }
+        }
+        break;
+
+      case NumismaticEmissionOutlierType.yearOutOfRange:
+        final targetYearStr = customValue ?? outlier.expectedValue;
+        if (targetYearStr != null) {
+          final parsedYear = double.tryParse(targetYearStr);
+          if (parsedYear != null) {
+            setOrUpdateMagnitude(
+              propertyName: AppStrings.mintagePropertyName,
+              dataType: AppTechnicalStrings.datatypeIntegerLower,
+              magnitudeValue: parsedYear,
+              unitSymbol: AppStrings.yearUnitSymbol,
+            );
+          }
+        }
+        break;
+    }
+
+    final updatedEntity = instance.copyWith(magnitudes: mags);
+    await entityRepo.saveEntity(updatedEntity);
+
+    if (instance.subspeciesId != null) {
+      final sub = await catalogRepo.getSubspeciesById(instance.subspeciesId!);
+      if (sub != null) {
+        await repairAttachmentFileNames(
+          catalogRepo: catalogRepo,
+          entityRepo: entityRepo,
+          subspecies: sub,
+          instance: updatedEntity,
+        );
+      }
+    }
+
+    return updatedEntity;
   }
 }

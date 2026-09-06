@@ -39,6 +39,7 @@ class AuditRuleRegistry {
           NumismaticAttachmentIncongruityStrategy(),
           NumismaticMissingMagnitudesStrategy(),
           EmptyDataAuditStrategy(),
+          NumismaticEmissionOutlierStrategy(),
           // 6. Periodic verification sampling
           OwnershipCheckStrategy(),
           LocationVerificationStrategy(),

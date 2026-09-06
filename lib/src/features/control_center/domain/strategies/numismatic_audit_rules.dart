@@ -481,3 +481,169 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
     return cards;
   }
 }
+
+/// Strategy 6: Anomalía Histórica en Emisión Numismática (Outliers en Coinbase)
+class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
+  const NumismaticEmissionOutlierStrategy();
+
+  @override
+  AuditCardType get cardType => AuditCardType.numismaticEmissionOutlier;
+
+  @override
+  String get ruleId => AppTechnicalStrings.ruleNumismaticEmissionOutlier;
+
+  @override
+  AuditCategory get category => AuditCategory.integrity;
+
+  @override
+  Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
+    final cards = <AuditCardData>[];
+
+    for (final entity in context.allEntities) {
+      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
+        final sub = context.allSubspecies.where((s) => s.id == entity.subspeciesId).firstOrNull;
+        if (sub != null) {
+          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
+          final outliers = NumismaticDataHelper.checkEmissionOutliers(
+            instance: entity,
+            species: species,
+          );
+
+          for (int i = 0; i < outliers.length; i++) {
+            final outlier = outliers[i];
+            final cardId = AppTechnicalStrings.prefixNumisOutlier + entity.id + AppTechnicalStrings.underscore + i.toString();
+
+            String fixBtnLabel;
+            switch (outlier.type) {
+              case NumismaticEmissionOutlierType.currencyAnachronism:
+                fixBtnLabel = AppStrings.fixCorrectCurrencyAction;
+                break;
+              case NumismaticEmissionOutlierType.materialContradiction:
+                fixBtnLabel = AppStrings.fixCorrectMaterialAction;
+                break;
+              case NumismaticEmissionOutlierType.specialEditionMismatch:
+                fixBtnLabel = AppStrings.fixSetSpecialEditionAction;
+                break;
+              case NumismaticEmissionOutlierType.denominationAnomaly:
+                fixBtnLabel = AppStrings.fixPickDenominationAction;
+                break;
+              case NumismaticEmissionOutlierType.yearOutOfRange:
+                fixBtnLabel = AppStrings.fixCorrectYearAction;
+                break;
+            }
+
+            cards.add(AuditRuleHelper.forEntity(
+              id: cardId,
+              type: AuditCardType.numismaticEmissionOutlier,
+              title: AppStrings.numismaticEmissionOutlierCardTitle,
+              subtitle: AppStrings.numismaticEmissionOutlierSubtitle(
+                displayName,
+                outlier.description,
+              ),
+              question: AppStrings.numismaticEmissionOutlierQuestion(
+                outlier.description,
+                outlier.suggestedFixDescription,
+              ),
+              icon: Icons.history_edu,
+              themeColor: Colors.deepPurple,
+              entity: entity,
+              subspecies: sub,
+              species: species,
+              confirmLabel: AppStrings.confirmKeepDataAction,
+              fixLabel: fixBtnLabel,
+              confirmToastMessage: AppStrings.numismaticEmissionOutlierSkipped,
+              onFix: (ctx, ref) async {
+                String? customValue;
+
+                if (outlier.type == NumismaticEmissionOutlierType.denominationAnomaly) {
+                  final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+                  final yearInt = attrs.year != null ? int.tryParse(attrs.year!) : null;
+                  final availableDenoms = NumismaticDataHelper.getDenominationsForCountry(
+                    country: attrs.country,
+                    year: yearInt,
+                    currencyCode: attrs.currencyName,
+                  ).where((d) => d != AppStrings.otherSpecifyOption).toList();
+
+                  if (availableDenoms.isNotEmpty) {
+                    customValue = await AppWheelPicker.show<String>(
+                      ctx,
+                      items: availableDenoms,
+                      initialValue: availableDenoms.first,
+                      labelBuilder: (d) => d,
+                      title: AppStrings.denominationNumberLabel,
+                    );
+                    if (customValue == null || customValue.isEmpty) {
+                      return false;
+                    }
+                  }
+                } else if (outlier.type == NumismaticEmissionOutlierType.yearOutOfRange) {
+                  final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);
+                  final formKey = GlobalKey<FormState>();
+                  final confirmed = await showDialog<bool>(
+                    context: ctx,
+                    builder: (dialogCtx) => AlertDialog(
+                      title: const Text(AppStrings.mintageYearLabel),
+                      content: Form(
+                        key: formKey,
+                        child: TextFormField(
+                          controller: textCtrl,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: AppStrings.mintageYearLabel),
+                          validator: (val) {
+                            if (val == null || val.trim().isEmpty) {
+                              return AppStrings.enterMintageYearPrompt;
+                            }
+                            final n = int.tryParse(val.trim());
+                            if (n == null || n < 1500 || n > DateTime.now().year + 1) {
+                              return AppStrings.enterValidMintageYearPrompt;
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(dialogCtx, false),
+                          child: const Text(AppStrings.cancel),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (formKey.currentState?.validate() ?? false) {
+                              Navigator.pop(dialogCtx, true);
+                            }
+                          },
+                          child: const Text(AppStrings.confirm),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed == true) {
+                    customValue = textCtrl.text.trim();
+                  } else {
+                    return false;
+                  }
+                }
+
+                final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                await NumismaticDataHelper.repairEmissionOutlier(
+                  entityRepo: ref.read(entityRepositoryProvider),
+                  catalogRepo: ref.read(catalogRepositoryProvider),
+                  instance: freshEntity,
+                  outlier: outlier,
+                  customValue: customValue,
+                );
+
+                if (ctx.mounted) {
+                  AppToast.showSuccess(ctx, AppStrings.numismaticEmissionOutlierFixedSuccess);
+                }
+                return true;
+              },
+            ));
+          }
+        }
+      }
+    }
+    return cards;
+  }
+}

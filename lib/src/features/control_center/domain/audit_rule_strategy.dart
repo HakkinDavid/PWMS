@@ -29,6 +29,7 @@ enum AuditCardType {
   numismaticAttachmentIncongruity,
   numismaticMissingMagnitudes,
   emptyDataAudit,
+  numismaticEmissionOutlier,
   locationConflict,
   cyclicContainment,
   uniquenessViolation,

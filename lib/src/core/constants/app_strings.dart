@@ -764,6 +764,7 @@ class AppStrings {
   static const numismaticDuplicateSubspeciesTitle = 'Subespecie numismática duplicada';
   static const numismaticAttachmentIncongruityTitle = 'Incongruencia en archivo adjunto numismático';
   static const numismaticMissingMagnitudesTitle = 'Magnitudes numismáticas faltantes';
+  static const numismaticEmissionOutlierAuditTitle = 'Anomalía histórica en emisión numismática';
   static const emptyDataAuditTitle = 'Auditoría de datos vacíos';
   static const locationConflictAuditTitle = 'Conflicto de ubicación';
   static const cyclicContainmentAuditTitle = 'Contención cíclica detectada';
@@ -940,6 +941,14 @@ class AppStrings {
   static const selectExpirationDatePrompt = 'Selecciona Fecha de Caducidad';
   static const anomalousMagnitudeCardTitle = 'Magnitud con Valor No Positivo';
   static const numismaticDuplicateSubspeciesCardTitle = 'Subespecies Numismáticas Duplicadas';
+  static const numismaticEmissionOutlierCardTitle = 'Anomalía Histórica Numismática (Outlier)';
+  static const numismaticEmissionOutlierSkipped = 'Anomalía histórica mantenida sin cambios.';
+  static const numismaticEmissionOutlierFixedSuccess = 'Anomalía numismática corregida exitosamente.';
+  static const fixCorrectCurrencyAction = 'Corregir a Divisa Canónica';
+  static const fixCorrectMaterialAction = 'Corregir a Material Canónico';
+  static const fixSetSpecialEditionAction = 'Marcar Edición Especial';
+  static const fixCorrectYearAction = 'Corregir Año de Acuñación';
+  static const fixPickDenominationAction = 'Seleccionar Denominación Válida';
   static const correctNumismaticIncongruityTitle = 'Corregir Incongruencia Numismática';
   static const invalidUnitSymbolTitle = 'Unidad de Medida Desconocida';
   static const integerUnitIncongruityTitle = 'Incongruencia de Unidad Entera';
@@ -1143,6 +1152,20 @@ class AppStrings {
   static String emptyGradeDataSubtitle(String displayName) => '$displayName • Grado de conservación sin asignar';
   static String emptyGradeDataQuestion(String displayName) => '¿Deseas asignar un grado de conservación a la pieza "$displayName"?';
   static String gradeUpdatedSuccess(String grade) => 'Grado de conservación actualizado a "$grade".';
+  static String numismaticEmissionOutlierSubtitle(String displayName, String anomalyDescription) =>
+      '$displayName • $anomalyDescription';
+  static String numismaticEmissionOutlierQuestion(String anomalyDetail, String suggestedFix) =>
+      '$anomalyDetail ¿Deseas aplicar la corrección recomendada: $suggestedFix?';
+  static String numismaticCurrencyAnachronismDesc(String foundIso, String expectedIso, int year, String country) =>
+      'Divisa $foundIso no válida para $country ($year). Esperada: $expectedIso';
+  static String numismaticMaterialContradictionDesc(String foundMat, String expectedMat, String denom) =>
+      'Material "$foundMat" incongruente con emisión para $denom. Esperado: "$expectedMat"';
+  static String numismaticSpecialEditionMismatchDesc(String denom, String reason) =>
+      'Emisión de $denom corresponde a "$reason" pero no está marcada';
+  static String numismaticDenominationAnomalyDesc(String denom, String country, int year) =>
+      'Denominación "$denom" no pertenece a las emisiones oficiales de $country ($year)';
+  static String numismaticYearOutOfRangeDesc(int year, String country) =>
+      'Año $year fuera del rango histórico registrado para $country';
   static String photoOfDisplayName(String name) => 'Foto de $name';
 
   static String invalidUnitSymbolSubtitle(String targetName, String propName, String symbol) => '$targetName • Propiedad "$propName" con unidad no estándar "$symbol"';

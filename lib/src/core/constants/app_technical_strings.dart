@@ -548,6 +548,7 @@ WHERE id IN (
   static const ruleNumismaticAttachmentIncongruity = 'numismatic_attachment_incongruity';
   static const ruleNumismaticMissingMagnitudes = 'numismatic_missing_magnitudes';
   static const ruleNumismaticEmptyDataAudit = 'numismatic_empty_data_audit';
+  static const ruleNumismaticEmissionOutlier = 'numismatic_emission_outlier';
   static const ruleUnitInvalidSymbol = 'unit_invalid_symbol';
   static const ruleUnitIntegerIncongruity = 'unit_integer_incongruity';
   static const ruleUnitNonNumericWithUnit = 'unit_non_numeric_with_unit';
@@ -609,6 +610,7 @@ WHERE id IN (
   static const prefixNumisAtt = 'numis_att_';
   static const prefixNumisMag = 'numis_mag_';
   static const prefixNumisEmptyGrade = 'numis_empty_grade_';
+  static const prefixNumisOutlier = 'numis_outlier_';
   static const prefixInvUnit = 'inv_unit_';
   static const prefixIntUnit = 'int_unit_';
   static const prefixNonNumUnit = 'non_num_unit_';
@@ -4078,6 +4080,497 @@ abstract final class AppTechnicalNumismatics {
     'regimen': 5,
     'cambio': 5,
   };
+
+  static const List<NumismaticEmissionRuleData> emissionRules = [
+    // 1. México & Virreinato de Nueva España
+    NumismaticEmissionRuleData(
+      country: 'Virreinato de Nueva España',
+      minYear: 1535,
+      maxYear: 1821,
+      validCurrencies: ['MXR', 'REAL', 'MXE', 'ESC', 'MRV'],
+      defaultCurrency: 'MXR',
+      denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/16': 'Cobre',
+        '1/8': 'Cobre',
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Imperio Mexicano (Primer y Segundo Imperio)',
+      minYear: 1821,
+      maxYear: 1823,
+      validCurrencies: ['MXR', 'MXE'],
+      defaultCurrency: 'MXR',
+      denominations: ['1/8', '1/4', '1/2', '1', '2', '8'],
+      denominationMaterials: {
+        '1/8': 'Cobre',
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Imperio Mexicano (Primer y Segundo Imperio)',
+      minYear: 1864,
+      maxYear: 1867,
+      validCurrencies: ['MXP', 'MXR'],
+      defaultCurrency: 'MXP',
+      denominations: ['1', '5', '10', '50', '20'],
+      denominationMaterials: {
+        '1': 'Cobre',
+        '5': 'Plata',
+        '10': 'Plata',
+        '50': 'Plata',
+        '20': 'Oro',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1535,
+      maxYear: 1821,
+      validCurrencies: ['MXR', 'MXE', 'REAL', 'ESC'],
+      defaultCurrency: 'MXR',
+      denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/16': 'Cobre',
+        '1/8': 'Cobre',
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1822,
+      maxYear: 1823,
+      validCurrencies: ['MXR', 'MXE'],
+      defaultCurrency: 'MXR',
+      denominations: ['1/8', '1/4', '1/2', '1', '2', '8'],
+      denominationMaterials: {
+        '1/8': 'Cobre',
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1824,
+      maxYear: 1863,
+      validCurrencies: ['MXR', 'MXE'],
+      defaultCurrency: 'MXR',
+      denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/16': 'Cobre',
+        '1/8': 'Cobre',
+        '1/4': 'Cobre',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1864,
+      maxYear: 1867,
+      validCurrencies: ['MXP', 'MXR'],
+      defaultCurrency: 'MXP',
+      denominations: ['1', '5', '10', '50', '20'],
+      denominationMaterials: {
+        '1': 'Cobre',
+        '5': 'Plata',
+        '10': 'Plata',
+        '50': 'Plata',
+        '20': 'Oro',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1868,
+      maxYear: 1904,
+      validCurrencies: ['MXP', 'MXE'],
+      defaultCurrency: 'MXP',
+      denominations: ['1', '2', '5', '10', '20', '25', '50', '100'],
+      denominationMaterials: {
+        '1': 'Cobre',
+        '2': 'Cobre',
+        '5': 'Níquel',
+        '10': 'Plata',
+        '20': 'Plata',
+        '25': 'Plata',
+        '50': 'Plata',
+        '100': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1905,
+      maxYear: 1969,
+      validCurrencies: ['MXP'],
+      defaultCurrency: 'MXP',
+      denominations: ['1', '2', '5', '10', '20', '25', '50', '100'],
+      denominationMaterials: {
+        '1': 'Plata',
+        '2': 'Oro',
+        '5': 'Plata',
+        '10': 'Plata',
+        '20': 'Bronce',
+        '25': 'Plata',
+        '50': 'Oro',
+        '100': 'Plata',
+      },
+      commemorativeDenominations: {'25'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1970,
+      maxYear: 1992,
+      validCurrencies: ['MXP'],
+      defaultCurrency: 'MXP',
+      denominations: ['1', '5', '10', '20', '50', '100', '200', '500', '1000', '5000'],
+      denominationMaterials: {
+        '1': 'Cuproníquel',
+        '5': 'Cuproníquel',
+        '10': 'Cuproníquel',
+        '20': 'Cuproníquel',
+        '50': 'Cuproníquel',
+        '100': 'Bronce de aluminio',
+        '200': 'Cuproníquel',
+        '500': 'Cuproníquel',
+        '1000': 'Bronce de aluminio',
+        '5000': 'Cuproníquel',
+      },
+      commemorativeDenominations: {'200'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1993,
+      maxYear: 1995,
+      validCurrencies: ['MXN'],
+      defaultCurrency: 'MXN',
+      denominations: ['0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50'],
+      denominationMaterials: {
+        '0.05': 'Acero inoxidable',
+        '0.10': 'Acero inoxidable',
+        '0.20': 'Bronce de aluminio',
+        '0.50': 'Bronce de aluminio',
+        '1': 'Bimetálica',
+        '2': 'Bimetálica',
+        '5': 'Bimetálica',
+        '10': 'Bimetálica',
+        '20': 'Bimetálica',
+        '50': 'Bimetálica',
+      },
+      commemorativeDenominations: {'0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50'},
+      defaultCommemorativeReason: 'Emisión de cambio de régimen',
+    ),
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1996,
+      maxYear: 2100,
+      validCurrencies: ['MXN'],
+      defaultCurrency: 'MXN',
+      denominations: ['0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100'],
+      denominationMaterials: {
+        '0.10': 'Acero inoxidable',
+        '0.20': 'Bronce de aluminio',
+        '0.50': 'Bronce de aluminio',
+        '1': 'Bimetálica',
+        '2': 'Bimetálica',
+        '5': 'Bimetálica',
+        '10': 'Bimetálica',
+        '20': 'Bimetálica',
+        '50': 'Bimetálica',
+        '100': 'Bimetálica',
+      },
+      commemorativeDenominations: {'5', '20', '100'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // 2. Estados Unidos
+    NumismaticEmissionRuleData(
+      country: 'Estados Unidos',
+      minYear: 1775,
+      maxYear: 1791,
+      validCurrencies: ['USC', 'USD'],
+      defaultCurrency: 'USC',
+      denominations: ['1/6', '1/3', '1/2', '1', '2', '3', '4', '5', '8', '20'],
+      denominationMaterials: {
+        '1': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Estados Unidos',
+      minYear: 1792,
+      maxYear: 1964,
+      validCurrencies: ['USD'],
+      defaultCurrency: 'USD',
+      denominations: ['0.01', '0.02', '0.03', '0.05', '0.10', '0.20', '0.25', '0.50', '1', '2.5', '5', '10', '20'],
+      denominationMaterials: {
+        '0.01': 'Cobre',
+        '0.05': 'Cuproníquel',
+        '0.10': 'Plata',
+        '0.20': 'Plata',
+        '0.25': 'Plata',
+        '0.50': 'Plata',
+        '1': 'Plata',
+        '2.5': 'Oro',
+        '5': 'Oro',
+        '10': 'Oro',
+        '20': 'Oro',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Estados Unidos',
+      minYear: 1965,
+      maxYear: 2100,
+      validCurrencies: ['USD'],
+      defaultCurrency: 'USD',
+      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
+      denominationMaterials: {
+        '0.01': 'Zinc',
+        '0.05': 'Cuproníquel',
+        '0.10': 'Cuproníquel',
+        '0.25': 'Cuproníquel',
+        '0.50': 'Cuproníquel',
+        '1': 'Latón',
+      },
+      commemorativeDenominations: {'0.25', '0.50', '1'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // 3. España y Unión Europea
+    NumismaticEmissionRuleData(
+      country: 'España',
+      minYear: 1500,
+      maxYear: 1868,
+      validCurrencies: ['REAL', 'ESC', 'MRV', 'RDV'],
+      defaultCurrency: 'REAL',
+      denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/16': 'Cobre',
+        '1/8': 'Cobre',
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'España',
+      minYear: 1869,
+      maxYear: 2001,
+      validCurrencies: ['ESP'],
+      defaultCurrency: 'ESP',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.25', '0.50', '1', '2', '5', '10', '25', '50', '100', '200', '500', '2000'],
+      denominationMaterials: {
+        '1': 'Bronce de aluminio',
+        '5': 'Cuproníquel',
+        '25': 'Cuproníquel',
+        '50': 'Cuproníquel',
+        '100': 'Bronce de aluminio',
+        '200': 'Cuproníquel',
+        '500': 'Bronce de aluminio',
+        '2000': 'Plata',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'España',
+      minYear: 2002,
+      maxYear: 2100,
+      validCurrencies: ['EUR'],
+      defaultCurrency: 'EUR',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2'],
+      denominationMaterials: {
+        '0.01': 'Acero bañado en cobre',
+        '0.02': 'Acero bañado en cobre',
+        '0.05': 'Acero bañado en cobre',
+        '0.10': 'Oro nórdico',
+        '0.20': 'Oro nórdico',
+        '0.50': 'Oro nórdico',
+        '1': 'Bimetálica',
+        '2': 'Bimetálica',
+      },
+      commemorativeDenominations: {'2'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Unión Europea',
+      minYear: 2002,
+      maxYear: 2100,
+      validCurrencies: ['EUR'],
+      defaultCurrency: 'EUR',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2'],
+      denominationMaterials: {
+        '0.01': 'Acero bañado en cobre',
+        '0.02': 'Acero bañado en cobre',
+        '0.05': 'Acero bañado en cobre',
+        '0.10': 'Oro nórdico',
+        '0.20': 'Oro nórdico',
+        '0.50': 'Oro nórdico',
+        '1': 'Bimetálica',
+        '2': 'Bimetálica',
+      },
+      commemorativeDenominations: {'2'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // 4. Guatemala
+    NumismaticEmissionRuleData(
+      country: 'Guatemala',
+      minYear: 1925,
+      maxYear: 2100,
+      validCurrencies: ['GTQ'],
+      defaultCurrency: 'GTQ',
+      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
+      denominationMaterials: {
+        '0.01': 'Latón',
+        '0.05': 'Cuproníquel',
+        '0.10': 'Cuproníquel',
+        '0.25': 'Cuproníquel',
+        '0.50': 'Cuproníquel',
+        '1': 'Bimetálica',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Guatemala',
+      minYear: 1500,
+      maxYear: 1924,
+      validCurrencies: ['REAL', 'GTQ_HIST'],
+      defaultCurrency: 'REAL',
+      denominations: ['1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+
+    // 5. Colombia
+    NumismaticEmissionRuleData(
+      country: 'Colombia',
+      minYear: 1905,
+      maxYear: 2100,
+      validCurrencies: ['COP'],
+      defaultCurrency: 'COP',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '200', '500', '1000'],
+      denominationMaterials: {
+        '50': 'Acero inoxidable',
+        '100': 'Bronce de aluminio',
+        '200': 'Cuproníquel',
+        '500': 'Bimetálica',
+        '1000': 'Bimetálica',
+      },
+    ),
+    NumismaticEmissionRuleData(
+      country: 'Colombia',
+      minYear: 1500,
+      maxYear: 1904,
+      validCurrencies: ['REAL', 'ESC', 'COP_HIST'],
+      defaultCurrency: 'REAL',
+      denominations: ['1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+
+    // 6. Canadá
+    NumismaticEmissionRuleData(
+      country: 'Canadá',
+      minYear: 1858,
+      maxYear: 2100,
+      validCurrencies: ['CAD'],
+      defaultCurrency: 'CAD',
+      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1', '2'],
+      denominationMaterials: {
+        '0.01': 'Cobre',
+        '0.05': 'Níquel',
+        '0.10': 'Acero bañado en níquel',
+        '0.25': 'Acero bañado en níquel',
+        '0.50': 'Acero bañado en níquel',
+        '1': 'Acero bañado en latón',
+        '2': 'Bimetálica',
+      },
+      commemorativeDenominations: {'0.25', '2'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // 7. Cuba
+    NumismaticEmissionRuleData(
+      country: 'Cuba',
+      minYear: 1915,
+      maxYear: 2100,
+      validCurrencies: ['CUP', 'CUC'],
+      defaultCurrency: 'CUP',
+      denominations: ['0.01', '0.02', '0.05', '0.20', '0.40', '1', '3', '5'],
+      denominationMaterials: {
+        '0.01': 'Aluminio',
+        '0.02': 'Aluminio',
+        '0.05': 'Aluminio',
+        '0.20': 'Cuproníquel',
+        '0.40': 'Cuproníquel',
+        '1': 'Cuproníquel',
+        '3': 'Cuproníquel',
+        '5': 'Bimetálica',
+      },
+    ),
+  ];
+}
+
+/// Metadata record representing a country's currency epoch emission rules.
+class NumismaticEmissionRuleData {
+  final String country;
+  final int minYear;
+  final int maxYear;
+  final List<String> validCurrencies;
+  final String? defaultCurrency;
+  final List<String> denominations;
+  final Map<String, String> denominationMaterials;
+  final Set<String> commemorativeDenominations;
+  final String? defaultCommemorativeReason;
+
+  const NumismaticEmissionRuleData({
+    required this.country,
+    required this.minYear,
+    required this.maxYear,
+    required this.validCurrencies,
+    this.defaultCurrency,
+    required this.denominations,
+    this.denominationMaterials = const {},
+    this.commemorativeDenominations = const {},
+    this.defaultCommemorativeReason,
+  });
+
+  bool matches(String targetCountry, int year) {
+    if (country.toLowerCase() != targetCountry.trim().toLowerCase()) return false;
+    return year >= minYear && year <= maxYear;
+  }
 }
 
 /// Organized namespace for Product Lookup Service Constants.

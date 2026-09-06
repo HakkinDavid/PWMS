@@ -13,6 +13,8 @@ class NumismaticAttributes {
   final String? year;
   final String? material;
   final String? grade;
+  final bool? isSpecialEdition;
+  final String? specialEditionReason;
 
   const NumismaticAttributes({
     this.faceValueNumber,
@@ -23,6 +25,8 @@ class NumismaticAttributes {
     this.year,
     this.material,
     this.grade,
+    this.isSpecialEdition,
+    this.specialEditionReason,
   });
 }
 
@@ -338,6 +342,8 @@ class NumismaticParser {
     String? material;
     String? grade;
     String? country;
+    bool? isSpecialEdition;
+    String? specialReason;
 
     for (final mag in entity.magnitudes) {
       final pName = mag.propertyName.trim().toLowerCase();
@@ -359,6 +365,24 @@ class NumismaticParser {
           pName == AppTechnicalStrings.magPaisLower ||
           pName == AppTechnicalStrings.magPaisWithoutAccentLower) {
         country = mag.stringValue;
+      } else if (pName == AppStrings.specialEditionTitle.toLowerCase()) {
+        isSpecialEdition = mag.stringValue == AppTechnicalStrings.boolTrue ||
+            mag.stringValue == AppTechnicalStrings.valOne ||
+            mag.magnitudeValue == 1.0;
+      } else if (pName == AppStrings.specialEditionReasonLabel.toLowerCase()) {
+        specialReason = mag.stringValue;
+      }
+    }
+
+    if (isSpecialEdition == null && entity.notes != null) {
+      if (entity.notes!.contains(AppStrings.specialEditionNotePrefix)) {
+        isSpecialEdition = true;
+        final notePart = entity.notes!.split(AppStrings.specialEditionNotePrefix).last;
+        final endIdx = notePart.indexOf(AppTechnicalStrings.pipe);
+        final rawReason = endIdx >= 0 ? notePart.substring(0, endIdx).trim() : notePart.trim();
+        if (rawReason.isNotEmpty) {
+          specialReason = rawReason;
+        }
       }
     }
 
@@ -369,6 +393,8 @@ class NumismaticParser {
       year: year,
       material: material,
       grade: grade,
+      isSpecialEdition: isSpecialEdition,
+      specialEditionReason: specialReason,
     );
   }
 

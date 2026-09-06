@@ -6,10 +6,12 @@ import '../infrastructure/catalog_repository.dart';
 import 'numismatics/numismatic_dictionary.dart';
 import 'numismatics/numismatic_parser.dart';
 import 'numismatics/numismatic_domain_rules.dart';
+import 'numismatics/numismatic_matrix.dart';
 
 export 'numismatics/numismatic_dictionary.dart';
 export 'numismatics/numismatic_parser.dart';
 export 'numismatics/numismatic_domain_rules.dart';
+export 'numismatics/numismatic_matrix.dart';
 
 /// Facade for numismatic dictionary, parsing, and domain rules.
 class NumismaticDataHelper {
@@ -25,11 +27,51 @@ class NumismaticDataHelper {
   static const List<String> coinMaterials = NumismaticDictionary.coinMaterials;
   static const List<String> specialEditionReasons = NumismaticDictionary.specialEditionReasons;
 
-  static List<String> getCurrenciesForCountry(String? country) =>
-      NumismaticDictionary.getCurrenciesForCountry(country);
+  static List<String> getCurrenciesForCountry(String? country, {int? year}) =>
+      NumismaticMatrix.getCurrencies(country: country, year: year);
 
-  static Map<String, String> getCurrencyMapForCountry(String? country) =>
-      NumismaticDictionary.getCurrencyMapForCountry(country);
+  static Map<String, String> getCurrencyMapForCountry(String? country, {int? year}) {
+    final codes = getCurrenciesForCountry(country, year: year);
+    final result = <String, String>{};
+    for (final code in codes) {
+      if (currencyMap.containsKey(code)) {
+        result[code] = currencyMap[code]!;
+      }
+    }
+    return result;
+  }
+
+  static String? inferCurrency({String? country, int? year}) =>
+      NumismaticMatrix.inferCurrency(country: country, year: year);
+
+  static List<String> getDenominationsForCountry({String? country, int? year, String? currencyCode}) =>
+      NumismaticMatrix.getDenominations(country: country, year: year, currencyCode: currencyCode);
+
+  static String? inferMaterial({
+    String? country,
+    int? year,
+    String? currencyCode,
+    String? denomination,
+  }) =>
+      NumismaticMatrix.inferMaterial(
+        country: country,
+        year: year,
+        currencyCode: currencyCode,
+        denomination: denomination,
+      );
+
+  static ({bool isSpecial, String? reason})? checkSpecialEdition({
+    String? country,
+    int? year,
+    String? currencyCode,
+    String? denomination,
+  }) =>
+      NumismaticMatrix.checkSpecialEdition(
+        country: country,
+        year: year,
+        currencyCode: currencyCode,
+        denomination: denomination,
+      );
 
   // Parsing methods from NumismaticParser
   static String resolveCurrencyIsoCode(String codeOrName) =>
@@ -160,5 +202,29 @@ class NumismaticDataHelper {
         entityRepo: entityRepo,
         subspecies: subspecies,
         instance: instance,
+      );
+
+  static List<NumismaticEmissionOutlier> checkEmissionOutliers({
+    required WorldEntity instance,
+    CatalogItem? species,
+  }) =>
+      NumismaticDomainRules.checkEmissionOutliers(
+        instance: instance,
+        species: species,
+      );
+
+  static Future<WorldEntity> repairEmissionOutlier({
+    required IEntityRepository entityRepo,
+    required CatalogRepository catalogRepo,
+    required WorldEntity instance,
+    required NumismaticEmissionOutlier outlier,
+    String? customValue,
+  }) =>
+      NumismaticDomainRules.repairEmissionOutlier(
+        entityRepo: entityRepo,
+        catalogRepo: catalogRepo,
+        instance: instance,
+        outlier: outlier,
+        customValue: customValue,
       );
 }

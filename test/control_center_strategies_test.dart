@@ -26,7 +26,7 @@ void main() {
   group('Control Center Strategy Pattern Tests', () {
     test('AuditRuleRegistry initializes all strategies', () {
       final registry = AuditRuleRegistry();
-      expect(registry.strategies.length, 30);
+      expect(registry.strategies.length, 31);
     });
 
     test('OrphanEntityStrategy detects instances without location or container', () async {

@@ -8,6 +8,8 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/sub
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
+import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
+import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/numismatic_audit_rules.dart';
 
 import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -336,6 +338,258 @@ void main() {
       final reloadedSpecies = await catalogRepo.getCatalogItemById(species.id);
       expect(reloadedSpecies!.mainPhotoPath, equals(localRelativeFileName));
       expect(reloadedSpecies.mainPhotoPath!.startsWith('http'), isFalse);
+    });
+
+    test('NumismaticEmissionOutlierStrategy detects currency anachronism and repairs to canonical epoch currency', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: 'Pesos Mexicanos Antiguos',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      // Create piece with anachronistic currency: Mexico 1982 coin registered as MXN (Nuevos Pesos) instead of MXP
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final updatedInstance = instance.copyWith(
+        magnitudes: [
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Valor nominal',
+            dataType: 'real',
+            magnitudeValue: 50.0,
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Acuñación',
+            dataType: 'integer',
+            magnitudeValue: 1982.0,
+            unitSymbol: 'año',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Divisa',
+            dataType: 'string',
+            stringValue: 'MXN', // Anachronism!
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Emisor',
+            dataType: 'string',
+            stringValue: 'México',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Material',
+            dataType: 'string',
+            stringValue: 'Cuproníquel',
+          ),
+        ],
+      );
+      await entityRepo.saveEntity(updatedInstance);
+
+      final evalContext = AuditEvaluationContext(
+        db: db,
+        allEntities: await entityRepo.getAllEntities(),
+        allCatalog: await catalogRepo.getAllCatalogItems(),
+        allSubspecies: await catalogRepo.getAllSubspecies(),
+        allRelations: const [],
+        allLocations: const [],
+        allSpeciesMagnitudes: const [],
+        allInstanceMagnitudes: const [],
+        allRequirements: const [],
+        effectiveLocationMap: const {},
+      );
+
+      const strategy = NumismaticEmissionOutlierStrategy();
+      final cards = await strategy.evaluate(evalContext);
+
+      expect(cards.length, equals(1));
+      expect(cards.first.type, equals(AuditCardType.numismaticEmissionOutlier));
+      expect(cards.first.subtitle, contains('MXN'));
+      expect(cards.first.subtitle, contains('MXP'));
+
+      // Test pure domain detection
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
+      expect(outliers.length, equals(1));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.currencyAnachronism));
+      expect(outliers.first.expectedValue, equals('MXP'));
+
+      // Test repair
+      final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
+        entityRepo: entityRepo,
+        catalogRepo: catalogRepo,
+        instance: updatedInstance,
+        outlier: outliers.first,
+      );
+
+      final reloadedMag = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
+      expect(reloadedMag.stringValue, equals('MXP'));
+
+      // Re-evaluating context should now yield 0 outlier cards
+      final evalContextAfter = AuditEvaluationContext(
+        db: db,
+        allEntities: await entityRepo.getAllEntities(),
+        allCatalog: await catalogRepo.getAllCatalogItems(),
+        allSubspecies: await catalogRepo.getAllSubspecies(),
+        allRelations: const [],
+        allLocations: const [],
+        allSpeciesMagnitudes: const [],
+        allInstanceMagnitudes: const [],
+        allRequirements: const [],
+        effectiveLocationMap: const {},
+      );
+      final cardsAfter = await strategy.evaluate(evalContextAfter);
+      expect(cardsAfter.isEmpty, isTrue);
+    });
+
+    test('NumismaticEmissionOutlierStrategy detects material contradiction and repairs to canonical material', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: 'Pesos Mexicanos Antiguos',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      // Create piece with contradictory material: Mexico 1982 50 Pesos coin with 'Oro' instead of 'Cuproníquel'
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final updatedInstance = instance.copyWith(
+        magnitudes: [
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Valor nominal',
+            dataType: 'real',
+            magnitudeValue: 50.0,
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Acuñación',
+            dataType: 'integer',
+            magnitudeValue: 1982.0,
+            unitSymbol: 'año',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Divisa',
+            dataType: 'string',
+            stringValue: 'MXP',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Emisor',
+            dataType: 'string',
+            stringValue: 'México',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Material',
+            dataType: 'string',
+            stringValue: 'Oro', // Contradiction! 1982 50 Pesos Coyolxauhqui is Cuproníquel
+          ),
+        ],
+      );
+      await entityRepo.saveEntity(updatedInstance);
+
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
+      expect(outliers.length, equals(1));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.materialContradiction));
+      expect(outliers.first.expectedValue, equals('Cuproníquel'));
+
+      final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
+        entityRepo: entityRepo,
+        catalogRepo: catalogRepo,
+        instance: updatedInstance,
+        outlier: outliers.first,
+      );
+
+      final reloadedMat = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Material');
+      expect(reloadedMat.stringValue, equals('Cuproníquel'));
+    });
+
+    test('NumismaticEmissionOutlierStrategy detects missing regime change special edition for 1993 Mexico and repairs it', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: 'Nuevos Pesos',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      // Create Mexico 1993 10 N$ coin without special edition flag
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final updatedInstance = instance.copyWith(
+        magnitudes: [
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Valor nominal',
+            dataType: 'real',
+            magnitudeValue: 10.0,
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Acuñación',
+            dataType: 'integer',
+            magnitudeValue: 1993.0,
+            unitSymbol: 'año',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Divisa',
+            dataType: 'string',
+            stringValue: 'MXN',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Emisor',
+            dataType: 'string',
+            stringValue: 'México',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Material',
+            dataType: 'string',
+            stringValue: 'Bimetálica',
+          ),
+        ],
+      );
+      await entityRepo.saveEntity(updatedInstance);
+
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
+      expect(outliers.length, equals(1));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.specialEditionMismatch));
+      expect(outliers.first.expectedValue, equals('Emisión de cambio de régimen'));
+
+      final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
+        entityRepo: entityRepo,
+        catalogRepo: catalogRepo,
+        instance: updatedInstance,
+        outlier: outliers.first,
+      );
+
+      final reloadedSpecial = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Edición especial');
+      expect(reloadedSpecial.stringValue, equals('true'));
+
+      final reloadedReason = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Razón de edición especial');
+      expect(reloadedReason.stringValue, equals('Emisión de cambio de régimen'));
     });
   });
 }
