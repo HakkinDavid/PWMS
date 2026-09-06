@@ -278,5 +278,98 @@ void main() {
       expect(relations.first.targetEntityId, equals('e_chest'));
       expect(relations.first.relationType, equals(AppTechnicalStrings.relGuardadoEn));
     });
+
+    testWidgets('EntityDetailScreen saving change from container to physical location removes GUARDADO_EN and sets selected physical location in DB', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_sword', name: 'Espada', createdAt: now),
+          );
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(id: 'sp_box', name: 'Caja Fuerte', type: const Value('Contenedor'), createdAt: now),
+          );
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_vault', name: 'Bóveda Subterránea', createdAt: now),
+          );
+      await db.into(db.locationsTable).insert(
+            LocationsTableCompanion.insert(id: 'loc_armory', name: 'Armería Principal', createdAt: now),
+          );
+      // Container e_box is placed in loc_vault
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_box', speciesId: 'sp_box', locationId: const Value('loc_vault'), createdAt: now, updatedAt: now),
+          );
+      await db.into(db.instanceLocationsTable).insert(
+            InstanceLocationsTableCompanion.insert(instanceId: 'e_box', locationId: 'loc_vault', createdAt: now),
+          );
+      // Item e_sword is contained in e_box (GUARDADO_EN)
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(id: 'e_sword', speciesId: 'sp_sword', locationId: const Value(null), createdAt: now, updatedAt: now),
+          );
+      await db.into(db.relationsTable).insert(
+            RelationsTableCompanion.insert(
+              id: 'rel_sword_box',
+              sourceEntityId: 'e_sword',
+              targetEntityId: 'e_box',
+              relationType: AppTechnicalStrings.relGuardadoEn,
+              createdAt: now,
+            ),
+          );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: const MaterialApp(
+            home: EntityDetailScreen(entityId: 'e_sword'),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Enter edit mode
+      await tester.tap(find.byTooltip(AppStrings.edit));
+      await tester.pumpAndSettle();
+
+      // Tap location card to open LocationOrContainerSelectionSheet
+      await tester.tap(find.byIcon(Icons.edit_location));
+      await tester.pumpAndSettle();
+
+      // Switch mode to physical node
+      await tester.tap(find.text(AppStrings.physicalLocation));
+      await tester.pumpAndSettle();
+
+      // Open location tree picker
+      await tester.tap(find.byIcon(Icons.account_tree_outlined).last);
+      await tester.pumpAndSettle();
+
+      // Select 'Armería Principal'
+      expect(find.text('Armería Principal'), findsWidgets);
+      await tester.tap(find.text('Armería Principal').first);
+      await tester.pumpAndSettle();
+
+      // Confirm in sheet
+      await tester.tap(find.text(AppStrings.confirm));
+      await tester.pumpAndSettle();
+
+      // Save changes in EntityDetailScreen
+      await tester.tap(find.byTooltip(AppStrings.saveChangesAction));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 4));
+
+      // 1. Verify GUARDADO_EN relation was removed
+      final relations = await (db.select(db.relationsTable)..where((t) => t.sourceEntityId.equals('e_sword'))).get();
+      expect(relations, isEmpty);
+
+      // 2. Verify entity has direct physical location 'loc_armory' (NOT container's 'loc_vault')
+      final entityInDb = await (db.select(db.entitiesTable)..where((t) => t.id.equals('e_sword'))).getSingle();
+      expect(entityInDb.locationId, equals('loc_armory'));
+
+      // 3. Verify 4NF InstanceLocationsTable is updated with 'loc_armory'
+      final locInDb = await (db.select(db.instanceLocationsTable)..where((t) => t.instanceId.equals('e_sword'))).getSingleOrNull();
+      expect(locInDb, isNotNull);
+      expect(locInDb!.locationId, equals('loc_armory'));
+    });
   });
 }

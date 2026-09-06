@@ -169,10 +169,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
       updatedAt: DateTime.now(),
     );
 
-    // 1. Save entity
-    await ref.read(entityListProvider.notifier).saveEntity(updated);
-
-    // 2. Sync relations delta
+    // 1. Sync relations delta FIRST
+    // Ensures containment relations (GUARDADO_EN / PARTE_DE) are added or removed
+    // before saving entity location, so that direct location isn't overridden by container inheritance rules.
     if (_originalRelations != null) {
       final relationRepo = ref.read(relationRepositoryProvider);
       final deletedRelations = _originalRelations!.where((orig) => !_workingRelations.any((w) => w.id == orig.id)).toList();
@@ -185,6 +184,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
         await relationRepo.addRelation(rel);
       }
     }
+
+    // 2. Save entity
+    await ref.read(entityListProvider.notifier).saveEntity(updated);
 
     // 3. Sync requirements delta
     if (_originalRequirements != null) {
