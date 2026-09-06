@@ -135,7 +135,6 @@ void main() {
           InstanceMagnitude(id: 'm3', instanceId: 'inst-mxn-1992', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
           InstanceMagnitude(id: 'm4', instanceId: 'inst-mxn-1992', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 2.0),
           InstanceMagnitude(id: 'm5', instanceId: 'inst-mxn-1992', propertyName: 'Material', dataType: 'string', stringValue: 'Bimetálica'),
-          InstanceMagnitude(id: 'm6', instanceId: 'inst-mxn-1992', propertyName: 'Edición especial', dataType: 'boolean', stringValue: 'false'),
         ],
       );
 
@@ -143,7 +142,7 @@ void main() {
       expect(outliers, isEmpty);
     });
 
-    test('checkEmissionOutliers accepts standard circulating Brasil 2017 1 Real without specialEdition mismatch', () {
+    test('checkEmissionOutliers accepts standard circulating Brasil 2017 1 Real without motif mismatch', () {
       final now = DateTime.now();
       final entity = WorldEntity(
         id: 'inst-brl-2017',
@@ -156,7 +155,6 @@ void main() {
           InstanceMagnitude(id: 'm3', instanceId: 'inst-brl-2017', propertyName: 'Divisa', dataType: 'string', stringValue: 'BRL'),
           InstanceMagnitude(id: 'm4', instanceId: 'inst-brl-2017', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 1.0),
           InstanceMagnitude(id: 'm5', instanceId: 'inst-brl-2017', propertyName: 'Material', dataType: 'string', stringValue: 'Bimetálica'),
-          InstanceMagnitude(id: 'm6', instanceId: 'inst-brl-2017', propertyName: 'Edición especial', dataType: 'boolean', stringValue: 'false'),
         ],
       );
 

@@ -13,8 +13,6 @@ class NumismaticAttributes {
   final String? year;
   final String? material;
   final String? grade;
-  final bool? isSpecialEdition;
-  final String? specialEditionReason;
   final String? motif;
 
   const NumismaticAttributes({
@@ -26,8 +24,6 @@ class NumismaticAttributes {
     this.year,
     this.material,
     this.grade,
-    this.isSpecialEdition,
-    this.specialEditionReason,
     this.motif,
   });
 }
@@ -155,27 +151,6 @@ class NumismaticParser {
     for (final entry in sortedEntries) {
       if (lower.contains(entry.key)) {
         return entry.value;
-      }
-    }
-
-    return clean;
-  }
-
-  /// Resolves special edition reason to strict canonical item in `specialEditionReasons`.
-  static String resolveSpecialEditionReason(String raw) {
-    final clean = raw.trim();
-    if (clean.isEmpty) return clean;
-    if (NumismaticDictionary.specialEditionReasons.contains(clean)) return clean;
-
-    final lower = clean.toLowerCase();
-    if (AppTechnicalNumismatics.specialEditionKeywords.containsKey(lower)) {
-      return NumismaticDictionary.specialEditionReasons[AppTechnicalNumismatics.specialEditionKeywords[lower]!];
-    }
-    final sortedEntries = AppTechnicalNumismatics.specialEditionKeywords.entries.toList()
-      ..sort((a, b) => b.key.length.compareTo(a.key.length));
-    for (final entry in sortedEntries) {
-      if (lower.contains(entry.key)) {
-        return NumismaticDictionary.specialEditionReasons[entry.value];
       }
     }
 
@@ -421,8 +396,6 @@ class NumismaticParser {
     String? material;
     String? grade;
     String? country;
-    bool? isSpecialEdition;
-    String? specialReason;
     String? motif;
 
     for (final mag in entity.magnitudes) {
@@ -475,17 +448,6 @@ class NumismaticParser {
       } else if (pName == AppStrings.motifPropertyName.toLowerCase() ||
           pName == 'motivo') {
         motif = mag.stringValue?.trim();
-        if (motif != null && motif.isNotEmpty) {
-          isSpecialEdition = true;
-          specialReason = motif;
-        }
-      } else if (pName == AppStrings.specialEditionTitle.toLowerCase()) {
-        isSpecialEdition = mag.stringValue == AppTechnicalStrings.boolTrue ||
-            mag.stringValue == AppTechnicalStrings.valOne ||
-            mag.magnitudeValue == 1.0;
-      } else if (pName == AppStrings.specialEditionReasonLabel.toLowerCase()) {
-        specialReason = mag.stringValue?.trim();
-        motif ??= specialReason;
       }
     }
 
@@ -497,8 +459,6 @@ class NumismaticParser {
       year: year,
       material: material,
       grade: grade,
-      isSpecialEdition: isSpecialEdition,
-      specialEditionReason: specialReason,
       motif: motif,
     );
   }

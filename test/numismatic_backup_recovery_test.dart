@@ -216,6 +216,10 @@ void main() {
       expect(coinAcunacion.dataType, equals('integer'));
       expect(coinAcunacion.magnitudeValue, equals(2023.0));
 
+      final coinMotivo = coinMags.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(coinMotivo.dataType, equals('string'));
+      expect(coinMotivo.stringValue, isNull);
+
       // Test InstanceMagnitude displayValue behavior:
       // Material must NOT format as '0'
       final instMagMaterial = InstanceMagnitude(
@@ -259,10 +263,6 @@ void main() {
       final billMotivo = billMags.firstWhere((m) => m.propertyName == 'Motivo');
       expect(billMotivo.dataType, equals('string'));
       expect(billMotivo.stringValue, equals('Aniversario'));
-
-      final billSpecial = billMags.firstWhere((m) => m.propertyName == 'Edición especial');
-      expect(billSpecial.dataType, equals('boolean'));
-      expect(billSpecial.stringValue, equals('true'));
 
       final entBill1 = await (db.select(db.entitiesTable)..where((t) => t.id.equals('ent-bill-1'))).getSingle();
       expect(entBill1.notes, isNull);
@@ -618,11 +618,44 @@ void main() {
       final motifMag = reloaded.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
       expect(motifMag.stringValue, equals('175 Aniversario de la Independencia'));
       expect(motifMag.dataType, equals('string'));
+    });
 
-      // Edición especial magnitude must exist
-      final specialMag = reloaded.magnitudes.firstWhere((m) => m.propertyName == 'Edición especial');
-      expect(specialMag.stringValue, equals('true'));
-      expect(specialMag.dataType, equals('boolean'));
+    test('NumismaticMigrationPostProcessor sets Motivo to null when none applies', () async {
+      final catRepo = CatalogRepository(db);
+      final entRepo = EntityRepository(db);
+
+      final species = await catRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: '1 Peso Mexicano - México (1980)',
+        createdAt: DateTime.now(),
+      );
+      await catRepo.saveSubspecies(sub);
+
+      final instance = await entRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final updatedInstance = instance.copyWith(
+        notes: null,
+        magnitudes: [
+          InstanceMagnitude(id: 'm1', instanceId: instance.id, propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 1.0),
+          InstanceMagnitude(id: 'm2', instanceId: instance.id, propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1980.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: instance.id, propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: instance.id, propertyName: 'Emisor', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm5', instanceId: instance.id, propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
+        ],
+      );
+      await entRepo.saveEntity(updatedInstance);
+
+      // Run post-processor
+      await const NumismaticMigrationPostProcessor().process(db);
+
+      final reloaded = await entRepo.getEntityById(instance.id);
+      expect(reloaded, isNotNull);
+
+      // Motivo magnitude must exist with null stringValue
+      final motifMag = reloaded!.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(motifMag.stringValue, isNull);
+      expect(motifMag.dataType, equals('string'));
     });
   });
 }

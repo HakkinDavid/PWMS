@@ -11,9 +11,6 @@ class NumismaticScanResult {
   final String? currencyName; // e.g. 'Pesos Mexicanos', 'Pesetas'
   final String? composition; // e.g. 'Cuproníquel', 'Plata', 'Papel'
   final String? grade; // e.g. 'MBC / VF (Muy Buena)'
-  final bool isSpecialEdition;
-  final String? specialEditionReason; // e.g. 'Conmemorativa', 'Otro'
-  final String? specialEditionNotes; // free text when 'Otro'
   final String? motif; // Specific numismatic motif e.g. 'Copa Mundial FIFA México 86'
   final String obversePhotoPath;
   final String? reversePhotoPath;
@@ -33,9 +30,6 @@ class NumismaticScanResult {
     this.currencyName,
     this.composition,
     this.grade,
-    this.isSpecialEdition = false,
-    this.specialEditionReason,
-    this.specialEditionNotes,
     this.motif,
     required this.obversePhotoPath,
     this.reversePhotoPath,

@@ -28,7 +28,6 @@ class NumismaticDataHelper {
   static const List<String> denominations = NumismaticDictionary.denominations;
   static const List<String> grades = NumismaticDictionary.grades;
   static const List<String> coinMaterials = NumismaticDictionary.coinMaterials;
-  static const List<String> specialEditionReasons = NumismaticDictionary.specialEditionReasons;
 
   static List<String> getCurrenciesForCountry(String? country, {int? year, bool? isBanknote}) =>
       NumismaticMatrix.getCurrencies(country: country, year: year, isBanknote: isBanknote ?? false);
@@ -123,14 +122,14 @@ class NumismaticDataHelper {
         isBanknote: isBanknote ?? false,
       );
 
-  static ({bool isSpecial, String? reason, List<String> validMotifs})? checkSpecialEdition({
+  static bool isStrictlyCommemorative({
     String? country,
     int? year,
     String? currencyCode,
     String? denomination,
     bool? isBanknote,
   }) =>
-      NumismaticMatrix.checkSpecialEdition(
+      NumismaticMatrix.isStrictlyCommemorative(
         country: country,
         year: year,
         currencyCode: currencyCode,
@@ -151,9 +150,6 @@ class NumismaticDataHelper {
   static String resolveGrade(String raw) => NumismaticParser.resolveGrade(raw);
 
   static String resolveMaterial(String raw) => NumismaticParser.resolveMaterial(raw);
-
-  static String resolveSpecialEditionReason(String raw) =>
-      NumismaticParser.resolveSpecialEditionReason(raw);
 
   static bool areCurrenciesEquivalent(String? c1, String? c2, {double? count}) =>
       NumismaticParser.areCurrenciesEquivalent(c1, c2, count: count);

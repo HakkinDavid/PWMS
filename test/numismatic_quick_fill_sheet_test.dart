@@ -128,7 +128,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify all wheel picker fields display 'Sin selección' as default value
-    expect(find.text('Sin selección'), findsNWidgets(5)); // País, Divisa, Denominación, Material, Conservación
+    expect(find.text('Sin selección'), findsNWidgets(6)); // País, Divisa, Denominación, Material, Conservación, Motivo
 
     // Tap submit button with null fields
     final submitText = find.text(AppStrings.confirmAndRegisterPieceAction);
@@ -210,6 +210,7 @@ void main() {
     expect(submittedResult!.grade, equals('Muy buena'));
     expect(submittedResult!.composition, equals('Cuproníquel'));
     expect(submittedResult!.subspeciesName, equals('5 Pesos Mexicanos Antiguos - México (1982)'));
+    expect(submittedResult!.motif, isNull);
   });
 
   testWidgets('NumismaticQuickFillSheet auto-infers Currency and Material for Mexico 1982 50 Pesos', (WidgetTester tester) async {
@@ -368,7 +369,7 @@ void main() {
     expect(submittedResult!.currencyCode, equals('MXP'));
   });
 
-  testWidgets('NumismaticQuickFillSheet handles Special Edition Otro option with summoned notes', (WidgetTester tester) async {
+  testWidgets('NumismaticQuickFillSheet handles custom Motif Otro option with summoned text field', (WidgetTester tester) async {
     NumismaticScanResult? submittedResult;
 
     final dummyObverse = File('/tmp/obverse.jpg');
@@ -422,23 +423,17 @@ void main() {
     final gradeField = find.byType(AppWheelPickerField<String?>).at(4);
     await selectWheelOption(tester, gradeField, 'Sin circular');
 
-    // 7. Check Special Edition manually
-    final checkbox = find.byType(CheckboxListTile);
-    await tester.ensureVisible(checkbox);
-    await tester.tap(checkbox);
-    await tester.pumpAndSettle();
+    // 7. Select Motif ('Otro')
+    final motifField = find.byType(AppWheelPickerField<String?>).at(5);
+    await selectWheelOption(tester, motifField, 'Otro');
 
-    // 8. Select Special Edition Reason ('Otro')
-    final reasonField = find.byType(AppWheelPickerField<String?>).last;
-    await selectWheelOption(tester, reasonField, 'Otro');
+    // Verify custom motif field is summoned
+    expect(find.text(AppStrings.customMotifOption), findsOneWidget);
 
-    // Verify notes field is summoned
-    expect(find.text(AppStrings.specialEditionNotesLabel), findsOneWidget);
-
-    // Enter notes
-    final notesField = find.widgetWithText(TextFormField, AppStrings.specialEditionNotesLabel);
-    await tester.ensureVisible(notesField);
-    await tester.enterText(notesField, 'Prueba de cuño conmemorativo');
+    // Enter custom motif
+    final customMotifField = find.widgetWithText(TextFormField, AppStrings.customMotifOption);
+    await tester.ensureVisible(customMotifField);
+    await tester.enterText(customMotifField, 'Prueba de cuño conmemorativo');
     await tester.pumpAndSettle();
 
     // Submit
@@ -448,9 +443,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(submittedResult, isNotNull);
-    expect(submittedResult!.isSpecialEdition, isTrue);
-    expect(submittedResult!.specialEditionReason, equals('Otro'));
-    expect(submittedResult!.specialEditionNotes, equals('Prueba de cuño conmemorativo'));
+    expect(submittedResult!.motif, equals('Prueba de cuño conmemorativo'));
   });
 
   testWidgets('NumismaticQuickFillSheet does not pop navigator when onResultSubmitted is provided', (WidgetTester tester) async {

@@ -520,8 +520,8 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
               case NumismaticEmissionOutlierType.materialContradiction:
                 fixBtnLabel = AppStrings.fixCorrectMaterialAction;
                 break;
-              case NumismaticEmissionOutlierType.specialEditionMismatch:
-                fixBtnLabel = AppStrings.fixSetSpecialEditionAction;
+              case NumismaticEmissionOutlierType.motifMismatch:
+                fixBtnLabel = AppStrings.fixSetMotifAction;
                 break;
               case NumismaticEmissionOutlierType.denominationAnomaly:
                 fixBtnLabel = AppStrings.fixPickDenominationAction;
@@ -608,7 +608,7 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                       return false;
                     }
                   }
-                } else if (outlier.type == NumismaticEmissionOutlierType.specialEditionMismatch) {
+                } else if (outlier.type == NumismaticEmissionOutlierType.motifMismatch) {
                   final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
                   final yearInt = attrs.year != null ? int.tryParse(attrs.year!) : null;
                   final isBanknote = NumismaticDataHelper.isBanknotePiece(

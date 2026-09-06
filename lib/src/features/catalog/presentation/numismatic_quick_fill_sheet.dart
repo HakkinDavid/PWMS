@@ -83,7 +83,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   static List<String> get _denominations => NumismaticDataHelper.denominations;
   static List<String> get _grades => NumismaticDataHelper.grades;
   static List<String> get _coinMaterials => NumismaticDataHelper.coinMaterials;
-  static List<String> get _specialEditionReasons => NumismaticDataHelper.specialEditionReasons;
 
   // Static memory cache for auto-fill in active session
   static LocationOrContainerSelection? _lastUsedSelection;
@@ -102,6 +101,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   String? _denomination;
   String? _grade;
   String? _composition;
+  String? _motif;
 
   // Null checkmark states
   bool _isCountryNull = false;
@@ -117,12 +117,8 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   final TextEditingController _customCurrencyController = TextEditingController();
   final TextEditingController _customGradeController = TextEditingController();
   final TextEditingController _customMaterialController = TextEditingController();
+  final TextEditingController _customMotifController = TextEditingController();
   final TextEditingController _yearController = TextEditingController(text: AppTechnicalStrings.empty);
-
-  // Special Edition Controls
-  bool _isSpecialEdition = false;
-  String? _specialReason;
-  final TextEditingController _specialNotesController = TextEditingController();
 
   @override
   void initState() {
@@ -141,7 +137,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     _denomination = null;
     _grade = null;
     _composition = null;
-    _specialReason = null;
+    _motif = null;
   }
 
   Future<void> _loadLastUsedLocation() async {
@@ -173,8 +169,8 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     _customCurrencyController.dispose();
     _customGradeController.dispose();
     _customMaterialController.dispose();
+    _customMotifController.dispose();
     _yearController.dispose();
-    _specialNotesController.dispose();
     super.dispose();
   }
 
@@ -317,14 +313,9 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       year: effectiveYear,
     );
 
-    final effectiveMotif = _isSpecialEdition
-        ? ((_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized)
-            ? _specialNotesController.text.trim()
-            : _specialReason)
-        : null;
-
-    final isSpecialNotesApplicable = _isSpecialEdition &&
-        (_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized);
+    final effectiveMotif = (_motif == AppStrings.otherSpecifyOption || _motif == AppStrings.otherSpecifyParenthesized)
+        ? (_customMotifController.text.trim().isNotEmpty ? _customMotifController.text.trim() : null)
+        : ((_motif != null && _motif!.trim().isNotEmpty) ? _motif!.trim() : null);
 
     final result = NumismaticScanResult(
       speciesType: speciesType,
@@ -337,11 +328,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       currencyName: effectiveCurrencyName,
       composition: effectiveComposition,
       grade: effectiveGrade,
-      isSpecialEdition: _isSpecialEdition,
-      specialEditionReason: _isSpecialEdition ? _specialReason : null,
-      specialEditionNotes: isSpecialNotesApplicable
-          ? _specialNotesController.text.trim()
-          : null,
       motif: effectiveMotif,
       obversePhotoPath: widget.obversePhoto.path,
       reversePhotoPath: widget.reversePhoto?.path,
@@ -376,9 +362,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     final items = <String>[];
     for (final m in rawMotifs) {
       if (!items.contains(m)) items.add(m);
-    }
-    for (final r in _specialEditionReasons) {
-      if (!items.contains(r)) items.add(r);
     }
     if (!items.contains(AppStrings.otherSpecifyOption)) {
       items.add(AppStrings.otherSpecifyOption);
@@ -466,16 +449,26 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       }
     }
 
-    // 4. Special Edition auto-check
-    final specialCheck = NumismaticDataHelper.checkSpecialEdition(
-      country: effectiveCountry,
-      year: year,
-      currencyCode: currCode,
-      denomination: denom,
-    );
-    if (specialCheck != null) {
-      _isSpecialEdition = true;
-      _specialReason = specialCheck.reason;
+    // 4. Commemorative Motif auto-suggestion / validation
+    if (denom != null) {
+      final availableMotifs = NumismaticDataHelper.getCommemorativeMotifs(
+        country: effectiveCountry,
+        year: year,
+        currencyCode: currCode,
+        denomination: denom,
+        isBanknote: !widget.isCoin,
+      );
+      if (availableMotifs.isNotEmpty) {
+        if (_motif == null || (_motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized && !availableMotifs.contains(_motif))) {
+          _motif = availableMotifs.first;
+        }
+      } else if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized) {
+        _motif = null;
+      }
+    } else {
+      if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized) {
+        _motif = null;
+      }
     }
   }
 
@@ -1055,75 +1048,31 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               ],
               const SizedBox(height: 14),
 
-              // 8. Edición Especial (Sección con checkbox y razón opcional)
-              Container(
-                decoration: BoxDecoration(
-                  color: _isSpecialEdition ? theme.colorScheme.primaryContainer.withAlpha(50) : Colors.transparent,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: _isSpecialEdition ? theme.colorScheme.primary : Colors.grey.shade300,
+              // 8. Motivo de la emisión (Opcional)
+              AppWheelPickerField<String?>(
+                value: _motif,
+                items: [null, ..._availableMotifs],
+                labelBuilder: (m) => m ?? AppStrings.noSelectionPrompt,
+                title: AppStrings.motifLabel,
+                decoration: InputDecoration(
+                  labelText: AppStrings.motifLabel,
+                  hintText: AppStrings.noSelectionPrompt,
+                  prefixIcon: const Icon(Icons.star_outline),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                onChanged: (val) => setState(() => _motif = val),
+              ),
+              if (_motif == AppStrings.otherSpecifyOption || _motif == AppStrings.otherSpecifyParenthesized) ...[
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _customMotifController,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.customMotifOption,
+                    prefixIcon: const Icon(Icons.edit_note),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Column(
-                  children: [
-                    CheckboxListTile(
-                      title: const Text(AppStrings.specialEditionTitle, style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: const Text(AppStrings.specialEditionCheckSubtitle),
-                      value: _isSpecialEdition,
-                      activeColor: theme.colorScheme.primary,
-                      contentPadding: EdgeInsets.zero,
-                      onChanged: (val) => setState(() {
-                        _isSpecialEdition = val ?? false;
-                        if (!_isSpecialEdition) _specialReason = null;
-                      }),
-                    ),
-                    if (_isSpecialEdition) ...[
-                      const Divider(),
-                      const SizedBox(height: 4),
-                      AppWheelPickerField<String?>(
-                        value: _specialReason,
-                        items: [null, ..._availableMotifs],
-                        labelBuilder: (r) => r ?? AppStrings.noSelectionPrompt,
-                        title: AppStrings.motifLabel,
-                        decoration: InputDecoration(
-                          labelText: AppStrings.motifLabel,
-                          hintText: AppStrings.noSelectionPrompt,
-                          prefixIcon: const Icon(Icons.star),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                        validator: (val) {
-                          if (_isSpecialEdition && val == null) {
-                            return AppStrings.selectSpecialEditionReasonPrompt;
-                          }
-                          return null;
-                        },
-                        onChanged: (val) => setState(() => _specialReason = val),
-                      ),
-                      if (_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized) ...[
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          controller: _specialNotesController,
-                          decoration: InputDecoration(
-                            labelText: AppStrings.specialEditionNotesLabel,
-                            prefixIcon: const Icon(Icons.edit_note),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                          ),
-                          validator: (val) {
-                            if (_isSpecialEdition &&
-                                (_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized) &&
-                                (val == null || val.trim().isEmpty)) {
-                              return AppStrings.specifySpecialEditionNotesPrompt;
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
-                      const SizedBox(height: 8),
-                    ],
-                  ],
-                ),
-              ),
+              ],
 
               const SizedBox(height: 20),
 

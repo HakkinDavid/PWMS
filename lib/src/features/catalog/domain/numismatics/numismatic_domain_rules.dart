@@ -17,7 +17,7 @@ import 'numismatic_matrix.dart';
 enum NumismaticEmissionOutlierType {
   currencyAnachronism,
   materialContradiction,
-  specialEditionMismatch,
+  motifMismatch,
   denominationAnomaly,
   yearOutOfRange,
 }
@@ -573,7 +573,8 @@ class NumismaticDomainRules {
               ));
             } else if (pName == AppStrings.motifPropertyName.toLowerCase() ||
                 pName == 'motivo' ||
-                pName == AppStrings.specialEditionReasonLabel.toLowerCase()) {
+                pName == 'razón de edición especial' ||
+                pName == 'razon de edicion especial') {
               var motifVal = m.stringValue?.trim();
               if (motifVal != null && motifVal.isNotEmpty) {
                 customMags.add(m.copyWith(
@@ -584,14 +585,8 @@ class NumismaticDomainRules {
                   magnitudeValue: null,
                 ));
               }
-            } else if (pName == AppStrings.specialEditionTitle.toLowerCase()) {
-              customMags.add(m.copyWith(
-                propertyName: AppStrings.specialEditionTitle,
-                dataType: AppTechnicalStrings.datatypeBooleanLower,
-                stringValue: m.stringValue ?? AppTechnicalStrings.boolTrue,
-                unitSymbol: null,
-                magnitudeValue: null,
-              ));
+            } else if (pName == 'edición especial' || pName == 'edicion especial') {
+              // Ignore obsolete special edition magnitude
             } else {
               customMags.add(m);
             }
@@ -753,42 +748,60 @@ class NumismaticDomainRules {
                   cleanedNotes = null;
                 }
               }
+            } else if (lowerNotes.contains('motivo:') || lowerNotes.contains('motivo :')) {
+              final matchMotif = RegExp(r'(?:\[\s*)?Motivo\s*:\s*([^\]|\n]+)(?:\])?', caseSensitive: false).firstMatch(inst.notes!);
+              if (matchMotif != null) {
+                final raw = matchMotif.group(1)?.trim();
+                if (raw != null && raw.isNotEmpty) {
+                  extractedMotifFromNotes = raw;
+                }
+                cleanedNotes = inst.notes!.replaceAll(matchMotif.group(0)!, '').trim();
+                cleanedNotes = cleanedNotes.replaceAll(RegExp(r'^[|\s]+|[|\s]+$'), '').replaceAll(RegExp(r'\s*\|\s*\|\s*'), ' | ').trim();
+                if (cleanedNotes.isEmpty) {
+                  cleanedNotes = null;
+                }
+              }
             }
           }
 
-          final hasMotif = customMags.any((m) {
+          // Check for existing motif in magnitudes or extracted from notes
+          String? resolvedMotif;
+          final existingMotifMag = customMags.where((m) {
             final p = m.propertyName.trim().toLowerCase();
-            return (p == AppStrings.motifPropertyName.toLowerCase() || p == 'motivo') &&
+            return (p == AppStrings.motifPropertyName.toLowerCase() ||
+                    p == 'motivo' ||
+                    p == 'razón de edición especial' ||
+                    p == 'razon de edicion especial') &&
                 m.stringValue != null &&
                 m.stringValue!.trim().isNotEmpty;
+          }).firstOrNull;
+
+          if (existingMotifMag != null) {
+            resolvedMotif = existingMotifMag.stringValue!.trim();
+          } else if (extractedMotifFromNotes != null && extractedMotifFromNotes.isNotEmpty) {
+            resolvedMotif = extractedMotifFromNotes;
+          }
+
+          final motifIdx = customMags.indexWhere((m) {
+            final p = m.propertyName.trim().toLowerCase();
+            return p == AppStrings.motifPropertyName.toLowerCase() || p == 'motivo';
           });
-          if (!hasMotif && extractedMotifFromNotes != null && extractedMotifFromNotes.isNotEmpty) {
+
+          if (motifIdx >= 0) {
+            customMags[motifIdx] = customMags[motifIdx].copyWith(
+              propertyName: AppStrings.motifPropertyName,
+              dataType: AppTechnicalStrings.datatypeStringLower,
+              stringValue: (resolvedMotif != null && resolvedMotif.isNotEmpty) ? resolvedMotif : null,
+              unitSymbol: null,
+            );
+          } else {
             customMags.add(InstanceMagnitude(
               id: const Uuid().v4(),
               instanceId: inst.id,
               propertyName: AppStrings.motifPropertyName,
               dataType: AppTechnicalStrings.datatypeStringLower,
-              stringValue: extractedMotifFromNotes,
+              stringValue: (resolvedMotif != null && resolvedMotif.isNotEmpty) ? resolvedMotif : null,
             ));
-          }
-
-          final hasAnyMotif = customMags.any((m) {
-            final p = m.propertyName.trim().toLowerCase();
-            return (p == AppStrings.motifPropertyName.toLowerCase() || p == 'motivo') &&
-                m.stringValue != null &&
-                m.stringValue!.trim().isNotEmpty;
-          });
-          if (hasAnyMotif) {
-            final hasSpecialBool = customMags.any((m) => m.propertyName.trim().toLowerCase() == AppStrings.specialEditionTitle.toLowerCase());
-            if (!hasSpecialBool) {
-              customMags.add(InstanceMagnitude(
-                id: const Uuid().v4(),
-                instanceId: inst.id,
-                propertyName: AppStrings.specialEditionTitle,
-                dataType: AppTechnicalStrings.datatypeBooleanLower,
-                stringValue: AppTechnicalStrings.boolTrue,
-              ));
-            }
           }
 
           // Deduplicate customMags by normalized propertyName (keep best value)
@@ -858,8 +871,6 @@ class NumismaticDomainRules {
     final year = yearStr != null ? int.tryParse(yearStr) : null;
     final currency = attrs.currencyName?.trim();
     final material = attrs.material?.trim();
-    final isSpecial = attrs.isSpecialEdition;
-    final specialReason = attrs.specialEditionReason?.trim();
 
     final isBanknote = NumismaticParser.isBanknotePiece(
       species: species,
@@ -955,50 +966,47 @@ class NumismaticDomainRules {
           }
         }
 
-        // C. Special edition / Motif check
+        // C. Commemorative Motif check
         if (denomStr != null && denomStr.isNotEmpty) {
-          final specialInfo = NumismaticMatrix.checkSpecialEdition(
+          final motifs = NumismaticMatrix.getCommemorativeMotifs(
             country: country,
             year: year,
             currencyCode: currency,
             denomination: denomStr,
             isBanknote: isBanknote,
           );
-          if (specialInfo != null && specialInfo.isSpecial) {
-            final expectedReason = specialInfo.reason ?? AppTechnicalNumismatics.specialEditionReasons.first;
-            final isMissingFlag = isSpecial != true;
-            final validMotifs = specialInfo.validMotifs;
-            final effectiveMotif = attrs.motif ?? specialReason;
+          final isStrictlyCommemorative = rule.isCommemorativeDenomination(denomStr);
+          final effectiveMotif = attrs.motif;
 
-            bool isReasonMismatch = false;
-            if (effectiveMotif != null && effectiveMotif.trim().isNotEmpty) {
-              if (validMotifs.isNotEmpty) {
-                final cleanFound = effectiveMotif.trim().toLowerCase();
-                final matchesAny = validMotifs.any((m) {
-                  final cleanM = m.trim().toLowerCase();
-                  return cleanM == cleanFound || cleanM.contains(cleanFound) || cleanFound.contains(cleanM);
-                });
-                if (!matchesAny) {
-                  isReasonMismatch = true;
-                }
-              } else {
-                isReasonMismatch = effectiveMotif.toLowerCase() != expectedReason.toLowerCase();
+          bool isMotifMismatch = false;
+          if (effectiveMotif != null && effectiveMotif.trim().isNotEmpty) {
+            if (motifs.isNotEmpty) {
+              final cleanFound = effectiveMotif.trim().toLowerCase();
+              final matchesAny = motifs.any((m) {
+                final cleanM = m.trim().toLowerCase();
+                return cleanM == cleanFound || cleanM.contains(cleanFound) || cleanFound.contains(cleanM);
+              });
+              if (!matchesAny) {
+                isMotifMismatch = true;
               }
             } else {
-              isReasonMismatch = true;
+              isMotifMismatch = true;
             }
+          } else if (isStrictlyCommemorative && motifs.isNotEmpty) {
+            isMotifMismatch = true;
+          }
 
-            if (isMissingFlag || isReasonMismatch) {
-              outliers.add(NumismaticEmissionOutlier(
-                type: NumismaticEmissionOutlierType.specialEditionMismatch,
-                title: AppStrings.numismaticEmissionOutlierCardTitle,
-                description: AppStrings.numismaticSpecialEditionMismatchDesc(denomStr, expectedReason),
-                suggestedFixDescription: AppStrings.fixSetSpecialEditionAction,
-                expectedValue: expectedReason,
-                foundValue: effectiveMotif,
-                targetPropertyName: AppStrings.motifPropertyName,
-              ));
-            }
+          if (isMotifMismatch) {
+            final expectedMotif = motifs.isNotEmpty ? motifs.first : AppStrings.motifPropertyName;
+            outliers.add(NumismaticEmissionOutlier(
+              type: NumismaticEmissionOutlierType.motifMismatch,
+              title: AppStrings.numismaticEmissionOutlierCardTitle,
+              description: AppStrings.numismaticMotifMismatchDesc(denomStr, expectedMotif),
+              suggestedFixDescription: AppStrings.fixSetMotifAction,
+              expectedValue: expectedMotif,
+              foundValue: effectiveMotif,
+              targetPropertyName: AppStrings.motifPropertyName,
+            ));
           }
         }
 
@@ -1084,22 +1092,12 @@ class NumismaticDomainRules {
         }
         break;
 
-      case NumismaticEmissionOutlierType.specialEditionMismatch:
-        final targetReason = customValue ?? outlier.expectedValue ?? AppTechnicalNumismatics.specialEditionReasons.first;
+      case NumismaticEmissionOutlierType.motifMismatch:
+        final targetMotif = customValue ?? outlier.expectedValue ?? AppStrings.motifPropertyName;
         setOrUpdateMagnitude(
           propertyName: AppStrings.motifPropertyName,
           dataType: AppTechnicalStrings.datatypeStringLower,
-          stringValue: targetReason,
-        );
-        setOrUpdateMagnitude(
-          propertyName: AppStrings.specialEditionTitle,
-          dataType: AppTechnicalStrings.datatypeStringLower,
-          stringValue: AppTechnicalStrings.boolTrue,
-        );
-        setOrUpdateMagnitude(
-          propertyName: AppStrings.specialEditionReasonLabel,
-          dataType: AppTechnicalStrings.datatypeStringLower,
-          stringValue: targetReason,
+          stringValue: targetMotif,
         );
         break;
 

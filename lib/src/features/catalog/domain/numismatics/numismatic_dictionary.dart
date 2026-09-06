@@ -41,6 +41,4 @@ class NumismaticDictionary {
   static const List<String> grades = AppTechnicalNumismatics.grades;
 
   static const List<String> coinMaterials = AppTechnicalNumismatics.coinMaterials;
-
-  static const List<String> specialEditionReasons = AppTechnicalNumismatics.specialEditionReasons;
 }

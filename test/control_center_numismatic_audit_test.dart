@@ -521,7 +521,7 @@ void main() {
       expect(reloadedMat.stringValue, equals('Cuproníquel'));
     });
 
-    test('NumismaticEmissionOutlierStrategy detects missing commemorative special edition for 2008 Mexico and repairs it', () async {
+    test('NumismaticEmissionOutlierStrategy detects missing commemorative motif for 2008 Mexico and repairs it', () async {
       final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
@@ -531,7 +531,7 @@ void main() {
       );
       await catalogRepo.saveSubspecies(sub);
 
-      // Create Mexico 2008 5 Pesos coin without special edition flag
+      // Create Mexico 2008 5 Pesos coin without motif
       final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
         magnitudes: [
@@ -577,7 +577,7 @@ void main() {
 
       final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
-      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.specialEditionMismatch));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.motifMismatch));
       expect(outliers.first.expectedValue, equals('Ignacio López Rayón'));
 
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
@@ -587,11 +587,8 @@ void main() {
         outlier: outliers.first,
       );
 
-      final reloadedSpecial = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Edición especial');
-      expect(reloadedSpecial.stringValue, equals('true'));
-
-      final reloadedReason = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Razón de edición especial');
-      expect(reloadedReason.stringValue, equals('Ignacio López Rayón'));
+      final reloadedMotif = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(reloadedMotif.stringValue, equals('Ignacio López Rayón'));
     });
 
     test('repairAndStandardizeImportedData groups singular and plural pieces into single canonical subspecies', () async {
@@ -779,13 +776,6 @@ void main() {
           InstanceMagnitude(
             id: const Uuid().v4(),
             instanceId: instance.id,
-            propertyName: 'Edición especial',
-            dataType: 'boolean',
-            stringValue: 'true',
-          ),
-          InstanceMagnitude(
-            id: const Uuid().v4(),
-            instanceId: instance.id,
             propertyName: 'Motivo',
             dataType: 'string',
             stringValue: 'Motivo Inexistente 123',
@@ -796,7 +786,7 @@ void main() {
 
       final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
-      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.specialEditionMismatch));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.motifMismatch));
 
       // Repair with canonical motif
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(

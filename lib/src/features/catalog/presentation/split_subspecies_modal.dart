@@ -438,7 +438,7 @@ class _SplitSubspeciesModalState extends ConsumerState<SplitSubspeciesModal> {
               TextField(
                 controller: _notesController,
                 decoration: const InputDecoration(
-                  labelText: AppStrings.specialNotesOptionalLabel,
+                  labelText: AppStrings.variantNotesOptionalLabel,
                   prefixIcon: Icon(Icons.notes),
                   isDense: true,
                 ),

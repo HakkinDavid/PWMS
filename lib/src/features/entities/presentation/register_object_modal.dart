@@ -249,6 +249,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.materialPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.gradePropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
             await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.issuerPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+            await catalogRepo.addSpeciesMagnitude(matchingSpecies.id, AppStrings.motifPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
 
             if (!mounted) return;
             ref.invalidate(catalogListProvider);
@@ -349,7 +350,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   strVal = result.country;
                   unit = null;
                 } else if (sm.propertyName == AppStrings.motifPropertyName) {
-                  strVal = result.motif ?? (result.isSpecialEdition ? (result.specialEditionReason ?? AppStrings.specialEditionTitle) : null);
+                  strVal = (result.motif != null && result.motif!.trim().isNotEmpty) ? result.motif!.trim() : null;
                   unit = null;
                 }
 
@@ -361,6 +362,17 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   magnitudeValue: val,
                   stringValue: strVal,
                   unitSymbol: unit,
+                ));
+              }
+
+              final hasMotifMag = customInstanceMags.any((m) => m.propertyName.trim().toLowerCase() == AppStrings.motifPropertyName.toLowerCase());
+              if (!hasMotifMag) {
+                customInstanceMags.add(InstanceMagnitude(
+                  id: const Uuid().v4(),
+                  instanceId: createdInstance.id,
+                  propertyName: AppStrings.motifPropertyName,
+                  dataType: AppTechnicalStrings.datatypeStringLower,
+                  stringValue: (result.motif != null && result.motif!.trim().isNotEmpty) ? result.motif!.trim() : null,
                 ));
               }
 

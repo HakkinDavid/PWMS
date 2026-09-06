@@ -7,6 +7,7 @@ import 'package:platinum_world_management_system/src/core/providers/providers.da
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/entity_photo_helper.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 
 void main() {
@@ -136,6 +137,62 @@ void main() {
         instanceId: instance.id,
       );
       expect(resolvedInstance, equals('/storage/photos/instance_photo.jpg'));
+    });
+
+    test('Numismatic entity creation sets Motivo to null when no motif applies', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      await catalogRepo.addSpeciesMagnitude(species.id, 'Valor nominal', dataType: 'real');
+      await catalogRepo.addSpeciesMagnitude(species.id, 'Acuñación', dataType: 'integer', unitSymbol: 'año');
+      await catalogRepo.addSpeciesMagnitude(species.id, 'Divisa', dataType: 'string');
+      await catalogRepo.addSpeciesMagnitude(species.id, 'Material', dataType: 'string');
+      await catalogRepo.addSpeciesMagnitude(species.id, 'Grado', dataType: 'string');
+      await catalogRepo.addSpeciesMagnitude(species.id, 'Emisor', dataType: 'string');
+      await catalogRepo.addSpeciesMagnitude(species.id, 'Motivo', dataType: 'string');
+
+      final subspecies = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: 'Pesos Mexicanos',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(subspecies);
+
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: subspecies.id);
+
+      final freshSpecies = await catalogRepo.getCatalogItemById(species.id);
+      expect(freshSpecies, isNotNull);
+
+      // Simulate registration logic mapping from NumismaticScanResult (when motif is null)
+      final List<InstanceMagnitude> customInstanceMags = [];
+      for (final sm in freshSpecies!.magnitudes) {
+        String? strVal;
+        if (sm.propertyName == 'Divisa') {
+          strVal = 'MXN';
+        } else if (sm.propertyName == 'Motivo') {
+          strVal = null; // None applies
+        }
+
+        customInstanceMags.add(InstanceMagnitude(
+          id: const Uuid().v4(),
+          instanceId: instance.id,
+          propertyName: sm.propertyName,
+          dataType: sm.dataType,
+          stringValue: strVal,
+        ));
+      }
+
+      final updatedInstance = instance.copyWith(magnitudes: customInstanceMags);
+      await entityRepo.saveEntity(updatedInstance);
+
+      final reloaded = await entityRepo.getEntityById(instance.id);
+      expect(reloaded, isNotNull);
+
+      final motifMag = reloaded!.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(motifMag.stringValue, isNull);
+      expect(motifMag.dataType, equals('string'));
+
+      final hasSpecial = reloaded.magnitudes.any((m) => m.propertyName == 'Edición especial');
+      expect(hasSpecial, isFalse);
     });
   });
 }

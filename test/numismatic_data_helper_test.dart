@@ -167,15 +167,12 @@ void main() {
       expect(issue, contains('Divisa de instancia no es código ISO'));
     });
 
-    test('resolveGrade, resolveMaterial, and resolveSpecialEditionReason map to canonical lists', () {
+    test('resolveGrade and resolveMaterial map to canonical lists', () {
       expect(NumismaticDataHelper.resolveGrade('UNC'), equals('Sin circular'));
       expect(NumismaticDataHelper.resolveGrade('VF'), equals('Muy buena'));
 
       expect(NumismaticDataHelper.resolveMaterial('cu-ni'), equals('Cuproníquel'));
       expect(NumismaticDataHelper.resolveMaterial('silver'), equals('Plata'));
-
-      expect(NumismaticDataHelper.resolveSpecialEditionReason('commemorative'), equals('Conmemorativa'));
-      expect(NumismaticDataHelper.resolveSpecialEditionReason('proof'), equals('Prueba de acuñación'));
     });
 
     test('checkInstanceSubspeciesCongruence detects non-standard grade or material', () {

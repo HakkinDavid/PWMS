@@ -3728,11 +3728,6 @@ abstract final class AppTechnicalNumismatics {
     'Otro',
   ];
 
-  static const List<String> specialEditionReasons = [
-    'Conmemorativa', 'Prueba de acuñación', 'Error de impresión', 'Serie limitada',
-    'Aniversario', 'Emisión de cambio de régimen', 'Otro',
-  ];
-
   /// Maps plural currency nouns and nationalities to their singular standard representation.
   static const Map<String, String> currencySingularReplacements = {
     // Monedas
@@ -4198,25 +4193,6 @@ abstract final class AppTechnicalNumismatics {
     'leather': 'Cuero',
     'madera': 'Madera',
     'wood': 'Madera',
-  };
-
-  static const Map<String, int> specialEditionKeywords = {
-    'conmemorativa': 0,
-    'commemorative': 0,
-    'proof': 1,
-    'prueba': 1,
-    'error': 2,
-    'impresión': 2,
-    'impresion': 2,
-    'limitada': 3,
-    'numeración': 3,
-    'numeracion': 3,
-    'aniversario': 4,
-    'histórico': 4,
-    'historico': 4,
-    'régimen': 5,
-    'regimen': 5,
-    'cambio': 5,
   };
 
   static const List<NumismaticEmissionRuleData> emissionRules = [
@@ -9273,7 +9249,10 @@ class NumismaticEmissionRuleData {
   }
 
   bool isCommemorativeDenomination(String targetDenom) {
-    return commemorativeDenominations.any((d) => matchesDenomination(d, targetDenom));
+    if (commemorativeDenominations.isNotEmpty) {
+      return commemorativeDenominations.any((d) => matchesDenomination(d, targetDenom));
+    }
+    return false;
   }
 
   List<String> getCommemorativeMotifsForDenomination(String targetDenom) {
@@ -9283,10 +9262,14 @@ class NumismaticEmissionRuleData {
       }
     }
     if (commemorativeReasons.isNotEmpty) {
-      return commemorativeReasons;
+      if (commemorativeDenominations.isEmpty || isCommemorativeDenomination(targetDenom)) {
+        return commemorativeReasons;
+      }
     }
     if (defaultCommemorativeReason != null && defaultCommemorativeReason!.trim().isNotEmpty) {
-      return [defaultCommemorativeReason!];
+      if (commemorativeDenominations.isEmpty || isCommemorativeDenomination(targetDenom)) {
+        return [defaultCommemorativeReason!];
+      }
     }
     return const [];
   }

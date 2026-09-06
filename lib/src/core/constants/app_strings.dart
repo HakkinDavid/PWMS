@@ -161,7 +161,6 @@ class AppStrings {
   static const nameOrVariantHint = 'Nombre';
   static const brandHint = 'Marca';
   static const barcodeHint = 'Código de barras';
-  static const notesSpecialEditionHint = 'Notas';
   static const editSpeciesTitle = 'Editar especie';
   static const createSpeciesTitle = 'Crear nueva especie';
   static const noTemplate = 'Sin plantilla';
@@ -409,7 +408,7 @@ class AppStrings {
   static const searchPhotoOnWebAction = 'Buscar foto en la web';
   static const brandOptionalLabel = 'Marca';
   static const barcodeOptionalLabel = 'Código de barras';
-  static const specialNotesOptionalLabel = 'Notas de edición especial';
+  static const variantNotesOptionalLabel = 'Notas de la variante';
   static const cannotDeleteSpeciesWithInstancesError = 'No se puede eliminar una especie con instancias registradas.';
   static const expirationDateLabel = 'Fecha de caducidad';
   static const noExpirationDateAssigned = 'Sin fecha asignada';
@@ -444,10 +443,6 @@ class AppStrings {
   static const noInstancesToTransferNotice = 'Esta subespecie no tiene instancias asociadas. Se creará la nueva subespecie sin transferir instancias.';
   static const selectAllAction = 'Seleccionar todas';
   static const deselectAllAction = 'Deseleccionar todas';
-  static const specialEditionTitle = 'Edición especial';
-  static const specialEditionCheckSubtitle = 'Indica si la pieza posee particularidades.';
-  static const specialEditionReasonLabel = 'Razón de edición especial';
-  static const specialEditionNotesLabel = 'Anotaciones de edición especial';
   static const confirmAndRegisterPieceAction = 'Confirmar y registrar pieza';
   static const fileAttachedToSpeciesPrefix = 'Archivo "';
   static const fileAttachedToSpeciesSuffix = '" adjuntado a la especie.';
@@ -521,7 +516,6 @@ class AppStrings {
   static const yearNotePrefix = 'Año: ';
   static const materialNotePrefix = 'Material: ';
   static const otherSpecifyOption = 'Otro';
-  static const specialEditionNotePrefix = 'Edición especial: ';
 
   // Tipos de Datos Primitivos
   static const dataTypeRealLabel = 'Número decimal';
@@ -811,8 +805,6 @@ class AppStrings {
   static const specifyMaterialLabel = 'Especificar material o composición';
   static const specifyMaterialPrompt = 'Ingresa el material o composición.';
   static const unspecifiedMaterialLabel = 'Sin material / Desconocido';
-  static const selectSpecialEditionReasonPrompt = 'Selecciona la razón de edición especial.';
-  static const specifySpecialEditionNotesPrompt = 'Especifica el motivo de la edición especial.';
   static const numismaticDataTitlePrefix = 'Datos numismáticos: ';
   static const selectCurrencyPrompt = 'Selecciona una divisa.';
   static const specifyCurrencyLabel = 'Especificar divisa';
@@ -952,7 +944,7 @@ class AppStrings {
   static const numismaticEmissionOutlierFixedSuccess = 'Anomalía numismática corregida exitosamente.';
   static const fixCorrectCurrencyAction = 'Corregir a Divisa Canónica';
   static const fixCorrectMaterialAction = 'Corregir a Material Canónico';
-  static const fixSetSpecialEditionAction = 'Marcar Edición Especial';
+  static const fixSetMotifAction = 'Asignar Motivo';
   static const fixCorrectYearAction = 'Corregir Año de Acuñación';
   static const fixPickDenominationAction = 'Seleccionar Denominación Válida';
   static const correctNumismaticIncongruityTitle = 'Corregir Incongruencia Numismática';
@@ -1166,8 +1158,8 @@ class AppStrings {
       'Divisa $foundIso no válida para $country ($year). Esperada: $expectedIso';
   static String numismaticMaterialContradictionDesc(String foundMat, String expectedMat, String denom) =>
       'Material "$foundMat" incongruente con emisión para $denom. Esperado: "$expectedMat"';
-  static String numismaticSpecialEditionMismatchDesc(String denom, String reason) =>
-      'Emisión de $denom corresponde a "$reason" pero no está marcada';
+  static String numismaticMotifMismatchDesc(String denom, String motif) =>
+      'Emisión de $denom corresponde al motivo conmemorativo "$motif", pero no coincide';
   static String numismaticDenominationAnomalyDesc(String denom, String country, int year) =>
       'Denominación "$denom" no pertenece a las emisiones oficiales de $country ($year)';
   static String numismaticYearOutOfRangeDesc(int year, String country) =>
@@ -1633,10 +1625,6 @@ class AppStrings {
   static String propertyWithColon(String propertyName, String displayValue) => '$propertyName: $displayValue';
   static String countWithStatus(int count, String status) => '$count $status';
   static String ancestorPathWithSpace(String path) => '$path ';
-
-  // Special Edition Helpers
-  static String specialEditionWithReason(String reason) => '$specialEditionNotePrefix$reason';
-  static String specialEditionWithAdditionalNotes(String baseNote, String extraNotes) => '$baseNote ($extraNotes)';
 
   // Attachment Helpers
   static String scanReverseFileName(String speciesName) => '${scanReverseTitle}_$speciesName${AppTechnicalStrings.extJpg}';

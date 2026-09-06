@@ -36,8 +36,8 @@ void main() {
       final mat2 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
       expect(mat2, equals('Bimetálica'));
 
-      final special2 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
-      expect(special2, isNull);
+      final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
+      expect(motifs2, isEmpty);
     });
 
     test('Mexico 1947 Centenario infers Oro for 50 Pesos', () {
@@ -107,8 +107,8 @@ void main() {
       final matMxn2 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
       expect(matMxn2, equals('Bimetálica'));
 
-      final special2 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
-      expect(special2, isNull);
+      final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
+      expect(motifs2, isEmpty);
     });
 
     test('Brasil 2017 1 Real is standard circulation BRL bimetallic and not commemorative', () {
@@ -118,8 +118,8 @@ void main() {
       final mat1Real = NumismaticDataHelper.inferMaterial(country: 'Brasil', year: 2017, denomination: '1');
       expect(mat1Real, equals('Bimetálica'));
 
-      final special1Real = NumismaticDataHelper.checkSpecialEdition(country: 'Brasil', year: 2017, denomination: '1');
-      expect(special1Real, isNull);
+      final isCommemorative1Real = NumismaticDataHelper.isStrictlyCommemorative(country: 'Brasil', year: 2017, denomination: '1');
+      expect(isCommemorative1Real, isFalse);
     });
 
     test('Spain 1999 physical stamped year on Euro coins infers EUR and modern alloys', () {
@@ -134,24 +134,21 @@ void main() {
       expect(matEuro2, equals('Bimetálica'));
 
       // Standard circulating 2 Euro is not forced as commemorative
-      final special2Euro = NumismaticDataHelper.checkSpecialEdition(country: 'España', year: 2005, denomination: '2');
-      expect(special2Euro, isNull);
+      final isCommemorative2Euro = NumismaticDataHelper.isStrictlyCommemorative(country: 'España', year: 2005, denomination: '2');
+      expect(isCommemorative2Euro, isFalse);
 
-      // Spain 1989 2000 Pesetas is a commemorative plata coin
-      final special2000Ptas = NumismaticDataHelper.checkSpecialEdition(country: 'España', year: 1995, denomination: '2000');
-      expect(special2000Ptas, isNotNull);
-      expect(special2000Ptas!.isSpecial, isTrue);
+      // Spain 1995 2000 Pesetas is a commemorative plata coin
+      final isCommemorative2000Ptas = NumismaticDataHelper.isStrictlyCommemorative(country: 'España', year: 1995, denomination: '2000');
+      expect(isCommemorative2000Ptas, isTrue);
     });
 
     test('Modern commemorative editions for Mexico, Canada, and Colombia', () {
       // Mexico 2008 Bicentenario 5 Pesos and 2021 20 Pesos
-      final specialMex5 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 2008, denomination: '5');
-      expect(specialMex5, isNotNull);
-      expect(specialMex5!.isSpecial, isTrue);
+      final motifsMex5 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 2008, denomination: '5');
+      expect(motifsMex5, isNotEmpty);
 
-      final specialMex20 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 2021, denomination: '20');
-      expect(specialMex20, isNotNull);
-      expect(specialMex20!.isSpecial, isTrue);
+      final motifsMex20 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 2021, denomination: '20');
+      expect(motifsMex20, isNotEmpty);
 
       // Canada Loonie (1987+) and Toonie (1996+)
       final matLoonie = NumismaticDataHelper.inferMaterial(country: 'Canadá', year: 2000, denomination: '1');
@@ -283,7 +280,7 @@ void main() {
       expect(denomsFallback, equals(NumismaticDictionary.denominations));
 
       expect(NumismaticDataHelper.inferMaterial(country: null, year: null, denomination: '5'), isNull);
-      expect(NumismaticDataHelper.checkSpecialEdition(country: null, year: null, denomination: '5'), isNull);
+      expect(NumismaticDataHelper.getCommemorativeMotifs(country: null, year: null, denomination: '5'), isEmpty);
     });
 
     test('1. USA \$1 2000+ infers Clad Manganese Brass and allows canonical composition', () {

@@ -221,16 +221,16 @@ class NumismaticMatrix {
     return result;
   }
 
-  /// Checks if (country, year, currency, denomination, isBanknote) is a known commemorative or special edition emission.
-  static ({bool isSpecial, String? reason, List<String> validMotifs})? checkSpecialEdition({
+  /// Checks if (country, year, currency, denomination, isBanknote) is strictly a commemorative emission.
+  static bool isStrictlyCommemorative({
     String? country,
     int? year,
     String? currencyCode,
     String? denomination,
     bool isBanknote = false,
   }) {
-    if (country == null || year == null || denomination == null) return null;
-    if (denomination == AppStrings.otherSpecifyOption) return null;
+    if (country == null || year == null || denomination == null) return false;
+    if (denomination == AppStrings.otherSpecifyOption) return false;
 
     final rule = findRule(
       country,
@@ -239,18 +239,8 @@ class NumismaticMatrix {
       denomination: denomination,
       isBanknote: isBanknote,
     );
-    if (rule == null) return null;
+    if (rule == null) return false;
 
-    final cleanDenom = denomination.trim();
-    if (rule.isCommemorativeDenomination(cleanDenom)) {
-      final motifs = rule.getCommemorativeMotifsForDenomination(cleanDenom);
-      return (
-        isSpecial: true,
-        reason: motifs.isNotEmpty ? motifs.first : (rule.defaultCommemorativeReason ?? AppTechnicalNumismatics.specialEditionReasons.first),
-        validMotifs: motifs,
-      );
-    }
-
-    return null;
+    return rule.isCommemorativeDenomination(denomination.trim());
   }
 }
