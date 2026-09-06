@@ -286,7 +286,7 @@ void main() {
       expect(NumismaticDataHelper.checkSpecialEdition(country: null, year: null, denomination: '5'), isNull);
     });
 
-    test('1. USA $1 2000+ infers Clad Manganese Brass and allows canonical composition', () {
+    test('1. USA \$1 2000+ infers Clad Manganese Brass and allows canonical composition', () {
       final inferredMat = NumismaticDataHelper.inferMaterial(
         country: 'Estados Unidos',
         year: 2000,
@@ -296,7 +296,7 @@ void main() {
       expect(inferredMat, equals('Latón de manganeso sobre núcleo de cobre'));
 
       final validMats = NumismaticDataHelper.getValidMaterialsForCountry(
-        'Estados Unidos',
+        country: 'Estados Unidos',
         year: 2000,
         currencyCode: 'USD',
         denomination: '1',
@@ -315,7 +315,7 @@ void main() {
       expect(inferredMat, equals('Papel de algodón'));
 
       final validMats = NumismaticDataHelper.getValidMaterialsForCountry(
-        'México',
+        country: 'México',
         year: 2019,
         currencyCode: 'MXN',
         denomination: '100',
@@ -326,7 +326,7 @@ void main() {
 
     test('3. Mexico 50 MXP 1988 transition year allows both Cuproníquel and Acero inoxidable', () {
       final validMats1988 = NumismaticDataHelper.getValidMaterialsForCountry(
-        'México',
+        country: 'México',
         year: 1988,
         currencyCode: 'MXP',
         denomination: '50',

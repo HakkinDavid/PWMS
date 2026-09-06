@@ -423,6 +423,7 @@ class NumismaticParser {
     String? country;
     bool? isSpecialEdition;
     String? specialReason;
+    String? motif;
 
     for (final mag in entity.magnitudes) {
       final pName = mag.propertyName.trim().toLowerCase();

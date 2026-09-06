@@ -6,6 +6,8 @@ import 'package:platinum_world_management_system/src/core/database/app_database.
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_domain_rules.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
@@ -576,7 +578,7 @@ void main() {
       final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
       expect(outliers.first.type, equals(NumismaticEmissionOutlierType.specialEditionMismatch));
-      expect(outliers.first.expectedValue, equals('Conmemorativa'));
+      expect(outliers.first.expectedValue, equals('Ignacio López Rayón'));
 
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
         entityRepo: entityRepo,
@@ -589,7 +591,7 @@ void main() {
       expect(reloadedSpecial.stringValue, equals('true'));
 
       final reloadedReason = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Razón de edición especial');
-      expect(reloadedReason.stringValue, equals('Conmemorativa'));
+      expect(reloadedReason.stringValue, equals('Ignacio López Rayón'));
     });
 
     test('repairAndStandardizeImportedData groups singular and plural pieces into single canonical subspecies', () async {
@@ -794,7 +796,7 @@ void main() {
 
       final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
-      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.motifContradiction));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.specialEditionMismatch));
 
       // Repair with canonical motif
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
@@ -802,7 +804,7 @@ void main() {
         catalogRepo: catalogRepo,
         instance: updatedInstance,
         outlier: outliers.first,
-        replacementValue: '175 Aniversario de la Independencia',
+        customValue: '175 Aniversario de la Independencia',
       );
 
       final reloadedMotif = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');

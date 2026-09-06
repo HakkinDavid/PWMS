@@ -9,6 +9,9 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/core/database/data_migration_post_processor.dart';
 import 'package:platinum_world_management_system/src/core/database/database_backup_service.dart';
+import 'package:uuid/uuid.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_backup_post_processor.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_registry.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
@@ -581,7 +584,13 @@ void main() {
       final entRepo = EntityRepository(db);
 
       final species = await catRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
-      final sub = await catRepo.getOrCreateSubspecies(species.id, '200 Pesos Mexicanos Antiguos - México (1985)');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: '200 Pesos Mexicanos Antiguos - México (1985)',
+        createdAt: DateTime.now(),
+      );
+      await catRepo.saveSubspecies(sub);
 
       final instance = await entRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
