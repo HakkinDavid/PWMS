@@ -29,6 +29,7 @@ class AppWheelPicker<T> extends StatefulWidget {
     String title = AppStrings.selectOptionPrompt,
   }) {
     if (items.isEmpty) return Future.value(null);
+    if (items.length == 1) return Future.value(WheelPickerResult<T>(items.first));
     return showModalBottomSheet<WheelPickerResult<T>>(
       context: context,
       useRootNavigator: true,
