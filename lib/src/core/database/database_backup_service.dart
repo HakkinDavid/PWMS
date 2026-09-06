@@ -20,10 +20,7 @@ class DatabaseBackupService {
   final List<IDataMigrationPostProcessor> _postProcessors;
 
   DatabaseBackupService(this._db, [List<IDataMigrationPostProcessor>? postProcessors])
-      : _postProcessors = postProcessors ?? const [
-          NumismaticBackupPostProcessor(),
-          HistoryMigrationPostProcessor(),
-        ];
+      : _postProcessors = postProcessors ?? DataMigrationRegistry.defaultPostProcessors;
 
   /// Sanitiza rutas de archivos para evitar almacenar rutas absolutas locales del SO (ej. Android)
   /// Si es una URL externa (http/https), la preserva intacta.
@@ -602,10 +599,18 @@ class DatabaseBackupService {
     // 2. Reparar y estandarizar speciesMagnitudes
     final speciesMagnitudes = (tables[AppTechnicalDb.tableSpeciesMagnitudes] as List? ?? []);
     final List<Map<String, dynamic>> updatedSM = [];
+    final Set<String> seenSmKeys = {};
     for (final item in speciesMagnitudes) {
       if (item is Map) {
         final m = Map<String, dynamic>.from(item);
+        final specId = m[AppTechnicalJsonKeys.keySpeciesId]?.toString() ?? '';
         final propName = (m[AppTechnicalJsonKeys.keyPropertyName] ?? AppTechnicalStrings.empty).toString().trim();
+        final dedupKey = '$specId:${propName.toLowerCase()}';
+        if (seenSmKeys.contains(dedupKey)) {
+          continue;
+        }
+        seenSmKeys.add(dedupKey);
+
         var dt = m[AppTechnicalJsonKeys.keyDataType]?.toString();
 
         if (dt == null || dt.isEmpty || dt == AppTechnicalStrings.datatypeRealLower) {
@@ -967,9 +972,7 @@ class DatabaseBackupService {
     });
 
     // Execute decoupled migration post-processors (e.g. Numismatic standardization, History backfill)
-    for (final processor in _postProcessors) {
-      await processor.processAfterImport(_db);
-    }
+    await DataMigrationRegistry.runAll(_db, _postProcessors);
 
     // Log backup restore event
     int totalImportedRecords = 0;

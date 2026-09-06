@@ -14,8 +14,13 @@ class HistoryMigrationPostProcessor implements IDataMigrationPostProcessor {
   const HistoryMigrationPostProcessor();
 
   @override
-  Future<void> processAfterImport(AppDatabase db) async {
+  Future<void> process(AppDatabase db) async {
     await backfillMissingHistory(db);
+  }
+
+  @override
+  Future<void> processAfterImport(AppDatabase db) async {
+    await process(db);
   }
 
   /// Reconstructs missing creation events for existing records using their original `createdAt` timestamps.
