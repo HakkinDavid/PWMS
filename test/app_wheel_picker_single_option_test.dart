@@ -12,10 +12,12 @@ import 'package:platinum_world_management_system/src/core/database/app_database.
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_wheel_picker.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_domain_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/governance_audit_rules.dart';
 import 'package:platinum_world_management_system/src/features/control_center/presentation/control_center_screen.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform
@@ -277,6 +279,76 @@ void main() {
 
       // Allow AppToast timer to complete
       await tester.pump(const Duration(seconds: 4));
+    });
+  });
+
+  group('CCC Text Formatting for Multiple vs Single Options', () {
+    final coinSpecies = CatalogItem(
+      id: 'sp_coin',
+      name: 'Moneda Numismática',
+      type: 'Moneda',
+      createdAt: DateTime.now(),
+    );
+
+    test('When multiple materials are valid, text does not say "Esperado" and uses magnitude not among expected phrasing', () {
+      // Mexico 1988 50 Pesos has both Cuproníquel and Acero inoxidable
+      final instance = WorldEntity(
+        id: 'inst_mex_50',
+        speciesId: 'sp_coin',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: [
+          InstanceMagnitude(id: '1', instanceId: 'inst_mex_50', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+          InstanceMagnitude(id: '2', instanceId: 'inst_mex_50', propertyName: 'Acuñación', stringValue: '1988', dataType: 'string'),
+          InstanceMagnitude(id: '3', instanceId: 'inst_mex_50', propertyName: 'Divisa', stringValue: 'MXP', dataType: 'string'),
+          InstanceMagnitude(id: '4', instanceId: 'inst_mex_50', propertyName: 'Valor nominal', stringValue: '50', dataType: 'string'),
+          InstanceMagnitude(id: '5', instanceId: 'inst_mex_50', propertyName: 'Material', stringValue: 'Oro', dataType: 'string'),
+        ],
+      );
+
+      final outliers = NumismaticDomainRules.checkEmissionOutliers(
+        instance: instance,
+        species: coinSpecies,
+      );
+
+      expect(outliers.length, 1);
+      final matOutlier = outliers.first;
+      expect(matOutlier.type, NumismaticEmissionOutlierType.materialContradiction);
+
+      // Must NOT contain "Esperado" or "Esperada"
+      expect(matOutlier.description.contains('Esperado'), isFalse);
+      expect(matOutlier.description.contains('Esperada'), isFalse);
+      // Must contain the expected phrasing
+      expect(matOutlier.description, 'La magnitud Material no posee un valor de los esperados para este espécimen');
+    });
+
+    test('When only 1 material is valid, text specifies the single expected material', () {
+      // Mexico 1980 5 Pesos has only Cuproníquel
+      final instance = WorldEntity(
+        id: 'inst_mex_5',
+        speciesId: 'sp_coin',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: [
+          InstanceMagnitude(id: '1', instanceId: 'inst_mex_5', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+          InstanceMagnitude(id: '2', instanceId: 'inst_mex_5', propertyName: 'Acuñación', stringValue: '1980', dataType: 'string'),
+          InstanceMagnitude(id: '3', instanceId: 'inst_mex_5', propertyName: 'Divisa', stringValue: 'MXP', dataType: 'string'),
+          InstanceMagnitude(id: '4', instanceId: 'inst_mex_5', propertyName: 'Valor nominal', stringValue: '5', dataType: 'string'),
+          InstanceMagnitude(id: '5', instanceId: 'inst_mex_5', propertyName: 'Material', stringValue: 'Oro', dataType: 'string'),
+        ],
+      );
+
+      final outliers = NumismaticDomainRules.checkEmissionOutliers(
+        instance: instance,
+        species: coinSpecies,
+      );
+
+      expect(outliers.length, 1);
+      final matOutlier = outliers.first;
+      expect(matOutlier.type, NumismaticEmissionOutlierType.materialContradiction);
+
+      // Should contain "Esperado:" for 1 option
+      expect(matOutlier.description.contains('Esperado: "Cuproníquel"'), isTrue);
     });
   });
 }

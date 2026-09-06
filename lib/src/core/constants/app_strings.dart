@@ -1154,6 +1154,8 @@ class AppStrings {
       '$displayName • $anomalyDescription';
   static String numismaticEmissionOutlierQuestion(String anomalyDetail, String suggestedFix) =>
       '$anomalyDetail ¿Deseas aplicar la corrección recomendada: $suggestedFix?';
+  static String numismaticMagnitudeNotAmongExpectedDesc(String magnitudeName) =>
+      'La magnitud $magnitudeName no posee un valor de los esperados para este espécimen';
   static String numismaticCurrencyAnachronismDesc(String foundIso, String expectedIso, int year, String country) =>
       'Divisa $foundIso no válida para $country ($year). Esperada: $expectedIso';
   static String numismaticMaterialContradictionDesc(String foundMat, String expectedMat, String denom) =>

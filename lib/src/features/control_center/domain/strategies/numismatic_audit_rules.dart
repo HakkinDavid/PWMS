@@ -554,7 +554,33 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
               onFix: (ctx, ref) async {
                 String? customValue;
 
-                if (outlier.type == NumismaticEmissionOutlierType.denominationAnomaly) {
+                if (outlier.type == NumismaticEmissionOutlierType.currencyAnachronism) {
+                  final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+                  final yearInt = attrs.year != null ? int.tryParse(attrs.year!) : null;
+                  final isBanknote = NumismaticDataHelper.isBanknotePiece(
+                    species: species,
+                    instance: entity,
+                    material: attrs.material,
+                  );
+                  final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(
+                    attrs.country,
+                    year: yearInt,
+                    isBanknote: isBanknote,
+                  ).where((c) => c != AppStrings.otherSpecifyOption).toList();
+
+                  if (availableCurrencies.isNotEmpty) {
+                    customValue = await AppWheelPicker.show<String>(
+                      ctx,
+                      items: availableCurrencies,
+                      initialValue: availableCurrencies.first,
+                      labelBuilder: (c) => c,
+                      title: AppStrings.currencyPropertyName,
+                    );
+                    if (customValue == null || customValue.isEmpty) {
+                      return false;
+                    }
+                  }
+                } else if (outlier.type == NumismaticEmissionOutlierType.denominationAnomaly) {
                   final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
                   final yearInt = attrs.year != null ? int.tryParse(attrs.year!) : null;
                   final isBanknote = NumismaticDataHelper.isBanknotePiece(
