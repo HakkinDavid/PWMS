@@ -50,7 +50,7 @@ void main() {
       expect(NumismaticParser.resolveMaterial('billon'), 'Billón (Vellón)');
       expect(NumismaticParser.resolveMaterial('german silver'), 'Alpaca (Plata alemana)');
       expect(NumismaticParser.resolveMaterial('nordic gold'), 'Oro nórdico');
-      expect(NumismaticParser.resolveMaterial('porcelain'), 'Porcelana / Cerámica');
+      expect(NumismaticParser.resolveMaterial('porcelain'), 'Porcelana');
 
       final title = NumismaticParser.buildSubspeciesName(
         faceValueNumber: 10,

@@ -4085,59 +4085,87 @@ abstract final class AppTechnicalNumismatics {
   };
 
   static const List<NumismaticEmissionRuleData> emissionRules = [
-    // 1. México & Virreinato de Nueva España
+    // =========================================================================
+    // 1. MÉXICO Y EMISORES HISTÓRICOS MEXICANOS
+    // =========================================================================
+
+    // 1.1 Virreinato de Nueva España (1536–1821)
+    // Ref: Banco de México - Historia de la moneda colonial novohispana:
+    // https://www.banxico.org.mx/billetes-y-monedas/virreinato-historia-moneda-b.html
+    // Ref: Numista - Colonial Mexico (1535-1821):
+    // https://en.numista.com/catalogue/mexico-colonial-1.html
     NumismaticEmissionRuleData(
       country: 'Virreinato de Nueva España',
-      minYear: 1535,
+      minYear: 1536,
       maxYear: 1821,
       validCurrencies: ['MXR', 'REAL', 'MXE', 'ESC', 'MRV'],
       defaultCurrency: 'MXR',
       denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
       denominationMaterials: {
-        '1/16': 'Cobre',
-        '1/8': 'Cobre',
-        '1/4': 'Plata',
-        '1/2': 'Plata',
-        '1': 'Plata',
-        '2': 'Plata',
-        '4': 'Plata',
-        '8': 'Plata',
+        '1/16': 'Cobre',  // Tlaco colonial novohispano (1/16 de real)
+        '1/8': 'Cobre',   // Octavo de real novohispano en cobre
+        '1/4': 'Plata',   // Cuartilla de real (Carlos y Juana / Fernando VII)
+        '1/2': 'Plata',   // Medio real de plata (Macuquina, Columnario, De Busto)
+        '1': 'Plata',     // 1 real de plata
+        '2': 'Plata',     // 2 reales de plata / Peseta novohispana
+        '4': 'Plata',     // 4 reales de plata / Tostón
+        '8': 'Plata',     // 8 reales de plata / Real de a 8 / Peso Fuerte
       },
     ),
+
+    // 1.2 Primer Imperio Mexicano - Agustín de Iturbide (1822–1823)
+    // Ref: Numista - First Mexican Empire (1821-1823):
+    // https://en.numista.com/catalogue/mexico-first-empire-1.html
+    // Ref: Banco de México - Monedas del Primer Imperio:
+    // https://www.banxico.org.mx/billetes-y-monedas/primer-imperio-mexicano.html
     NumismaticEmissionRuleData(
       country: 'Imperio Mexicano (Primer y Segundo Imperio)',
-      minYear: 1821,
+      minYear: 1822,
       maxYear: 1823,
       validCurrencies: ['MXR', 'MXE'],
       defaultCurrency: 'MXR',
-      denominations: ['1/8', '1/4', '1/2', '1', '2', '8'],
+      denominations: ['1/8', '1/4', '1/2', '1', '2', '4', '8'],
       denominationMaterials: {
-        '1/8': 'Cobre',
-        '1/4': 'Plata',
-        '1/2': 'Plata',
-        '1': 'Plata',
-        '2': 'Plata',
-        '8': 'Plata',
+        '1/8': 'Cobre',   // Octavo de real de Iturbide
+        '1/4': 'Cobre',   // Cuartilla provisional de cobre
+        '1/2': 'Plata',   // Medio real de plata de Iturbide
+        '1': 'Plata',     // 1 real de plata de Iturbide
+        '2': 'Plata',     // 2 reales de plata de Iturbide
+        '4': 'Oro',       // 4 escudos de oro de Iturbide
+        '8': 'Plata',     // 8 reales de plata de Iturbide (y 8 escudos de oro)
       },
     ),
+
+    // 1.3 Segundo Imperio Mexicano - Maximiliano de Habsburgo (1864–1867)
+    // Ref: Numista - Second Mexican Empire (1864-1867):
+    // https://en.numista.com/catalogue/mexico-second-empire-1.html
+    // Ref: Banco de México - Monedas del Segundo Imperio:
+    // https://www.banxico.org.mx/billetes-y-monedas/segundo-imperio-mexicano.html
     NumismaticEmissionRuleData(
       country: 'Imperio Mexicano (Primer y Segundo Imperio)',
       minYear: 1864,
       maxYear: 1867,
       validCurrencies: ['MXP', 'MXR'],
       defaultCurrency: 'MXP',
-      denominations: ['1', '5', '10', '50', '20'],
+      denominations: ['0.01', '0.05', '0.10', '0.50', '1', '20', '1', '5', '10', '50'],
       denominationMaterials: {
-        '1': 'Cobre',
-        '5': 'Plata',
-        '10': 'Plata',
-        '50': 'Plata',
-        '20': 'Oro',
+        '0.01': 'Cobre',  // 1 centavo de cobre (1864-1867)
+        '0.05': 'Plata',  // 5 centavos de plata (1866-1867)
+        '0.10': 'Plata',  // 10 centavos de plata (1866-1867)
+        '0.50': 'Plata',  // 50 centavos de plata (1866-1867)
+        '1': 'Plata',     // 1 peso de plata de Maximiliano (1866-1867)
+        '5': 'Plata',     // 5 centavos
+        '10': 'Plata',    // 10 centavos
+        '50': 'Plata',    // 50 centavos
+        '20': 'Oro',      // 20 pesos de oro de Maximiliano (1866)
       },
     ),
+
+    // 1.4 México - Período Virreinal novohispano (1536–1821)
+    // Ref: Numista - Mexico Colonial: https://en.numista.com/catalogue/mexico-colonial-1.html
     NumismaticEmissionRuleData(
       country: 'México',
-      minYear: 1535,
+      minYear: 1536,
       maxYear: 1821,
       validCurrencies: ['MXR', 'MXE', 'REAL', 'ESC'],
       defaultCurrency: 'MXR',
@@ -4153,118 +4181,186 @@ abstract final class AppTechnicalNumismatics {
         '8': 'Plata',
       },
     ),
+
+    // 1.5 México - Primer Imperio (1822–1823)
+    // Ref: Numista - First Mexican Empire: https://en.numista.com/catalogue/mexico-first-empire-1.html
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 1822,
       maxYear: 1823,
       validCurrencies: ['MXR', 'MXE'],
       defaultCurrency: 'MXR',
-      denominations: ['1/8', '1/4', '1/2', '1', '2', '8'],
+      denominations: ['1/8', '1/4', '1/2', '1', '2', '4', '8'],
       denominationMaterials: {
-        '1/8': 'Cobre',
-        '1/4': 'Plata',
-        '1/2': 'Plata',
-        '1': 'Plata',
-        '2': 'Plata',
-        '8': 'Plata',
-      },
-    ),
-    NumismaticEmissionRuleData(
-      country: 'México',
-      minYear: 1824,
-      maxYear: 1863,
-      validCurrencies: ['MXR', 'MXE'],
-      defaultCurrency: 'MXR',
-      denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
-      denominationMaterials: {
-        '1/16': 'Cobre',
         '1/8': 'Cobre',
         '1/4': 'Cobre',
         '1/2': 'Plata',
         '1': 'Plata',
         '2': 'Plata',
-        '4': 'Plata',
+        '4': 'Oro',
         '8': 'Plata',
       },
     ),
+
+    // 1.6 México - Primera República y República Centralista (1823–1863)
+    // Ref: Numista - Mexican Republic - First Republic (1823-1863):
+    // https://en.numista.com/catalogue/mexico-first-republic-1.html
+    // Ref: Banco de México - Sistema de reales republicanos (Águila de Perfil y Resplandor):
+    // https://www.banxico.org.mx/billetes-y-monedas/primeras-emisiones-republican.html
+    NumismaticEmissionRuleData(
+      country: 'México',
+      minYear: 1823,
+      maxYear: 1863,
+      validCurrencies: ['MXR', 'MXE'],
+      defaultCurrency: 'MXR',
+      denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/16': 'Cobre',  // Tlaco republicano (1/16 real)
+        '1/8': 'Cobre',   // Octavo republicano (1/8 real)
+        '1/4': 'Cobre',   // Cuartilla republicana de cobre (y plata)
+        '1/2': 'Plata',   // Medio real de plata republicano
+        '1': 'Plata',     // 1 real de plata republicano
+        '2': 'Plata',     // 2 reales de plata republicano
+        '4': 'Plata',     // 4 reales de plata republicano
+        '8': 'Plata',     // 8 reales de plata Resplandor (Cap and Rays)
+      },
+    ),
+
+    // 1.7 México - Segundo Imperio (1864–1867)
+    // Ref: Numista - Second Mexican Empire: https://en.numista.com/catalogue/mexico-second-empire-1.html
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 1864,
       maxYear: 1867,
       validCurrencies: ['MXP', 'MXR'],
       defaultCurrency: 'MXP',
-      denominations: ['1', '5', '10', '50', '20'],
+      denominations: ['0.01', '0.05', '0.10', '0.50', '1', '20', '1', '5', '10', '50'],
       denominationMaterials: {
-        '1': 'Cobre',
+        '0.01': 'Cobre',
+        '0.05': 'Plata',
+        '0.10': 'Plata',
+        '0.50': 'Plata',
+        '1': 'Plata',
         '5': 'Plata',
         '10': 'Plata',
         '50': 'Plata',
         '20': 'Oro',
       },
     ),
+
+    // 1.8 México - República Restaurada y Porfiriato (Balanza y Resplandor Decimal 1868–1904)
+    // Ref: Numista - Republic of Mexico - Decimal Pesos (1868-1905):
+    // https://en.numista.com/catalogue/mexico-republic-decimal-1.html
+    // Ref: Banco de México - Historia del Peso Decimal:
+    // https://www.banxico.org.mx/billetes-y-monedas/republica-restaurada-porfiri.html
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 1868,
       maxYear: 1904,
-      validCurrencies: ['MXP', 'MXE'],
+      validCurrencies: ['MXP', 'MXE', 'MXR'],
       defaultCurrency: 'MXP',
-      denominations: ['1', '2', '5', '10', '20', '25', '50', '100'],
+      denominations: [
+        '0.01', '0.02', '0.05', '0.10', '0.20', '0.25', '0.50', '1', '2.5', '5', '10', '20',
+        '1', '2', '5', '10', '20', '25', '50', '100', '8',
+      ],
       denominationMaterials: {
-        '1': 'Cobre',
-        '2': 'Cobre',
-        '5': 'Níquel',
-        '10': 'Plata',
-        '20': 'Plata',
-        '25': 'Plata',
-        '50': 'Plata',
-        '100': 'Plata',
+        '0.01': 'Cobre',  // 1 centavo de cobre/bronce
+        '0.02': 'Cobre',  // 2 centavos de cobre
+        '0.05': 'Plata',  // 5 centavos de plata (y níquel 1882-1883)
+        '0.10': 'Plata',  // 10 centavos de plata
+        '0.20': 'Plata',  // 20 centavos de plata
+        '0.25': 'Plata',  // 25 centavos de plata Balanza
+        '0.50': 'Plata',  // 50 centavos de plata Balanza / Resplandor
+        '1': 'Plata',     // 1 peso Balanza (1869-1873) y Fuerte Resplandor (1873-1904)
+        '2': 'Cobre',     // 2 centavos
+        '2.5': 'Oro',     // 2 1/2 pesos de oro
+        '5': 'Oro',       // 5 pesos de oro (Hidalgo / Escudo)
+        '10': 'Oro',      // 10 pesos de oro
+        '20': 'Oro',      // 20 pesos de oro
+        '25': 'Plata',    // 25 centavos
+        '50': 'Plata',    // 50 centavos
+        '100': 'Plata',   // 100 centavos / 1 Peso
+        '8': 'Plata',     // 8 Reales Resplandor (coexistente hasta 1897)
       },
     ),
+
+    // 1.9 México - Siglo XX (Reforma Monetaria de 1905 hasta 1969)
+    // Ref: Numista - United Mexican States (1905-1969):
+    // https://en.numista.com/catalogue/mexico-united-states-1905-1.html
+    // Ref: Banco de México - Monedas de plata y oro del siglo XX:
+    // https://www.banxico.org.mx/billetes-y-monedas/monedas-plata-oro-siglo-xx.html
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 1905,
       maxYear: 1969,
       validCurrencies: ['MXP'],
       defaultCurrency: 'MXP',
-      denominations: ['1', '2', '5', '10', '20', '25', '50', '100'],
+      denominations: [
+        '0.01', '0.02', '0.05', '0.10', '0.20', '0.25', '0.50', '1', '2', '2.5', '5', '10', '20', '25', '50', '100',
+        '1', '2', '5', '10', '20', '25', '50', '100',
+      ],
       denominationMaterials: {
-        '1': 'Plata',
-        '2': 'Oro',
-        '5': 'Plata',
-        '10': 'Plata',
-        '20': 'Bronce',
-        '25': 'Plata',
-        '50': 'Oro',
+        '0.01': 'Bronce',       // 1 centavo de bronce
+        '0.02': 'Bronce',       // 2 centavos de bronce (1905-1941)
+        '0.05': 'Bronce',       // 5 centavos bronce Josefita (1942-1955) y latón (1954-1969)
+        '0.10': 'Latón',        // 10 centavos latón / bronce / cuproníquel
+        '0.20': 'Bronce',       // 20 centavos Pirámide de Teotihuacán de bronce (1943-1971)
+        '0.25': 'Cuproníquel',  // 25 centavos Balanza de cuproníquel (1950-1953)
+        '0.50': 'Cuproníquel',  // 50 centavos Cuauhtémoc cuproníquel (1964-1969) / plata
+        '1': 'Plata',           // 1 peso plata Resplandor / Morelos Tepalcate (.100)
+        '2': 'Oro',             // 2 pesos de oro (1919-1948)
+        '2.5': 'Oro',           // 2.5 pesos de oro Hidalgo (1918-1948)
+        '5': 'Plata',           // 5 pesos plata (Cuauhtémoc, Hidalgo, Ferrocarril, Constitución, Carranza)
+        '10': 'Plata',          // 10 pesos plata (Hidalgo, Constitución, Madero)
+        '20': 'Oro',            // 20 pesos de oro Azteca (1917-1959)
+        '25': 'Plata',          // 25 pesos de plata conmemorativa Juegos Olímpicos México 68
+        '50': 'Oro',            // 50 pesos de oro Centenario (1921-1947)
         '100': 'Plata',
       },
-      commemorativeDenominations: {'25'},
+      commemorativeDenominations: {'5', '10', '25'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
+
+    // 1.10 México - Siglo XX (Devaluación e Inflación 1970–1992)
+    // Ref: Banco de México - Monedas metálicas desmonetizadas de la unidad anterior (Pesos):
+    // https://www.banxico.org.mx/billetes-y-monedas/monedas-desmonetizadas-unida.html
+    // Ref: Numista - Mexico (1970-1992):
+    // https://en.numista.com/catalogue/mexico-united-states-1905-2.html
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 1970,
       maxYear: 1992,
       validCurrencies: ['MXP'],
       defaultCurrency: 'MXP',
-      denominations: ['1', '5', '10', '20', '50', '100', '200', '500', '1000', '5000'],
+      denominations: ['0.05', '0.10', '0.20', '0.50', '1', '5', '10', '20', '50', '100', '200', '500', '1000', '5000'],
       denominationMaterials: {
-        '1': 'Cuproníquel',
-        '5': 'Cuproníquel',
-        '10': 'Cuproníquel',
-        '20': 'Cuproníquel',
-        '50': 'Cuproníquel',
-        '100': 'Bronce de aluminio',
-        '200': 'Cuproníquel',
-        '500': 'Cuproníquel',
-        '1000': 'Bronce de aluminio',
-        '5000': 'Cuproníquel',
+        '0.05': 'Latón',               // 5 centavos Josefita latón
+        '0.10': 'Cuproníquel',         // 10 centavos Mazorca cuproníquel
+        '0.20': 'Bronce',              // 20 centavos Madero bronce/cuproníquel
+        '0.50': 'Cuproníquel',         // 50 centavos Cuauhtémoc cuproníquel
+        '1': 'Cuproníquel',            // 1 peso Morelos cuproníquel (1970-1983) / acero (1984-1987)
+        '5': 'Cuproníquel',            // 5 pesos Vicente Guerrero (1971-1978) / Quetzalcóatl (1980-1985)
+        '10': 'Cuproníquel',           // 10 pesos Hidalgo heptagonal (1974-1985)
+        '20': 'Cuproníquel',           // 20 pesos Cultura Maya (1980-1984) / Latón Victoria (1985-1990)
+        '50': 'Cuproníquel',           // 50 pesos Coyolxauhqui (1982-1984) / Acero Juárez (1984-1992)
+        '100': 'Bronce de aluminio',   // 100 pesos Venustiano Carranza (1984-1992)
+        '200': 'Cuproníquel',          // 200 pesos conmemorativa 175 Aniv Independencia/75 Aniv Revolución (1985), Mundial 86
+        '500': 'Cuproníquel',          // 500 pesos Francisco I. Madero (1986-1992)
+        '1000': 'Bronce de aluminio',  // 1000 pesos Sor Juana Inés de la Cruz (1988-1992)
+        '5000': 'Cuproníquel',         // 5000 pesos Cincuentenario Expropiación Petrolera (1988)
       },
-      commemorativeDenominations: {'200'},
+      commemorativeDenominations: {'200', '5000'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
+
+    // 1.11 México - Nuevos Pesos (N$ grabados físicamente 1992–1995)
+    // Ref: Banco de México - Familia B (Nuevos Pesos en proceso de retiro):
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
+    // Ref: Numista - Mexico Nuevos Pesos (1992-1995):
+    // https://en.numista.com/catalogue/mexico-united-states-1905-3.html
     NumismaticEmissionRuleData(
       country: 'México',
-      minYear: 1993,
+      minYear: 1992,
       maxYear: 1995,
       validCurrencies: ['MXN'],
       defaultCurrency: 'MXN',
@@ -4274,40 +4370,57 @@ abstract final class AppTechnicalNumismatics {
         '0.10': 'Acero inoxidable',
         '0.20': 'Bronce de aluminio',
         '0.50': 'Bronce de aluminio',
-        '1': 'Bimetálica',
-        '2': 'Bimetálica',
-        '5': 'Bimetálica',
-        '10': 'Bimetálica',
-        '20': 'Bimetálica',
-        '50': 'Bimetálica',
+        '1': 'Bimetálica',  // Centro bronce-aluminio, anillo acero inoxidable
+        '2': 'Bimetálica',  // Centro bronce-aluminio, anillo acero inoxidable
+        '5': 'Bimetálica',  // Centro bronce-aluminio, anillo acero inoxidable
+        '10': 'Bimetálica', // Centro plata .925, anillo bronce de aluminio (Piedra del Sol)
+        '20': 'Bimetálica', // Centro plata .925, anillo bronce de aluminio (Miguel Hidalgo)
+        '50': 'Bimetálica', // Centro plata .925, anillo bronce de aluminio (Niños Héroes)
       },
       commemorativeDenominations: {'0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50'},
       defaultCommemorativeReason: 'Emisión de cambio de régimen',
     ),
+
+    // 1.12 México - Pesos Modernos (Familia C, C1 y D grabados físicamente 1996–presente)
+    // Ref: Banco de México - Familia C y C1 en circulación:
+    // https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
+    // Ref: Banco de México - Monedas conmemorativas de 20 pesos Familia C y C1:
+    // https://www.banxico.org.mx/billetes-y-monedas/monedas-20-pesos-conmemorati.html
+    // Ref: Numista - Mexico Modern Pesos (1996-date):
+    // https://en.numista.com/catalogue/mexico-united-states-1905-4.html
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 1996,
       maxYear: 2100,
       validCurrencies: ['MXN'],
       defaultCurrency: 'MXN',
-      denominations: ['0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100'],
+      denominations: ['0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100'],
       denominationMaterials: {
+        '0.05': 'Acero inoxidable',
         '0.10': 'Acero inoxidable',
-        '0.20': 'Bronce de aluminio',
-        '0.50': 'Bronce de aluminio',
-        '1': 'Bimetálica',
-        '2': 'Bimetálica',
-        '5': 'Bimetálica',
-        '10': 'Bimetálica',
-        '20': 'Bimetálica',
+        '0.20': 'Acero inoxidable', // Bronce de aluminio (1996-2009) / Acero inoxidable (2009+)
+        '0.50': 'Acero inoxidable', // Bronce de aluminio (1996-2009) / Acero inoxidable (2009+)
+        '1': 'Bimetálica',          // Centro bronce-aluminio, anillo acero inoxidable
+        '2': 'Bimetálica',          // Centro bronce-aluminio, anillo acero inoxidable
+        '5': 'Bimetálica',          // Centro bronce-aluminio, anillo acero inoxidable (y conmemorativas 2008-2010)
+        '10': 'Bimetálica',         // Centro alpaca plateada, anillo bronce-aluminio
+        '20': 'Bimetálica',         // Centro alpaca plateada, anillo bronce-aluminio (Familia C y C1 dodecagonal)
         '50': 'Bimetálica',
-        '100': 'Bimetálica',
+        '100': 'Bimetálica',        // Centro plata .925, anillo bronce de aluminio (Estados de la República 2003-2007)
       },
       commemorativeDenominations: {'5', '20', '100'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 2. Estados Unidos
+    // =========================================================================
+    // 2. ESTADOS UNIDOS DE AMÉRICA
+    // =========================================================================
+
+    // 2.1 Estados Unidos - Período Continental y Pre-Federal (1775–1791)
+    // Ref: Numista - United States - Pre-Federal (1776-1791):
+    // https://en.numista.com/catalogue/united-states-pre-federal-1.html
+    // Ref: US Mint - History of the US Mint:
+    // https://www.usmint.gov/learn/history/overview-history-of-the-us-mint
     NumismaticEmissionRuleData(
       country: 'Estados Unidos',
       minYear: 1775,
@@ -4316,31 +4429,53 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'USC',
       denominations: ['1/6', '1/3', '1/2', '1', '2', '3', '4', '5', '8', '20'],
       denominationMaterials: {
-        '1': 'Plata',
-        '8': 'Plata',
+        '1': 'Plata', // Continental Dollar (1776 plata/peltre/latón)
+        '8': 'Plata', // Spanish Milled Dollar (8 Reales de curso legal en EE.UU.)
       },
     ),
+
+    // 2.2 Estados Unidos - Era Clásica de Metales Preciosos (Coinage Act 1792–1964)
+    // Ref: US Mint - Coin Specifications & Classic Commemorative Program (1892-1954):
+    // https://www.usmint.gov/learn/coin-and-medal-programs/commemorative-coins
+    // Ref: Numista - United States - Federal Republic (1792-1964):
+    // https://en.numista.com/catalogue/united-states-1.html
     NumismaticEmissionRuleData(
       country: 'Estados Unidos',
       minYear: 1792,
       maxYear: 1964,
       validCurrencies: ['USD'],
       defaultCurrency: 'USD',
-      denominations: ['0.01', '0.02', '0.03', '0.05', '0.10', '0.20', '0.25', '0.50', '1', '2.5', '5', '10', '20'],
+      denominations: [
+        '0.005', '0.01', '0.02', '0.03', '0.05', '0.10', '0.20', '0.25', '0.50', '1', '2.5', '3', '4', '5', '10', '20', '50',
+      ],
       denominationMaterials: {
-        '0.01': 'Cobre',
-        '0.05': 'Cuproníquel',
-        '0.10': 'Plata',
-        '0.20': 'Plata',
-        '0.25': 'Plata',
-        '0.50': 'Plata',
-        '1': 'Plata',
-        '2.5': 'Oro',
-        '5': 'Oro',
-        '10': 'Oro',
-        '20': 'Oro',
+        '0.005': 'Cobre',       // Half Cent (1793-1857)
+        '0.01': 'Cobre',        // Large Cent (1793-1857) / Indian Head / Lincoln Cent de bronce
+        '0.02': 'Bronce',       // Two-Cent piece (1864-1873)
+        '0.03': 'Plata',        // Three-Cent silver (1851-1873) / Cuproníquel (1865-1889)
+        '0.05': 'Cuproníquel',  // Half Dime plata (1794-1873) / 5 Cents Nickel (1866+)
+        '0.10': 'Plata',        // Dime plata .900 (Draped Bust, Seated Liberty, Barber, Mercury, Roosevelt)
+        '0.20': 'Plata',        // Twenty-Cent piece plata (1875-1878)
+        '0.25': 'Plata',        // Quarter Dollar plata .900 (Standing Liberty, Washington)
+        '0.50': 'Plata',        // Half Dollar plata .900 (Walking Liberty, Franklin, Kennedy 1964)
+        '1': 'Plata',           // Silver Dollar .900 (Morgan, Peace) / Gold Dollar (1849-1889)
+        '2.5': 'Oro',           // Quarter Eagle $2.50 oro
+        '3': 'Oro',             // Three-Dollar piece $3 oro (1854-1889)
+        '4': 'Oro',             // Stella $4 oro (1879-1880)
+        '5': 'Oro',             // Half Eagle $5 oro
+        '10': 'Oro',            // Eagle $10 oro
+        '20': 'Oro',            // Double Eagle $20 oro (Liberty Head, Saint-Gaudens)
+        '50': 'Oro',            // Panama-Pacific $50 conmemorativa de oro (1915)
       },
+      commemorativeDenominations: {'0.50', '1', '2.5', '50'},
+      defaultCommemorativeReason: 'Conmemorativa',
     ),
+
+    // 2.3 Estados Unidos - Era Clad y Contemporánea (1965–presente)
+    // Ref: US Mint - Modern Coin Specifications:
+    // https://www.usmint.gov/learn/coin-and-medal-programs/coin-specifications
+    // Ref: Numista - United States - Modern (1965-date):
+    // https://en.numista.com/catalogue/united-states-2.html
     NumismaticEmissionRuleData(
       country: 'Estados Unidos',
       minYear: 1965,
@@ -4349,18 +4484,25 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'USD',
       denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
       denominationMaterials: {
-        '0.01': 'Zinc',
-        '0.05': 'Cuproníquel',
-        '0.10': 'Cuproníquel',
-        '0.25': 'Cuproníquel',
-        '0.50': 'Cuproníquel',
-        '1': 'Latón',
+        '0.01': 'Zinc',         // Zinc bañado en cobre (desde 1982) / Bronce (1965-1982)
+        '0.05': 'Cuproníquel',  // Jefferson Nickel (75% Cobre, 25% Níquel)
+        '0.10': 'Cuproníquel',  // Roosevelt Dime clad (cuproníquel sobre núcleo de cobre)
+        '0.25': 'Cuproníquel',  // Washington Quarter clad (50 State Quarters, National Parks, American Women)
+        '0.50': 'Cuproníquel',  // Kennedy Half Dollar clad (40% plata 1965-1970; cuproníquel 1971+)
+        '1': 'Latón',           // Latón de manganeso (Sacagawea, Presidenciales, Innovación Americana)
       },
       commemorativeDenominations: {'0.25', '0.50', '1'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 3. España y Unión Europea
+    // =========================================================================
+    // 3. ESPAÑA Y UNIÓN EUROPEA
+    // =========================================================================
+
+    // 3.1 España - Antiguo Régimen y Monarquía Hispánica (1500–1868)
+    // Ref: Real Casa de la Moneda - FNMT Historia: https://www.fnmt.es/museo/historia
+    // Ref: Numista - Spain - Real (1497-1833): https://en.numista.com/catalogue/spain-1.html
+    // Ref: Numista - Spain - Escudo & Decimal (1833-1868): https://en.numista.com/catalogue/spain-2.html
     NumismaticEmissionRuleData(
       country: 'España',
       minYear: 1500,
@@ -4369,41 +4511,68 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'REAL',
       denominations: ['1/16', '1/8', '1/4', '1/2', '1', '2', '4', '8'],
       denominationMaterials: {
-        '1/16': 'Cobre',
-        '1/8': 'Cobre',
-        '1/4': 'Plata',
-        '1/2': 'Plata',
-        '1': 'Plata',
-        '2': 'Plata',
-        '4': 'Plata',
-        '8': 'Plata',
+        '1/16': 'Cobre',  // Maravedís (1, 2 maravedís)
+        '1/8': 'Cobre',   // Ochavo / 4 maravedís
+        '1/4': 'Plata',   // Cuartillo de real
+        '1/2': 'Plata',   // Medio real de plata
+        '1': 'Plata',     // 1 real de plata / Escudo de oro
+        '2': 'Plata',     // 2 reales / Doblón de oro de 2 escudos
+        '4': 'Plata',     // 4 reales / Medio peso / 4 escudos
+        '8': 'Plata',     // 8 reales / Real de a 8 / Onza de oro de 8 escudos
       },
     ),
+
+    // 3.2 España - Época de la Peseta (1869–2001)
+    // Ref: Banco de España - Billetes y monedas en pesetas:
+    // https://www.bde.es/wbe/es/para-ciudadanos/billetes-y-monedas/pesetas/
+    // Ref: Numista - Spain - Peseta (1868-2001):
+    // https://en.numista.com/catalogue/spain-peseta-1.html
     NumismaticEmissionRuleData(
       country: 'España',
       minYear: 1869,
       maxYear: 2001,
       validCurrencies: ['ESP'],
       defaultCurrency: 'ESP',
-      denominations: ['0.01', '0.02', '0.05', '0.10', '0.25', '0.50', '1', '2', '5', '10', '25', '50', '100', '200', '500', '2000'],
+      denominations: [
+        '0.01', '0.02', '0.05', '0.10', '0.25', '0.50', '1', '2', '2.5', '5', '10', '25', '50', '100', '200', '500', '2000',
+      ],
       denominationMaterials: {
-        '1': 'Bronce de aluminio',
-        '5': 'Cuproníquel',
-        '25': 'Cuproníquel',
-        '50': 'Cuproníquel',
-        '100': 'Bronce de aluminio',
-        '200': 'Cuproníquel',
-        '500': 'Bronce de aluminio',
-        '2000': 'Plata',
+        '0.01': 'Bronce',
+        '0.02': 'Bronce',
+        '0.05': 'Aluminio',           // 5 céntimos aluminio franquista / bronce
+        '0.10': 'Aluminio',           // 10 céntimos aluminio
+        '0.25': 'Cuproníquel',        // 25 céntimos con taladro (1925/1927/1934)
+        '0.50': 'Cuproníquel',        // 50 céntimos cuproníquel con taladro / plata
+        '1': 'Bronce de aluminio',    // 1 peseta "La Rubia" (1944-1975) / Aluminio (1982-2001)
+        '2': 'Aluminio',              // 2 pesetas aluminio (1982-1984)
+        '2.5': 'Bronce de aluminio',  // 2.50 pesetas (1953)
+        '5': 'Cuproníquel',           // Duro de cuproníquel (1957-1988) / Bronce de aluminio (1989-2001)
+        '10': 'Cuproníquel',          // 10 pesetas cuproníquel
+        '25': 'Cuproníquel',          // 25 pesetas con taladro y motivos autonómicos
+        '50': 'Cuproníquel',          // 50 pesetas Flor de España
+        '100': 'Bronce de aluminio',  // 100 pesetas Juan Carlos I / Plata 1966
+        '200': 'Cuproníquel',         // 200 pesetas cuproníquel
+        '500': 'Bronce de aluminio',  // 500 pesetas bronce de aluminio
+        '2000': 'Plata',              // 2000 pesetas conmemorativas de plata (1994-2001)
       },
+      commemorativeDenominations: {'2000'},
+      defaultCommemorativeReason: 'Conmemorativa',
     ),
+
+    // 3.3 España - Época del Euro (grabadas físicamente 1999–presente)
+    // Ref: Banco Central Europeo - Monedas de Euro de España:
+    // https://www.ecb.europa.eu/euro/coins/html/es.es.html
+    // Ref: Real Casa de la Moneda - FNMT Monedas de Colección y 2€ Conmemorativos:
+    // https://www.fnmt.es/coleccionista/monedas-2-euros
+    // Ref: Numista - Spain - Euro (1999-date):
+    // https://en.numista.com/catalogue/spain-euro-1.html
     NumismaticEmissionRuleData(
       country: 'España',
-      minYear: 2002,
+      minYear: 1999,
       maxYear: 2100,
       validCurrencies: ['EUR'],
       defaultCurrency: 'EUR',
-      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2'],
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2', '10', '12', '20', '30', '40'],
       denominationMaterials: {
         '0.01': 'Acero bañado en cobre',
         '0.02': 'Acero bañado en cobre',
@@ -4411,15 +4580,26 @@ abstract final class AppTechnicalNumismatics {
         '0.10': 'Oro nórdico',
         '0.20': 'Oro nórdico',
         '0.50': 'Oro nórdico',
-        '1': 'Bimetálica',
-        '2': 'Bimetálica',
+        '1': 'Bimetálica',  // Núcleo cuproníquel, anillo latón de níquel
+        '2': 'Bimetálica',  // Núcleo latón de níquel, anillo cuproníquel (y series anuales conmemorativas)
+        '10': 'Plata',      // Monedas de colección de 10€ plata
+        '12': 'Plata',      // Monedas de colección de 12€ plata
+        '20': 'Plata',      // Monedas de colección de 20€ plata
+        '30': 'Plata',      // Monedas de colección de 30€ plata
+        '40': 'Plata',      // Monedas de colección de 40€ plata
       },
-      commemorativeDenominations: {'2'},
+      commemorativeDenominations: {'2', '10', '12', '20', '30', '40'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
+
+    // 3.4 Unión Europea (Zona Euro, grabadas físicamente 1999–presente)
+    // Ref: European Central Bank - Euro Coinage Specifications:
+    // https://www.ecb.europa.eu/euro/coins/html/index.en.html
+    // Ref: Numista - Eurozone Common Issues:
+    // https://en.numista.com/catalogue/eurozone-1.html
     NumismaticEmissionRuleData(
       country: 'Unión Europea',
-      minYear: 2002,
+      minYear: 1999,
       maxYear: 2100,
       validCurrencies: ['EUR'],
       defaultCurrency: 'EUR',
@@ -4438,28 +4618,19 @@ abstract final class AppTechnicalNumismatics {
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 4. Guatemala
-    NumismaticEmissionRuleData(
-      country: 'Guatemala',
-      minYear: 1925,
-      maxYear: 2100,
-      validCurrencies: ['GTQ'],
-      defaultCurrency: 'GTQ',
-      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
-      denominationMaterials: {
-        '0.01': 'Latón',
-        '0.05': 'Cuproníquel',
-        '0.10': 'Cuproníquel',
-        '0.25': 'Cuproníquel',
-        '0.50': 'Cuproníquel',
-        '1': 'Bimetálica',
-      },
-    ),
+    // =========================================================================
+    // 4. GUATEMALA
+    // =========================================================================
+
+    // 4.1 Guatemala - Época Colonial y Federación Centroamericana (1535–1859)
+    // Ref: Banco de Guatemala - Historia Numismática: https://www.banguat.gob.gt
+    // Ref: Numista - Guatemala - Real (1733-1859):
+    // https://en.numista.com/catalogue/guatemala-real-1.html
     NumismaticEmissionRuleData(
       country: 'Guatemala',
       minYear: 1500,
-      maxYear: 1924,
-      validCurrencies: ['REAL', 'GTQ_HIST'],
+      maxYear: 1859,
+      validCurrencies: ['REAL', 'ESC', 'GTH_CENT'],
       defaultCurrency: 'REAL',
       denominations: ['1/4', '1/2', '1', '2', '4', '8'],
       denominationMaterials: {
@@ -4472,7 +4643,119 @@ abstract final class AppTechnicalNumismatics {
       },
     ),
 
-    // 5. Colombia
+    // 4.2 Guatemala - Época del Peso (1860–1924)
+    // Ref: Numista - Guatemala - Peso (1859-1925):
+    // https://en.numista.com/catalogue/guatemala-peso-1.html
+    NumismaticEmissionRuleData(
+      country: 'Guatemala',
+      minYear: 1860,
+      maxYear: 1924,
+      validCurrencies: ['GTQ_HIST', 'REAL'],
+      defaultCurrency: 'GTQ_HIST',
+      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1', '2', '4', '5', '10', '20', '1/4', '1/2'],
+      denominationMaterials: {
+        '0.01': 'Cobre',
+        '0.05': 'Níquel',
+        '0.10': 'Plata',
+        '0.25': 'Plata',
+        '0.50': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '5': 'Oro',
+        '10': 'Oro',
+        '20': 'Oro',
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+      },
+    ),
+
+    // 4.3 Guatemala - Época del Quetzal (1925–presente)
+    // Ref: Banco de Guatemala - Especificaciones y aleaciones autorizadas (Decreto 92-98):
+    // https://www.banguat.gob.gt/es/page/especificaciones-monedas
+    // Ref: Numista - Guatemala - Quetzal (1925-date):
+    // https://en.numista.com/catalogue/guatemala-quetzal-1.html
+    NumismaticEmissionRuleData(
+      country: 'Guatemala',
+      minYear: 1925,
+      maxYear: 2100,
+      validCurrencies: ['GTQ'],
+      defaultCurrency: 'GTQ',
+      denominations: ['0.005', '0.01', '0.05', '0.10', '0.25', '0.50', '1', '5', '10', '20'],
+      denominationMaterials: {
+        '0.005': 'Aluminio-Magnesio (Magnalio)',
+        '0.01': 'Aluminio-Magnesio (Magnalio)', // 98.5% Al, 1.5% Mg
+        '0.05': 'Cuproníquel',                  // 61% Cu, 20% Zn, 19% Ni
+        '0.10': 'Cuproníquel',                  // 61% Cu, 20% Zn, 19% Ni
+        '0.25': 'Cuproníquel',                  // 61% Cu, 20% Zn, 19% Ni
+        '0.50': 'Latón',                        // 70% Cu, 24.5% Zn, 5.5% Ni (Monja Blanca)
+        '1': 'Latón',                           // 70% Cu, 24.5% Zn, 5.5% Ni (Moneda de la Paz 1999+)
+        '5': 'Oro',                             // 5 Quetzales oro (1926)
+        '10': 'Oro',                            // 10 Quetzales oro (1926)
+        '20': 'Oro',                            // 20 Quetzales oro (1926)
+      },
+      commemorativeDenominations: {'1'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 5. COLOMBIA
+    // =========================================================================
+
+    // 5.1 Colombia - Virreinato de Nueva Granada y Reales Predecimales (1500–1846)
+    // Ref: Banco de la República - Historia de la moneda colonial:
+    // https://www.banrep.gov.co/es/coleccion-numismatica/historia-moneda-colonial
+    // Ref: Numista - Colombia - Real (1616-1820):
+    // https://en.numista.com/catalogue/colombia-real-1.html
+    NumismaticEmissionRuleData(
+      country: 'Colombia',
+      minYear: 1500,
+      maxYear: 1846,
+      validCurrencies: ['REAL', 'ESC', 'COP_HIST'],
+      defaultCurrency: 'REAL',
+      denominations: ['1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+
+    // 5.2 Colombia - Peso Histórico y Decimal Antiguo (1847–1904)
+    // Ref: Banco de la República - Colección Numismática:
+    // https://www.banrep.gov.co/es/coleccion-numismatica
+    // Ref: Numista - Colombia - Peso Decimal (1847-1904):
+    // https://en.numista.com/catalogue/colombia-peso-decimal-1.html
+    NumismaticEmissionRuleData(
+      country: 'Colombia',
+      minYear: 1847,
+      maxYear: 1904,
+      validCurrencies: ['COP_HIST'],
+      defaultCurrency: 'COP_HIST',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20'],
+      denominationMaterials: {
+        '0.01': 'Cobre',
+        '0.02': 'Cobre',
+        '0.05': 'Plata',
+        '0.10': 'Plata',
+        '0.20': 'Plata',
+        '0.50': 'Plata',
+        '1': 'Plata',
+        '2': 'Oro',
+        '5': 'Oro',
+        '10': 'Oro',
+        '20': 'Oro',
+      },
+    ),
+
+    // 5.3 Colombia - Peso Moderno (1905–presente)
+    // Ref: Banco de la República - Monedas en circulación (Familias de Fauna y Tradicional):
+    // https://www.banrep.gov.co/es/billetes-monedas/monedas-circulacion
+    // Ref: Numista - Colombia - Republic (1905-date):
+    // https://en.numista.com/catalogue/colombia-republic-1905-1.html
     NumismaticEmissionRuleData(
       country: 'Colombia',
       minYear: 1905,
@@ -4481,67 +4764,778 @@ abstract final class AppTechnicalNumismatics {
       defaultCurrency: 'COP',
       denominations: ['1', '2', '5', '10', '20', '50', '100', '200', '500', '1000'],
       denominationMaterials: {
-        '50': 'Acero inoxidable',
-        '100': 'Bronce de aluminio',
-        '200': 'Cuproníquel',
-        '500': 'Bimetálica',
-        '1000': 'Bimetálica',
+        '1': 'Bronce de aluminio',
+        '2': 'Bronce de aluminio',
+        '5': 'Cuproníquel',
+        '10': 'Cuproníquel',
+        '20': 'Cuproníquel',
+        '50': 'Acero inoxidable',     // Acero inoxidable tradicional / Acero niquelado (Osito de anteojos 2012+)
+        '100': 'Bronce de aluminio',  // Acero latonado tradicional / Bronce de aluminio (Frailejón 2012+)
+        '200': 'Cuproníquel',         // Cuproníquel Quimbaya / Guacamaya bandera (2012+)
+        '500': 'Bimetálica',          // Árbol de Guacarí / Rana de cristal (2012+)
+        '1000': 'Bimetálica',         // Tortuga caguama (2012+)
       },
-    ),
-    NumismaticEmissionRuleData(
-      country: 'Colombia',
-      minYear: 1500,
-      maxYear: 1904,
-      validCurrencies: ['REAL', 'ESC', 'COP_HIST'],
-      defaultCurrency: 'REAL',
-      denominations: ['1/4', '1/2', '1', '2', '4', '8'],
-      denominationMaterials: {
-        '1/2': 'Plata',
-        '1': 'Plata',
-        '2': 'Plata',
-        '8': 'Plata',
-      },
+      commemorativeDenominations: {'1000'},
+      defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 6. Canadá
+    // =========================================================================
+    // 6. CANADÁ
+    // =========================================================================
+
+    // 6.1 Canadá - Época Colonial, Victoriana y Plata Pre-Decimal/Decimal (1858–1952)
+    // Ref: Royal Canadian Mint - Circulation Coins History:
+    // https://www.mint.ca/en/discover/canadian-circulation-coins-history
+    // Ref: Numista - Canada (1858-1952):
+    // https://en.numista.com/catalogue/canada-1.html
     NumismaticEmissionRuleData(
       country: 'Canadá',
       minYear: 1858,
+      maxYear: 1952,
+      validCurrencies: ['CAD', 'CAD_HIST'],
+      defaultCurrency: 'CAD',
+      denominations: ['0.01', '0.05', '0.10', '0.20', '0.25', '0.50', '1', '5', '10'],
+      denominationMaterials: {
+        '0.01': 'Cobre',  // Large Cent / Small Cent de bronce
+        '0.05': 'Níquel', // 5 cents plata .925 (hasta 1921) / Níquel puro (1922-1942, 1946+)
+        '0.10': 'Plata',  // 10 cents plata (.925 hasta 1919, .800 1920-1952)
+        '0.20': 'Plata',  // 20 cents plata (1858)
+        '0.25': 'Plata',  // 25 cents plata
+        '0.50': 'Plata',  // 50 cents plata
+        '1': 'Plata',     // Silver Voyageur Dollar (.800 plata desde 1935)
+        '5': 'Oro',       // 5 Dollars oro (1912-1914)
+        '10': 'Oro',      // 10 Dollars oro (1912-1914)
+      },
+    ),
+
+    // 6.2 Canadá - Época de Transición y Plata / Níquel Isabel II (1953–1967)
+    // Ref: Royal Canadian Mint - 1967 Centennial Coinage: https://www.mint.ca
+    // Ref: Numista - Canada - Elizabeth II Silver Era:
+    // https://en.numista.com/catalogue/canada-2.html
+    NumismaticEmissionRuleData(
+      country: 'Canadá',
+      minYear: 1953,
+      maxYear: 1967,
+      validCurrencies: ['CAD'],
+      defaultCurrency: 'CAD',
+      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
+      denominationMaterials: {
+        '0.01': 'Bronce',
+        '0.05': 'Níquel',
+        '0.10': 'Plata', // .800 plata
+        '0.25': 'Plata', // .800 plata
+        '0.50': 'Plata', // .800 plata
+        '1': 'Plata',    // .800 plata Voyageur / Centennial 1967
+      },
+      commemorativeDenominations: {'1'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // 6.3 Canadá - Época Moderna (1968–presente)
+    // Ref: Royal Canadian Mint - Modern Coin Specifications:
+    // https://www.mint.ca/en/discover/canadian-circulation-coins
+    // Ref: Numista - Canada - Modern (1968-date):
+    // https://en.numista.com/catalogue/canada-3.html
+    NumismaticEmissionRuleData(
+      country: 'Canadá',
+      minYear: 1968,
       maxYear: 2100,
       validCurrencies: ['CAD'],
       defaultCurrency: 'CAD',
       denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1', '2'],
       denominationMaterials: {
-        '0.01': 'Cobre',
-        '0.05': 'Níquel',
+        '0.01': 'Cobre',                 // Bronce / Zinc bañado en cobre / Acero cobreado (hasta 2012)
+        '0.05': 'Níquel',                // Níquel puro / Acero niquelado multi-ply
         '0.10': 'Acero bañado en níquel',
-        '0.25': 'Acero bañado en níquel',
+        '0.25': 'Acero bañado en níquel', // Níquel / Acero multi-ply (series provinciales y conmemorativas)
         '0.50': 'Acero bañado en níquel',
-        '1': 'Acero bañado en latón',
-        '2': 'Bimetálica',
+        '1': 'Acero bañado en latón',    // "Loonie" (1987+)
+        '2': 'Bimetálica',               // "Toonie" (1996+)
       },
-      commemorativeDenominations: {'0.25', '2'},
+      commemorativeDenominations: {'0.25', '1', '2'},
       defaultCommemorativeReason: 'Conmemorativa',
     ),
 
-    // 7. Cuba
+    // =========================================================================
+    // 7. CUBA
+    // =========================================================================
+
+    // 7.1 Cuba - Primera República (1915–1961)
+    // Ref: Banco Central de Cuba - Emisiones Históricas: https://www.bc.gob.cu/monedas
+    // Ref: Numista - Cuba - First Republic (1915-1961):
+    // https://en.numista.com/catalogue/cuba-1.html
     NumismaticEmissionRuleData(
       country: 'Cuba',
       minYear: 1915,
+      maxYear: 1961,
+      validCurrencies: ['CUP'],
+      defaultCurrency: 'CUP',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.40', '1', '2', '4', '5', '10', '20'],
+      denominationMaterials: {
+        '0.01': 'Cuproníquel',
+        '0.02': 'Cuproníquel',
+        '0.05': 'Cuproníquel',
+        '0.10': 'Plata', // .900 plata
+        '0.20': 'Plata', // .900 plata
+        '0.40': 'Plata', // .900 plata
+        '1': 'Plata',    // 1 Peso Estrella ABC / José Martí
+        '2': 'Oro',      // 2 Pesos oro
+        '4': 'Oro',      // 4 Pesos oro
+        '5': 'Oro',      // 5 Pesos oro
+        '10': 'Oro',     // 10 Pesos oro
+        '20': 'Oro',     // 20 Pesos oro
+      },
+      commemorativeDenominations: {'1'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // 7.2 Cuba - Período Socialista y Régimen Dual CUP/CUC (1962–presente)
+    // Ref: Banco Central de Cuba - Sistema Monetario: https://www.bc.gob.cu
+    // Ref: Numista - Cuba - Second Republic & CUC (1962-date):
+    // https://en.numista.com/catalogue/cuba-2.html
+    NumismaticEmissionRuleData(
+      country: 'Cuba',
+      minYear: 1962,
       maxYear: 2100,
       validCurrencies: ['CUP', 'CUC'],
       defaultCurrency: 'CUP',
-      denominations: ['0.01', '0.02', '0.05', '0.20', '0.40', '1', '3', '5'],
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.25', '0.40', '0.50', '1', '3', '5'],
       denominationMaterials: {
         '0.01': 'Aluminio',
         '0.02': 'Aluminio',
         '0.05': 'Aluminio',
-        '0.20': 'Cuproníquel',
+        '0.10': 'Aluminio',    // CUP aluminio / CUC acero niquelado
+        '0.20': 'Cuproníquel', // CUP aluminio/cuproníquel
+        '0.25': 'Cuproníquel', // CUC cuproníquel
         '0.40': 'Cuproníquel',
-        '1': 'Cuproníquel',
-        '3': 'Cuproníquel',
-        '5': 'Bimetálica',
+        '0.50': 'Cuproníquel', // CUC cuproníquel
+        '1': 'Cuproníquel',    // CUP cuproníquel / CUC cuproníquel
+        '3': 'Cuproníquel',    // 3 Pesos Che Guevara cuproníquel/acero
+        '5': 'Bimetálica',     // 5 Pesos CUC bimetálica / CUP latón
       },
+      commemorativeDenominations: {'3'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 8. ARGENTINA
+    // =========================================================================
+
+    // 8.1 Argentina - Provincias Unidas del Río de la Plata y Confederación (1813–1880)
+    // Ref: Numista - Argentina - Real & Early Peso (1813-1881):
+    // https://en.numista.com/catalogue/argentina-1.html
+    NumismaticEmissionRuleData(
+      country: 'Argentina',
+      minYear: 1813,
+      maxYear: 1880,
+      validCurrencies: ['ARM', 'REAL'],
+      defaultCurrency: 'ARM',
+      denominations: ['1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/4': 'Cobre',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+
+    // 8.2 Argentina - Peso Moneda Nacional (1881–1969)
+    // Ref: Banco Central de la República Argentina - Emisiones históricas: https://www.bcra.gob.ar
+    // Ref: Numista - Argentina - Peso Moneda Nacional (1881-1969):
+    // https://en.numista.com/catalogue/argentina-2.html
+    NumismaticEmissionRuleData(
+      country: 'Argentina',
+      minYear: 1881,
+      maxYear: 1969,
+      validCurrencies: ['ARM'],
+      defaultCurrency: 'ARM',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '25', '50', '100'],
+      denominationMaterials: {
+        '0.01': 'Bronce',
+        '0.02': 'Bronce',
+        '0.05': 'Cuproníquel',
+        '0.10': 'Cuproníquel',
+        '0.20': 'Cuproníquel',
+        '0.50': 'Plata',        // 50 centavos plata / cuproníquel
+        '1': 'Plata',           // 1 peso plata Patacón (1881-1896) / cuproníquel
+        '5': 'Oro',             // 5 pesos Argentino de oro (1881-1896)
+        '10': 'Cuproníquel',
+        '20': 'Cuproníquel',
+        '25': 'Acero',
+        '50': 'Acero',
+        '100': 'Acero',
+      },
+    ),
+
+    // 8.3 Argentina - Peso Ley (1970–1983)
+    // Ref: Numista - Argentina - Peso Ley (1970-1983):
+    // https://en.numista.com/catalogue/argentina-3.html
+    NumismaticEmissionRuleData(
+      country: 'Argentina',
+      minYear: 1970,
+      maxYear: 1983,
+      validCurrencies: ['ARL'],
+      defaultCurrency: 'ARL',
+      denominations: ['0.01', '0.05', '0.10', '0.20', '0.50', '1', '5', '10', '20', '50', '100'],
+      denominationMaterials: {
+        '0.01': 'Bronce de aluminio',
+        '0.05': 'Bronce de aluminio',
+        '0.10': 'Bronce de aluminio',
+        '0.20': 'Bronce de aluminio',
+        '0.50': 'Bronce de aluminio',
+        '1': 'Bronce de aluminio',
+        '5': 'Bronce de aluminio',
+        '10': 'Bronce de aluminio',
+        '20': 'Bronce de aluminio',
+        '50': 'Bronce de aluminio',
+        '100': 'Bronce de aluminio',
+      },
+    ),
+
+    // 8.4 Argentina - Peso Argentino y Austral (1983–1991)
+    // Ref: Numista - Argentina - Austral (1985-1991):
+    // https://en.numista.com/catalogue/argentina-4.html
+    NumismaticEmissionRuleData(
+      country: 'Argentina',
+      minYear: 1983,
+      maxYear: 1991,
+      validCurrencies: ['ARA', 'ARP'],
+      defaultCurrency: 'ARA',
+      denominations: ['0.005', '0.01', '0.05', '0.10', '0.50', '1', '5', '10', '50', '100', '500', '1000'],
+      denominationMaterials: {
+        '0.005': 'Aluminio',
+        '0.01': 'Aluminio',
+        '0.05': 'Aluminio',
+        '0.10': 'Aluminio',
+        '0.50': 'Aluminio',
+        '1': 'Aluminio',
+        '5': 'Aluminio',
+        '10': 'Aluminio',
+        '50': 'Cuproníquel',
+        '100': 'Cuproníquel',
+        '500': 'Cuproníquel',
+        '1000': 'Cuproníquel',
+      },
+    ),
+
+    // 8.5 Argentina - Peso Convertible Moderno (1992–presente)
+    // Ref: Banco Central de la República Argentina - Monedas en circulación: https://www.bcra.gob.ar
+    // Ref: Numista - Argentina - Peso (1992-date):
+    // https://en.numista.com/catalogue/argentina-5.html
+    NumismaticEmissionRuleData(
+      country: 'Argentina',
+      minYear: 1992,
+      maxYear: 2100,
+      validCurrencies: ['ARS'],
+      defaultCurrency: 'ARS',
+      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1', '2', '5', '10'],
+      denominationMaterials: {
+        '0.01': 'Bronce de aluminio',
+        '0.05': 'Bronce de aluminio',
+        '0.10': 'Bronce de aluminio',
+        '0.25': 'Bronce de aluminio',
+        '0.50': 'Bronce de aluminio',
+        '1': 'Bimetálica', // Centro bronce de aluminio, anillo cuproníquel
+        '2': 'Bimetálica', // Centro cuproníquel, anillo bronce de aluminio
+        '5': 'Acero bañado en cobre',
+        '10': 'Acero bañado en latón',
+      },
+      commemorativeDenominations: {'1', '2'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 9. BRASIL
+    // =========================================================================
+
+    // 9.1 Brasil - Período Colonial e Imperial (Réis 1500–1942)
+    // Ref: Numista - Brazil - Real / Réis (1500-1942):
+    // https://en.numista.com/catalogue/brazil-1.html
+    NumismaticEmissionRuleData(
+      country: 'Brasil',
+      minYear: 1500,
+      maxYear: 1942,
+      validCurrencies: ['BRS'],
+      defaultCurrency: 'BRS',
+      denominations: ['10', '20', '40', '80', '100', '200', '300', '400', '500', '640', '960', '1000', '2000'],
+      denominationMaterials: {
+        '10': 'Cobre',
+        '20': 'Cobre',
+        '40': 'Cobre',
+        '80': 'Cobre',
+        '100': 'Cuproníquel',
+        '200': 'Cuproníquel',
+        '300': 'Cuproníquel',
+        '400': 'Cuproníquel',
+        '500': 'Plata',
+        '640': 'Plata',
+        '960': 'Plata',   // Patacão de plata
+        '1000': 'Plata',
+        '2000': 'Plata',
+      },
+    ),
+
+    // 9.2 Brasil - Cruzeiro y Cruzado (1942–1993)
+    // Ref: Banco Central do Brasil - Museu de Valores: https://www.bcb.gov.br
+    // Ref: Numista - Brazil - Cruzeiro (1942-1986):
+    // https://en.numista.com/catalogue/brazil-2.html
+    NumismaticEmissionRuleData(
+      country: 'Brasil',
+      minYear: 1942,
+      maxYear: 1993,
+      validCurrencies: ['BRB', 'BRC', 'BRN', 'BRE', 'BRR'],
+      defaultCurrency: 'BRB',
+      denominations: ['0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100', '200', '500', '1000', '5000'],
+      denominationMaterials: {
+        '0.10': 'Bronce de aluminio',
+        '0.20': 'Bronce de aluminio',
+        '0.50': 'Bronce de aluminio',
+        '1': 'Bronce de aluminio',
+        '2': 'Bronce de aluminio',
+        '5': 'Cuproníquel',
+        '10': 'Cuproníquel',
+        '20': 'Cuproníquel',
+        '50': 'Cuproníquel',
+        '100': 'Acero inoxidable',
+        '200': 'Acero inoxidable',
+        '500': 'Acero inoxidable',
+        '1000': 'Acero inoxidable',
+        '5000': 'Acero inoxidable',
+      },
+    ),
+
+    // 9.3 Brasil - Real Moderno (grabadas físicamente 1994–presente)
+    // Ref: Banco Central do Brasil - Moedas do Real: https://www.bcb.gov.br/cedulasemoedas/moedasreal
+    // Ref: Numista - Brazil - Real (1994-date):
+    // https://en.numista.com/catalogue/brazil-3.html
+    NumismaticEmissionRuleData(
+      country: 'Brasil',
+      minYear: 1994,
+      maxYear: 2100,
+      validCurrencies: ['BRL'],
+      defaultCurrency: 'BRL',
+      denominations: ['0.01', '0.05', '0.10', '0.25', '0.50', '1'],
+      denominationMaterials: {
+        '0.01': 'Acero bañado en cobre',
+        '0.05': 'Acero bañado en cobre',
+        '0.10': 'Acero bañado en bronce',
+        '0.25': 'Acero bañado en bronce',
+        '0.50': 'Cuproníquel', // Cuproníquel (1ª familia) / Acero inoxidable (2ª familia)
+        '1': 'Bimetálica',     // Centro acero inoxidable, anillo acero bañado en bronce
+      },
+      commemorativeDenominations: {'1'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 10. CHILE
+    // =========================================================================
+
+    // 10.1 Chile - Período Colonial y Reales (1500–1850)
+    // Ref: Numista - Chile - Real (1743-1851):
+    // https://en.numista.com/catalogue/chile-1.html
+    NumismaticEmissionRuleData(
+      country: 'Chile',
+      minYear: 1500,
+      maxYear: 1850,
+      validCurrencies: ['CLF', 'REAL', 'ESC'],
+      defaultCurrency: 'REAL',
+      denominations: ['1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+
+    // 10.2 Chile - Peso Antiguo Decimal y Escudo (1851–1974)
+    // Ref: Banco Central de Chile - Billetes y Monedas: https://www.bcentral.cl
+    // Ref: Numista - Chile - Peso (1851-1959) & Escudo (1960-1975):
+    // https://en.numista.com/catalogue/chile-2.html
+    NumismaticEmissionRuleData(
+      country: 'Chile',
+      minYear: 1851,
+      maxYear: 1974,
+      validCurrencies: ['CLF', 'CLE'],
+      defaultCurrency: 'CLF',
+      denominations: ['0.005', '0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100'],
+      denominationMaterials: {
+        '0.005': 'Cobre',
+        '0.01': 'Cobre',
+        '0.02': 'Cobre',
+        '0.05': 'Cuproníquel',
+        '0.10': 'Cuproníquel',
+        '0.20': 'Cuproníquel',
+        '0.50': 'Plata',
+        '1': 'Plata',
+        '2': 'Oro',
+        '5': 'Oro',
+        '10': 'Oro',
+        '20': 'Oro',
+        '50': 'Oro',
+        '100': 'Oro',
+      },
+    ),
+
+    // 10.3 Chile - Peso Actual (1975–presente)
+    // Ref: Banco Central de Chile - Monedas en circulación: https://www.bcentral.cl/billetes-y-monedas/monedas
+    // Ref: Numista - Chile - Peso (1975-date):
+    // https://en.numista.com/catalogue/chile-3.html
+    NumismaticEmissionRuleData(
+      country: 'Chile',
+      minYear: 1975,
+      maxYear: 2100,
+      validCurrencies: ['CLP'],
+      defaultCurrency: 'CLP',
+      denominations: ['1', '5', '10', '50', '100', '500'],
+      denominationMaterials: {
+        '1': 'Aluminio',
+        '5': 'Aluminio-Bronce',
+        '10': 'Aluminio-Bronce',
+        '50': 'Aluminio-Bronce', // Decagonal
+        '100': 'Bimetálica',     // Centro alpaca, anillo bronce de aluminio
+        '500': 'Bimetálica',     // Centro bronce de aluminio, anillo alpaca
+      },
+      commemorativeDenominations: {'100', '500'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 11. PERÚ
+    // =========================================================================
+
+    // 11.1 Perú - Época Colonial y Reales (1500–1862)
+    // Ref: Numista - Peru - Real (1568-1857):
+    // https://en.numista.com/catalogue/peru-1.html
+    NumismaticEmissionRuleData(
+      country: 'Perú',
+      minYear: 1500,
+      maxYear: 1862,
+      validCurrencies: ['PER', 'REAL', 'ESC'],
+      defaultCurrency: 'REAL',
+      denominations: ['1/4', '1/2', '1', '2', '4', '8'],
+      denominationMaterials: {
+        '1/4': 'Plata',
+        '1/2': 'Plata',
+        '1': 'Plata',
+        '2': 'Plata',
+        '4': 'Plata',
+        '8': 'Plata',
+      },
+    ),
+
+    // 11.2 Perú - Sol de Oro e Inti (1863–1990)
+    // Ref: Banco Central de Reserva del Perú - Numismática: https://www.bcrp.gob.pe
+    // Ref: Numista - Peru - Sol de Oro (1863-1985) & Inti (1985-1991):
+    // https://en.numista.com/catalogue/peru-2.html
+    NumismaticEmissionRuleData(
+      country: 'Perú',
+      minYear: 1863,
+      maxYear: 1990,
+      validCurrencies: ['PEH', 'PEI'],
+      defaultCurrency: 'PEH',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100', '500'],
+      denominationMaterials: {
+        '0.01': 'Cobre',
+        '0.02': 'Cobre',
+        '0.05': 'Latón',
+        '0.10': 'Latón',
+        '0.20': 'Latón',
+        '0.50': 'Plata',
+        '1': 'Plata', // Un Sol de plata (1863-1935) / Latón
+        '2': 'Oro',
+        '5': 'Oro',
+        '10': 'Oro',
+        '20': 'Oro',
+        '50': 'Oro',
+        '100': 'Oro',
+        '500': 'Cuproníquel',
+      },
+    ),
+
+    // 11.3 Perú - Sol Moderno (1991–presente)
+    // Ref: Banco Central de Reserva del Perú - Familia de Monedas: https://www.bcrp.gob.pe/billetes-y-monedas/monedas.html
+    // Ref: Numista - Peru - Sol (1991-date):
+    // https://en.numista.com/catalogue/peru-3.html
+    NumismaticEmissionRuleData(
+      country: 'Perú',
+      minYear: 1991,
+      maxYear: 2100,
+      validCurrencies: ['PEN'],
+      defaultCurrency: 'PEN',
+      denominations: ['0.01', '0.05', '0.10', '0.20', '0.50', '1', '2', '5'],
+      denominationMaterials: {
+        '0.01': 'Aluminio',
+        '0.05': 'Aluminio',
+        '0.10': 'Latón',
+        '0.20': 'Latón',
+        '0.50': 'Alpaca (Plata alemana)',
+        '1': 'Alpaca (Plata alemana)', // Serie Riqueza y Orgullo del Perú (conmemorativas)
+        '2': 'Bimetálica',             // Centro latón, anillo acero inoxidable
+        '5': 'Bimetálica',             // Centro latón, anillo acero inoxidable
+      },
+      commemorativeDenominations: {'1'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 12. REINO UNIDO
+    // =========================================================================
+
+    // 12.1 Reino Unido - Sistema Pre-Decimal (1500–1970)
+    // Ref: The Royal Mint - History of the Pre-decimal Coinage: https://www.royalmint.com
+    // Ref: Numista - United Kingdom - Pre-decimal (1500-1970):
+    // https://en.numista.com/catalogue/united-kingdom-1.html
+    NumismaticEmissionRuleData(
+      country: 'Reino Unido',
+      minYear: 1500,
+      maxYear: 1970,
+      validCurrencies: ['GBP_OLD'],
+      defaultCurrency: 'GBP_OLD',
+      denominations: ['1/4', '1/2', '1', '3', '6', '2', '2.5', '5'],
+      denominationMaterials: {
+        '1/4': 'Cobre',        // Farthing
+        '1/2': 'Cobre',        // Halfpenny
+        '1': 'Cobre',          // Penny
+        '3': 'Níquel-Latón',   // Threepence dodecagonal (o plata pre-1937)
+        '6': 'Cuproníquel',    // Sixpence plata/cuproníquel
+        '2': 'Cuproníquel',    // Florin (Two Shillings)
+        '2.5': 'Cuproníquel',  // Half Crown
+        '5': 'Cuproníquel',    // Crown
+      },
+    ),
+
+    // 12.2 Reino Unido - Sistema Decimal (1971–presente)
+    // Ref: The Royal Mint - Modern Coin Specifications: https://www.royalmint.com
+    // Ref: Numista - United Kingdom - Decimal (1971-date):
+    // https://en.numista.com/catalogue/united-kingdom-2.html
+    NumismaticEmissionRuleData(
+      country: 'Reino Unido',
+      minYear: 1971,
+      maxYear: 2100,
+      validCurrencies: ['GBP'],
+      defaultCurrency: 'GBP',
+      denominations: ['0.005', '0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2', '5'],
+      denominationMaterials: {
+        '0.005': 'Bronce',
+        '0.01': 'Acero bañado en cobre',
+        '0.02': 'Acero bañado en cobre',
+        '0.05': 'Acero bañado en níquel',
+        '0.10': 'Acero bañado en níquel',
+        '0.20': 'Cuproníquel',           // Heptagonal (84% Cu, 16% Ni)
+        '0.50': 'Cuproníquel',           // Heptagonal
+        '1': 'Bimetálica',               // Dodecagonal bimetálica (2017+) / Níquel-latón redondo (1983-2016)
+        '2': 'Bimetálica',               // Centro cuproníquel, anillo latón de níquel
+        '5': 'Cuproníquel',              // Crown decimal conmemorativa
+      },
+      commemorativeDenominations: {'0.50', '2', '5'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 13. FRANCIA
+    // =========================================================================
+
+    // 13.1 Francia - Ancien Régime (1500–1794)
+    // Ref: Monnaie de Paris - Histoire: https://www.monnaiedeparis.fr
+    // Ref: Numista - France - Royal (1500-1794):
+    // https://en.numista.com/catalogue/france-royal-1.html
+    NumismaticEmissionRuleData(
+      country: 'Francia',
+      minYear: 1500,
+      maxYear: 1794,
+      validCurrencies: ['LVT', 'ECU', 'LDO'],
+      defaultCurrency: 'LVT',
+      denominations: ['1/12', '1/6', '1/4', '1/2', '1', '2', '3', '6', '12', '24'],
+      denominationMaterials: {
+        '1/12': 'Cobre', // Denier
+        '1/6': 'Cobre',  // Liard
+        '1/4': 'Cobre',  // Sol / Douzain
+        '1/2': 'Plata',  // Demi-écu
+        '1': 'Plata',    // Écu de plata
+        '2': 'Oro',      // Louis d'or
+        '3': 'Plata',
+        '6': 'Plata',
+        '12': 'Oro',
+        '24': 'Oro',
+      },
+    ),
+
+    // 13.2 Francia - Franc Ancien (1795–1959)
+    // Ref: Numista - France - Franc (1795-1959):
+    // https://en.numista.com/catalogue/france-1.html
+    NumismaticEmissionRuleData(
+      country: 'Francia',
+      minYear: 1795,
+      maxYear: 1959,
+      validCurrencies: ['FRF'],
+      defaultCurrency: 'FRF',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.25', '0.50', '1', '2', '5', '10', '20', '50', '100'],
+      denominationMaterials: {
+        '0.01': 'Bronce',
+        '0.02': 'Bronce',
+        '0.05': 'Aluminio',           // Bronce / Aluminio
+        '0.10': 'Aluminio',
+        '0.20': 'Aluminio',
+        '0.25': 'Cuproníquel',
+        '0.50': 'Aluminio-Bronce',
+        '1': 'Aluminio-Bronce',       // Morlon / Semeuse plata
+        '2': 'Aluminio-Bronce',
+        '5': 'Plata',                 // Plata / Cuproníquel
+        '10': 'Plata',                // Plata Turin / Oro Napoleón
+        '20': 'Plata',                // Plata Turin / Oro Napoleón
+        '50': 'Cuproníquel',
+        '100': 'Cuproníquel',
+      },
+    ),
+
+    // 13.3 Francia - Nouveau Franc (1960–2001)
+    // Ref: Numista - France - Nouveau Franc (1960-2001):
+    // https://en.numista.com/catalogue/france-2.html
+    NumismaticEmissionRuleData(
+      country: 'Francia',
+      minYear: 1960,
+      maxYear: 2001,
+      validCurrencies: ['FRF'],
+      defaultCurrency: 'FRF',
+      denominations: ['0.01', '0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100'],
+      denominationMaterials: {
+        '0.01': 'Acero inoxidable',
+        '0.05': 'Bronce de aluminio',
+        '0.10': 'Bronce de aluminio',
+        '0.20': 'Bronce de aluminio',
+        '0.50': 'Níquel',
+        '1': 'Níquel',                // Semeuse de níquel
+        '2': 'Níquel',
+        '5': 'Plata',                 // Plata .835 (1960-1969) / Cuproníquel niquelado (1970+)
+        '10': 'Bimetálica',           // Bimetálica Génie de la Bastille (1988-2001) / Plata Hercule
+        '20': 'Trimetálica',          // Trimetálica Mont-Saint-Michel (1992-2001)
+        '50': 'Plata',                // 50 Francs Hercule plata (1974-1980)
+        '100': 'Plata',               // 100 Francs plata conmemorativa
+      },
+      commemorativeDenominations: {'10', '20', '100'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 14. ALEMANIA
+    // =========================================================================
+
+    // 14.1 Alemania - Imperio Alemán y República de Weimar (Goldmark / Reichsmark 1873–1948)
+    // Ref: Deutsche Bundesbank - Geldgeschichte: https://www.bundesbank.de
+    // Ref: Numista - Germany (1871-1948):
+    // https://en.numista.com/catalogue/germany-1.html
+    NumismaticEmissionRuleData(
+      country: 'Alemania',
+      minYear: 1873,
+      maxYear: 1948,
+      validCurrencies: ['FRG', 'PRM', 'RTM', 'RKM'],
+      defaultCurrency: 'RKM',
+      denominations: ['0.01', '0.02', '0.04', '0.05', '0.10', '0.50', '1', '2', '3', '5', '10', '20'],
+      denominationMaterials: {
+        '0.01': 'Bronce',
+        '0.02': 'Bronce',
+        '0.04': 'Bronce',
+        '0.05': 'Bronce de aluminio', // Cuproníquel / Bronce de aluminio / Zinc
+        '0.10': 'Bronce de aluminio',
+        '0.50': 'Bronce de aluminio',
+        '1': 'Níquel',                // Níquel / Plata
+        '2': 'Plata',                 // Plata .625-.900
+        '3': 'Plata',
+        '5': 'Plata',                 // 5 Reichsmark Hindenburg / Potsdam plata
+        '10': 'Oro',                  // 10 Mark oro imperial
+        '20': 'Oro',                  // 20 Mark oro imperial
+      },
+    ),
+
+    // 14.2 Alemania - Deutsche Mark (RFA 1948–2001)
+    // Ref: Deutsche Bundesbank - DM-Münzen: https://www.bundesbank.de
+    // Ref: Numista - Federal Republic of Germany - Mark (1948-2001):
+    // https://en.numista.com/catalogue/germany-2.html
+    NumismaticEmissionRuleData(
+      country: 'Alemania',
+      minYear: 1948,
+      maxYear: 2001,
+      validCurrencies: ['DEM', 'DDM'],
+      defaultCurrency: 'DEM',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.50', '1', '2', '5', '10'],
+      denominationMaterials: {
+        '0.01': 'Acero bañado en cobre',
+        '0.02': 'Acero bañado en cobre', // Bronce / Acero cobreado
+        '0.05': 'Acero bañado en latón',
+        '0.10': 'Acero bañado en latón',
+        '0.50': 'Cuproníquel',
+        '1': 'Cuproníquel',
+        '2': 'Cuproníquel',
+        '5': 'Plata',                    // Plata .625 (1951-1974) / Cuproníquel Magnimat (1975+)
+        '10': 'Plata',                   // 10 DM plata conmemorativa (Olimpiadas 1972, Aniversarios)
+      },
+      commemorativeDenominations: {'5', '10'},
+      defaultCommemorativeReason: 'Conmemorativa',
+    ),
+
+    // =========================================================================
+    // 15. ITALIA
+    // =========================================================================
+
+    // 15.1 Italia - Reino de Italia (1861–1945)
+    // Ref: Banca d'Italia - Museo della Moneta: https://www.bancaditalia.it
+    // Ref: Numista - Italy - Kingdom (1861-1946):
+    // https://en.numista.com/catalogue/italy-1.html
+    NumismaticEmissionRuleData(
+      country: 'Italia',
+      minYear: 1861,
+      maxYear: 1945,
+      validCurrencies: ['ITL'],
+      defaultCurrency: 'ITL',
+      denominations: ['0.01', '0.02', '0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50', '100'],
+      denominationMaterials: {
+        '0.01': 'Bronce',
+        '0.02': 'Bronce',
+        '0.05': 'Bronce',
+        '0.10': 'Bronce',
+        '0.20': 'Níquel',             // Níquel / Acero
+        '0.50': 'Níquel',             // Plata / Níquel
+        '1': 'Níquel',                // Plata / Níquel / Acero (Acmonital)
+        '2': 'Níquel',                // Plata / Níquel / Acero (Acmonital)
+        '5': 'Plata',                 // Plata 5 Lire
+        '10': 'Plata',                // Plata 10 Lire Biga / Oro
+        '20': 'Plata',                // Plata 20 Lire Fascio / Oro
+        '50': 'Oro',                  // 50 Lire oro
+        '100': 'Oro',                 // 100 Lire oro
+      },
+    ),
+
+    // 15.2 Italia - República Italiana (Lira 1946–2001)
+    // Ref: Istituto Poligrafico e Zecca dello Stato: https://www.ipzs.it
+    // Ref: Numista - Italy - Republic - Lira (1946-2001):
+    // https://en.numista.com/catalogue/italy-2.html
+    NumismaticEmissionRuleData(
+      country: 'Italia',
+      minYear: 1946,
+      maxYear: 2001,
+      validCurrencies: ['ITL'],
+      defaultCurrency: 'ITL',
+      denominations: ['1', '2', '5', '10', '20', '50', '100', '200', '500', '1000'],
+      denominationMaterials: {
+        '1': 'Aluminio',              // Italma (Aluminio-Magnesio)
+        '2': 'Aluminio',              // Italma
+        '5': 'Aluminio',              // Italma Delfino
+        '10': 'Aluminio',             // Italma Spiga
+        '20': 'Bronce de aluminio',   // Bronzital
+        '50': 'Acero inoxidable',     // Acmonital Vulcano
+        '100': 'Acero inoxidable',    // Acmonital Minerva
+        '200': 'Bronce de aluminio',  // Bronzital
+        '500': 'Bimetálica',          // Caravelle de plata (1958-1967) / Bimetálica Quirinale (1982-2001)
+        '1000': 'Bimetálica',         // Bimetálica Confini d'Europa (1997-2001)
+      },
+      commemorativeDenominations: {'500', '1000'},
+      defaultCommemorativeReason: 'Conmemorativa',
     ),
   ];
 }

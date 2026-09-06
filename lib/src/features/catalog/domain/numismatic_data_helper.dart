@@ -1,3 +1,4 @@
+import '../../../core/constants/app_technical_strings.dart';
 import 'catalog_item.dart';
 import 'subspecies.dart';
 import '../../entities/domain/world_entity.dart';
@@ -8,6 +9,7 @@ import 'numismatics/numismatic_parser.dart';
 import 'numismatics/numismatic_domain_rules.dart';
 import 'numismatics/numismatic_matrix.dart';
 
+export '../../../core/constants/app_technical_strings.dart' show NumismaticEmissionRuleData;
 export 'numismatics/numismatic_dictionary.dart';
 export 'numismatics/numismatic_parser.dart';
 export 'numismatics/numismatic_domain_rules.dart';
@@ -40,6 +42,9 @@ class NumismaticDataHelper {
     }
     return result;
   }
+
+  static NumismaticEmissionRuleData? findRule(String? country, int? year) =>
+      NumismaticMatrix.findRule(country, year);
 
   static String? inferCurrency({String? country, int? year}) =>
       NumismaticMatrix.inferCurrency(country: country, year: year);

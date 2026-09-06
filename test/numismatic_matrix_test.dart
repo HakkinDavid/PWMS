@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_matrix.dart';
 
 void main() {
   group('NumismaticMatrix & Cascading Inference Tests', () {
@@ -70,6 +69,65 @@ void main() {
 
       final matEuro1 = NumismaticDataHelper.inferMaterial(country: 'España', year: 2005, denomination: '1');
       expect(matEuro1, equals('Bimetálica'));
+    });
+
+    test('Mexico 1992 physical stamped year infers MXN Nuevos Pesos and regime change', () {
+      final inferredCurr = NumismaticDataHelper.inferCurrency(country: 'México', year: 1992);
+      expect(inferredCurr, isNotNull);
+      // Stamped 1992 matches Mexico Nuevos Pesos rule (1992-1995) or 1970-1992 transition
+      final rule1992 = NumismaticDataHelper.findRule('México', 1992);
+      expect(rule1992, isNotNull);
+      expect(rule1992!.minYear <= 1992 && rule1992.maxYear >= 1992, isTrue);
+
+      final mat10 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1994, currencyCode: 'MXN', denomination: '10');
+      expect(mat10, equals('Bimetálica'));
+
+      final special50 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '50');
+      expect(special50, isNotNull);
+      expect(special50!.isSpecial, isTrue);
+      expect(special50.reason, equals('Emisión de cambio de régimen'));
+    });
+
+    test('Spain 1999 physical stamped year on Euro coins infers EUR and modern alloys', () {
+      final curr1999 = NumismaticDataHelper.inferCurrency(country: 'España', year: 1999);
+      expect(curr1999, equals('ESP')); // 1869-2001 Peseta is matched for 1999 in Spain
+
+      final euroRule = NumismaticDataHelper.findRule('Unión Europea', 1999);
+      expect(euroRule, isNotNull);
+      expect(euroRule!.validCurrencies, contains('EUR'));
+
+      final matEuro2 = NumismaticDataHelper.inferMaterial(country: 'España', year: 2002, denomination: '2');
+      expect(matEuro2, equals('Bimetálica'));
+
+      final special2Euro = NumismaticDataHelper.checkSpecialEdition(country: 'España', year: 2005, denomination: '2');
+      expect(special2Euro, isNotNull);
+      expect(special2Euro!.isSpecial, isTrue);
+      expect(special2Euro.reason, equals('Conmemorativa'));
+    });
+
+    test('Modern commemorative editions for Mexico, Canada, and Colombia', () {
+      // Mexico 2008 Bicentenario 5 Pesos and 2021 20 Pesos
+      final specialMex5 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 2008, denomination: '5');
+      expect(specialMex5, isNotNull);
+      expect(specialMex5!.isSpecial, isTrue);
+
+      final specialMex20 = NumismaticDataHelper.checkSpecialEdition(country: 'México', year: 2021, denomination: '20');
+      expect(specialMex20, isNotNull);
+      expect(specialMex20!.isSpecial, isTrue);
+
+      // Canada Loonie (1987+) and Toonie (1996+)
+      final matLoonie = NumismaticDataHelper.inferMaterial(country: 'Canadá', year: 2000, denomination: '1');
+      expect(matLoonie, equals('Acero bañado en latón'));
+
+      final matToonie = NumismaticDataHelper.inferMaterial(country: 'Canadá', year: 2000, denomination: '2');
+      expect(matToonie, equals('Bimetálica'));
+
+      // Colombia 500 and 1000 Pesos bimetallics
+      final matCol500 = NumismaticDataHelper.inferMaterial(country: 'Colombia', year: 2015, denomination: '500');
+      expect(matCol500, equals('Bimetálica'));
+
+      final matCol1000 = NumismaticDataHelper.inferMaterial(country: 'Colombia', year: 2015, denomination: '1000');
+      expect(matCol1000, equals('Bimetálica'));
     });
 
     test('Fallback gracefully when country or year is unspecified or unlisted', () {
