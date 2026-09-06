@@ -898,6 +898,27 @@ WHERE id IN (
   static const magValorFacialLower = 'valor facial';
   static const magValorNominalLower = 'valor nominal';
   static const magEmisorLower = 'emisor';
+  static const magMotivoLower = 'motivo';
+  static const magRazonEdicionEspecialLower = 'razón de edición especial';
+  static const magRazonEdicionEspecialWithoutAccentLower = 'razon de edicion especial';
+  static const magEdicionEspecialLower = 'edición especial';
+  static const magEdicionEspecialWithoutAccentLower = 'edicion especial';
+  static const regexEdicionEspecialNote = r'(?:\[\s*)?Edici(?:ó|o)n\s+especial\s*:\s*([^\]|\n]+)(?:\])?';
+  static const regexMotivoNote = r'(?:\[\s*)?Motivo\s*:\s*([^\]|\n]+)(?:\])?';
+  static const regexLeadingTrailingPipesAndSpaces = r'^[|\s]+|[|\s]+$';
+  static const regexConsecutivePipes = r'\s*\|\s*\|\s*';
+  static const prefixMotivoColonWithSpace = 'motivo :';
+  static const prefixMotivoColon = 'motivo:';
+  static const cambioDeRegimenLower = 'cambio de régimen';
+  static const cambioDeRegimenWithoutAccentLower = 'cambio de regimen';
+  static const emisionDeCambioDeRegimenLower = 'emisión de cambio de régimen';
+  static const emisionDeCambioDeRegimenWithoutAccentLower = 'emision de cambio de regimen';
+  static const mexicoLower = 'méxico';
+  static const mexicoWithoutAccentLower = 'mexico';
+  static const motifNuevoPesoPiedraDelSolPlata = 'Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)';
+  static const motifNuevoPesoHidalgoPlata = 'Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)';
+  static const motifNuevoPesoNinosHeroesPlata = 'Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)';
+  static const motifNuevoPeso = 'Nuevo Peso';
   static const regexIllegalFileNameChars = r'[\\/:*?"<>|]';
   static const regexParenthesizedEndYear = r'\(([^)]+)\)\s*$';
   static const regexSpaceMexicanos = r'\s+mexicanos?';
@@ -4592,17 +4613,15 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Oro',
         '10': 'Oro',
       },
-      commemorativeDenominations: {'1'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '1': [
-          'Un Peso Caballito - Centenario de la Independencia (1910-1914)',
-          'Pesos Caballito',
+          NumismaticMotifRule('Un Peso Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
         ],
       },
       commemorativeReasons: [
         'Un Peso Caballito - Centenario de la Independencia (1910-1914)',
       ],
-    ),
+),
 
     // 1.14 México - Período Revolucionario / Constitucionalista (1915–1919)
     // Ref: Banco de México - Monedas de la Revolución Mexicana:
@@ -4635,7 +4654,7 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Oro',
         '20': 'Oro',
       },
-    ),
+                ),
 
     // 1.15 México - Ley .720 y Centenario de Oro (1920–1942)
     // Ref General: Banco de México - Monedas de plata y oro del siglo XX:
@@ -4671,22 +4690,19 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Oro',
         '50': 'Oro',
       },
-      commemorativeDenominations: {'1', '50'},
+                                              commemorativeDenominations: {'2'},
       commemorativeMotifsByDenomination: {
-        '1': [
-          'Victoria Alada - Centenario de la Consumación de la Independencia (1921)',
-          'Dos Pesos Centenario (1921)',
+        '2': [
+          NumismaticMotifRule('Victoria Alada - Centenario de la Consumación de la Independencia (1921)', 1921),
         ],
         '50': [
-          'Centenario de Oro 50 Pesos (1921-1931)',
-          'Centenario de Oro 50 Pesos',
+          NumismaticMotifRule('Centenario de la Consumación de la Independencia - 50 Pesos Oro (1921-1931)', 1921, 1931),
         ],
       },
       commemorativeReasons: [
         'Centenario de la Consumación de la Independencia (1921)',
-        'Centenario de Oro 50 Pesos (1921-1931)',
       ],
-    ),
+),
 
     // 1.16 México - Segunda Guerra y Postguerra (1943–1949)
     // Ref General: Banco de México - Monedas de plata y oro del siglo XX:
@@ -4720,16 +4736,15 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Plata',
         '50': 'Oro',
       },
-      commemorativeDenominations: {'5'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '5': [
-          'Cuauhtémoc Plata Ley .900 (1947-1948)',
+          NumismaticMotifRule('Cuauhtémoc (1947-1948)', 1947, 1948),
         ],
       },
       commemorativeReasons: [
         'Cuauhtémoc Plata Ley .900 (1947-1948)',
       ],
-    ),
+),
 
     // 1.17 México - Década de 1950 (1950–1956)
     // Ref General: Banco de México - Monedas de plata y oro del siglo XX:
@@ -4764,18 +4779,18 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Plata',
         '10': 'Plata',
       },
-      commemorativeDenominations: {'5'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '5': [
-          'Inauguración del Ferrocarril del Sureste (1950)',
-          'Bicentenario del Natalicio de Miguel Hidalgo y Costilla (1953)',
+          NumismaticMotifRule('Inauguración del Ferrocarril del Sureste (1950)', 1950),
+          NumismaticMotifRule('Hidalgo - Laurel (1951-1954)', 1951, 1954),
+          NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo (1953)', 1953),
         ],
       },
       commemorativeReasons: [
         'Inauguración del Ferrocarril del Sureste (1950)',
-        'Bicentenario del Natalicio de Miguel Hidalgo y Costilla (1953)',
+        'Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo (1953)',
       ],
-    ),
+),
 
     // 1.18 México - Período de los Tepalcates y Conmemorativas (1957–1969)
     // Ref General: Banco de México - Monedas de plata y oro del siglo XX:
@@ -4810,29 +4825,29 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Plata',
         '25': 'Plata',
       },
-      commemorativeDenominations: {'5', '10', '25'},
+                                              commemorativeDenominations: {'25'},
       commemorativeMotifsByDenomination: {
+        '1': [
+          NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
+        ],
         '5': [
-          'Centenario del Natalicio de Venustiano Carranza (1959)',
-          'Sesquicentenario de la Independencia (1960)',
+          NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
         ],
         '10': [
-          'Centenario de la Constitución de 1857 (1957)',
-          'Sesquicentenario de la Independencia (1960)',
+          NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
+          NumismaticMotifRule('150 Aniversario de la Independencia y 50 de la Revolución (1960)', 1960),
         ],
         '25': [
-          'Juegos Olímpicos México 68 (1968)',
-          'Juegos Olímpicos México 68 - Aros Caídos (1968)',
-          'Juegos Olímpicos México 68 - Aros Rectos (1968)',
+          NumismaticMotifRule('Juegos Olímpicos México 68 - Tipo 1 (Aros rectos / alineados)', 1968),
+          NumismaticMotifRule('Juegos Olímpicos México 68 - Tipo 2 (Aros caídos / desiguales)', 1968),
         ],
       },
       commemorativeReasons: [
-        'Centenario de la Constitución de 1857',
-        'Centenario del Natalicio de Venustiano Carranza',
-        'Sesquicentenario de la Independencia',
-        'Juegos Olímpicos México 68',
+        'Centenario de la Constitución de 1857 (1957)',
+        '150 Aniversario de la Independencia y 50 de la Revolución (1960)',
+        'Juegos Olímpicos México 68 (1968)',
       ],
-    ),
+),
 
     // 1.19 México - Transición Pirámide de Bronce y Monedas de Cuproníquel (1970–1973)
     // Ref General: Banco de México - Monedas metálicas desmonetizadas de la unidad anterior:
@@ -4859,7 +4874,7 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Cuproníquel',
         '5': 'Cuproníquel',
       },
-    ),
+                      ),
 
     // 1.20 México - Serie Numismática Cuproníquel, Latón y Plata (1974–1983)
     // Ref General: Banco de México - Monedas metálicas desmonetizadas de la unidad anterior:
@@ -4896,15 +4911,19 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Cuproníquel',
         '100': 'Plata',
       },
-      commemorativeDenominations: {'100'},
+                                              commemorativeDenominations: {'100'},
       commemorativeMotifsByDenomination: {
+        '50': [
+          NumismaticMotifRule('Coyolxauhqui - Templo Mayor (1982-1984)', 1982, 1984),
+        ],
         '100': [
-          'Morelos Plata Ley .720 (1977-1979)',
-          'José María Morelos Plata Ley .720 (1977-1979)',
+          NumismaticMotifRule('José María Morelos Plata Ley .720 (1977-1979)', 1977, 1979),
         ],
       },
-      commemorativeReasons: ['Morelos Plata Ley .720 (1977-1979)'],
-    ),
+      commemorativeReasons: [
+        'Morelos Plata Ley .720 (1977-1979)',
+      ],
+),
 
     // 1.21 México - Acero Inoxidable, Latón y Valores Medios (1984–1987)
     // Ref General: Banco de México - Monedas metálicas desmonetizadas:
@@ -4935,25 +4954,20 @@ abstract final class AppTechnicalNumismatics {
         '200': 'Cuproníquel',
         '500': 'Cuproníquel',
       },
-      commemorativeDenominations: {'200'},
+                                              commemorativeDenominations: {'200'},
       commemorativeMotifsByDenomination: {
         '200': [
-          '175 Aniversario de la Independencia',
-          '175 Aniversario de la Independencia (1985)',
-          '75 Aniversario de la Revolución',
-          '75 Aniversario de la Revolución (1985)',
-          'Copa Mundial de la FIFA México 1986',
-          'Copa Mundial FIFA México 86 (1986)',
-          'Copa Mundial FIFA México 86',
+          NumismaticMotifRule('175 Aniversario de la Independencia', 1985),
+          NumismaticMotifRule('75 Aniversario de la Revolución', 1985),
+          NumismaticMotifRule('Copa Mundial de la FIFA México 1986', 1986),
         ],
       },
       commemorativeReasons: [
         '175 Aniversario de la Independencia',
         '75 Aniversario de la Revolución',
-        'Copa Mundial FIFA México 86',
         'Copa Mundial de la FIFA México 1986',
       ],
-    ),
+),
 
     // 1.22 México - Grandes Valores de Inflación Pre-N$ (1988–1992)
     // Ref General: Banco de México - Monedas metálicas desmonetizadas:
@@ -4985,18 +4999,16 @@ abstract final class AppTechnicalNumismatics {
       denominationAllowedMaterials: {
         '50': ['Cuproníquel', 'Acero inoxidable'],
       },
-      commemorativeDenominations: {'5000'},
+                                              commemorativeDenominations: {'5000'},
       commemorativeMotifsByDenomination: {
         '5000': [
-          'Cincuentenario de la Expropiación Petrolera (1988)',
-          '50 Aniversario de la Expropiación Petrolera (1988)',
-          'Expropiación Petrolera (1988)',
+          NumismaticMotifRule('Cincuentenario de la Expropiación Petrolera (1988)', 1988),
         ],
       },
       commemorativeReasons: [
         'Cincuentenario de la Expropiación Petrolera (1988)',
       ],
-    ),
+),
 
     // 1.23 México - Nuevos Pesos (N$ grabados físicamente 1992–1995)
     // Ref General: Banco de México - Familia B (Nuevos Pesos en proceso de retiro):
@@ -5033,7 +5045,24 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Bimetálica',
         '50': 'Bimetálica',
       },
-    ),
+                            commemorativeDenominations: {'10', '20', '50'},
+      commemorativeMotifsByDenomination: {
+        '10': [
+          NumismaticMotifRule('Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)', 1992, 1995),
+        ],
+        '20': [
+          NumismaticMotifRule('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)', 1993, 1995),
+        ],
+        '50': [
+          NumismaticMotifRule('Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)', 1993, 1995),
+        ],
+      },
+      commemorativeReasons: [
+        'Nuevo Peso',
+        'Don Miguel Hidalgo y Costilla (1993-1995)',
+        'Niños Héroes (1993-1995)',
+      ],
+),
 
     // 1.24 México - Familia C Primer Período (1996–2007)
     // Ref General: Banco de México - Familia C en circulación:
@@ -5066,27 +5095,28 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Bimetálica',
         '100': 'Bimetálica',
       },
-      commemorativeDenominations: {'20', '100'},
+                                              commemorativeDenominations: {'20', '100'},
       commemorativeMotifsByDenomination: {
+        '10': [
+          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2000 (2000)', 2000),
+          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2001 (2001)', 2001),
+        ],
         '20': [
-          'Octavio Paz - Cambio de Milenio (2000)',
-          'Fuego Nuevo - Señorío de Xiuhtecuhtli (2000)',
-          'Octavio Paz - Cambio de Milenio',
-          'Fuego Nuevo - Señorío de Xiuhtecuhtli',
+          NumismaticMotifRule('Octavio Paz - Cambio de Milenio (2000)', 2000, 2001),
+          NumismaticMotifRule('Fuego Nuevo - Señorío de Xiuhtecuhtli (2000)', 2000, 2001),
         ],
         '100': [
-          '32 Estados de la República (Fase 1 y Fase 2)',
-          '32 Estados de la República - Fase 1 (Heráldicos)',
-          '32 Estados de la República - Fase 2 (Emblemáticos)',
-          '470 Aniversario de la Casa de Moneda de México (2005)',
-          '80 Aniversario del Banco de México (2005)',
-          '400 Aniversario de Don Quijote de la Mancha (2005)',
-          '400 Aniversario de la Primera Edición de Don Quijote de la Mancha (2005)',
-          'Bicentenario del Natalicio de Benito Juárez (2006)',
-          '180 Aniversario de la Unión Federal (2004)',
+          NumismaticMotifRule('32 Estados de la República - Fase 1 (Heráldicos)', 2003, 2005),
+          NumismaticMotifRule('32 Estados de la República - Fase 2 (Emblemáticos)', 2005, 2007),
+          NumismaticMotifRule('180 Aniversario de la Unión Federal (2004)', 2004),
+          NumismaticMotifRule('470 Aniversario de la Casa de Moneda de México (2005)', 2005),
+          NumismaticMotifRule('80 Aniversario del Banco de México (2005)', 2005),
+          NumismaticMotifRule('400 Aniversario de la Primera Edición de Don Quijote de la Mancha (2005)', 2005),
+          NumismaticMotifRule('Bicentenario del Natalicio de Benito Juárez (2006)', 2006),
         ],
       },
       commemorativeReasons: [
+        'Cambio de Milenio (2000-2001)',
         'Octavio Paz - Cambio de Milenio',
         'Fuego Nuevo - Señorío de Xiuhtecuhtli',
         '32 Estados de la República',
@@ -5096,7 +5126,7 @@ abstract final class AppTechnicalNumismatics {
         'Bicentenario del Natalicio de Benito Juárez',
         '180 Aniversario de la Unión Federal',
       ],
-    ),
+),
 
     // 1.25 México - Familia C Bicentenario y Centenario (2008–2010)
     // Ref General: Banco de México - Monedas de 5 pesos conmemorativas:
@@ -5125,49 +5155,55 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Bimetálica',
         '20': 'Bimetálica',
       },
-      commemorativeDenominations: {'5', '20'},
+                                              commemorativeDenominations: {'5', '20'},
       commemorativeMotifsByDenomination: {
         '5': [
-          'Ignacio López Rayón',
-          'Francisco Xavier Mina',
-          'Mariano Matamoros',
-          'Carlos María de Bustamante',
-          'Hermenegildo Galeana',
-          'José María Cos',
-          'Pedro Moreno',
-          'Agustín de Iturbide',
-          'Servando Teresa de Mier',
-          'Nicolás Bravo',
-          'Leona Vicario',
-          'Miguel Hidalgo y Costilla',
-          'José María Morelos y Pavón',
-          'Vicente Guerrero',
-          'Ignacio Allende',
-          'Guadalupe Victoria',
-          'Josefa Ortiz de Domínguez',
-          'Francisco Primo de Verdad y Ramos',
-          'Álvaro Obregón',
-          'José Vasconcelos',
-          'Francisco Villa',
-          'Heriberto Jara',
-          'Ricardo Flores Magón',
-          'Francisco J. Múgica',
-          'Filomeno Mata',
-          'Carmen Serdán',
-          'Andrés Molina Enríquez',
-          'Luis Cabrera',
-          'Eulalio Gutiérrez',
-          'Otilio Montaño',
-          'Belisario Domínguez',
-          'Francisco I. Madero',
-          'Emiliano Zapata',
-          'Venustiano Carranza',
-          'La Soldadera (Adelita)',
-          'José María Pino Suárez',
+          // 2008 - Independencia
+          NumismaticMotifRule('Ignacio López Rayón', 2008),
+          NumismaticMotifRule('Francisco Xavier Mina', 2008),
+          NumismaticMotifRule('Mariano Matamoros', 2008),
+          NumismaticMotifRule('Carlos María de Bustamante', 2008),
+          NumismaticMotifRule('Hermenegildo Galeana', 2008),
+          NumismaticMotifRule('Francisco Primo de Verdad y Ramos (Con puntos)', 2008),
+          NumismaticMotifRule('Francisco Primo de Verdad y Ramos (Sin puntos - Variedad especial)', 2008),
+          // 2008 - Revolución
+          NumismaticMotifRule('Álvaro Obregón', 2008),
+          NumismaticMotifRule('José Vasconcelos', 2008),
+          NumismaticMotifRule('Francisco Villa', 2008),
+          NumismaticMotifRule('Heriberto Jara', 2008),
+          NumismaticMotifRule('Ricardo Flores Magón', 2008),
+          NumismaticMotifRule('Francisco J. Múgica', 2008),
+          // 2009 - Independencia
+          NumismaticMotifRule('José María Cos', 2009),
+          NumismaticMotifRule('Pedro Moreno', 2009),
+          NumismaticMotifRule('Agustín de Iturbide', 2009),
+          NumismaticMotifRule('Servando Teresa de Mier', 2009),
+          NumismaticMotifRule('Nicolás Bravo', 2009),
+          NumismaticMotifRule('Leona Vicario', 2009),
+          // 2009 - Revolución
+          NumismaticMotifRule('Filomeno Mata', 2009),
+          NumismaticMotifRule('Carmen Serdán', 2009),
+          NumismaticMotifRule('Andrés Molina Enríquez', 2009),
+          NumismaticMotifRule('Luis Cabrera', 2009),
+          NumismaticMotifRule('Eulalio Gutiérrez', 2009),
+          NumismaticMotifRule('Otilio Montaño', 2009),
+          // 2010 - Independencia
+          NumismaticMotifRule('Miguel Hidalgo y Costilla', 2010),
+          NumismaticMotifRule('José María Morelos y Pavón', 2010),
+          NumismaticMotifRule('Vicente Guerrero', 2010),
+          NumismaticMotifRule('Ignacio Allende', 2010),
+          NumismaticMotifRule('Guadalupe Victoria', 2010),
+          NumismaticMotifRule('Josefa Ortiz de Domínguez', 2010),
+          // 2010 - Revolución
+          NumismaticMotifRule('Belisario Domínguez', 2010),
+          NumismaticMotifRule('Francisco I. Madero', 2010),
+          NumismaticMotifRule('Emiliano Zapata', 2010),
+          NumismaticMotifRule('Venustiano Carranza', 2010),
+          NumismaticMotifRule('La Soldadera (Adelita)', 2010),
+          NumismaticMotifRule('José María Pino Suárez', 2010),
         ],
         '20': [
-          'Octavio Paz - Premio Nobel de Literatura (2010)',
-          'Octavio Paz - Premio Nobel de Literatura',
+          NumismaticMotifRule('Octavio Paz - Premio Nobel de Literatura (2010)', 2010, 2011),
         ],
       },
       commemorativeReasons: [
@@ -5175,7 +5211,7 @@ abstract final class AppTechnicalNumismatics {
         'Centenario de la Revolución Mexicana (1910-2010)',
         'Octavio Paz - Premio Nobel de Literatura (2010)',
       ],
-    ),
+),
 
     // 1.26 México - Familia C Fraccionarias Acero Inoxidable (2011–2019)
     // Ref General: Banco de México - Monedas conmemorativas de 20 pesos Familia C:
@@ -5203,29 +5239,27 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Bimetálica',
         '20': 'Bimetálica',
       },
-      commemorativeDenominations: {'20'},
+                                              commemorativeDenominations: {'20'},
       commemorativeMotifsByDenomination: {
+        '10': [
+          NumismaticMotifRule('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza (2012)', 2012),
+        ],
         '20': [
-          'Centenario del Ejército Mexicano (2013)',
-          '150 Aniversario del Natalicio de Belisario Domínguez (2013)',
-          '150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez (2013)',
-          'Centenario de la Gesta Heroica de Veracruz (2014)',
-          'Centenario de la Toma de Zacatecas (2014)',
-          'Centenario de la Fuerza Aérea Mexicana (2015)',
-          'Bicentenario Luctuoso de José María Morelos y Pavón (2015)',
-          'Bicentenario Luctuoso del Generalísimo José María Morelos y Pavón (2015)',
-          'Quincuagésimo Aniversario del Plan DN-III-E (2016)',
-          'Cincuenta Aniversario del Plan DN-III-E (2016)',
-          'Centenario de la Constitución Política (2017)',
-          'Centenario de la Constitución Política de los Estados Unidos Mexicanos (2017)',
-          '50 Aniversario del Plan Marina (2018)',
-          'Cincuenta Aniversario de la Aplicación del Plan Marina (2018)',
-          '500 Años de la Fundación de la Ciudad y Puerto de Veracruz (2019)',
-          'Centenario de la Muerte del General Emiliano Zapata (2019)',
-          'Centenario de la Muerte del General Emiliano Zapata Salazar (2019)',
+          NumismaticMotifRule('Centenario del Ejército Mexicano (2013)', 2013),
+          NumismaticMotifRule('150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez (2013)', 2013),
+          NumismaticMotifRule('Centenario de la Gesta Heroica de Veracruz (2014)', 2014),
+          NumismaticMotifRule('Centenario de la Toma de Zacatecas (2014)', 2014),
+          NumismaticMotifRule('Centenario de la Fuerza Aérea Mexicana (2015)', 2015),
+          NumismaticMotifRule('Bicentenario Luctuoso del Generalísimo José María Morelos y Pavón (2015)', 2015),
+          NumismaticMotifRule('Cincuenta Aniversario de la Aplicación del Plan DN-III-E (2016)', 2016),
+          NumismaticMotifRule('Centenario de la Promulgación de la Constitución Política (2017)', 2017),
+          NumismaticMotifRule('50 Aniversario de la Aplicación del Plan Marina (2018)', 2018),
+          NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (2019)', 2019),
+          NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (2019)', 2019),
         ],
       },
       commemorativeReasons: [
+        '150 Aniversario de la Batalla de Puebla (2012)',
         'Centenario del Ejército Mexicano (2013)',
         '150 Aniversario de Belisario Domínguez (2013)',
         'Centenario de la Gesta Heroica de Veracruz (2014)',
@@ -5238,7 +5272,7 @@ abstract final class AppTechnicalNumismatics {
         '500 Años del Puerto de Veracruz (2019)',
         'Emiliano Zapata (2019)',
       ],
-    ),
+),
 
     // 1.27 México - Familia C1 Dodecagonal (2020–presente)
     // Ref General: Banco de México - Monedas de 20 pesos conmemorativas Familia C1:
@@ -5264,31 +5298,21 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Bimetálica',
         '20': 'Bimetálica',
       },
-      commemorativeDenominations: {'20'},
+                                              commemorativeDenominations: {'20'},
       commemorativeMotifsByDenomination: {
         '20': [
-          '700 Años de la Fundación Lunar de México-Tenochtitlan',
-          '700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)',
-          '700 Años de la Fundación Lunar de México-Tenochtitlan (2021)',
-          '500 Años de Memoria Histórica de México-Tenochtitlan',
-          '500 Años de Memoria Histórica de México-Tenochtitlan (2021)',
-          'Bicentenario de la Independencia Nacional',
-          'Bicentenario de la Independencia Nacional (2021)',
-          'Cien Años de la Llegada de los Menonitas a México (2022)',
-          'Llegada de los Menonitas a México (2022)',
-          'Bicentenario de la Marina-Armada de México (2022)',
-          'Bicentenario de la Marina-Armada (2022)',
-          'Bicentenario del Heroico Colegio Militar (2023)',
-          'Bicentenario del Heroico Colegio Militar',
-          'Doscientos Años de Relaciones Diplomáticas México-Estados Unidos (2023)',
-          'Doscientos Años de Relaciones Diplomáticas entre los Estados Unidos Mexicanos y los Estados Unidos de América (2023)',
-          '500 Años de la Fundación de la Primera Villa de Colima (2023)',
-          '500 Años de la Fundación de la Villa de Colima (2023)',
-          'Villa de Colima (2023)',
-          'Bicentenario de la Instauración del Senado de la República (2024)',
-          'Bicentenario de la Instauración del Senado de la República y Sesquicentenario de su Restauración (2024)',
-          'Cien Años del Heroico Batallón de Marina (2024)',
-          'Cien Años del Heroico Batallón de Infantería de Marina (2024)',
+          NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)', 2020),
+          NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (Dodecagonal 2020)', 2020),
+          NumismaticMotifRule('700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)', 2021),
+          NumismaticMotifRule('500 Años de Memoria Histórica de México-Tenochtitlan (2021)', 2021),
+          NumismaticMotifRule('Bicentenario de la Independencia Nacional (2021)', 2021),
+          NumismaticMotifRule('Cien Años de la Llegada de los Menonitas a México (2022)', 2022),
+          NumismaticMotifRule('Bicentenario de la Marina-Armada de México (2022)', 2022),
+          NumismaticMotifRule('Bicentenario del Heroico Colegio Militar (2023)', 2023),
+          NumismaticMotifRule('Doscientos Años de Relaciones Diplomáticas México-Estados Unidos (2023)', 2023),
+          NumismaticMotifRule('500 Años de la Fundación de la Villa de Colima (2023)', 2023),
+          NumismaticMotifRule('Bicentenario de la Instauración del Senado de la República (2024)', 2024),
+          NumismaticMotifRule('Cien Años del Heroico Batallón de Infantería de Marina (2024)', 2024),
         ],
       },
       commemorativeReasons: [
@@ -5303,7 +5327,7 @@ abstract final class AppTechnicalNumismatics {
         'Instauración del Senado de la República (2024)',
         'Heroico Batallón de Infantería de Marina (2024)',
       ],
-    ),
+),
 
     // =========================================================================
     // 2. ESTADOS UNIDOS DE AMÉRICA
@@ -5330,7 +5354,7 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Plata',
         '8': 'Plata',
       },
-    ),
+                      ),
 
     // 2.2 Estados Unidos - Large Cent, Half Cent y Plata/Oro Clásica (1792–1857)
     // Ref General: US Mint - Historical Coin Specifications:
@@ -5366,7 +5390,15 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Oro',
         '20': 'Oro',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '1': [
+          NumismaticMotifRule('Un Peso Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
+        ],
+      },
+      commemorativeReasons: [
+        'Un Peso Caballito - Centenario de la Independencia (1910-1914)',
+      ],
+),
 
     // 2.3 Estados Unidos - Small Cent, Guerra Civil y Nuevas Denominaciones (1858–1873)
     // Ref General: Numista - United States - Federal Republic (1792-1964):
@@ -5530,28 +5562,23 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Cuproníquel',
         '1': 'Cuproníquel',
       },
-      commemorativeDenominations: {'0.25', '0.50', '1'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '0.25': [
-          'Bicentennial Drummer Boy (1776-1976)',
-          'Bicentennial Quarter (1776-1976)',
+          NumismaticMotifRule('Bicentenario de los Estados Unidos - Tamborilero Colonial (1776-1976)', 1975, 1976),
         ],
         '0.50': [
-          'Bicentennial Independence Hall (1776-1976)',
-          'Bicentennial Half Dollar (1776-1976)',
+          NumismaticMotifRule('Bicentenario de los Estados Unidos - Independence Hall (1776-1976)', 1975, 1976),
         ],
         '1': [
-          'Bicentennial Liberty Bell and Moon (1776-1976)',
-          'Eisenhower Dollar (1971-1978)',
-          'Susan B. Anthony Dollar (1979-1981)',
+          NumismaticMotifRule('Eisenhower Bicentennial - Moon and Liberty Bell (1776-1976)', 1975, 1976),
+          NumismaticMotifRule('Susan B. Anthony Dollar (1979-1981)', 1979, 1981),
         ],
       },
       commemorativeReasons: [
-        'Bicentennial Drummer Boy (1776-1976)',
-        'Bicentennial Independence Hall (1776-1976)',
-        'Bicentennial Liberty Bell and Moon (1776-1976)',
+        'Bicentenario de los Estados Unidos (1776-1976)',
+        'Susan B. Anthony Dollar (1979-1981)',
       ],
-    ),
+),
 
     // 2.8 Estados Unidos - Centavos de Zinc y 50 State Quarters (1982–1999)
     // Ref General: US Mint - 50 State Quarters Program:
@@ -5581,20 +5608,23 @@ abstract final class AppTechnicalNumismatics {
       denominationAllowedMaterials: {
         '0.01': ['Zinc bañado en cobre', 'Bronce', 'Latón'],
       },
-      commemorativeDenominations: {'0.25'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '0.25': [
-          '50 State Quarters - Delaware (1999)',
-          '50 State Quarters - Pennsylvania (1999)',
-          '50 State Quarters - New Jersey (1999)',
-          '50 State Quarters - Georgia (1999)',
-          '50 State Quarters - Connecticut (1999)',
+          NumismaticMotifRule('50 State Quarters - Delaware (1999)', 1999),
+          NumismaticMotifRule('50 State Quarters - Pennsylvania (1999)', 1999),
+          NumismaticMotifRule('50 State Quarters - New Jersey (1999)', 1999),
+          NumismaticMotifRule('50 State Quarters - Georgia (1999)', 1999),
+          NumismaticMotifRule('50 State Quarters - Connecticut (1999)', 1999),
+        ],
+        '1': [
+          NumismaticMotifRule('Susan B. Anthony Dollar (1999)', 1999),
         ],
       },
       commemorativeReasons: [
-        '50 State Quarters (1999)',
+        '50 State Quarters Program (1999)',
+        'Susan B. Anthony Dollar (1999)',
       ],
-    ),
+),
 
     // 2.9 Estados Unidos - Golden Dollar y Programas Modernos (2000–presente)
     // Ref General: US Mint - Modern Coin Specifications:
@@ -5629,100 +5659,255 @@ abstract final class AppTechnicalNumismatics {
           'Latón',
         ],
       },
-      commemorativeDenominations: {'0.01', '0.05', '0.25', '1'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '0.01': [
-          'Lincoln Bicentennial - Birthplace (2009)',
-          'Lincoln Bicentennial - Formative Years in Indiana (2009)',
-          'Lincoln Bicentennial - Professional Life in Illinois (2009)',
-          'Lincoln Bicentennial - Presidency in Washington D.C. (2009)',
-          'Lincoln Union Shield (2010+)',
+          NumismaticMotifRule('Lincoln Bicentennial - Birthplace (2009)', 2009),
+          NumismaticMotifRule('Lincoln Bicentennial - Formative Years in Indiana (2009)', 2009),
+          NumismaticMotifRule('Lincoln Bicentennial - Professional Life in Illinois (2009)', 2009),
+          NumismaticMotifRule('Lincoln Bicentennial - Presidency in Washington D.C. (2009)', 2009),
+          NumismaticMotifRule('Union Shield (2010+)', 2010, 2100),
         ],
         '0.05': [
-          'Westward Journey - Peace Medal (2004)',
-          'Westward Journey - Keelboat (2004)',
-          'Westward Journey - American Bison (2005)',
-          'Westward Journey - Ocean in View (2005)',
+          NumismaticMotifRule('Westward Journey - Peace Medal (2004)', 2004),
+          NumismaticMotifRule('Westward Journey - Keelboat (2004)', 2004),
+          NumismaticMotifRule('Westward Journey - American Bison (2005)', 2005),
+          NumismaticMotifRule('Westward Journey - Ocean in View (2005)', 2005),
+          NumismaticMotifRule('Monticello Return (2006+)', 2006, 2100),
         ],
         '0.25': [
-          '50 State Quarters',
-          'District of Columbia and U.S. Territories Quarters (2009)',
-          'America the Beautiful Quarters',
-          'General George Washington Crossing the Delaware (2021)',
-          'American Women Quarters',
-          'American Women Quarters - Maya Angelou (2022)',
-          'American Women Quarters - Dr. Sally Ride (2022)',
-          'American Women Quarters - Wilma Mankiller (2022)',
-          'American Women Quarters - Nina Otero-Warren (2022)',
-          'American Women Quarters - Anna May Wong (2022)',
-          'American Women Quarters - Bessie Coleman (2023)',
-          'American Women Quarters - Edith Kanakaʻole (2023)',
-          'American Women Quarters - Eleanor Roosevelt (2023)',
-          'American Women Quarters - Jovita Idár (2023)',
-          'American Women Quarters - Maria Tallchief (2023)',
-          'American Women Quarters - Rev. Dr. Pauli Murray (2024)',
-          'American Women Quarters - Patsy Takemoto Mink (2024)',
-          'American Women Quarters - Dr. Mary Edwards Walker (2024)',
-          'American Women Quarters - Celia Cruz (2024)',
-          'American Women Quarters - Zitkala-Ša (2024)',
+          // 50 State Quarters (2000-2008)
+          NumismaticMotifRule('50 State Quarters - Massachusetts (2000)', 2000),
+          NumismaticMotifRule('50 State Quarters - Maryland (2000)', 2000),
+          NumismaticMotifRule('50 State Quarters - South Carolina (2000)', 2000),
+          NumismaticMotifRule('50 State Quarters - New Hampshire (2000)', 2000),
+          NumismaticMotifRule('50 State Quarters - Virginia (2000)', 2000),
+          NumismaticMotifRule('50 State Quarters - New York (2001)', 2001),
+          NumismaticMotifRule('50 State Quarters - North Carolina (2001)', 2001),
+          NumismaticMotifRule('50 State Quarters - Rhode Island (2001)', 2001),
+          NumismaticMotifRule('50 State Quarters - Vermont (2001)', 2001),
+          NumismaticMotifRule('50 State Quarters - Kentucky (2001)', 2001),
+          NumismaticMotifRule('50 State Quarters - Tennessee (2002)', 2002),
+          NumismaticMotifRule('50 State Quarters - Ohio (2002)', 2002),
+          NumismaticMotifRule('50 State Quarters - Louisiana (2002)', 2002),
+          NumismaticMotifRule('50 State Quarters - Indiana (2002)', 2002),
+          NumismaticMotifRule('50 State Quarters - Mississippi (2002)', 2002),
+          NumismaticMotifRule('50 State Quarters - Illinois (2003)', 2003),
+          NumismaticMotifRule('50 State Quarters - Alabama (2003)', 2003),
+          NumismaticMotifRule('50 State Quarters - Maine (2003)', 2003),
+          NumismaticMotifRule('50 State Quarters - Missouri (2003)', 2003),
+          NumismaticMotifRule('50 State Quarters - Arkansas (2003)', 2003),
+          NumismaticMotifRule('50 State Quarters - Michigan (2004)', 2004),
+          NumismaticMotifRule('50 State Quarters - Florida (2004)', 2004),
+          NumismaticMotifRule('50 State Quarters - Texas (2004)', 2004),
+          NumismaticMotifRule('50 State Quarters - Iowa (2004)', 2004),
+          NumismaticMotifRule('50 State Quarters - Wisconsin (2004)', 2004),
+          NumismaticMotifRule('50 State Quarters - California (2005)', 2005),
+          NumismaticMotifRule('50 State Quarters - Minnesota (2005)', 2005),
+          NumismaticMotifRule('50 State Quarters - Oregon (2005)', 2005),
+          NumismaticMotifRule('50 State Quarters - Kansas (2005)', 2005),
+          NumismaticMotifRule('50 State Quarters - West Virginia (2005)', 2005),
+          NumismaticMotifRule('50 State Quarters - Nevada (2006)', 2006),
+          NumismaticMotifRule('50 State Quarters - Nebraska (2006)', 2006),
+          NumismaticMotifRule('50 State Quarters - Colorado (2006)', 2006),
+          NumismaticMotifRule('50 State Quarters - North Dakota (2006)', 2006),
+          NumismaticMotifRule('50 State Quarters - South Dakota (2006)', 2006),
+          NumismaticMotifRule('50 State Quarters - Montana (2007)', 2007),
+          NumismaticMotifRule('50 State Quarters - Washington (2007)', 2007),
+          NumismaticMotifRule('50 State Quarters - Idaho (2007)', 2007),
+          NumismaticMotifRule('50 State Quarters - Wyoming (2007)', 2007),
+          NumismaticMotifRule('50 State Quarters - Utah (2007)', 2007),
+          NumismaticMotifRule('50 State Quarters - Oklahoma (2008)', 2008),
+          NumismaticMotifRule('50 State Quarters - New Mexico (2008)', 2008),
+          NumismaticMotifRule('50 State Quarters - Arizona (2008)', 2008),
+          NumismaticMotifRule('50 State Quarters - Alaska (2008)', 2008),
+          NumismaticMotifRule('50 State Quarters - Hawaii (2008)', 2008),
+          // DC & US Territories (2009)
+          NumismaticMotifRule('District of Columbia & US Territories - District of Columbia (2009)', 2009),
+          NumismaticMotifRule('District of Columbia & US Territories - Puerto Rico (2009)', 2009),
+          NumismaticMotifRule('District of Columbia & US Territories - Guam (2009)', 2009),
+          NumismaticMotifRule('District of Columbia & US Territories - American Samoa (2009)', 2009),
+          NumismaticMotifRule('District of Columbia & US Territories - U.S. Virgin Islands (2009)', 2009),
+          NumismaticMotifRule('District of Columbia & US Territories - Northern Mariana Islands (2009)', 2009),
+          // America the Beautiful Quarters (2010-2021)
+          NumismaticMotifRule('America the Beautiful - Hot Springs (2010)', 2010),
+          NumismaticMotifRule('America the Beautiful - Yellowstone (2010)', 2010),
+          NumismaticMotifRule('America the Beautiful - Yosemite (2010)', 2010),
+          NumismaticMotifRule('America the Beautiful - Grand Canyon (2010)', 2010),
+          NumismaticMotifRule('America the Beautiful - Mount Hood (2010)', 2010),
+          NumismaticMotifRule('America the Beautiful - Gettysburg (2011)', 2011),
+          NumismaticMotifRule('America the Beautiful - Glacier (2011)', 2011),
+          NumismaticMotifRule('America the Beautiful - Olympic (2011)', 2011),
+          NumismaticMotifRule('America the Beautiful - Vicksburg (2011)', 2011),
+          NumismaticMotifRule('America the Beautiful - Chickasaw (2011)', 2011),
+          NumismaticMotifRule('America the Beautiful - El Yunque (2012)', 2012),
+          NumismaticMotifRule('America the Beautiful - Chaco Culture (2012)', 2012),
+          NumismaticMotifRule('America the Beautiful - Acadia (2012)', 2012),
+          NumismaticMotifRule('America the Beautiful - Hawaii Volcanoes (2012)', 2012),
+          NumismaticMotifRule('America the Beautiful - Denali (2012)', 2012),
+          NumismaticMotifRule('America the Beautiful - White Mountain (2013)', 2013),
+          NumismaticMotifRule('America the Beautiful - Perry\'s Victory (2013)', 2013),
+          NumismaticMotifRule('America the Beautiful - Great Basin (2013)', 2013),
+          NumismaticMotifRule('America the Beautiful - Fort McHenry (2013)', 2013),
+          NumismaticMotifRule('America the Beautiful - Mount Rushmore (2013)', 2013),
+          NumismaticMotifRule('America the Beautiful - Great Smoky Mountains (2014)', 2014),
+          NumismaticMotifRule('America the Beautiful - Shenandoah (2014)', 2014),
+          NumismaticMotifRule('America the Beautiful - Arches (2014)', 2014),
+          NumismaticMotifRule('America the Beautiful - Great Sand Dunes (2014)', 2014),
+          NumismaticMotifRule('America the Beautiful - Everglades (2014)', 2014),
+          NumismaticMotifRule('America the Beautiful - Homestead (2015)', 2015),
+          NumismaticMotifRule('America the Beautiful - Kisatchie (2015)', 2015),
+          NumismaticMotifRule('America the Beautiful - Blue Ridge Parkway (2015)', 2015),
+          NumismaticMotifRule('America the Beautiful - Bombay Hook (2015)', 2015),
+          NumismaticMotifRule('America the Beautiful - Saratoga (2015)', 2015),
+          NumismaticMotifRule('America the Beautiful - Shawnee (2016)', 2016),
+          NumismaticMotifRule('America the Beautiful - Cumberland Gap (2016)', 2016),
+          NumismaticMotifRule('America the Beautiful - Harpers Ferry (2016)', 2016),
+          NumismaticMotifRule('America the Beautiful - Theodore Roosevelt (2016)', 2016),
+          NumismaticMotifRule('America the Beautiful - Fort Moultrie (2016)', 2016),
+          NumismaticMotifRule('America the Beautiful - Effigy Mounds (2017)', 2017),
+          NumismaticMotifRule('America the Beautiful - Frederick Douglass (2017)', 2017),
+          NumismaticMotifRule('America the Beautiful - Ozark Riverways (2017)', 2017),
+          NumismaticMotifRule('America the Beautiful - Ellis Island (2017)', 2017),
+          NumismaticMotifRule('America the Beautiful - George Rogers Clark (2017)', 2017),
+          NumismaticMotifRule('America the Beautiful - Pictured Rocks (2018)', 2018),
+          NumismaticMotifRule('America the Beautiful - Apostle Islands (2018)', 2018),
+          NumismaticMotifRule('America the Beautiful - Voyageurs (2018)', 2018),
+          NumismaticMotifRule('America the Beautiful - Cumberland Island (2018)', 2018),
+          NumismaticMotifRule('America the Beautiful - Block Island (2018)', 2018),
+          NumismaticMotifRule('America the Beautiful - Lowell (2019)', 2019),
+          NumismaticMotifRule('America the Beautiful - American Memorial Park (2019)', 2019),
+          NumismaticMotifRule('America the Beautiful - War in the Pacific (2019)', 2019),
+          NumismaticMotifRule('America the Beautiful - San Antonio Missions (2019)', 2019),
+          NumismaticMotifRule('America the Beautiful - Frank Church River of No Return (2019)', 2019),
+          NumismaticMotifRule('America the Beautiful - National Park of American Samoa (2020)', 2020),
+          NumismaticMotifRule('America the Beautiful - Weir Farm (2020)', 2020),
+          NumismaticMotifRule('America the Beautiful - Salt River Bay (2020)', 2020),
+          NumismaticMotifRule('America the Beautiful - Marsh-Billings-Rockefeller (2020)', 2020),
+          NumismaticMotifRule('America the Beautiful - Tallgrass Prairie (2020)', 2020),
+          NumismaticMotifRule('America the Beautiful - Tuskegee Airmen (2021)', 2021),
+          // American Women Quarters (2022-2025)
+          NumismaticMotifRule('American Women - Maya Angelou (2022)', 2022),
+          NumismaticMotifRule('American Women - Dr. Sally Ride (2022)', 2022),
+          NumismaticMotifRule('American Women - Wilma Mankiller (2022)', 2022),
+          NumismaticMotifRule('American Women - Nina Otero-Warren (2022)', 2022),
+          NumismaticMotifRule('American Women - Anna May Wong (2022)', 2022),
+          NumismaticMotifRule('American Women - Bessie Coleman (2023)', 2023),
+          NumismaticMotifRule('American Women - Edith Kanakaʻole (2023)', 2023),
+          NumismaticMotifRule('American Women - Eleanor Roosevelt (2023)', 2023),
+          NumismaticMotifRule('American Women - Jovita Idár (2023)', 2023),
+          NumismaticMotifRule('American Women - Maria Tallchief (2023)', 2023),
+          NumismaticMotifRule('American Women - Rev. Dr. Pauli Murray (2024)', 2024),
+          NumismaticMotifRule('American Women - Patsy Takemoto Mink (2024)', 2024),
+          NumismaticMotifRule('American Women - Dr. Mary Edwards Walker (2024)', 2024),
+          NumismaticMotifRule('American Women - Celia Cruz (2024)', 2024),
+          NumismaticMotifRule('American Women - Zitkala-Ša (2024)', 2024),
+          NumismaticMotifRule('American Women - Ida B. Wells (2025)', 2025),
+          NumismaticMotifRule('American Women - Juliette Gordon Low (2025)', 2025),
+          NumismaticMotifRule('American Women - Dr. Vera Rubin (2025)', 2025),
+          NumismaticMotifRule('American Women - Althea Gibson (2025)', 2025),
+          NumismaticMotifRule('American Women - Stacey Park Milbern (2025)', 2025),
         ],
         '1': [
-          'Sacagawea / Native American Dollar',
-          'Sacagawea Dollar (2000-2008)',
-          'Native American Dollar',
-          'Presidential Dollar',
-          'Presidential Dollar - George Washington (2007)',
-          'Presidential Dollar - John Adams (2007)',
-          'Presidential Dollar - Thomas Jefferson (2007)',
-          'Presidential Dollar - James Madison (2007)',
-          'Presidential Dollar - James Monroe (2008)',
-          'Presidential Dollar - John Quincy Adams (2008)',
-          'Presidential Dollar - Andrew Jackson (2008)',
-          'Presidential Dollar - Martin Van Buren (2008)',
-          'Presidential Dollar - William Henry Harrison (2009)',
-          'Presidential Dollar - John Tyler (2009)',
-          'Presidential Dollar - James K. Polk (2009)',
-          'Presidential Dollar - Zachary Taylor (2009)',
-          'Presidential Dollar - Millard Fillmore (2010)',
-          'Presidential Dollar - Franklin Pierce (2010)',
-          'Presidential Dollar - James Buchanan (2010)',
-          'Presidential Dollar - Abraham Lincoln (2010)',
-          'Presidential Dollar - Andrew Johnson (2011)',
-          'Presidential Dollar - Ulysses S. Grant (2011)',
-          'Presidential Dollar - Rutherford B. Hayes (2011)',
-          'Presidential Dollar - James A. Garfield (2011)',
-          'Presidential Dollar - Chester A. Arthur (2012)',
-          'Presidential Dollar - Grover Cleveland - 1st Term (2012)',
-          'Presidential Dollar - Benjamin Harrison (2012)',
-          'Presidential Dollar - Grover Cleveland - 2nd Term (2012)',
-          'Presidential Dollar - William McKinley (2013)',
-          'Presidential Dollar - Theodore Roosevelt (2013)',
-          'Presidential Dollar - William Howard Taft (2013)',
-          'Presidential Dollar - Woodrow Wilson (2013)',
-          'Presidential Dollar - Warren G. Harding (2014)',
-          'Presidential Dollar - Calvin Coolidge (2014)',
-          'Presidential Dollar - Herbert Hoover (2014)',
-          'Presidential Dollar - Franklin D. Roosevelt (2014)',
-          'Presidential Dollar - Harry S. Truman (2015)',
-          'Presidential Dollar - Dwight D. Eisenhower (2015)',
-          'Presidential Dollar - John F. Kennedy (2015)',
-          'Presidential Dollar - Lyndon B. Johnson (2015)',
-          'Presidential Dollar - Richard M. Nixon (2016)',
-          'Presidential Dollar - Gerald R. Ford (2016)',
-          'Presidential Dollar - Ronald Reagan (2016)',
-          'Presidential Dollar - George H.W. Bush (2020)',
-          'American Innovation Dollar',
+          // Sacagawea Dollar (2000-2008)
+          NumismaticMotifRule('Sacagawea Dollar (2000-2008)', 2000, 2008),
+          // Native American Dollar (2009-present)
+          NumismaticMotifRule('Native American - Tres Hermanas Agricultura (2009)', 2009),
+          NumismaticMotifRule('Native American - Gran Árbol de la Paz (2010)', 2010),
+          NumismaticMotifRule('Native American - Tratado Wampanoag (2011)', 2011),
+          NumismaticMotifRule('Native American - Rutas Comerciales del Siglo XVII (2012)', 2012),
+          NumismaticMotifRule('Native American - Tratado con los Lenape (2013)', 2013),
+          NumismaticMotifRule('Native American - Hospitalidad Nativa (2014)', 2014),
+          NumismaticMotifRule('Native American - Trabajadores del Hierro Mohawk (2015)', 2015),
+          NumismaticMotifRule('Native American - Codificadores de Clave (2016)', 2016),
+          NumismaticMotifRule('Native American - Sequoyah (2017)', 2017),
+          NumismaticMotifRule('Native American - Jim Thorpe (2018)', 2018),
+          NumismaticMotifRule('Native American - Mary Golda Ross y Programa Espacial (2019)', 2019),
+          NumismaticMotifRule('Native American - Elizabeth Peratrovich (2020)', 2020),
+          NumismaticMotifRule('Native American - Servicio Militar Indígena (2021)', 2021),
+          NumismaticMotifRule('Native American - Ely S. Parker (2022)', 2022),
+          NumismaticMotifRule('Native American - Maria Tallchief (2023)', 2023),
+          NumismaticMotifRule('Native American - Ley de Ciudadanía Indígena (2024)', 2024),
+          // Presidential Dollar (2007-2016, 2020)
+          NumismaticMotifRule('Presidential Dollar - George Washington (2007)', 2007),
+          NumismaticMotifRule('Presidential Dollar - John Adams (2007)', 2007),
+          NumismaticMotifRule('Presidential Dollar - Thomas Jefferson (2007)', 2007),
+          NumismaticMotifRule('Presidential Dollar - James Madison (2007)', 2007),
+          NumismaticMotifRule('Presidential Dollar - James Monroe (2008)', 2008),
+          NumismaticMotifRule('Presidential Dollar - John Quincy Adams (2008)', 2008),
+          NumismaticMotifRule('Presidential Dollar - Andrew Jackson (2008)', 2008),
+          NumismaticMotifRule('Presidential Dollar - Martin Van Buren (2008)', 2008),
+          NumismaticMotifRule('Presidential Dollar - William Henry Harrison (2009)', 2009),
+          NumismaticMotifRule('Presidential Dollar - John Tyler (2009)', 2009),
+          NumismaticMotifRule('Presidential Dollar - James K. Polk (2009)', 2009),
+          NumismaticMotifRule('Presidential Dollar - Zachary Taylor (2009)', 2009),
+          NumismaticMotifRule('Presidential Dollar - Millard Fillmore (2010)', 2010),
+          NumismaticMotifRule('Presidential Dollar - Franklin Pierce (2010)', 2010),
+          NumismaticMotifRule('Presidential Dollar - James Buchanan (2010)', 2010),
+          NumismaticMotifRule('Presidential Dollar - Abraham Lincoln (2010)', 2010),
+          NumismaticMotifRule('Presidential Dollar - Andrew Johnson (2011)', 2011),
+          NumismaticMotifRule('Presidential Dollar - Ulysses S. Grant (2011)', 2011),
+          NumismaticMotifRule('Presidential Dollar - Rutherford B. Hayes (2011)', 2011),
+          NumismaticMotifRule('Presidential Dollar - James A. Garfield (2011)', 2011),
+          NumismaticMotifRule('Presidential Dollar - Chester A. Arthur (2012)', 2012),
+          NumismaticMotifRule('Presidential Dollar - Grover Cleveland - 1st Term (2012)', 2012),
+          NumismaticMotifRule('Presidential Dollar - Benjamin Harrison (2012)', 2012),
+          NumismaticMotifRule('Presidential Dollar - Grover Cleveland - 2nd Term (2012)', 2012),
+          NumismaticMotifRule('Presidential Dollar - William McKinley (2013)', 2013),
+          NumismaticMotifRule('Presidential Dollar - Theodore Roosevelt (2013)', 2013),
+          NumismaticMotifRule('Presidential Dollar - William Howard Taft (2013)', 2013),
+          NumismaticMotifRule('Presidential Dollar - Woodrow Wilson (2013)', 2013),
+          NumismaticMotifRule('Presidential Dollar - Warren G. Harding (2014)', 2014),
+          NumismaticMotifRule('Presidential Dollar - Calvin Coolidge (2014)', 2014),
+          NumismaticMotifRule('Presidential Dollar - Herbert Hoover (2014)', 2014),
+          NumismaticMotifRule('Presidential Dollar - Franklin D. Roosevelt (2014)', 2014),
+          NumismaticMotifRule('Presidential Dollar - Harry S. Truman (2015)', 2015),
+          NumismaticMotifRule('Presidential Dollar - Dwight D. Eisenhower (2015)', 2015),
+          NumismaticMotifRule('Presidential Dollar - John F. Kennedy (2015)', 2015),
+          NumismaticMotifRule('Presidential Dollar - Lyndon B. Johnson (2015)', 2015),
+          NumismaticMotifRule('Presidential Dollar - Richard M. Nixon (2016)', 2016),
+          NumismaticMotifRule('Presidential Dollar - Gerald R. Ford (2016)', 2016),
+          NumismaticMotifRule('Presidential Dollar - Ronald Reagan (2016)', 2016),
+          NumismaticMotifRule('Presidential Dollar - George H.W. Bush (2020)', 2020),
+          // American Innovation Dollar (2018+)
+          NumismaticMotifRule('American Innovation - Primera Patente (2018)', 2018),
+          NumismaticMotifRule('American Innovation - Delaware (2019)', 2019),
+          NumismaticMotifRule('American Innovation - Pennsylvania (2019)', 2019),
+          NumismaticMotifRule('American Innovation - New Jersey (2019)', 2019),
+          NumismaticMotifRule('American Innovation - Georgia (2019)', 2019),
+          NumismaticMotifRule('American Innovation - Connecticut (2020)', 2020),
+          NumismaticMotifRule('American Innovation - Massachusetts (2020)', 2020),
+          NumismaticMotifRule('American Innovation - Maryland (2020)', 2020),
+          NumismaticMotifRule('American Innovation - South Carolina (2020)', 2020),
+          NumismaticMotifRule('American Innovation - New Hampshire (2021)', 2021),
+          NumismaticMotifRule('American Innovation - Virginia (2021)', 2021),
+          NumismaticMotifRule('American Innovation - New York (2021)', 2021),
+          NumismaticMotifRule('American Innovation - North Carolina (2021)', 2021),
+          NumismaticMotifRule('American Innovation - Rhode Island (2022)', 2022),
+          NumismaticMotifRule('American Innovation - Vermont (2022)', 2022),
+          NumismaticMotifRule('American Innovation - Kentucky (2022)', 2022),
+          NumismaticMotifRule('American Innovation - Tennessee (2022)', 2022),
+          NumismaticMotifRule('American Innovation - Ohio (2023)', 2023),
+          NumismaticMotifRule('American Innovation - Louisiana (2023)', 2023),
+          NumismaticMotifRule('American Innovation - Indiana (2023)', 2023),
+          NumismaticMotifRule('American Innovation - Mississippi (2023)', 2023),
+          NumismaticMotifRule('American Innovation - Illinois (2024)', 2024),
+          NumismaticMotifRule('American Innovation - Alabama (2024)', 2024),
+          NumismaticMotifRule('American Innovation - Maine (2024)', 2024),
+          NumismaticMotifRule('American Innovation - Missouri (2024)', 2024),
         ],
       },
       commemorativeReasons: [
-        '50 State Quarters',
-        'America the Beautiful Quarters',
-        'American Women Quarters',
-        'Sacagawea / Native American Dollar',
-        'Presidential Dollar',
-        'American Innovation Dollar',
+        '50 State Quarters (1999-2008)',
+        'America the Beautiful Quarters (2010-2021)',
+        'American Women Quarters (2022-2025)',
+        'Lincoln Bicentennial (2009)',
+        'Westward Journey (2004-2005)',
+        'Sacagawea Dollar (2000-2008)',
+        'Native American Dollar (2009+)',
+        'Presidential Dollar (2007-2016, 2020)',
+        'American Innovation Dollar (2018+)',
       ],
-    ),
+),
 
     // =========================================================================
     // 3. ESPAÑA Y UNIÓN EUROPEA
@@ -5755,7 +5940,7 @@ abstract final class AppTechnicalNumismatics {
       denominationAllowedMaterials: {
         '1/4': ['Plata', 'Cobre'],
       },
-    ),
+                ),
 
     // 3.2 España - Peseta Clásica (1869–1939)
     // Ref General: Banco de España - Billetes y monedas en pesetas:
@@ -5791,7 +5976,23 @@ abstract final class AppTechnicalNumismatics {
         '25': 'Oro',
         '100': 'Oro',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '0.25': [
+          NumismaticMotifRule('Bicentenario de los Estados Unidos - Tamborilero Colonial (1776-1976)', 1975, 1976),
+        ],
+        '0.50': [
+          NumismaticMotifRule('Bicentenario de los Estados Unidos - Independence Hall (1776-1976)', 1975, 1976),
+        ],
+        '1': [
+          NumismaticMotifRule('Eisenhower Bicentennial - Moon and Liberty Bell (1776-1976)', 1975, 1976),
+          NumismaticMotifRule('Susan B. Anthony Dollar (1979-1981)', 1979, 1981),
+        ],
+      },
+      commemorativeReasons: [
+        'Bicentenario de los Estados Unidos (1776-1976)',
+        'Susan B. Anthony Dollar (1979-1981)',
+      ],
+),
 
     // 3.3 España - Peseta del Estado Español y Transición (1940–1981)
     // Ref General: Banco de España - Monedas de Franco y Juan Carlos I:
@@ -5823,15 +6024,17 @@ abstract final class AppTechnicalNumismatics {
       denominationAllowedMaterials: {
         '100': ['Plata', 'Cuproníquel'],
       },
-      commemorativeDenominations: {'100'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '100': [
-          '100 Pesetas Franco Plata .800 (1966)',
-          '100 Pesetas Juan Carlos I (1975)',
+          NumismaticMotifRule('100 Pesetas Franco Plata .800 (1966)', 1966),
+          NumismaticMotifRule('100 Pesetas Juan Carlos I (1975)', 1975),
         ],
       },
-      defaultCommemorativeReason: 'Conmemorativa',
-    ),
+      commemorativeReasons: [
+        '100 Pesetas Franco Plata .800 (1966)',
+        '100 Pesetas Juan Carlos I (1975)',
+      ],
+),
 
     // 3.4 España - Peseta Moderna y Monedas Autonómicas (1982–2001)
     // Ref General: Real Casa de la Moneda - FNMT Series de Pesetas:
@@ -5862,33 +6065,36 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Bronce de aluminio',
         '2000': 'Plata',
       },
-      commemorativeDenominations: {'25', '2000'},
+                                              commemorativeDenominations: {'2000'},
       commemorativeMotifsByDenomination: {
         '25': [
-          'Juegos Olímpicos de Barcelona 92 (1990-1992)',
-          'Castilla y León (1993)',
-          'País Vasco (1994)',
-          'Canarias (1995)',
-          'Principado de Asturias (1996)',
-          'Castilla-La Mancha (1997)',
-          'Melilla (1997)',
-          'Ceuta (1998)',
-          'Comunidad Foral de Navarra (1999)',
-          'Palacio Real de Madrid (2000)',
+          NumismaticMotifRule('Juegos Olímpicos de Barcelona 92 (1990-1992)', 1990, 1992),
+          NumismaticMotifRule('Castilla y León (1993)', 1993),
+          NumismaticMotifRule('País Vasco (1994)', 1994),
+          NumismaticMotifRule('Canarias (1995)', 1995),
+          NumismaticMotifRule('Principado de Asturias (1996)', 1996),
+          NumismaticMotifRule('Castilla-La Mancha (1997)', 1997),
+          NumismaticMotifRule('Melilla (1997)', 1997),
+          NumismaticMotifRule('Ceuta (1998)', 1998),
+          NumismaticMotifRule('Comunidad Foral de Navarra (1999)', 1999),
+          NumismaticMotifRule('Palacio Real de Madrid (2000)', 2000),
         ],
         '2000': [
-          'Asamblea del FMI y Banco Mundial - Madrid (1994)',
-          'Presidencia Española del Consejo de la Unión Europea (1995)',
-          'IV Centenario de Don Quijote y Sancho (1996)',
-          '400 Aniversario de Juan de Herrera (1997)',
-          'IV Centenario de la Muerte de Felipe II (1998)',
-          'Año Santo Xacobeo (1999)',
-          'V Centenario del Nacimiento de Carlos V (2000)',
-          'Última Emisión de la Peseta - Hispania (2001)',
+          NumismaticMotifRule('Asamblea del FMI y Banco Mundial - Madrid (1994)', 1994),
+          NumismaticMotifRule('Presidencia Española del Consejo de la Unión Europea (1995)', 1995),
+          NumismaticMotifRule('IV Centenario de Don Quijote y Sancho (1996)', 1996),
+          NumismaticMotifRule('400 Aniversario de Juan de Herrera (1997)', 1997),
+          NumismaticMotifRule('IV Centenario de la Muerte de Felipe II (1998)', 1998),
+          NumismaticMotifRule('Año Santo Xacobeo (1999)', 1999),
+          NumismaticMotifRule('V Centenario del Nacimiento de Carlos V (2000)', 2000),
+          NumismaticMotifRule('Última Emisión de la Peseta - Hispania (2001)', 2001),
         ],
       },
-      defaultCommemorativeReason: 'Conmemorativa',
-    ),
+      commemorativeReasons: [
+        'Serie Comunidades Autónomas 25 Pesetas',
+        'Serie Conmemorativa 2000 Pesetas Plata',
+      ],
+),
 
     // 3.5 España - Época del Euro (grabadas físicamente 1999–presente)
     // Ref General: Banco Central Europeo - Monedas de Euro de España:
@@ -5925,52 +6131,45 @@ abstract final class AppTechnicalNumismatics {
         '30': 'Plata',
         '40': 'Plata',
       },
-      commemorativeDenominations: {'10', '12', '20', '30', '40'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '2': [
-          'IV Centenario de Don Quijote de la Mancha',
-          'IV Centenario de la Primera Edición de Don Quijote de la Mancha (2005)',
-          '50 Aniversario del Tratado de Roma (2007)',
-          '10 Años de la Unión Económica y Monetaria (2009)',
-          'Centro Histórico de Córdoba - Mezquita-Catedral (UNESCO 2010)',
-          'La Alhambra, Generalife y Albaicín de Granada (UNESCO 2011)',
-          'Catedral de Burgos (UNESCO 2012)',
-          '10 Años de los Billetes y Monedas en Euros (2012)',
-          'Real Monasterio de San Lorenzo de El Escorial (UNESCO 2013)',
-          'Parque Güell - Obras de Antoni Gaudí (UNESCO 2014)',
-          'Proclamación de Su Majestad el Rey Felipe VI (2014)',
-          'Cueva de Altamira y Arte Rupestre del Norte de España (UNESCO 2015)',
-          '30 Años de la Bandera de la Unión Europea (2015)',
-          'Acueducto de Segovia (UNESCO 2016)',
-          'Monumentos de Oviedo y del Reino de Asturias (UNESCO 2017)',
-          '50 Aniversario del Nacimiento del Rey Felipe VI (2018)',
-          'Ciudad Vieja de Santiago de Compostela (UNESCO 2018)',
-          'Murallas y Ciudad Vieja de Ávila (UNESCO 2019)',
-          'Arquitectura Mudéjar de Aragón (UNESCO 2020)',
-          'Ciudad Histórica de Toledo (UNESCO 2021)',
-          'Parque Nacional de Garajonay (UNESCO 2022)',
-          'V Centenario de la Vuelta al Mundo de Juan Sebastián Elcano (2022)',
-          '35 Años del Programa Erasmus (2022)',
-          'Ciudad Vieja de Cáceres (UNESCO 2023)',
-          'Presidencia Española del Consejo de la Unión Europea (2023)',
-          'Catedral, Alcázar y Archivo de Indias de Sevilla (UNESCO 2024)',
-          'Bicentenario de la Policía Nacional (2024)',
-          'Paisaje de la Luz de Madrid (UNESCO 2025)',
-          'Patrimonio Mundial de la UNESCO',
-          'Tratado de Roma (2007)',
-          '10 Años de la Unión Económica y Monetaria (2009)',
-          'Proclamación de Felipe VI (2014)',
-          'Conmemorativa',
+          NumismaticMotifRule('IV Centenario de Don Quijote de la Mancha', 2005),
+          NumismaticMotifRule('50 Aniversario del Tratado de Roma (2007)', 2007),
+          NumismaticMotifRule('10 Años de la Unión Económica y Monetaria (2009)', 2009),
+          NumismaticMotifRule('Centro Histórico de Córdoba - Mezquita-Catedral (UNESCO 2010)', 2010),
+          NumismaticMotifRule('La Alhambra, Generalife y Albaicín de Granada (UNESCO 2011)', 2011),
+          NumismaticMotifRule('Catedral de Burgos (UNESCO 2012)', 2012),
+          NumismaticMotifRule('10 Años de los Billetes y Monedas en Euros (2012)', 2012),
+          NumismaticMotifRule('Real Monasterio de San Lorenzo de El Escorial (UNESCO 2013)', 2013),
+          NumismaticMotifRule('Parque Güell - Obras de Antoni Gaudí (UNESCO 2014)', 2014),
+          NumismaticMotifRule('Proclamación de Su Majestad el Rey Felipe VI (2014)', 2014),
+          NumismaticMotifRule('Cueva de Altamira y Arte Rupestre del Norte de España (UNESCO 2015)', 2015),
+          NumismaticMotifRule('30 Años de la Bandera de la Unión Europea (2015)', 2015),
+          NumismaticMotifRule('Acueducto de Segovia (UNESCO 2016)', 2016),
+          NumismaticMotifRule('Monumentos de Oviedo y del Reino de Asturias (UNESCO 2017)', 2017),
+          NumismaticMotifRule('50 Aniversario del Nacimiento del Rey Felipe VI (2018)', 2018),
+          NumismaticMotifRule('Ciudad Vieja de Santiago de Compostela (UNESCO 2018)', 2018),
+          NumismaticMotifRule('Murallas y Ciudad Vieja de Ávila (UNESCO 2019)', 2019),
+          NumismaticMotifRule('Arquitectura Mudéjar de Aragón (UNESCO 2020)', 2020),
+          NumismaticMotifRule('Ciudad Histórica de Toledo (UNESCO 2021)', 2021),
+          NumismaticMotifRule('Parque Nacional de Garajonay (UNESCO 2022)', 2022),
+          NumismaticMotifRule('V Centenario de la Vuelta al Mundo de Juan Sebastián Elcano (2022)', 2022),
+          NumismaticMotifRule('35 Años del Programa Erasmus (2022)', 2022),
+          NumismaticMotifRule('Ciudad Vieja de Cáceres (UNESCO 2023)', 2023),
+          NumismaticMotifRule('Presidencia Española del Consejo de la Unión Europea (2023)', 2023),
+          NumismaticMotifRule('Catedral, Alcázar y Archivo de Indias de Sevilla (UNESCO 2024)', 2024),
+          NumismaticMotifRule('Bicentenario de la Policía Nacional (2024)', 2024),
+          NumismaticMotifRule('Paisaje de la Luz de Madrid (UNESCO 2025)', 2025),
         ],
       },
       commemorativeReasons: [
-        'Tratado de Roma',
-        'Unión Económica y Monetaria',
         'Patrimonio Mundial de la UNESCO',
-        'Proclamación de Felipe VI',
-        'Conmemorativa',
+        'Tratado de Roma (2007)',
+        '10 Años de la Unión Económica y Monetaria (2009)',
+        'Proclamación de Felipe VI (2014)',
+        'Erasmus (2022)',
       ],
-    ),
+),
 
     // 3.6 Unión Europea (Zona Euro, grabadas físicamente 1999–presente)
     // Ref General: European Central Bank - Euro Coinage Specifications:
@@ -5999,24 +6198,23 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Bimetálica',
         '2': 'Bimetálica',
       },
-      commemorativeDenominations: {'2'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '2': [
-          '50 Aniversario del Tratado de Roma (2007)',
-          '10 Años de la Unión Económica y Monetaria (2009)',
-          '10 Años de los Billetes y Monedas en Euros (2012)',
-          '30 Años de la Bandera de la Unión Europea (2015)',
-          '35 Años del Programa Erasmus (2022)',
+          NumismaticMotifRule('50 Aniversario del Tratado de Roma (2007)', 2007),
+          NumismaticMotifRule('10 Años de la Unión Económica y Monetaria (2009)', 2009),
+          NumismaticMotifRule('10 Años de los Billetes y Monedas en Euros (2012)', 2012),
+          NumismaticMotifRule('30 Años de la Bandera de la Unión Europea (2015)', 2015),
+          NumismaticMotifRule('35 Años del Programa Erasmus (2022)', 2022),
         ],
       },
       commemorativeReasons: [
-        '50 Aniversario del Tratado de Roma (2007)',
+        'Tratado de Roma (2007)',
         '10 Años de la Unión Económica y Monetaria (2009)',
-        '10 Años de los Billetes y Monedas en Euros (2012)',
-        '30 Años de la Bandera de la Unión Europea (2015)',
+        '10 Años del Euro (2012)',
+        '30 Años de la Bandera Europea (2015)',
         '35 Años del Programa Erasmus (2022)',
       ],
-    ),
+),
 
     // =========================================================================
     // 4. GUATEMALA
@@ -6044,7 +6242,7 @@ abstract final class AppTechnicalNumismatics {
         '4': 'Plata',
         '8': 'Plata',
       },
-    ),
+                ),
 
     // 4.2 Guatemala - Época del Peso (1860–1924)
     // Ref General: Numista - Guatemala - Peso (1859-1925):
@@ -6076,7 +6274,17 @@ abstract final class AppTechnicalNumismatics {
         '1/4': 'Plata',
         '1/2': 'Plata',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '100': [
+          NumismaticMotifRule('100 Pesetas Franco Plata .800 (1966)', 1966),
+          NumismaticMotifRule('100 Pesetas Juan Carlos I (1975)', 1975),
+        ],
+      },
+      commemorativeReasons: [
+        '100 Pesetas Franco Plata .800 (1966)',
+        '100 Pesetas Juan Carlos I (1975)',
+      ],
+),
 
     // 4.3 Guatemala - Quetzal Clásico de Plata y Oro (1925–1964)
     // Ref General: Banco de Guatemala - Historia del Quetzal: https://www.banguat.gob.gt
@@ -6138,17 +6346,15 @@ abstract final class AppTechnicalNumismatics {
       denominationAllowedMaterials: {
         '1': ['Latón', 'Bimetálica'],
       },
-      commemorativeDenominations: {'1'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '1': [
-          'Paz Firme y Duradera (1996+)',
-          'Acuerdo de Paz Firme y Duradera',
+          NumismaticMotifRule('Acuerdo de Paz Firme y Duradera (1996+)', 1996, 2100),
         ],
       },
       commemorativeReasons: [
-        'Paz Firme y Duradera (1996+)',
+        'Paz Firme y Duradera',
       ],
-    ),
+),
 
     // =========================================================================
     // 5. COLOMBIA
@@ -6177,7 +6383,7 @@ abstract final class AppTechnicalNumismatics {
         '4': 'Plata',
         '8': 'Plata',
       },
-    ),
+                ),
 
     // 5.2 Colombia - Peso Histórico y Decimal Antiguo (1847–1904)
     // Ref General: Banco de la República - Colección Numismática:
@@ -6208,7 +6414,15 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Oro',
         '20': 'Oro',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '1': [
+          NumismaticMotifRule('Acuerdo de Paz Firme y Duradera (1996+)', 1996, 2100),
+        ],
+      },
+      commemorativeReasons: [
+        'Paz Firme y Duradera',
+      ],
+),
 
     // 5.3 Colombia - Peso Republicano Clásico (1905–1979)
     // Ref General: Banco de la República - Monedas en circulación histórica:
@@ -6270,17 +6484,15 @@ abstract final class AppTechnicalNumismatics {
         '200': 'Cuproníquel',
         '500': 'Bimetálica',
       },
-      commemorativeDenominations: {'500'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '500': [
-          'Árbol de Guacarí (Samanea saman)',
-          'Árbol de Guacarí',
+          NumismaticMotifRule('Árbol de Guacarí (Samanea saman)', 1993, 2011),
         ],
       },
       commemorativeReasons: [
         'Árbol de Guacarí',
       ],
-    ),
+),
 
     // 5.5 Colombia - Familia Biodiversidad de Colombia (2012–presente)
     // Ref General: Banco de la República - Monedas en circulación y conmemorativas:
@@ -6308,30 +6520,40 @@ abstract final class AppTechnicalNumismatics {
         '10000': 'Cuproníquel',
         '20000': 'Cuproníquel',
       },
-      commemorativeDenominations: {'50', '100', '200', '500', '1000', '10000', '20000'},
+                                              commemorativeDenominations: {'10000', '20000'},
       commemorativeMotifsByDenomination: {
-        '50': ['Oso de Anteojos (Tremarctos ornatus)'],
-        '100': ['Frailejón (Espeletia grandiflora)'],
-        '200': ['Guacamaya Bandera (Ara macao)'],
-        '500': ['Rana de Cristal (Anura Centrolenidae)'],
-        '1000': ['Tortuga Caguama (Caretta caretta)'],
+        '50': [
+          NumismaticMotifRule('Oso de Anteojos (Tremarctos ornatus)', 2012, 2100),
+        ],
+        '100': [
+          NumismaticMotifRule('Frailejón (Espeletia grandiflora)', 2012, 2100),
+        ],
+        '200': [
+          NumismaticMotifRule('Guacamaya Bandera (Ara macao)', 2012, 2100),
+        ],
+        '500': [
+          NumismaticMotifRule('Rana de Cristal (Anura Centrolenidae)', 2012, 2100),
+        ],
+        '1000': [
+          NumismaticMotifRule('Tortuga Caguama (Caretta caretta)', 2012, 2100),
+        ],
         '10000': [
-          'Bicentenario de la Independencia de Colombia (2019)',
-          'Bicentenario del Sacrificio de Policarpa Salavarrieta (2022)',
-          'Bicentenario de la Batalla Naval del Lago de Maracaibo (2023)',
+          NumismaticMotifRule('Bicentenario de la Independencia de Colombia (2019)', 2019),
+          NumismaticMotifRule('Bicentenario del Sacrificio de Policarpa Salavarrieta (2022)', 2022),
+          NumismaticMotifRule('Bicentenario de la Batalla Naval del Lago de Maracaibo (2023)', 2023),
         ],
         '20000': [
-          'Bicentenario del Museo Nacional de Colombia (2023)',
+          NumismaticMotifRule('Bicentenario del Museo Nacional de Colombia (2023)', 2023),
         ],
       },
       commemorativeReasons: [
         'Biodiversidad de Colombia',
-        'Bicentenario de la Independencia de Colombia (2019)',
+        'Bicentenario de la Independencia (2019)',
         'Policarpa Salavarrieta (2022)',
         'Batalla Naval del Lago de Maracaibo (2023)',
         'Museo Nacional de Colombia (2023)',
       ],
-    ),
+),
 
     // =========================================================================
     // 6. CANADÁ
@@ -6365,7 +6587,7 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Oro',
         '10': 'Oro',
       },
-    ),
+                ),
 
     // 6.2 Canadá - Era de Plata Isabel II (1953–1967)
     // Ref General: Royal Canadian Mint - 1967 Centennial Coinage: https://www.mint.ca
@@ -6390,16 +6612,21 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Plata',
         '1': 'Plata',
       },
-      commemorativeDenominations: {'0.25', '0.50', '1'},
-      commemorativeMotifsByDenomination: {
-        '0.25': ['Centennial Bobcat / Lince (1967)'],
-        '0.50': ['Centennial Howling Wolf (1967)'],
-        '1': ['Centennial Canada Goose (1967)'],
+                                              commemorativeMotifsByDenomination: {
+        '0.25': [
+          NumismaticMotifRule('Lince del Centenario (1967)', 1967),
+        ],
+        '0.50': [
+          NumismaticMotifRule('Lobo Aullador del Centenario (1967)', 1967),
+        ],
+        '1': [
+          NumismaticMotifRule('Ganso de Canadá del Centenario (1967)', 1967),
+        ],
       },
       commemorativeReasons: [
         'Centennial Coinage (1967)',
       ],
-    ),
+),
 
     // 6.3 Canadá - Transición Níquel Puro Pre-Loonie (1968–1986)
     // Ref General: Royal Canadian Mint - Modern Circulation Coins:
@@ -6426,18 +6653,17 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Níquel',
         '1': 'Níquel',
       },
-      commemorativeDenominations: {'0.25', '1'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '0.25': [
-          'Mountie RCMP Centennial (1973)',
+          NumismaticMotifRule('Centenario de la Policía Montada RCMP (1973)', 1973),
         ],
         '1': [
-          'Manitoba Centennial (1970)',
-          'British Columbia Centennial (1971)',
-          'Prince Edward Island Centennial (1973)',
-          'Winnipeg Centennial (1974)',
-          'Constitution Act (1982)',
-          'Jacques Cartier 450th Anniversary (1984)',
+          NumismaticMotifRule('Centenario de Manitoba (1970)', 1970),
+          NumismaticMotifRule('Centenario de Columbia Británica (1971)', 1971),
+          NumismaticMotifRule('Centenario de la Isla del Príncipe Eduardo (1973)', 1973),
+          NumismaticMotifRule('Centenario de Winnipeg (1974)', 1974),
+          NumismaticMotifRule('Ley Constitucional de Canadá (1982)', 1982),
+          NumismaticMotifRule('450 Aniversario del Viaje de Jacques Cartier (1984)', 1984),
         ],
       },
       commemorativeReasons: [
@@ -6445,7 +6671,7 @@ abstract final class AppTechnicalNumismatics {
         'Winnipeg Centennial (1974)',
         'Constitution Act (1982)',
       ],
-    ),
+),
 
     // 6.4 Canadá - Introducción del Loonie y Toonie (1987–1999)
     // Ref General: Royal Canadian Mint - The Loonie and Toonie:
@@ -6474,19 +6700,18 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Acero bañado en latón',
         '2': 'Bimetálica',
       },
-      commemorativeDenominations: {'0.25', '1', '2'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '0.25': [
-          '125 Aniversario de la Confederación de Canadá (1992)',
-          'Millennium Series - 12 Diseños Mensuales (1999)',
+          NumismaticMotifRule('125 Aniversario de la Confederación de Canadá (1992)', 1992),
+          NumismaticMotifRule('Millennium Series - 12 Diseños Mensuales (1999)', 1999),
         ],
         '1': [
-          '125 Aniversario de Canadá (1992)',
-          'National War Memorial (1994)',
-          'Peacekeeping (1995)',
+          NumismaticMotifRule('125 Aniversario de Canadá (1992)', 1992),
+          NumismaticMotifRule('Monumento Nacional a la Guerra (1994)', 1994),
+          NumismaticMotifRule('Mantenimiento de la Paz de la ONU (1995)', 1995),
         ],
         '2': [
-          'Creación del Territorio de Nunavut (1999)',
+          NumismaticMotifRule('Creación del Territorio de Nunavut (1999)', 1999),
         ],
       },
       commemorativeReasons: [
@@ -6494,7 +6719,7 @@ abstract final class AppTechnicalNumismatics {
         'Millennium Series (1999)',
         'Creación de Nunavut (1999)',
       ],
-    ),
+),
 
     // 6.5 Canadá - Época Multi-Ply Plated Steel (2000–presente)
     // Ref General: Royal Canadian Mint - Modern Coin Specifications:
@@ -6523,40 +6748,39 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Acero bañado en latón',
         '2': 'Bimetálica',
       },
-      commemorativeDenominations: {'0.25', '1', '2'},
-      commemorativeMotifsByDenomination: {
+                                              commemorativeMotifsByDenomination: {
         '0.25': [
-          'Millennium Series - 12 Diseños (2000)',
-          'Remembrance Day Poppy (2004)',
-          'Juegos Olímpicos de Invierno Vancouver 2010 (2007-2010)',
-          'War of 1812 (2012-2013)',
-          'Canada 150 - Hope for a Green Future (2017)',
+          NumismaticMotifRule('Millennium Series - 12 Diseños (2000)', 2000),
+          NumismaticMotifRule('Amapola del Día del Recuerdo (2004)', 2004),
+          NumismaticMotifRule('Juegos Olímpicos de Invierno Vancouver 2010 (2007-2010)', 2007, 2010),
+          NumismaticMotifRule('Guerra de 1812 (2012-2013)', 2012, 2013),
+          NumismaticMotifRule('Canada 150 - Esperanza por un Futuro Verde (2017)', 2017),
         ],
         '1': [
-          'Lucky Loonie (2004, 2008, 2010, 2012, 2014, 2016)',
-          'Terry Fox (2005)',
-          'Centenario de los Montreal Canadiens (2009)',
-          'Centenario de la Marina Real Canadiense (2010)',
-          'Canada 150 - Connecting a Nation (2017)',
-          'Despenalización de la Homosexualidad (2019)',
-          'Oscar Peterson (2022)',
-          'Elsie MacGill (2023)',
+          NumismaticMotifRule('Lucky Loonie (2004, 2008, 2010, 2012, 2014, 2016)', 2004, 2016),
+          NumismaticMotifRule('Terry Fox (2005)', 2005),
+          NumismaticMotifRule('Centenario de los Montreal Canadiens (2009)', 2009),
+          NumismaticMotifRule('Centenario de la Marina Real Canadiense (2010)', 2010),
+          NumismaticMotifRule('Canada 150 - Conectando una Nación (2017)', 2017),
+          NumismaticMotifRule('Despenalización de la Homosexualidad (2019)', 2019),
+          NumismaticMotifRule('Oscar Peterson (2022)', 2022),
+          NumismaticMotifRule('Elsie MacGill (2023)', 2023),
         ],
         '2': [
-          'Path of Knowledge (2000)',
-          '10 Aniversario del Toonie (2006)',
-          '400 Años de la Ciudad de Quebec (2008)',
-          'HMS Shannon (2012)',
-          'Sir John A. Macdonald (2015)',
-          'Batalla del Atlántico (2016)',
-          'Canada 150 - Dance of the Spirits (2017)',
-          'Armisticio de 1918 (2018)',
-          'D-Day 75 Aniversario (2019)',
-          'Fin de la Segunda Guerra Mundial 75 Aniversario (2020)',
-          'Descubrimiento de la Insulina (2021)',
-          'Homenaje a la Reina Isabel II - Anillo Negro (2022)',
-          'Día Nacional de los Pueblos Indígenas (2023)',
-          'Centenario de la Real Fuerza Aérea Canadiense (2024)',
+          NumismaticMotifRule('Camino del Conocimiento (2000)', 2000),
+          NumismaticMotifRule('10 Aniversario del Toonie (2006)', 2006),
+          NumismaticMotifRule('400 Años de la Ciudad de Quebec (2008)', 2008),
+          NumismaticMotifRule('HMS Shannon (2012)', 2012),
+          NumismaticMotifRule('Sir John A. Macdonald (2015)', 2015),
+          NumismaticMotifRule('Batalla del Atlántico (2016)', 2016),
+          NumismaticMotifRule('Canada 150 - Danza de los Espíritus (2017)', 2017),
+          NumismaticMotifRule('Armisticio de 1918 (2018)', 2018),
+          NumismaticMotifRule('75 Aniversario del Día D (2019)', 2019),
+          NumismaticMotifRule('75 Aniversario del Fin de la Segunda Guerra Mundial (2020)', 2020),
+          NumismaticMotifRule('Descubrimiento de la Insulina (2021)', 2021),
+          NumismaticMotifRule('Homenaje a la Reina Isabel II - Anillo Negro (2022)', 2022),
+          NumismaticMotifRule('Día Nacional de los Pueblos Indígenas (2023)', 2023),
+          NumismaticMotifRule('Centenario de la Real Fuerza Aérea Canadiense (2024)', 2024),
         ],
       },
       commemorativeReasons: [
@@ -6565,7 +6789,7 @@ abstract final class AppTechnicalNumismatics {
         'Canada 150',
         'Toonie Commemorative Series',
       ],
-    ),
+),
 
     // =========================================================================
     // 7. CUBA
@@ -6600,16 +6824,16 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Oro',
         '20': 'Oro',
       },
-      commemorativeDenominations: {'0.25', '0.50', '1'},
+                                              commemorativeDenominations: {'1'},
       commemorativeMotifsByDenomination: {
         '1': [
-          'Centenario del Natalicio de José Martí (1953)',
+          NumismaticMotifRule('Centenario del Natalicio de José Martí (1953)', 1953),
         ],
       },
       commemorativeReasons: [
         'Centenario del Natalicio de José Martí (1953)',
       ],
-    ),
+),
 
     // 7.2 Cuba - Período Socialista Pre-CUC (1962–1993)
     // Ref General: Banco Central de Cuba - Sistema Monetario: https://www.bc.gob.cu
@@ -6634,17 +6858,16 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Cuproníquel',
         '3': 'Cuproníquel',
       },
-      commemorativeDenominations: {'3'},
+                                              commemorativeDenominations: {'3'},
       commemorativeMotifsByDenomination: {
         '3': [
-          'Ernesto Che Guevara - Hasta la Victoria Siempre',
-          'Che Guevara',
+          NumismaticMotifRule('Ernesto Che Guevara - Hasta la Victoria Siempre', 1983, 1993),
         ],
       },
       commemorativeReasons: [
         'Che Guevara',
       ],
-    ),
+),
 
     // 7.3 Cuba - Régimen Dual CUP / CUC (1994–2020)
     // Ref General: Banco Central de Cuba - Monedas en Circulación: https://www.bc.gob.cu
@@ -6671,19 +6894,16 @@ abstract final class AppTechnicalNumismatics {
         '3': 'Cuproníquel',
         '5': 'Bimetálica',
       },
-      commemorativeDenominations: {'1', '3', '5'},
+                                              commemorativeDenominations: {'1', '3', '5'},
       commemorativeMotifsByDenomination: {
         '1': [
-          'José Martí',
-          'Camilo Cienfuegos',
-          'Celia Sánchez',
+          NumismaticMotifRule('José Martí', 1994, 2020),
         ],
         '3': [
-          'Ernesto Che Guevara - Hasta la Victoria Siempre',
-          'Che Guevara',
+          NumismaticMotifRule('Ernesto Che Guevara', 1994, 2020),
         ],
         '5': [
-          'Antonio Maceo - Protesta de Baraguá',
+          NumismaticMotifRule('Antonio Maceo - Protesta de Baraguá', 1994, 2020),
         ],
       },
       commemorativeReasons: [
@@ -6691,7 +6911,7 @@ abstract final class AppTechnicalNumismatics {
         'Che Guevara',
         'Antonio Maceo',
       ],
-    ),
+),
 
     // 7.4 Cuba - Unificación Monetaria (2021–presente)
     // Ref General: Banco Central de Cuba - Ordenamiento Monetario: https://www.bc.gob.cu
@@ -6715,16 +6935,22 @@ abstract final class AppTechnicalNumismatics {
         '3': 'Acero bañado en níquel',
         '5': 'Acero bañado en latón',
       },
-      commemorativeDenominations: {'1', '3', '5'},
+                                              commemorativeDenominations: {'1', '3', '5'},
       commemorativeMotifsByDenomination: {
-        '1': ['José Martí'],
-        '3': ['Ernesto Che Guevara'],
-        '5': ['Antonio Maceo'],
+        '1': [
+          NumismaticMotifRule('José Martí', 2021, 2100),
+        ],
+        '3': [
+          NumismaticMotifRule('Ernesto Che Guevara', 2021, 2100),
+        ],
+        '5': [
+          NumismaticMotifRule('Antonio Maceo', 2021, 2100),
+        ],
       },
       commemorativeReasons: [
         'Héroes Nacionales',
       ],
-    ),
+),
 
     // =========================================================================
     // 8. ARGENTINA
@@ -6756,7 +6982,7 @@ abstract final class AppTechnicalNumismatics {
         '4': 'Plata',
         '8': 'Plata',
       },
-    ),
+                ),
 
     // 8.2 Argentina - Peso Moneda Nacional (1881–1969)
     // Ref General: Banco Central de la República Argentina - Emisiones históricas: https://www.bcra.gob.ar
@@ -6793,25 +7019,24 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Acero',
         '100': 'Acero',
       },
-      commemorativeDenominations: {'25', '50', '100'},
+                                              commemorativeDenominations: {'25', '50', '100'},
       commemorativeMotifsByDenomination: {
         '25': [
-          'Sesquicentenario de la Revolución de Mayo (1960)',
+          NumismaticMotifRule('Sesquicentenario de la Revolución de Mayo (1960)', 1960),
         ],
         '50': [
-          'Centenario de la Reorganización Nacional (1962)',
-          'Sesquicentenario de la Declaración de la Independencia (1966)',
+          NumismaticMotifRule('Centenario de la Reorganización Nacional (1962)', 1962),
+          NumismaticMotifRule('Sesquicentenario de la Declaración de la Independencia (1966)', 1966),
         ],
         '100': [
-          'Sesquicentenario de la Declaración de la Independencia (1966)',
-          'Centenario del Nacimiento del General San Martín (1978)',
+          NumismaticMotifRule('Sesquicentenario de la Declaración de la Independencia (1966)', 1966),
         ],
       },
       commemorativeReasons: [
         'Sesquicentenario de la Revolución de Mayo (1960)',
         'Sesquicentenario de la Independencia (1966)',
       ],
-    ),
+),
 
     // 8.3 Argentina - Peso Ley 18.188 (1970–1983)
     // Ref General: Banco Central de la República Argentina - Emisiones Ley 18.188: https://www.bcra.gob.ar
@@ -6840,28 +7065,29 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Bronce de aluminio',
         '100': 'Bronce de aluminio',
       },
-      commemorativeDenominations: {'20', '50', '100'},
+                                              commemorativeDenominations: {'20', '50', '100'},
       commemorativeMotifsByDenomination: {
         '20': [
-          'Mundial de Fútbol Argentina 1978 - Estadio José María Minella',
-          'Mundial de Fútbol Argentina 1978 - Estadio Monumental',
-          'Bicentenario del Natalicio del General José de San Martín (1978)',
+          NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio José María Minella', 1978),
+          NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Monumental', 1978),
+          NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín (1978)', 1978),
         ],
         '50': [
-          'Mundial de Fútbol Argentina 1978 - Estadio Ciudad de Mendoza',
-          'Bicentenario del Natalicio del General José de San Martín (1978)',
+          NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Ciudad de Mendoza', 1978),
+          NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín (1978)', 1978),
         ],
         '100': [
-          'Mundial de Fútbol Argentina 1978 - Estadio Monumental de River Plate',
-          'Bicentenario del Natalicio del General José de San Martín (1978)',
-          'Centenario de la Conquista del Desierto (1979)',
+          NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Monumental', 1978),
+          NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín (1978)', 1978),
+          NumismaticMotifRule('Centenario de la Campaña del Desierto (1979)', 1979),
         ],
       },
       commemorativeReasons: [
         'Mundial de Fútbol Argentina 1978',
         'Bicentenario de San Martín (1978)',
+        'Centenario de la Campaña del Desierto (1979)',
       ],
-    ),
+),
 
     // 8.4 Argentina - Peso Argentino (1983–1985)
     // Ref General: Banco Central de la República Argentina: https://www.bcra.gob.ar
@@ -6888,7 +7114,7 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Latón',
         '100': 'Latón',
       },
-    ),
+                      ),
 
     // 8.5 Argentina - Austral (1985–1991)
     // Ref General: Banco Central de la República Argentina: https://www.bcra.gob.ar
@@ -6918,7 +7144,15 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Cuproníquel',
         '1000': 'Cuproníquel',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '500': [
+          NumismaticMotifRule('Árbol de Guacarí (Samanea saman)', 1993, 2011),
+        ],
+      },
+      commemorativeReasons: [
+        'Árbol de Guacarí',
+      ],
+),
 
     // 8.6 Argentina - Peso Convertible Series Tradicionales (1992–2016)
     // Ref General: Banco Central de la República Argentina - Monedas en circulación:
@@ -6949,36 +7183,34 @@ abstract final class AppTechnicalNumismatics {
         '1': 'Bimetálica',
         '2': 'Bimetálica',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '0.50': [
-          'Convención Nacional Constituyente (1994)',
-          '50 Aniversario de UNICEF (1994)',
-          '50 Aniversario del Voto Femenino (1997)',
-          'Mercosur (1998)',
-          'Centenario del Natalicio de Jorge Luis Borges (1999)',
-          'Fallecimiento de Eva Perón - 50 Aniversario (2002)',
+          NumismaticMotifRule('Convención Nacional Constituyente (1994)', 1994),
+          NumismaticMotifRule('50 Aniversario de UNICEF (1994)', 1994),
+          NumismaticMotifRule('50 Aniversario del Voto Femenino (1997)', 1997),
+          NumismaticMotifRule('Mercosur (1998)', 1998),
+          NumismaticMotifRule('Centenario del Natalicio de Jorge Luis Borges (1999)', 1999),
+          NumismaticMotifRule('Fallecimiento de Eva Perón - 50 Aniversario (2002)', 2002),
         ],
         '1': [
-          'Bicentenario de la Revolución de Mayo - Pucará de Tilcara (2010)',
-          'Bicentenario de la Revolución de Mayo - El Palmar (2010)',
-          'Bicentenario de la Revolución de Mayo - Aconcagua (2010)',
-          'Bicentenario de la Revolución de Mayo - Mar del Plata (2010)',
-          'Bicentenario de la Revolución de Mayo - Glaciar Perito Moreno (2010)',
-          'Bicentenario de la Primera Moneda Patria - Asamblea del Año XIII (2013)',
-          '50 Aniversario de UNICEF (1994)',
-          '30 Aniversario de la Carta de las Naciones Unidas (1995)',
-          'Mercosur (1998)',
-          'Centenario del Natalicio de Jorge Luis Borges (1999)',
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Pucará de Tilcara (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - El Palmar (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Aconcagua (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Mar del Plata (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Glaciar Perito Moreno (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Primera Moneda Patria - Asamblea del Año XIII (2013)', 2013),
+          NumismaticMotifRule('50 Aniversario de UNICEF (1994)', 1994),
+          NumismaticMotifRule('30 Aniversario de la Carta de las Naciones Unidas (1995)', 1995),
+          NumismaticMotifRule('Mercosur (1998)', 1998),
+          NumismaticMotifRule('Centenario del Natalicio de Jorge Luis Borges (1999)', 1999),
         ],
         '2': [
-          'Bicentenario de la Creación de la Bandera Nacional (2012)',
-          '30 Aniversario de la Guerra de Malvinas (2012)',
-          'Bicentenario de la Declaración de la Independencia (2016)',
-          'Centenario del Descubrimiento del Petróleo en Argentina (2007)',
-          'Centenario del Vuelo de Jorge Newbery (2014)',
-          'Bicentenario del Combate de San Lorenzo (2013)',
-          'Bicentenario del Cruce de los Andes (2017)',
-          '70 Aniversario de los Derechos Políticos de la Mujer (2017)',
+          NumismaticMotifRule('Bicentenario de la Creación de la Bandera Nacional (2012)', 2012),
+          NumismaticMotifRule('30 Aniversario de la Guerra de Malvinas (2012)', 2012),
+          NumismaticMotifRule('Bicentenario de la Declaración de la Independencia (2016)', 2016),
+          NumismaticMotifRule('Centenario del Descubrimiento del Petróleo en Argentina (2007)', 2007),
+          NumismaticMotifRule('Centenario del Vuelo de Jorge Newbery (2014)', 2014),
+          NumismaticMotifRule('Bicentenario del Combate de San Lorenzo (2013)', 2013),
         ],
       },
       commemorativeReasons: [
@@ -6987,7 +7219,7 @@ abstract final class AppTechnicalNumismatics {
         'Guerra de Malvinas (2012)',
         'Bicentenario de la Independencia (2016)',
       ],
-    ),
+),
 
     // 8.7 Argentina - Serie "Árboles de la República Argentina" (2017–presente)
     // Ref General: Banco Central de la República Argentina - Línea Peso Árboles:
@@ -7010,16 +7242,24 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Acero bañado en níquel',
         '10': 'Alpaca (Plata alemana)',
       },
-      commemorativeMotifsByDenomination: {
-        '1': ['Jacarandá (Jacaranda mimosifolia)'],
-        '2': ['Palo Borracho (Ceiba speciosa)'],
-        '5': ['Arrayán (Luma apiculata)'],
-        '10': ['Caldén (Prosopis caldenia)'],
+                                        commemorativeMotifsByDenomination: {
+        '1': [
+          NumismaticMotifRule('Jacarandá (Jacaranda mimosifolia)', 2017, 2100),
+        ],
+        '2': [
+          NumismaticMotifRule('Palo Borracho (Ceiba speciosa)', 2017, 2100),
+        ],
+        '5': [
+          NumismaticMotifRule('Arrayán (Luma apiculata)', 2017, 2100),
+        ],
+        '10': [
+          NumismaticMotifRule('Caldén (Prosopis caldenia)', 2018, 2100),
+        ],
       },
       commemorativeReasons: [
         'Serie Árboles de la República Argentina',
       ],
-    ),
+),
 
     // =========================================================================
     // 9. BRASIL
@@ -7055,7 +7295,7 @@ abstract final class AppTechnicalNumismatics {
         '1000': 'Plata',
         '2000': 'Plata',
       },
-    ),
+                ),
 
     // 9.2 Brasil - Cruzeiro (1942–1985)
     // Ref General: Banco Central do Brasil - Museu de Valores: https://www.bcb.gov.br
@@ -7082,15 +7322,22 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Cuproníquel',
         '50': 'Cuproníquel',
       },
-      commemorativeMotifsByDenomination: {
-        '5': ['Sesquicentenário da Independência do Brasil (1972)'],
-        '10': ['Sesquicentenário da Independência do Brasil (1972)'],
-        '20': ['Sesquicentenário da Independência do Brasil (1972)', 'Centenário da Imigração Italiana (1975)'],
+                                        commemorativeMotifsByDenomination: {
+        '5': [
+          NumismaticMotifRule('Sesquicentenário da Independência do Brasil (1972)', 1972),
+        ],
+        '10': [
+          NumismaticMotifRule('Sesquicentenário da Independência do Brasil (1972)', 1972),
+        ],
+        '20': [
+          NumismaticMotifRule('Sesquicentenário da Independência do Brasil (1972)', 1972),
+          NumismaticMotifRule('Centenário da Imigração Italiana (1975)', 1975),
+        ],
       },
       commemorativeReasons: [
         'Sesquicentenário da Independência do Brasil (1972)',
       ],
-    ),
+),
 
     // 9.3 Brasil - Cruzado, Cruzado Novo y Cruzeiro Real (1986–1993)
     // Ref General: Banco Central do Brasil: https://www.bcb.gov.br
@@ -7122,15 +7369,19 @@ abstract final class AppTechnicalNumismatics {
         '1000': 'Acero inoxidable',
         '5000': 'Acero inoxidable',
       },
-      commemorativeMotifsByDenomination: {
-        '100': ['Centenário da Abolição da Escravidão - Lei Áurea (1988)'],
-        '200': ['Centenário da Proclamação da República (1989)'],
+                                        commemorativeMotifsByDenomination: {
+        '100': [
+          NumismaticMotifRule('Centenário da Abolição da Escravidão - Lei Áurea (1988)', 1988),
+        ],
+        '200': [
+          NumismaticMotifRule('Centenário da Proclamação da República (1989)', 1989),
+        ],
       },
       commemorativeReasons: [
         'Centenário da Abolição da Escravidão (1988)',
         'Centenário da Proclamação da República (1989)',
       ],
-    ),
+),
 
     // 9.4 Brasil - Real 1ª Familia Acero Inoxidable (1994–1997)
     // Ref General: Banco Central do Brasil - Moedas do Real:
@@ -7159,16 +7410,22 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Acero inoxidable',
         '1': 'Acero inoxidable',
       },
-      commemorativeMotifsByDenomination: {
-        '0.10': ['FAO - 50 Anos da FAO (1995)'],
-        '0.25': ['FAO - 50 Anos da FAO (1995)'],
-        '1': ['30 Anos do Banco Central do Brasil (1995)'],
+                                        commemorativeMotifsByDenomination: {
+        '0.10': [
+          NumismaticMotifRule('FAO - 50 Anos da FAO (1995)', 1995),
+        ],
+        '0.25': [
+          NumismaticMotifRule('FAO - 50 Anos da FAO (1995)', 1995),
+        ],
+        '1': [
+          NumismaticMotifRule('30 Anos do Banco Central do Brasil (1995)', 1995),
+        ],
       },
       commemorativeReasons: [
         '50 Anos da FAO (1995)',
         '30 Anos do Banco Central do Brasil (1995)',
       ],
-    ),
+),
 
     // 9.5 Brasil - Real 2ª Familia Bimetálica y Recubrimientos (1998–presente)
     // Ref General: Banco Central do Brasil - Moedas do Real:
@@ -7197,31 +7454,34 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Cuproníquel',
         '1': 'Bimetálica',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '1': [
-          '50 Aniversario de la Declaración Universal de los Derechos Humanos (1998)',
-          'Centenario de Juscelino Kubitschek (2002)',
-          '40 Aniversario del Banco Central do Brasil (2005)',
-          'Centenario de la Inmigración Japonesa a Brasil (2008)',
-          'Entrega de la Bandera Olímpica - Londres 2012 a Río 2016 (2012)',
-          '50 Aniversario del Banco Central do Brasil (2015)',
-          '25 Años del Plano Real (2019)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo (2014)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Natación (2014)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Paratriatlón (2014)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Golf (2014)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Baloncesto (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Vela (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Paracanotaje (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Rugby (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Fútbol (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Voleibol (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo Paralímpico (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Judo (2015)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Boxeo (2016)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Natación Paralímpica (2016)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Olímpica Vinicius (2016)',
-          'Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Paralímpica Tom (2016)',
+          NumismaticMotifRule('50 Aniversario de la Declaración Universal de los Derechos Humanos (1998)', 1998),
+          NumismaticMotifRule('Centenario de Juscelino Kubitschek (2002)', 2002),
+          NumismaticMotifRule('40 Aniversario del Banco Central do Brasil (2005)', 2005),
+          NumismaticMotifRule('Centenario de la Inmigración Japonesa a Brasil (2008)', 2008),
+          NumismaticMotifRule('Entrega de la Bandera Olímpica - Londres 2012 a Río 2016 (2012)', 2012),
+          NumismaticMotifRule('50 Aniversario del Banco Central do Brasil (2015)', 2015),
+          NumismaticMotifRule('25 Años del Plano Real (2019)', 2019),
+          // Jogos Rio 2016 (2014)
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo (2014)', 2014),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Natación (2014)', 2014),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Paratriatlón (2014)', 2014),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Golf (2014)', 2014),
+          // Jogos Rio 2016 (2015)
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Baloncesto (2015)', 2015),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Vela (2015)', 2015),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Paracanotaje (2015)', 2015),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Rugby (2015)', 2015),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Fútbol (2015)', 2015),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Voleibol (2015)', 2015),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo Paralímpico (2015)', 2015),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Judo (2015)', 2015),
+          // Jogos Rio 2016 (2016)
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Boxeo (2016)', 2016),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Natación Paralímpica (2016)', 2016),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Olímpica Vinicius (2016)', 2016),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Paralímpica Tom (2016)', 2016),
         ],
       },
       commemorativeReasons: [
@@ -7231,7 +7491,7 @@ abstract final class AppTechnicalNumismatics {
         'Juegos Olímpicos Río 2016',
         '25 Años Plano Real (2019)',
       ],
-    ),
+),
 
     // =========================================================================
     // 10. CHILE
@@ -7263,7 +7523,7 @@ abstract final class AppTechnicalNumismatics {
         '4': 'Plata',
         '8': 'Plata',
       },
-    ),
+                ),
 
     // 10.2 Chile - Peso Antiguo Decimal (1851–1959)
     // Ref General: Banco Central de Chile - Billetes y Monedas: https://www.bcentral.cl
@@ -7297,7 +7557,43 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Oro',
         '100': 'Oro',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '0.50': [
+          NumismaticMotifRule('Convención Nacional Constituyente (1994)', 1994),
+          NumismaticMotifRule('50 Aniversario de UNICEF (1994)', 1994),
+          NumismaticMotifRule('50 Aniversario del Voto Femenino (1997)', 1997),
+          NumismaticMotifRule('Mercosur (1998)', 1998),
+          NumismaticMotifRule('Centenario del Natalicio de Jorge Luis Borges (1999)', 1999),
+          NumismaticMotifRule('Fallecimiento de Eva Perón - 50 Aniversario (2002)', 2002),
+        ],
+        '1': [
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Pucará de Tilcara (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - El Palmar (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Aconcagua (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Mar del Plata (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Glaciar Perito Moreno (2010)', 2010),
+          NumismaticMotifRule('Bicentenario de la Primera Moneda Patria - Asamblea del Año XIII (2013)', 2013),
+          NumismaticMotifRule('50 Aniversario de UNICEF (1994)', 1994),
+          NumismaticMotifRule('30 Aniversario de la Carta de las Naciones Unidas (1995)', 1995),
+          NumismaticMotifRule('Mercosur (1998)', 1998),
+          NumismaticMotifRule('Centenario del Natalicio de Jorge Luis Borges (1999)', 1999),
+        ],
+        '2': [
+          NumismaticMotifRule('Bicentenario de la Creación de la Bandera Nacional (2012)', 2012),
+          NumismaticMotifRule('30 Aniversario de la Guerra de Malvinas (2012)', 2012),
+          NumismaticMotifRule('Bicentenario de la Declaración de la Independencia (2016)', 2016),
+          NumismaticMotifRule('Centenario del Descubrimiento del Petróleo en Argentina (2007)', 2007),
+          NumismaticMotifRule('Centenario del Vuelo de Jorge Newbery (2014)', 2014),
+          NumismaticMotifRule('Bicentenario del Combate de San Lorenzo (2013)', 2013),
+        ],
+      },
+      commemorativeReasons: [
+        'Bicentenario de la Revolución de Mayo (2010)',
+        'Bicentenario de la Primera Moneda Patria (2013)',
+        'Guerra de Malvinas (2012)',
+        'Bicentenario de la Independencia (2016)',
+      ],
+),
 
     // 10.3 Chile - Escudo Chileno (1960–1974)
     // Ref General: Banco Central de Chile: https://www.bcentral.cl
@@ -7363,20 +7659,20 @@ abstract final class AppTechnicalNumismatics {
         '10': ['Bronce de aluminio', 'Aluminio-Bronce'],
         '50': ['Bronce de aluminio', 'Aluminio-Bronce'],
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '10': [
-          'Bernardo O\'Higgins',
-          'Ángel de la Libertad (1976-1990)',
+          NumismaticMotifRule('Bernardo O\'Higgins', 1975, 2100),
+          NumismaticMotifRule('Ángel de la Libertad (1976-1990)', 1976, 1990),
         ],
         '50': [
-          'Bernardo O\'Higgins (Forma Decagonal)',
+          NumismaticMotifRule('Bernardo O\'Higgins (Forma Decagonal)', 1981, 2100),
         ],
         '100': [
-          'Pueblos Originarios - Mujer Mapuche',
-          'Escudo Nacional de 8 Lados (1981-2000)',
+          NumismaticMotifRule('Pueblos Originarios - Mujer Mapuche', 2001, 2100),
+          NumismaticMotifRule('Escudo Nacional de 8 Lados (1981-2000)', 1981, 2000),
         ],
         '500': [
-          'Cardenal Raúl Silva Henríquez',
+          NumismaticMotifRule('Cardenal Raúl Silva Henríquez', 2000, 2100),
         ],
       },
       commemorativeReasons: [
@@ -7384,7 +7680,7 @@ abstract final class AppTechnicalNumismatics {
         'Cardenal Raúl Silva Henríquez',
         'Ángel de la Libertad',
       ],
-    ),
+),
 
     // =========================================================================
     // 11. PERÚ
@@ -7416,7 +7712,7 @@ abstract final class AppTechnicalNumismatics {
         '4': 'Plata',
         '8': 'Plata',
       },
-    ),
+                ),
 
     // 11.2 Perú - Sol de Oro (1863–1984)
     // Ref General: Banco Central de Reserva del Perú - Numismática: https://www.bcrp.gob.pe
@@ -7449,13 +7745,27 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Oro',
         '100': 'Oro',
       },
+                                  commemorativeDenominations: {'100'},
       commemorativeMotifsByDenomination: {
-        '1': ['Libertad Parada', 'Túpac Amaru II (1970-1977)'],
-        '5': ['Almirante Miguel Grau'],
-        '10': ['Túpac Amaru II'],
-        '100': ['Centenario de la Guerra del Pacífico (1979)'],
+        '1': [
+          NumismaticMotifRule('Libertad Parada', 1863, 1969),
+          NumismaticMotifRule('Túpac Amaru II (1970-1977)', 1970, 1977),
+        ],
+        '5': [
+          NumismaticMotifRule('Almirante Miguel Grau', 1970, 1977),
+        ],
+        '10': [
+          NumismaticMotifRule('Túpac Amaru II', 1977, 1984),
+        ],
+        '100': [
+          NumismaticMotifRule('Centenario de la Guerra del Pacífico (1979)', 1979),
+        ],
       },
-    ),
+      commemorativeReasons: [
+        'Túpac Amaru II',
+        'Centenario de la Guerra del Pacífico (1979)',
+      ],
+),
 
     // 11.3 Perú - Inti (1985–1990)
     // Ref General: Banco Central de Reserva del Perú: https://www.bcrp.gob.pe
@@ -7484,13 +7794,24 @@ abstract final class AppTechnicalNumismatics {
         '100': 'Cuproníquel',
         '500': 'Cuproníquel',
       },
-      commemorativeMotifsByDenomination: {
-        '1': ['Gran Almirante Miguel Grau'],
-        '5': ['Gran Almirante Miguel Grau'],
-        '50': ['Andrés Avelino Cáceres'],
-        '100': ['César Vallejo'],
+                                  commemorativeMotifsByDenomination: {
+        '1': [
+          NumismaticMotifRule('Gran Almirante Miguel Grau', 1985, 1988),
+        ],
+        '5': [
+          NumismaticMotifRule('Gran Almirante Miguel Grau', 1985, 1988),
+        ],
+        '50': [
+          NumismaticMotifRule('Andrés Avelino Cáceres', 1989, 1990),
+        ],
+        '100': [
+          NumismaticMotifRule('César Vallejo', 1989, 1990),
+        ],
       },
-    ),
+      commemorativeReasons: [
+        'Héroes Nacionales del Perú',
+      ],
+),
 
     // 11.4 Perú - Sol Moderno (1991–presente)
     // Ref General: Banco Central de Reserva del Perú - Familia de Monedas:
@@ -7521,67 +7842,63 @@ abstract final class AppTechnicalNumismatics {
         '2': 'Bimetálica',
         '5': 'Bimetálica',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '1': [
-          // Serie Riqueza y Orgullo del Perú (26 motivos)
-          'Tumi de Oro (Lambayeque)',
-          'Sarcófagos de Karajía (Amazonas)',
-          'Estela de Raimondi (Áncash)',
-          'Chullpas de Sillustani (Puno)',
-          'Monasterio de Santa Catalina (Arequipa)',
-          'Machu Picchu (Cusco)',
-          'Gran Pajatén (San Martín)',
-          'Piedra de Saywite (Apurímac)',
-          'Fortaleza del Real Felipe (Callao)',
-          'Templo del Sol - Vilcashuamán (Ayacucho)',
-          'Kuntur Wasi (Cajamarca)',
-          'Templo Inca Huaytará (Huancavelica)',
-          'Complejo Arqueológico de Kotosh (Huánuco)',
-          'Arte Textil Paracas (Ica)',
-          'Complejo Arqueológico de Tunanmarca (Junín)',
-          'Ciudad Sagrada de Caral (Lima)',
-          'Huaca de la Luna (La Libertad)',
-          'Antiguo Hotel Palace (Loreto)',
-          'Catedral de Lima (Lima)',
-          'Petroglifos de Pusharo (Madre de Dios)',
-          'Arquitectura Moqueguana (Moquegua)',
-          'Sitio Arqueológico de Huarautambo (Pasco)',
-          'Complejo Arqueológico de Cabeza de Vaca (Tumbes)',
-          'Cerámica Vicús (Piura)',
-          'Cerámica Shipibo-Konibo (Ucayali)',
-          'Arco Parabólico de Tacna (Tacna)',
-          // Serie Recursos Naturales del Perú (3 motivos)
-          'La Anchoveta (Engraulis ringens)',
-          'El Cacao (Theobroma cacao)',
-          'La Quinua (Chenopodium quinoa)',
-          // Serie Fauna Silvestre Amenazada del Perú (10 motivos)
-          'Oso Andino de Anteojos (Tremarctos ornatus)',
-          'Cocodrilo de Tumbes (Crocodylus acutus)',
-          'Cóndor Andino (Vultur gryphus)',
-          'Tapir Andino (Tapirus pinchaque)',
-          'Pava Aliblanca (Penelope albipennis)',
-          'Jaguar (Panthera onca)',
-          'Suri (Rhea pennata)',
-          'Mono Choro de Cola Amarilla (Lagothrix flavicauda)',
-          'Gato Andino (Leopardus jacobita)',
-          'Rana Gigante del Titicaca (Telmatobius culeus)',
-          // Serie Constructores de la República Bicentenario 1821-2021 (9 motivos)
-          'Juan Pablo Viscardo y Guzmán',
-          'Hipólito Unanue',
-          'Toribio Rodríguez de Mendoza',
-          'Manuel Lorenzo de Vidaurre',
-          'Francisco Xavier de Luna Pizarro',
-          'José Baquíjano y Carrillo',
-          'José Faustino Sánchez Carrión',
-          'José de la Mar',
-          'Mariano Melgar',
-          // Serie La Mujer en el Proceso de Independencia del Perú (3 motivos)
-          'Heroínas Toledo',
-          'Brigida Silva de Ochoa',
-          'María Parado de Bellido',
-          // Conmemorativas Especiales
-          'Bicentenario del Banco Central de Reserva del Perú (2022)',
-          'Casa Nacional de Moneda - 450 Años (2015)',
+          // Serie Riqueza y Orgullo del Perú (2010-2016)
+          NumismaticMotifRule('Tumi de Oro (Lambayeque)', 2010),
+          NumismaticMotifRule('Sarcófagos de Karajía (Amazonas)', 2010),
+          NumismaticMotifRule('Estela de Raimondi (Áncash)', 2010),
+          NumismaticMotifRule('Chullpas de Sillustani (Puno)', 2011),
+          NumismaticMotifRule('Monasterio de Santa Catalina (Arequipa)', 2011),
+          NumismaticMotifRule('Machu Picchu (Cusco)', 2011),
+          NumismaticMotifRule('Gran Pajatén (San Martín)', 2011),
+          NumismaticMotifRule('Piedra de Saywite (Apurímac)', 2012),
+          NumismaticMotifRule('Fortaleza del Real Felipe (Callao)', 2012),
+          NumismaticMotifRule('Templo del Sol - Vilcashuamán (Ayacucho)', 2012),
+          NumismaticMotifRule('Kuntur Wasi (Cajamarca)', 2012),
+          NumismaticMotifRule('Templo Inca Huaytará (Huancavelica)', 2013),
+          NumismaticMotifRule('Complejo Arqueológico de Kotosh (Huánuco)', 2013),
+          NumismaticMotifRule('Arte Textil Paracas (Ica)', 2013),
+          NumismaticMotifRule('Complejo Arqueológico de Tunanmarca (Junín)', 2013),
+          NumismaticMotifRule('Ciudad Sagrada de Caral (Lima)', 2013),
+          NumismaticMotifRule('Huaca de la Luna (La Libertad)', 2014),
+          NumismaticMotifRule('Antiguo Hotel Palace (Loreto)', 2014),
+          NumismaticMotifRule('Catedral de Lima (Lima)', 2014),
+          NumismaticMotifRule('Petroglifos de Pusharo (Madre de Dios)', 2015),
+          NumismaticMotifRule('Arquitectura Moqueguana (Moquegua)', 2015),
+          NumismaticMotifRule('Sitio Arqueológico de Huarautambo (Pasco)', 2015),
+          NumismaticMotifRule('Complejo Arqueológico de Cabeza de Vaca (Tumbes)', 2016),
+          NumismaticMotifRule('Cerámica Vicús (Piura)', 2016),
+          NumismaticMotifRule('Cerámica Shipibo-Konibo (Ucayali)', 2016),
+          NumismaticMotifRule('Arco Parabólico de Tacna (Tacna)', 2016),
+          // Serie Recursos Naturales del Perú (2013)
+          NumismaticMotifRule('El Cacao (Theobroma cacao)', 2013),
+          NumismaticMotifRule('La Quinua (Chenopodium quinoa)', 2013),
+          NumismaticMotifRule('La Anchoveta (Engraulis ringens)', 2013),
+          // Casa Nacional de Moneda (2015)
+          NumismaticMotifRule('Casa Nacional de Moneda - 450 Años (2015)', 2015),
+          // Serie Fauna Silvestre Amenazada del Perú (2017-2019)
+          NumismaticMotifRule('Oso Andino de Anteojos (Tremarctos ornatus)', 2017),
+          NumismaticMotifRule('Cocodrilo de Tumbes (Crocodylus acutus)', 2017),
+          NumismaticMotifRule('Cóndor Andino (Vultur gryphus)', 2017),
+          NumismaticMotifRule('Tapir Andino (Tapirus pinchaque)', 2018),
+          NumismaticMotifRule('Pava Aliblanca (Penelope albipennis)', 2018),
+          NumismaticMotifRule('Jaguar (Panthera onca)', 2018),
+          NumismaticMotifRule('Suri (Rhea pennata)', 2018),
+          NumismaticMotifRule('Mono Choro de Cola Amarilla (Lagothrix flavicauda)', 2019),
+          NumismaticMotifRule('Gato Andino (Leopardus jacobita)', 2019),
+          NumismaticMotifRule('Rana Gigante del Titicaca (Telmatobius culeus)', 2019),
+          // Serie Constructores de la República (2020-2022)
+          NumismaticMotifRule('Juan Pablo Viscardo y Guzmán', 2020),
+          NumismaticMotifRule('Hipólito Unanue', 2020),
+          NumismaticMotifRule('Toribio Rodríguez de Mendoza', 2021),
+          NumismaticMotifRule('Manuel Lorenzo de Vidaurre', 2021),
+          NumismaticMotifRule('Francisco Xavier de Luna Pizarro', 2022),
+          NumismaticMotifRule('José Baquíjano y Carrillo', 2022),
+          NumismaticMotifRule('José Faustino Sánchez Carrión', 2022),
+          // Serie La Mujer en el Proceso de Independencia (2020)
+          NumismaticMotifRule('Brigida Silva de Ochoa', 2020),
+          NumismaticMotifRule('María Parado de Bellido', 2020),
         ],
       },
       commemorativeReasons: [
@@ -7591,7 +7908,7 @@ abstract final class AppTechnicalNumismatics {
         'Serie Constructores de la República',
         'Serie La Mujer en el Proceso de Independencia',
       ],
-    ),
+),
 
     // =========================================================================
     // 12. REINO UNIDO
@@ -7627,7 +7944,7 @@ abstract final class AppTechnicalNumismatics {
         '2.5': 'Cuproníquel',
         '5': 'Cuproníquel',
       },
-    ),
+                      ),
 
     // 12.2 Reino Unido - Sistema Decimal 1ª Fase (1971–2016)
     // Ref General: The Royal Mint - Round Pound and Decimal History:
@@ -7670,59 +7987,60 @@ abstract final class AppTechnicalNumismatics {
         '0.05': ['Acero bañado en níquel', 'Cuproníquel'],
         '0.10': ['Acero bañado en níquel', 'Cuproníquel'],
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '0.50': [
-          'Ingreso a la Comunidad Económica Europea EEC (1973)',
-          'Presidencia Británica de la CEE (1992-1993)',
-          '50 Aniversario del Día D desembarco de Normandía (1994)',
-          '50 Aniversario del NHS Servicio Nacional de Salud (1998)',
-          '25 Aniversario de la Adhesión a la CEE (1998)',
-          'Fundación de las Public Libraries (2000)',
-          'Centenario de la Suffragette WSPU (2003)',
-          '50 Aniversario de la Milla de Roger Bannister (2004)',
-          '250 Aniversario del Diccionario de Samuel Johnson (2005)',
-          '150 Aniversario de la Victoria Cross (2006)',
-          'Centenario del Movimiento Scout (2007)',
-          '250 Aniversario de los Jardines de Kew - Kew Gardens (2009)',
-          'Centenario de Girlguiding (2010)',
-          'Juegos Olímpicos y Paralímpicos de Londres 2012 - 29 Deportes (2011)',
-          'Centenario del Nacimiento de Benjamin Britten (2013)',
-          'Juegos de la Commonwealth Glasgow 2014 (2014)',
-          '75 Aniversario de la Batalla de Inglaterra (2015)',
-          'Serie Beatrix Potter - Peter Rabbit (2016)',
-          'Serie Beatrix Potter - Jemima Puddle-Duck (2016)',
-          'Serie Beatrix Potter - Mrs. Tiggy-Winkle (2016)',
-          'Serie Beatrix Potter - Squirrel Nutkin (2016)',
-          'Centenario de la Batalla de Hastings (2016)',
+          NumismaticMotifRule('Ingreso a la Comunidad Económica Europea EEC (1973)', 1973),
+          NumismaticMotifRule('Presidencia Británica de la CEE (1992-1993)', 1992, 1993),
+          NumismaticMotifRule('50 Aniversario del Día D desembarco de Normandía (1994)', 1994),
+          NumismaticMotifRule('50 Aniversario del NHS Servicio Nacional de Salud (1998)', 1998),
+          NumismaticMotifRule('25 Años de la CEE (1998)', 1998),
+          NumismaticMotifRule('150 Aniversario de las Bibliotecas Públicas (2000)', 2000),
+          NumismaticMotifRule('100 Años de la Fundación de la WSPU Movimiento Sufragista (2003)', 2003),
+          NumismaticMotifRule('50 Años de la Milla en Cuatro Minutos por Roger Bannister (2004)', 2004),
+          NumismaticMotifRule('250 Aniversario del Diccionario de Samuel Johnson (2005)', 2005),
+          NumismaticMotifRule('Bicentenario de Isambard Kingdom Brunel (2006)', 2006),
+          NumismaticMotifRule('Centenario del Movimiento Scout (2007)', 2007),
+          NumismaticMotifRule('250 Aniversario de los Jardines Botánicos Reales de Kew (2009)', 2009),
+          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos de Londres 2012 - 29 Deportes (2011)', 2011),
+          NumismaticMotifRule('Centenario de Benjamin Britten (2013)', 2013),
+          NumismaticMotifRule('Centenario del Inicio de la Primera Guerra Mundial (2014)', 2014),
+          NumismaticMotifRule('75 Aniversario de la Batalla de Inglaterra (2015)', 2015),
+          NumismaticMotifRule('950 Aniversario de la Batalla de Hastings (2016)', 2016),
+          NumismaticMotifRule('Serie Beatrix Potter - Peter Rabbit (2016)', 2016),
+          NumismaticMotifRule('Serie Beatrix Potter - Jemima Puddle-Duck (2016)', 2016),
+          NumismaticMotifRule('Serie Beatrix Potter - Squirrel Nutkin (2016)', 2016),
+          NumismaticMotifRule('Serie Beatrix Potter - Mrs. Tiggy-Winkle (2016)', 2016),
         ],
         '1': [
-          'Escudos de Armas del Reino Unido (1983, 1993, 2003, 2008)',
-          'Cardo de Escocia (1984, 1989)',
-          'Puerro de Gales (1985, 1990)',
-          'Lino de Irlanda del Norte (1986, 1991)',
-          'Roble de Inglaterra (1987, 1992)',
-          'Puentes del Reino Unido (2004-2007)',
-          'Ciudades Capitales del Reino Unido (2010-2011)',
-          'Flora Heráldica Británica (2013-2014)',
+          NumismaticMotifRule('Escudos de Armas del Reino Unido (1983, 1993, 2003, 2008)', 1983, 2008),
+          NumismaticMotifRule('Puentes del Reino Unido (2004-2007)', 2004, 2007),
+          NumismaticMotifRule('Ciudades Capitales Británicas (2010-2011)', 2010, 2011),
+          NumismaticMotifRule('Flora Heráldica Británica (2013-2014)', 2013, 2014),
+          NumismaticMotifRule('Última Emisión Redonda - The Last Round Pound (2016)', 2016),
         ],
         '2': [
-          'Desarrollo de la Tecnología (1997+)',
-          'Rugby World Cup (1999)',
-          'Centenario de la Radio Transatlántica de Marconi (2001)',
-          'Commonwealth Games Manchester (2002)',
-          '50 Aniversario del Descubrimiento del ADN (2003)',
-          '200 Aniversario de la Locomotora de Vapor de Trevithick (2004)',
-          '400 Aniversario de la Conspiración de la Pólvora (2005)',
-          '60 Aniversario del Fin de la Segunda Guerra Mundial (2005)',
-          '200 Aniversario de Isambard Kingdom Brunel (2006)',
-          'Bicentenario de la Abolición del Comercio de Esclavos (2007)',
-          'Handover Olímpico Beijing a Londres (2008)',
-          '200 Aniversario de Charles Darwin (2009)',
-          '400 Aniversario de la Biblia King James (2011)',
-          'Bicentenario de Charles Dickens (2012)',
-          'Centenario de la Primera Guerra Mundial (2014-2018)',
-          '800 Aniversario de la Carta Magna (2015)',
-          '400 Aniversario de William Shakespeare (2016)',
+          NumismaticMotifRule('Desarrollo de la Tecnología (1997+)', 1997, 2015),
+          NumismaticMotifRule('Rugby World Cup (1999)', 1999),
+          NumismaticMotifRule('Centenario de la Radio Transatlántica de Marconi (2001)', 2001),
+          NumismaticMotifRule('Commonwealth Games Manchester (2002)', 2002),
+          NumismaticMotifRule('50 Aniversario del Descubrimiento del ADN (2003)', 2003),
+          NumismaticMotifRule('200 Años de la Locomotora de Vapor de Trevithick (2004)', 2004),
+          NumismaticMotifRule('400 Años de la Conspiración de la Pólvora (2005)', 2005),
+          NumismaticMotifRule('60 Aniversario del Fin de la Segunda Guerra Mundial (2005)', 2005),
+          NumismaticMotifRule('Bicentenario de Isambard Kingdom Brunel (2006)', 2006),
+          NumismaticMotifRule('Bicentenario de la Abolición del Comercio de Esclavos (2007)', 2007),
+          NumismaticMotifRule('Tercentenario del Acta de Unión (2007)', 2007),
+          NumismaticMotifRule('Centenario de los Juegos Olímpicos de Londres 1908 (2008)', 2008),
+          NumismaticMotifRule('Bicentenario de Charles Darwin (2009)', 2009),
+          NumismaticMotifRule('250 Aniversario del Nacimiento de Robert Burns (2009)', 2009),
+          NumismaticMotifRule('Centenario de Florence Nightingale (2010)', 2010),
+          NumismaticMotifRule('400 Aniversario de la Biblia del Rey Jacobo (2011)', 2011),
+          NumismaticMotifRule('Bicentenario de Charles Dickens (2012)', 2012),
+          NumismaticMotifRule('150 Años del Metro de Londres (2013)', 2013),
+          NumismaticMotifRule('350 Aniversario de la Guinea de Oro (2013)', 2013),
+          NumismaticMotifRule('Centenario de la Primera Guerra Mundial - Tu País te Necesita (2014)', 2014),
+          NumismaticMotifRule('800 Aniversario de la Carta Magna (2015)', 2015),
+          NumismaticMotifRule('400 Aniversario de William Shakespeare (2016)', 2016),
         ],
       },
       commemorativeReasons: [
@@ -7731,7 +8049,7 @@ abstract final class AppTechnicalNumismatics {
         'Kew Gardens 250th Anniversary',
         'British History Commemoratives',
       ],
-    ),
+),
 
     // 12.3 Reino Unido - Sistema Decimal 2ª Fase Dodecagonal (2017–presente)
     // Ref General: The Royal Mint - 12-sided £1 Coin & Modern Commemoratives:
@@ -7762,29 +8080,29 @@ abstract final class AppTechnicalNumismatics {
         '2': 'Bimetálica',
         '5': 'Cuproníquel',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '0.50': [
-          'Sir Isaac Newton (2017)',
-          'Centenario de la Ley de Representación Popular (2018)',
-          'Stephen Hawking (2019)',
-          'Salida del Reino Unido de la Unión Europea - Brexit (2020)',
-          'Dinosaurios de la Colección del Museo de Historia Natural - Megalosaurus (2020)',
-          '50 Aniversario del Orgullo Gay - Pride UK (2022)',
-          'Coronación del Rey Carlos III (2023)',
-          'Homenaje a la Reina Isabel II (2022)',
+          NumismaticMotifRule('Sir Isaac Newton (2017)', 2017),
+          NumismaticMotifRule('Centenario de la Ley de Representación Popular (2018)', 2018),
+          NumismaticMotifRule('Stephen Hawking (2019)', 2019),
+          NumismaticMotifRule('Salida del Reino Unido de la Unión Europea - Brexit (2020)', 2020),
+          NumismaticMotifRule('Dinosaurios de la Colección del Museo de Historia Natural - Megalosaurus (2020)', 2020),
+          NumismaticMotifRule('50 Aniversario del Orgullo Gay - Pride UK (2022)', 2022),
+          NumismaticMotifRule('Homenaje a la Reina Isabel II (2022)', 2022),
+          NumismaticMotifRule('Coronación del Rey Carlos III (2023)', 2023),
         ],
         '1': [
-          'Nations of the Crown (2017+)',
-          'Flora y Fauna Británica - Abejas de Carlos III (2023+)',
+          NumismaticMotifRule('Nations of the Crown (2017+)', 2017, 2022),
+          NumismaticMotifRule('Flora y Fauna Británica - Abejas de Carlos III (2023+)', 2023, 2100),
         ],
         '2': [
-          'Jane Austen (2017)',
-          'Centenario de la RAF Royal Air Force (2018)',
-          '75 Aniversario del Día D (2019)',
-          '100 Años de Agatha Christie (2020)',
-          '75 Aniversario de la Victoria en Europa VE Day (2020)',
-          'Alexander Graham Bell (2022)',
-          'J.R.R. Tolkien (2023)',
+          NumismaticMotifRule('Jane Austen (2017)', 2017),
+          NumismaticMotifRule('Centenario de la RAF Royal Air Force (2018)', 2018),
+          NumismaticMotifRule('75 Aniversario del Día D (2019)', 2019),
+          NumismaticMotifRule('100 Años de Agatha Christie (2020)', 2020),
+          NumismaticMotifRule('75 Aniversario de la Victoria en Europa VE Day (2020)', 2020),
+          NumismaticMotifRule('Alexander Graham Bell (2022)', 2022),
+          NumismaticMotifRule('J.R.R. Tolkien (2023)', 2023),
         ],
       },
       commemorativeReasons: [
@@ -7793,7 +8111,7 @@ abstract final class AppTechnicalNumismatics {
         'King Charles III Coronation',
         'British Cultural Icons',
       ],
-    ),
+),
 
     // =========================================================================
     // 13. FRANCIA
@@ -7826,7 +8144,7 @@ abstract final class AppTechnicalNumismatics {
         '12': 'Oro',
         '24': 'Oro',
       },
-    ),
+                ),
 
     // 13.2 Francia - Franc Ancien (1795–1959)
     // Ref General: Monnaie de Paris: https://www.monnaiedeparis.fr
@@ -7863,7 +8181,28 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Cuproníquel',
         '100': 'Cuproníquel',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '10': [
+          NumismaticMotifRule('Bernardo O\'Higgins', 1975, 2100),
+          NumismaticMotifRule('Ángel de la Libertad (1976-1990)', 1976, 1990),
+        ],
+        '50': [
+          NumismaticMotifRule('Bernardo O\'Higgins (Forma Decagonal)', 1981, 2100),
+        ],
+        '100': [
+          NumismaticMotifRule('Pueblos Originarios - Mujer Mapuche', 2001, 2100),
+          NumismaticMotifRule('Escudo Nacional de 8 Lados (1981-2000)', 1981, 2000),
+        ],
+        '500': [
+          NumismaticMotifRule('Cardenal Raúl Silva Henríquez', 2000, 2100),
+        ],
+      },
+      commemorativeReasons: [
+        'Pueblos Originarios de Chile',
+        'Cardenal Raúl Silva Henríquez',
+        'Ángel de la Libertad',
+      ],
+),
 
     // 13.3 Francia - Nouveau Franc (1960–2001)
     // Ref General: Monnaie de Paris - Le Nouveau Franc:
@@ -7900,38 +8239,37 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Plata',
         '100': 'Plata',
       },
+                                        commemorativeDenominations: {'50'},
       commemorativeMotifsByDenomination: {
         '10': [
-          'Génie de la Bastille',
-          'Bicentenario de la Revolución Francesa (1989)',
-          'Centenario de la Torre Eiffel (1989)',
-          'Guglielmo Marconi (1992)',
-          'Mont Saint-Michel (1992)',
-          'Gaston Phébus (1994)',
-          'Jean Monnet (1988)',
+          NumismaticMotifRule('Jean Monnet (1988)', 1988),
+          NumismaticMotifRule('Bicentenario de la Revolución Francesa (1989)', 1989),
+          NumismaticMotifRule('Centenario de la Torre Eiffel (1989)', 1989),
+          NumismaticMotifRule('Guglielmo Marconi (1992)', 1992),
+          NumismaticMotifRule('Mont Saint-Michel (1992)', 1992),
+          NumismaticMotifRule('Gaston Phébus (1994)', 1994),
         ],
         '20': [
-          'Mont Saint-Michel',
-          'Juegos Olímpicos de Albertville 1992 - Pierre de Coubertin (1992)',
-          'Juegos del Mediterráneo (1993)',
+          NumismaticMotifRule('Juegos Olímpicos de Albertville 1992 - Pierre de Coubertin (1992)', 1992),
+          NumismaticMotifRule('Juegos del Mediterráneo (1993)', 1993),
         ],
         '50': [
-          'Hercule de Dupré (1974-1980)',
+          NumismaticMotifRule('Hercule de Dupré (1974-1980)', 1974, 1980),
         ],
         '100': [
-          'Marie Curie (1984)',
-          'Émile Zola (1985)',
-          'Estatua de la Libertad (1986)',
-          'La Fayette (1987)',
-          'Fraternité (1988)',
-          'Droits de l\'Homme (1989)',
-          'Charlemagne (1990)',
-          'René Descartes (1991)',
-          'Jean Monnet (1992)',
-          'Liberté par Louvre (1993)',
-          'André Malraux (1996)',
-          'Clovis (1996)',
-          'Paul Cézanne (1998)',
+          NumismaticMotifRule('Marie Curie (1984)', 1984),
+          NumismaticMotifRule('Émile Zola (1985)', 1985),
+          NumismaticMotifRule('Estatua de la Libertad (1986)', 1986),
+          NumismaticMotifRule('La Fayette (1987)', 1987),
+          NumismaticMotifRule('Fraternité (1988)', 1988),
+          NumismaticMotifRule('Droits de l\'Homme (1989)', 1989),
+          NumismaticMotifRule('Charlemagne (1990)', 1990),
+          NumismaticMotifRule('René Descartes (1991)', 1991),
+          NumismaticMotifRule('Jean Monnet (1992)', 1992),
+          NumismaticMotifRule('Liberté par Louvre (1993)', 1993),
+          NumismaticMotifRule('André Malraux (1996)', 1996),
+          NumismaticMotifRule('Clovis (1996)', 1996),
+          NumismaticMotifRule('Paul Cézanne (1998)', 1998),
         ],
       },
       commemorativeReasons: [
@@ -7939,7 +8277,7 @@ abstract final class AppTechnicalNumismatics {
         'Hercule de Dupré',
         'Grands Personnages de France',
       ],
-    ),
+),
 
     // =========================================================================
     // 14. ALEMANIA
@@ -7977,7 +8315,7 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Oro',
         '20': 'Oro',
       },
-    ),
+                      ),
 
     // 14.2 Alemania - República de Weimar y Reichsmark (1924–1947)
     // Ref General: Deutsche Bundesbank - Geldgeschichte: https://www.bundesbank.de
@@ -8007,7 +8345,45 @@ abstract final class AppTechnicalNumismatics {
         '3': 'Plata',
         '5': 'Plata',
       },
-    ),
+          commemorativeDenominations: {'50'},
+      commemorativeMotifsByDenomination: {
+        '10': [
+          NumismaticMotifRule('Jean Monnet (1988)', 1988),
+          NumismaticMotifRule('Bicentenario de la Revolución Francesa (1989)', 1989),
+          NumismaticMotifRule('Centenario de la Torre Eiffel (1989)', 1989),
+          NumismaticMotifRule('Guglielmo Marconi (1992)', 1992),
+          NumismaticMotifRule('Mont Saint-Michel (1992)', 1992),
+          NumismaticMotifRule('Gaston Phébus (1994)', 1994),
+        ],
+        '20': [
+          NumismaticMotifRule('Juegos Olímpicos de Albertville 1992 - Pierre de Coubertin (1992)', 1992),
+          NumismaticMotifRule('Juegos del Mediterráneo (1993)', 1993),
+        ],
+        '50': [
+          NumismaticMotifRule('Hercule de Dupré (1974-1980)', 1974, 1980),
+        ],
+        '100': [
+          NumismaticMotifRule('Marie Curie (1984)', 1984),
+          NumismaticMotifRule('Émile Zola (1985)', 1985),
+          NumismaticMotifRule('Estatua de la Libertad (1986)', 1986),
+          NumismaticMotifRule('La Fayette (1987)', 1987),
+          NumismaticMotifRule('Fraternité (1988)', 1988),
+          NumismaticMotifRule('Droits de l\'Homme (1989)', 1989),
+          NumismaticMotifRule('Charlemagne (1990)', 1990),
+          NumismaticMotifRule('René Descartes (1991)', 1991),
+          NumismaticMotifRule('Jean Monnet (1992)', 1992),
+          NumismaticMotifRule('Liberté par Louvre (1993)', 1993),
+          NumismaticMotifRule('André Malraux (1996)', 1996),
+          NumismaticMotifRule('Clovis (1996)', 1996),
+          NumismaticMotifRule('Paul Cézanne (1998)', 1998),
+        ],
+      },
+      commemorativeReasons: [
+        'Bicentenaire de la Révolution',
+        'Hercule de Dupré',
+        'Grands Personnages de France',
+      ],
+),
 
     // 14.3 Alemania - Deutsche Mark 1ª Era (1948–1974)
     // Ref General: Deutsche Bundesbank - DM-Münzen:
@@ -8039,40 +8415,39 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Plata',
         '10': 'Plata',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '5': [
-          'Centenario del Germanisches Nationalmuseum (1952)',
-          '150 Aniversario del Fallecimiento de Friedrich von Schiller (1955)',
-          '300 Aniversario del Natalicio de Ludwig Wilhelm von Baden (1955)',
-          'Centenario del Fallecimiento de Joseph von Eichendorff (1957)',
-          '150 Aniversario del Natalicio de Johann Gottlieb Fichte (1964)',
-          '250 Aniversario del Fallecimiento de Gottfried Wilhelm Leibniz (1966)',
-          'Centenario de Wilhelm Conrad Röntgen (1967)',
-          'Centenario del Fallecimiento de Wilhelm von Humboldt (1967)',
-          '150 Aniversario del Natalicio de Karl Marx (1968)',
-          '500 Aniversario del Fallecimiento de Johannes Gutenberg (1968)',
-          '150 Aniversario del Natalicio de Friedrich Wilhelm Raiffeisen (1968)',
-          'Centenario de la Fundación del Reichstag (1971)',
-          '500 Aniversario del Natalicio de Alberto Durero (1971)',
-          '500 Aniversario del Natalicio de Nicolás Copérnico (1973)',
-          '125 Aniversario de la Asamblea Nacional de Frankfurt en Paulskirche (1973)',
-          '25 Años de la Ley Fundamental de la RFA (1974)',
-          '250 Aniversario del Natalicio de Immanuel Kant (1974)',
+          NumismaticMotifRule('Centenario del Germanisches Nationalmuseum (1952)', 1952),
+          NumismaticMotifRule('150 Aniversario del Fallecimiento de Friedrich von Schiller (1955)', 1955),
+          NumismaticMotifRule('300 Aniversario del Natalicio de Ludwig Wilhelm von Baden (1955)', 1955),
+          NumismaticMotifRule('Centenario del Fallecimiento de Joseph von Eichendorff (1957)', 1957),
+          NumismaticMotifRule('150 Aniversario del Natalicio de Johann Gottlieb Fichte (1964)', 1964),
+          NumismaticMotifRule('250 Aniversario del Fallecimiento de Gottfried Wilhelm Leibniz (1966)', 1966),
+          NumismaticMotifRule('Centenario de Wilhelm Conrad Röntgen (1967)', 1967),
+          NumismaticMotifRule('Centenario del Fallecimiento de Wilhelm von Humboldt (1967)', 1967),
+          NumismaticMotifRule('150 Aniversario del Natalicio de Karl Marx (1968)', 1968),
+          NumismaticMotifRule('500 Aniversario del Fallecimiento de Johannes Gutenberg (1968)', 1968),
+          NumismaticMotifRule('150 Aniversario del Natalicio de Friedrich Wilhelm Raiffeisen (1968)', 1968),
+          NumismaticMotifRule('Centenario de la Fundación del Reichstag (1971)', 1971),
+          NumismaticMotifRule('500 Aniversario del Natalicio de Alberto Durero (1971)', 1971),
+          NumismaticMotifRule('500 Aniversario del Natalicio de Nicolás Copérnico (1973)', 1973),
+          NumismaticMotifRule('125 Aniversario de la Asamblea Nacional de Frankfurt en Paulskirche (1973)', 1973),
+          NumismaticMotifRule('25 Años de la Ley Fundamental de la RFA (1974)', 1974),
+          NumismaticMotifRule('250 Aniversario del Natalicio de Immanuel Kant (1974)', 1974),
         ],
         '10': [
-          'Juegos Olímpicos de Múnich 1972',
-          'Juegos Olímpicos de Múnich 1972 - Emblema Espiral',
-          'Juegos Olímpicos de Múnich 1972 - Rayos de Luz',
-          'Juegos Olímpicos de Múnich 1972 - Pareja de Atletas',
-          'Juegos Olímpicos de Múnich 1972 - Instalaciones Deportivas Estadio Olímpico',
-          'Juegos Olímpicos de Múnich 1972 - Bucle conmemorativo',
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Emblema Espiral', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Rayos de Luz', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Pareja de Atletas', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Instalaciones Deportivas Estadio Olímpico', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Bucle conmemorativo', 1972),
         ],
       },
       commemorativeReasons: [
         'Juegos Olímpicos de Múnich 1972',
         'Grandes Personalidades de la Historia Alemana',
       ],
-    ),
+),
 
     // 14.4 Alemania - Deutsche Mark 2ª Era Magnimat (1975–2001)
     // Ref General: Deutsche Bundesbank - DM-Münzen:
@@ -8103,42 +8478,42 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Cuproníquel',
         '10': 'Plata',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '10': [
-          '750 Años de Berlín (1987)',
-          'Bicentenario del Natalicio de Arthur Schopenhauer (1988)',
-          'Centenario del Fallecimiento de Carl Zeiss (1988)',
-          '40 Años de la República Federal de Alemania (1989)',
-          '2000 Años de Bonn (1989)',
-          '800 Años del Puerto de Hamburgo (1989)',
-          '800 Años de la Orden Teutónica (1990)',
-          '200 Aniversario de la Puerta de Brandeburgo (1991)',
-          '125 Aniversario del Natalicio de Käthe Kollwitz (1992)',
-          '150 Aniversario de la Orden Pour le Mérite (1992)',
-          '1000 Años de Potsdam (1993)',
-          '150 Aniversario del Natalicio de Robert Koch (1993)',
-          '50 Aniversario del Levantamiento del 20 de Julio de 1944 (1994)',
-          '250 Aniversario del Natalicio de Johann Gottfried Herder (1994)',
-          'Centenario del Descubrimiento de los Rayos X (1995)',
-          '150 Aniversario del Descubrimiento de Neptuno por Johann Gottfried Galle (1996)',
-          '500 Aniversario del Reformador Philipp Melanchthon (1997)',
-          'Centenario del Motor Diesel (1997)',
-          '350 Años de la Paz de Westfalia (1998)',
-          '50 Años del Deutsche Mark (1998)',
-          '900 Aniversario del Natalicio de Hildegarda de Bingen (1998)',
-          '50 Años de la Ley Fundamental (1999)',
-          '250 Aniversario del Natalicio de Johann Wolfgang von Goethe (1999)',
-          'Exposición Universal Expo 2000 Hannover (2000)',
-          '250 Aniversario del Fallecimiento de Johann Sebastian Bach (2000)',
-          '10 Años de la Unidad Alemana (2000)',
-          '50 Años del Tribunal Constitucional Federal (2001)',
+          NumismaticMotifRule('750 Años de Berlín (1987)', 1987),
+          NumismaticMotifRule('Bicentenario del Natalicio de Arthur Schopenhauer (1988)', 1988),
+          NumismaticMotifRule('Centenario del Fallecimiento de Carl Zeiss (1988)', 1988),
+          NumismaticMotifRule('40 Años de la República Federal de Alemania (1989)', 1989),
+          NumismaticMotifRule('2000 Años de Bonn (1989)', 1989),
+          NumismaticMotifRule('800 Años del Puerto de Hamburgo (1989)', 1989),
+          NumismaticMotifRule('800 Años de la Orden Teutónica (1990)', 1990),
+          NumismaticMotifRule('200 Aniversario de la Puerta de Brandeburgo (1991)', 1991),
+          NumismaticMotifRule('125 Aniversario del Natalicio de Käthe Kollwitz (1992)', 1992),
+          NumismaticMotifRule('150 Aniversario de la Orden Pour le Mérite (1992)', 1992),
+          NumismaticMotifRule('1000 Años de Potsdam (1993)', 1993),
+          NumismaticMotifRule('150 Aniversario del Natalicio de Robert Koch (1993)', 1993),
+          NumismaticMotifRule('50 Aniversario del Levantamiento del 20 de Julio de 1944 (1994)', 1994),
+          NumismaticMotifRule('250 Aniversario del Natalicio de Johann Gottfried Herder (1994)', 1994),
+          NumismaticMotifRule('Centenario del Descubrimiento de los Rayos X (1995)', 1995),
+          NumismaticMotifRule('150 Aniversario del Descubrimiento de Neptuno por Johann Gottfried Galle (1996)', 1996),
+          NumismaticMotifRule('500 Aniversario del Reformador Philipp Melanchthon (1997)', 1997),
+          NumismaticMotifRule('Centenario del Motor Diesel (1997)', 1997),
+          NumismaticMotifRule('350 Años de la Paz de Westfalia (1998)', 1998),
+          NumismaticMotifRule('50 Años del Deutsche Mark (1998)', 1998),
+          NumismaticMotifRule('900 Aniversario del Natalicio de Hildegarda de Bingen (1998)', 1998),
+          NumismaticMotifRule('50 Años de la Ley Fundamental (1999)', 1999),
+          NumismaticMotifRule('250 Aniversario del Natalicio de Johann Wolfgang von Goethe (1999)', 1999),
+          NumismaticMotifRule('Exposición Universal Expo 2000 Hannover (2000)', 2000),
+          NumismaticMotifRule('250 Aniversario del Fallecimiento de Johann Sebastian Bach (2000)', 2000),
+          NumismaticMotifRule('10 Años de la Unidad Alemana (2000)', 2000),
+          NumismaticMotifRule('50 Años del Tribunal Constitucional Federal (2001)', 2001),
         ],
       },
       commemorativeReasons: [
         'Serie Conmemorativa de 10 Marcos de Plata',
         'Historia de la República Federal de Alemania',
       ],
-    ),
+),
 
     // =========================================================================
     // 15. ITALIA
@@ -8176,7 +8551,39 @@ abstract final class AppTechnicalNumismatics {
         '50': 'Oro',
         '100': 'Oro',
       },
-    ),
+          commemorativeMotifsByDenomination: {
+        '5': [
+          NumismaticMotifRule('Centenario del Germanisches Nationalmuseum (1952)', 1952),
+          NumismaticMotifRule('150 Aniversario del Fallecimiento de Friedrich von Schiller (1955)', 1955),
+          NumismaticMotifRule('300 Aniversario del Natalicio de Ludwig Wilhelm von Baden (1955)', 1955),
+          NumismaticMotifRule('Centenario del Fallecimiento de Joseph von Eichendorff (1957)', 1957),
+          NumismaticMotifRule('150 Aniversario del Natalicio de Johann Gottlieb Fichte (1964)', 1964),
+          NumismaticMotifRule('250 Aniversario del Fallecimiento de Gottfried Wilhelm Leibniz (1966)', 1966),
+          NumismaticMotifRule('Centenario de Wilhelm Conrad Röntgen (1967)', 1967),
+          NumismaticMotifRule('Centenario del Fallecimiento de Wilhelm von Humboldt (1967)', 1967),
+          NumismaticMotifRule('150 Aniversario del Natalicio de Karl Marx (1968)', 1968),
+          NumismaticMotifRule('500 Aniversario del Fallecimiento de Johannes Gutenberg (1968)', 1968),
+          NumismaticMotifRule('150 Aniversario del Natalicio de Friedrich Wilhelm Raiffeisen (1968)', 1968),
+          NumismaticMotifRule('Centenario de la Fundación del Reichstag (1971)', 1971),
+          NumismaticMotifRule('500 Aniversario del Natalicio de Alberto Durero (1971)', 1971),
+          NumismaticMotifRule('500 Aniversario del Natalicio de Nicolás Copérnico (1973)', 1973),
+          NumismaticMotifRule('125 Aniversario de la Asamblea Nacional de Frankfurt en Paulskirche (1973)', 1973),
+          NumismaticMotifRule('25 Años de la Ley Fundamental de la RFA (1974)', 1974),
+          NumismaticMotifRule('250 Aniversario del Natalicio de Immanuel Kant (1974)', 1974),
+        ],
+        '10': [
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Emblema Espiral', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Rayos de Luz', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Pareja de Atletas', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Instalaciones Deportivas Estadio Olímpico', 1972),
+          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Bucle conmemorativo', 1972),
+        ],
+      },
+      commemorativeReasons: [
+        'Juegos Olímpicos de Múnich 1972',
+        'Grandes Personalidades de la Historia Alemana',
+      ],
+),
 
     // 15.2 Italia - República Italiana 1ª Era Caravelle de Plata (1946–1981)
     // Ref General: Istituto Poligrafico e Zecca dello Stato: https://www.ipzs.it
@@ -8206,13 +8613,13 @@ abstract final class AppTechnicalNumismatics {
         '200': 'Bronce de aluminio',
         '500': 'Plata',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '500': [
-          'Le Caravelle di Cristoforo Colombo (1958-1967)',
-          'Centenario de la Unificación de Italia - Proclama del Reino de Italia (1961)',
-          'Centenario del Nacimiento de Dante Alighieri (1965)',
-          'Centenario del Nacimiento de Guglielmo Marconi (1974)',
-          'Bimilenario de Virgilio (1981)',
+          NumismaticMotifRule('Le Caravelle di Cristoforo Colombo (1958-1967)', 1958, 1967),
+          NumismaticMotifRule('Centenario de la Unificación de Italia - Proclama del Reino de Italia (1961)', 1961),
+          NumismaticMotifRule('Centenario del Nacimiento de Dante Alighieri (1965)', 1965),
+          NumismaticMotifRule('Centenario del Nacimiento de Guglielmo Marconi (1974)', 1974),
+          NumismaticMotifRule('Bimilenario de Virgilio (1981)', 1981),
         ],
       },
       commemorativeReasons: [
@@ -8221,7 +8628,7 @@ abstract final class AppTechnicalNumismatics {
         'Dante Alighieri',
         'Guglielmo Marconi',
       ],
-    ),
+),
 
     // 15.3 Italia - República Italiana 2ª Era Bimetálicas (1982–2001)
     // Ref General: Istituto Poligrafico e Zecca dello Stato: https://www.ipzs.it
@@ -8253,33 +8660,33 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Bimetálica',
         '1000': 'Bimetálica',
       },
-      commemorativeMotifsByDenomination: {
+                                        commemorativeMotifsByDenomination: {
         '200': [
-          'Centenario de la Aeronautica Militare (1993)',
-          'Centenario del Nacimiento de Maria Montessori (1990)',
-          '70 Aniversario de la Guardia di Finanza (1996)',
-          '50 Aniversario de la Declaración Universal de los Derechos Humanos (1998)',
+          NumismaticMotifRule('Centenario de la Aeronautica Militare (1993)', 1993),
+          NumismaticMotifRule('Centenario del Nacimiento de Maria Montessori (1990)', 1990),
+          NumismaticMotifRule('70 Aniversario de la Guardia di Finanza (1996)', 1996),
+          NumismaticMotifRule('50 Aniversario de la Declaración Universal de los Derechos Humanos (1998)', 1998),
         ],
         '500': [
-          'República Italiana Clásica Bimetálica',
-          'Centenario del Banco de Italia (1993)',
-          'Centenario de Luca Pacioli (1994)',
-          '70 Aniversario del ISTAT (1996)',
-          '50 Aniversario de la Policía de Tráfico Polizia Stradale (1997)',
-          'Centenario de la Federación Italiana de Fútbol FIGC (1998)',
-          '20 Años del IFAD (1998)',
-          'Elecciones al Parlamento Europeo (1999)',
+          NumismaticMotifRule('República Italiana Clásica Bimetálica', 1982, 2001),
+          NumismaticMotifRule('Centenario del Banco de Italia (1993)', 1993),
+          NumismaticMotifRule('Centenario de Luca Pacioli (1994)', 1994),
+          NumismaticMotifRule('70 Aniversario del ISTAT (1996)', 1996),
+          NumismaticMotifRule('50 Aniversario de la Policía de Tráfico Polizia Stradale (1997)', 1997),
+          NumismaticMotifRule('Centenario de la Federación Italiana de Fútbol FIGC (1998)', 1998),
+          NumismaticMotifRule('20 Años del IFAD (1998)', 1998),
+          NumismaticMotifRule('Elecciones al Parlamento Europeo (1999)', 1999),
         ],
         '1000': [
-          'Mapa de la Unión Europea con Fronteras Erróneas (1997)',
-          'Mapa de la Unión Europea con Fronteras Corregidas (1997-1998)',
+          NumismaticMotifRule('Mapa de la Unión Europea con Fronteras Erróneas (1997)', 1997),
+          NumismaticMotifRule('Mapa de la Unión Europea con Fronteras Corregidas (1997-1998)', 1997, 1998),
         ],
       },
       commemorativeReasons: [
         '500 Lire Bimetalliche Commemorative',
         '1000 Lire Mappa d\'Europa',
       ],
-    ),
+),
 
     // =========================================================================
     // NOTAFILIA: BILLETES Y PAPEL MONEDA (isBanknote: true)
@@ -8523,13 +8930,15 @@ abstract final class AppTechnicalNumismatics {
       denominationAllowedMaterials: {
         '100': ['Papel de algodón', 'Polímero'],
       },
+                  isBanknote: true,
+                            commemorativeDenominations: {'100', '200'},
       commemorativeMotifsByDenomination: {
         '100': [
-          'Centenario de la Revolución Mexicana (2010)',
-          'Centenario de la Constitución Política (2017)',
+          NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2010),
+          NumismaticMotifRule('Centenario de la Constitución Política (2017)', 2017),
         ],
         '200': [
-          'Bicentenario de la Independencia de México (2010)',
+          NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2010),
         ],
       },
       commemorativeReasons: [
@@ -8537,8 +8946,7 @@ abstract final class AppTechnicalNumismatics {
         'Centenario de la Constitución Política (2017)',
         'Bicentenario de la Independencia de México (2010)',
       ],
-      isBanknote: true,
-    ),
+),
 
     // B1.9 México Billetes - Familia G en Circulación y Polímeros de Vanguardia (2020–presente)
     // Ref General: Banco de México - Billetes de la Familia G:
@@ -8568,16 +8976,16 @@ abstract final class AppTechnicalNumismatics {
       denominationAllowedMaterials: {
         '100': ['Polímero', 'Papel de algodón'],
       },
+      isBanknote: true,
       commemorativeMotifsByDenomination: {
         '20': [
-          'Bicentenario de la Independencia Nacional (2021)',
+          NumismaticMotifRule('Bicentenario de la Independencia Nacional (2021)', 2021),
         ],
       },
       commemorativeReasons: [
         'Bicentenario de la Independencia Nacional (2021)',
       ],
-      isBanknote: true,
-    ),
+),
 
     // B2.1 Estados Unidos Billetes - Large Size Notes (1861–1927)
     // Ref General: US Bureau of Engraving and Printing - Large Size Currency: https://www.bep.gov
@@ -8606,7 +9014,7 @@ abstract final class AppTechnicalNumismatics {
         '10000': 'Papel de algodón',
       },
       isBanknote: true,
-    ),
+                      ),
 
     // B2.2 Estados Unidos Billetes - Small Size Federal Reserve Notes (1928–presente)
     // Ref General: US Bureau of Engraving and Printing - Currency Denominations:
@@ -8643,7 +9051,22 @@ abstract final class AppTechnicalNumismatics {
         '100000': 'Papel de algodón',
       },
       isBanknote: true,
-    ),
+          commemorativeDenominations: {'100', '200'},
+      commemorativeMotifsByDenomination: {
+        '100': [
+          NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2010),
+          NumismaticMotifRule('Centenario de la Constitución Política (2017)', 2017),
+        ],
+        '200': [
+          NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2010),
+        ],
+      },
+      commemorativeReasons: [
+        'Centenario de la Revolución Mexicana (2010)',
+        'Centenario de la Constitución Política (2017)',
+        'Bicentenario de la Independencia de México (2010)',
+      ],
+),
 
     // B3.1 España Billetes - Era de la Peseta (1874–2001)
     // Ref General: Banco de España - Billetes en pesetas:
@@ -9169,6 +9592,24 @@ abstract final class AppTechnicalNumismatics {
   ];
 }
 
+/// Metadata representation of a temporally bounded numismatic commemorative motif.
+class NumismaticMotifRule {
+  final String name;
+  final int minYear;
+  final int maxYear;
+
+  const NumismaticMotifRule(
+    this.name,
+    this.minYear, [
+    int? maxYear,
+  ]) : maxYear = maxYear ?? minYear;
+
+  bool matchesYear(int? year) {
+    if (year == null) return true;
+    return year >= minYear && year <= maxYear;
+  }
+}
+
 /// Metadata record representing a country's currency epoch emission rules (Coins or Banknotes).
 class NumismaticEmissionRuleData {
   final String country;
@@ -9181,7 +9622,7 @@ class NumismaticEmissionRuleData {
   final Map<String, List<String>> denominationAllowedMaterials;
   final Set<String> commemorativeDenominations;
   final List<String> commemorativeReasons;
-  final Map<String, List<String>> commemorativeMotifsByDenomination;
+  final Map<String, List<NumismaticMotifRule>> commemorativeMotifsByDenomination;
   final String? defaultCommemorativeReason;
   final bool isBanknote;
 
@@ -9255,10 +9696,14 @@ class NumismaticEmissionRuleData {
     return false;
   }
 
-  List<String> getCommemorativeMotifsForDenomination(String targetDenom) {
+  List<String> getCommemorativeMotifsForDenomination(String targetDenom, {int? year}) {
     for (final entry in commemorativeMotifsByDenomination.entries) {
       if (matchesDenomination(entry.key, targetDenom)) {
-        return entry.value;
+        final matching = entry.value
+            .where((m) => m.matchesYear(year))
+            .map((m) => m.name)
+            .toList();
+        return matching;
       }
     }
     if (commemorativeReasons.isNotEmpty) {
@@ -9274,8 +9719,8 @@ class NumismaticEmissionRuleData {
     return const [];
   }
 
-  bool isMotifValidForDenomination(String targetDenom, String targetMotif) {
-    final motifs = getCommemorativeMotifsForDenomination(targetDenom);
+  bool isMotifValidForDenomination(String targetDenom, String targetMotif, {int? year}) {
+    final motifs = getCommemorativeMotifsForDenomination(targetDenom, year: year);
     if (motifs.isEmpty) return true;
     final clean = targetMotif.trim().toLowerCase();
     return motifs.any((m) {

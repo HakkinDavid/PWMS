@@ -209,12 +209,21 @@ class NumismaticMatrix {
     for (final rule in rules) {
       if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
         final cleanDenom = denomination.trim();
-        for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom)) {
+        for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom, year: year)) {
           if (!result.contains(motif)) result.add(motif);
         }
       } else {
-        for (final motif in rule.commemorativeReasons) {
-          if (!result.contains(motif)) result.add(motif);
+        for (final entry in rule.commemorativeMotifsByDenomination.entries) {
+          for (final motif in entry.value) {
+            if (motif.matchesYear(year) && !result.contains(motif.name)) {
+              result.add(motif.name);
+            }
+          }
+        }
+        if (result.isEmpty) {
+          for (final motif in rule.commemorativeReasons) {
+            if (!result.contains(motif)) result.add(motif);
+          }
         }
       }
     }

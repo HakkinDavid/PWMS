@@ -446,7 +446,7 @@ class NumismaticParser {
           pName == AppTechnicalStrings.magEmisorLower) {
         country = mag.stringValue?.trim();
       } else if (pName == AppStrings.motifPropertyName.toLowerCase() ||
-          pName == 'motivo') {
+          pName == AppTechnicalStrings.magMotivoLower) {
         motif = mag.stringValue?.trim();
       }
     }

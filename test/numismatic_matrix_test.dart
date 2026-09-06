@@ -380,14 +380,37 @@ void main() {
       expect(motifs1986, contains('Copa Mundial de la FIFA México 1986'));
       expect(motifs1986.any((m) => m.contains(' / ')), isFalse);
 
-      // 2010 Mexico $5 (Bicentenario / Centenario)
+      // 2008 Mexico $5 (Independencia y Revolución 2008)
+      final motifs2008 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2008,
+        currencyCode: 'MXN',
+        denomination: '5',
+      );
+      expect(motifs2008, containsAll([
+        'Ignacio López Rayón',
+        'Francisco Primo de Verdad y Ramos (Con puntos)',
+        'Francisco Primo de Verdad y Ramos (Sin puntos - Variedad especial)',
+        'Francisco Villa',
+        'Álvaro Obregón',
+      ]));
+      expect(motifs2008, isNot(contains('Miguel Hidalgo y Costilla'))); // Hidalgo was minted in 2010
+
+      // 2010 Mexico $5 (Bicentenario / Centenario 2010)
       final motifs2010 = NumismaticDataHelper.getCommemorativeMotifs(
         country: 'México',
         year: 2010,
         currencyCode: 'MXN',
         denomination: '5',
       );
-      expect(motifs2010, containsAll(['Miguel Hidalgo y Costilla', 'José María Morelos y Pavón', 'Ignacio Allende', 'Emiliano Zapata', 'Francisco Villa']));
+      expect(motifs2010, containsAll([
+        'Miguel Hidalgo y Costilla',
+        'José María Morelos y Pavón',
+        'Ignacio Allende',
+        'Emiliano Zapata',
+        'Venustiano Carranza',
+      ]));
+      expect(motifs2010, isNot(contains('Francisco Villa'))); // Villa was strictly 2008
 
       // 2021 Mexico $20
       final motifs2021 = NumismaticDataHelper.getCommemorativeMotifs(
@@ -397,9 +420,9 @@ void main() {
         denomination: '20',
       );
       expect(motifs2021, containsAll([
-        'Bicentenario de la Independencia Nacional',
-        '500 Años de Memoria Histórica de México-Tenochtitlan',
-        '700 Años de la Fundación Lunar de México-Tenochtitlan',
+        'Bicentenario de la Independencia Nacional (2021)',
+        '500 Años de Memoria Histórica de México-Tenochtitlan (2021)',
+        '700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)',
       ]));
 
       // 2005 Spain 2 Euro
@@ -418,7 +441,120 @@ void main() {
         currencyCode: 'DEM',
         denomination: '10',
       );
-      expect(motifsDem1972, contains('Juegos Olímpicos de Múnich 1972'));
+      expect(motifsDem1972, contains('Juegos Olímpicos de Múnich 1972 - Emblema Espiral'));
+    });
+
+    test('6. Strict temporal bounding and missing official motifs tests', () {
+      // Temporal Bounding: USA 1 Cent Lincoln (2005 vs 2009)
+      final lincoln2005 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'Estados Unidos',
+        year: 2005,
+        currencyCode: 'USD',
+        denomination: '0.01',
+      );
+      expect(lincoln2005, isEmpty);
+
+      final lincoln2009 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'Estados Unidos',
+        year: 2009,
+        currencyCode: 'USD',
+        denomination: '0.01',
+      );
+      expect(lincoln2009, hasLength(4));
+      expect(lincoln2009, containsAll([
+        'Lincoln Bicentennial - Birthplace (2009)',
+        'Lincoln Bicentennial - Formative Years in Indiana (2009)',
+        'Lincoln Bicentennial - Professional Life in Illinois (2009)',
+        'Lincoln Bicentennial - Presidency in Washington D.C. (2009)',
+      ]));
+
+      // Temporal Bounding: Eurozone 2 Euro (2002 vs 2007)
+      final euroSpain2002 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'España',
+        year: 2002,
+        currencyCode: 'EUR',
+        denomination: '2',
+      );
+      expect(euroSpain2002, isEmpty);
+
+      final euroSpain2007 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'España',
+        year: 2007,
+        currencyCode: 'EUR',
+        denomination: '2',
+      );
+      expect(euroSpain2007, contains('50 Aniversario del Tratado de Roma (2007)'));
+
+      // USA 50 State Quarters: 2005 25c gives exactly the 5 states of 2005
+      final usQuarters2005 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'Estados Unidos',
+        year: 2005,
+        currencyCode: 'USD',
+        denomination: '0.25',
+      );
+      expect(usQuarters2005, containsAll([
+        '50 State Quarters - California (2005)',
+        '50 State Quarters - Minnesota (2005)',
+        '50 State Quarters - Oregon (2005)',
+        '50 State Quarters - Kansas (2005)',
+        '50 State Quarters - West Virginia (2005)',
+      ]));
+      expect(usQuarters2005, isNot(contains('50 State Quarters - Delaware (1999)')));
+
+      // Missing official motifs: Mexico 10 MXN Cambio de Milenio (2000, 2001)
+      final mex10_2000 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2000,
+        currencyCode: 'MXN',
+        denomination: '10',
+      );
+      expect(mex10_2000, contains('Cambio de Milenio - Glifo Año 2000 (2000)'));
+
+      final mex10_2001 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2001,
+        currencyCode: 'MXN',
+        denomination: '10',
+      );
+      expect(mex10_2001, contains('Cambio de Milenio - Glifo Año 2001 (2001)'));
+
+      // Missing official motifs: Mexico 10 MXN 150 Aniversario Batalla de Puebla (2012)
+      final mex10_2012 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2012,
+        currencyCode: 'MXN',
+        denomination: '10',
+      );
+      expect(mex10_2012, contains('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza (2012)'));
+
+      // Missing official motifs: Mexico N$ 20 & N$ 50 Centro de Plata (1993-1995)
+      final mexN20_1993 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 1993,
+        currencyCode: 'MXN',
+        denomination: '20',
+      );
+      expect(mexN20_1993, contains('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)'));
+
+      final mexN50_1993 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 1993,
+        currencyCode: 'MXN',
+        denomination: '50',
+      );
+      expect(mexN50_1993, contains('Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)'));
+
+      // Distinct die varieties: Mexico 1968 25 Pesos Type 1 vs Type 2
+      final mex25_1968 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 1968,
+        currencyCode: 'MXP',
+        denomination: '25',
+      );
+      expect(mex25_1968, containsAll([
+        'Juegos Olímpicos México 68 - Tipo 1 (Aros rectos / alineados)',
+        'Juegos Olímpicos México 68 - Tipo 2 (Aros caídos / desiguales)',
+      ]));
     });
   });
 }

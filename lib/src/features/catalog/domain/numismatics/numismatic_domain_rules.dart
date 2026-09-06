@@ -358,7 +358,7 @@ class NumismaticDomainRules {
             pName == AppStrings.gradePropertyName.toLowerCase() ||
             pName == AppStrings.issuerPropertyName.toLowerCase() ||
             pName == AppStrings.motifPropertyName.toLowerCase() ||
-            pName == 'motivo' ||
+            pName == AppTechnicalStrings.magMotivoLower ||
             pName == AppTechnicalStrings.magPaisLower ||
             pName == AppTechnicalStrings.magPaisWithoutAccentLower ||
             pName == AppTechnicalStrings.magMonedaLower ||
@@ -572,9 +572,9 @@ class NumismaticDomainRules {
                 unitSymbol: null,
               ));
             } else if (pName == AppStrings.motifPropertyName.toLowerCase() ||
-                pName == 'motivo' ||
-                pName == 'razón de edición especial' ||
-                pName == 'razon de edicion especial') {
+                pName == AppTechnicalStrings.magMotivoLower ||
+                pName == AppTechnicalStrings.magRazonEdicionEspecialLower ||
+                pName == AppTechnicalStrings.magRazonEdicionEspecialWithoutAccentLower) {
               var motifVal = m.stringValue?.trim();
               if (motifVal != null && motifVal.isNotEmpty) {
                 customMags.add(m.copyWith(
@@ -585,7 +585,7 @@ class NumismaticDomainRules {
                   magnitudeValue: null,
                 ));
               }
-            } else if (pName == 'edición especial' || pName == 'edicion especial') {
+            } else if (pName == AppTechnicalStrings.magEdicionEspecialLower || pName == AppTechnicalStrings.magEdicionEspecialWithoutAccentLower) {
               // Ignore obsolete special edition magnitude
             } else {
               customMags.add(m);
@@ -735,28 +735,28 @@ class NumismaticDomainRules {
           String? extractedMotifFromNotes;
           if (inst.notes != null && inst.notes!.isNotEmpty) {
             final lowerNotes = inst.notes!.toLowerCase();
-            if (lowerNotes.contains('edición especial') || lowerNotes.contains('edicion especial')) {
-              final matchWithPrefix = RegExp(r'(?:\[\s*)?Edici(?:ó|o)n\s+especial\s*:\s*([^\]|\n]+)(?:\])?', caseSensitive: false).firstMatch(inst.notes!);
+            if (lowerNotes.contains(AppTechnicalStrings.magEdicionEspecialLower) || lowerNotes.contains(AppTechnicalStrings.magEdicionEspecialWithoutAccentLower)) {
+              final matchWithPrefix = RegExp(AppTechnicalStrings.regexEdicionEspecialNote, caseSensitive: false).firstMatch(inst.notes!);
               if (matchWithPrefix != null) {
                 final raw = matchWithPrefix.group(1)?.trim();
                 if (raw != null && raw.isNotEmpty) {
                   extractedMotifFromNotes = raw;
                 }
-                cleanedNotes = inst.notes!.replaceAll(matchWithPrefix.group(0)!, '').trim();
-                cleanedNotes = cleanedNotes.replaceAll(RegExp(r'^[|\s]+|[|\s]+$'), '').replaceAll(RegExp(r'\s*\|\s*\|\s*'), ' | ').trim();
+                cleanedNotes = inst.notes!.replaceAll(matchWithPrefix.group(0)!, AppTechnicalStrings.empty).trim();
+                cleanedNotes = cleanedNotes.replaceAll(RegExp(AppTechnicalStrings.regexLeadingTrailingPipesAndSpaces), AppTechnicalStrings.empty).replaceAll(RegExp(AppTechnicalStrings.regexConsecutivePipes), AppTechnicalStrings.pipeWithSpaces).trim();
                 if (cleanedNotes.isEmpty) {
                   cleanedNotes = null;
                 }
               }
-            } else if (lowerNotes.contains('motivo:') || lowerNotes.contains('motivo :')) {
-              final matchMotif = RegExp(r'(?:\[\s*)?Motivo\s*:\s*([^\]|\n]+)(?:\])?', caseSensitive: false).firstMatch(inst.notes!);
+            } else if (lowerNotes.contains(AppTechnicalStrings.prefixMotivoColon) || lowerNotes.contains(AppTechnicalStrings.prefixMotivoColonWithSpace)) {
+              final matchMotif = RegExp(AppTechnicalStrings.regexMotivoNote, caseSensitive: false).firstMatch(inst.notes!);
               if (matchMotif != null) {
                 final raw = matchMotif.group(1)?.trim();
                 if (raw != null && raw.isNotEmpty) {
                   extractedMotifFromNotes = raw;
                 }
-                cleanedNotes = inst.notes!.replaceAll(matchMotif.group(0)!, '').trim();
-                cleanedNotes = cleanedNotes.replaceAll(RegExp(r'^[|\s]+|[|\s]+$'), '').replaceAll(RegExp(r'\s*\|\s*\|\s*'), ' | ').trim();
+                cleanedNotes = inst.notes!.replaceAll(matchMotif.group(0)!, AppTechnicalStrings.empty).trim();
+                cleanedNotes = cleanedNotes.replaceAll(RegExp(AppTechnicalStrings.regexLeadingTrailingPipesAndSpaces), AppTechnicalStrings.empty).replaceAll(RegExp(AppTechnicalStrings.regexConsecutivePipes), AppTechnicalStrings.pipeWithSpaces).trim();
                 if (cleanedNotes.isEmpty) {
                   cleanedNotes = null;
                 }
@@ -769,9 +769,9 @@ class NumismaticDomainRules {
           final existingMotifMag = customMags.where((m) {
             final p = m.propertyName.trim().toLowerCase();
             return (p == AppStrings.motifPropertyName.toLowerCase() ||
-                    p == 'motivo' ||
-                    p == 'razón de edición especial' ||
-                    p == 'razon de edicion especial') &&
+                    p == AppTechnicalStrings.magMotivoLower ||
+                    p == AppTechnicalStrings.magRazonEdicionEspecialLower ||
+                    p == AppTechnicalStrings.magRazonEdicionEspecialWithoutAccentLower) &&
                 m.stringValue != null &&
                 m.stringValue!.trim().isNotEmpty;
           }).firstOrNull;
@@ -782,9 +782,32 @@ class NumismaticDomainRules {
             resolvedMotif = extractedMotifFromNotes;
           }
 
+          if (resolvedMotif != null && resolvedMotif.isNotEmpty) {
+            final norm = resolvedMotif.trim().toLowerCase();
+            if (norm.contains(AppTechnicalStrings.cambioDeRegimenLower) ||
+                norm.contains(AppTechnicalStrings.cambioDeRegimenWithoutAccentLower) ||
+                norm == AppTechnicalStrings.emisionDeCambioDeRegimenLower ||
+                norm == AppTechnicalStrings.emisionDeCambioDeRegimenWithoutAccentLower) {
+              final emisorMag = customMags.where((m) => m.propertyName == AppStrings.issuerPropertyName).firstOrNull?.stringValue;
+              final yearMag = customMags.where((m) => m.propertyName == AppStrings.mintagePropertyName).firstOrNull?.magnitudeValue?.toInt();
+              final denomMag = customMags.where((m) => m.propertyName == AppStrings.nominalValuePropertyName).firstOrNull?.magnitudeValue;
+              if (emisorMag != null && (emisorMag.toLowerCase().contains(AppTechnicalStrings.mexicoLower) || emisorMag.toLowerCase().contains(AppTechnicalStrings.mexicoWithoutAccentLower)) && yearMag != null && yearMag >= 1992 && yearMag <= 1995) {
+                if (denomMag != null && (denomMag - 10).abs() < 0.01) {
+                  resolvedMotif = AppTechnicalStrings.motifNuevoPesoPiedraDelSolPlata;
+                } else if (denomMag != null && (denomMag - 20).abs() < 0.01) {
+                  resolvedMotif = AppTechnicalStrings.motifNuevoPesoHidalgoPlata;
+                } else if (denomMag != null && (denomMag - 50).abs() < 0.01) {
+                  resolvedMotif = AppTechnicalStrings.motifNuevoPesoNinosHeroesPlata;
+                } else {
+                  resolvedMotif = AppTechnicalStrings.motifNuevoPeso;
+                }
+              }
+            }
+          }
+
           final motifIdx = customMags.indexWhere((m) {
             final p = m.propertyName.trim().toLowerCase();
-            return p == AppStrings.motifPropertyName.toLowerCase() || p == 'motivo';
+            return p == AppStrings.motifPropertyName.toLowerCase() || p == AppTechnicalStrings.magMotivoLower;
           });
 
           if (motifIdx >= 0) {

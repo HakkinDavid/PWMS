@@ -803,6 +803,78 @@ void main() {
       // User notes must remain untouched
       expect(repairedEntity.notes, equals('Original user note'));
     });
+
+    test('repairAndStandardizeImportedData normalizes legacy "Emisión de cambio de régimen" to "Nuevo Peso"', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: '20 Nuevos Pesos - México (1993)',
+        notes: 'Moneda: Nuevos Pesos | Año: 1993 | Metal: Bimetálica',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      final instance = await entityRepo.instantiateOrMerge(
+        species.id,
+        null,
+        1.0,
+        subspeciesId: sub.id,
+        notes: '[Edición especial: Emisión de cambio de régimen] Moneda conmemorativa de transición',
+      );
+
+      // Add basic magnitudes
+      final updatedInstance = instance.copyWith(
+        magnitudes: [
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Valor nominal',
+            dataType: 'real',
+            magnitudeValue: 20.0,
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Acuñación',
+            dataType: 'integer',
+            magnitudeValue: 1993.0,
+            unitSymbol: 'año',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Divisa',
+            dataType: 'string',
+            stringValue: 'MXN',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Emisor',
+            dataType: 'string',
+            stringValue: 'México',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Material',
+            dataType: 'string',
+            stringValue: 'Bimetálica',
+          ),
+        ],
+      );
+      await entityRepo.saveEntity(updatedInstance);
+
+      // Run repair and standardize
+      await NumismaticDataHelper.repairAndStandardizeImportedData(db);
+
+      final reloaded = await entityRepo.getEntityById(instance.id);
+      expect(reloaded, isNotNull);
+      final motifMag = reloaded!.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(motifMag.stringValue, equals('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)'));
+      expect(reloaded.notes, isNot(contains('Emisión de cambio de régimen')));
+    });
   });
 }
 
