@@ -23,17 +23,21 @@ class LocationBreadcrumb {
 class LocationPathHelper {
   LocationPathHelper._();
 
-  static LocationBreadcrumb buildBreadcrumbPath(String? locationId, List<LocationNode> allNodes) {
+  static LocationBreadcrumb buildBreadcrumbPath(
+    String? locationId,
+    List<LocationNode> allNodes, {
+    Map<String, LocationNode>? nodeMap,
+  }) {
     if (locationId == null) {
       return const LocationBreadcrumb(ancestorPath: AppTechnicalStrings.empty, targetName: AppStrings.rootLocationName);
     }
 
-    final nodeMap = {for (final n in allNodes) n.id: n};
+    final map = nodeMap ?? {for (final n in allNodes) n.id: n};
     final List<String> nodeNames = [];
     String? currentId = locationId;
 
     while (currentId != null) {
-      final node = nodeMap[currentId];
+      final node = map[currentId];
       if (node != null) {
         nodeNames.insert(0, node.name);
         currentId = node.parentLocationId;
@@ -68,22 +72,29 @@ class LocationPathHelper {
     required List<LocationNode> allNodes,
     required List<CatalogItem> catalogItems,
     List<Subspecies>? subspeciesList,
+    Map<String, LocationNode>? nodeMap,
+    Map<String, EntityRelation>? parentRelMap,
+    Map<String, WorldEntity>? entityMap,
+    Map<String, CatalogItem>? speciesMap,
+    Map<String, Subspecies>? subspeciesMap,
   }) {
     if (entityId == null) {
-      return buildBreadcrumbPath(effectiveLocationId, allNodes);
+      return buildBreadcrumbPath(effectiveLocationId, allNodes, nodeMap: nodeMap);
     }
 
-    final parentRelMap = <String, EntityRelation>{};
-    for (final r in allRelations) {
-      if (LocationResolver.locationInheritingTypes.contains(r.relationType)) {
-        parentRelMap.putIfAbsent(r.sourceEntityId, () => r);
+    final pRelMap = parentRelMap ?? () {
+      final map = <String, EntityRelation>{};
+      for (final r in allRelations) {
+        if (LocationResolver.locationInheritingTypes.contains(r.relationType)) {
+          map.putIfAbsent(r.sourceEntityId, () => r);
+        }
       }
-    }
-    final entityMap = {for (final e in allEntities) e.id: e};
-    final speciesMap = {for (final s in catalogItems) s.id: s};
-    final subspeciesMap = subspeciesList != null
-        ? {for (final sub in subspeciesList) sub.id: sub}
-        : null;
+      return map;
+    }();
+    final eMap = entityMap ?? {for (final e in allEntities) e.id: e};
+    final sMap = speciesMap ?? {for (final s in catalogItems) s.id: s};
+    final subMap = subspeciesMap ??
+        (subspeciesList != null ? {for (final sub in subspeciesList) sub.id: sub} : null);
 
     // Trace container chain up
     final List<String> containerNames = [];
@@ -91,20 +102,20 @@ class LocationPathHelper {
     String currentId = entityId;
 
     while (true) {
-      final parentRel = parentRelMap[currentId];
+      final parentRel = pRelMap[currentId];
       if (parentRel == null) break;
 
       final targetId = parentRel.targetEntityId;
       if (visited.contains(targetId)) break;
       visited.add(targetId);
 
-      final targetEntity = entityMap[targetId];
+      final targetEntity = eMap[targetId];
       if (targetEntity != null) {
-        final targetSpecies = speciesMap[targetEntity.speciesId];
+        final targetSpecies = sMap[targetEntity.speciesId];
         Subspecies? targetSubspecies;
         final subId = targetEntity.subspeciesId;
-        if (subId != null && subspeciesMap != null) {
-          targetSubspecies = subspeciesMap[subId];
+        if (subId != null && subMap != null) {
+          targetSubspecies = subMap[subId];
         }
         final baseName = EntityDisplayHelper.getDisplayNameWithLookups(
           entity: targetEntity,
@@ -122,11 +133,11 @@ class LocationPathHelper {
 
     String? resolvedPhysicalLocId = effectiveLocationId;
     if (resolvedPhysicalLocId == null && currentId != entityId) {
-      final outermostEntity = entityMap[currentId];
+      final outermostEntity = eMap[currentId];
       resolvedPhysicalLocId = outermostEntity?.locationId;
     }
 
-    final physicalBreadcrumb = buildBreadcrumbPath(resolvedPhysicalLocId, allNodes);
+    final physicalBreadcrumb = buildBreadcrumbPath(resolvedPhysicalLocId, allNodes, nodeMap: nodeMap);
 
     if (containerNames.isEmpty) {
       return physicalBreadcrumb;

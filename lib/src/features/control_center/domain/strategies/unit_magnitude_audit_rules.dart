@@ -31,14 +31,12 @@ class InvalidUnitSymbolStrategy implements IAuditRuleStrategy {
 
     // 1. Auditar magnitudes a nivel de Especie
     for (final species in context.allCatalog) {
-      if (cards.length >= 10) break;
       final invalidSpeciesMags = species.magnitudes.where((sm) =>
           sm.unitSymbol != null &&
           sm.unitSymbol!.trim().isNotEmpty &&
           !UnitsRegistry.isKnownUnit(sm.unitSymbol)).toList();
 
       for (final sm in invalidSpeciesMags) {
-        if (cards.length >= 10) break;
         cards.add(AuditRuleHelper.forSpecies(
           id: AppTechnicalStrings.prefixInvUnit + species.id + AppTechnicalStrings.dash + sm.propertyName,
           type: AuditCardType.invalidUnitSymbol,
@@ -86,15 +84,13 @@ class InvalidUnitSymbolStrategy implements IAuditRuleStrategy {
     }
 
     // 2. Auditar magnitudes a nivel de Instancia
-    for (final entity in context.allEntities.take(30)) {
-      if (cards.length >= 10) break;
+    for (final entity in context.allEntities) {
       final invalidEntityMags = entity.magnitudes.where((im) =>
           im.unitSymbol != null &&
           im.unitSymbol!.trim().isNotEmpty &&
           !UnitsRegistry.isKnownUnit(im.unitSymbol)).toList();
 
       for (final im in invalidEntityMags) {
-        if (cards.length >= 10) break;
         final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -168,7 +164,6 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
 
     // 1. Especies con unidad entera pero tipo real, o especies únicas con unidad entera
     for (final species in context.allCatalog) {
-      if (cards.length >= 10) break;
       final incongruousMags = species.magnitudes.where((sm) {
         if (sm.unitSymbol == null) return false;
         final isIntUnit = DomainRules.isIntegerUnit(sm.unitSymbol);
@@ -179,7 +174,6 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
       }).toList();
 
       for (final sm in incongruousMags) {
-        if (cards.length >= 10) break;
         cards.add(AuditRuleHelper.forSpecies(
           id: AppTechnicalStrings.prefixIntUnit + species.id + AppTechnicalStrings.dash + sm.propertyName,
           type: AuditCardType.integerUnitIncongruity,
@@ -216,8 +210,7 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
     }
 
     // 2. Instancias con unidad entera pero tipo real o valor decimal con residuo
-    for (final entity in context.allEntities.take(30)) {
-      if (cards.length >= 10) break;
+    for (final entity in context.allEntities) {
       final incongruousEntityMags = entity.magnitudes.where((im) {
         if (im.unitSymbol == null) return false;
         final isIntUnit = DomainRules.isIntegerUnit(im.unitSymbol);
@@ -228,7 +221,6 @@ class IntegerUnitIncongruityStrategy implements IAuditRuleStrategy {
       }).toList();
 
       for (final im in incongruousEntityMags) {
-        if (cards.length >= 10) break;
         final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -291,14 +283,12 @@ class NonNumericWithUnitStrategy implements IAuditRuleStrategy {
 
     // 1. Especies
     for (final species in context.allCatalog) {
-      if (cards.length >= 10) break;
       final nonNumericWithUnitMags = species.magnitudes.where((sm) =>
           !PropertyDataType.fromCode(sm.dataType).isNumeric &&
           sm.unitSymbol != null &&
           sm.unitSymbol!.trim().isNotEmpty).toList();
 
       for (final sm in nonNumericWithUnitMags) {
-        if (cards.length >= 10) break;
         cards.add(AuditRuleHelper.forSpecies(
           id: AppTechnicalStrings.prefixNonNumUnit + species.id + AppTechnicalStrings.dash + sm.propertyName,
           type: AuditCardType.nonNumericWithUnit,
@@ -332,15 +322,13 @@ class NonNumericWithUnitStrategy implements IAuditRuleStrategy {
     }
 
     // 2. Instancias
-    for (final entity in context.allEntities.take(30)) {
-      if (cards.length >= 10) break;
+    for (final entity in context.allEntities) {
       final nonNumericWithUnitMags = entity.magnitudes.where((im) =>
           !PropertyDataType.fromCode(im.dataType).isNumeric &&
           im.unitSymbol != null &&
           im.unitSymbol!.trim().isNotEmpty).toList();
 
       for (final im in nonNumericWithUnitMags) {
-        if (cards.length >= 10) break;
         final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -398,8 +386,7 @@ class NegativeMagnitudeViolationStrategy implements IAuditRuleStrategy {
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
     final cards = <AuditCardData>[];
 
-    for (final entity in context.allEntities.take(30)) {
-      if (cards.length >= 10) break;
+    for (final entity in context.allEntities) {
       final negativeMags = entity.magnitudes.where((im) {
         if (im.magnitudeValue == null || im.magnitudeValue! >= 0) return false;
         final def = UnitsRegistry.getDefinition(im.unitSymbol);
@@ -407,7 +394,6 @@ class NegativeMagnitudeViolationStrategy implements IAuditRuleStrategy {
       }).toList();
 
       for (final im in negativeMags) {
-        if (cards.length >= 10) break;
         final species = context.speciesById[entity.speciesId];
         final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -485,7 +471,6 @@ class PropertyNameSuggestionIncongruityStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final species in context.allCatalog) {
-      if (cards.length >= 10) break;
       final genericMags = species.magnitudes.where((sm) {
         if (sm.unitSymbol == null || !UnitsRegistry.isKnownUnit(sm.unitSymbol)) return false;
         final cleanProp = sm.propertyName.trim().toLowerCase();
@@ -495,7 +480,6 @@ class PropertyNameSuggestionIncongruityStrategy implements IAuditRuleStrategy {
       }).toList();
 
       for (final sm in genericMags) {
-        if (cards.length >= 10) break;
         final suggested = DomainRules.suggestPropertyNameForUnit(sm.unitSymbol!);
         cards.add(AuditRuleHelper.forSpecies(
           id: AppTechnicalStrings.prefixPropSug + species.id + AppTechnicalStrings.dash + sm.propertyName,

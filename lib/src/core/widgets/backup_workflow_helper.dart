@@ -40,38 +40,6 @@ class BackupWorkflowHelper {
     void Function(bool isProcessing) setProcessing, {
     VoidCallback? onSuccess,
   }) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: [AppTechnicalStrings.extZipClean, AppTechnicalStrings.extJsonClean],
-    );
-
-    if (result == null || result.files.single.path == null) return;
-    if (!context.mounted) return;
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(AppStrings.confirmRestoreTitle),
-        content: const Text(AppStrings.confirmRestoreWarningMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(AppStrings.cancel),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(AppStrings.restoreAllAction),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm != true || !context.mounted) return;
-
     setProcessing(true);
     var dialogOpen = true;
     showDialog<void>(
@@ -114,6 +82,39 @@ class BackupWorkflowHelper {
     });
 
     try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: [AppTechnicalStrings.extZipClean, AppTechnicalStrings.extJsonClean],
+      );
+
+      if (result == null || result.files.single.path == null || !context.mounted) {
+        return;
+      }
+
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text(AppStrings.confirmRestoreTitle),
+          content: const Text(AppStrings.confirmRestoreWarningMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text(AppStrings.cancel),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text(AppStrings.restoreAllAction),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm != true || !context.mounted) return;
+
       final filePath = result.files.single.path!;
       final backupService = ref.read(databaseBackupServiceProvider);
 

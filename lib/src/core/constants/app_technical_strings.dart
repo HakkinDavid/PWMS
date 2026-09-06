@@ -869,7 +869,15 @@ WHERE id IN (
   // ---------------------------------------------------------------------------
   static const numisCoinKeyword = 'moneda';
   static const numisBanknoteKeyword = 'billete';
+  static const numisPapelMonedaKeyword = 'papel moneda';
+  static const numisNotafiliaKeyword = 'notafilia';
   static const numisNumismaticKeyword = 'numismátic';
+  static const materialPapelLower = 'papel';
+  static const materialPapelAlgodonWithAccentLower = 'papel de algodón';
+  static const materialPapelAlgodonWithoutAccentLower = 'papel de algodon';
+  static const materialPolimeroWithAccentLower = 'polímero';
+  static const materialPolimeroWithoutAccentLower = 'polimero';
+  static const materialCottonPaperLower = 'cotton paper';
   static const magPaisWithAccent = 'País';
   static const magPaisWithoutAccent = 'Pais';
   static const magPaisLower = 'país';

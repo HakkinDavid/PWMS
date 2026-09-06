@@ -25,7 +25,7 @@ class OrphanEntityStrategy implements IAuditRuleStrategy {
     final orphanEntities = context.allEntities.where((e) =>
       e.locationId == null &&
       !context.containedEntityIds.contains(e.id)
-    ).take(10);
+    );
 
     final cards = <AuditCardData>[];
     for (final entity in orphanEntities) {
@@ -71,12 +71,13 @@ class LocationConflictStrategy implements IAuditRuleStrategy {
     final conflictEntities = context.allEntities.where((e) {
       if (!context.effectiveLocationMap.containsKey(e.id)) return false;
       return context.containedEntityIds.contains(e.id);
-    }).take(8);
+    });
 
     final cards = <AuditCardData>[];
     for (final entity in conflictEntities) {
       final species = context.speciesById[entity.speciesId];
-      final containerRel = context.allRelations.where((r) => r.sourceEntityId == entity.id && r.relationType == AppTechnicalStrings.relGuardadoEn).first;
+      final containerRel = context.locationInheritingRelMap[entity.id] ??
+          context.allRelations.where((r) => r.sourceEntityId == entity.id && r.relationType == AppTechnicalStrings.relGuardadoEn).first;
       final containerEntity = context.entityById[containerRel.targetEntityId];
       final containerSpecies = containerEntity != null ? context.speciesById[containerEntity.speciesId] : null;
       final containerName = containerSpecies?.name ?? AppStrings.containerFallback;
@@ -167,13 +168,18 @@ class CyclicContainmentStrategy implements IAuditRuleStrategy {
 
   @override
   Future<List<AuditCardData>> evaluate(AuditEvaluationContext context) async {
+    final guardadoEnPairs = <String, Set<String>>{};
+    for (final r in context.allRelations) {
+      if (r.relationType == AppTechnicalStrings.relGuardadoEn) {
+        (guardadoEnPairs[r.sourceEntityId] ??= {}).add(r.targetEntityId);
+      }
+    }
+
     final circularRels = context.allRelations.where((r) {
       if (r.sourceEntityId == r.targetEntityId) return true;
       if (r.relationType == AppTechnicalStrings.relGuardadoEn) {
-        return context.allRelations.any((r2) =>
-            r2.sourceEntityId == r.targetEntityId &&
-            r2.targetEntityId == r.sourceEntityId &&
-            r2.relationType == AppTechnicalStrings.relGuardadoEn);
+        final reverse = guardadoEnPairs[r.targetEntityId];
+        return reverse != null && reverse.contains(r.sourceEntityId);
       }
       return false;
     }).toList();

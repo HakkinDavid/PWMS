@@ -157,14 +157,15 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       if (species != null && species.magnitudes.isNotEmpty) {
+        final entityPropNames = {
+          for (final im in entity.magnitudes) im.propertyName.trim().toLowerCase()
+        };
         final missingMags = species.magnitudes.where((sm) =>
-            !entity.magnitudes.any((im) => im.propertyName.trim().toLowerCase() == sm.propertyName.trim().toLowerCase())).toList();
+            !entityPropNames.contains(sm.propertyName.trim().toLowerCase())).toList();
 
         for (final missingProp in missingMags) {
-          if (cards.length >= 10) break;
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
           final unitSuffix = (missingProp.unitSymbol != null && missingProp.unitSymbol!.isNotEmpty)
               ? AppStrings.unitSymbolParentheses(missingProp.unitSymbol!)

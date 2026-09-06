@@ -219,10 +219,10 @@ class NumismaticParser {
     final typeLower = species.type.trim().toLowerCase();
     return !nameLower.contains(AppTechnicalStrings.numisBanknoteKeyword) &&
         !typeLower.contains(AppTechnicalStrings.numisBanknoteKeyword) &&
-        !nameLower.contains('papel moneda') &&
-        !typeLower.contains('papel moneda') &&
-        !nameLower.contains('notafilia') &&
-        !typeLower.contains('notafilia');
+        !nameLower.contains(AppTechnicalStrings.numisPapelMonedaKeyword) &&
+        !typeLower.contains(AppTechnicalStrings.numisPapelMonedaKeyword) &&
+        !nameLower.contains(AppTechnicalStrings.numisNotafiliaKeyword) &&
+        !typeLower.contains(AppTechnicalStrings.numisNotafiliaKeyword);
   }
 
   /// Checks if an entity is a banknote (vs coin) based on species, instance attributes, material, or title.
@@ -238,12 +238,12 @@ class NumismaticParser {
 
     if (material != null && material.trim().isNotEmpty) {
       final matLower = material.trim().toLowerCase();
-      if (matLower == 'papel' ||
-          matLower == 'papel de algodón' ||
-          matLower == 'papel de algodon' ||
-          matLower == 'polímero' ||
-          matLower == 'polimero' ||
-          matLower == 'cotton paper') {
+      if (matLower == AppTechnicalStrings.materialPapelLower ||
+          matLower == AppTechnicalStrings.materialPapelAlgodonWithAccentLower ||
+          matLower == AppTechnicalStrings.materialPapelAlgodonWithoutAccentLower ||
+          matLower == AppTechnicalStrings.materialPolimeroWithAccentLower ||
+          matLower == AppTechnicalStrings.materialPolimeroWithoutAccentLower ||
+          matLower == AppTechnicalStrings.materialCottonPaperLower) {
         return true;
       }
     }
@@ -252,12 +252,12 @@ class NumismaticParser {
       final attrs = extractAttributesFromInstance(instance);
       if (attrs.material != null && attrs.material!.trim().isNotEmpty) {
         final matLower = attrs.material!.trim().toLowerCase();
-        if (matLower == 'papel' ||
-            matLower == 'papel de algodón' ||
-            matLower == 'papel de algodon' ||
-            matLower == 'polímero' ||
-            matLower == 'polimero' ||
-            matLower == 'cotton paper') {
+        if (matLower == AppTechnicalStrings.materialPapelLower ||
+            matLower == AppTechnicalStrings.materialPapelAlgodonWithAccentLower ||
+            matLower == AppTechnicalStrings.materialPapelAlgodonWithoutAccentLower ||
+            matLower == AppTechnicalStrings.materialPolimeroWithAccentLower ||
+            matLower == AppTechnicalStrings.materialPolimeroWithoutAccentLower ||
+            matLower == AppTechnicalStrings.materialCottonPaperLower) {
           return true;
         }
       }
@@ -265,7 +265,7 @@ class NumismaticParser {
 
     if (subspeciesName != null && subspeciesName.trim().isNotEmpty) {
       final subLower = subspeciesName.toLowerCase();
-      if (subLower.contains('billete') || subLower.contains('papel moneda')) {
+      if (subLower.contains(AppTechnicalStrings.numisBanknoteKeyword) || subLower.contains(AppTechnicalStrings.numisPapelMonedaKeyword)) {
         return true;
       }
     }

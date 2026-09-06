@@ -37,7 +37,6 @@ class DuplicateSpeciesStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final entry in grouped.entries) {
-      if (cards.length >= 10) break;
       final speciesList = entry.value;
       final canonical = speciesList.first;
       final dupCount = speciesList.length;
@@ -134,10 +133,8 @@ class DuplicatePhotoStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final entry in photoMap.entries) {
-      if (cards.length >= 10) break;
       final speciesList = entry.value;
       for (int i = 0; i < speciesList.length; i++) {
-        if (cards.length >= 10) break;
         final current = speciesList[i];
         final other = speciesList[(i + 1) % speciesList.length];
 
@@ -233,7 +230,6 @@ class SpeciesWithoutSubspeciesStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final sp in emptySpecies) {
-      if (cards.length >= 10) break;
       cards.add(AuditRuleHelper.forSpecies(
         id: AppTechnicalStrings.prefixNoSub + sp.id,
         type: AuditCardType.speciesWithoutSubspecies,
@@ -338,7 +334,6 @@ class UnlinkedInstancesStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final entity in unlinkedEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
@@ -454,7 +449,6 @@ class AnomalousExpirationStrategy implements IAuditRuleStrategy {
 
     final cards = <AuditCardData>[];
     for (final entity in anomalousEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
       final formattedDate = entity.expirationDate.toString().substring(0, 10);

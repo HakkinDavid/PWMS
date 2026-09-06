@@ -168,6 +168,16 @@ class AuditEvaluationContext {
     for (final r in allRelations)
       if (r.relationType == AppTechnicalStrings.relGuardadoEn) r.sourceEntityId,
   };
+
+  late final Map<String, EntityRelation> locationInheritingRelMap = () {
+    final map = <String, EntityRelation>{};
+    for (final r in allRelations) {
+      if (r.relationType == AppTechnicalStrings.relGuardadoEn || r.relationType == AppTechnicalStrings.relParteDe) {
+        map.putIfAbsent(r.sourceEntityId, () => r);
+      }
+    }
+    return map;
+  }();
 }
 
 abstract class IAuditRuleStrategy {

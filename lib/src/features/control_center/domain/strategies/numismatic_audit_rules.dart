@@ -32,7 +32,6 @@ class NumismaticDuplicateSubspeciesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entry in duplicateSubGroups.entries) {
-      if (cards.length >= 10) break;
       final canonicalSub = entry.value.first;
       final parentSpecies = context.speciesById[canonicalSub.speciesId];
       if (parentSpecies != null && NumismaticDataHelper.isNumismaticSpecies(parentSpecies)) {
@@ -107,7 +106,6 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
         final sub = context.subspeciesById[entity.subspeciesId];
@@ -205,7 +203,6 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
         final sub = context.subspeciesById[entity.subspeciesId];
@@ -217,7 +214,6 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
 
           final instanceAttachments = context.attachmentsByInstanceId[entity.id] ?? const <Attachment>[];
           for (final att in instanceAttachments) {
-            if (cards.length >= 10) break;
             final isObverse = att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoParensLower) ||
                 att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoLower);
             final side = isObverse ? AppTechnicalStrings.anversoLower : AppTechnicalStrings.reversoLower;
@@ -296,7 +292,6 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
         final sub = context.subspeciesById[entity.subspeciesId];
@@ -414,7 +409,6 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
         final sub = context.subspeciesById[entity.subspeciesId];
@@ -504,7 +498,6 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities) {
-      if (cards.length >= 10) break;
       final species = context.speciesById[entity.speciesId];
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
         final sub = context.subspeciesById[entity.subspeciesId];
@@ -516,7 +509,6 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
           );
 
           for (int i = 0; i < outliers.length; i++) {
-            if (cards.length >= 10) break;
             final outlier = outliers[i];
             final cardId = AppTechnicalStrings.prefixNumisOutlier + entity.id + AppTechnicalStrings.underscore + i.toString();
 

@@ -41,7 +41,11 @@ class _ControlCenterScreenState extends ConsumerState<ControlCenterScreen>
     _tabController.addListener(() {
       if (mounted) setState(() {});
     });
-    _generateAuditCards();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _generateAuditCards();
+      }
+    });
   }
 
   @override

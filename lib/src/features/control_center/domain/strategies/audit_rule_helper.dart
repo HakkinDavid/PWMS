@@ -50,6 +50,11 @@ class AuditRuleHelper {
       allNodes: context.allLocations,
       catalogItems: context.allCatalog,
       subspeciesList: context.allSubspecies,
+      nodeMap: context.locationById,
+      parentRelMap: context.locationInheritingRelMap,
+      entityMap: context.entityById,
+      speciesMap: context.speciesById,
+      subspeciesMap: context.subspeciesById,
     );
   }
 

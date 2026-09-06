@@ -29,7 +29,6 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final sub in context.allSubspecies) {
-      if (cards.length >= 10) break;
       final isInstantiated = context.instantiatedSubspeciesIds.contains(sub.id);
       if (!isInstantiated && sub.subspeciesName.toLowerCase() != AppStrings.genericSubspeciesNameLower) {
         final parentSpecies = context.speciesById[sub.speciesId];
@@ -143,10 +142,8 @@ class UniquenessViolationStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final sp in context.allCatalog.where((c) => c.isUnique)) {
-      if (cards.length >= 10) break;
       final spSubspecies = context.subspeciesBySpeciesId[sp.id] ?? const <Subspecies>[];
       for (final sub in spSubspecies) {
-        if (cards.length >= 10) break;
         final matchingInstances = context.entitiesBySubspeciesId[sub.id] ?? const <WorldEntity>[];
         if (matchingInstances.length > 1) {
           cards.add(AuditRuleHelper.forSubspecies(
@@ -440,7 +437,6 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
        c.mainPhotoPath!.startsWith(AppTechnicalStrings.schemeHttps))
     );
     for (final sp in remoteImageSpecies) {
-      if (cards.length >= 10) break;
       cards.add(AuditRuleHelper.forSpecies(
         id: AppTechnicalStrings.prefixSpecRemote + sp.id,
         type: AuditCardType.remoteImageAudit,
@@ -477,7 +473,6 @@ class RemoteImageAuditStrategy implements IAuditRuleStrategy {
        s.photoPath!.startsWith(AppTechnicalStrings.schemeHttps))
     );
     for (final sub in remoteImageSubspecies) {
-      if (cards.length >= 10) break;
       final parentSpecies = context.speciesById[sub.speciesId];
       cards.add(AuditRuleHelper.forSubspecies(
         id: AppTechnicalStrings.prefixSubRemote + sub.id,
