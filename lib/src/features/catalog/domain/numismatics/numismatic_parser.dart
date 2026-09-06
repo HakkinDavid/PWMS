@@ -15,6 +15,7 @@ class NumismaticAttributes {
   final String? grade;
   final bool? isSpecialEdition;
   final String? specialEditionReason;
+  final String? motif;
 
   const NumismaticAttributes({
     this.faceValueNumber,
@@ -27,6 +28,7 @@ class NumismaticAttributes {
     this.grade,
     this.isSpecialEdition,
     this.specialEditionReason,
+    this.motif,
   });
 }
 
@@ -469,16 +471,24 @@ class NumismaticParser {
           pName == AppTechnicalStrings.magPaisWithoutAccentLower ||
           pName == AppTechnicalStrings.magEmisorLower) {
         country = mag.stringValue?.trim();
+      } else if (pName == AppStrings.motifPropertyName.toLowerCase() ||
+          pName == 'motivo') {
+        motif = mag.stringValue?.trim();
+        if (motif != null && motif.isNotEmpty) {
+          isSpecialEdition = true;
+          specialReason = motif;
+        }
       } else if (pName == AppStrings.specialEditionTitle.toLowerCase()) {
         isSpecialEdition = mag.stringValue == AppTechnicalStrings.boolTrue ||
             mag.stringValue == AppTechnicalStrings.valOne ||
             mag.magnitudeValue == 1.0;
       } else if (pName == AppStrings.specialEditionReasonLabel.toLowerCase()) {
         specialReason = mag.stringValue?.trim();
+        motif ??= specialReason;
       }
     }
 
-    if (isSpecialEdition == null && entity.notes != null) {
+    if ((motif == null || motif.isEmpty) && entity.notes != null) {
       if (entity.notes!.contains(AppStrings.specialEditionNotePrefix)) {
         isSpecialEdition = true;
         final notePart = entity.notes!.split(AppStrings.specialEditionNotePrefix).last;
@@ -486,6 +496,7 @@ class NumismaticParser {
         final rawReason = endIdx >= 0 ? notePart.substring(0, endIdx).trim() : notePart.trim();
         if (rawReason.isNotEmpty) {
           specialReason = rawReason;
+          motif = rawReason;
         }
       }
     }
@@ -500,6 +511,7 @@ class NumismaticParser {
       grade: grade,
       isSpecialEdition: isSpecialEdition,
       specialEditionReason: specialReason,
+      motif: motif,
     );
   }
 

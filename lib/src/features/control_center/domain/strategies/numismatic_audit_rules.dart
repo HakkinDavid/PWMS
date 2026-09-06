@@ -581,6 +581,147 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                       return false;
                     }
                   }
+                } else if (outlier.type == NumismaticEmissionOutlierType.materialContradiction) {
+                  final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+                  final yearInt = attrs.year != null ? int.tryParse(attrs.year!) : null;
+                  final isBanknote = NumismaticDataHelper.isBanknotePiece(
+                    species: species,
+                    instance: entity,
+                    material: attrs.material,
+                  );
+                  final validMaterials = NumismaticDataHelper.getValidMaterialsForCountry(
+                    country: attrs.country,
+                    year: yearInt,
+                    currencyCode: attrs.currencyName,
+                    denomination: attrs.faceValueStr ?? (attrs.faceValueNumber != null ? (attrs.faceValueNumber == attrs.faceValueNumber!.toInt() ? attrs.faceValueNumber!.toInt().toString() : attrs.faceValueNumber.toString()) : null),
+                    isBanknote: isBanknote,
+                  );
+                  if (validMaterials.isNotEmpty) {
+                    customValue = await AppWheelPicker.show<String>(
+                      ctx,
+                      items: validMaterials,
+                      initialValue: validMaterials.first,
+                      labelBuilder: (m) => m,
+                      title: AppStrings.magMaterial,
+                    );
+                    if (customValue == null || customValue.isEmpty) {
+                      return false;
+                    }
+                  }
+                } else if (outlier.type == NumismaticEmissionOutlierType.specialEditionMismatch) {
+                  final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+                  final yearInt = attrs.year != null ? int.tryParse(attrs.year!) : null;
+                  final isBanknote = NumismaticDataHelper.isBanknotePiece(
+                    species: species,
+                    instance: entity,
+                    material: attrs.material,
+                  );
+                  final availableMotifs = NumismaticDataHelper.getCommemorativeMotifs(
+                    country: attrs.country,
+                    year: yearInt,
+                    currencyCode: attrs.currencyName,
+                    denomination: attrs.faceValueStr ?? (attrs.faceValueNumber != null ? (attrs.faceValueNumber == attrs.faceValueNumber!.toInt() ? attrs.faceValueNumber!.toInt().toString() : attrs.faceValueNumber.toString()) : null),
+                    isBanknote: isBanknote,
+                  );
+
+                  if (availableMotifs.isNotEmpty) {
+                    final items = [...availableMotifs, AppStrings.customMotifOption];
+                    final picked = await AppWheelPicker.show<String>(
+                      ctx,
+                      items: items,
+                      initialValue: items.first,
+                      labelBuilder: (m) => m,
+                      title: AppStrings.motifLabel,
+                    );
+                    if (picked == null || picked.isEmpty) {
+                      return false;
+                    }
+                    if (picked == AppStrings.customMotifOption) {
+                      final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);
+                      final formKey = GlobalKey<FormState>();
+                      final confirmed = await showDialog<bool>(
+                        context: ctx,
+                        builder: (dialogCtx) => AlertDialog(
+                          title: const Text(AppStrings.motifLabel),
+                          content: Form(
+                            key: formKey,
+                            child: TextFormField(
+                              controller: textCtrl,
+                              decoration: const InputDecoration(labelText: AppStrings.motifLabel),
+                              validator: (val) {
+                                if (val == null || val.trim().isEmpty) {
+                                  return AppStrings.selectMotifPrompt;
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(dialogCtx, false),
+                              child: const Text(AppStrings.cancel),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState?.validate() ?? false) {
+                                  Navigator.pop(dialogCtx, true);
+                                }
+                              },
+                              child: const Text(AppStrings.confirm),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true && textCtrl.text.trim().isNotEmpty) {
+                        customValue = textCtrl.text.trim();
+                      } else {
+                        return false;
+                      }
+                    } else {
+                      customValue = picked;
+                    }
+                  } else {
+                    final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);
+                    final formKey = GlobalKey<FormState>();
+                    final confirmed = await showDialog<bool>(
+                      context: ctx,
+                      builder: (dialogCtx) => AlertDialog(
+                        title: const Text(AppStrings.motifLabel),
+                        content: Form(
+                          key: formKey,
+                          child: TextFormField(
+                            controller: textCtrl,
+                            decoration: const InputDecoration(labelText: AppStrings.motifLabel),
+                            validator: (val) {
+                              if (val == null || val.trim().isEmpty) {
+                                return AppStrings.selectMotifPrompt;
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(dialogCtx, false),
+                            child: const Text(AppStrings.cancel),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (formKey.currentState?.validate() ?? false) {
+                                Navigator.pop(dialogCtx, true);
+                              }
+                            },
+                            child: const Text(AppStrings.confirm),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed == true && textCtrl.text.trim().isNotEmpty) {
+                      customValue = textCtrl.text.trim();
+                    } else {
+                      return false;
+                    }
+                  }
                 } else if (outlier.type == NumismaticEmissionOutlierType.yearOutOfRange) {
                   final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);
                   final formKey = GlobalKey<FormState>();

@@ -93,7 +93,37 @@ class NumismaticDataHelper {
         isBanknote: isBanknote ?? false,
       );
 
-  static ({bool isSpecial, String? reason})? checkSpecialEdition({
+  static List<String> getValidMaterialsForCountry({
+    String? country,
+    int? year,
+    String? currencyCode,
+    String? denomination,
+    bool? isBanknote,
+  }) =>
+      NumismaticMatrix.getValidMaterials(
+        country: country,
+        year: year,
+        currencyCode: currencyCode,
+        denomination: denomination,
+        isBanknote: isBanknote ?? false,
+      );
+
+  static List<String> getCommemorativeMotifs({
+    String? country,
+    int? year,
+    String? currencyCode,
+    String? denomination,
+    bool? isBanknote,
+  }) =>
+      NumismaticMatrix.getCommemorativeMotifs(
+        country: country,
+        year: year,
+        currencyCode: currencyCode,
+        denomination: denomination,
+        isBanknote: isBanknote ?? false,
+      );
+
+  static ({bool isSpecial, String? reason, List<String> validMotifs})? checkSpecialEdition({
     String? country,
     int? year,
     String? currencyCode,

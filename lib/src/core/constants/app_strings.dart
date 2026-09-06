@@ -513,6 +513,10 @@ class AppStrings {
   static const materialPropertyName = 'Material';
   static const gradePropertyName = 'Grado';
   static const issuerPropertyName = 'Emisor';
+  static const motifPropertyName = 'Motivo';
+  static const motifLabel = 'Motivo de la emisión';
+  static const selectMotifPrompt = 'Selecciona el motivo conmemorativo';
+  static const customMotifOption = 'Motivo personalizado...';
   static const currencyNotePrefix = 'Moneda: ';
   static const yearNotePrefix = 'Año: ';
   static const materialNotePrefix = 'Material: ';

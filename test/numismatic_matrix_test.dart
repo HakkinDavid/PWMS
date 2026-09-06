@@ -285,5 +285,143 @@ void main() {
       expect(NumismaticDataHelper.inferMaterial(country: null, year: null, denomination: '5'), isNull);
       expect(NumismaticDataHelper.checkSpecialEdition(country: null, year: null, denomination: '5'), isNull);
     });
+
+    test('1. USA $1 2000+ infers Clad Manganese Brass and allows canonical composition', () {
+      final inferredMat = NumismaticDataHelper.inferMaterial(
+        country: 'Estados Unidos',
+        year: 2000,
+        currencyCode: 'USD',
+        denomination: '1',
+      );
+      expect(inferredMat, equals('Latón de manganeso sobre núcleo de cobre'));
+
+      final validMats = NumismaticDataHelper.getValidMaterialsForCountry(
+        'Estados Unidos',
+        year: 2000,
+        currencyCode: 'USD',
+        denomination: '1',
+      );
+      expect(validMats, containsAll(['Latón de manganeso sobre núcleo de cobre', 'Latón']));
+    });
+
+    test('2. Mexico 100 MXN 2019 Banknote infers Cotton Paper (Familia F) and allows Polymer', () {
+      final inferredMat = NumismaticDataHelper.inferMaterial(
+        country: 'México',
+        year: 2019,
+        currencyCode: 'MXN',
+        denomination: '100',
+        isBanknote: true,
+      );
+      expect(inferredMat, equals('Papel de algodón'));
+
+      final validMats = NumismaticDataHelper.getValidMaterialsForCountry(
+        'México',
+        year: 2019,
+        currencyCode: 'MXN',
+        denomination: '100',
+        isBanknote: true,
+      );
+      expect(validMats, containsAll(['Papel de algodón', 'Polímero']));
+    });
+
+    test('3. Mexico 50 MXP 1988 transition year allows both Cuproníquel and Acero inoxidable', () {
+      final validMats1988 = NumismaticDataHelper.getValidMaterialsForCountry(
+        'México',
+        year: 1988,
+        currencyCode: 'MXP',
+        denomination: '50',
+      );
+      expect(validMats1988, containsAll(['Cuproníquel', 'Acero inoxidable']));
+
+      final inferred1987 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1987, currencyCode: 'MXP', denomination: '50');
+      expect(inferred1987, equals('Cuproníquel'));
+
+      final inferred1989 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1989, currencyCode: 'MXP', denomination: '50');
+      expect(inferred1989, equals('Acero inoxidable'));
+    });
+
+    test('4. Mexico 20 MXP 1988 and 1989 (Guadalupe Victoria) is in valid denominations and infers Latón', () {
+      final denoms1988 = NumismaticDataHelper.getDenominationsForCountry(
+        country: 'México',
+        year: 1988,
+        currencyCode: 'MXP',
+      );
+      expect(denoms1988, contains('20'));
+
+      final denoms1989 = NumismaticDataHelper.getDenominationsForCountry(
+        country: 'México',
+        year: 1989,
+        currencyCode: 'MXP',
+      );
+      expect(denoms1989, contains('20'));
+
+      final mat20_1988 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1988, currencyCode: 'MXP', denomination: '20');
+      expect(mat20_1988, equals('Latón'));
+
+      final mat20_1989 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1989, currencyCode: 'MXP', denomination: '20');
+      expect(mat20_1989, equals('Latón'));
+    });
+
+    test('5. Commemorative motifs are atomic arrays per denomination without concatenated slashes', () {
+      // 1985 Mexico $200
+      final motifs1985 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 1985,
+        currencyCode: 'MXP',
+        denomination: '200',
+      );
+      expect(motifs1985, containsAll(['175 Aniversario de la Independencia', '75 Aniversario de la Revolución']));
+      expect(motifs1985.any((m) => m.contains(' / ')), isFalse);
+
+      // 1986 Mexico $200
+      final motifs1986 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 1986,
+        currencyCode: 'MXP',
+        denomination: '200',
+      );
+      expect(motifs1986, contains('Copa Mundial de la FIFA México 1986'));
+      expect(motifs1986.any((m) => m.contains(' / ')), isFalse);
+
+      // 2010 Mexico $5 (Bicentenario / Centenario)
+      final motifs2010 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2010,
+        currencyCode: 'MXN',
+        denomination: '5',
+      );
+      expect(motifs2010, containsAll(['Miguel Hidalgo y Costilla', 'José María Morelos y Pavón', 'Ignacio Allende', 'Emiliano Zapata', 'Francisco Villa']));
+
+      // 2021 Mexico $20
+      final motifs2021 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'México',
+        year: 2021,
+        currencyCode: 'MXN',
+        denomination: '20',
+      );
+      expect(motifs2021, containsAll([
+        'Bicentenario de la Independencia Nacional',
+        '500 Años de Memoria Histórica de México-Tenochtitlan',
+        '700 Años de la Fundación Lunar de México-Tenochtitlan',
+      ]));
+
+      // 2005 Spain 2 Euro
+      final motifsSpain2005 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'España',
+        year: 2005,
+        currencyCode: 'EUR',
+        denomination: '2',
+      );
+      expect(motifsSpain2005, contains('IV Centenario de Don Quijote de la Mancha'));
+
+      // 1972 Germany 10 Mark
+      final motifsDem1972 = NumismaticDataHelper.getCommemorativeMotifs(
+        country: 'Alemania',
+        year: 1972,
+        currencyCode: 'DEM',
+        denomination: '10',
+      );
+      expect(motifsDem1972, contains('Juegos Olímpicos de Múnich 1972'));
+    });
   });
 }

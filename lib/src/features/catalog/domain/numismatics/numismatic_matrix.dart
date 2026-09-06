@@ -169,8 +169,60 @@ class NumismaticMatrix {
     return rule.getMaterialForDenomination(cleanDenom);
   }
 
+  /// Returns all valid/allowed materials for a piece (supporting transition years and concurrent alloys).
+  static List<String> getValidMaterials({
+    String? country,
+    int? year,
+    String? currencyCode,
+    String? denomination,
+    bool isBanknote = false,
+  }) {
+    if (country == null || year == null || denomination == null) return const [];
+    if (denomination == AppStrings.otherSpecifyOption) return const [];
+
+    final rules = findRules(country, year, isBanknote: isBanknote);
+    if (rules.isEmpty) return const [];
+
+    final cleanDenom = denomination.trim();
+    final result = <String>[];
+    for (final rule in rules) {
+      for (final mat in rule.getAllowedMaterialsForDenomination(cleanDenom)) {
+        if (!result.contains(mat)) result.add(mat);
+      }
+    }
+    return result;
+  }
+
+  /// Returns individual atomic commemorative motifs for a piece.
+  static List<String> getCommemorativeMotifs({
+    String? country,
+    int? year,
+    String? currencyCode,
+    String? denomination,
+    bool isBanknote = false,
+  }) {
+    if (country == null || year == null) return const [];
+    final rules = findRules(country, year, isBanknote: isBanknote);
+    if (rules.isEmpty) return const [];
+
+    final result = <String>[];
+    for (final rule in rules) {
+      if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
+        final cleanDenom = denomination.trim();
+        for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom)) {
+          if (!result.contains(motif)) result.add(motif);
+        }
+      } else {
+        for (final motif in rule.commemorativeReasons) {
+          if (!result.contains(motif)) result.add(motif);
+        }
+      }
+    }
+    return result;
+  }
+
   /// Checks if (country, year, currency, denomination, isBanknote) is a known commemorative or special edition emission.
-  static ({bool isSpecial, String? reason})? checkSpecialEdition({
+  static ({bool isSpecial, String? reason, List<String> validMotifs})? checkSpecialEdition({
     String? country,
     int? year,
     String? currencyCode,
@@ -191,9 +243,11 @@ class NumismaticMatrix {
 
     final cleanDenom = denomination.trim();
     if (rule.isCommemorativeDenomination(cleanDenom)) {
+      final motifs = rule.getCommemorativeMotifsForDenomination(cleanDenom);
       return (
         isSpecial: true,
-        reason: rule.defaultCommemorativeReason ?? AppTechnicalNumismatics.specialEditionReasons.first,
+        reason: motifs.isNotEmpty ? motifs.first : (rule.defaultCommemorativeReason ?? AppTechnicalNumismatics.specialEditionReasons.first),
+        validMotifs: motifs,
       );
     }
 

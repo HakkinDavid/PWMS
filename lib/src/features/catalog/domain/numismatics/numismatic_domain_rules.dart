@@ -344,6 +344,7 @@ class NumismaticDomainRules {
       await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.materialPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
       await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.gradePropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
       await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.issuerPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
+      await catalogRepo.addSpeciesMagnitude(species.id, AppStrings.motifPropertyName, dataType: AppTechnicalStrings.datatypeStringLower);
 
       // Fix any data types and unit symbols in DB for speciesMagnitudes
       final existingSmRows = await (db.select(db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(species.id))).get();
@@ -356,6 +357,8 @@ class NumismaticDomainRules {
             pName == AppStrings.materialPropertyName.toLowerCase() ||
             pName == AppStrings.gradePropertyName.toLowerCase() ||
             pName == AppStrings.issuerPropertyName.toLowerCase() ||
+            pName == AppStrings.motifPropertyName.toLowerCase() ||
+            pName == 'motivo' ||
             pName == AppTechnicalStrings.magPaisLower ||
             pName == AppTechnicalStrings.magPaisWithoutAccentLower ||
             pName == AppTechnicalStrings.magMonedaLower ||
@@ -845,16 +848,22 @@ class NumismaticDomainRules {
 
         // B. Material contradiction check
         if (denomStr != null && denomStr.isNotEmpty && material != null && material.isNotEmpty) {
-          final expectedMat = NumismaticMatrix.inferMaterial(
+          final validMaterials = NumismaticMatrix.getValidMaterials(
             country: country,
             year: year,
             currencyCode: currency,
             denomination: denomStr,
             isBanknote: isBanknote,
           );
-          if (expectedMat != null) {
+          if (validMaterials.isNotEmpty) {
             final resolvedFoundMat = NumismaticParser.resolveMaterial(material);
-            if (resolvedFoundMat.toLowerCase() != expectedMat.toLowerCase()) {
+            final isValid = validMaterials.any((m) {
+              final cleanM = m.trim().toLowerCase();
+              return cleanM == resolvedFoundMat.toLowerCase() ||
+                  cleanM == material.trim().toLowerCase();
+            });
+            if (!isValid) {
+              final expectedMat = validMaterials.first;
               outliers.add(NumismaticEmissionOutlier(
                 type: NumismaticEmissionOutlierType.materialContradiction,
                 title: AppStrings.numismaticEmissionOutlierCardTitle,
@@ -868,7 +877,7 @@ class NumismaticDomainRules {
           }
         }
 
-        // C. Special edition / Regime change check
+        // C. Special edition / Motif check
         if (denomStr != null && denomStr.isNotEmpty) {
           final specialInfo = NumismaticMatrix.checkSpecialEdition(
             country: country,
@@ -880,7 +889,27 @@ class NumismaticDomainRules {
           if (specialInfo != null && specialInfo.isSpecial) {
             final expectedReason = specialInfo.reason ?? AppTechnicalNumismatics.specialEditionReasons.first;
             final isMissingFlag = isSpecial != true;
-            final isReasonMismatch = specialReason != null && specialReason.toLowerCase() != expectedReason.toLowerCase();
+            final validMotifs = specialInfo.validMotifs;
+            final effectiveMotif = attrs.motif ?? specialReason;
+
+            bool isReasonMismatch = false;
+            if (effectiveMotif != null && effectiveMotif.trim().isNotEmpty) {
+              if (validMotifs.isNotEmpty) {
+                final cleanFound = effectiveMotif.trim().toLowerCase();
+                final matchesAny = validMotifs.any((m) {
+                  final cleanM = m.trim().toLowerCase();
+                  return cleanM == cleanFound || cleanM.contains(cleanFound) || cleanFound.contains(cleanM);
+                });
+                if (!matchesAny) {
+                  isReasonMismatch = true;
+                }
+              } else {
+                isReasonMismatch = effectiveMotif.toLowerCase() != expectedReason.toLowerCase();
+              }
+            } else {
+              isReasonMismatch = true;
+            }
+
             if (isMissingFlag || isReasonMismatch) {
               outliers.add(NumismaticEmissionOutlier(
                 type: NumismaticEmissionOutlierType.specialEditionMismatch,
@@ -888,8 +917,8 @@ class NumismaticDomainRules {
                 description: AppStrings.numismaticSpecialEditionMismatchDesc(denomStr, expectedReason),
                 suggestedFixDescription: AppStrings.fixSetSpecialEditionAction,
                 expectedValue: expectedReason,
-                foundValue: specialReason,
-                targetPropertyName: AppStrings.specialEditionTitle,
+                foundValue: effectiveMotif,
+                targetPropertyName: AppStrings.motifPropertyName,
               ));
             }
           }
@@ -979,6 +1008,11 @@ class NumismaticDomainRules {
 
       case NumismaticEmissionOutlierType.specialEditionMismatch:
         final targetReason = customValue ?? outlier.expectedValue ?? AppTechnicalNumismatics.specialEditionReasons.first;
+        setOrUpdateMagnitude(
+          propertyName: AppStrings.motifPropertyName,
+          dataType: AppTechnicalStrings.datatypeStringLower,
+          stringValue: targetReason,
+        );
         setOrUpdateMagnitude(
           propertyName: AppStrings.specialEditionTitle,
           dataType: AppTechnicalStrings.datatypeStringLower,

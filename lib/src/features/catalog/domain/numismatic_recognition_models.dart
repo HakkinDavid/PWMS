@@ -14,6 +14,7 @@ class NumismaticScanResult {
   final bool isSpecialEdition;
   final String? specialEditionReason; // e.g. 'Conmemorativa', 'Otro'
   final String? specialEditionNotes; // free text when 'Otro'
+  final String? motif; // Specific numismatic motif e.g. 'Copa Mundial FIFA México 86'
   final String obversePhotoPath;
   final String? reversePhotoPath;
   final String sourceEngine;
@@ -35,6 +36,7 @@ class NumismaticScanResult {
     this.isSpecialEdition = false,
     this.specialEditionReason,
     this.specialEditionNotes,
+    this.motif,
     required this.obversePhotoPath,
     this.reversePhotoPath,
     required this.sourceEngine,

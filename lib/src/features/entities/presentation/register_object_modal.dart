@@ -289,21 +289,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               ref.invalidate(subspeciesListProvider);
             }
 
-            // 2. Determinar anotaciones: Únicamente la información de Edición Especial va en las anotaciones
-            String? instanceNotes;
-            if (result.isSpecialEdition) {
-              final reason = result.specialEditionReason ?? AppStrings.specialEditionTitle;
-              if (reason == AppStrings.otherSpecifyOption && result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
-                instanceNotes = AppStrings.specialEditionWithReason(result.specialEditionNotes!);
-              } else {
-                instanceNotes = AppStrings.specialEditionWithReason(reason);
-                if (result.specialEditionNotes != null && result.specialEditionNotes!.isNotEmpty) {
-                  instanceNotes = AppStrings.specialEditionWithAdditionalNotes(instanceNotes, result.specialEditionNotes!);
-                }
-              }
-            }
-
-            // 3. Instanciar directamente en inventario (con soporte para ubicación física o contenedor)
+            // 2. Instanciar directamente en inventario (con soporte para ubicación física o contenedor)
             if (!mounted) return;
             final entityRepo = ref.read(entityRepositoryProvider);
             final relationRepo = ref.read(relationRepositoryProvider);
@@ -317,7 +303,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               targetPhysicalLoc,
               1.0,
               subspeciesId: targetSubspecies.id,
-              notes: instanceNotes,
+              notes: null,
             );
 
             // Si se seleccionó modo contenedor, crear relación GUARDADO_EN
@@ -332,7 +318,7 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
               await relationRepo.addRelation(rel);
             }
 
-            // 4. Guardar magnitudes 4NF relacionales en la instancia (SSOT)
+            // 3. Guardar magnitudes 4NF relacionales en la instancia (SSOT)
             if (freshSpecies.magnitudes.isNotEmpty) {
               final List<InstanceMagnitude> customInstanceMags = [];
               for (final sm in freshSpecies.magnitudes) {
@@ -361,6 +347,9 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
                   unit = null;
                 } else if (sm.propertyName == AppStrings.issuerPropertyName) {
                   strVal = result.country;
+                  unit = null;
+                } else if (sm.propertyName == AppStrings.motifPropertyName) {
+                  strVal = result.motif ?? (result.isSpecialEdition ? (result.specialEditionReason ?? AppStrings.specialEditionTitle) : null);
                   unit = null;
                 }
 

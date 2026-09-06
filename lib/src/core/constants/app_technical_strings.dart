@@ -3678,6 +3678,10 @@ abstract final class AppTechnicalNumismatics {
     'Bronce de aluminio',
     'Bronce fosforoso',
     'Latón',
+    'Latón de manganeso',
+    'Latón de manganeso (Clad)',
+    'Latón de manganeso sobre núcleo de cobre',
+    'Cuproníquel sobre núcleo de cobre',
     'Níquel-Latón',
     'Latón dorado (Tombac)',
     'Níquel',
@@ -4063,6 +4067,17 @@ abstract final class AppTechnicalNumismatics {
     'latón': 'Latón',
     'laton': 'Latón',
     'brass': 'Latón',
+    'latón de manganeso': 'Latón de manganeso sobre núcleo de cobre',
+    'laton de manganeso': 'Latón de manganeso sobre núcleo de cobre',
+    'latón de manganeso sobre núcleo de cobre': 'Latón de manganeso sobre núcleo de cobre',
+    'laton de manganeso sobre nucleo de cobre': 'Latón de manganeso sobre núcleo de cobre',
+    'latón de manganeso (clad)': 'Latón de manganeso (Clad)',
+    'laton de manganeso (clad)': 'Latón de manganeso (Clad)',
+    'manganese brass': 'Latón de manganeso sobre núcleo de cobre',
+    'manganese brass clad copper': 'Latón de manganeso sobre núcleo de cobre',
+    'cuproníquel sobre núcleo de cobre': 'Cuproníquel sobre núcleo de cobre',
+    'cuproniquel sobre nucleo de cobre': 'Cuproníquel sobre núcleo de cobre',
+    'cupronickel clad copper': 'Cuproníquel sobre núcleo de cobre',
     'níquel-latón': 'Níquel-Latón',
     'niquel-laton': 'Níquel-Latón',
     'nickel-brass': 'Níquel-Latón',
@@ -4630,7 +4645,25 @@ abstract final class AppTechnicalNumismatics {
         '25': 'Plata',
       },
       commemorativeDenominations: {'5', '10', '25'},
-      defaultCommemorativeReason: 'Constitución / Carranza / Independencia / Olimpiadas México 68',
+      commemorativeMotifsByDenomination: {
+        '5': [
+          'Centenario del Natalicio de Venustiano Carranza (1959)',
+          'Sesquicentenario de la Independencia (1960)',
+        ],
+        '10': [
+          'Centenario de la Constitución de 1857 (1957)',
+          'Sesquicentenario de la Independencia (1960)',
+        ],
+        '25': [
+          'Juegos Olímpicos México 68 (1968)',
+        ],
+      },
+      commemorativeReasons: [
+        'Centenario de la Constitución de 1857',
+        'Centenario del Natalicio de Venustiano Carranza',
+        'Sesquicentenario de la Independencia',
+        'Juegos Olímpicos México 68',
+      ],
     ),
 
     // 1.19 México - Transición Pirámide de Bronce y Monedas de Cuproníquel (1970–1973)
@@ -4679,7 +4712,7 @@ abstract final class AppTechnicalNumismatics {
         '100': 'Plata',
       },
       commemorativeDenominations: {'100'},
-      defaultCommemorativeReason: 'Morelos Plata Ley .720 (1977-1979)',
+      commemorativeReasons: ['Morelos Plata Ley .720 (1977-1979)'],
     ),
 
     // 1.21 México - Acero Inoxidable, Latón y Valores Medios (1984–1987)
@@ -4697,13 +4730,24 @@ abstract final class AppTechnicalNumismatics {
         '5': 'Latón',
         '10': 'Acero inoxidable',
         '20': 'Latón',
-        '50': 'Acero inoxidable',
+        '50': 'Cuproníquel',
         '100': 'Bronce de aluminio',
         '200': 'Cuproníquel',
         '500': 'Cuproníquel',
       },
       commemorativeDenominations: {'200'},
-      defaultCommemorativeReason: '175 Aniv Independencia / 75 Aniv Revolución / Copa Mundial FIFA 1986',
+      commemorativeMotifsByDenomination: {
+        '200': [
+          '175 Aniversario de la Independencia (1985)',
+          '75 Aniversario de la Revolución (1985)',
+          'Copa Mundial FIFA México 86 (1986)',
+        ],
+      },
+      commemorativeReasons: [
+        '175 Aniversario de la Independencia',
+        '75 Aniversario de la Revolución',
+        'Copa Mundial FIFA México 86',
+      ],
     ),
 
     // 1.22 México - Grandes Valores de Inflación Pre-N$ (1988–1992)
@@ -4715,16 +4759,28 @@ abstract final class AppTechnicalNumismatics {
       maxYear: 1992,
       validCurrencies: ['MXP'],
       defaultCurrency: 'MXP',
-      denominations: ['50', '100', '500', '1000', '5000'],
+      denominations: ['10', '20', '50', '100', '500', '1000', '5000'],
       denominationMaterials: {
+        '10': 'Acero inoxidable',
+        '20': 'Latón',
         '50': 'Acero inoxidable',
         '100': 'Bronce de aluminio',
         '500': 'Cuproníquel',
         '1000': 'Bronce de aluminio',
         '5000': 'Cuproníquel',
       },
+      denominationAllowedMaterials: {
+        '50': ['Cuproníquel', 'Acero inoxidable'],
+      },
       commemorativeDenominations: {'5000'},
-      defaultCommemorativeReason: 'Cincuentenario de la Expropiación Petrolera (1988)',
+      commemorativeMotifsByDenomination: {
+        '5000': [
+          'Cincuentenario de la Expropiación Petrolera (1988)',
+        ],
+      },
+      commemorativeReasons: [
+        'Cincuentenario de la Expropiación Petrolera (1988)',
+      ],
     ),
 
     // 1.23 México - Nuevos Pesos (N$ grabados físicamente 1992–1995)
@@ -4778,7 +4834,28 @@ abstract final class AppTechnicalNumismatics {
         '100': 'Bimetálica',
       },
       commemorativeDenominations: {'20', '100'},
-      defaultCommemorativeReason: 'Conmemorativa',
+      commemorativeMotifsByDenomination: {
+        '20': [
+          'Octavio Paz - Cambio de Milenio (2000)',
+          'Fuego Nuevo - Señorío de Xiuhtecuhtli (2000)',
+        ],
+        '100': [
+          '32 Estados de la República (Fase 1 y Fase 2)',
+          '470 Aniversario de la Casa de Moneda de México (2005)',
+          '80 Aniversario del Banco de México (2005)',
+          '400 Aniversario de Don Quijote de la Mancha (2005)',
+          'Bicentenario del Natalicio de Benito Juárez (2006)',
+        ],
+      },
+      commemorativeReasons: [
+        'Octavio Paz - Cambio de Milenio',
+        'Fuego Nuevo - Señorío de Xiuhtecuhtli',
+        '32 Estados de la República',
+        '470 Aniversario de la Casa de Moneda de México',
+        '80 Aniversario del Banco de México',
+        '400 Aniversario de Don Quijote de la Mancha',
+        'Bicentenario del Natalicio de Benito Juárez',
+      ],
     ),
 
     // 1.25 México - Familia C Bicentenario y Centenario (2008–2010)
@@ -4803,7 +4880,30 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Bimetálica',
       },
       commemorativeDenominations: {'5', '20'},
-      defaultCommemorativeReason: 'Conmemorativa',
+      commemorativeMotifsByDenomination: {
+        '5': [
+          'Ignacio López Rayón', 'Francisco Xavier Mina', 'Mariano Matamoros',
+          'Carlos María de Bustamante', 'Hermenegildo Galeana', 'José María Cos',
+          'Pedro Moreno', 'Agustín de Iturbide', 'Servando Teresa de Mier',
+          'Nicolás Bravo', 'Leona Vicario', 'Miguel Hidalgo y Costilla',
+          'José María Morelos y Pavón', 'Vicente Guerrero', 'Ignacio Allende',
+          'Guadalupe Victoria', 'Josefa Ortiz de Domínguez', 'Francisco Primo de Verdad y Ramos',
+          'Álvaro Obregón', 'José Vasconcelos', 'Francisco Villa', 'Heriberto Jara',
+          'Ricardo Flores Magón', 'Francisco J. Múgica', 'Filomeno Mata',
+          'Carmen Serdán', 'Andrés Molina Enríquez', 'Luis Cabrera',
+          'Eulalio Gutiérrez', 'Otilio Montaño', 'Belisario Domínguez',
+          'Francisco I. Madero', 'Emiliano Zapata', 'Venustiano Carranza',
+          'La Soldadera (Adelita)', 'José María Pino Suárez',
+        ],
+        '20': [
+          'Octavio Paz - Premio Nobel de Literatura (2010)',
+        ],
+      },
+      commemorativeReasons: [
+        'Bicentenario de la Independencia de México (1810-2010)',
+        'Centenario de la Revolución Mexicana (1910-2010)',
+        'Octavio Paz - Premio Nobel de Literatura (2010)',
+      ],
     ),
 
     // 1.26 México - Familia C Fraccionarias Acero Inoxidable (2011–2019)
@@ -4827,7 +4927,34 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Bimetálica',
       },
       commemorativeDenominations: {'20'},
-      defaultCommemorativeReason: 'Conmemorativa',
+      commemorativeMotifsByDenomination: {
+        '20': [
+          'Centenario del Ejército Mexicano (2013)',
+          '150 Aniversario del Natalicio de Belisario Domínguez (2013)',
+          'Centenario de la Gesta Heroica de Veracruz (2014)',
+          'Centenario de la Toma de Zacatecas (2014)',
+          'Centenario de la Fuerza Aérea Mexicana (2015)',
+          'Bicentenario Luctuoso de José María Morelos y Pavón (2015)',
+          'Quincuagésimo Aniversario del Plan DN-III-E (2016)',
+          'Centenario de la Constitución Política (2017)',
+          '50 Aniversario del Plan Marina (2018)',
+          '500 Años de la Fundación de la Ciudad y Puerto de Veracruz (2019)',
+          'Centenario de la Muerte del General Emiliano Zapata (2019)',
+        ],
+      },
+      commemorativeReasons: [
+        'Centenario del Ejército Mexicano (2013)',
+        '150 Aniversario de Belisario Domínguez (2013)',
+        'Centenario de la Gesta Heroica de Veracruz (2014)',
+        'Centenario de la Toma de Zacatecas (2014)',
+        'Centenario de la Fuerza Aérea Mexicana (2015)',
+        'Bicentenario Luctuoso de Morelos (2015)',
+        'Plan DN-III-E (2016)',
+        'Centenario de la Constitución (2017)',
+        'Plan Marina (2018)',
+        '500 Años del Puerto de Veracruz (2019)',
+        'Emiliano Zapata (2019)',
+      ],
     ),
 
     // 1.27 México - Familia C1 Dodecagonal (2020–presente)
@@ -4851,7 +4978,29 @@ abstract final class AppTechnicalNumismatics {
         '20': 'Bimetálica',
       },
       commemorativeDenominations: {'20'},
-      defaultCommemorativeReason: 'Conmemorativa',
+      commemorativeMotifsByDenomination: {
+        '20': [
+          '700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)',
+          '500 Años de Memoria Histórica de México-Tenochtitlan (2021)',
+          'Bicentenario de la Independencia Nacional (2021)',
+          'Cien Años de la Llegada de los Menonitas a México (2022)',
+          'Bicentenario de la Marina-Armada de México (2022)',
+          'Bicentenario del Heroico Colegio Militar (2023)',
+          'Doscientos Años de Relaciones Diplomáticas México-Estados Unidos (2023)',
+          '500 Años de la Fundación de la Primera Villa de Colima (2023)',
+          'Cien Años del Heroico Batallón de Marina (2024)',
+        ],
+      },
+      commemorativeReasons: [
+        'Fundación Lunar de Tenochtitlan (2021)',
+        'Memoria Histórica de Tenochtitlan (2021)',
+        'Bicentenario de la Independencia (2021)',
+        'Llegada de los Menonitas a México (2022)',
+        'Bicentenario de la Marina-Armada (2022)',
+        'Bicentenario del Heroico Colegio Militar (2023)',
+        'Relaciones Diplomáticas México-EE.UU. (2023)',
+        'Villa de Colima (2023)',
+      ],
     ),
 
     // =========================================================================
@@ -5039,6 +5188,9 @@ abstract final class AppTechnicalNumismatics {
         '0.50': 'Cuproníquel',
         '1': 'Cuproníquel',
       },
+      denominationAllowedMaterials: {
+        '0.01': ['Zinc bañado en cobre', 'Bronce', 'Latón'],
+      },
     ),
 
     // 2.9 Estados Unidos - Golden Dollar y Programas Modernos (2000–presente)
@@ -5057,8 +5209,25 @@ abstract final class AppTechnicalNumismatics {
         '0.10': 'Cuproníquel',
         '0.25': 'Cuproníquel',
         '0.50': 'Cuproníquel',
-        '1': 'Latón',
+        '1': 'Latón de manganeso sobre núcleo de cobre',
       },
+      denominationAllowedMaterials: {
+        '1': [
+          'Latón de manganeso sobre núcleo de cobre',
+          'Latón de manganeso (Clad)',
+          'Latón de manganeso',
+          'Latón',
+        ],
+      },
+      commemorativeDenominations: {'0.25', '1'},
+      commemorativeReasons: [
+        '50 State Quarters',
+        'America the Beautiful Quarters',
+        'American Women Quarters',
+        'Sacagawea / Native American Dollar',
+        'Presidential Dollar',
+        'American Innovation Dollar',
+      ],
     ),
 
     // =========================================================================
@@ -5201,8 +5370,23 @@ abstract final class AppTechnicalNumismatics {
         '30': 'Plata',
         '40': 'Plata',
       },
-      commemorativeDenominations: {'10', '12', '20', '30', '40'},
-      defaultCommemorativeReason: 'Conmemorativa',
+      commemorativeDenominations: {'2', '10', '12', '20', '30', '40'},
+      commemorativeMotifsByDenomination: {
+        '2': [
+          'Tratado de Roma (2007)',
+          '10 Años de la Unión Económica y Monetaria (2009)',
+          'Patrimonio Mundial de la UNESCO',
+          'Proclamación de Felipe VI (2014)',
+          'Conmemorativa',
+        ],
+      },
+      commemorativeReasons: [
+        'Tratado de Roma',
+        'Unión Económica y Monetaria',
+        'Patrimonio Mundial de la UNESCO',
+        'Proclamación de Felipe VI',
+        'Conmemorativa',
+      ],
     ),
 
     // 3.6 Unión Europea (Zona Euro, grabadas físicamente 1999–presente)
@@ -6376,7 +6560,16 @@ abstract final class AppTechnicalNumismatics {
         '10': 'Plata',
       },
       commemorativeDenominations: {'10'},
-      defaultCommemorativeReason: 'Juegos Olímpicos Múnich 1972 / Conmemorativa',
+      commemorativeMotifsByDenomination: {
+        '10': [
+          'Juegos Olímpicos de Múnich 1972',
+          'Conmemorativa',
+        ],
+      },
+      commemorativeReasons: [
+        'Juegos Olímpicos de Múnich 1972',
+        'Conmemorativa',
+      ],
     ),
 
     // 14.4 Alemania - Deutsche Mark 2ª Era Magnimat (1975–2001)
@@ -6649,13 +6842,13 @@ abstract final class AppTechnicalNumismatics {
       isBanknote: true,
     ),
 
-    // B1.8 México Billetes - Familia F y Conmemorativos del Centenario/Bicentenario (2006–2017)
+    // B1.8 México Billetes - Familia F y Conmemorativos del Centenario/Bicentenario (2006–2020)
     // Ref: Banco de México - Billetes de la Familia F en circulación:
     // https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
     NumismaticEmissionRuleData(
       country: 'México',
       minYear: 2006,
-      maxYear: 2017,
+      maxYear: 2020,
       validCurrencies: ['MXN'],
       defaultCurrency: 'MXN',
       denominations: ['20', '50', '100', '200', '500', '1000'],
@@ -6667,6 +6860,21 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Papel de algodón',
         '1000': 'Papel de algodón',
       },
+      commemorativeDenominations: {'100', '200'},
+      commemorativeMotifsByDenomination: {
+        '100': [
+          'Centenario de la Revolución Mexicana (2010)',
+          'Centenario de la Constitución Política (2017)',
+        ],
+        '200': [
+          'Bicentenario de la Independencia de México (2010)',
+        ],
+      },
+      commemorativeReasons: [
+        'Centenario de la Revolución Mexicana (2010)',
+        'Centenario de la Constitución Política (2017)',
+        'Bicentenario de la Independencia de México (2010)',
+      ],
       isBanknote: true,
     ),
 
@@ -6688,6 +6896,18 @@ abstract final class AppTechnicalNumismatics {
         '500': 'Papel de algodón',
         '1000': 'Papel de algodón',
       },
+      denominationAllowedMaterials: {
+        '100': ['Polímero', 'Papel de algodón'],
+      },
+      commemorativeDenominations: {'20'},
+      commemorativeMotifsByDenomination: {
+        '20': [
+          'Bicentenario de la Independencia Nacional (2021)',
+        ],
+      },
+      commemorativeReasons: [
+        'Bicentenario de la Independencia Nacional (2021)',
+      ],
       isBanknote: true,
     ),
 
@@ -7174,7 +7394,10 @@ class NumismaticEmissionRuleData {
   final String? defaultCurrency;
   final List<String> denominations;
   final Map<String, String> denominationMaterials;
+  final Map<String, List<String>> denominationAllowedMaterials;
   final Set<String> commemorativeDenominations;
+  final List<String> commemorativeReasons;
+  final Map<String, List<String>> commemorativeMotifsByDenomination;
   final String? defaultCommemorativeReason;
   final bool isBanknote;
 
@@ -7186,7 +7409,10 @@ class NumismaticEmissionRuleData {
     this.defaultCurrency,
     required this.denominations,
     this.denominationMaterials = const {},
+    this.denominationAllowedMaterials = const {},
     this.commemorativeDenominations = const {},
+    this.commemorativeReasons = const [],
+    this.commemorativeMotifsByDenomination = const {},
     this.defaultCommemorativeReason,
     this.isBanknote = false,
   });
@@ -7201,6 +7427,19 @@ class NumismaticEmissionRuleData {
     return denominations.any((d) => matchesDenomination(d, targetDenom));
   }
 
+  List<String> getAllowedMaterialsForDenomination(String targetDenom) {
+    for (final entry in denominationAllowedMaterials.entries) {
+      if (matchesDenomination(entry.key, targetDenom)) {
+        return entry.value;
+      }
+    }
+    final singleMat = getMaterialForDenomination(targetDenom);
+    if (singleMat != null) {
+      return [singleMat];
+    }
+    return const [];
+  }
+
   String? getMaterialForDenomination(String targetDenom) {
     if (denominationMaterials.containsKey(targetDenom)) {
       return denominationMaterials[targetDenom];
@@ -7210,11 +7449,48 @@ class NumismaticEmissionRuleData {
         return entry.value;
       }
     }
+    for (final entry in denominationAllowedMaterials.entries) {
+      if (matchesDenomination(entry.key, targetDenom) && entry.value.isNotEmpty) {
+        return entry.value.first;
+      }
+    }
     return null;
+  }
+
+  bool isMaterialValidForDenomination(String targetDenom, String targetMaterial) {
+    final allowed = getAllowedMaterialsForDenomination(targetDenom);
+    if (allowed.isEmpty) return true;
+    final cleanTarget = targetMaterial.trim().toLowerCase();
+    return allowed.any((mat) => mat.trim().toLowerCase() == cleanTarget);
   }
 
   bool isCommemorativeDenomination(String targetDenom) {
     return commemorativeDenominations.any((d) => matchesDenomination(d, targetDenom));
+  }
+
+  List<String> getCommemorativeMotifsForDenomination(String targetDenom) {
+    for (final entry in commemorativeMotifsByDenomination.entries) {
+      if (matchesDenomination(entry.key, targetDenom)) {
+        return entry.value;
+      }
+    }
+    if (commemorativeReasons.isNotEmpty) {
+      return commemorativeReasons;
+    }
+    if (defaultCommemorativeReason != null && defaultCommemorativeReason!.trim().isNotEmpty) {
+      return [defaultCommemorativeReason!];
+    }
+    return const [];
+  }
+
+  bool isMotifValidForDenomination(String targetDenom, String targetMotif) {
+    final motifs = getCommemorativeMotifsForDenomination(targetDenom);
+    if (motifs.isEmpty) return true;
+    final clean = targetMotif.trim().toLowerCase();
+    return motifs.any((m) {
+      final mClean = m.trim().toLowerCase();
+      return mClean == clean || mClean.contains(clean) || clean.contains(mClean);
+    });
   }
 
   static bool matchesDenomination(String d1, String d2) {

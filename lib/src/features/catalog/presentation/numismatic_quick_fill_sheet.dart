@@ -317,6 +317,12 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       year: effectiveYear,
     );
 
+    final effectiveMotif = _isSpecialEdition
+        ? ((_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized)
+            ? _specialNotesController.text.trim()
+            : _specialReason)
+        : null;
+
     final isSpecialNotesApplicable = _isSpecialEdition &&
         (_specialReason == AppStrings.otherSpecifyOption || _specialReason == AppStrings.otherSpecifyParenthesized);
 
@@ -336,6 +342,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       specialEditionNotes: isSpecialNotesApplicable
           ? _specialNotesController.text.trim()
           : null,
+      motif: effectiveMotif,
       obversePhotoPath: widget.obversePhoto.path,
       reversePhotoPath: widget.reversePhoto?.path,
       sourceEngine: AppStrings.inAppQuickFillSourceEngine,
@@ -352,6 +359,32 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   }
 
   int? get _parsedYear => _isYearNull ? null : int.tryParse(_yearController.text.trim());
+
+  List<String> get _availableMotifs {
+    final effectiveCountry = _isCountryNull ? null : (_country == AppStrings.otherSpecifyOption ? _customCountryController.text.trim() : _country);
+    final effectiveCurrency = _isCurrencyNull ? null : (_currencyCode == AppStrings.otherSpecifyOption ? _customCurrencyController.text.trim() : _currencyCode);
+    final effectiveDenom = _isDenominationNull ? null : (_denomination == AppStrings.otherSpecifyOption ? _customDenominationController.text.trim() : _denomination);
+
+    final rawMotifs = NumismaticDataHelper.getCommemorativeMotifs(
+      country: effectiveCountry,
+      year: _parsedYear,
+      currencyCode: effectiveCurrency,
+      denomination: effectiveDenom,
+      isBanknote: !widget.isCoin,
+    );
+
+    final items = <String>[];
+    for (final m in rawMotifs) {
+      if (!items.contains(m)) items.add(m);
+    }
+    for (final r in _specialEditionReasons) {
+      if (!items.contains(r)) items.add(r);
+    }
+    if (!items.contains(AppStrings.otherSpecifyOption)) {
+      items.add(AppStrings.otherSpecifyOption);
+    }
+    return items;
+  }
 
   void _onCountryChanged(String? val) {
     setState(() {
@@ -1050,11 +1083,11 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       const SizedBox(height: 4),
                       AppWheelPickerField<String?>(
                         value: _specialReason,
-                        items: [null, ..._specialEditionReasons],
+                        items: [null, ..._availableMotifs],
                         labelBuilder: (r) => r ?? AppStrings.noSelectionPrompt,
-                        title: AppStrings.specialEditionReasonLabel,
+                        title: AppStrings.motifLabel,
                         decoration: InputDecoration(
-                          labelText: AppStrings.specialEditionReasonLabel,
+                          labelText: AppStrings.motifLabel,
                           hintText: AppStrings.noSelectionPrompt,
                           prefixIcon: const Icon(Icons.star),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),

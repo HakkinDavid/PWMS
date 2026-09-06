@@ -651,6 +651,166 @@ void main() {
       );
       expect(issue5, isNull);
     });
+
+    test('checkEmissionOutliers accepts both Cuproníquel and Acero inoxidable for Mexico 1988 50 MXP coin', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+
+      // Cuproníquel instance
+      final instCuNi = WorldEntity(
+        id: 'inst-1988-cuni',
+        speciesId: species.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-1988-cuni', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-1988-cuni', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1988.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-1988-cuni', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-1988-cuni', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 50.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-1988-cuni', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
+        ],
+      );
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instCuNi, species: species), isEmpty);
+
+      // Acero inoxidable instance
+      final instAcero = WorldEntity(
+        id: 'inst-1988-acero',
+        speciesId: species.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-1988-acero', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-1988-acero', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1988.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-1988-acero', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-1988-acero', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 50.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-1988-acero', propertyName: 'Material', dataType: 'string', stringValue: 'Acero inoxidable'),
+        ],
+      );
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instAcero, species: species), isEmpty);
+    });
+
+    test('checkEmissionOutliers accepts both Papel de algodón and Polímero for Mexico 2019 100 MXN banknote', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
+
+      // 2019 Papel de algodón (Familia F - Nezahualcóyotl)
+      final instAlgodon = WorldEntity(
+        id: 'inst-2019-algodon',
+        speciesId: species.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-2019-algodon', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-2019-algodon', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2019.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-2019-algodon', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-2019-algodon', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-2019-algodon', propertyName: 'Material', dataType: 'string', stringValue: 'Papel de algodón'),
+        ],
+      );
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instAlgodon, species: species), isEmpty);
+
+      // 2019 Polímero (Familia G - Sor Juana)
+      final instPolimero = WorldEntity(
+        id: 'inst-2019-polimero',
+        speciesId: species.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-2019-polimero', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-2019-polimero', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2019.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-2019-polimero', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-2019-polimero', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-2019-polimero', propertyName: 'Material', dataType: 'string', stringValue: 'Polímero'),
+        ],
+      );
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instPolimero, species: species), isEmpty);
+    });
+
+    test('Motivo magnitude is repaired and persisted directly without touching instance notes', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+      final sub = Subspecies(
+        id: const Uuid().v4(),
+        speciesId: species.id,
+        subspeciesName: '200 Pesos Conmemorativa',
+        createdAt: DateTime.now(),
+      );
+      await catalogRepo.saveSubspecies(sub);
+
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final updatedInstance = instance.copyWith(
+        notes: 'Original user note',
+        magnitudes: [
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Valor nominal',
+            dataType: 'real',
+            magnitudeValue: 200.0,
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Acuñación',
+            dataType: 'integer',
+            magnitudeValue: 1985.0,
+            unitSymbol: 'año',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Divisa',
+            dataType: 'string',
+            stringValue: 'MXP',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Emisor',
+            dataType: 'string',
+            stringValue: 'México',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Material',
+            dataType: 'string',
+            stringValue: 'Cuproníquel',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Edición especial',
+            dataType: 'boolean',
+            stringValue: 'true',
+          ),
+          InstanceMagnitude(
+            id: const Uuid().v4(),
+            instanceId: instance.id,
+            propertyName: 'Motivo',
+            dataType: 'string',
+            stringValue: 'Motivo Inexistente 123',
+          ),
+        ],
+      );
+      await entityRepo.saveEntity(updatedInstance);
+
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
+      expect(outliers.length, equals(1));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.motifContradiction));
+
+      // Repair with canonical motif
+      final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
+        entityRepo: entityRepo,
+        catalogRepo: catalogRepo,
+        instance: updatedInstance,
+        outlier: outliers.first,
+        replacementValue: '175 Aniversario de la Independencia',
+      );
+
+      final reloadedMotif = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(reloadedMotif.stringValue, equals('175 Aniversario de la Independencia'));
+
+      // User notes must remain untouched
+      expect(repairedEntity.notes, equals('Original user note'));
+    });
   });
 }
 
