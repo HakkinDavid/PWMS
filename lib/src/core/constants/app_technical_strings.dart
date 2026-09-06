@@ -2933,11 +2933,11 @@ abstract final class AppTechnicalNumismatics {
   ];
 
   static const List<String> grades = [
-    'Sin circular', 'Excelente', 'Muy buena', 'Buena', 'Regular',
+    'Sin circular', 'Excelente', 'Muy buena', 'Buena', 'Regular', 'Otro',
   ];
 
   static const List<String> coinMaterials = [
-    'Cuproníquel', 'Plata', 'Bronce', 'Oro', 'Latón', 'Aluminio', 'Bimetálica', 'Acero', 'Papel',
+    'Cuproníquel', 'Plata', 'Bronce', 'Oro', 'Latón', 'Aluminio', 'Bimetálica', 'Acero', 'Papel', 'Otro',
   ];
 
   static const List<String> specialEditionReasons = [

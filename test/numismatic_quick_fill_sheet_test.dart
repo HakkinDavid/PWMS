@@ -493,5 +493,161 @@ void main() {
     expect(onResultCalled, isTrue);
     expect(submittedResult, isNull);
   });
+
+  testWidgets('NumismaticQuickFillSheet allows specifying custom Country, Currency, Grade, and Material when Otro is selected', (WidgetTester tester) async {
+    NumismaticScanResult? submittedResult;
+    final dummyObverse = File('/tmp/obverse.jpg');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+        ],
+        child: MaterialApp(
+          key: UniqueKey(),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: NumismaticQuickFillSheet(
+                obversePhoto: dummyObverse,
+                isCoin: true,
+                onResultSubmitted: (result) {
+                  submittedResult = result;
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // 1. Country: select 'Otro' and specify custom country
+    final countryField = find.byType(AppWheelPickerField<String?>).at(0);
+    await selectWheelOption(tester, countryField, 'Otro');
+    expect(find.text(AppStrings.specifyCountryLabel), findsOneWidget);
+    final customCountryInput = find.widgetWithText(TextFormField, AppStrings.specifyCountryLabel);
+    await tester.enterText(customCountryInput, 'Imperio Romano');
+    await tester.pumpAndSettle();
+
+    // 2. Denomination: select '1'
+    final denomField = find.byType(AppWheelPickerField<String?>).at(1);
+    await selectWheelOption(tester, denomField, '1');
+
+    // 3. Currency: select 'Otro' and specify custom currency
+    final currencyField = find.byType(AppWheelPickerField<String?>).at(2);
+    await selectWheelOption(tester, currencyField, 'Otro');
+    expect(find.text(AppStrings.specifyCurrencyLabel), findsOneWidget);
+    final customCurrencyInput = find.widgetWithText(TextFormField, AppStrings.specifyCurrencyLabel);
+    await tester.enterText(customCurrencyInput, 'Denario');
+    await tester.pumpAndSettle();
+
+    // 4. Year: 120
+    final yearField = find.widgetWithText(TextFormField, AppStrings.mintageYearLabel);
+    await tester.enterText(yearField, '1920');
+    await tester.pumpAndSettle();
+
+    // 5. Grade: select 'Otro' and specify custom grade
+    final gradeField = find.byType(AppWheelPickerField<String?>).at(3);
+    await selectWheelOption(tester, gradeField, 'Otro');
+    expect(find.text(AppStrings.specifyGradeLabel), findsOneWidget);
+    final customGradeInput = find.widgetWithText(TextFormField, AppStrings.specifyGradeLabel);
+    await tester.enterText(customGradeInput, 'NGC MS-65');
+    await tester.pumpAndSettle();
+
+    // 6. Material: select 'Otro' and specify custom material
+    final matField = find.byType(AppWheelPickerField<String?>).at(4);
+    await selectWheelOption(tester, matField, 'Otro');
+    expect(find.text(AppStrings.specifyMaterialLabel), findsOneWidget);
+    final customMatInput = find.widgetWithText(TextFormField, AppStrings.specifyMaterialLabel);
+    await tester.enterText(customMatInput, 'Electrum');
+    await tester.pumpAndSettle();
+
+    // Submit
+    final submitButton = find.text(AppStrings.confirmAndRegisterPieceAction);
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
+    await tester.pumpAndSettle();
+
+    expect(submittedResult, isNotNull);
+    expect(submittedResult!.country, equals('Imperio Romano'));
+    expect(submittedResult!.faceValueNumber, equals(1.0));
+    expect(submittedResult!.currencyCode, equals('Denario'));
+    expect(submittedResult!.currencyName, equals('Denario'));
+    expect(submittedResult!.year, equals('1920'));
+    expect(submittedResult!.grade, equals('NGC MS-65'));
+    expect(submittedResult!.composition, equals('Electrum'));
+    expect(submittedResult!.subspeciesName, equals('1 Denario - Imperio Romano (1920)'));
+  });
+
+  testWidgets('NumismaticQuickFillSheet submits successfully when fields are marked null with checkmarks', (WidgetTester tester) async {
+    NumismaticScanResult? submittedResult;
+    final dummyObverse = File('/tmp/obverse.jpg');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+        ],
+        child: MaterialApp(
+          key: UniqueKey(),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: NumismaticQuickFillSheet(
+                obversePhoto: dummyObverse,
+                isCoin: true,
+                onResultSubmitted: (result) {
+                  submittedResult = result;
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Toggle all null checkmarks
+    final countryNull = find.text(AppStrings.unspecifiedCountryLabel);
+    await tester.tap(countryNull);
+    await tester.pumpAndSettle();
+
+    final denomNull = find.text(AppStrings.unspecifiedDenominationLabel);
+    await tester.tap(denomNull);
+    await tester.pumpAndSettle();
+
+    final currNull = find.text(AppStrings.unspecifiedCurrencyLabel);
+    await tester.tap(currNull);
+    await tester.pumpAndSettle();
+
+    final yearNull = find.text(AppStrings.unspecifiedYearLabel);
+    await tester.tap(yearNull);
+    await tester.pumpAndSettle();
+
+    final gradeNull = find.text(AppStrings.unspecifiedGradeLabel);
+    await tester.tap(gradeNull);
+    await tester.pumpAndSettle();
+
+    final matNull = find.text(AppStrings.unspecifiedMaterialLabel);
+    await tester.tap(matNull);
+    await tester.pumpAndSettle();
+
+    // Submit form with all fields null
+    final submitButton = find.text(AppStrings.confirmAndRegisterPieceAction);
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
+    await tester.pumpAndSettle();
+
+    expect(submittedResult, isNotNull);
+    expect(submittedResult!.country, isNull);
+    expect(submittedResult!.faceValueNumber, isNull);
+    expect(submittedResult!.currencyCode, isNull);
+    expect(submittedResult!.currencyName, isNull);
+    expect(submittedResult!.year, isNull);
+    expect(submittedResult!.grade, isNull);
+    expect(submittedResult!.composition, isNull);
+    expect(submittedResult!.subspeciesName, equals(AppStrings.defaultNumismaticPiece));
+  });
 }
 

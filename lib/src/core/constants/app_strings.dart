@@ -773,20 +773,34 @@ class AppStrings {
   static const noSelectionPrompt = 'Sin selección';
   static const countryIssuerLabel = 'Emisor';
   static const selectCountryPrompt = 'Selecciona un emisor.';
+  static const specifyCountryLabel = 'Especificar país / emisor';
+  static const specifyCountryPrompt = 'Ingresa el país o emisor.';
+  static const unspecifiedCountryLabel = 'Sin país / Desconocido';
   static const denominationLabel = 'Denominación';
   static const selectDenominationPrompt = 'Selecciona una denominación.';
   static const denominationNumberLabel = 'Número de denominación';
   static const enterDenominationNumberPrompt = 'Ingresa el número de denominación.';
   static const enterValidNumericValuePrompt = 'Ingresa un valor numérico válido.';
+  static const unspecifiedDenominationLabel = 'Sin denominación';
   static const mintageYearLabel = 'Año de emisión';
   static const enterMintageYearPrompt = 'Ingresa el año de emisión.';
   static const enterValidMintageYearPrompt = 'Ingresa un año válido.';
+  static const unspecifiedYearLabel = 'Sin año / Desconocido';
   static const selectGradePrompt = 'Selecciona el estado de conservación.';
+  static const specifyGradeLabel = 'Especificar conservación';
+  static const specifyGradePrompt = 'Ingresa el estado de conservación.';
+  static const unspecifiedGradeLabel = 'Sin conservación / No calificada';
   static const selectMaterialPrompt = 'Selecciona el material o composición.';
+  static const specifyMaterialLabel = 'Especificar material o composición';
+  static const specifyMaterialPrompt = 'Ingresa el material o composición.';
+  static const unspecifiedMaterialLabel = 'Sin material / Desconocido';
   static const selectSpecialEditionReasonPrompt = 'Selecciona la razón de edición especial.';
   static const specifySpecialEditionNotesPrompt = 'Especifica el motivo de la edición especial.';
   static const numismaticDataTitlePrefix = 'Datos numismáticos: ';
   static const selectCurrencyPrompt = 'Selecciona una divisa.';
+  static const specifyCurrencyLabel = 'Especificar divisa';
+  static const specifyCurrencyPrompt = 'Ingresa la divisa.';
+  static const unspecifiedCurrencyLabel = 'Sin divisa';
 
   // Confirmaciones y Prevención de Descarte de Cambios
   static const unsavedChangesTitle = 'Cambios sin guardar';

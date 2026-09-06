@@ -103,11 +103,21 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   String? _grade;
   String? _composition;
 
-  // Empty year text field by default
-  final TextEditingController _yearController = TextEditingController(text: AppTechnicalStrings.empty);
+  // Null checkmark states
+  bool _isCountryNull = false;
+  bool _isDenominationNull = false;
+  bool _isCurrencyNull = false;
+  bool _isYearNull = false;
+  bool _isGradeNull = false;
+  bool _isCompositionNull = false;
 
-  // Custom denomination text field (when 'Otro' is selected)
+  // Custom text controllers for 'Otro'
+  final TextEditingController _customCountryController = TextEditingController();
   final TextEditingController _customDenominationController = TextEditingController();
+  final TextEditingController _customCurrencyController = TextEditingController();
+  final TextEditingController _customGradeController = TextEditingController();
+  final TextEditingController _customMaterialController = TextEditingController();
+  final TextEditingController _yearController = TextEditingController(text: AppTechnicalStrings.empty);
 
   // Special Edition Controls
   bool _isSpecialEdition = false;
@@ -158,8 +168,12 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
 
   @override
   void dispose() {
-    _yearController.dispose();
+    _customCountryController.dispose();
     _customDenominationController.dispose();
+    _customCurrencyController.dispose();
+    _customGradeController.dispose();
+    _customMaterialController.dispose();
+    _yearController.dispose();
     _specialNotesController.dispose();
     super.dispose();
   }
@@ -219,21 +233,88 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       }
     } catch (_) {}
 
-    final isCustomDenom = _denomination == AppStrings.otherSpecifyOption;
-    final effectiveDenom = isCustomDenom
-        ? _customDenominationController.text.trim()
-        : _denomination!;
-    final faceVal = double.tryParse(effectiveDenom);
-    final currName = _currencyMap[_currencyCode!] ?? _currencyCode;
-    final yearStr = _yearController.text.trim();
+    // 1. Effective Country
+    final String? effectiveCountry;
+    if (_isCountryNull) {
+      effectiveCountry = null;
+    } else if (_country == AppStrings.otherSpecifyOption) {
+      effectiveCountry = _customCountryController.text.trim();
+    } else {
+      effectiveCountry = _country;
+    }
+
+    // 2. Effective Denomination
+    final String? effectiveDenom;
+    if (_isDenominationNull) {
+      effectiveDenom = null;
+    } else if (_denomination == AppStrings.otherSpecifyOption) {
+      effectiveDenom = _customDenominationController.text.trim();
+    } else {
+      effectiveDenom = _denomination;
+    }
+    final faceVal = (effectiveDenom != null && effectiveDenom.isNotEmpty) ? double.tryParse(effectiveDenom) : null;
+
+    // 3. Effective Currency
+    final String? effectiveCurrencyCode;
+    final String? effectiveCurrencyName;
+    if (_isCurrencyNull) {
+      effectiveCurrencyCode = null;
+      effectiveCurrencyName = null;
+    } else if (_currencyCode == AppStrings.otherSpecifyOption) {
+      final customCurr = _customCurrencyController.text.trim();
+      effectiveCurrencyCode = customCurr.isNotEmpty ? customCurr : null;
+      effectiveCurrencyName = customCurr.isNotEmpty ? customCurr : null;
+    } else if (_currencyCode != null && _currencyCode!.isNotEmpty) {
+      effectiveCurrencyCode = _currencyCode;
+      effectiveCurrencyName = _currencyMap[_currencyCode!] ?? _currencyCode;
+    } else {
+      effectiveCurrencyCode = null;
+      effectiveCurrencyName = null;
+    }
+
+    // 4. Effective Year
+    final String? effectiveYear;
+    if (_isYearNull) {
+      effectiveYear = null;
+    } else {
+      final yearStr = _yearController.text.trim();
+      effectiveYear = yearStr.isNotEmpty ? yearStr : null;
+    }
+
+    // 5. Effective Grade
+    final String? effectiveGrade;
+    if (_isGradeNull) {
+      effectiveGrade = null;
+    } else if (_grade == AppStrings.otherSpecifyOption) {
+      final customGrade = _customGradeController.text.trim();
+      effectiveGrade = customGrade.isNotEmpty ? customGrade : null;
+    } else {
+      effectiveGrade = _grade;
+    }
+
+    // 6. Effective Composition
+    final String? effectiveComposition;
+    if (widget.isCoin) {
+      if (_isCompositionNull) {
+        effectiveComposition = null;
+      } else if (_composition == AppStrings.otherSpecifyOption) {
+        final customMat = _customMaterialController.text.trim();
+        effectiveComposition = customMat.isNotEmpty ? customMat : null;
+      } else {
+        effectiveComposition = _composition;
+      }
+    } else {
+      effectiveComposition = AppStrings.materialPaper;
+    }
+
     final speciesType = widget.isCoin ? AppStrings.coinCircularLabel : AppStrings.banknoteRectangleLabel;
 
     final title = NumismaticDataHelper.buildSubspeciesName(
       faceValueStr: effectiveDenom,
       faceValueNumber: faceVal,
-      currencyName: currName,
-      country: _country,
-      year: yearStr.isNotEmpty ? yearStr : null,
+      currencyName: effectiveCurrencyName,
+      country: effectiveCountry,
+      year: effectiveYear,
     );
 
     final isSpecialNotesApplicable = _isSpecialEdition &&
@@ -243,13 +324,13 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       speciesType: speciesType,
       generalSpeciesName: speciesType,
       subspeciesName: title,
-      country: _country,
-      year: yearStr.isNotEmpty ? yearStr : null,
+      country: effectiveCountry,
+      year: effectiveYear,
       faceValueNumber: faceVal,
-      currencyCode: _currencyCode,
-      currencyName: currName,
-      composition: widget.isCoin ? _composition : AppStrings.materialPaper,
-      grade: _grade,
+      currencyCode: effectiveCurrencyCode,
+      currencyName: effectiveCurrencyName,
+      composition: effectiveComposition,
+      grade: effectiveGrade,
       isSpecialEdition: _isSpecialEdition,
       specialEditionReason: _isSpecialEdition ? _specialReason : null,
       specialEditionNotes: isSpecialNotesApplicable
@@ -268,6 +349,60 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     } else if (mounted && Navigator.canPop(context)) {
       Navigator.pop(context, result);
     }
+  }
+
+  Widget _buildFieldHeader({
+    required String title,
+    required bool isNull,
+    required String nullLabel,
+    required ValueChanged<bool?> onNullChanged,
+  }) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isNull ? theme.disabledColor : null,
+            ),
+          ),
+          InkWell(
+            onTap: () => onNullChanged(!isNull),
+            borderRadius: BorderRadius.circular(6),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Checkbox(
+                      value: isNull,
+                      onChanged: onNullChanged,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    nullLabel,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: isNull ? theme.colorScheme.primary : theme.hintColor,
+                      fontWeight: isNull ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -348,47 +483,102 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               const SizedBox(height: 16),
 
               // 1. País / Emisor Dropdown (1 campo por fila)
+              _buildFieldHeader(
+                title: AppStrings.countryIssuerLabel,
+                isNull: _isCountryNull,
+                nullLabel: AppStrings.unspecifiedCountryLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isCountryNull = val ?? false;
+                    if (_isCountryNull) {
+                      _country = null;
+                      _customCountryController.clear();
+                    }
+                  });
+                },
+              ),
               AppWheelPickerField<String?>(
                 value: _country,
+                enabled: !_isCountryNull,
                 items: [null, ..._countries],
                 labelBuilder: (c) => c ?? AppStrings.noSelectionPrompt,
                 title: AppStrings.countryIssuerLabel,
                 decoration: InputDecoration(
                   labelText: AppStrings.countryIssuerLabel,
-                  hintText: AppStrings.noSelectionPrompt,
+                  hintText: _isCountryNull ? AppStrings.unspecifiedCountryLabel : AppStrings.noSelectionPrompt,
                   prefixIcon: const Icon(Icons.flag),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                validator: (val) => val == null ? AppStrings.selectCountryPrompt : null,
+                validator: (val) {
+                  if (_isCountryNull) return null;
+                  return val == null ? AppStrings.selectCountryPrompt : null;
+                },
                 onChanged: (val) {
                   setState(() {
                     _country = val;
-                    final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(_country);
-                    if (_currencyCode != null && !availableCurrencies.contains(_currencyCode)) {
+                    final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(_country == AppStrings.otherSpecifyOption ? null : _country);
+                    if (_currencyCode != null && _currencyCode != AppStrings.otherSpecifyOption && !availableCurrencies.contains(_currencyCode)) {
                       _currencyCode = null;
                     }
                   });
                 },
               ),
+              if (!_isCountryNull && _country == AppStrings.otherSpecifyOption) ...[
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _customCountryController,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.specifyCountryLabel,
+                    hintText: AppStrings.specifyCountryLabel,
+                    prefixIcon: const Icon(Icons.edit_location_alt_outlined),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  validator: (val) {
+                    if (_isCountryNull) return null;
+                    if (_country == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
+                      return AppStrings.specifyCountryPrompt;
+                    }
+                    return null;
+                  },
+                ),
+              ],
               const SizedBox(height: 14),
 
               // 2. Denominación Dropdown (1 campo por fila)
+              _buildFieldHeader(
+                title: AppStrings.denominationLabel,
+                isNull: _isDenominationNull,
+                nullLabel: AppStrings.unspecifiedDenominationLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isDenominationNull = val ?? false;
+                    if (_isDenominationNull) {
+                      _denomination = null;
+                      _customDenominationController.clear();
+                    }
+                  });
+                },
+              ),
               AppWheelPickerField<String?>(
                 value: _denomination,
+                enabled: !_isDenominationNull,
                 items: [null, ..._denominations],
                 labelBuilder: (d) => d ?? AppStrings.noSelectionPrompt,
                 title: AppStrings.denominationLabel,
                 decoration: InputDecoration(
                   labelText: AppStrings.denominationLabel,
-                  hintText: AppStrings.noSelectionPrompt,
+                  hintText: _isDenominationNull ? AppStrings.unspecifiedDenominationLabel : AppStrings.noSelectionPrompt,
                   prefixIcon: const Icon(Icons.numbers),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                validator: (val) => val == null ? AppStrings.selectDenominationPrompt : null,
+                validator: (val) {
+                  if (_isDenominationNull) return null;
+                  return val == null ? AppStrings.selectDenominationPrompt : null;
+                },
                 onChanged: (val) => setState(() => _denomination = val),
               ),
-              if (_denomination == AppStrings.otherSpecifyOption) ...[
-                const SizedBox(height: 12),
+              if (!_isDenominationNull && _denomination == AppStrings.otherSpecifyOption) ...[
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _customDenominationController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -402,6 +592,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   validator: (val) {
+                    if (_isDenominationNull) return null;
                     if (_denomination == AppStrings.otherSpecifyOption) {
                       if (val == null || val.trim().isEmpty) {
                         return AppStrings.enterDenominationNumberPrompt;
@@ -418,42 +609,95 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               const SizedBox(height: 14),
 
               // 3. Divisa Dropdown (1 campo por fila) - Filtrado por País seleccionado
+              _buildFieldHeader(
+                title: AppStrings.currencyLabel,
+                isNull: _isCurrencyNull,
+                nullLabel: AppStrings.unspecifiedCurrencyLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isCurrencyNull = val ?? false;
+                    if (_isCurrencyNull) {
+                      _currencyCode = null;
+                      _customCurrencyController.clear();
+                    }
+                  });
+                },
+              ),
               Builder(
                 builder: (context) {
-                  final availableCurrencies = NumismaticDataHelper.getCurrencyMapForCountry(_country);
+                  final availableCurrencies = NumismaticDataHelper.getCurrencyMapForCountry(_country == AppStrings.otherSpecifyOption ? null : _country);
                   return AppWheelPickerField<String?>(
                     value: _currencyCode,
-                    items: [null, ...availableCurrencies.keys],
+                    enabled: !_isCurrencyNull,
+                    items: [null, ...availableCurrencies.keys, AppStrings.otherSpecifyOption],
                     labelBuilder: (code) {
                       if (code == null) return AppStrings.noSelectionPrompt;
-                      final name = availableCurrencies[code] ?? code;
+                      if (code == AppStrings.otherSpecifyOption) return AppStrings.otherSpecifyOption;
+                      final name = availableCurrencies[code] ?? _currencyMap[code] ?? code;
                       return AppStrings.currencyCodeWithName(code, name);
                     },
                     title: AppStrings.currencyLabel,
                     decoration: InputDecoration(
                       labelText: AppStrings.currencyLabel,
-                      hintText: AppStrings.noSelectionPrompt,
+                      hintText: _isCurrencyNull ? AppStrings.unspecifiedCurrencyLabel : AppStrings.noSelectionPrompt,
                       prefixIcon: const Icon(Icons.monetization_on),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    validator: (val) => val == null ? AppStrings.selectCurrencyPrompt : null,
+                    validator: (val) {
+                      if (_isCurrencyNull) return null;
+                      return val == null ? AppStrings.selectCurrencyPrompt : null;
+                    },
                     onChanged: (val) => setState(() => _currencyCode = val),
                   );
                 },
               ),
+              if (!_isCurrencyNull && _currencyCode == AppStrings.otherSpecifyOption) ...[
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _customCurrencyController,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.specifyCurrencyLabel,
+                    hintText: AppStrings.specifyCurrencyLabel,
+                    prefixIcon: const Icon(Icons.monetization_on_outlined),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  validator: (val) {
+                    if (_isCurrencyNull) return null;
+                    if (_currencyCode == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
+                      return AppStrings.specifyCurrencyPrompt;
+                    }
+                    return null;
+                  },
+                ),
+              ],
               const SizedBox(height: 14),
 
               // 4. Año TextField (1 campo por fila)
+              _buildFieldHeader(
+                title: AppStrings.mintageYearLabel,
+                isNull: _isYearNull,
+                nullLabel: AppStrings.unspecifiedYearLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isYearNull = val ?? false;
+                    if (_isYearNull) {
+                      _yearController.clear();
+                    }
+                  });
+                },
+              ),
               TextFormField(
                 controller: _yearController,
+                enabled: !_isYearNull,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: AppStrings.mintageYearLabel,
-                  hintText: AppStrings.exampleYearHint,
+                  hintText: _isYearNull ? AppStrings.unspecifiedYearLabel : AppStrings.exampleYearHint,
                   prefixIcon: const Icon(Icons.calendar_today),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 validator: (val) {
+                  if (_isYearNull) return null;
                   if (val == null || val.trim().isEmpty) {
                     return AppStrings.enterMintageYearPrompt;
                   }
@@ -467,38 +711,112 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               const SizedBox(height: 14),
 
               // 5. Conservación Dropdown (1 campo por fila)
+              _buildFieldHeader(
+                title: AppStrings.gradePropertyName,
+                isNull: _isGradeNull,
+                nullLabel: AppStrings.unspecifiedGradeLabel,
+                onNullChanged: (val) {
+                  setState(() {
+                    _isGradeNull = val ?? false;
+                    if (_isGradeNull) {
+                      _grade = null;
+                      _customGradeController.clear();
+                    }
+                  });
+                },
+              ),
               AppWheelPickerField<String?>(
                 value: _grade,
+                enabled: !_isGradeNull,
                 items: [null, ..._grades],
                 labelBuilder: (g) => g ?? AppStrings.noSelectionPrompt,
                 title: AppStrings.gradePropertyName,
                 decoration: InputDecoration(
                   labelText: AppStrings.gradePropertyName,
-                  hintText: AppStrings.noSelectionPrompt,
+                  hintText: _isGradeNull ? AppStrings.unspecifiedGradeLabel : AppStrings.noSelectionPrompt,
                   prefixIcon: const Icon(Icons.grade),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                validator: (val) => val == null ? AppStrings.selectGradePrompt : null,
+                validator: (val) {
+                  if (_isGradeNull) return null;
+                  return val == null ? AppStrings.selectGradePrompt : null;
+                },
                 onChanged: (val) => setState(() => _grade = val),
               ),
+              if (!_isGradeNull && _grade == AppStrings.otherSpecifyOption) ...[
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _customGradeController,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.specifyGradeLabel,
+                    hintText: AppStrings.specifyGradeLabel,
+                    prefixIcon: const Icon(Icons.stars_outlined),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  validator: (val) {
+                    if (_isGradeNull) return null;
+                    if (_grade == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
+                      return AppStrings.specifyGradePrompt;
+                    }
+                    return null;
+                  },
+                ),
+              ],
               const SizedBox(height: 14),
 
               // 6. Material / Composición Dropdown (1 campo por fila, sólo para monedas)
               if (widget.isCoin) ...[
+                _buildFieldHeader(
+                  title: AppStrings.materialPropertyName,
+                  isNull: _isCompositionNull,
+                  nullLabel: AppStrings.unspecifiedMaterialLabel,
+                  onNullChanged: (val) {
+                    setState(() {
+                      _isCompositionNull = val ?? false;
+                      if (_isCompositionNull) {
+                        _composition = null;
+                        _customMaterialController.clear();
+                      }
+                    });
+                  },
+                ),
                 AppWheelPickerField<String?>(
                   value: _composition,
+                  enabled: !_isCompositionNull,
                   items: [null, ..._coinMaterials],
                   labelBuilder: (mat) => mat ?? AppStrings.noSelectionPrompt,
                   title: AppStrings.materialPropertyName,
                   decoration: InputDecoration(
                     labelText: AppStrings.materialPropertyName,
-                    hintText: AppStrings.noSelectionPrompt,
+                    hintText: _isCompositionNull ? AppStrings.unspecifiedMaterialLabel : AppStrings.noSelectionPrompt,
                     prefixIcon: const Icon(Icons.token),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  validator: (val) => val == null ? AppStrings.selectMaterialPrompt : null,
+                  validator: (val) {
+                    if (_isCompositionNull) return null;
+                    return val == null ? AppStrings.selectMaterialPrompt : null;
+                  },
                   onChanged: (val) => setState(() => _composition = val),
                 ),
+                if (!_isCompositionNull && _composition == AppStrings.otherSpecifyOption) ...[
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: _customMaterialController,
+                    decoration: InputDecoration(
+                      labelText: AppStrings.specifyMaterialLabel,
+                      hintText: AppStrings.specifyMaterialLabel,
+                      prefixIcon: const Icon(Icons.category_outlined),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    validator: (val) {
+                      if (_isCompositionNull) return null;
+                      if (_composition == AppStrings.otherSpecifyOption && (val == null || val.trim().isEmpty)) {
+                        return AppStrings.specifyMaterialPrompt;
+                      }
+                      return null;
+                    },
+                  ),
+                ],
                 const SizedBox(height: 14),
               ],
 
