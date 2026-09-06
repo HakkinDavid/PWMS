@@ -1064,10 +1064,9 @@ class DatabaseBackupService {
     } else if (rawVersion is String) {
       importedVer = double.tryParse(rawVersion)?.floor() ?? 1;
     }
-
-    if (importedVer < _db.schemaVersion) {
-      await DataMigrationRegistry.runAll(_db, _postProcessors);
-    }
+    // Always execute registered post-processors upon restore to ensure
+    // data normalization, numismatic standardization, and consistency regardless of schema version.
+    await DataMigrationRegistry.runAll(_db, _postProcessors);
 
     // Log backup restore event
     int totalImportedRecords = 0;

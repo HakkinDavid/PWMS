@@ -73,6 +73,46 @@ class BackupWorkflowHelper {
     if (confirm != true || !context.mounted) return;
 
     setProcessing(true);
+    var dialogOpen = true;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.7),
+      builder: (dialogCtx) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Card(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 20),
+                  Text(
+                    AppStrings.restoringBackupDialogTitle,
+                    style: Theme.of(dialogCtx).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppStrings.restoringBackupDialogMessage,
+                    style: Theme.of(dialogCtx).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ).then((_) {
+      dialogOpen = false;
+    });
+
     try {
       final filePath = result.files.single.path!;
       final backupService = ref.read(databaseBackupServiceProvider);
@@ -89,6 +129,9 @@ class BackupWorkflowHelper {
         AppToast.showError(context, AppStrings.backupImportErrorMessage(e));
       }
     } finally {
+      if (dialogOpen && context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
       if (context.mounted) {
         setProcessing(false);
       }

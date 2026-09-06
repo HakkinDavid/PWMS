@@ -59,6 +59,7 @@ class AuditRuleRegistry {
     for (final strategy in _strategies) {
       final cards = await strategy.evaluate(context);
       allCards.addAll(cards);
+      await Future<void>.delayed(Duration.zero);
     }
 
     return allCards;
@@ -71,6 +72,7 @@ class AuditRuleRegistry {
     for (final strategy in categoryStrategies) {
       final res = await strategy.evaluate(context);
       cards.addAll(res);
+      await Future<void>.delayed(Duration.zero);
     }
 
     return cards;

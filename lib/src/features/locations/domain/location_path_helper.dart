@@ -28,11 +28,12 @@ class LocationPathHelper {
       return const LocationBreadcrumb(ancestorPath: AppTechnicalStrings.empty, targetName: AppStrings.rootLocationName);
     }
 
+    final nodeMap = {for (final n in allNodes) n.id: n};
     final List<String> nodeNames = [];
     String? currentId = locationId;
 
     while (currentId != null) {
-      final node = allNodes.where((n) => n.id == currentId).firstOrNull;
+      final node = nodeMap[currentId];
       if (node != null) {
         nodeNames.insert(0, node.name);
         currentId = node.parentLocationId;
@@ -72,29 +73,43 @@ class LocationPathHelper {
       return buildBreadcrumbPath(effectiveLocationId, allNodes);
     }
 
+    final parentRelMap = <String, EntityRelation>{};
+    for (final r in allRelations) {
+      if (LocationResolver.locationInheritingTypes.contains(r.relationType)) {
+        parentRelMap.putIfAbsent(r.sourceEntityId, () => r);
+      }
+    }
+    final entityMap = {for (final e in allEntities) e.id: e};
+    final speciesMap = {for (final s in catalogItems) s.id: s};
+    final subspeciesMap = subspeciesList != null
+        ? {for (final sub in subspeciesList) sub.id: sub}
+        : null;
+
     // Trace container chain up
     final List<String> containerNames = [];
     final Set<String> visited = {entityId};
     String currentId = entityId;
 
     while (true) {
-      final parentRel = allRelations.where((r) =>
-        r.sourceEntityId == currentId &&
-        LocationResolver.locationInheritingTypes.contains(r.relationType)
-      ).firstOrNull;
-
+      final parentRel = parentRelMap[currentId];
       if (parentRel == null) break;
 
       final targetId = parentRel.targetEntityId;
       if (visited.contains(targetId)) break;
       visited.add(targetId);
 
-      final targetEntity = allEntities.where((e) => e.id == targetId).firstOrNull;
+      final targetEntity = entityMap[targetId];
       if (targetEntity != null) {
-        final baseName = EntityDisplayHelper.getDisplayName(
+        final targetSpecies = speciesMap[targetEntity.speciesId];
+        Subspecies? targetSubspecies;
+        final subId = targetEntity.subspeciesId;
+        if (subId != null && subspeciesMap != null) {
+          targetSubspecies = subspeciesMap[subId];
+        }
+        final baseName = EntityDisplayHelper.getDisplayNameWithLookups(
           entity: targetEntity,
-          catalogItems: catalogItems,
-          subspeciesList: subspeciesList,
+          species: targetSpecies,
+          subspecies: targetSubspecies,
         );
         final name = targetEntity.notes != null && targetEntity.notes!.isNotEmpty
             ? AppTechnicalStrings.formatEntityWithNotes(baseName, targetEntity.notes!)
@@ -107,7 +122,7 @@ class LocationPathHelper {
 
     String? resolvedPhysicalLocId = effectiveLocationId;
     if (resolvedPhysicalLocId == null && currentId != entityId) {
-      final outermostEntity = allEntities.where((e) => e.id == currentId).firstOrNull;
+      final outermostEntity = entityMap[currentId];
       resolvedPhysicalLocId = outermostEntity?.locationId;
     }
 

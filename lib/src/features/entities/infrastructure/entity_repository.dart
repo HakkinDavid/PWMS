@@ -32,8 +32,17 @@ class EntityRepository implements IEntityRepository {
 
   Future<Map<String, List<InstanceMagnitude>>> _fetchMagnitudesForEntities(List<String> entityIds) async {
     if (entityIds.isEmpty) return {};
-    final magRows = await (_db.select(_db.instanceMagnitudesTable)
-      ..where((t) => t.instanceId.isIn(entityIds))).get();
+    final List<InstanceMagnitudesTableData> magRows = [];
+    const chunkSize = 500;
+    for (var i = 0; i < entityIds.length; i += chunkSize) {
+      final chunk = entityIds.sublist(
+        i,
+        i + chunkSize > entityIds.length ? entityIds.length : i + chunkSize,
+      );
+      final rows = await (_db.select(_db.instanceMagnitudesTable)
+        ..where((t) => t.instanceId.isIn(chunk))).get();
+      magRows.addAll(rows);
+    }
 
     final Map<String, List<InstanceMagnitude>> magMap = {};
     for (final m in magRows) {
@@ -196,8 +205,20 @@ class EntityRepository implements IEntityRepository {
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
     final rows = await query.get();
     final effectiveLocs = await _getEffectiveLocationMap(rows);
-    final entityIds = rows.map((r) => r.id).toList();
-    final magMap = await _fetchMagnitudesForEntities(entityIds);
+
+    final magRows = await _db.select(_db.instanceMagnitudesTable).get();
+    final Map<String, List<InstanceMagnitude>> magMap = {};
+    for (final m in magRows) {
+      magMap.putIfAbsent(m.instanceId, () => []).add(InstanceMagnitude(
+        id: m.id,
+        instanceId: m.instanceId,
+        propertyName: m.propertyName,
+        dataType: m.dataType,
+        magnitudeValue: m.magnitudeValue,
+        stringValue: m.stringValue,
+        unitSymbol: m.unitSymbol,
+      ));
+    }
 
     return rows.map((row) => _mapToDomainSync(
       row,

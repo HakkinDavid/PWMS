@@ -480,6 +480,8 @@ class AppStrings {
   static const exportBackupSubtitle = 'Genera un archivo comprimido de tu mundo.';
   static const importBackupTitle = 'Importar respaldo';
   static const importBackupSubtitle = 'Restaura tu mundo desde un archivo de respaldo.';
+  static const restoringBackupDialogTitle = 'Restaurando copia de seguridad...';
+  static const restoringBackupDialogMessage = 'Por favor espere. Se están importando los datos y archivos multimedia.';
 
   // Excepciones e Infraestructura de Catálogo
   static const genericSubspeciesName = 'Genérica';
