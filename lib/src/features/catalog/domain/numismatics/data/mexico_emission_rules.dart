@@ -925,7 +925,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         motifName: 'Dos Pesos Plata - Victoria Alada / Centenario Consumación de la Independencia',
         motifs: [
-          NumismaticMotifRule('Victoria Alada - Centenario de la Consumación de la Independencia (1921)', 1921),
+          NumismaticMotifRule('Victoria Alada - Centenario de la Consumación de la Independencia', 1921),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1080,7 +1080,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Inauguración del Ferrocarril del Sureste',
         motifs: [
-          NumismaticMotifRule('Inauguración del Ferrocarril del Sureste (1950)', 1950),
+          NumismaticMotifRule('Inauguración del Ferrocarril del Sureste', 1950),
         ],
       ),
       // 5 Pesos 1951-1954 Hidalgo Laurel
@@ -1102,7 +1102,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Año de Hidalgo (Bicentenario del Natalicio)',
         motifs: [
-          NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo (1953)', 1953),
+          NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo', 1953),
         ],
       ),
       // 5 Pesos 1955-1957 Hidalgo Chico
@@ -1187,7 +1187,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         motifName: 'Un Peso Plata .500 - Centenario de la Constitución de 1857',
         motifs: [
-          NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
+          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1197,8 +1197,8 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Centenario de la Constitución de 1857',
         motifs: [
-          NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
-          NumismaticMotifRule('Hidalgo Chico (1957)', 1957),
+          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
+          NumismaticMotifRule('Hidalgo Chico', 1957),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1208,7 +1208,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         motifName: 'Diez Pesos Plata .900 - Centenario de la Constitución de 1857',
         motifs: [
-          NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
+          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1218,7 +1218,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         motifName: 'Diez Pesos Plata .900 - 150 Aniversario Independencia y 50 Revolución',
         motifs: [
-          NumismaticMotifRule('150 Aniversario de la Independencia y 50 de la Revolución (1960)', 1960),
+          NumismaticMotifRule('150 Aniversario de la Independencia y 50 de la Revolución', 1960),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1494,7 +1494,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Cuproníquel',
         motifName: 'Cinco Mil Pesos Cincuentenario Expropiación Petrolera',
         motifs: [
-          NumismaticMotifRule('Cincuentenario de la Expropiación Petrolera (1988)', 1988),
+          NumismaticMotifRule('Cincuentenario de la Expropiación Petrolera', 1988),
         ],
       ),
     ],
@@ -1735,8 +1735,8 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: '10 Pesos Bimetálica Piedra del Sol',
         motifs: [
-          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2000 (2000)', 2000),
-          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2001 (2001)', 2001),
+          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2000', 2000),
+          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2001', 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1746,8 +1746,8 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: '20 Pesos Conmemorativos Bimetálica Familia C',
         motifs: [
-          NumismaticMotifRule('Octavio Paz - Cambio de Milenio (2000)', 2000, 2001),
-          NumismaticMotifRule('Fuego Nuevo - Señorío de Xiuhtecuhtli (2000)', 2000, 2001),
+          NumismaticMotifRule('Octavio Paz - Cambio de Milenio', 2000, 2001),
+          NumismaticMotifRule('Fuego Nuevo - Señorío de Xiuhtecuhtli', 2000, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1760,11 +1760,11 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         motifs: [
           NumismaticMotifRule('32 Estados de la República - Fase 1 (Heráldicos)', 2003, 2005),
           NumismaticMotifRule('32 Estados de la República - Fase 2 (Emblemáticos)', 2005, 2007),
-          NumismaticMotifRule('180 Aniversario de la Unión Federal (2004)', 2004),
-          NumismaticMotifRule('470 Aniversario de la Casa de Moneda de México (2005)', 2005),
-          NumismaticMotifRule('80 Aniversario del Banco de México (2005)', 2005),
-          NumismaticMotifRule('400 Aniversario de la Primera Edición de Don Quijote de la Mancha (2005)', 2005),
-          NumismaticMotifRule('Bicentenario del Natalicio de Benito Juárez (2006)', 2006),
+          NumismaticMotifRule('180 Aniversario de la Unión Federal', 2004),
+          NumismaticMotifRule('470 Aniversario de la Casa de Moneda de México', 2005),
+          NumismaticMotifRule('80 Aniversario del Banco de México', 2005),
+          NumismaticMotifRule('400 Aniversario de la Primera Edición de Don Quijote de la Mancha', 2005),
+          NumismaticMotifRule('Bicentenario del Natalicio de Benito Juárez', 2006),
         ],
       ),
     ],
@@ -1886,7 +1886,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: '20 Pesos Octavio Paz - Premio Nobel de Literatura',
         motifs: [
-          NumismaticMotifRule('Octavio Paz - Premio Nobel de Literatura (2010)', 2010, 2011),
+          NumismaticMotifRule('Octavio Paz - Premio Nobel de Literatura', 2010, 2011),
         ],
       ),
     ],
@@ -1949,7 +1949,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: '10 Pesos Bimetálica Piedra del Sol / Batalla de Puebla',
         motifs: [
-          NumismaticMotifRule('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza (2012)', 2012),
+          NumismaticMotifRule('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza', 2012),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1959,17 +1959,17 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: '20 Pesos Bimetálica Circular Familia C Conmemorativas',
         motifs: [
-          NumismaticMotifRule('Centenario del Ejército Mexicano (2013)', 2013),
-          NumismaticMotifRule('150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez (2013)', 2013),
-          NumismaticMotifRule('Centenario de la Gesta Heroica de Veracruz (2014)', 2014),
-          NumismaticMotifRule('Centenario de la Toma de Zacatecas (2014)', 2014),
-          NumismaticMotifRule('Centenario de la Fuerza Aérea Mexicana (2015)', 2015),
-          NumismaticMotifRule('Bicentenario Luctuoso del Generalísimo José María Morelos y Pavón (2015)', 2015),
-          NumismaticMotifRule('Cincuenta Aniversario de la Aplicación del Plan DN-III-E (2016)', 2016),
-          NumismaticMotifRule('Centenario de la Promulgación de la Constitución Política de 1917 (2017)', 2017),
-          NumismaticMotifRule('50 Aniversario de la Aplicación del Plan Marina (2018)', 2018),
-          NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (2019)', 2019),
-          NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (2019)', 2019),
+          NumismaticMotifRule('Centenario del Ejército Mexicano', 2013),
+          NumismaticMotifRule('150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez', 2013),
+          NumismaticMotifRule('Centenario de la Gesta Heroica de Veracruz', 2014),
+          NumismaticMotifRule('Centenario de la Toma de Zacatecas', 2014),
+          NumismaticMotifRule('Centenario de la Fuerza Aérea Mexicana', 2015),
+          NumismaticMotifRule('Bicentenario Luctuoso del Generalísimo José María Morelos y Pavón', 2015),
+          NumismaticMotifRule('Cincuenta Aniversario de la Aplicación del Plan DN-III-E', 2016),
+          NumismaticMotifRule('Centenario de la Promulgación de la Constitución Política de 1917', 2017),
+          NumismaticMotifRule('50 Aniversario de la Aplicación del Plan Marina', 2018),
+          NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz', 2019),
+          NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar', 2019),
         ],
       ),
     ],
@@ -2041,16 +2041,16 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         motifs: [
           NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)', 2020),
           NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (Dodecagonal 2020)', 2020),
-          NumismaticMotifRule('700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)', 2021),
-          NumismaticMotifRule('500 Años de Memoria Histórica de México-Tenochtitlan (2021)', 2021),
-          NumismaticMotifRule('Bicentenario de la Independencia Nacional (2021)', 2021),
+          NumismaticMotifRule('700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan', 2021),
+          NumismaticMotifRule('500 Años de Memoria Histórica de México-Tenochtitlan', 2021),
+          NumismaticMotifRule('Bicentenario de la Independencia Nacional', 2021),
           NumismaticMotifRule('Bicentenario de la Marina-Armada de México (2021-2022)', 2021, 2022),
-          NumismaticMotifRule('Cien Años de la Llegada de los Menonitas a México (2022)', 2022),
-          NumismaticMotifRule('Bicentenario del Heroico Colegio Militar (2023)', 2023),
-          NumismaticMotifRule('Doscientos Años de Relaciones Diplomáticas México-Estados Unidos (2023)', 2023),
-          NumismaticMotifRule('500 Años de la Fundación de la Villa de Colima (2023)', 2023),
-          NumismaticMotifRule('Bicentenario de la Instauración del Senado de la República (2024)', 2024),
-          NumismaticMotifRule('Cien Años del Heroico Batallón de Infantería de Marina (2024)', 2024),
+          NumismaticMotifRule('Cien Años de la Llegada de los Menonitas a México', 2022),
+          NumismaticMotifRule('Bicentenario del Heroico Colegio Militar', 2023),
+          NumismaticMotifRule('Doscientos Años de Relaciones Diplomáticas México-Estados Unidos', 2023),
+          NumismaticMotifRule('500 Años de la Fundación de la Villa de Colima', 2023),
+          NumismaticMotifRule('Bicentenario de la Instauración del Senado de la República', 2024),
+          NumismaticMotifRule('Cien Años del Heroico Batallón de Infantería de Marina', 2024),
         ],
       ),
     ],
