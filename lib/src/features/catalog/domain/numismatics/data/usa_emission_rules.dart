@@ -16,8 +16,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1787,
         maxYear: 1787,
         motifName: 'Fugio Cent - Mind Your Business / We Are One',
-        kmNumber: 'KM#EA40',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces17260.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -25,8 +23,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1776,
         maxYear: 1776,
         motifName: 'Continental Currency Dollar - Sun Dial',
-        kmNumber: 'KM#X#2',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces23015.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -34,8 +30,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1775,
         maxYear: 1791,
         motifName: '8 Reales Español de Libre Circulación (Spanish Milled Dollar)',
-        kmNumber: 'KM#106',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15058.html',
       ),
     ],
   ),
@@ -54,8 +48,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1793,
         maxYear: 1857,
         motifName: 'Half Cent (Liberty Cap, Draped Bust, Classic Head, Braided Hair)',
-        kmNumber: 'KM#34',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14144.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
@@ -63,8 +55,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1793,
         maxYear: 1857,
         motifName: 'Large Cent (Flowing Hair, Draped Bust, Classic Head, Coronet, Braided Hair)',
-        kmNumber: 'KM#45',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1124.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -72,8 +62,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1794,
         maxYear: 1857,
         motifName: 'Half Dime Plata .892/.900 (Flowing Hair, Draped Bust, Capped Bust, Seated Liberty)',
-        kmNumber: 'KM#47',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4422.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -81,8 +69,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1796,
         maxYear: 1857,
         motifName: 'Dime Plata .892/.900 (Draped Bust, Capped Bust, Seated Liberty)',
-        kmNumber: 'KM#48',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4424.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -90,8 +76,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1796,
         maxYear: 1857,
         motifName: 'Quarter Dollar Plata .892/.900 (Draped Bust, Capped Bust, Seated Liberty)',
-        kmNumber: 'KM#49',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4426.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -99,8 +83,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1794,
         maxYear: 1857,
         motifName: 'Half Dollar Plata .892/.900 (Flowing Hair, Draped Bust, Capped Bust, Seated Liberty)',
-        kmNumber: 'KM#50',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4428.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -108,8 +90,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1794,
         maxYear: 1857,
         motifName: 'Silver Dollar Plata .892/.900 (Flowing Hair, Draped Bust, Gobrecht, Seated Liberty)',
-        kmNumber: 'KM#51',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces23363.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -117,8 +97,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1849,
         maxYear: 1857,
         motifName: 'Gold Dollar Oro .900 (Liberty Head Type 1 / Indian Princess Type 2)',
-        kmNumber: 'KM#73',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15286.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
@@ -126,8 +104,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1796,
         maxYear: 1857,
         motifName: 'Quarter Eagle Oro .900 (Draped Bust, Capped Bust, Classic Head, Coronet Liberty)',
-        kmNumber: 'KM#52',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18915.html',
       ),
       NumismaticPieceDefinition(
         denomination: '3',
@@ -135,8 +111,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1854,
         maxYear: 1857,
         motifName: 'Three Dollar Piece Oro .900 (Indian Princess Head)',
-        kmNumber: 'KM#83',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15287.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -144,8 +118,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1795,
         maxYear: 1857,
         motifName: 'Half Eagle Oro .900 (Draped Bust, Capped Bust, Classic Head, Coronet Liberty)',
-        kmNumber: 'KM#53',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18916.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -153,8 +125,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1795,
         maxYear: 1857,
         motifName: 'Eagle Oro .900 (Draped Bust, Coronet Liberty)',
-        kmNumber: 'KM#54',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18917.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -162,8 +132,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1849,
         maxYear: 1857,
         motifName: 'Double Eagle Oro .900 (Coronet Liberty Head)',
-        kmNumber: 'KM#74.1',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18918.html',
       ),
     ],
   ),
@@ -183,8 +151,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Indian Head Cent / Flying Eagle Cent',
-        kmNumber: 'KM#90',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2349.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -192,8 +158,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1864,
         maxYear: 1873,
         motifName: 'Two Cent Piece - In God We Trust',
-        kmNumber: 'KM#94',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2294.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.03',
@@ -202,8 +166,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Three Cent Piece (Silver / Nickel Liberty Head)',
-        kmNumber: 'KM#95',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces3800.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -212,8 +174,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Shield Nickel / Seated Liberty Half Dime',
-        kmNumber: 'KM#96',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces3632.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -221,8 +181,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Seated Liberty Dime Plata .900',
-        kmNumber: 'KM#92',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4424.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -230,8 +188,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Seated Liberty Quarter Plata .900',
-        kmNumber: 'KM#98',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4426.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -239,8 +195,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Seated Liberty Half Dollar Plata .900',
-        kmNumber: 'KM#99',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4428.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -248,8 +202,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Seated Liberty Dollar Plata .900',
-        kmNumber: 'KM#100',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces23363.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -257,8 +209,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Gold Dollar Oro .900 (Indian Princess Type 3)',
-        kmNumber: 'KM#86',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15286.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
@@ -266,8 +216,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Coronet Liberty Quarter Eagle Oro .900',
-        kmNumber: 'KM#72',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18915.html',
       ),
       NumismaticPieceDefinition(
         denomination: '3',
@@ -275,8 +223,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Three Dollar Piece Oro .900',
-        kmNumber: 'KM#83',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15287.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -284,8 +230,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Coronet Liberty Half Eagle Oro .900',
-        kmNumber: 'KM#67',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18916.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -293,8 +237,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Coronet Liberty Eagle Oro .900',
-        kmNumber: 'KM#66.2',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18917.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -302,8 +244,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifName: 'Coronet Liberty Double Eagle Oro .900',
-        kmNumber: 'KM#74.1',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces18918.html',
       ),
     ],
   ),
@@ -322,8 +262,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifName: 'Indian Head Cent / Lincoln Wheat Cent',
-        kmNumber: 'KM#132',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces908.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -331,8 +269,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifName: 'Shield, Liberty "V", Indian Head / Buffalo Nickel',
-        kmNumber: 'KM#134',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1109.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -340,8 +276,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifName: 'Barber Dime / Winged Liberty Head "Mercury" Dime Plata .900',
-        kmNumber: 'KM#140',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces51.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -349,8 +283,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1875,
         maxYear: 1878,
         motifName: 'Twenty Cent Piece Plata .900 (Seated Liberty)',
-        kmNumber: 'KM#108',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces13374.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -358,8 +290,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifName: 'Barber Quarter / Standing Liberty Quarter / Washington Quarter Plata .900',
-        kmNumber: 'KM#145',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces3573.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -367,8 +297,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifName: 'Barber Half / Walking Liberty Half Dollar Plata .900',
-        kmNumber: 'KM#142',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4455.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -405,8 +333,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1889,
         motifName: 'Gold Dollar Oro .900 (Indian Princess Type 3)',
-        kmNumber: 'KM#86',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15286.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
@@ -414,8 +340,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1929,
         motifName: 'Quarter Eagle Oro .900 (Coronet Liberty / Indian Head)',
-        kmNumber: 'KM#128',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6126.html',
       ),
       NumismaticPieceDefinition(
         denomination: '3',
@@ -423,8 +347,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1889,
         motifName: 'Three Dollar Piece Oro .900',
-        kmNumber: 'KM#83',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15287.html',
       ),
       NumismaticPieceDefinition(
         denomination: '4',
@@ -432,8 +354,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1879,
         maxYear: 1880,
         motifName: 'Four Dollar Stella Oro .900 (Flowing Hair / Coiled Hair)',
-        kmNumber: 'KM#E111',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces23026.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -441,8 +361,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1929,
         motifName: 'Half Eagle Oro .900 (Coronet Liberty / Indian Head)',
-        kmNumber: 'KM#129',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6127.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -450,8 +368,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifName: 'Eagle Oro .900 (Coronet Liberty / Indian Head Saint-Gaudens)',
-        kmNumber: 'KM#130',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces16117.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -459,8 +375,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifName: 'Double Eagle Oro .900 (Coronet Liberty / Saint-Gaudens Walking Liberty)',
-        kmNumber: 'KM#131',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces23358.html',
       ),
       NumismaticPieceDefinition(
         denomination: '50',
@@ -468,8 +382,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1915,
         maxYear: 1915,
         motifName: 'Panama-Pacific 50 Dollars Oro .900 (Octagonal / Round)',
-        kmNumber: 'KM#43',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces23027.html',
       ),
     ],
   ),
@@ -570,8 +482,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1934,
         maxYear: 1964,
         motifName: 'Washington Quarter Plata .900 (1932-1964)',
-        kmNumber: 'KM#164',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces55.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -619,8 +529,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1965,
         maxYear: 1970,
         motifName: 'Lincoln Memorial Cent Latón .950 Cu',
-        kmNumber: 'KM#201',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces43.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -628,8 +536,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1965,
         maxYear: 1970,
         motifName: 'Jefferson Nickel Cuproníquel',
-        kmNumber: 'KM#A192',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces44.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -637,8 +543,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1965,
         maxYear: 1970,
         motifName: 'Roosevelt Dime Clad Cuproníquel',
-        kmNumber: 'KM#A195',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces52.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -646,8 +550,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1965,
         maxYear: 1970,
         motifName: 'Washington Quarter Clad Cuproníquel',
-        kmNumber: 'KM#A164a',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces54.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -656,8 +558,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1965,
         maxYear: 1970,
         motifName: 'Kennedy Half Dollar Plata .400 (Clad Silver)',
-        kmNumber: 'KM#202a',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces10865.html',
       ),
     ],
   ),
@@ -676,8 +576,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1971,
         maxYear: 1981,
         motifName: 'Lincoln Memorial Cent',
-        kmNumber: 'KM#201',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces43.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -685,8 +583,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1971,
         maxYear: 1981,
         motifName: 'Jefferson Nickel',
-        kmNumber: 'KM#A192',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces44.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -694,8 +590,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1971,
         maxYear: 1981,
         motifName: 'Roosevelt Dime Clad',
-        kmNumber: 'KM#A195',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces52.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -788,8 +682,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1982,
         maxYear: 1999,
         motifName: 'Lincoln Memorial Cent Core Zinc',
-        kmNumber: 'KM#201a',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces42.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -797,8 +689,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1982,
         maxYear: 1999,
         motifName: 'Jefferson Nickel',
-        kmNumber: 'KM#A192',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces44.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -806,8 +696,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1982,
         maxYear: 1999,
         motifName: 'Roosevelt Dime Clad',
-        kmNumber: 'KM#A195',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces52.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -865,8 +753,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1982,
         maxYear: 1999,
         motifName: 'Kennedy Half Dollar Clad',
-        kmNumber: 'KM#A202b',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6918.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -874,8 +760,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1999,
         maxYear: 1999,
         motifName: 'Susan B. Anthony Dollar (1999)',
-        kmNumber: 'KM#207',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces3530.html',
       ),
     ],
   ),
@@ -990,8 +874,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifName: 'Roosevelt Dime Clad',
-        kmNumber: 'KM#A195',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces52.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -1139,8 +1021,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifName: 'Kennedy Half Dollar Clad',
-        kmNumber: 'KM#A202b',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6918.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',

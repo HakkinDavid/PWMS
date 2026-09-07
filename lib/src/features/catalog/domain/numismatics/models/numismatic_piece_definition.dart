@@ -11,8 +11,6 @@ class NumismaticPieceDefinition {
   final List<NumismaticMotifRule> motifs;
   final String? commonName;
   final String? motifName;
-  final String? kmNumber;
-  final String? numistaUrl;
   final double? weightGrams;
   final double? diameterMm;
   final bool isBanknote;
@@ -27,8 +25,6 @@ class NumismaticPieceDefinition {
     this.motifs = const [],
     this.commonName,
     this.motifName,
-    this.kmNumber,
-    this.numistaUrl,
     this.weightGrams,
     this.diameterMm,
     this.isBanknote = false,

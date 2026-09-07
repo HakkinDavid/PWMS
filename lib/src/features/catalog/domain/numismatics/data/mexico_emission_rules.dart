@@ -16,8 +16,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Cobre',
         motifName: 'Tlaco / Dieciseisavo de Real de Cobre',
-        kmNumber: 'KM#59',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38548.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
@@ -25,8 +23,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Cobre',
         motifName: 'Octavo Virreinal de Cobre',
-        kmNumber: 'KM#71',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38549.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
@@ -35,8 +31,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Cobre'],
         motifName: 'Cuartilla de Real Virreinal',
-        kmNumber: 'KM#62',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces20112.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
@@ -44,8 +38,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Plata',
         motifName: 'Medio Real Virreinal',
-        kmNumber: 'KM#67',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14995.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -53,8 +45,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Plata',
         motifName: 'Un Real Virreinal (Columnario / Busto)',
-        kmNumber: 'KM#76',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14996.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -62,8 +52,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Plata',
         motifName: 'Dos Reales Virreinal',
-        kmNumber: 'KM#88',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14997.html',
       ),
       NumismaticPieceDefinition(
         denomination: '4',
@@ -72,8 +60,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Cuatro Reales Plata / 4 Escudos Oro',
-        kmNumber: 'KM#102',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14998.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -82,8 +68,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Ocho Reales (Columnario / Busto) / 8 Escudos Oro',
-        kmNumber: 'KM#109',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15008.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.5',
@@ -91,8 +75,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1820,
         material: 'Oro',
         motifName: 'Medio Escudo de Oro Virreinal',
-        kmNumber: 'KM#136',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38548.html',
       ),
     ],
   ),
@@ -111,8 +93,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Cobre',
         motifName: 'Octavo de Real - Iturbide',
-        kmNumber: 'KM#303',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38549.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
@@ -120,8 +100,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Cobre',
         motifName: 'Cuartilla - Iturbide',
-        kmNumber: 'KM#304',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38550.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
@@ -129,8 +107,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Plata',
         motifName: 'Medio Real - Agustín de Iturbide',
-        kmNumber: 'KM#305',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15039.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -138,8 +114,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Plata',
         motifName: 'Un Real - Agustín de Iturbide',
-        kmNumber: 'KM#306',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15040.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -147,8 +121,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Plata',
         motifName: 'Dos Reales - Agustín de Iturbide',
-        kmNumber: 'KM#307',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15041.html',
       ),
       NumismaticPieceDefinition(
         denomination: '4',
@@ -157,8 +129,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Oro',
         allowedMaterials: ['Oro', 'Plata'],
         motifName: 'Cuatro Escudos Oro / 4 Reales Plata - Iturbide',
-        kmNumber: 'KM#311',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38551.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -167,8 +137,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Ocho Reales Plata / 8 Escudos Oro - Agustín de Iturbide',
-        kmNumber: 'KM#310',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15042.html',
       ),
     ],
   ),
@@ -187,8 +155,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Cobre',
         motifName: 'Un Centavo - Corona Imperial Maximiliano',
-        kmNumber: 'KM#385',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15050.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -196,8 +162,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Cinco Centavos Plata - Maximiliano',
-        kmNumber: 'KM#386',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15051.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -205,8 +169,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Diez Centavos Plata - Maximiliano',
-        kmNumber: 'KM#387',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15052.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -214,8 +176,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata - Busto Maximiliano',
-        kmNumber: 'KM#388',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15053.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -223,8 +183,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Un Peso Plata - Busto Emperador Maximiliano',
-        kmNumber: 'KM#389',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15054.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -232,8 +190,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1866,
         material: 'Oro',
         motifName: 'Veinte Pesos Oro - Busto Emperador Maximiliano',
-        kmNumber: 'KM#390',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38555.html',
       ),
     ],
   ),
@@ -252,8 +208,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Cobre',
         motifName: 'Octavo Virreinal de Cobre',
-        kmNumber: 'KM#71',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38549.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
@@ -262,8 +216,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Cobre'],
         motifName: 'Cuartilla de Real Virreinal',
-        kmNumber: 'KM#62',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces20112.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
@@ -271,8 +223,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Plata',
         motifName: 'Medio Real Virreinal',
-        kmNumber: 'KM#67',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14995.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -280,8 +230,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Plata',
         motifName: 'Un Real Virreinal (Columnario / Busto)',
-        kmNumber: 'KM#76',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14996.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -289,8 +237,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1821,
         material: 'Plata',
         motifName: 'Dos Reales Virreinal',
-        kmNumber: 'KM#88',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14997.html',
       ),
       NumismaticPieceDefinition(
         denomination: '4',
@@ -299,8 +245,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Cuatro Reales Plata / 4 Escudos Oro',
-        kmNumber: 'KM#102',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14998.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -309,8 +253,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Ocho Reales (Columnario / Busto) / 8 Escudos Oro',
-        kmNumber: 'KM#109',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15008.html',
       ),
     ],
   ),
@@ -329,8 +271,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Cobre',
         motifName: 'Octavo de Real - Iturbide',
-        kmNumber: 'KM#303',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38549.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
@@ -338,8 +278,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Cobre',
         motifName: 'Cuartilla - Iturbide',
-        kmNumber: 'KM#304',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38550.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
@@ -347,8 +285,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Plata',
         motifName: 'Medio Real - Agustín de Iturbide',
-        kmNumber: 'KM#305',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15039.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -356,8 +292,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Plata',
         motifName: 'Un Real - Agustín de Iturbide',
-        kmNumber: 'KM#306',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15040.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -365,8 +299,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1823,
         material: 'Plata',
         motifName: 'Dos Reales - Agustín de Iturbide',
-        kmNumber: 'KM#307',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15041.html',
       ),
       NumismaticPieceDefinition(
         denomination: '4',
@@ -375,8 +307,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Oro',
         allowedMaterials: ['Oro', 'Plata'],
         motifName: 'Cuatro Escudos Oro / 4 Reales Plata - Iturbide',
-        kmNumber: 'KM#311',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38551.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -385,8 +315,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Ocho Reales Plata / 8 Escudos Oro - Agustín de Iturbide',
-        kmNumber: 'KM#310',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15042.html',
       ),
     ],
   ),
@@ -405,8 +333,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1863,
         material: 'Cobre',
         motifName: 'Dieciseisavo de Real (Octavillo)',
-        kmNumber: 'KM#360',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38556.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
@@ -414,8 +340,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1863,
         material: 'Cobre',
         motifName: 'Octavo de Real Republicano',
-        kmNumber: 'KM#362',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38557.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
@@ -424,8 +348,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Cobre'],
         motifName: 'Cuartilla de Real Republicana',
-        kmNumber: 'KM#368',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38558.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
@@ -433,8 +355,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1863,
         material: 'Plata',
         motifName: 'Medio Real Resplandor',
-        kmNumber: 'KM#370',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15045.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -442,8 +362,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1863,
         material: 'Plata',
         motifName: 'Un Real Resplandor',
-        kmNumber: 'KM#372',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15046.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -451,8 +369,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1863,
         material: 'Plata',
         motifName: 'Dos Reales Resplandor',
-        kmNumber: 'KM#374',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15047.html',
       ),
       NumismaticPieceDefinition(
         denomination: '4',
@@ -461,8 +377,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Cuatro Reales Plata / 4 Escudos Oro',
-        kmNumber: 'KM#375',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15048.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -471,8 +385,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Plata',
         allowedMaterials: ['Plata', 'Oro'],
         motifName: 'Ocho Reales Resplandor (Cap and Rays) / 8 Escudos Oro',
-        kmNumber: 'KM#377',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces7389.html',
       ),
     ],
   ),
@@ -491,8 +403,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Cobre',
         motifName: 'Un Centavo - Corona Imperial Maximiliano',
-        kmNumber: 'KM#385',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15050.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -500,8 +410,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Cinco Centavos Plata - Maximiliano',
-        kmNumber: 'KM#386',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15051.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -509,8 +417,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Diez Centavos Plata - Maximiliano',
-        kmNumber: 'KM#387',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15052.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -518,8 +424,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata - Busto Maximiliano',
-        kmNumber: 'KM#388',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15053.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -527,8 +431,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1867,
         material: 'Plata',
         motifName: 'Un Peso Plata - Busto Emperador Maximiliano',
-        kmNumber: 'KM#389',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15054.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -536,8 +438,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1866,
         material: 'Oro',
         motifName: 'Veinte Pesos Oro - Busto Emperador Maximiliano',
-        kmNumber: 'KM#390',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38555.html',
       ),
     ],
   ),
@@ -556,8 +456,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Cobre',
         motifName: 'Un Centavo Balanza',
-        kmNumber: 'KM#391',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15055.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -565,8 +463,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1879,
         material: 'Cobre',
         motifName: 'Dos Centavos Balanza',
-        kmNumber: 'KM#392',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38560.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -574,8 +470,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Plata',
         motifName: 'Cinco Centavos Balanza',
-        kmNumber: 'KM#397',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38561.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -583,8 +477,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Plata',
         motifName: 'Diez Centavos Balanza',
-        kmNumber: 'KM#401',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38562.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -592,8 +484,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Plata',
         motifName: 'Veinticinco Centavos Balanza',
-        kmNumber: 'KM#405',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15056.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -601,8 +491,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Balanza',
-        kmNumber: 'KM#407',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15057.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -610,8 +498,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1873,
         material: 'Plata',
         motifName: 'Un Peso Balanza',
-        kmNumber: 'KM#408',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15058.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
@@ -619,8 +505,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Oro',
         motifName: 'Dos y Medio Pesos Oro Balanza',
-        kmNumber: 'KM#411',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38564.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -628,8 +512,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Oro',
         motifName: 'Cinco Pesos Oro Balanza',
-        kmNumber: 'KM#412',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38565.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -637,8 +519,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Oro',
         motifName: 'Diez Pesos Oro Balanza',
-        kmNumber: 'KM#413',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38566.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -646,8 +526,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Oro',
         motifName: 'Veinte Pesos Oro Balanza',
-        kmNumber: 'KM#414',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38567.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -655,8 +533,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1881,
         material: 'Plata',
         motifName: 'Ocho Reales Resplandor (Acuñación concurrente)',
-        kmNumber: 'KM#377',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces7389.html',
       ),
     ],
   ),
@@ -676,8 +552,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Níquel',
         allowedMaterials: ['Níquel', 'Cuproníquel'],
         motifName: 'Un Centavo de Níquel',
-        kmNumber: 'KM#391',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15060.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -686,8 +560,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Níquel',
         allowedMaterials: ['Níquel', 'Cuproníquel'],
         motifName: 'Dos Centavos de Níquel',
-        kmNumber: 'KM#392',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15061.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -696,8 +568,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Níquel',
         allowedMaterials: ['Níquel', 'Cuproníquel'],
         motifName: 'Cinco Centavos de Níquel',
-        kmNumber: 'KM#393',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15062.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -705,8 +575,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1883,
         material: 'Plata',
         motifName: 'Diez Centavos Balanza',
-        kmNumber: 'KM#401',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38562.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -714,8 +582,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1883,
         material: 'Plata',
         motifName: 'Veinticinco Centavos Balanza',
-        kmNumber: 'KM#405',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15056.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -723,8 +589,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1883,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Balanza',
-        kmNumber: 'KM#407',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15057.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -732,8 +596,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1883,
         material: 'Plata',
         motifName: 'Ocho Reales Resplandor',
-        kmNumber: 'KM#377',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces7389.html',
       ),
     ],
   ),
@@ -752,8 +614,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1898,
         material: 'Cobre',
         motifName: 'Un Centavo Porfiriano Cobre',
-        kmNumber: 'KM#394',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15064.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -761,8 +621,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1898,
         material: 'Cobre',
         motifName: 'Dos Centavos Porfiriano Cobre',
-        kmNumber: 'KM#395',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15065.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -770,8 +628,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1904,
         material: 'Plata',
         motifName: 'Cinco Centavos Plata Balanza / Corona',
-        kmNumber: 'KM#398',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38561.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -779,8 +635,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1904,
         material: 'Plata',
         motifName: 'Diez Centavos Plata Balanza / Corona',
-        kmNumber: 'KM#402',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38562.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -788,8 +642,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1904,
         material: 'Plata',
         motifName: 'Veinte Centavos Corona Porfiriana',
-        kmNumber: 'KM#406',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15066.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -797,8 +649,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1904,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata Gorro Frigio y Balanza',
-        kmNumber: 'KM#407',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15057.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -806,8 +656,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1904,
         material: 'Plata',
         motifName: 'Un Peso Fuerte Resplandor',
-        kmNumber: 'KM#409',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces7390.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -815,8 +663,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1897,
         material: 'Plata',
         motifName: 'Ocho Reales Resplandor (Últimas emisiones)',
-        kmNumber: 'KM#377',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces7389.html',
       ),
     ],
   ),
@@ -835,8 +681,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1914,
         material: 'Bronce',
         motifName: 'Un Centavo Porfiriano Corona de Laurel',
-        kmNumber: 'KM#415',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15068.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -844,8 +688,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1906,
         material: 'Bronce',
         motifName: 'Dos Centavos Porfiriano Bronce',
-        kmNumber: 'KM#419',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38569.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -853,8 +695,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1914,
         material: 'Cuproníquel',
         motifName: 'Cinco Centavos Porfiriano Níquel',
-        kmNumber: 'KM#421',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15069.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -862,8 +702,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1914,
         material: 'Plata',
         motifName: 'Diez Centavos Plata .800 Corona',
-        kmNumber: 'KM#429',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38570.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -871,8 +709,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1914,
         material: 'Plata',
         motifName: 'Veinte Centavos Plata .800 Corona',
-        kmNumber: 'KM#435',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38571.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -880,8 +716,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1914,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata Resplandor',
-        kmNumber: 'KM#445',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15070.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -889,8 +723,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1909,
         material: 'Plata',
         motifName: 'Un Peso Fuerte Resplandor',
-        kmNumber: 'KM#409',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces7390.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -898,8 +730,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1914,
         material: 'Plata',
         motifName: 'Un Peso Caballito - Centenario de la Independencia',
-        kmNumber: 'KM#453',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4398.html',
         motifs: [
           NumismaticMotifRule('Un Peso Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
         ],
@@ -910,8 +740,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1910,
         material: 'Oro',
         motifName: 'Cinco Pesos Oro Hidalgo',
-        kmNumber: 'KM#464',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15074.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -919,8 +747,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1910,
         material: 'Oro',
         motifName: 'Diez Pesos Oro Hidalgo',
-        kmNumber: 'KM#475',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15075.html',
       ),
     ],
   ),
@@ -939,8 +765,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1919,
         material: 'Bronce',
         motifName: 'Un Centavo Revolucionario Bronce',
-        kmNumber: 'KM#416',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15068.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -948,8 +772,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1916,
         material: 'Bronce',
         motifName: 'Dos Centavos Revolucionario',
-        kmNumber: 'KM#420',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38569.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -957,8 +779,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1919,
         material: 'Bronce',
         motifName: 'Cinco Centavos Bronce Constitucionalista',
-        kmNumber: 'KM#422',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38573.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -966,8 +786,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1919,
         material: 'Plata',
         motifName: 'Diez Centavos Plata .800',
-        kmNumber: 'KM#430',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38570.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -975,8 +793,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1919,
         material: 'Plata',
         motifName: 'Veinte Centavos Plata .800',
-        kmNumber: 'KM#436',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38571.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -984,8 +800,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1919,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata .800 Resplandor Reducido',
-        kmNumber: 'KM#446',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38574.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -993,8 +807,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1919,
         material: 'Plata',
         motifName: 'Un Peso Plata .800 Resplandor Reducido',
-        kmNumber: 'KM#454',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38575.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -1002,8 +814,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1920,
         material: 'Oro',
         motifName: 'Dos Pesos Oro Hidalgo',
-        kmNumber: 'KM#461',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15077.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
@@ -1011,8 +821,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1920,
         material: 'Oro',
         motifName: 'Dos y Medio Pesos Oro Hidalgo',
-        kmNumber: 'KM#463',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15078.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -1020,8 +828,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1920,
         material: 'Oro',
         motifName: 'Cinco Pesos Oro Hidalgo',
-        kmNumber: 'KM#464',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15074.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -1029,8 +835,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1920,
         material: 'Oro',
         motifName: 'Diez Pesos Oro Hidalgo',
-        kmNumber: 'KM#475',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15075.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -1038,8 +842,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1921,
         material: 'Oro',
         motifName: 'Veinte Pesos Oro Calendario Azteca',
-        kmNumber: 'KM#478',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15080.html',
       ),
     ],
   ),
@@ -1058,8 +860,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1942,
         material: 'Bronce',
         motifName: 'Un Centavo Bronce Espigas',
-        kmNumber: 'KM#416',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15068.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -1067,8 +867,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1941,
         material: 'Bronce',
         motifName: 'Dos Centavos Bronce',
-        kmNumber: 'KM#420',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38569.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -1076,8 +874,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1935,
         material: 'Cuproníquel',
         motifName: 'Cinco Centavos Níquel Josefa Chica',
-        kmNumber: 'KM#423',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15084.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -1085,8 +881,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1942,
         material: 'Bronce',
         motifName: 'Cinco Centavos Bronce Josefa Ortiz de Perfil',
-        kmNumber: 'KM#424',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15085.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -1094,8 +888,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1935,
         material: 'Plata',
         motifName: 'Diez Centavos Plata .720',
-        kmNumber: 'KM#431',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38576.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -1103,8 +895,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1940,
         material: 'Bronce',
         motifName: 'Diez Centavos Bronce',
-        kmNumber: 'KM#432',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38577.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -1112,8 +902,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1935,
         material: 'Plata',
         motifName: 'Veinte Centavos Plata .720 Gorro Frigio',
-        kmNumber: 'KM#438',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15086.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1121,8 +909,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1942,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata .720 Resplandor',
-        kmNumber: 'KM#447',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15087.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -1130,8 +916,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1942,
         material: 'Plata',
         motifName: 'Un Peso Plata .720 Resplandor',
-        kmNumber: 'KM#455',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15088.html',
       ),
       // 2 Pesos 1921 Victoria Alada - PLATA .903
       NumismaticPieceDefinition(
@@ -1140,8 +924,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1921,
         material: 'Plata',
         motifName: 'Dos Pesos Plata - Victoria Alada / Centenario Consumación de la Independencia',
-        kmNumber: 'KM#460',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6329.html',
         motifs: [
           NumismaticMotifRule('Victoria Alada - Centenario de la Consumación de la Independencia (1921)', 1921),
         ],
@@ -1152,8 +934,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1931,
         material: 'Oro',
         motifName: 'Cincuenta Pesos Oro - Centenario de la Independencia (37.5g Oro Puro)',
-        kmNumber: 'KM#481',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15082.html',
       ),
     ],
   ),
@@ -1172,8 +952,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1949,
         material: 'Bronce',
         motifName: 'Un Centavo Espigas de Trigo',
-        kmNumber: 'KM#417',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15068.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -1181,8 +959,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1949,
         material: 'Bronce',
         motifName: 'Cinco Centavos Josefa Ortiz Grande',
-        kmNumber: 'KM#425',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15085.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -1190,8 +966,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1949,
         material: 'Bronce',
         motifName: 'Veinte Centavos Pirámide del Sol de Teotihuacán',
-        kmNumber: 'KM#439',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15089.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1199,8 +973,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1945,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata .720 Resplandor',
-        kmNumber: 'KM#447',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15087.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1208,8 +980,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1948,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata .420 Cuauhtémoc',
-        kmNumber: 'KM#448',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38578.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -1217,8 +987,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1949,
         material: 'Plata',
         motifName: 'Un Peso Plata .500 Morelos Cachetón',
-        kmNumber: 'KM#456',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6332.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -1226,8 +994,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1948,
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .900 Cuauhtémoc (30 gramos)',
-        kmNumber: 'KM#465',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6330.html',
         motifs: [
           NumismaticMotifRule('Cuauhtémoc (1947-1948)', 1947, 1948),
         ],
@@ -1238,8 +1004,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1947,
         material: 'Oro',
         motifName: 'Cincuenta Pesos Oro Centenario',
-        kmNumber: 'KM#481',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15082.html',
       ),
     ],
   ),
@@ -1258,8 +1022,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1956,
         material: 'Bronce',
         motifName: 'Un Centavo Espigas de Trigo',
-        kmNumber: 'KM#417',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15068.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -1267,8 +1029,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1956,
         material: 'Latón',
         motifName: 'Cinco Centavos Latón Josefa',
-        kmNumber: 'KM#426',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15091.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -1276,8 +1036,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1956,
         material: 'Latón',
         motifName: 'Diez Centavos Latón Benito Juárez',
-        kmNumber: 'KM#433',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15092.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -1285,8 +1043,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1956,
         material: 'Bronce',
         motifName: 'Veinte Centavos Bronce Pirámide de Teotihuacán',
-        kmNumber: 'KM#440',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15089.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -1294,8 +1050,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1953,
         material: 'Cuproníquel',
         motifName: 'Veinticinco Centavos Balanza Cuproníquel',
-        kmNumber: 'KM#444',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38579.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1303,8 +1057,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1951,
         material: 'Plata',
         motifName: 'Cincuenta Centavos Plata .300 Morelos',
-        kmNumber: 'KM#449',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38580.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1312,8 +1064,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1956,
         material: 'Bronce',
         motifName: 'Cincuenta Centavos Bronce Cuauhtémoc',
-        kmNumber: 'KM#450',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15093.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -1321,8 +1071,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1950,
         material: 'Plata',
         motifName: 'Un Peso Plata .300 Morelos',
-        kmNumber: 'KM#457',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38581.html',
       ),
       // 5 Pesos 1950 Ferrocarril
       NumismaticPieceDefinition(
@@ -1331,8 +1079,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1950,
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Inauguración del Ferrocarril del Sureste',
-        kmNumber: 'KM#466',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6334.html',
         motifs: [
           NumismaticMotifRule('Inauguración del Ferrocarril del Sureste (1950)', 1950),
         ],
@@ -1344,8 +1090,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1954,
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Hidalgo Laurel (Hidalgo Grande)',
-        kmNumber: 'KM#467',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6333.html',
         motifs: [
           NumismaticMotifRule('Hidalgo - Laurel (1951-1954)', 1951, 1954),
         ],
@@ -1357,8 +1101,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1953,
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Año de Hidalgo (Bicentenario del Natalicio)',
-        kmNumber: 'KM#468',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6335.html',
         motifs: [
           NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo (1953)', 1953),
         ],
@@ -1370,8 +1112,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1956,
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Hidalgo Chico (18.05g)',
-        kmNumber: 'KM#469',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6336.html',
         motifs: [
           NumismaticMotifRule('Hidalgo Chico (1955-1957)', 1955, 1957),
         ],
@@ -1383,8 +1123,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1956,
         material: 'Plata',
         motifName: 'Diez Pesos Plata .900 - Hidalgo Grande (28.88g)',
-        kmNumber: 'KM#473',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6338.html',
         motifs: [
           NumismaticMotifRule('Hidalgo Plata .900 (1955-1956)', 1955, 1956),
         ],
@@ -1406,8 +1144,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1969,
         material: 'Bronce',
         motifName: 'Un Centavo Espigas de Trigo',
-        kmNumber: 'KM#417',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15068.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -1415,8 +1151,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1969,
         material: 'Latón',
         motifName: 'Cinco Centavos Latón Josefa',
-        kmNumber: 'KM#426',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15091.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -1424,8 +1158,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1967,
         material: 'Latón',
         motifName: 'Diez Centavos Latón Benito Juárez',
-        kmNumber: 'KM#433',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15092.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -1433,8 +1165,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1969,
         material: 'Bronce',
         motifName: 'Veinte Centavos Bronce Pirámide de Teotihuacán',
-        kmNumber: 'KM#440',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15089.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1442,8 +1172,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1969,
         material: 'Cuproníquel',
         motifName: 'Cincuenta Centavos Cuproníquel Cuauhtémoc',
-        kmNumber: 'KM#451',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38582.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -1451,8 +1179,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1967,
         material: 'Plata',
         motifName: 'Un Peso Plata .100 Morelos Tepalcate',
-        kmNumber: 'KM#459',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces3550.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -1460,8 +1186,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1957,
         material: 'Plata',
         motifName: 'Un Peso Plata .500 - Centenario de la Constitución de 1857',
-        kmNumber: 'KM#470',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6338.html',
         motifs: [
           NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
         ],
@@ -1472,8 +1196,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1957,
         material: 'Plata',
         motifName: 'Cinco Pesos Plata .720 - Centenario de la Constitución de 1857',
-        kmNumber: 'KM#471',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6337.html',
         motifs: [
           NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
           NumismaticMotifRule('Hidalgo Chico (1957)', 1957),
@@ -1485,8 +1207,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1957,
         material: 'Plata',
         motifName: 'Diez Pesos Plata .900 - Centenario de la Constitución de 1857',
-        kmNumber: 'KM#474',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6339.html',
         motifs: [
           NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
         ],
@@ -1497,8 +1217,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1960,
         material: 'Plata',
         motifName: 'Diez Pesos Plata .900 - 150 Aniversario Independencia y 50 Revolución',
-        kmNumber: 'KM#476',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6340.html',
         motifs: [
           NumismaticMotifRule('150 Aniversario de la Independencia y 50 de la Revolución (1960)', 1960),
         ],
@@ -1509,8 +1227,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1968,
         material: 'Plata',
         motifName: 'Veinticinco Pesos Plata .720 - Juegos Olímpicos México 68',
-        kmNumber: 'KM#479',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6341.html',
         motifs: [
           NumismaticMotifRule('Juegos Olímpicos México 68 - Tipo 1 (Aros rectos / alineados)', 1968),
           NumismaticMotifRule('Juegos Olímpicos México 68 - Tipo 2 (Aros caídos / desiguales)', 1968),
@@ -1533,8 +1249,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1973,
         material: 'Latón',
         motifName: 'Cinco Centavos Latón Josefa Chica',
-        kmNumber: 'KM#427',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15091.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -1542,8 +1256,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1971,
         material: 'Bronce',
         motifName: 'Veinte Centavos Bronce Pirámide',
-        kmNumber: 'KM#440',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15089.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1551,8 +1263,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1973,
         material: 'Cuproníquel',
         motifName: 'Cincuenta Centavos Cuproníquel Cuauhtémoc',
-        kmNumber: 'KM#451',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38582.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -1560,8 +1270,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1973,
         material: 'Cuproníquel',
         motifName: 'Un Peso Cuproníquel José María Morelos',
-        kmNumber: 'KM#458',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38583.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -1569,8 +1277,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1973,
         material: 'Cuproníquel',
         motifName: 'Cinco Pesos Cuproníquel Vicente Guerrero',
-        kmNumber: 'KM#472',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38584.html',
       ),
     ],
   ),
@@ -1589,8 +1295,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1976,
         material: 'Latón',
         motifName: 'Cinco Centavos Latón Josefa',
-        kmNumber: 'KM#427',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15091.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -1598,8 +1302,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1980,
         material: 'Cuproníquel',
         motifName: 'Diez Centavos Mazorca de Maíz',
-        kmNumber: 'KM#434',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38585.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -1608,8 +1310,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Latón',
         allowedMaterials: ['Latón', 'Cuproníquel'],
         motifName: 'Veinte Centavos Francisco I. Madero / Cabeza Olmeca',
-        kmNumber: 'KM#441',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38586.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -1617,8 +1317,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1983,
         material: 'Cuproníquel',
         motifName: 'Cincuenta Centavos Cuauhtémoc',
-        kmNumber: 'KM#451',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38582.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -1626,8 +1324,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1983,
         material: 'Cuproníquel',
         motifName: 'Un Peso José María Morelos',
-        kmNumber: 'KM#458',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38583.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -1635,8 +1331,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1983,
         material: 'Cuproníquel',
         motifName: 'Cinco Pesos Vicente Guerrero / Quetzalcóatl',
-        kmNumber: 'KM#472',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38584.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -1644,8 +1338,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1983,
         material: 'Cuproníquel',
         motifName: 'Diez Pesos Heptagonal Miguel Hidalgo',
-        kmNumber: 'KM#477',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6342.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -1653,8 +1345,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1983,
         material: 'Cuproníquel',
         motifName: 'Veinte Pesos Cultura Maya - Jugador de Pelota',
-        kmNumber: 'KM#486',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6343.html',
       ),
       NumismaticPieceDefinition(
         denomination: '50',
@@ -1662,8 +1352,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1983,
         material: 'Cuproníquel',
         motifName: 'Cincuenta Pesos Coyolxauhqui - Templo Mayor',
-        kmNumber: 'KM#490',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6345.html',
       ),
       NumismaticPieceDefinition(
         denomination: '100',
@@ -1671,8 +1359,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1983,
         material: 'Plata',
         motifName: 'Cien Pesos Plata .720 José María Morelos',
-        kmNumber: 'KM#483',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6344.html',
       ),
     ],
   ),
@@ -1691,8 +1377,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1987,
         material: 'Acero inoxidable',
         motifName: 'Un Peso Morelos Acero',
-        kmNumber: 'KM#496',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6346.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -1700,8 +1384,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1987,
         material: 'Latón',
         motifName: 'Cinco Pesos Latón Josefa Ortiz',
-        kmNumber: 'KM#502',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6347.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -1709,8 +1391,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1987,
         material: 'Acero inoxidable',
         motifName: 'Diez Pesos Acero Miguel Hidalgo',
-        kmNumber: 'KM#503',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6348.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -1718,8 +1398,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1987,
         material: 'Latón',
         motifName: 'Veinte Pesos Bronce Guadalupe Victoria',
-        kmNumber: 'KM#507',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38587.html',
       ),
       NumismaticPieceDefinition(
         denomination: '50',
@@ -1728,8 +1406,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Cuproníquel',
         allowedMaterials: ['Cuproníquel', 'Acero inoxidable'],
         motifName: 'Cincuenta Pesos Benito Juárez',
-        kmNumber: 'KM#495',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38588.html',
       ),
       NumismaticPieceDefinition(
         denomination: '100',
@@ -1737,8 +1413,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1987,
         material: 'Bronce de aluminio',
         motifName: 'Cien Pesos Venustiano Carranza',
-        kmNumber: 'KM#493',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38589.html',
       ),
       NumismaticPieceDefinition(
         denomination: '200',
@@ -1746,8 +1420,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1986,
         material: 'Cuproníquel',
         motifName: 'Doscientos Pesos Conmemorativos',
-        kmNumber: 'KM#509',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6349.html',
         motifs: [
           NumismaticMotifRule('175 Aniversario de la Independencia', 1985),
           NumismaticMotifRule('75 Aniversario de la Revolución', 1985),
@@ -1760,8 +1432,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1987,
         material: 'Cuproníquel',
         motifName: 'Quinientos Pesos Francisco I. Madero',
-        kmNumber: 'KM#529',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6353.html',
       ),
     ],
   ),
@@ -1780,8 +1450,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1990,
         material: 'Acero inoxidable',
         motifName: 'Diez Pesos Acero Miguel Hidalgo',
-        kmNumber: 'KM#503',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6348.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -1789,8 +1457,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1990,
         material: 'Latón',
         motifName: 'Veinte Pesos Guadalupe Victoria',
-        kmNumber: 'KM#507',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38587.html',
       ),
       NumismaticPieceDefinition(
         denomination: '50',
@@ -1799,8 +1465,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Acero inoxidable',
         allowedMaterials: ['Acero inoxidable', 'Cuproníquel'],
         motifName: 'Cincuenta Pesos Benito Juárez Acero',
-        kmNumber: 'KM#495',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38588.html',
       ),
       NumismaticPieceDefinition(
         denomination: '100',
@@ -1808,8 +1472,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1992,
         material: 'Bronce de aluminio',
         motifName: 'Cien Pesos Venustiano Carranza',
-        kmNumber: 'KM#493',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38589.html',
       ),
       NumismaticPieceDefinition(
         denomination: '500',
@@ -1817,8 +1479,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1992,
         material: 'Cuproníquel',
         motifName: 'Quinientos Pesos Francisco I. Madero',
-        kmNumber: 'KM#529',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6353.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
@@ -1826,8 +1486,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1992,
         material: 'Bronce de aluminio',
         motifName: 'Mil Pesos Sor Juana Inés de la Cruz',
-        kmNumber: 'KM#536',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6354.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
@@ -1835,8 +1493,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1988,
         material: 'Cuproníquel',
         motifName: 'Cinco Mil Pesos Cincuentenario Expropiación Petrolera',
-        kmNumber: 'KM#535',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces6356.html',
         motifs: [
           NumismaticMotifRule('Cincuentenario de la Expropiación Petrolera (1988)', 1988),
         ],
@@ -1859,8 +1515,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Acero inoxidable',
         motifName: '5 Centavos Acero Inoxidable',
-        kmNumber: 'KM#544',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces589.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
@@ -1872,8 +1526,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Acero inoxidable',
         motifName: '10 Centavos Acero Inoxidable',
-        kmNumber: 'KM#545',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces590.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
@@ -1885,8 +1537,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Bronce de aluminio',
         motifName: '20 Centavos Bronce de Aluminio',
-        kmNumber: 'KM#546',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces591.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
@@ -1898,8 +1548,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Bronce de aluminio',
         motifName: '50 Centavos Bronce de Aluminio',
-        kmNumber: 'KM#547',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces592.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
@@ -1911,8 +1559,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Bimetálica',
         motifName: 'N\$ 1 Bimetálica (Anillo Bronce-Aluminio, Centro Acero)',
-        kmNumber: 'KM#551',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces586.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
@@ -1924,8 +1570,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Bimetálica',
         motifName: 'N\$ 2 Bimetálica (Anillo Bronce-Aluminio, Centro Acero)',
-        kmNumber: 'KM#552',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces587.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
@@ -1937,8 +1581,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Bimetálica',
         motifName: 'N\$ 5 Bimetálica (Anillo Bronce-Aluminio, Centro Acero)',
-        kmNumber: 'KM#553',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces588.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
@@ -1949,9 +1591,8 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1992,
         maxYear: 1995,
         material: 'Bimetálica',
+        allowedMaterials: ['Bimetálica', 'Plata'],
         motifName: 'N\$ 10 Piedra del Sol (Centro de Plata Sterling .925)',
-        kmNumber: 'KM#554',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces594.html',
         motifs: [
           NumismaticMotifRule('Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)', 1992, 1995),
         ],
@@ -1962,8 +1603,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Bimetálica',
         motifName: 'N\$ 20 Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)',
-        kmNumber: 'KM#555',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces595.html',
         motifs: [
           NumismaticMotifRule('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)', 1993, 1995),
         ],
@@ -1974,8 +1613,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         material: 'Bimetálica',
         motifName: 'N\$ 50 Niños Héroes (Centro de Plata Sterling .925)',
-        kmNumber: 'KM#556',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces596.html',
         motifs: [
           NumismaticMotifRule('Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)', 1993, 1995),
         ],
@@ -1997,8 +1634,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Acero inoxidable',
         motifName: '5 Centavos Acero Inoxidable',
-        kmNumber: 'KM#602',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces589.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -2006,8 +1641,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Acero inoxidable',
         motifName: '10 Centavos Acero Inoxidable',
-        kmNumber: 'KM#603',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces590.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -2015,8 +1648,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bronce de aluminio',
         motifName: '20 Centavos Bronce de Aluminio',
-        kmNumber: 'KM#604',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces591.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -2024,8 +1655,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bronce de aluminio',
         motifName: '50 Centavos Bronce de Aluminio',
-        kmNumber: 'KM#605',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces592.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -2033,8 +1662,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bimetálica',
         motifName: '1 Peso Bimetálica',
-        kmNumber: 'KM#606',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces586.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -2042,8 +1669,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bimetálica',
         motifName: '2 Pesos Bimetálica',
-        kmNumber: 'KM#607',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces587.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -2051,8 +1676,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bimetálica',
         motifName: '5 Pesos Bimetálica',
-        kmNumber: 'KM#608',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces588.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -2060,8 +1683,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bimetálica',
         motifName: '10 Pesos Bimetálica Piedra del Sol',
-        kmNumber: 'KM#616',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces593.html',
         motifs: [
           NumismaticMotifRule('Cambio de Milenio - Glifo Año 2000 (2000)', 2000),
           NumismaticMotifRule('Cambio de Milenio - Glifo Año 2001 (2001)', 2001),
@@ -2073,8 +1694,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bimetálica',
         motifName: '20 Pesos Conmemorativos Bimetálica Familia C',
-        kmNumber: 'KM#655',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces597.html',
         motifs: [
           NumismaticMotifRule('Octavio Paz - Cambio de Milenio (2000)', 2000, 2001),
           NumismaticMotifRule('Fuego Nuevo - Señorío de Xiuhtecuhtli (2000)', 2000, 2001),
@@ -2086,8 +1705,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         material: 'Bimetálica',
         motifName: '100 Pesos Plata .925 Conmemorativos de los Estados',
-        kmNumber: 'KM#665',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15094.html',
         motifs: [
           NumismaticMotifRule('32 Estados de la República - Fase 1 (Heráldicos)', 2003, 2005),
           NumismaticMotifRule('32 Estados de la República - Fase 2 (Emblemáticos)', 2005, 2007),
@@ -2115,8 +1732,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Acero inoxidable',
         motifName: '5 Centavos Acero Inoxidable',
-        kmNumber: 'KM#602',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces589.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -2124,8 +1739,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Acero inoxidable',
         motifName: '10 Centavos Acero Inoxidable',
-        kmNumber: 'KM#603',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces590.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -2133,8 +1746,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Bronce de aluminio',
         motifName: '20 Centavos Bronce de Aluminio',
-        kmNumber: 'KM#604',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces591.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -2142,8 +1753,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Bronce de aluminio',
         motifName: '50 Centavos Bronce de Aluminio',
-        kmNumber: 'KM#605',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces592.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -2151,8 +1760,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Bimetálica',
         motifName: '1 Peso Bimetálica',
-        kmNumber: 'KM#606',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces586.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -2160,8 +1767,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Bimetálica',
         motifName: '2 Pesos Bimetálica',
-        kmNumber: 'KM#607',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces587.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -2169,8 +1774,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Bimetálica',
         motifName: '5 Pesos Bicentenario de la Independencia y Centenario de la Revolución',
-        kmNumber: 'KM#880',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15095.html',
         motifs: [
           // 2008 - Independencia
           NumismaticMotifRule('Ignacio López Rayón', 2008),
@@ -2223,8 +1826,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Bimetálica',
         motifName: '10 Pesos Piedra del Sol',
-        kmNumber: 'KM#616',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces593.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -2232,8 +1833,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2010,
         material: 'Bimetálica',
         motifName: '20 Pesos Octavio Paz - Premio Nobel de Literatura',
-        kmNumber: 'KM#934',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15090.html',
         motifs: [
           NumismaticMotifRule('Octavio Paz - Premio Nobel de Literatura (2010)', 2010, 2011),
         ],
@@ -2255,8 +1854,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Acero inoxidable',
         motifName: '10 Centavos Acero Inoxidable',
-        kmNumber: 'KM#603',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces590.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -2264,8 +1861,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Acero inoxidable',
         motifName: '20 Centavos Acero Inoxidable',
-        kmNumber: 'KM#931',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces208570.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -2273,8 +1868,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Acero inoxidable',
         motifName: '50 Centavos Acero Inoxidable',
-        kmNumber: 'KM#932',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces208571.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -2282,8 +1875,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Bimetálica',
         motifName: '1 Peso Bimetálica',
-        kmNumber: 'KM#606',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces586.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -2291,8 +1882,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Bimetálica',
         motifName: '2 Pesos Bimetálica',
-        kmNumber: 'KM#607',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces587.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -2300,8 +1889,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Bimetálica',
         motifName: '5 Pesos Bimetálica',
-        kmNumber: 'KM#608',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces588.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -2309,8 +1896,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Bimetálica',
         motifName: '10 Pesos Bimetálica Piedra del Sol / Batalla de Puebla',
-        kmNumber: 'KM#616',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces593.html',
         motifs: [
           NumismaticMotifRule('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza (2012)', 2012),
         ],
@@ -2321,8 +1906,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2019,
         material: 'Bimetálica',
         motifName: '20 Pesos Bimetálica Circular Familia C Conmemorativas',
-        kmNumber: 'KM#959',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces46760.html',
         motifs: [
           NumismaticMotifRule('Centenario del Ejército Mexicano (2013)', 2013),
           NumismaticMotifRule('150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez (2013)', 2013),
@@ -2354,8 +1937,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Acero inoxidable',
         motifName: '10 Centavos Acero Inoxidable',
-        kmNumber: 'KM#603',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces590.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -2363,8 +1944,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Acero inoxidable',
         motifName: '20 Centavos Acero Inoxidable',
-        kmNumber: 'KM#931',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces208570.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -2372,8 +1951,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Acero inoxidable',
         motifName: '50 Centavos Acero Inoxidable',
-        kmNumber: 'KM#932',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces208571.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -2381,8 +1958,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Bimetálica',
         motifName: '1 Peso Bimetálica',
-        kmNumber: 'KM#606',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces586.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -2390,8 +1965,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Bimetálica',
         motifName: '2 Pesos Bimetálica',
-        kmNumber: 'KM#607',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces587.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -2399,8 +1972,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Bimetálica',
         motifName: '5 Pesos Bimetálica',
-        kmNumber: 'KM#608',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces588.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -2408,8 +1979,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Bimetálica',
         motifName: '10 Pesos Bimetálica Piedra del Sol',
-        kmNumber: 'KM#616',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces593.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -2417,8 +1986,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2100,
         material: 'Bimetálica',
         motifName: '20 Pesos Dodecagonal Familia C1 Conmemorativas',
-        kmNumber: 'KM#1015',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces208573.html',
         motifs: [
           NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)', 2020),
           NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (Dodecagonal 2020)', 2020),

@@ -185,4 +185,38 @@ void main() {
       expect(result.availableDenominations, isNotEmpty);
     });
   });
+
+  group('NumismaticPieceDefinition Materials & Definition Congruence Tests', () {
+    test('Mexican N\$ 10, 20, 50 and 100 pesos provide congruent allowed materials', () {
+      final mex92 = NumismaticMatrix.findRule('México', 1993, isBanknote: false);
+      expect(mex92, isNotNull);
+      final piece10 = mex92!.getPieceForDenomination('10', year: 1993);
+      expect(piece10?.effectiveAllowedMaterials, containsAll(['Bimetálica', 'Plata']));
+
+      final piece20 = mex92.getPieceForDenomination('20', year: 1993);
+      expect(piece20?.effectiveAllowedMaterials, containsAll(['Bimetálica', 'Plata']));
+
+      final piece50 = mex92.getPieceForDenomination('50', year: 1993);
+      expect(piece50?.effectiveAllowedMaterials, containsAll(['Bimetálica', 'Plata']));
+
+      final mex03 = NumismaticMatrix.findRule('México', 2005, isBanknote: false);
+      expect(mex03, isNotNull);
+      final piece100 = mex03!.getPieceForDenomination('100', year: 2005);
+      expect(piece100?.effectiveAllowedMaterials, containsAll(['Bimetálica', 'Plata']));
+    });
+
+    test('All piece definitions in registry have canonical materials and valid allowedMaterials', () {
+      final allRules = NumismaticMatrix.findRules('México', 2000)
+          .followedBy(NumismaticMatrix.findRules('España', 2000))
+          .followedBy(NumismaticMatrix.findRules('Estados Unidos', 2000));
+      for (final r in allRules) {
+        for (final p in r.pieces) {
+          if (p.allowedMaterials.isNotEmpty && p.material != null) {
+            expect(p.allowedMaterials, contains(p.material));
+          }
+        }
+      }
+    });
+  });
 }
+

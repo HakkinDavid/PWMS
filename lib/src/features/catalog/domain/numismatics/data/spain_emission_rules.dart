@@ -16,7 +16,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: '1/16 Real (Medio Maravedí / Maravedí Cobre)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38382.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
@@ -24,7 +23,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: '1/8 Real (2 Maravedís / 4 Maravedís Cobre)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38383.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
@@ -33,7 +31,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: 'Cuartillo de Real Plata / 8 Maravedís Cobre',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38384.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
@@ -41,7 +38,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: 'Medio Real Plata',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces38385.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -49,7 +45,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: '1 Real de Plata',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14887.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -57,7 +52,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: '2 Reales de Plata (Pistolete / Dos Reales)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14888.html',
       ),
       NumismaticPieceDefinition(
         denomination: '4',
@@ -65,7 +59,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: '4 Reales de Plata (Medio Duro)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14889.html',
       ),
       NumismaticPieceDefinition(
         denomination: '8',
@@ -73,8 +66,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifName: '8 Reales de Plata (Real de a Ocho / Columnario / Busto / Duro)',
-        kmNumber: 'KM#106',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces15058.html',
       ),
     ],
   ),
@@ -93,8 +84,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1870,
         motifName: '1 Céntimo de Peseta (León rampante / Hispania)',
-        kmNumber: 'KM#661',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2284.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -102,8 +91,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1870,
         motifName: '2 Céntimos de Peseta (León rampante / Hispania)',
-        kmNumber: 'KM#662',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2285.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -111,8 +98,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1879,
         motifName: '5 Céntimos de Peseta (Perra Chica)',
-        kmNumber: 'KM#663',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2286.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -120,8 +105,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1879,
         motifName: '10 Céntimos de Peseta (Perra Gorda)',
-        kmNumber: 'KM#664',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2287.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
@@ -129,8 +112,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1925,
         maxYear: 1937,
         motifName: '25 Céntimos con agujero (Carabela / Gallega)',
-        kmNumber: 'KM#701',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4023.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -138,8 +119,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1926,
         motifName: '50 Céntimos de Plata .835',
-        kmNumber: 'KM#667',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4024.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -147,8 +126,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1937,
         motifName: '1 Peseta de Plata .835 (Hispania / Reyes)',
-        kmNumber: 'KM#668',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4025.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -156,8 +133,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1905,
         motifName: '2 Pesetas de Plata .835',
-        kmNumber: 'KM#669',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4026.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -165,8 +140,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1899,
         motifName: '5 Pesetas de Plata .900 (Duro de Plata)',
-        kmNumber: 'KM#670',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4027.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -174,8 +147,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1878,
         maxYear: 1879,
         motifName: '10 Pesetas Oro .900 (Alfonso XII)',
-        kmNumber: 'KM#675',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14890.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -183,8 +154,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1889,
         maxYear: 1904,
         motifName: '20 Pesetas Oro .900 (Alfonso XIII)',
-        kmNumber: 'KM#697',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14891.html',
       ),
       NumismaticPieceDefinition(
         denomination: '25',
@@ -192,8 +161,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1876,
         maxYear: 1881,
         motifName: '25 Pesetas Oro .900 (Alfonso XII)',
-        kmNumber: 'KM#673',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14892.html',
       ),
       NumismaticPieceDefinition(
         denomination: '100',
@@ -201,8 +168,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1897,
         motifName: '100 Pesetas Oro .900',
-        kmNumber: 'KM#674',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14893.html',
       ),
     ],
   ),
@@ -221,8 +186,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1940,
         maxYear: 1953,
         motifName: '5 Céntimos Jinete Ibérico',
-        kmNumber: 'KM#765',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2288.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -230,8 +193,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1940,
         maxYear: 1959,
         motifName: '10 Céntimos Jinete Ibérico',
-        kmNumber: 'KM#766',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces2289.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -239,8 +200,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1949,
         maxYear: 1975,
         motifName: '50 Céntimos Timón y Ancla con agujero',
-        kmNumber: 'KM#777',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4030.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -248,8 +207,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1944,
         maxYear: 1981,
         motifName: '1 Peseta (Rubia de Franco / Juan Carlos I)',
-        kmNumber: 'KM#796',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4031.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
@@ -257,8 +214,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1953,
         maxYear: 1953,
         motifName: '2.50 Pesetas Franco',
-        kmNumber: 'KM#787',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4032.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -266,8 +221,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1949,
         maxYear: 1980,
         motifName: '5 Pesetas (Duro de Franco / Juan Carlos I)',
-        kmNumber: 'KM#778',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4033.html',
       ),
       NumismaticPieceDefinition(
         denomination: '25',
@@ -275,8 +228,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1957,
         maxYear: 1980,
         motifName: '25 Pesetas con agujero (Corona / Juan Carlos I)',
-        kmNumber: 'KM#789',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4034.html',
       ),
       NumismaticPieceDefinition(
         denomination: '50',
@@ -284,8 +235,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1957,
         maxYear: 1980,
         motifName: '50 Pesetas (Franco / Juan Carlos I)',
-        kmNumber: 'KM#790',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces4035.html',
       ),
       NumismaticPieceDefinition(
         denomination: '100',
@@ -327,8 +276,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1983,
         maxYear: 1998,
         motifName: '10 Céntimos Aluminio',
-        kmNumber: 'KM#821',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1275.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -336,8 +283,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1980,
         maxYear: 1989,
         motifName: '50 Céntimos España 82',
-        kmNumber: 'KM#822',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1276.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -345,8 +290,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1982,
         maxYear: 2001,
         motifName: '1 Peseta Aluminio (Grande 1982-1989 / Lenteja 1989-2001)',
-        kmNumber: 'KM#838',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces785.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -354,8 +297,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1982,
         maxYear: 1984,
         motifName: '2 Pesetas Aluminio España 82',
-        kmNumber: 'KM#824',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1277.html',
       ),
       NumismaticPieceDefinition(
         denomination: '5',
@@ -363,8 +304,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1989,
         maxYear: 2001,
         motifName: '5 Pesetas Bronce de aluminio',
-        kmNumber: 'KM#839',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces786.html',
       ),
       NumismaticPieceDefinition(
         denomination: '10',
@@ -372,8 +311,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1983,
         maxYear: 2000,
         motifName: '10 Pesetas Cuproníquel',
-        kmNumber: 'KM#840',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1278.html',
       ),
       NumismaticPieceDefinition(
         denomination: '25',
@@ -405,8 +342,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1990,
         maxYear: 2000,
         motifName: '50 Pesetas Flor de Lis / Pantalla',
-        kmNumber: 'KM#842',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1290.html',
       ),
       NumismaticPieceDefinition(
         denomination: '100',
@@ -414,8 +349,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1982,
         maxYear: 2001,
         motifName: '100 Pesetas (20 Duros)',
-        kmNumber: 'KM#828',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1291.html',
       ),
       NumismaticPieceDefinition(
         denomination: '200',
@@ -423,8 +356,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1986,
         maxYear: 2001,
         motifName: '200 Pesetas Cuproníquel',
-        kmNumber: 'KM#835',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1292.html',
       ),
       NumismaticPieceDefinition(
         denomination: '500',
@@ -432,8 +363,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1987,
         maxYear: 2001,
         motifName: '500 Pesetas Bronce de aluminio',
-        kmNumber: 'KM#836',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces1293.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
@@ -468,8 +397,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: 'Catedral de Santiago de Compostela',
-        kmNumber: 'KM#1040',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces103.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -477,8 +404,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: 'Catedral de Santiago de Compostela',
-        kmNumber: 'KM#1041',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces104.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -486,8 +411,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: 'Catedral de Santiago de Compostela',
-        kmNumber: 'KM#1042',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces105.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -495,8 +418,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: 'Miguel de Cervantes',
-        kmNumber: 'KM#1043',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces106.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -504,8 +425,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: 'Miguel de Cervantes',
-        kmNumber: 'KM#1044',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces107.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -513,8 +432,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: 'Miguel de Cervantes',
-        kmNumber: 'KM#1045',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces108.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -522,8 +439,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: 'Rey Juan Carlos I / Rey Felipe VI',
-        kmNumber: 'KM#1046',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces109.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
@@ -567,7 +482,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2002,
         maxYear: 2100,
         motifName: '10 Euros Plata Conmemorativa',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14894.html',
       ),
       NumismaticPieceDefinition(
         denomination: '12',
@@ -575,7 +489,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2002,
         maxYear: 2010,
         motifName: '12 Euros Plata Conmemorativa',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14895.html',
       ),
       NumismaticPieceDefinition(
         denomination: '20',
@@ -583,7 +496,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2010,
         maxYear: 2011,
         motifName: '20 Euros Plata Conmemorativa',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14896.html',
       ),
       NumismaticPieceDefinition(
         denomination: '30',
@@ -591,7 +503,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2012,
         maxYear: 2020,
         motifName: '30 Euros Plata Conmemorativa',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces14897.html',
       ),
       NumismaticPieceDefinition(
         denomination: '40',
@@ -599,7 +510,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifName: '40 Euros Plata Conmemorativa',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces324399.html',
       ),
     ],
   ),
@@ -618,7 +528,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: '1 Céntimo de Euro Común (Globo Terráqueo)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces103.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
@@ -626,7 +535,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: '2 Céntimos de Euro Común (Globo Terráqueo)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces104.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -634,7 +542,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: '5 Céntimos de Euro Común (Globo Terráqueo)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces105.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
@@ -642,7 +549,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: '10 Céntimos de Euro Común (Mapa Europeo)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces106.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
@@ -650,7 +556,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: '20 Céntimos de Euro Común (Mapa Europeo)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces107.html',
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
@@ -658,7 +563,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: '50 Céntimos de Euro Común (Mapa Europeo)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces108.html',
       ),
       NumismaticPieceDefinition(
         denomination: '1',
@@ -666,7 +570,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifName: '1 Euro Común (Mapa Europeo)',
-        numistaUrl: 'https://en.numista.com/catalogue/pieces109.html',
       ),
       NumismaticPieceDefinition(
         denomination: '2',
