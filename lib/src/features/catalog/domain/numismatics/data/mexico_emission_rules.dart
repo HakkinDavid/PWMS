@@ -1590,7 +1590,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1985,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Miguel Hidalgo (Acero)', 1985, 1987),
+          NumismaticMotifRule('Miguel Hidalgo', 1985, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1658,7 +1658,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Miguel Hidalgo (Acero)', 1988, 1990),
+          NumismaticMotifRule('Miguel Hidalgo', 1988, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1677,7 +1677,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Benito Juárez (Acero)', 1988, 1992),
+          NumismaticMotifRule('Benito Juárez', 1988, 1992),
         ],
       ),
       NumismaticPieceDefinition(
