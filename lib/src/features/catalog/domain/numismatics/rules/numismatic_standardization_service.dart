@@ -56,89 +56,29 @@ class NumismaticStandardizationService {
         : (parsedOld.currencyName ?? subspecies.subspeciesName);
     final canonicalCurrency = NumismaticParser.resolveCurrencyName(rawCurr);
 
-    // Check if other instances use this subspecies with a different currency
-    final allEntities = await entityRepo.getAllEntities();
-    final siblingInstances = allEntities.where((e) => e.subspeciesId == subspecies.id && e.id != instance.id).toList();
+    final canonicalNotes = NumismaticParser.buildSubspeciesNotes(
+      currencyName: canonicalCurrency,
+    );
 
-    Subspecies effectiveSub;
-    if (siblingInstances.isEmpty) {
-      // Safe to update the subspecies directly
-      final canonicalNotes = NumismaticParser.buildSubspeciesNotes(
-        currencyName: canonicalCurrency,
-      );
-      effectiveSub = subspecies.copyWith(
-        subspeciesName: canonicalCurrency,
-        notes: canonicalNotes.isNotEmpty ? canonicalNotes : subspecies.notes,
-      );
-      await catalogRepo.saveSubspecies(effectiveSub);
-    } else {
-      // Sibling instances exist; do not destroy their subspecies. Find or create matching currency subspecies for this instance.
-      final speciesSubs = await catalogRepo.getSubspeciesForSpecies(subspecies.speciesId);
-      var targetSub = speciesSubs.where((s) => NumismaticParser.areCurrenciesEquivalent(s.subspeciesName, canonicalCurrency)).firstOrNull;
-      if (targetSub == null) {
-        targetSub = Subspecies(
-          id: const Uuid().v4(),
-          speciesId: subspecies.speciesId,
-          subspeciesName: canonicalCurrency,
-          notes: NumismaticParser.buildSubspeciesNotes(currencyName: canonicalCurrency),
-          createdAt: DateTime.now(),
-        );
-        await catalogRepo.saveSubspecies(targetSub);
-      }
-      effectiveSub = targetSub;
-    }
+    final updatedSub = subspecies.copyWith(
+      subspeciesName: canonicalCurrency,
+      notes: canonicalNotes.isNotEmpty ? canonicalNotes : subspecies.notes,
+    );
+
+    await catalogRepo.saveSubspecies(updatedSub);
 
     // Standardize instance magnitudes ('Divisa', 'Grado', 'Material', 'Emisor') if present
     final List<InstanceMagnitude> updatedMags = instance.magnitudes.map((m) {
       final pName = m.propertyName.trim().toLowerCase();
-      if (pName == AppStrings.magDivisa.toLowerCase() ||
-          pName == AppStrings.currencyPropertyName.toLowerCase() ||
-          pName == AppTechnicalStrings.magDivisaLower ||
-          pName == AppTechnicalStrings.magMonedaLower) {
-        final iso = NumismaticParser.resolveCurrencyIsoCode(m.stringValue ?? canonicalCurrency);
-        return m.copyWith(
-          propertyName: AppStrings.currencyPropertyName,
-          dataType: AppTechnicalStrings.datatypeStringLower,
-          stringValue: iso,
-          magnitudeValue: null,
-          unitSymbol: null,
-        );
+      if (pName == AppStrings.magDivisa.toLowerCase() && m.stringValue != null) {
+        final iso = NumismaticParser.resolveCurrencyIsoCode(m.stringValue!);
+        return m.copyWith(stringValue: iso);
       }
-      if (pName == AppStrings.magGrado.toLowerCase() ||
-          pName == AppStrings.gradePropertyName.toLowerCase() ||
-          pName == AppTechnicalStrings.magGradoLower ||
-          pName == AppTechnicalStrings.magConservacionWithAccentLower ||
-          pName == AppTechnicalStrings.magConservacionWithoutAccentLower) {
-        return m.copyWith(
-          propertyName: AppStrings.gradePropertyName,
-          dataType: AppTechnicalStrings.datatypeStringLower,
-          stringValue: m.stringValue != null ? NumismaticParser.resolveGrade(m.stringValue!) : null,
-          magnitudeValue: null,
-          unitSymbol: null,
-        );
+      if (pName == AppStrings.magGrado.toLowerCase() && m.stringValue != null) {
+        return m.copyWith(stringValue: NumismaticParser.resolveGrade(m.stringValue!));
       }
-      if (pName == AppStrings.magMaterial.toLowerCase() ||
-          pName == AppStrings.materialPropertyName.toLowerCase() ||
-          pName == AppTechnicalStrings.magMaterialLower ||
-          pName == AppTechnicalStrings.magMetalLower) {
-        return m.copyWith(
-          propertyName: AppStrings.materialPropertyName,
-          dataType: AppTechnicalStrings.datatypeStringLower,
-          stringValue: m.stringValue != null ? NumismaticParser.resolveMaterial(m.stringValue!) : null,
-          magnitudeValue: null,
-          unitSymbol: null,
-        );
-      }
-      if (pName == AppStrings.magEmisor.toLowerCase() ||
-          pName == AppStrings.issuerPropertyName.toLowerCase() ||
-          pName == AppTechnicalStrings.magPaisLower ||
-          pName == AppTechnicalStrings.magPaisWithoutAccentLower ||
-          pName == AppTechnicalStrings.magEmisorLower) {
-        return m.copyWith(
-          propertyName: AppStrings.issuerPropertyName,
-          dataType: AppTechnicalStrings.datatypeStringLower,
-          unitSymbol: null,
-        );
+      if (pName == AppStrings.magMaterial.toLowerCase() && m.stringValue != null) {
+        return m.copyWith(stringValue: NumismaticParser.resolveMaterial(m.stringValue!));
       }
       return m;
     }).toList();
@@ -147,7 +87,6 @@ class NumismaticStandardizationService {
     final hasEmisor = updatedMags.any((m) {
       final pName = m.propertyName.trim().toLowerCase();
       return pName == AppStrings.magEmisor.toLowerCase() ||
-          pName == AppStrings.issuerPropertyName.toLowerCase() ||
           pName == AppTechnicalStrings.magPaisLower ||
           pName == AppTechnicalStrings.magPaisWithoutAccentLower;
     });
@@ -161,21 +100,18 @@ class NumismaticStandardizationService {
       ));
     }
 
-    final updatedInstance = instance.copyWith(
-      subspeciesId: effectiveSub.id,
-      magnitudes: updatedMags,
-    );
+    final updatedInstance = instance.copyWith(magnitudes: updatedMags);
     await entityRepo.saveEntity(updatedInstance);
 
     // Standardize attachment file names using instance derived title
     await repairAttachmentFileNames(
       catalogRepo: catalogRepo,
       entityRepo: entityRepo,
-      subspecies: effectiveSub,
+      subspecies: updatedSub,
       instance: updatedInstance,
     );
 
-    return effectiveSub;
+    return updatedSub;
   }
 
   /// Renames attachment files and updates database records to match current canonical instance derived name.
@@ -204,23 +140,10 @@ class NumismaticStandardizationService {
     }
 
     final attachments = await entityRepo.getAttachmentsForInstance(instance.id);
-    for (int i = 0; i < attachments.length; i++) {
-      final att = attachments[i];
-      final lowerName = att.fileName.toLowerCase();
-      String side;
-      if (lowerName.contains(AppTechnicalStrings.anversoParensLower) || lowerName.contains(AppTechnicalStrings.anversoLower)) {
-        side = AppTechnicalStrings.anversoLower;
-      } else if (lowerName.contains(AppTechnicalStrings.reversoParensLower) || lowerName.contains(AppTechnicalStrings.reversoLower)) {
-        side = AppTechnicalStrings.reversoLower;
-      } else if (lowerName.contains(AppTechnicalStrings.cantoLower) || lowerName.contains(AppTechnicalStrings.edgeLower)) {
-        side = AppTechnicalStrings.cantoLower;
-      } else if (lowerName.contains(AppTechnicalStrings.certificadoLower) || lowerName.contains(AppTechnicalStrings.certLower)) {
-        side = AppTechnicalStrings.certificadoLower;
-      } else if (lowerName.contains(AppTechnicalStrings.slabLower) || lowerName.contains(AppTechnicalStrings.estucheLower)) {
-        side = AppTechnicalStrings.estucheLower;
-      } else {
-        side = i == 0 ? AppTechnicalStrings.anversoLower : (i == 1 ? AppTechnicalStrings.reversoLower : AppTechnicalStrings.adjuntoIndex(i + 1));
-      }
+    for (final att in attachments) {
+      final isObverse = att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoParensLower) ||
+          att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoLower);
+      final side = isObverse ? AppTechnicalStrings.anversoLower : AppTechnicalStrings.reversoLower;
 
       final file = File(att.filePath);
       final ext = att.fileName.contains(AppTechnicalStrings.dot)
@@ -280,7 +203,7 @@ class NumismaticStandardizationService {
         mags[idx] = mags[idx].copyWith(
           dataType: dataType,
           stringValue: stringValue,
-          magnitudeValue: magnitudeValue,
+          magnitudeValue: magnitudeValue ?? 0.0,
           unitSymbol: unitSymbol,
         );
       } else {
@@ -290,71 +213,42 @@ class NumismaticStandardizationService {
           propertyName: propertyName,
           dataType: dataType,
           stringValue: stringValue,
-          magnitudeValue: magnitudeValue,
+          magnitudeValue: magnitudeValue ?? 0.0,
           unitSymbol: unitSymbol,
         ));
       }
     }
 
-    String? targetNewSubspeciesId = instance.subspeciesId;
-
     switch (outlier.type) {
       case NumismaticEmissionOutlierType.currencyAnachronism:
         final targetCurr = customValue ?? outlier.expectedValue;
         if (targetCurr != null && targetCurr.isNotEmpty) {
-          final targetIso = NumismaticParser.resolveCurrencyIsoCode(targetCurr);
           setOrUpdateMagnitude(
             propertyName: AppStrings.currencyPropertyName,
             dataType: AppTechnicalStrings.datatypeStringLower,
-            stringValue: targetIso,
+            stringValue: targetCurr,
           );
-
-          // Sincronizar subespecie a la nueva divisa
-          final canonicalCurrName = NumismaticParser.resolveCurrencyName(targetCurr);
-          final speciesSubs = await catalogRepo.getSubspeciesForSpecies(instance.speciesId);
-          var matchingSub = speciesSubs.where((s) => NumismaticParser.areCurrenciesEquivalent(s.subspeciesName, canonicalCurrName)).firstOrNull;
-          if (matchingSub == null) {
-            matchingSub = Subspecies(
-              id: const Uuid().v4(),
-              speciesId: instance.speciesId,
-              subspeciesName: canonicalCurrName,
-              notes: NumismaticParser.buildSubspeciesNotes(currencyName: canonicalCurrName),
-              createdAt: DateTime.now(),
-            );
-            await catalogRepo.saveSubspecies(matchingSub);
-          }
-          targetNewSubspeciesId = matchingSub.id;
         }
         break;
 
       case NumismaticEmissionOutlierType.materialContradiction:
         final targetMat = customValue ?? outlier.expectedValue;
         if (targetMat != null && targetMat.isNotEmpty) {
-          final stdMat = NumismaticParser.resolveMaterial(targetMat);
           setOrUpdateMagnitude(
             propertyName: AppStrings.materialPropertyName,
             dataType: AppTechnicalStrings.datatypeStringLower,
-            stringValue: stdMat,
+            stringValue: targetMat,
           );
         }
         break;
 
       case NumismaticEmissionOutlierType.motifMismatch:
-        final targetMotif = customValue ?? outlier.expectedValue;
-        if (targetMotif == null ||
-            targetMotif.trim().isEmpty ||
-            targetMotif == AppTechnicalStrings.none ||
-            targetMotif == AppStrings.standardCirculationToken) {
-          mags.removeWhere((m) =>
-              m.propertyName.trim().toLowerCase() == AppStrings.motifPropertyName.toLowerCase() ||
-              m.propertyName.trim().toLowerCase() == AppTechnicalStrings.magMotivoLower);
-        } else {
-          setOrUpdateMagnitude(
-            propertyName: AppStrings.motifPropertyName,
-            dataType: AppTechnicalStrings.datatypeStringLower,
-            stringValue: targetMotif.trim(),
-          );
-        }
+        final targetMotif = customValue ?? outlier.expectedValue ?? AppStrings.motifPropertyName;
+        setOrUpdateMagnitude(
+          propertyName: AppStrings.motifPropertyName,
+          dataType: AppTechnicalStrings.datatypeStringLower,
+          stringValue: targetMotif,
+        );
         break;
 
       case NumismaticEmissionOutlierType.denominationAnomaly:
@@ -387,14 +281,11 @@ class NumismaticStandardizationService {
         break;
     }
 
-    final updatedEntity = instance.copyWith(
-      subspeciesId: targetNewSubspeciesId,
-      magnitudes: mags,
-    );
+    final updatedEntity = instance.copyWith(magnitudes: mags);
     await entityRepo.saveEntity(updatedEntity);
 
-    if (updatedEntity.subspeciesId != null) {
-      final sub = await catalogRepo.getSubspeciesById(updatedEntity.subspeciesId!);
+    if (instance.subspeciesId != null) {
+      final sub = await catalogRepo.getSubspeciesById(instance.subspeciesId!);
       if (sub != null) {
         await repairAttachmentFileNames(
           catalogRepo: catalogRepo,

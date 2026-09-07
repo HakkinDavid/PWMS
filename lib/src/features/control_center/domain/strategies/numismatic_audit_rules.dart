@@ -110,8 +110,7 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
         final sub = context.subspeciesById[entity.subspeciesId];
         if (sub != null) {
-          final rawDisplayName = AuditRuleHelper.getEntityDisplayName(context, entity);
-          final derivedPieceName = NumismaticDataHelper.deriveInstanceName(entity, defaultSpeciesName: rawDisplayName);
+          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
           final issueMsg = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
             subspecies: sub,
@@ -124,7 +123,7 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
               type: AuditCardType.numismaticSubspeciesIncongruity,
               title: AppStrings.numismaticIncongruityTitle,
               subtitle: AppStrings.numismaticSubspeciesIncongruitySubtitle(
-                derivedPieceName,
+                displayName,
                 sub.subspeciesName,
               ),
               question: AppStrings.numismaticSubspeciesIncongruityQuestion(issueMsg),
@@ -141,7 +140,7 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
                   context: ctx,
                   builder: (dialogCtx) => AlertDialog(
                     title: const Text(AppStrings.correctNumismaticIncongruityTitle),
-                    content: Text(AppStrings.syncInfoPrompt(derivedPieceName, issueMsg)),
+                    content: Text(AppStrings.syncInfoPrompt(displayName, issueMsg)),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
@@ -158,10 +157,16 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
                 if (action == AppTechnicalStrings.actionSubspecies) {
                   final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
                   final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
-                  await NumismaticDataHelper.repairSubspeciesFromInstance(
+                  final updatedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
                     catalogRepo: ref.read(catalogRepositoryProvider),
                     entityRepo: ref.read(entityRepositoryProvider),
                     subspecies: freshSub,
+                    instance: freshEntity,
+                  );
+                  await NumismaticDataHelper.repairAttachmentFileNames(
+                    catalogRepo: ref.read(catalogRepositoryProvider),
+                    entityRepo: ref.read(entityRepositoryProvider),
+                    subspecies: updatedSub,
                     instance: freshEntity,
                   );
                   if (ctx.mounted) {
@@ -199,109 +204,69 @@ class NumismaticAttachmentIncongruityStrategy implements IAuditRuleStrategy {
 
     for (final entity in context.allEntities) {
       final species = context.speciesById[entity.speciesId];
-      if (species != null && NumismaticDataHelper.isNumismaticSpecies(species)) {
-        final sub = entity.subspeciesId != null ? context.subspeciesById[entity.subspeciesId] : null;
-        final rawDisplayName = AuditRuleHelper.getEntityDisplayName(context, entity);
-        final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
-        var pieceDisplayName = NumismaticDataHelper.buildInstanceDisplayName(instAttrs);
-        if (pieceDisplayName == AppStrings.defaultNumismaticPiece && sub != null) {
-          final parsedSub = NumismaticDataHelper.parseSubspeciesName(sub.subspeciesName);
-          if (parsedSub.currencyName != null || parsedSub.faceValueNumber != null) {
-            pieceDisplayName = NumismaticDataHelper.buildSubspeciesName(
-              faceValueNumber: parsedSub.faceValueNumber,
-              faceValueStr: parsedSub.faceValueStr,
-              currencyName: parsedSub.currencyName,
-              country: parsedSub.country,
-              year: parsedSub.year,
+      if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
+        final sub = context.subspeciesById[entity.subspeciesId];
+        if (sub != null) {
+          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
+
+          final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+          final pieceDisplayName = NumismaticDataHelper.buildInstanceDisplayName(instAttrs);
+
+          final instanceAttachments = context.attachmentsByInstanceId[entity.id] ?? const <Attachment>[];
+          for (final att in instanceAttachments) {
+            final isObverse = att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoParensLower) ||
+                att.fileName.toLowerCase().contains(AppTechnicalStrings.anversoLower);
+            final side = isObverse ? AppTechnicalStrings.anversoLower : AppTechnicalStrings.reversoLower;
+            final file = File(att.filePath);
+            final ext = att.fileName.contains(AppTechnicalStrings.dot)
+                ? att.fileName.split(AppTechnicalStrings.dot).last
+                : (file.path.contains(AppTechnicalStrings.dot)
+                    ? file.path.split(AppTechnicalStrings.dot).last
+                    : AppTechnicalStrings.empty);
+
+            final expectedName = NumismaticDataHelper.buildAttachmentFileName(
+              subspeciesName: pieceDisplayName,
+              instanceId: entity.id,
+              side: side,
+              extension: ext,
             );
+
+            if (att.fileName != expectedName) {
+              cards.add(AuditRuleHelper.forEntity(
+                id: AppTechnicalStrings.prefixNumisAtt + att.id,
+                type: AuditCardType.numismaticAttachmentIncongruity,
+                title: AppStrings.desyncedAttachmentNameTitle,
+                subtitle: AppStrings.desyncedAttachmentNameSubtitle(displayName, att.fileName),
+                question: AppStrings.desyncedAttachmentNameQuestion(
+                  att.fileName,
+                  pieceDisplayName,
+                  expectedName,
+                ),
+                icon: Icons.attachment,
+                themeColor: Colors.indigo,
+                entity: entity,
+                subspecies: sub,
+                species: species,
+                confirmLabel: AppStrings.confirmKeepNameAction,
+                fixLabel: AppStrings.fixRenameFileAction,
+                confirmToastMessage: AppStrings.attachmentNameRetainedSuccess,
+                onFix: (ctx, ref) async {
+                  final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                  final freshSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub;
+                  await NumismaticDataHelper.repairAttachmentFileNames(
+                    catalogRepo: ref.read(catalogRepositoryProvider),
+                    entityRepo: ref.read(entityRepositoryProvider),
+                    subspecies: freshSub,
+                    instance: freshEntity,
+                  );
+                  if (ctx.mounted) {
+                    AppToast.showSuccess(ctx, AppStrings.attachmentRenamedSuccess);
+                  }
+                  return true;
+                },
+              ));
+            }
           }
-        }
-        if (pieceDisplayName == AppStrings.defaultNumismaticPiece) {
-          pieceDisplayName = sub?.subspeciesName ?? rawDisplayName;
-        }
-
-        final instanceAttachments = context.attachmentsByInstanceId[entity.id] ?? const <Attachment>[];
-        if (instanceAttachments.isEmpty) continue;
-
-        bool hasDesynced = false;
-        Attachment? sampleDesynced;
-        String? sampleExpected;
-
-        for (int i = 0; i < instanceAttachments.length; i++) {
-          final att = instanceAttachments[i];
-          final lowerName = att.fileName.toLowerCase();
-          String side;
-          if (lowerName.contains(AppTechnicalStrings.anversoParensLower) || lowerName.contains(AppTechnicalStrings.anversoLower)) {
-            side = AppTechnicalStrings.anversoLower;
-          } else if (lowerName.contains(AppTechnicalStrings.reversoParensLower) || lowerName.contains(AppTechnicalStrings.reversoLower)) {
-            side = AppTechnicalStrings.reversoLower;
-          } else if (lowerName.contains(AppTechnicalStrings.cantoLower) || lowerName.contains(AppTechnicalStrings.edgeLower)) {
-            side = AppTechnicalStrings.cantoLower;
-          } else if (lowerName.contains(AppTechnicalStrings.certificadoLower) || lowerName.contains(AppTechnicalStrings.certLower)) {
-            side = AppTechnicalStrings.certificadoLower;
-          } else if (lowerName.contains(AppTechnicalStrings.slabLower) || lowerName.contains(AppTechnicalStrings.estucheLower)) {
-            side = AppTechnicalStrings.estucheLower;
-          } else {
-            side = i == 0 ? AppTechnicalStrings.anversoLower : (i == 1 ? AppTechnicalStrings.reversoLower : AppTechnicalStrings.adjuntoIndex(i + 1));
-          }
-
-          final file = File(att.filePath);
-          final ext = att.fileName.contains(AppTechnicalStrings.dot)
-              ? att.fileName.split(AppTechnicalStrings.dot).last
-              : (file.path.contains(AppTechnicalStrings.dot)
-                  ? file.path.split(AppTechnicalStrings.dot).last
-                  : AppTechnicalStrings.empty);
-
-          final expectedName = NumismaticDataHelper.buildAttachmentFileName(
-            subspeciesName: pieceDisplayName,
-            instanceId: entity.id,
-            side: side,
-            extension: ext,
-          );
-
-          if (att.fileName != expectedName) {
-            hasDesynced = true;
-            sampleDesynced ??= att;
-            sampleExpected ??= expectedName;
-          }
-        }
-
-        if (hasDesynced && sampleDesynced != null && sampleExpected != null) {
-          cards.add(AuditRuleHelper.forEntity(
-            id: AppTechnicalStrings.prefixNumisAtt + entity.id,
-            type: AuditCardType.numismaticAttachmentIncongruity,
-            title: AppStrings.desyncedAttachmentNameTitle,
-            subtitle: AppStrings.desyncedAttachmentNameSubtitle(pieceDisplayName, sampleDesynced.fileName),
-            question: AppStrings.desyncedAttachmentNameQuestion(
-              sampleDesynced.fileName,
-              pieceDisplayName,
-              sampleExpected,
-            ),
-            icon: Icons.attachment,
-            themeColor: Colors.indigo,
-            entity: entity,
-            subspecies: sub,
-            species: species,
-            confirmLabel: AppStrings.confirmKeepNameAction,
-            fixLabel: AppStrings.fixRenameFileAction,
-            confirmToastMessage: AppStrings.attachmentNameRetainedSuccess,
-            onFix: (ctx, ref) async {
-              final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-              final effectiveSub = sub != null ? (await ref.read(catalogRepositoryProvider).getSubspeciesById(sub.id) ?? sub) : null;
-              if (effectiveSub != null) {
-                await NumismaticDataHelper.repairAttachmentFileNames(
-                  catalogRepo: ref.read(catalogRepositoryProvider),
-                  entityRepo: ref.read(entityRepositoryProvider),
-                  subspecies: effectiveSub,
-                  instance: freshEntity,
-                );
-              }
-              if (ctx.mounted) {
-                AppToast.showSuccess(ctx, AppStrings.attachmentRenamedSuccess);
-              }
-              return true;
-            },
-          ));
         }
       }
     }
@@ -328,248 +293,97 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
 
     for (final entity in context.allEntities) {
       final species = context.speciesById[entity.speciesId];
-      if (species != null && NumismaticDataHelper.isNumismaticSpecies(species)) {
-        final sub = entity.subspeciesId != null ? context.subspeciesById[entity.subspeciesId] : null;
-        final rawDisplayName = AuditRuleHelper.getEntityDisplayName(context, entity);
-        final derivedPieceName = NumismaticDataHelper.deriveInstanceName(entity, defaultSpeciesName: rawDisplayName);
+      if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
+        final sub = context.subspeciesById[entity.subspeciesId];
+        if (sub != null) {
+          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
-        final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
-        final missingMags = <String>[];
-        if (instAttrs.faceValueNumber == null) missingMags.add(AppStrings.nominalValuePropertyName);
-        if (instAttrs.year == null) missingMags.add(AppStrings.mintagePropertyName);
-        if (instAttrs.currencyName == null) missingMags.add(AppStrings.currencyPropertyName);
-        if (instAttrs.material == null || instAttrs.material!.trim().isEmpty) missingMags.add(AppStrings.materialPropertyName);
-        if (instAttrs.country == null || instAttrs.country!.trim().isEmpty) missingMags.add(AppStrings.issuerPropertyName);
-        if (instAttrs.grade == null || instAttrs.grade!.trim().isEmpty) missingMags.add(AppStrings.gradePropertyName);
+          final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+          final missingMags = <String>[];
+          if (instAttrs.faceValueNumber == null) missingMags.add(AppStrings.nominalValuePropertyName);
+          if (instAttrs.year == null) missingMags.add(AppStrings.mintagePropertyName);
+          if (instAttrs.currencyName == null) missingMags.add(AppStrings.currencyPropertyName);
 
-        if (missingMags.isNotEmpty) {
-          cards.add(AuditRuleHelper.forEntity(
-            id: AppTechnicalStrings.prefixNumisMag + entity.id,
-            type: AuditCardType.numismaticMissingMagnitudes,
-            title: AppStrings.incompleteNumismaticMagnitudesTitle,
-            subtitle: AppStrings.incompleteNumismaticMagnitudesSubtitle(
-              derivedPieceName,
-              missingMags.join(AppTechnicalStrings.commaSpace),
-            ),
-            question: AppStrings.incompleteNumismaticMagnitudesQuestion(
-              derivedPieceName,
-              missingMags.join(AppTechnicalStrings.commaSpace),
-            ),
-            icon: Icons.fact_check_outlined,
-            themeColor: Colors.blueGrey,
-            entity: entity,
-            subspecies: sub,
-            species: species,
-            confirmLabel: AppStrings.confirmKeepEmptyAction,
-            fixLabel: AppStrings.fixAutocompleteAction,
-            confirmToastMessage: AppStrings.magnitudesRetainedSuccess,
-            onFix: (ctx, ref) async {
-              final parsedSub = sub != null ? NumismaticDataHelper.parseSubspeciesName(sub.subspeciesName) : const NumismaticAttributes();
-              final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-              final currentAttrs = NumismaticDataHelper.extractAttributesFromInstance(freshEntity);
-              final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
+          if (missingMags.isNotEmpty) {
+            cards.add(AuditRuleHelper.forEntity(
+              id: AppTechnicalStrings.prefixNumisMag + entity.id,
+              type: AuditCardType.numismaticMissingMagnitudes,
+              title: AppStrings.incompleteNumismaticMagnitudesTitle,
+              subtitle: AppStrings.incompleteNumismaticMagnitudesSubtitle(
+                displayName,
+                missingMags.join(AppTechnicalStrings.commaSpace),
+              ),
+              question: AppStrings.incompleteNumismaticMagnitudesQuestion(
+                displayName,
+                missingMags.join(AppTechnicalStrings.commaSpace),
+              ),
+              icon: Icons.fact_check_outlined,
+              themeColor: Colors.blueGrey,
+              entity: entity,
+              subspecies: sub,
+              species: species,
+              confirmLabel: AppStrings.confirmKeepEmptyAction,
+              fixLabel: AppStrings.fixAutocompleteAction,
+              confirmToastMessage: AppStrings.magnitudesRetainedSuccess,
+              onFix: (ctx, ref) async {
+                final parsedSub = NumismaticDataHelper.parseSubspeciesName(sub.subspeciesName);
+                final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                final freshInstAttrs = NumismaticDataHelper.extractAttributesFromInstance(freshEntity);
+                final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
 
-              void setOrUpdateMagnitude({
-                required String propertyName,
-                required String dataType,
-                String? stringValue,
-                double? magnitudeValue,
-                String? unitSymbol,
-              }) {
-                final idx = currentMags.indexWhere((m) => m.propertyName.trim().toLowerCase() == propertyName.trim().toLowerCase());
-                if (idx >= 0) {
-                  currentMags[idx] = currentMags[idx].copyWith(
-                    dataType: dataType,
-                    stringValue: stringValue,
-                    magnitudeValue: magnitudeValue,
-                    unitSymbol: unitSymbol,
-                  );
-                } else {
+                if (parsedSub.faceValueNumber != null && freshInstAttrs.faceValueNumber == null) {
                   currentMags.add(InstanceMagnitude(
                     id: const Uuid().v4(),
                     instanceId: freshEntity.id,
-                    propertyName: propertyName,
-                    dataType: dataType,
-                    stringValue: stringValue,
-                    magnitudeValue: magnitudeValue,
-                    unitSymbol: unitSymbol,
-                  ));
-                }
-              }
-
-              // 1. Nominal Value
-              if (currentAttrs.faceValueNumber == null) {
-                double? faceVal = parsedSub.faceValueNumber;
-                if (faceVal == null) {
-                  final textCtrl = TextEditingController();
-                  final formKey = GlobalKey<FormState>();
-                  final ok = await showDialog<bool>(
-                    context: ctx,
-                    builder: (dialogCtx) => AlertDialog(
-                      title: const Text(AppStrings.nominalValuePropertyName),
-                      content: Form(
-                        key: formKey,
-                        child: TextFormField(
-                          controller: textCtrl,
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          decoration: const InputDecoration(labelText: AppStrings.nominalValuePropertyName),
-                          validator: (val) {
-                            if (val == null || val.trim().isEmpty) return AppStrings.enterValidNominalValuePrompt;
-                            if (double.tryParse(val.trim()) == null) return AppStrings.enterValidNominalValuePrompt;
-                            return null;
-                          },
-                        ),
-                      ),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text(AppStrings.cancel)),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (formKey.currentState?.validate() ?? false) Navigator.pop(dialogCtx, true);
-                          },
-                          child: const Text(AppStrings.confirm),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (ok == true && textCtrl.text.trim().isNotEmpty) {
-                    faceVal = double.tryParse(textCtrl.text.trim());
-                  }
-                }
-                if (faceVal != null) {
-                  setOrUpdateMagnitude(
                     propertyName: AppStrings.nominalValuePropertyName,
                     dataType: AppTechnicalStrings.datatypeRealLower,
-                    magnitudeValue: faceVal,
-                  );
+                    magnitudeValue: parsedSub.faceValueNumber!,
+                  ));
                 }
-              }
 
-              // 2. Mintage Year
-              if (currentAttrs.year == null) {
-                double? yearVal = parsedSub.year != null ? double.tryParse(parsedSub.year!) : null;
-                if (yearVal == null) {
-                  final textCtrl = TextEditingController();
-                  final formKey = GlobalKey<FormState>();
-                  final ok = await showDialog<bool>(
-                    context: ctx,
-                    builder: (dialogCtx) => AlertDialog(
-                      title: const Text(AppStrings.mintagePropertyName),
-                      content: Form(
-                        key: formKey,
-                        child: TextFormField(
-                          controller: textCtrl,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: AppStrings.mintageYearLabel),
-                          validator: (val) {
-                            if (val == null || val.trim().isEmpty) return AppStrings.enterMintageYearPrompt;
-                            final n = int.tryParse(val.trim());
-                            if (n == null || n < 1500 || n > DateTime.now().year + 1) return AppStrings.enterValidMintageYearPrompt;
-                            return null;
-                          },
-                        ),
-                      ),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text(AppStrings.cancel)),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (formKey.currentState?.validate() ?? false) Navigator.pop(dialogCtx, true);
-                          },
-                          child: const Text(AppStrings.confirm),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (ok == true && textCtrl.text.trim().isNotEmpty) {
-                    yearVal = double.tryParse(textCtrl.text.trim());
-                  }
-                }
-                if (yearVal != null) {
-                  setOrUpdateMagnitude(
+                if (parsedSub.year != null && freshInstAttrs.year == null && double.tryParse(parsedSub.year!) != null) {
+                  currentMags.add(InstanceMagnitude(
+                    id: const Uuid().v4(),
+                    instanceId: freshEntity.id,
                     propertyName: AppStrings.mintagePropertyName,
                     dataType: AppTechnicalStrings.datatypeIntegerLower,
-                    magnitudeValue: yearVal,
-                    unitSymbol: AppStrings.yearUnitSymbol,
-                  );
+                    magnitudeValue: double.parse(parsedSub.year!),
+                    unitSymbol: AppStrings.unitYear,
+                  ));
                 }
-              }
 
-              // 3. Currency (ISO)
-              if (currentAttrs.currencyName == null) {
-                final currToUse = parsedSub.currencyName ?? sub?.subspeciesName ?? AppTechnicalStrings.currencyMxn;
-                final iso = NumismaticDataHelper.resolveCurrencyIsoCode(currToUse);
-                setOrUpdateMagnitude(
-                  propertyName: AppStrings.currencyPropertyName,
-                  dataType: AppTechnicalStrings.datatypeStringLower,
-                  stringValue: iso,
-                );
-              }
-
-              // 4. Country / Issuer
-              if (currentAttrs.country == null || currentAttrs.country!.trim().isEmpty) {
-                String? countryVal = parsedSub.country;
-                if (countryVal == null || countryVal.trim().isEmpty) {
-                  countryVal = await AppWheelPicker.show<String>(
-                    ctx,
-                    items: NumismaticDataHelper.countries,
-                    initialValue: NumismaticDataHelper.countries.first,
-                    labelBuilder: (c) => c,
-                    title: AppStrings.issuerPropertyName,
-                  );
+                if (freshInstAttrs.currencyName == null) {
+                  final currToUse = parsedSub.currencyName ?? sub.subspeciesName;
+                  final iso = NumismaticDataHelper.resolveCurrencyIsoCode(currToUse);
+                  currentMags.add(InstanceMagnitude(
+                    id: const Uuid().v4(),
+                    instanceId: freshEntity.id,
+                    propertyName: AppStrings.currencyPropertyName,
+                    dataType: AppTechnicalStrings.datatypeStringLower,
+                    stringValue: iso,
+                  ));
                 }
-                if (countryVal != null && countryVal.isNotEmpty) {
-                  setOrUpdateMagnitude(
+
+                if (parsedSub.country != null && parsedSub.country!.isNotEmpty && freshInstAttrs.country == null) {
+                  currentMags.add(InstanceMagnitude(
+                    id: const Uuid().v4(),
+                    instanceId: freshEntity.id,
                     propertyName: AppStrings.issuerPropertyName,
                     dataType: AppTechnicalStrings.datatypeStringLower,
-                    stringValue: countryVal.trim(),
-                  );
+                    stringValue: parsedSub.country!,
+                  ));
                 }
-              }
 
-              // 5. Material
-              if (currentAttrs.material == null || currentAttrs.material!.trim().isEmpty) {
-                final matVal = await AppWheelPicker.show<String>(
-                  ctx,
-                  items: NumismaticDataHelper.coinMaterials,
-                  initialValue: NumismaticDataHelper.coinMaterials.first,
-                  labelBuilder: (m) => m,
-                  title: AppStrings.materialPropertyName,
-                );
-                if (matVal != null && matVal.isNotEmpty) {
-                  setOrUpdateMagnitude(
-                    propertyName: AppStrings.materialPropertyName,
-                    dataType: AppTechnicalStrings.datatypeStringLower,
-                    stringValue: NumismaticDataHelper.resolveMaterial(matVal),
-                  );
+                final updatedEntity = freshEntity.copyWith(magnitudes: currentMags);
+                await ref.read(entityRepositoryProvider).saveEntity(updatedEntity);
+
+                if (ctx.mounted) {
+                  AppToast.showSuccess(ctx, AppStrings.numismaticMagnitudesAutoFilledSuccess);
                 }
-              }
-
-              // 6. Grade
-              if (currentAttrs.grade == null || currentAttrs.grade!.trim().isEmpty) {
-                final chosenGrade = await AppWheelPicker.show<String>(
-                  ctx,
-                  items: NumismaticDataHelper.grades,
-                  initialValue: NumismaticDataHelper.grades.first,
-                  labelBuilder: (g) => g,
-                  title: AppStrings.assignGradeTitle,
-                );
-                if (chosenGrade != null && chosenGrade.isNotEmpty) {
-                  setOrUpdateMagnitude(
-                    propertyName: AppStrings.gradePropertyName,
-                    dataType: AppTechnicalStrings.datatypeStringLower,
-                    stringValue: NumismaticDataHelper.resolveGrade(chosenGrade),
-                  );
-                }
-              }
-
-              final updatedEntity = freshEntity.copyWith(magnitudes: currentMags);
-              await ref.read(entityRepositoryProvider).saveEntity(updatedEntity);
-
-              if (ctx.mounted) {
-                AppToast.showSuccess(ctx, AppStrings.numismaticMagnitudesAutoFilledSuccess);
-              }
-              return true;
-            },
-          ));
+                return true;
+              },
+            ));
+          }
         }
       }
     }
@@ -596,78 +410,69 @@ class EmptyDataAuditStrategy implements IAuditRuleStrategy {
 
     for (final entity in context.allEntities) {
       final species = context.speciesById[entity.speciesId];
-      if (species != null && NumismaticDataHelper.isNumismaticSpecies(species)) {
-        final sub = entity.subspeciesId != null ? context.subspeciesById[entity.subspeciesId] : null;
-        final rawDisplayName = AuditRuleHelper.getEntityDisplayName(context, entity);
-        final derivedPieceName = NumismaticDataHelper.deriveInstanceName(entity, defaultSpeciesName: rawDisplayName);
+      if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
+        final sub = context.subspeciesById[entity.subspeciesId];
+        if (sub != null) {
+          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
 
-        final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
-        if (instAttrs.grade == null || instAttrs.grade!.trim().isEmpty) {
-          cards.add(AuditRuleHelper.forEntity(
-            id: AppTechnicalStrings.prefixNumisEmptyGrade + entity.id,
-            type: AuditCardType.emptyDataAudit,
-            title: AppStrings.emptyGradeDataTitle,
-            subtitle: AppStrings.emptyGradeDataSubtitle(derivedPieceName),
-            question: AppStrings.emptyGradeDataQuestion(derivedPieceName),
-            icon: Icons.star_outline,
-            themeColor: Colors.amber.shade800,
-            entity: entity,
-            subspecies: sub,
-            species: species,
-            confirmLabel: AppStrings.confirmWithoutGradeAction,
-            fixLabel: AppStrings.fixAssignGradeAction,
-            confirmToastMessage: AppStrings.gradeRetainedEmptySuccess,
-            onFix: (ctx, ref) async {
-              final chosenGrade = await AppWheelPicker.show<String>(
-                ctx,
-                items: NumismaticDataHelper.grades,
-                initialValue: NumismaticDataHelper.grades.first,
-                labelBuilder: (g) => g,
-                title: AppStrings.assignGradeTitle,
-              );
+          final instAttrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
+          if (instAttrs.grade == null || instAttrs.grade!.trim().isEmpty) {
+            cards.add(AuditRuleHelper.forEntity(
+              id: AppTechnicalStrings.prefixNumisEmptyGrade + entity.id,
+              type: AuditCardType.emptyDataAudit,
+              title: AppStrings.emptyGradeDataTitle,
+              subtitle: AppStrings.emptyGradeDataSubtitle(displayName),
+              question: AppStrings.emptyGradeDataQuestion(displayName),
+              icon: Icons.star_outline,
+              themeColor: Colors.amber.shade800,
+              entity: entity,
+              subspecies: sub,
+              species: species,
+              confirmLabel: AppStrings.confirmWithoutGradeAction,
+              fixLabel: AppStrings.fixAssignGradeAction,
+              confirmToastMessage: AppStrings.gradeRetainedEmptySuccess,
+              onFix: (ctx, ref) async {
+                final chosenGrade = await AppWheelPicker.show<String>(
+                  ctx,
+                  items: NumismaticDataHelper.grades,
+                  initialValue: NumismaticDataHelper.grades.first,
+                  labelBuilder: (g) => g,
+                  title: AppStrings.assignGradeTitle,
+                );
 
-              if (chosenGrade != null && chosenGrade.isNotEmpty) {
-                final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-                final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
-                final resolvedGrade = NumismaticDataHelper.resolveGrade(chosenGrade);
+                if (chosenGrade != null && chosenGrade.isNotEmpty) {
+                  final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
+                  final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
+                  final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == AppStrings.gradePropertyName);
+                  if (existingGradeIdx >= 0) {
+                    currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
+                      dataType: AppTechnicalStrings.datatypeStringLower,
+                      stringValue: chosenGrade,
+                      unitSymbol: null,
+                      magnitudeValue: 0.0,
+                    );
+                  } else {
+                    currentMags.add(InstanceMagnitude(
+                      id: const Uuid().v4(),
+                      instanceId: freshEntity.id,
+                      propertyName: AppStrings.gradePropertyName,
+                      dataType: AppTechnicalStrings.datatypeStringLower,
+                      stringValue: chosenGrade,
+                    ));
+                  }
 
-                final existingGradeIdx = currentMags.indexWhere((m) {
-                  final pName = m.propertyName.trim().toLowerCase();
-                  return pName == AppStrings.gradePropertyName.toLowerCase() ||
-                      pName == AppTechnicalStrings.magGradoLower ||
-                      pName == AppTechnicalStrings.magConservacionWithAccentLower ||
-                      pName == AppTechnicalStrings.magConservacionWithoutAccentLower;
-                });
+                  final updatedEntity = freshEntity.copyWith(magnitudes: currentMags);
+                  await ref.read(entityRepositoryProvider).saveEntity(updatedEntity);
 
-                if (existingGradeIdx >= 0) {
-                  currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
-                    propertyName: AppStrings.gradePropertyName,
-                    dataType: AppTechnicalStrings.datatypeStringLower,
-                    stringValue: resolvedGrade,
-                    unitSymbol: null,
-                    magnitudeValue: null,
-                  );
-                } else {
-                  currentMags.add(InstanceMagnitude(
-                    id: const Uuid().v4(),
-                    instanceId: freshEntity.id,
-                    propertyName: AppStrings.gradePropertyName,
-                    dataType: AppTechnicalStrings.datatypeStringLower,
-                    stringValue: resolvedGrade,
-                  ));
+                  if (ctx.mounted) {
+                    AppToast.showSuccess(ctx, AppStrings.gradeUpdatedSuccess(chosenGrade));
+                  }
+                  return true;
                 }
-
-                final updatedEntity = freshEntity.copyWith(magnitudes: currentMags);
-                await ref.read(entityRepositoryProvider).saveEntity(updatedEntity);
-
-                if (ctx.mounted) {
-                  AppToast.showSuccess(ctx, AppStrings.gradeUpdatedSuccess(resolvedGrade));
-                }
-                return true;
-              }
-              return false;
-            },
-          ));
+                return false;
+              },
+            ));
+          }
         }
       }
     }
@@ -697,8 +502,7 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
       if (species != null && NumismaticDataHelper.isNumismaticSpecies(species) && entity.subspeciesId != null) {
         final sub = context.subspeciesById[entity.subspeciesId];
         if (sub != null) {
-          final rawDisplayName = AuditRuleHelper.getEntityDisplayName(context, entity);
-          final derivedPieceName = NumismaticDataHelper.deriveInstanceName(entity, defaultSpeciesName: rawDisplayName);
+          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
           final outliers = NumismaticDataHelper.checkEmissionOutliers(
             instance: entity,
             species: species,
@@ -732,7 +536,7 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
               type: AuditCardType.numismaticEmissionOutlier,
               title: AppStrings.numismaticEmissionOutlierCardTitle,
               subtitle: AppStrings.numismaticEmissionOutlierSubtitle(
-                derivedPieceName,
+                displayName,
                 outlier.description,
               ),
               question: AppStrings.numismaticEmissionOutlierQuestion(
@@ -818,18 +622,17 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                     denomination: attrs.faceValueStr ?? (attrs.faceValueNumber != null ? (attrs.faceValueNumber == attrs.faceValueNumber!.toInt() ? attrs.faceValueNumber!.toInt().toString() : attrs.faceValueNumber.toString()) : null),
                     isBanknote: isBanknote,
                   );
-                  final items = validMaterials.isNotEmpty
-                      ? validMaterials
-                      : NumismaticDataHelper.coinMaterials;
-                  customValue = await AppWheelPicker.show<String>(
-                    ctx,
-                    items: items,
-                    initialValue: items.first,
-                    labelBuilder: (m) => m,
-                    title: AppStrings.materialPropertyName,
-                  );
-                  if (customValue == null || customValue.isEmpty) {
-                    return false;
+                  if (validMaterials.isNotEmpty) {
+                    customValue = await AppWheelPicker.show<String>(
+                      ctx,
+                      items: validMaterials,
+                      initialValue: validMaterials.first,
+                      labelBuilder: (m) => m,
+                      title: AppStrings.magMaterial,
+                    );
+                    if (customValue == null || customValue.isEmpty) {
+                      return false;
+                    }
                   }
                 } else if (outlier.type == NumismaticEmissionOutlierType.motifMismatch) {
                   final attrs = NumismaticDataHelper.extractAttributesFromInstance(entity);
@@ -855,22 +658,58 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                     isBanknote: isBanknote,
                   );
 
-                  final options = (attrs.motif != null && availableMotifs.isNotEmpty)
-                      ? availableMotifs
-                      : [
-                          if (!isStrictlyCommem) AppStrings.noMotifStandardCirculation,
-                          ...availableMotifs,
-                        ];
-
-                  customValue = await AppWheelPicker.show<String>(
-                    ctx,
-                    items: options,
-                    initialValue: options.first,
-                    labelBuilder: (m) => m,
-                    title: AppStrings.motifLabel,
-                  );
-                  if (customValue == null || customValue.isEmpty) {
-                    return false;
+                  if (availableMotifs.isNotEmpty) {
+                    customValue = await AppWheelPicker.show<String>(
+                      ctx,
+                      items: availableMotifs,
+                      initialValue: availableMotifs.first,
+                      labelBuilder: (m) => m,
+                      title: AppStrings.motifLabel,
+                    );
+                    if (customValue == null || customValue.isEmpty) {
+                      return false;
+                    }
+                  } else {
+                    final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);
+                    final formKey = GlobalKey<FormState>();
+                    final confirmed = await showDialog<bool>(
+                      context: ctx,
+                      builder: (dialogCtx) => AlertDialog(
+                        title: const Text(AppStrings.motifLabel),
+                        content: Form(
+                          key: formKey,
+                          child: TextFormField(
+                            controller: textCtrl,
+                            decoration: const InputDecoration(labelText: AppStrings.motifLabel),
+                            validator: (val) {
+                              if (val == null || val.trim().isEmpty) {
+                                return AppStrings.selectMotifPrompt;
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(dialogCtx, false),
+                            child: const Text(AppStrings.cancel),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (formKey.currentState?.validate() ?? false) {
+                                Navigator.pop(dialogCtx, true);
+                              }
+                            },
+                            child: const Text(AppStrings.confirm),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed == true && textCtrl.text.trim().isNotEmpty) {
+                      customValue = textCtrl.text.trim();
+                    } else {
+                      return false;
+                    }
                   }
                 } else if (outlier.type == NumismaticEmissionOutlierType.yearOutOfRange) {
                   final textCtrl = TextEditingController(text: outlier.foundValue ?? AppTechnicalStrings.empty);

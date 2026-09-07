@@ -511,9 +511,6 @@ class AppStrings {
   static const motifPropertyName = 'Motivo';
   static const motifLabel = 'Motivo de la emisión';
   static const selectMotifPrompt = 'Selecciona el motivo conmemorativo';
-  static const standardCirculationToken = 'CIRCULACION_ESTANDAR';
-  static const noMotifStandardCirculation = 'Sin motivo (Circulación regular)';
-  static const enterValidNominalValuePrompt = 'Ingresa un valor nominal numérico válido.';
   static const customMotifOption = 'Motivo personalizado...';
   static const currencyNotePrefix = 'Moneda: ';
   static const yearNotePrefix = 'Año: ';
