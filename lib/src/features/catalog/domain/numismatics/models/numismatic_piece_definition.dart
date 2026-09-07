@@ -70,14 +70,14 @@ class NumismaticPieceDefinition {
   /// Returns true if this piece supports standard generic circulation in [year] without a special motif.
   bool allowsStandardForYear(int? year) {
     if (motifs.isEmpty) return true;
-    return motifs.any((m) => m.isStandard && m.matchesYear(year));
+    return motifs.any((m) => m.matchesYear(year));
   }
 
   /// Returns commemorative motif names matching the specified [year] (excluding standard circulation tokens).
   List<String> getMotifsForYear(int? year) {
     if (motifs.isEmpty) return const [];
     return motifs
-        .where((m) => !m.isStandard && m.matchesYear(year))
+        .where((m) => m.matchesYear(year))
         .map((m) => m.name)
         .toList();
   }

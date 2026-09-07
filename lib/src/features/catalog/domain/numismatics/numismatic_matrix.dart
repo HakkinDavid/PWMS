@@ -320,7 +320,7 @@ class NumismaticMatrix {
       } else {
         for (final entry in rule.commemorativeMotifsByDenomination.entries) {
           for (final motif in entry.value) {
-            if (!motif.isStandard && motif.matchesYear(year) && !result.contains(motif.name)) {
+            if (motif.matchesYear(year) && !result.contains(motif.name)) {
               result.add(motif.name);
             }
           }

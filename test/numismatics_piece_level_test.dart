@@ -81,15 +81,9 @@ void main() {
         'Lincoln Memorial (1959-2008)',
         2000,
         2008,
-        'KM#201a',
-        'https://en.numista.com/catalogue/pieces42.html',
-        true,
       );
 
       expect(standardMotif.name, equals('Lincoln Memorial (1959-2008)'));
-      expect(standardMotif.isStandard, isTrue);
-      expect(standardMotif.kmNumber, equals('KM#201a'));
-      expect(standardMotif.numistaUrl, equals('https://en.numista.com/catalogue/pieces42.html'));
       expect(standardMotif.matchesYear(2004), isTrue);
       expect(standardMotif.matchesYear(1999), isFalse);
       expect(standardMotif.matchesYear(2009), isFalse);
@@ -99,7 +93,6 @@ void main() {
         'Lincoln Bicentennial - Birthplace (2009)',
         2009,
       );
-      expect(commemorativeMotif.isStandard, isFalse);
       expect(commemorativeMotif.minYear, equals(2009));
       expect(commemorativeMotif.maxYear, equals(2009));
       expect(commemorativeMotif.matchesYear(2009), isTrue);
