@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
+import 'package:platinum_world_management_system/src/core/database/data_migration_post_processor.dart';
 import 'package:platinum_world_management_system/src/core/database/database_backup_service.dart';
 
 class FakePathProviderPlatform extends PathProviderPlatform
@@ -226,5 +227,50 @@ void main() {
       expect(attachmentItem['instanceId'], isNull);
       expect(attachmentItem['filePath'], equals('doc.pdf'));
     });
+
+    test('importDatabaseFromJsonString unconditionally executes post-processors on version 6 backup', () async {
+      bool postProcessorRan = false;
+      final mockProcessor = _TrackingPostProcessor(() {
+        postProcessorRan = true;
+      });
+
+      final serviceWithProcessor = DatabaseBackupService(db, [mockProcessor]);
+
+      final v6Backup = {
+        'version': 6,
+        'exportedAt': DateTime.now().toIso8601String(),
+        'tables': {
+          'locations': [],
+          'catalog': [],
+          'subspecies': [],
+          'speciesMagnitudes': [],
+          'entities': [],
+          'instanceMagnitudes': [],
+          'instanceLocations': [],
+          'relations': [],
+          'attachments': [],
+          'historyEvents': [],
+          'customTemplates': [],
+          'speciesRequirements': [],
+          'notifications': [],
+          'appSettings': [],
+          'ignoredAuditCards': [],
+        }
+      };
+
+      await serviceWithProcessor.importDatabaseFromJsonString(jsonEncode(v6Backup));
+      expect(postProcessorRan, isTrue);
+    });
   });
 }
+
+class _TrackingPostProcessor implements IDataMigrationPostProcessor {
+  final void Function() onProcess;
+  _TrackingPostProcessor(this.onProcess);
+
+  @override
+  Future<void> process(AppDatabase db) async {
+    onProcess();
+  }
+}
+

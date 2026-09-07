@@ -601,18 +601,7 @@ class DatabaseBackupService {
     });
 
     // Execute decoupled migration post-processors (e.g. Numismatic standardization, History backfill)
-    // Only needed if the imported backup is from an older schema version
-    int importedVer = 1;
-    if (rawVersion is int) {
-      importedVer = rawVersion;
-    } else if (rawVersion is num) {
-      importedVer = rawVersion.floor();
-    } else if (rawVersion is String) {
-      importedVer = double.tryParse(rawVersion)?.floor() ?? 1;
-    }
-    if (importedVer < _db.schemaVersion) {
-      await DataMigrationRegistry.runAll(_db, _postProcessors);
-    }
+    await DataMigrationRegistry.runAll(_db, _postProcessors);
 
     // Log backup restore event
     int totalImportedRecords = 0;
