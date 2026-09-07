@@ -24,13 +24,29 @@ class NumismaticMigrationService {
   }) async {
     final allEntities = await entityRepo.getAllEntities();
 
+    // Standardize the canonical subspecies name to canonical currency name
+    final parsed = NumismaticParser.parseSubspeciesName(canonicalSubspecies.subspeciesName);
+    final rawCurr = (parsed.currencyName != null && parsed.currencyName!.isNotEmpty)
+        ? parsed.currencyName!
+        : canonicalSubspecies.subspeciesName;
+    final canonicalCurrency = NumismaticParser.resolveCurrencyName(rawCurr);
+
+    var targetCanonical = canonicalSubspecies;
+    if (canonicalSubspecies.subspeciesName != canonicalCurrency) {
+      targetCanonical = canonicalSubspecies.copyWith(
+        subspeciesName: canonicalCurrency,
+        notes: NumismaticParser.buildSubspeciesNotes(currencyName: canonicalCurrency),
+      );
+      await catalogRepo.saveSubspecies(targetCanonical);
+    }
+
     for (final dup in duplicateSubspeciesList) {
-      if (dup.id == canonicalSubspecies.id) continue;
+      if (dup.id == targetCanonical.id) continue;
 
       // Reassign entities belonging to dup
       final entitiesToMove = allEntities.where((e) => e.subspeciesId == dup.id);
       for (final entity in entitiesToMove) {
-        final updated = entity.copyWith(subspeciesId: canonicalSubspecies.id);
+        final updated = entity.copyWith(subspeciesId: targetCanonical.id);
         await entityRepo.saveEntity(updated);
       }
 

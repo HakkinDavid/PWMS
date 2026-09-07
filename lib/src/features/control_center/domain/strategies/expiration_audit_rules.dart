@@ -5,6 +5,7 @@ import 'package:platinum_world_management_system/src/core/domain/property_data_t
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import 'package:uuid/uuid.dart';
+import '../../../catalog/domain/numismatic_data_helper.dart';
 import '../../../entities/domain/instance_magnitude.dart';
 import '../audit_rule_strategy.dart';
 import 'audit_rule_helper.dart';
@@ -159,11 +160,26 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
     for (final entity in context.allEntities) {
       final species = context.speciesById[entity.speciesId];
       if (species != null && species.magnitudes.isNotEmpty) {
+        final isNumismatic = NumismaticDataHelper.isNumismaticSpecies(species);
         final entityPropNames = {
           for (final im in entity.magnitudes) im.propertyName.trim().toLowerCase()
         };
-        final missingMags = species.magnitudes.where((sm) =>
-            !entityPropNames.contains(sm.propertyName.trim().toLowerCase())).toList();
+        final missingMags = species.magnitudes.where((sm) {
+          final smNorm = sm.propertyName.trim().toLowerCase();
+          if (isNumismatic) {
+            // Motivo is commemorative-only (optional on circulating coins)
+            // and Grado is audited via EmptyDataAuditStrategy with dedicated WheelPicker
+            if (smNorm == AppStrings.motifPropertyName.toLowerCase() ||
+                smNorm == AppTechnicalStrings.magMotivoLower ||
+                smNorm == AppStrings.gradePropertyName.toLowerCase() ||
+                smNorm == AppTechnicalStrings.magGradoLower ||
+                smNorm == AppTechnicalStrings.magConservacionWithAccentLower ||
+                smNorm == AppTechnicalStrings.magConservacionWithoutAccentLower) {
+              return false;
+            }
+          }
+          return !entityPropNames.contains(smNorm);
+        }).toList();
 
         for (final missingProp in missingMags) {
           final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);

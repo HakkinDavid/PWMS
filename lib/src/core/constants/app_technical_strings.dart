@@ -655,8 +655,17 @@ WHERE id IN (
   };
   static const exceptionPrefix = 'Exception: ';
   static const anversoParensLower = '(anverso)';
+  static const reversoParensLower = '(reverso)';
   static const anversoLower = 'anverso';
   static const reversoLower = 'reverso';
+  static const cantoLower = 'canto';
+  static const edgeLower = 'edge';
+  static const certificadoLower = 'certificado';
+  static const certLower = 'cert';
+  static const slabLower = 'slab';
+  static const estucheLower = 'estuche';
+  static String adjuntoIndex(int i) => 'adjunto_$i';
+  static const none = 'none';
   static const assertConfirmToastOrOnConfirm = 'Either confirmToastMessage or onConfirm must be provided';
 
   // ---------------------------------------------------------------------------
