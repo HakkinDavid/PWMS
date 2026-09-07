@@ -29,9 +29,10 @@ void main() {
         expect(rule.denominations, isNotEmpty);
         expect(rule.validCurrencies, isNotEmpty);
 
-        // Every piece must have a non-empty denomination
+        // Every piece must have a non-empty denomination and non-empty motifs
         for (final piece in rule.pieces) {
           expect(piece.denomination.trim(), isNotEmpty);
+          expect(piece.motifs, isNotEmpty, reason: 'Piece ${piece.denomination} in ${rule.country} (${rule.minYear}-${rule.maxYear}) has empty motifs');
           if (rule.isBanknote) {
             expect(piece.isBanknote, isTrue);
           }
@@ -157,7 +158,7 @@ void main() {
       final outliersMex5 = NumismaticDomainRules.checkEmissionOutliers(instance: entityMex5);
       expect(outliersMex5.any((o) => o.type == NumismaticEmissionOutlierType.motifMismatch), isTrue);
 
-      // Spain 1 Peseta 1994 without motif -> standard circulation is valid, no motif outlier
+      // Spain 1 Peseta 1994 with valid motif -> no motif outlier
       final entitySpain1 = WorldEntity(
         id: 'inst-sp1-1994',
         speciesId: 'sp-coin',
@@ -169,6 +170,7 @@ void main() {
           InstanceMagnitude(id: 'm3', instanceId: 'inst-sp1-1994', propertyName: 'Divisa', dataType: 'string', stringValue: 'ESP'),
           InstanceMagnitude(id: 'm4', instanceId: 'inst-sp1-1994', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 1.0),
           InstanceMagnitude(id: 'm5', instanceId: 'inst-sp1-1994', propertyName: 'Material', dataType: 'string', stringValue: 'Aluminio'),
+          InstanceMagnitude(id: 'm6', instanceId: 'inst-sp1-1994', propertyName: 'Motivo', dataType: 'string', stringValue: '1 Peseta Aluminio (Grande 1982-1989 / Lenteja 1989-2001)'),
         ],
       );
 

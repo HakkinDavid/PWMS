@@ -9,8 +9,6 @@ class NumismaticPieceDefinition {
   final String? material;
   final List<String> allowedMaterials;
   final List<NumismaticMotifRule> motifs;
-  final String? commonName;
-  final String? motifName;
   final double? weightGrams;
   final double? diameterMm;
   final bool isBanknote;
@@ -18,18 +16,16 @@ class NumismaticPieceDefinition {
 
   const NumismaticPieceDefinition({
     required this.denomination,
+    required this.motifs,
     this.minYear,
     this.maxYear,
     this.material,
     this.allowedMaterials = const [],
-    this.motifs = const [],
-    this.commonName,
-    this.motifName,
     this.weightGrams,
     this.diameterMm,
     this.isBanknote = false,
     this.currencyCode,
-  });
+  }) : assert(motifs.length > 0, 'Every NumismaticPieceDefinition must have at least one motif.');
 
   /// Evaluates whether this specific piece was active/minted in the given [year].
   bool matchesYear(int? year) {
@@ -63,9 +59,6 @@ class NumismaticPieceDefinition {
     }
     return const [];
   }
-
-  /// Effective visual motif name representing this piece.
-  String? get effectiveMotifName => motifName ?? commonName;
 
   /// Returns commemorative motif names matching the specified [year] (excluding standard circulation tokens).
   List<String> getMotifsForYear(int? year) {
