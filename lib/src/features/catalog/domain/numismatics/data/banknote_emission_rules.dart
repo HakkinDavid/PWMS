@@ -158,7 +158,14 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         isBanknote: true,
         allowedMaterials: ['Papel de algodón', 'Polímero'],
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Nezahualcóyotl / Tenochtitlan (Circulación Estándar)',
+            2006,
+            2019,
+            null,
+            null,
+            true,
+          ),
           NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2009, 2010),
           NumismaticMotifRule('Centenario de la Constitución Política de 1917 (2017)', 2016, 2017),
         ],
@@ -170,7 +177,14 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         maxYear: 2019,
         isBanknote: true,
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Sor Juana Inés de la Cruz / Hacienda de Panoaya (Circulación Estándar)',
+            2006,
+            2019,
+            null,
+            null,
+            true,
+          ),
           NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2009, 2010),
         ],
       ),
@@ -195,7 +209,14 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         maxYear: 2024,
         isBanknote: true,
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Benito Juárez / Monte Albán (Familia F1)',
+            2020,
+            2024,
+            null,
+            null,
+            true,
+          ),
           NumismaticMotifRule('Bicentenario de la Independencia Nacional (2021)', 2021),
         ],
       ),

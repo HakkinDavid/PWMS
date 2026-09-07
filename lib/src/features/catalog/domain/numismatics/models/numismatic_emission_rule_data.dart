@@ -113,8 +113,8 @@ class NumismaticEmissionRuleData {
     final reasons = <String>{};
     for (final p in effectivePieces) {
       for (final m in p.motifs) {
-        if (!m.isStandard && m.name != null && m.name!.trim().isNotEmpty) {
-          reasons.add(m.name!);
+        if (!m.isStandard && m.name.trim().isNotEmpty) {
+          reasons.add(m.name);
         }
       }
     }
@@ -264,7 +264,7 @@ class NumismaticEmissionRuleData {
       if (matchesDenomination(entry.key, targetDenom)) {
         final matching = entry.value
             .where((m) => !m.isStandard && m.matchesYear(year))
-            .map((m) => m.name!)
+            .map((m) => m.name)
             .toList();
         return matching;
       }

@@ -78,7 +78,7 @@ class NumismaticPieceDefinition {
     if (motifs.isEmpty) return const [];
     return motifs
         .where((m) => !m.isStandard && m.matchesYear(year))
-        .map((m) => m.name!)
+        .map((m) => m.name)
         .toList();
   }
 

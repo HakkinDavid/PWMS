@@ -75,6 +75,36 @@ void main() {
       expect(piece.getMotifsForYear(2017), equals(['Centenario de la Constitución Política de 1917 (2017)']));
       expect(piece.getMotifsForYear(2014), isEmpty);
     });
+
+    test('NumismaticMotifRule handles descriptive names, standard flag and year matching', () {
+      const standardMotif = NumismaticMotifRule(
+        'Lincoln Memorial (1959-2008)',
+        2000,
+        2008,
+        'KM#201a',
+        'https://en.numista.com/catalogue/pieces42.html',
+        true,
+      );
+
+      expect(standardMotif.name, equals('Lincoln Memorial (1959-2008)'));
+      expect(standardMotif.isStandard, isTrue);
+      expect(standardMotif.kmNumber, equals('KM#201a'));
+      expect(standardMotif.numistaUrl, equals('https://en.numista.com/catalogue/pieces42.html'));
+      expect(standardMotif.matchesYear(2004), isTrue);
+      expect(standardMotif.matchesYear(1999), isFalse);
+      expect(standardMotif.matchesYear(2009), isFalse);
+      expect(standardMotif.matchesYear(null), isTrue);
+
+      const commemorativeMotif = NumismaticMotifRule(
+        'Lincoln Bicentennial - Birthplace (2009)',
+        2009,
+      );
+      expect(commemorativeMotif.isStandard, isFalse);
+      expect(commemorativeMotif.minYear, equals(2009));
+      expect(commemorativeMotif.maxYear, equals(2009));
+      expect(commemorativeMotif.matchesYear(2009), isTrue);
+      expect(commemorativeMotif.matchesYear(2010), isFalse);
+    });
   });
 
   group('NumismaticEmissionRuleData Piece-Level Granularity Tests', () {

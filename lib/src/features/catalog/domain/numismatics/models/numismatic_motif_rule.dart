@@ -1,36 +1,26 @@
 /// Metadata representation of a temporally bounded numismatic commemorative or standard motif.
 class NumismaticMotifRule {
-  final String? name;
-  final int? minYear;
-  final int? maxYear;
+  final String name;
+  final int minYear;
+  final int maxYear;
   final String? kmNumber;
   final String? numistaUrl;
+  final bool isStandard;
 
   const NumismaticMotifRule(
-    String name,
+    this.name,
     int minYear, [
     int? maxYear,
     this.kmNumber,
     this.numistaUrl,
-  ])  : name = name,
-        minYear = minYear,
+    this.isStandard = false,
+  ])  : minYear = minYear,
         maxYear = maxYear ?? minYear;
-
-  /// Explicit constructor declaring standard circulation availability without a special commemorative motif.
-  const NumismaticMotifRule.standard([
-    this.minYear,
-    this.maxYear,
-    this.kmNumber,
-    this.numistaUrl,
-  ]) : name = null;
-
-  /// Returns true if this rule represents the standard circulating edition.
-  bool get isStandard => name == null;
 
   bool matchesYear(int? year) {
     if (year == null) return true;
-    if (minYear != null && year < minYear!) return false;
-    if (maxYear != null && year > maxYear!) return false;
+    if (year < minYear) return false;
+    if (year > maxYear) return false;
     return true;
   }
 }

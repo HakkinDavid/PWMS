@@ -778,11 +778,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule.standard(
+          NumismaticMotifRule(
+            'Lincoln Memorial (1959-2008)',
             2000,
             2008,
             'KM#201a',
             'https://en.numista.com/catalogue/pieces42.html',
+            true,
           ),
           NumismaticMotifRule(
             'Lincoln Bicentennial - Birthplace (2009)',
@@ -812,11 +814,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             'KM#444',
             'https://en.numista.com/catalogue/pieces4789.html',
           ),
-          NumismaticMotifRule.standard(
+          NumismaticMotifRule(
+            'Union Shield - Escudo de la Unión (2010+)',
             2010,
             2100,
             'KM#468',
             'https://en.numista.com/catalogue/pieces9073.html',
+            true,
           ),
         ],
       ),
@@ -826,11 +830,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule.standard(
+          NumismaticMotifRule(
+            'Jefferson Nickel - Monticello (1938-2003)',
             2000,
             2003,
             'KM#A192',
             'https://en.numista.com/catalogue/pieces44.html',
+            true,
           ),
           NumismaticMotifRule(
             'Westward Journey - Peace Medal (2004)',
@@ -860,11 +866,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             'KM#369',
             'https://en.numista.com/catalogue/pieces50.html',
           ),
-          NumismaticMotifRule.standard(
+          NumismaticMotifRule(
+            'Jefferson Nickel - Return to Monticello (2006+)',
             2006,
             2100,
             'KM#381',
             'https://en.numista.com/catalogue/pieces46.html',
+            true,
           ),
         ],
       ),

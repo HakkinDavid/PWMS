@@ -1516,7 +1516,14 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Acero inoxidable',
         motifName: '5 Centavos Acero Inoxidable',
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
+            1992,
+            1995,
+            'KM#543',
+            'https://en.numista.com/catalogue/pieces594.html',
+            true,
+          ),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -1527,7 +1534,14 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Acero inoxidable',
         motifName: '10 Centavos Acero Inoxidable',
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Anillo del Sacrificio (Piedra del Sol)',
+            1992,
+            1995,
+            'KM#544',
+            'https://en.numista.com/catalogue/pieces584.html',
+            true,
+          ),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -1538,7 +1552,14 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bronce de aluminio',
         motifName: '20 Centavos Bronce de Aluminio',
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Ácatl - Decimotercer Día (Piedra del Sol)',
+            1992,
+            1995,
+            'KM#545',
+            'https://en.numista.com/catalogue/pieces585.html',
+            true,
+          ),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -1549,7 +1570,14 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bronce de aluminio',
         motifName: '50 Centavos Bronce de Aluminio',
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Anillo de la Aceptación (Piedra del Sol)',
+            1992,
+            1995,
+            'KM#546',
+            'https://en.numista.com/catalogue/pieces586.html',
+            true,
+          ),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -1560,7 +1588,14 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: 'N\$ 1 Bimetálica (Anillo Bronce-Aluminio, Centro Acero)',
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Anillo del Resplandor (Piedra del Sol)',
+            1992,
+            1995,
+            'KM#550',
+            'https://en.numista.com/catalogue/pieces587.html',
+            true,
+          ),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -1571,7 +1606,14 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: 'N\$ 2 Bimetálica (Anillo Bronce-Aluminio, Centro Acero)',
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Anillo de los Días (Piedra del Sol)',
+            1992,
+            1995,
+            'KM#551',
+            'https://en.numista.com/catalogue/pieces588.html',
+            true,
+          ),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -1582,7 +1624,14 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         material: 'Bimetálica',
         motifName: 'N\$ 5 Bimetálica (Anillo Bronce-Aluminio, Centro Acero)',
         motifs: [
-          NumismaticMotifRule.standard(),
+          NumismaticMotifRule(
+            'Anillo de las Serpientes (Piedra del Sol)',
+            1992,
+            1995,
+            'KM#552',
+            'https://en.numista.com/catalogue/pieces589.html',
+            true,
+          ),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -1602,6 +1651,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1993,
         maxYear: 1995,
         material: 'Bimetálica',
+        allowedMaterials: ['Bimetálica', 'Plata'],
         motifName: 'N\$ 20 Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)',
         motifs: [
           NumismaticMotifRule('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)', 1993, 1995),
@@ -1612,6 +1662,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1993,
         maxYear: 1995,
         material: 'Bimetálica',
+        allowedMaterials: ['Bimetálica', 'Plata'],
         motifName: 'N\$ 50 Niños Héroes (Centro de Plata Sterling .925)',
         motifs: [
           NumismaticMotifRule('Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)', 1993, 1995),
@@ -1704,6 +1755,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2003,
         maxYear: 2007,
         material: 'Bimetálica',
+        allowedMaterials: ['Bimetálica', 'Plata'],
         motifName: '100 Pesos Plata .925 Conmemorativos de los Estados',
         motifs: [
           NumismaticMotifRule('32 Estados de la República - Fase 1 (Heráldicos)', 2003, 2005),

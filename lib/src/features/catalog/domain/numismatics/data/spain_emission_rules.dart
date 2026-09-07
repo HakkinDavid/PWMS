@@ -318,11 +318,13 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1990,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule.standard(
+          NumismaticMotifRule(
+            'Corona Real y Letra M (1990-2000)',
             1990,
             2000,
             'KM#841',
             'https://en.numista.com/catalogue/pieces1279.html',
+            true,
           ),
           NumismaticMotifRule('Juegos Olímpicos de Barcelona 92 (1990-1992)', 1990, 1992),
           NumismaticMotifRule('Castilla y León (1993)', 1993, 1993),
@@ -446,7 +448,14 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule.standard(1999, 2100),
+          NumismaticMotifRule(
+            'Efigie del Rey Juan Carlos I / Rey Felipe VI (Circulación Estándar)',
+            1999,
+            2100,
+            'KM#1056/KM#1332',
+            'https://en.numista.com/catalogue/pieces110.html',
+            true,
+          ),
           NumismaticMotifRule('IV Centenario de Don Quijote de la Mancha', 2005, 2005),
           NumismaticMotifRule('50 Aniversario del Tratado de Roma (2007)', 2007, 2007),
           NumismaticMotifRule('10 Años de la Unión Económica y Monetaria (2009)', 2009, 2009),
@@ -577,7 +586,14 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule.standard(1999, 2100, null, 'https://en.numista.com/catalogue/pieces110.html'),
+          NumismaticMotifRule(
+            'Mapa de Europa / Unión Europea (Cara Común Estándar)',
+            1999,
+            2100,
+            null,
+            'https://en.numista.com/catalogue/pieces110.html',
+            true,
+          ),
           NumismaticMotifRule('50 Aniversario del Tratado de Roma (2007)', 2007, 2007, null, 'https://en.numista.com/catalogue/pieces2150.html'),
           NumismaticMotifRule('10 Años de la Unión Económica y Monetaria (2009)', 2009, 2009, null, 'https://en.numista.com/catalogue/pieces5053.html'),
           NumismaticMotifRule('10 Años de los Billetes y Monedas en Euros (2012)', 2012, 2012, null, 'https://en.numista.com/catalogue/pieces28239.html'),
