@@ -5,13 +5,10 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
   // 3.1 España - Antiguo Régimen y Monarquía Hispánica (1500–1868)
   NumismaticEmissionRuleData(
     country: 'España',
-    minYear: 1500,
-    maxYear: 1868,
-    validCurrencies: ['REAL', 'ESC', 'MRV', 'RDV'],
-    defaultCurrency: 'REAL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/16',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Medio Maravedí / Maravedí Cobre',
@@ -23,6 +20,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             '2 Maravedís / 4 Maravedís Cobre',
@@ -34,6 +32,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Castillo y León / Maravedís',
@@ -45,6 +44,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Monograma Real Coronado / Columnas y Castillo (Medio Real)',
@@ -56,6 +56,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Escudo Real Coronado / Columnario y Busto (Un Real)',
@@ -67,6 +68,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Pistolete / Dos Reales',
@@ -78,6 +80,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Medio Duro',
@@ -89,6 +92,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Real de a Ocho / Columnario / Busto / Duro',
@@ -104,13 +108,10 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
   // 3.2 España - Peseta Clásica (1869–1939)
   NumismaticEmissionRuleData(
     country: 'España',
-    minYear: 1869,
-    maxYear: 1939,
-    validCurrencies: ['ESP'],
-    defaultCurrency: 'ESP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Peseta (León rampante / Hispania)',
@@ -121,6 +122,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Peseta (León rampante / Hispania)',
@@ -131,6 +133,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Peseta (Perra Chica)',
@@ -142,6 +145,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Peseta (Perra Gorda)',
@@ -153,6 +157,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'con agujero (Carabela / Gallega)',
@@ -164,6 +169,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Hispania Recostada / Reyes Alfonso XII y XIII (Escudo de España)',
@@ -175,6 +181,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Plata .835 (Hispania / Reyes)',
@@ -186,6 +193,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Hispania / Bustos Reales (Alfonso XII y XIII)',
@@ -197,6 +205,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Duro de Plata (.900)',
@@ -208,6 +217,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Alfonso XII (Oro .900)',
@@ -219,6 +229,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Alfonso XIII (Oro .900)',
@@ -230,6 +241,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '25',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Alfonso XII (Oro .900)',
@@ -241,6 +253,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Hispania de Pie / Busto de Alfonso XIII Niño (Escudo Real)',
@@ -256,13 +269,10 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
   // 3.3 España - Peseta del Estado Español y Transición (1940–1981)
   NumismaticEmissionRuleData(
     country: 'España',
-    minYear: 1940,
-    maxYear: 1981,
-    validCurrencies: ['ESP'],
-    defaultCurrency: 'ESP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Jinete Ibérico',
@@ -274,6 +284,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Jinete Ibérico',
@@ -285,6 +296,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Timón y Ancla con agujero',
@@ -296,6 +308,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             '(Rubia de Franco / Juan Carlos I)',
@@ -307,6 +320,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Franco',
@@ -317,6 +331,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             '(Duro de Franco / Juan Carlos I)',
@@ -328,6 +343,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '25',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'con agujero (Corona / Juan Carlos I)',
@@ -339,6 +355,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             '(Franco / Juan Carlos I)',
@@ -350,6 +367,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Franco Plata .800',
@@ -369,13 +387,10 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
   // 3.4 España - Peseta Moderna y Monedas Autonómicas (1982–2001)
   NumismaticEmissionRuleData(
     country: 'España',
-    minYear: 1982,
-    maxYear: 2001,
-    validCurrencies: ['ESP'],
-    defaultCurrency: 'ESP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Busto del Rey Juan Carlos I / Escudo de España',
@@ -387,6 +402,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'España 82',
@@ -398,6 +414,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Grande / Lenteja',
@@ -409,6 +426,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'España 82',
@@ -420,6 +438,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Busto del Rey Juan Carlos I / Numeral 5 PTAS (Duro Pequeño)',
@@ -431,6 +450,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Busto del Rey Juan Carlos I / Homenajes Culturales',
@@ -442,6 +462,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '25',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Corona Real y Letra M (1990-2000)',
@@ -504,6 +525,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Flor de Lis / Pantalla',
@@ -515,6 +537,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             '(20 Duros)',
@@ -526,6 +549,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Rey Juan Carlos I y Príncipe Felipe / Patrimonio Cultural',
@@ -537,6 +561,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Reyes Juan Carlos I y Sofía / Escudo Nacional',
@@ -548,6 +573,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Asamblea del FMI y Banco Mundial - Madrid',
@@ -597,13 +623,10 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
   // 3.5 España - Época del Euro (grabadas físicamente 1999–presente)
   NumismaticEmissionRuleData(
     country: 'España',
-    minYear: 1999,
-    maxYear: 2100,
-    validCurrencies: ['EUR'],
-    defaultCurrency: 'EUR',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Catedral de Santiago de Compostela',
@@ -615,6 +638,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Catedral de Santiago de Compostela',
@@ -626,6 +650,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Catedral de Santiago de Compostela',
@@ -637,6 +662,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Miguel de Cervantes',
@@ -648,6 +674,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Miguel de Cervantes',
@@ -659,6 +686,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Miguel de Cervantes',
@@ -670,6 +698,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Rey Juan Carlos I / Rey Felipe VI',
@@ -681,6 +710,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Efigie del Rey Juan Carlos I / Rey Felipe VI (Circulación Estándar)',
@@ -827,6 +857,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
@@ -838,6 +869,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '12',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
@@ -849,6 +881,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
@@ -860,6 +893,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '30',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
@@ -871,6 +905,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '40',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
@@ -886,13 +921,10 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
   // 3.6 Unión Europea (Zona Euro, grabadas físicamente 1999–presente)
   NumismaticEmissionRuleData(
     country: 'Unión Europea',
-    minYear: 1999,
-    maxYear: 2100,
-    validCurrencies: ['EUR'],
-    defaultCurrency: 'EUR',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Euro Común (Globo Terráqueo)',
@@ -904,6 +936,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Euro Común (Globo Terráqueo)',
@@ -915,6 +948,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Euro Común (Globo Terráqueo)',
@@ -926,6 +960,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Euro Común (Mapa Europeo)',
@@ -937,6 +972,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Euro Común (Mapa Europeo)',
@@ -948,6 +984,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Euro Común (Mapa Europeo)',
@@ -959,6 +996,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Común (Mapa Europeo)',
@@ -970,6 +1008,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Mapa de Europa / Unión Europea (Cara Común Estándar)',

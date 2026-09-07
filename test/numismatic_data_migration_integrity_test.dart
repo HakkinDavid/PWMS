@@ -28,13 +28,11 @@ void main() {
         expect(rule.denominations, isNotEmpty);
         expect(rule.validCurrencies, isNotEmpty);
 
-        // Every piece must have a non-empty denomination and non-empty motifs
+        // Every piece must have a non-empty denomination, currency, and non-empty motifs
         for (final piece in rule.pieces) {
           expect(piece.denomination.trim(), isNotEmpty);
+          expect(piece.currency.trim(), isNotEmpty);
           expect(piece.motifs, isNotEmpty, reason: 'Piece ${piece.denomination} in ${rule.country} (${rule.minYear}-${rule.maxYear}) has empty motifs');
-          if (rule.isBanknote) {
-            expect(piece.isBanknote, isTrue);
-          }
         }
       }
     });
@@ -69,7 +67,6 @@ void main() {
       );
       final quarter = modernUSA.pieces.firstWhere((p) => p.denomination == '0.25');
       expect(quarter.motifs.length, greaterThan(60)); // State Quarters + ATB + Women Quarters
-
       final dollar = modernUSA.pieces.firstWhere((p) => p.denomination == '1');
       expect(dollar.motifs.length, greaterThan(40)); // Sacagawea + Presidential + Innovation
     });
@@ -98,12 +95,11 @@ void main() {
       expect(mexicoFamiliaG.isBanknote, isTrue);
       final piece20 = mexicoFamiliaG.pieces.firstWhere((p) => p.denomination == '20');
       expect(piece20.material, equals('Polímero'));
-      expect(piece20.isBanknote, isTrue);
       expect(piece20.motifs, isNotEmpty);
     });
 
     test('NumismaticMatrix evaluation executes with complete parity', () {
-      // Test Mexico 1822 4 Reales (Plata/Oro)
+      // Test Mexico 1822 4 Reales (Plata) vs 4 Escudos (Oro)
       final res1 = NumismaticMatrix.evaluate(const NumismaticQueryContext(
         country: 'Imperio Mexicano (Primer y Segundo Imperio)',
         year: 1822,
@@ -112,7 +108,17 @@ void main() {
       ));
       expect(res1.matchingPiece, isNotNull);
       expect(res1.inferredMaterial, equals('Plata'));
-      expect(res1.validMaterials, containsAll(['Plata', 'Oro']));
+      expect(res1.validMaterials, contains('Plata'));
+
+      final res1Gold = NumismaticMatrix.evaluate(const NumismaticQueryContext(
+        country: 'Imperio Mexicano (Primer y Segundo Imperio)',
+        year: 1822,
+        denomination: '4',
+        currencyCode: 'MXE',
+      ));
+      expect(res1Gold.matchingPiece, isNotNull);
+      expect(res1Gold.inferredMaterial, equals('Oro'));
+      expect(res1Gold.validMaterials, contains('Oro'));
 
 
       // Test USA 2004 Quarter (Westward Journey / State Quarters active)

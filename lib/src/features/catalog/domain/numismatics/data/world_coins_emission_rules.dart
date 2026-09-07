@@ -5,13 +5,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 4.1 Guatemala - Época Colonial y Reales Predecimales (1500–1859)
   NumismaticEmissionRuleData(
     country: 'Guatemala',
-    minYear: 1500,
-    maxYear: 1859,
-    validCurrencies: ['REAL', 'ESC', 'GTH_CENT'],
-    defaultCurrency: 'REAL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Castillo y León / Busto',
@@ -23,6 +20,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Colonial y República del Centro de América',
@@ -34,6 +32,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Columnario y Busto Real / Escudo Coronado (Ceca de Guatemala)',
@@ -45,6 +44,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)',
@@ -56,6 +56,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)',
@@ -67,6 +68,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Plata (Columnario / Busto / Volcán del Centro de América)',
@@ -82,13 +84,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 4.2 Guatemala - Época del Peso (1860–1924)
   NumismaticEmissionRuleData(
     country: 'Guatemala',
-    minYear: 1860,
-    maxYear: 1924,
-    validCurrencies: ['GTQ_HIST', 'REAL'],
-    defaultCurrency: 'GTQ_HIST',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Peso (Cobre / Cuproníquel)',
@@ -100,6 +99,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Cuarto de Real',
@@ -111,6 +111,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             '1 Real Plata .900/.720',
@@ -122,6 +123,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Quetzal y Escudo Nacional',
@@ -133,6 +135,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Quetzal y Escudo Nacional',
@@ -144,6 +147,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Plata .900 (Carrera / República de Guatemala)',
@@ -155,6 +159,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Escudo Nacional de Guatemala',
@@ -166,6 +171,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Escudo Nacional de Guatemala',
@@ -177,6 +183,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Escudo con Quetzal',
@@ -188,6 +195,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Escudo con Quetzal',
@@ -199,6 +207,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Escudo con Quetzal',
@@ -210,6 +219,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Escudo de la República de Guatemala',
@@ -221,6 +231,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'GTQ_HIST',
         motifs: [
           NumismaticMotifRule(
             'Busto de Rafael Carrera / Escudo de la República de Guatemala',
@@ -236,13 +247,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 4.3 Guatemala - Quetzal Clásico de Plata y Oro (1925–1964)
   NumismaticEmissionRuleData(
     country: 'Guatemala',
-    minYear: 1925,
-    maxYear: 1964,
-    validCurrencies: ['GTQ'],
-    defaultCurrency: 'GTQ',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Quetzal sobre Pedestal (Medio Centavo) / Escudo Nacional',
@@ -254,6 +262,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Quetzal (Fray Bartolomé de las Casas)',
@@ -265,6 +274,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 (Ceiba / Árbol de la Libertad)',
@@ -276,6 +286,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 (Monolito de Quiriguá)',
@@ -287,6 +298,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 (Mujer Indígena Santiago Atitlán)',
@@ -298,6 +310,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 (Monja Blanca)',
@@ -309,6 +322,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Quetzal sobre Columna (Plata .720)',
@@ -320,6 +334,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Quetzal sobre Columna (Oro .900)',
@@ -330,6 +345,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Quetzal sobre Columna (Oro .900)',
@@ -340,6 +356,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Quetzal sobre Columna (Oro .900)',
@@ -354,13 +371,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 4.4 Guatemala - Quetzal Moderno (1965–presente)
   NumismaticEmissionRuleData(
     country: 'Guatemala',
-    minYear: 1965,
-    maxYear: 2100,
-    validCurrencies: ['GTQ'],
-    defaultCurrency: 'GTQ',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Fray Bartolomé de las Casas',
@@ -372,6 +386,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Árbol de la Libertad (Ceiba)',
@@ -383,6 +398,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Monolito de Quiriguá',
@@ -394,6 +410,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             "Concepción Ramírez (Mujer Tz'utujil)",
@@ -405,6 +422,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Monja Blanca (Lycaste skinneri alba)',
@@ -416,6 +434,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Paz Firme y Duradera (1996+)',
@@ -431,13 +450,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 1.8 Colombia - Virreinato de Nueva Granada y Reales Predecimales (1500–1846)
   NumismaticEmissionRuleData(
     country: 'Colombia',
-    minYear: 1500,
-    maxYear: 1846,
-    validCurrencies: ['REAL', 'ESC', 'COP_HIST'],
-    defaultCurrency: 'REAL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Santa Fe de Bogotá / Popayán',
@@ -449,6 +465,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Monograma Real Coronado / Columnas de Hércules',
@@ -460,6 +477,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Escudo Real Coronado / Columnario Virreinal',
@@ -471,6 +489,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Columnario Virreinal / Escudo Real Coronado',
@@ -482,6 +501,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Columnario Virreinal / Escudo Real Coronado',
@@ -493,6 +513,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Plata (Columnario / Busto / Libertad de la Nueva Granada)',
@@ -508,13 +529,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 5.2 Colombia - Peso Histórico y Decimal Antiguo (1847–1904)
   NumismaticEmissionRuleData(
     country: 'Colombia',
-    minYear: 1847,
-    maxYear: 1904,
-    validCurrencies: ['COP_HIST'],
-    defaultCurrency: 'COP_HIST',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Cobre / Bronce',
@@ -526,6 +544,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Cobre / Cuproníquel',
@@ -537,6 +556,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Plata .666/.835 (Libertad)',
@@ -548,6 +568,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Plata .666/.835 (Libertad)',
@@ -559,6 +580,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Plata .666/.835 (Libertad)',
@@ -570,6 +592,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Plata .835/.900 (Libertad)',
@@ -581,6 +604,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Plata .900 (Estados Unidos de Colombia / República de Colombia)',
@@ -592,6 +616,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Perfil de la Libertad / Escudo con Cóndor Andino',
@@ -603,6 +628,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Perfil de la Libertad / Escudo con Cóndor Andino',
@@ -614,6 +640,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Perfil de la Libertad / Escudo con Cóndor Andino',
@@ -625,6 +652,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'COP_HIST',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (Doble Cóndor)',
@@ -640,13 +668,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 5.3 Colombia - Peso Republicano Clásico (1905–1979)
   NumismaticEmissionRuleData(
     country: 'Colombia',
-    minYear: 1905,
-    maxYear: 1979,
-    validCurrencies: ['COP'],
-    defaultCurrency: 'COP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             '(Cacique Calarcá / República)',
@@ -658,6 +683,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             '(Francisco de Paula Santander)',
@@ -669,6 +695,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Corona de Laurel (o Policarpa Salavarrieta)',
@@ -680,6 +707,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar / Escudo Nacional',
@@ -691,6 +719,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar / Escudo Nacional',
@@ -702,6 +731,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Plata .500 (Simón Bolívar)',
@@ -713,6 +743,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Cuproníquel (Simón Bolívar)',
@@ -724,6 +755,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)',
@@ -735,6 +767,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)',
@@ -746,6 +779,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar / Escudo de Armas con Cóndor',
@@ -757,6 +791,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar / Escudo de Armas con Cóndor',
@@ -768,6 +803,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Camilo Torres / Escudo Nacional',
@@ -783,13 +819,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 5.4 Colombia - Familia Tradicional Árbol de Guacarí (1980–2011)
   NumismaticEmissionRuleData(
     country: 'Colombia',
-    minYear: 1980,
-    maxYear: 2011,
-    validCurrencies: ['COP'],
-    defaultCurrency: 'COP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar',
@@ -801,6 +834,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar',
@@ -812,6 +846,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar',
@@ -823,6 +858,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar',
@@ -834,6 +870,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar',
@@ -845,6 +882,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Colombia',
@@ -856,6 +894,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Colombia',
@@ -867,6 +906,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Figura Quimbaya',
@@ -878,6 +918,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Árbol de Guacarí (Samanea saman)',
@@ -893,13 +934,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 5.5 Colombia - Familia Biodiversidad de Colombia (2012–presente)
   NumismaticEmissionRuleData(
     country: 'Colombia',
-    minYear: 2012,
-    maxYear: 2100,
-    validCurrencies: ['COP'],
-    defaultCurrency: 'COP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Oso de Anteojos (Tremarctos ornatus)',
@@ -911,6 +949,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Frailejón (Espeletia grandiflora)',
@@ -922,6 +961,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Guacamaya Bandera (Ara macao)',
@@ -933,6 +973,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Rana de Cristal (Anura Centrolenidae)',
@@ -944,6 +985,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Tortuga Caguama (Caretta caretta)',
@@ -955,6 +997,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Bicentenario de la Independencia de Colombia',
@@ -975,6 +1018,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20000',
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Bicentenario del Museo Nacional de Colombia',
@@ -989,13 +1033,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 6.1 Canadá - Época Victoriana, Jorge V y Jorge VI (1858–1952)
   NumismaticEmissionRuleData(
     country: 'Canadá',
-    minYear: 1858,
-    maxYear: 1952,
-    validCurrencies: ['CAD', 'CAD_HIST'],
-    defaultCurrency: 'CAD',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Large Cent / Small Cent (Hojas de Arce)',
@@ -1007,6 +1048,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata / Castor de Níquel / Victory Tombac',
@@ -1018,6 +1060,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata .800/.925 (Bluenose Schooner)',
@@ -1029,6 +1072,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata .925 (Victoria)',
@@ -1039,6 +1083,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata .800/.925 (Caribou / Hojas de Arce)',
@@ -1050,6 +1095,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata .800/.925 (Escudo de Canadá)',
@@ -1061,6 +1107,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Silver Dollar Plata .800 (Voyageur / Jorge V / Jorge VI)',
@@ -1072,6 +1119,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (Jorge V)',
@@ -1083,6 +1131,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (Jorge V)',
@@ -1098,13 +1147,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 6.2 Canadá - Era de Plata Isabel II (1953–1967)
   NumismaticEmissionRuleData(
     country: 'Canadá',
-    minYear: 1953,
-    maxYear: 1967,
-    validCurrencies: ['CAD'],
-    defaultCurrency: 'CAD',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Hojas de Arce (Isabel II)',
@@ -1116,6 +1162,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Beaver Castor (Isabel II)',
@@ -1127,6 +1174,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata .800 Bluenose',
@@ -1138,6 +1186,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata .800 Caribou Estándar (1953-1966)',
@@ -1154,6 +1203,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Plata .800 Escudo de Armas (1953-1966)',
@@ -1170,6 +1220,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Silver Dollar Plata .800 Voyageur (1953-1966)',
@@ -1190,13 +1241,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 6.3 Canadá - Transición Níquel Puro Pre-Loonie (1968–1986)
   NumismaticEmissionRuleData(
     country: 'Canadá',
-    minYear: 1968,
-    maxYear: 1986,
-    validCurrencies: ['CAD'],
-    defaultCurrency: 'CAD',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Hojas de Arce',
@@ -1208,6 +1256,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Beaver Castor',
@@ -1219,6 +1268,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Bluenose',
@@ -1230,6 +1280,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Níquel Caribou Estándar (1968-1986)',
@@ -1246,6 +1297,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas',
@@ -1257,6 +1309,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Níquel Voyageur Estándar (1968-1986)',
@@ -1302,13 +1355,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 6.4 Canadá - Introducción del Loonie y Toonie (1987–1999)
   NumismaticEmissionRuleData(
     country: 'Canadá',
-    minYear: 1987,
-    maxYear: 1999,
-    validCurrencies: ['CAD'],
-    defaultCurrency: 'CAD',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Hojas de Arce',
@@ -1320,6 +1370,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Beaver Castor',
@@ -1331,6 +1382,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Bluenose',
@@ -1342,6 +1394,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Caribou Estándar (1987-1999)',
@@ -1363,6 +1416,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas',
@@ -1374,6 +1428,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Loonie - Colimbo Común Estándar (1987-1999)',
@@ -1400,6 +1455,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Toonie - Oso Polar Estándar (1996-1999)',
@@ -1420,13 +1476,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 6.5 Canadá - Época Multi-Ply Plated Steel (2000–presente)
   NumismaticEmissionRuleData(
     country: 'Canadá',
-    minYear: 2000,
-    maxYear: 2100,
-    validCurrencies: ['CAD'],
-    defaultCurrency: 'CAD',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Hojas de Arce',
@@ -1438,6 +1491,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Beaver Castor',
@@ -1449,6 +1503,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Bluenose',
@@ -1460,6 +1515,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Caribou Estándar (2000+)',
@@ -1498,6 +1554,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas',
@@ -1509,6 +1566,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Loonie - Colimbo Común Estándar (2000+)',
@@ -1561,6 +1619,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Toonie - Oso Polar Estándar (2000+)',
@@ -1646,13 +1705,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 7.1 Cuba - Primera República (1915–1961)
   NumismaticEmissionRuleData(
     country: 'Cuba',
-    minYear: 1915,
-    maxYear: 1961,
-    validCurrencies: ['CUP'],
-    defaultCurrency: 'CUP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Cuproníquel (Estrella Solitaria)',
@@ -1664,6 +1720,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Estrella de Cinco Puntas / Escudo de la Palma Real',
@@ -1675,6 +1732,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Estrella de Cinco Puntas / Escudo de la Palma Real',
@@ -1686,6 +1744,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Estrella Radiante / Escudo de la Palma Real',
@@ -1697,6 +1756,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Estrella Radiante / Escudo de la Palma Real',
@@ -1708,6 +1768,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.40',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Estrella Radiante / Escudo de la Palma Real',
@@ -1719,6 +1780,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Plata .900 Estrella Radiante (1915-1939)',
@@ -1735,6 +1797,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (José Martí)',
@@ -1746,6 +1809,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (José Martí)',
@@ -1757,6 +1821,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (José Martí)',
@@ -1768,6 +1833,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (José Martí)',
@@ -1779,6 +1845,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Oro .900 (José Martí)',
@@ -1794,13 +1861,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 7.2 Cuba - Período Socialista Pre-CUC (1962–1993)
   NumismaticEmissionRuleData(
     country: 'Cuba',
-    minYear: 1962,
-    maxYear: 1993,
-    validCurrencies: ['CUP'],
-    defaultCurrency: 'CUP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
@@ -1812,6 +1876,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
@@ -1823,6 +1888,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
@@ -1834,6 +1900,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
@@ -1845,6 +1912,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.40',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Estrella de Cinco Puntas / Escudo Nacional',
@@ -1855,6 +1923,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Cuproníquel (Patria o Muerte)',
@@ -1866,6 +1935,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Ernesto Che Guevara - Hasta la Victoria Siempre',
@@ -1881,13 +1951,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 7.3 Cuba - Régimen Dual CUP / CUC (1994–2020)
   NumismaticEmissionRuleData(
     country: 'Cuba',
-    minYear: 1994,
-    maxYear: 2020,
-    validCurrencies: ['CUP', 'CUC'],
-    defaultCurrency: 'CUP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
@@ -1899,6 +1966,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
@@ -1910,6 +1978,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
@@ -1921,6 +1990,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Castillo de la Real Fuerza',
@@ -1932,6 +2002,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Castillo del Morro',
@@ -1943,6 +2014,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Plaza de la Revolución',
@@ -1954,6 +2026,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'José Martí',
@@ -1965,6 +2038,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Ernesto Che Guevara',
@@ -1976,6 +2050,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Antonio Maceo - Protesta de Baraguá',
@@ -1991,13 +2066,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 7.4 Cuba - Unificación Monetaria (2021–presente)
   NumismaticEmissionRuleData(
     country: 'Cuba',
-    minYear: 2021,
-    maxYear: 2100,
-    validCurrencies: ['CUP'],
-    defaultCurrency: 'CUP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
@@ -2009,6 +2081,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Patria o Muerte',
@@ -2020,6 +2093,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'José Martí',
@@ -2031,6 +2105,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Ernesto Che Guevara',
@@ -2042,6 +2117,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Antonio Maceo',
@@ -2057,13 +2133,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 8.1 Argentina - Provincias Unidas del Río de la Plata y Confederación (1813–1880)
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 1813,
-    maxYear: 1880,
-    validCurrencies: ['ARM', 'REAL'],
-    defaultCurrency: 'ARM',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Sol de Mayo / Corona de Laurel (Cuartillo)',
@@ -2075,6 +2148,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Primera Moneda Patria (Sol de Mayo / Provincias del Río de la Plata)',
@@ -2086,6 +2160,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Escudo de la Asamblea del Año XIII / Sol de Mayo',
@@ -2097,6 +2172,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Sol de Mayo Radiante',
@@ -2108,6 +2184,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Escudo Nacional / Sol de Mayo Radiante',
@@ -2119,6 +2196,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Plata Primera Moneda Patria (En Unión y Libertad)',
@@ -2134,13 +2212,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 8.2 Argentina - Peso Moneda Nacional (1881–1969)
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 1881,
-    maxYear: 1969,
-    validCurrencies: ['ARM'],
-    defaultCurrency: 'ARM',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Bronce (Libertad de Oudiné)',
@@ -2152,6 +2227,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Bronce (Libertad de Oudiné)',
@@ -2163,6 +2239,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Libertad de Oudiné / Escudo Nacional',
@@ -2174,6 +2251,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Libertad de Oudiné / Escudo Nacional',
@@ -2185,6 +2263,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Libertad de Oudiné / Escudo Nacional',
@@ -2196,6 +2275,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Plata .900 / Cuproníquel',
@@ -2207,6 +2287,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Patacón de Plata .900 / Cuproníquel',
@@ -2218,6 +2299,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'General José de San Martín / Escudo Nacional',
@@ -2229,6 +2311,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Argentino de Oro .900 (Oudiné)',
@@ -2240,6 +2323,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'General San Martín',
@@ -2251,6 +2335,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Primera Moneda Patria',
@@ -2262,6 +2347,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '25',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Sesquicentenario de la Revolución de Mayo',
@@ -2272,6 +2358,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Centenario de la Reorganización Nacional',
@@ -2287,6 +2374,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ARM',
         motifs: [
           NumismaticMotifRule(
             'Sesquicentenario de la Independencia (Casa de Tucumán)',
@@ -2301,13 +2389,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 8.3 Argentina - Peso Ley 18.188 (1970–1983)
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 1970,
-    maxYear: 1983,
-    validCurrencies: ['ARL'],
-    defaultCurrency: 'ARL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Ley',
@@ -2319,6 +2404,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Ley',
@@ -2330,6 +2416,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Ley',
@@ -2341,6 +2428,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Ley',
@@ -2352,6 +2440,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Ley',
@@ -2363,6 +2452,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'San Martín',
@@ -2374,6 +2464,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'San Martín',
@@ -2385,6 +2476,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'San Martín',
@@ -2396,6 +2488,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Mundial de Fútbol Argentina 1978 - Estadio José María Minella (1977-1978)',
@@ -2412,6 +2505,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Mundial de Fútbol Argentina 1978 - Estadio Ciudad de Mendoza (1977-1978)',
@@ -2428,6 +2522,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ARL',
         motifs: [
           NumismaticMotifRule(
             'Mundial de Fútbol Argentina 1978 - Estadio Monumental (1977-1978)',
@@ -2453,13 +2548,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 8.4 Argentina - Peso Argentino (1983–1985)
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 1983,
-    maxYear: 1985,
-    validCurrencies: ['ARP'],
-    defaultCurrency: 'ARP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Cabildo de Buenos Aires / Escudo Nacional',
@@ -2471,6 +2563,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Casa de Tucumán / Escudo Nacional',
@@ -2482,6 +2575,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Casa del Acuerdo de San Nicolás / Escudo Nacional',
@@ -2493,6 +2587,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Monumento Nacional a la Bandera / Escudo Nacional',
@@ -2504,6 +2599,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Argentino Cabildo',
@@ -2515,6 +2611,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Argentinos Congreso',
@@ -2526,6 +2623,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Argentinos Casa de Tucumán',
@@ -2537,6 +2635,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Argentinos Casa del Acuerdo',
@@ -2548,6 +2647,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ARP',
         motifs: [
           NumismaticMotifRule(
             'Argentinos Cabildo de Jujuy',
@@ -2562,13 +2662,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 8.5 Argentina - Austral (1985–1991)
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 1985,
-    maxYear: 1991,
-    validCurrencies: ['ARA'],
-    defaultCurrency: 'ARA',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Austral Hornero',
@@ -2580,6 +2677,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Ñandú',
@@ -2591,6 +2689,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Puma',
@@ -2602,6 +2701,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Cóndor',
@@ -2613,6 +2713,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Libertad',
@@ -2624,6 +2725,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Cabildo',
@@ -2634,6 +2736,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Congreso',
@@ -2644,6 +2747,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Casa de Tucumán',
@@ -2655,6 +2759,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Libertad',
@@ -2666,6 +2771,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas',
@@ -2677,6 +2783,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas',
@@ -2688,6 +2795,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
+        currency: 'ARA',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas',
@@ -2703,13 +2811,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 8.6 Argentina - Peso Convertible Series Tradicionales (1992–2016)
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 1992,
-    maxYear: 2016,
-    validCurrencies: ['ARS'],
-    defaultCurrency: 'ARS',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Laurel',
@@ -2721,6 +2826,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Sol de Mayo',
@@ -2732,6 +2838,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas',
@@ -2743,6 +2850,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Cabildo de Buenos Aires',
@@ -2754,6 +2862,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Casa de Tucumán Estándar (1992-2016)',
@@ -2795,6 +2904,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Sol de Mayo Bimetálica Estándar (1994-2016)',
@@ -2836,6 +2946,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Sol de Mayo Estándar (2011-2016)',
@@ -2876,13 +2987,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 8.7 Argentina - Serie "Árboles de la República Argentina" (2017–presente)
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 2017,
-    maxYear: 2100,
-    validCurrencies: ['ARS'],
-    defaultCurrency: 'ARS',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Jacarandá (Jacaranda mimosifolia)',
@@ -2894,6 +3002,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Palo Borracho (Ceiba speciosa)',
@@ -2905,6 +3014,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Arrayán (Luma apiculata)',
@@ -2916,6 +3026,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Caldén (Prosopis caldenia)',
@@ -2931,13 +3042,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 9.1 Brasil - Período Colonial e Imperial (1500–1941)
   NumismaticEmissionRuleData(
     country: 'Brasil',
-    minYear: 1500,
-    maxYear: 1941,
-    validCurrencies: ['BRS'],
-    defaultCurrency: 'BRS',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -2949,6 +3057,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -2960,6 +3069,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '40',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -2971,6 +3081,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '80',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -2982,6 +3093,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -2993,6 +3105,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3004,6 +3117,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '300',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3015,6 +3129,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '400',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3026,6 +3141,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3037,6 +3153,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '640',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3048,6 +3165,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '960',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Patacão Colonial/Imperial',
@@ -3059,6 +3177,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3070,6 +3189,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
+        currency: 'BRS',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3085,13 +3205,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 9.2 Brasil - Cruzeiro (1942–1985)
   NumismaticEmissionRuleData(
     country: 'Brasil',
-    minYear: 1942,
-    maxYear: 1985,
-    validCurrencies: ['BRB', 'BRC'],
-    defaultCurrency: 'BRB',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3103,6 +3220,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3114,6 +3232,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3125,6 +3244,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3136,6 +3256,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3147,6 +3268,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Mapa do Brasil e Ramo de Café (1972-1980)',
@@ -3163,6 +3285,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Cana-de-Açúcar e Brasão das Armas (1972-1984)',
@@ -3179,6 +3302,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Ramo de Soja e Brasão das Armas (1972-1986)',
@@ -3200,6 +3324,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'BRB',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3215,13 +3340,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 9.3 Brasil - Cruzado, Cruzado Novo y Cruzeiro Real (1986–1993)
   NumismaticEmissionRuleData(
     country: 'Brasil',
-    minYear: 1986,
-    maxYear: 1993,
-    validCurrencies: ['BRN', 'BRE', 'BRR'],
-    defaultCurrency: 'BRN',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3233,6 +3355,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3244,6 +3367,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3255,6 +3379,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3266,6 +3391,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3277,6 +3403,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3288,6 +3415,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3299,6 +3427,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3310,6 +3439,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Juscelino Kubitschek e Brasília (1986-1988)',
@@ -3326,6 +3456,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Centenário da República - Efigie da República (1989-1993)',
@@ -3342,6 +3473,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3353,6 +3485,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3364,6 +3497,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
+        currency: 'BRN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3378,13 +3512,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 9.4 Brasil - Real 1ª Familia Acero Inoxidable (1994–1997)
   NumismaticEmissionRuleData(
     country: 'Brasil',
-    minYear: 1994,
-    maxYear: 1997,
-    validCurrencies: ['BRL'],
-    defaultCurrency: 'BRL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3396,6 +3527,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3407,6 +3539,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efigie da República (1ª Familia 1994-1997)',
@@ -3423,6 +3556,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efigie da República (1ª Familia 1994-1995)',
@@ -3439,6 +3573,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3450,6 +3585,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efigie da República (1ª Familia 1994-1995)',
@@ -3470,13 +3606,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 9.5 Brasil - Real 2ª Familia Bimetálica y Recubrimientos (1998–presente)
   NumismaticEmissionRuleData(
     country: 'Brasil',
-    minYear: 1998,
-    maxYear: 2100,
-    validCurrencies: ['BRL'],
-    defaultCurrency: 'BRL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3488,6 +3621,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3499,6 +3633,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3510,6 +3645,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3521,6 +3657,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3532,6 +3669,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efigie da República com Grafismos Marajoaras (2ª Familia 1998+)',
@@ -3662,13 +3800,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 10.1 Chile - Período Colonial y Reales (1500–1850)
   NumismaticEmissionRuleData(
     country: 'Chile',
-    minYear: 1500,
-    maxYear: 1850,
-    validCurrencies: ['CLF', 'REAL', 'ESC'],
-    defaultCurrency: 'REAL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3680,6 +3815,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3691,6 +3827,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3702,6 +3839,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3713,6 +3851,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3724,6 +3863,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3739,13 +3879,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 10.2 Chile - Peso Antiguo Decimal (1851–1959)
   NumismaticEmissionRuleData(
     country: 'Chile',
-    minYear: 1851,
-    maxYear: 1959,
-    validCurrencies: ['CLF'],
-    defaultCurrency: 'CLF',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3757,6 +3894,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3768,6 +3906,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3779,6 +3918,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3790,6 +3930,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3801,6 +3942,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3812,6 +3954,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3823,6 +3966,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3834,6 +3978,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3845,6 +3990,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3856,6 +4002,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3867,6 +4014,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3878,6 +4026,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3889,6 +4038,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'CLF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3904,13 +4054,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 10.3 Chile - Escudo Chileno (1960–1974)
   NumismaticEmissionRuleData(
     country: 'Chile',
-    minYear: 1960,
-    maxYear: 1974,
-    validCurrencies: ['CLE'],
-    defaultCurrency: 'CLE',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3922,6 +4069,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3933,6 +4081,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3944,6 +4093,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3955,6 +4105,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3966,6 +4117,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3977,6 +4129,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3988,6 +4141,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -3999,6 +4153,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4010,6 +4165,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4021,6 +4177,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4032,6 +4189,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4043,6 +4201,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'CLE',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4058,13 +4217,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 10.4 Chile - Peso Actual (1975–presente)
   NumismaticEmissionRuleData(
     country: 'Chile',
-    minYear: 1975,
-    maxYear: 2100,
-    validCurrencies: ['CLP'],
-    defaultCurrency: 'CLP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             "Bernardo O'Higgins",
@@ -4076,6 +4232,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             "Bernardo O'Higgins (Forma Octagonal)",
@@ -4087,6 +4244,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             "Bernardo O'Higgins",
@@ -4104,6 +4262,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             "Bernardo O'Higgins (Forma Decagonal)",
@@ -4115,6 +4274,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Pueblos Originarios - Mujer Mapuche',
@@ -4132,6 +4292,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Cardenal Raúl Silva Henríquez',
@@ -4147,13 +4308,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 11.1 Perú - Época Colonial y Reales (1500–1862)
   NumismaticEmissionRuleData(
     country: 'Perú',
-    minYear: 1500,
-    maxYear: 1862,
-    validCurrencies: ['PER', 'REAL', 'ESC'],
-    defaultCurrency: 'REAL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4165,6 +4323,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4176,6 +4335,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4187,6 +4347,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4198,6 +4359,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4209,6 +4371,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'REAL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4224,13 +4387,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 11.2 Perú - Sol de Oro (1863–1984)
   NumismaticEmissionRuleData(
     country: 'Perú',
-    minYear: 1863,
-    maxYear: 1984,
-    validCurrencies: ['PEH'],
-    defaultCurrency: 'PEH',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4242,6 +4402,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4253,6 +4414,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4264,6 +4426,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4275,6 +4438,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4286,6 +4450,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4297,6 +4462,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Libertad Parada (Plata)',
@@ -4314,6 +4480,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4325,6 +4492,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Almirante Miguel Grau',
@@ -4336,6 +4504,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Túpac Amaru II',
@@ -4347,6 +4516,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4358,6 +4528,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4369,6 +4540,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'PEH',
         motifs: [
           NumismaticMotifRule(
             'Centenario de la Guerra del Pacífico',
@@ -4384,13 +4556,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 11.3 Perú - Inti (1985–1990)
   NumismaticEmissionRuleData(
     country: 'Perú',
-    minYear: 1985,
-    maxYear: 1990,
-    validCurrencies: ['PEI'],
-    defaultCurrency: 'PEI',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4402,6 +4571,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4413,6 +4583,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4424,6 +4595,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4435,6 +4607,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Gran Almirante Miguel Grau',
@@ -4446,6 +4619,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Gran Almirante Miguel Grau',
@@ -4457,6 +4631,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4468,6 +4643,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Andrés Avelino Cáceres',
@@ -4479,6 +4655,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'César Vallejo',
@@ -4490,6 +4667,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'PEI',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4504,13 +4682,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 11.4 Perú - Sol Moderno (1991–presente)
   NumismaticEmissionRuleData(
     country: 'Perú',
-    minYear: 1991,
-    maxYear: 2100,
-    validCurrencies: ['PEN'],
-    defaultCurrency: 'PEN',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4522,6 +4697,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4533,6 +4709,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4544,6 +4721,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4555,6 +4733,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4566,6 +4745,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Armas y Ramas de Laurel y Roble (Circulación Estándar)',
@@ -4822,6 +5002,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Líneas de Nazca - El Colibrí',
@@ -4833,6 +5014,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Líneas de Nazca - El Ave Fragata',
@@ -4848,13 +5030,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 12.1 Reino Unido - Sistema Pre-Decimal (1500–1970)
   NumismaticEmissionRuleData(
     country: 'Reino Unido',
-    minYear: 1500,
-    maxYear: 1970,
-    validCurrencies: ['GBP_OLD'],
-    defaultCurrency: 'GBP_OLD',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4866,6 +5045,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4877,6 +5057,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4888,6 +5069,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4899,6 +5081,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '6',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4910,6 +5093,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1s',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4921,6 +5105,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2s',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4932,6 +5117,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2.5s',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4943,6 +5129,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5s',
+        currency: 'GBP_OLD',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4958,13 +5145,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 12.2 Reino Unido - Sistema Decimal 1ª Fase (1971–2016)
   NumismaticEmissionRuleData(
     country: 'Reino Unido',
-    minYear: 1971,
-    maxYear: 2016,
-    validCurrencies: ['GBP'],
-    defaultCurrency: 'GBP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4976,6 +5160,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4987,6 +5172,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -4998,6 +5184,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5009,6 +5196,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5020,6 +5208,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5031,6 +5220,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Britannia Sedente con Escudo y Tridente (1969-2008)',
@@ -5154,6 +5344,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Royal Arms - Escudo Real de Armas del Reino Unido (1983, 1993, 2003, 2008)',
@@ -5188,6 +5379,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Desarrollo de la Tecnología - Anillos de la Historia Industrial (1997-2015)',
@@ -5304,6 +5496,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5319,13 +5512,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 12.3 Reino Unido - Sistema Decimal 2ª Fase Dodecagonal (2017–presente)
   NumismaticEmissionRuleData(
     country: 'Reino Unido',
-    minYear: 2017,
-    maxYear: 2100,
-    validCurrencies: ['GBP'],
-    defaultCurrency: 'GBP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5337,6 +5527,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5348,6 +5539,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5359,6 +5551,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5370,6 +5563,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5381,6 +5575,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Royal Shield of Arms - Sección del Escudo Real (2017-2022)',
@@ -5438,6 +5633,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Nations of the Crown - Rosa, Puerro, Cardo y Trébol (2017-2022)',
@@ -5455,6 +5651,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Britannia con Escudo y Tridente por Antony Dufort (2015-2022)',
@@ -5507,6 +5704,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5522,13 +5720,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 13.1 Francia - Ancien Régime (1500–1794)
   NumismaticEmissionRuleData(
     country: 'Francia',
-    minYear: 1500,
-    maxYear: 1794,
-    validCurrencies: ['LVT', 'ECU', 'LDO'],
-    defaultCurrency: 'LVT',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/12',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5540,6 +5735,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/6',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5551,6 +5747,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5562,6 +5759,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5573,6 +5771,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5584,6 +5783,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5595,6 +5795,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5606,6 +5807,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '6',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5617,6 +5819,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '12',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5628,6 +5831,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '24',
+        currency: 'LVT',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5643,13 +5847,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 13.2 Francia - Franc Ancien (1795–1959)
   NumismaticEmissionRuleData(
     country: 'Francia',
-    minYear: 1795,
-    maxYear: 1959,
-    validCurrencies: ['FRF'],
-    defaultCurrency: 'FRF',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5661,6 +5862,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5672,6 +5874,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5683,6 +5886,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5694,6 +5898,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5705,6 +5910,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5716,6 +5922,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5727,6 +5934,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5738,6 +5946,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5749,6 +5958,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5760,6 +5970,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5771,6 +5982,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5782,6 +5994,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5793,6 +6006,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -5808,13 +6022,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 13.3 Francia - Nouveau Franc (1960–2001)
   NumismaticEmissionRuleData(
     country: 'Francia',
-    minYear: 1960,
-    maxYear: 2001,
-    validCurrencies: ['FRF'],
-    defaultCurrency: 'FRF',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             "Épi d'épi",
@@ -5826,6 +6037,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Marianne de Lagriffoul',
@@ -5837,6 +6049,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Marianne de Lagriffoul',
@@ -5848,6 +6061,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Marianne de Lagriffoul',
@@ -5859,6 +6073,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Semeuse de Roty',
@@ -5870,6 +6085,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Semeuse de Roty',
@@ -5881,6 +6097,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Semeuse de Roty',
@@ -5892,6 +6109,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Semeuse de Roty',
@@ -5903,6 +6121,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Génie de la Bastille / Génie de la Liberté (1988-2001)',
@@ -5944,6 +6163,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Le Mont-Saint-Michel (1992-2001)',
@@ -5965,6 +6185,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Hercule de Dupré (1974-1980)',
@@ -5976,6 +6197,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Panthéon de París (1984-1998)',
@@ -6056,13 +6278,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 14.1 Alemania - Imperio Alemán Goldmark (1873–1923)
   NumismaticEmissionRuleData(
     country: 'Alemania',
-    minYear: 1873,
-    maxYear: 1923,
-    validCurrencies: ['FRG', 'PRM'],
-    defaultCurrency: 'FRG',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6074,6 +6293,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6085,6 +6305,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6096,6 +6317,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6107,6 +6329,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6118,6 +6341,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6129,6 +6353,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6140,6 +6365,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6151,6 +6377,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6162,6 +6389,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6173,6 +6401,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6184,6 +6413,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6195,6 +6425,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'FRG',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6210,13 +6441,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 14.2 Alemania - República de Weimar y Reichsmark (1924–1947)
   NumismaticEmissionRuleData(
     country: 'Alemania',
-    minYear: 1924,
-    maxYear: 1947,
-    validCurrencies: ['RKM', 'RTM'],
-    defaultCurrency: 'RKM',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6228,6 +6456,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6239,6 +6468,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.04',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6249,6 +6479,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6260,6 +6491,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6271,6 +6503,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6282,6 +6515,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6293,6 +6527,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6304,6 +6539,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6315,6 +6551,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'RKM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6330,13 +6567,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 14.3 Alemania - Deutsche Mark 1ª Era (1948–1974)
   NumismaticEmissionRuleData(
     country: 'Alemania',
-    minYear: 1948,
-    maxYear: 1974,
-    validCurrencies: ['DEM', 'DDM'],
-    defaultCurrency: 'DEM',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6348,6 +6582,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6359,6 +6594,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6370,6 +6606,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6381,6 +6618,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6392,6 +6630,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6403,6 +6642,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6414,6 +6654,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Bundesadler - Águila Federal Alemana (Silberadler 1951-1974)',
@@ -6510,6 +6751,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Juegos Olímpicos de Múnich 1972 - Emblema Espiral',
@@ -6544,13 +6786,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 14.4 Alemania - Deutsche Mark 2ª Era Magnimat (1975–2001)
   NumismaticEmissionRuleData(
     country: 'Alemania',
-    minYear: 1975,
-    maxYear: 2001,
-    validCurrencies: ['DEM'],
-    defaultCurrency: 'DEM',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6562,6 +6801,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6573,6 +6813,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6584,6 +6825,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6595,6 +6837,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6606,6 +6849,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6617,6 +6861,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6628,6 +6873,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6639,6 +6885,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Bundesadler - Águila Federal Alemana (Circulación Estándar)',
@@ -6789,13 +7036,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 15.1 Italia - Reino de Italia (1861–1945)
   NumismaticEmissionRuleData(
     country: 'Italia',
-    minYear: 1861,
-    maxYear: 1945,
-    validCurrencies: ['ITL'],
-    defaultCurrency: 'ITL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6807,6 +7051,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6818,6 +7063,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6829,6 +7075,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6840,6 +7087,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6851,6 +7099,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6862,6 +7111,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6873,6 +7123,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6884,6 +7135,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6895,6 +7147,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6906,6 +7159,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6917,6 +7171,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6928,6 +7183,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Circulación Estándar',
@@ -6943,13 +7199,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 15.2 Italia - República Italiana 1ª Era Caravelle de Plata (1946–1981)
   NumismaticEmissionRuleData(
     country: 'Italia',
-    minYear: 1946,
-    maxYear: 1981,
-    validCurrencies: ['ITL'],
-    defaultCurrency: 'ITL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Italina / Cornucopia',
@@ -6961,6 +7214,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Spiga / Olivo',
@@ -6972,6 +7226,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Timone / Delfino',
@@ -6983,6 +7238,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Spighe / Aratro',
@@ -6994,6 +7250,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Quercia',
@@ -7005,6 +7262,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Vulcano',
@@ -7016,6 +7274,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Minerva',
@@ -7027,6 +7286,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Ingranaggio',
@@ -7038,6 +7298,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Le Caravelle di Cristoforo Colombo (1958-1967)',
@@ -7073,13 +7334,10 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 15.3 Italia - República Italiana 2ª Era Bimetálicas (1982–2001)
   NumismaticEmissionRuleData(
     country: 'Italia',
-    minYear: 1982,
-    maxYear: 2001,
-    validCurrencies: ['ITL'],
-    defaultCurrency: 'ITL',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Italina / Cornucopia',
@@ -7091,6 +7349,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Spiga / Olivo',
@@ -7102,6 +7361,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Timone / Delfino',
@@ -7113,6 +7373,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Spighe / Aratro',
@@ -7124,6 +7385,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Quercia',
@@ -7135,6 +7397,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Vulcano Micro',
@@ -7146,6 +7409,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Minerva Micro',
@@ -7157,6 +7421,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Ingranaggio - Engranaje Industrial (1977-2001)',
@@ -7188,6 +7453,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Piazza del Quirinale y Valor en Braille (1982-2001)',
@@ -7234,6 +7500,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Mapa de la Unión Europea con Fronteras Erróneas',

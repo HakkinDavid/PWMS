@@ -132,10 +132,10 @@ class NumismaticMatrix {
 
     if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
       final cleanDenom = denomination.trim();
-      matchingPiece = matchingEpoch.getPieceForDenomination(cleanDenom, year: year);
-      validMaterials = matchingEpoch.getAllowedMaterialsForDenomination(cleanDenom, year: year);
-      inferredMaterial = matchingEpoch.getMaterialForDenomination(cleanDenom, year: year);
-      availableMotifs = matchingEpoch.getCommemorativeMotifsForDenomination(cleanDenom, year: year);
+      matchingPiece = matchingEpoch.getPieceForDenomination(cleanDenom, year: year, currencyCode: currencyCode);
+      validMaterials = matchingEpoch.getAllowedMaterialsForDenomination(cleanDenom, year: year, currencyCode: currencyCode);
+      inferredMaterial = matchingEpoch.getMaterialForDenomination(cleanDenom, year: year, currencyCode: currencyCode);
+      availableMotifs = matchingEpoch.getCommemorativeMotifsForDenomination(cleanDenom, year: year, currencyCode: currencyCode);
     }
 
     return NumismaticInferenceResult(
@@ -209,7 +209,7 @@ class NumismaticMatrix {
     final result = <NumismaticPieceDefinition>[];
     for (final r in rules) {
       for (final p in r.getPiecesForYear(year)) {
-        if (!result.any((existing) => existing.matchesDenomination(p.denomination))) {
+        if (!result.any((existing) => existing.matchesDenomination(p.denomination) && existing.currency == p.currency)) {
           result.add(p);
         }
       }
@@ -228,14 +228,14 @@ class NumismaticMatrix {
       if (currencyCode != null && currencyCode.trim().isNotEmpty) {
         final rule = findRule(country, year, currencyCode: currencyCode, isBanknote: isBanknote);
         if (rule != null) {
-          return [...rule.getDenominationsForYear(year), AppStrings.otherSpecifyOption];
+          return [...rule.getDenominationsForYear(year, currencyCode: currencyCode), AppStrings.otherSpecifyOption];
         }
       }
       final rules = findRules(country, year, isBanknote: isBanknote);
       if (rules.isNotEmpty) {
         final allDenoms = <String>[];
         for (final r in rules) {
-          for (final d in r.getDenominationsForYear(year)) {
+          for (final d in r.getDenominationsForYear(year, currencyCode: currencyCode)) {
             if (!allDenoms.contains(d)) allDenoms.add(d);
           }
         }
@@ -266,7 +266,7 @@ class NumismaticMatrix {
     if (rule == null) return null;
 
     final cleanDenom = denomination.trim();
-    return rule.getMaterialForDenomination(cleanDenom, year: year);
+    return rule.getMaterialForDenomination(cleanDenom, year: year, currencyCode: currencyCode);
   }
 
   /// Returns all valid/allowed materials for a piece (supporting transition years and concurrent alloys).
@@ -286,7 +286,7 @@ class NumismaticMatrix {
     final cleanDenom = denomination.trim();
     final result = <String>[];
     for (final rule in rules) {
-      for (final mat in rule.getAllowedMaterialsForDenomination(cleanDenom, year: year)) {
+      for (final mat in rule.getAllowedMaterialsForDenomination(cleanDenom, year: year, currencyCode: currencyCode)) {
         if (!result.contains(mat)) result.add(mat);
       }
     }
@@ -309,13 +309,13 @@ class NumismaticMatrix {
     final result = <String>[];
     for (final rule in rules) {
       if (material != null && material.trim().isNotEmpty && denomination != null) {
-        if (!rule.isMaterialValidForDenomination(denomination, material, year: year)) {
+        if (!rule.isMaterialValidForDenomination(denomination, material, year: year, currencyCode: currencyCode)) {
           continue;
         }
       }
       if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
         final cleanDenom = denomination.trim();
-        for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom, year: year)) {
+        for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom, year: year, currencyCode: currencyCode)) {
           if (!result.contains(motif)) result.add(motif);
         }
       } else {

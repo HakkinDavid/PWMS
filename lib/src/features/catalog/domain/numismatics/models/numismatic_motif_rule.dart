@@ -6,7 +6,6 @@ class NumismaticMotifRule {
   final String material;
   final double? weightGrams;
   final double? diameterMm;
-  final String? currencyCode;
   final bool isCommemorative;
 
   const NumismaticMotifRule(
@@ -16,7 +15,6 @@ class NumismaticMotifRule {
     required this.material,
     this.weightGrams,
     this.diameterMm,
-    this.currencyCode,
     this.isCommemorative = false,
   }) : maxYear = maxYear ?? minYear;
 
@@ -28,4 +26,5 @@ class NumismaticMotifRule {
     return true;
   }
 }
+
 

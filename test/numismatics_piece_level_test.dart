@@ -8,6 +8,7 @@ void main() {
     test('matchesYear correctly evaluates boundaries and intervals derived from motifs', () {
       const piece = NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuauhtémoc',
@@ -29,6 +30,7 @@ void main() {
     test('matchesDenomination accurately handles fractions, decimals and integers', () {
       const pieceCuartilla = NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule('Cuartilla', minYear: 1800, material: 'Plata'),
         ],
@@ -39,6 +41,7 @@ void main() {
 
       const pieceOctavo = NumismaticPieceDefinition(
         denomination: '1/8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule('Octavo', minYear: 1800, material: 'Cobre'),
         ],
@@ -48,6 +51,7 @@ void main() {
 
       const piece50c = NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule('50 Centavos', minYear: 1950, material: 'Bronce'),
         ],
@@ -61,6 +65,7 @@ void main() {
     test('effectiveAllowedMaterials and getMaterialsForYear resolves primary and concurrent alloys', () {
       const singleMatPiece = NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule('Un Peso', minYear: 1900, material: 'Plata'),
         ],
@@ -70,6 +75,7 @@ void main() {
 
       const multiMatPiece = NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule('Cien Pesos Polímero', minYear: 2020, material: 'Polímero'),
           NumismaticMotifRule('Cien Pesos Algodón', minYear: 2020, material: 'Papel de algodón'),
@@ -82,6 +88,7 @@ void main() {
     test('getMotifsForYear filters temporally bounded motifs', () {
       const piece = NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', minYear: 2009, maxYear: 2010, material: 'Polímero'),
           NumismaticMotifRule('Centenario de la Constitución Política de 1917 (2017)', minYear: 2016, maxYear: 2017, material: 'Papel de algodón'),
@@ -125,21 +132,20 @@ void main() {
     test('supports piece definitions and derives denomination metadata correctly', () {
       const rule = NumismaticEmissionRuleData(
         country: 'México',
-        minYear: 1993,
-        maxYear: 1995,
-        validCurrencies: ['MXN'],
-        defaultCurrency: 'MXN',
         pieces: [
           NumismaticPieceDefinition(
             denomination: '10',
+            currency: 'MXN',
             motifs: [NumismaticMotifRule('10 Nuevos Pesos', minYear: 1993, maxYear: 1995, material: 'Plata / Aluminio-Bronce')],
           ),
           NumismaticPieceDefinition(
             denomination: '20',
+            currency: 'MXN',
             motifs: [NumismaticMotifRule('20 Nuevos Pesos', minYear: 1993, maxYear: 1995, material: 'Plata / Latón')],
           ),
           NumismaticPieceDefinition(
             denomination: '50',
+            currency: 'MXN',
             motifs: [NumismaticMotifRule('50 Nuevos Pesos', minYear: 1993, maxYear: 1995, material: 'Plata / Latón')],
           ),
         ],
@@ -153,21 +159,20 @@ void main() {
     test('supports explicit piece definitions with dynamic year filtering', () {
       const rule = NumismaticEmissionRuleData(
         country: 'México',
-        minYear: 1905,
-        maxYear: 1969,
-        validCurrencies: ['MXP'],
-        defaultCurrency: 'MXP',
         pieces: [
           NumismaticPieceDefinition(
             denomination: '0.01',
+            currency: 'MXP',
             motifs: [NumismaticMotifRule('Centavito Porfiriano', minYear: 1905, maxYear: 1914, material: 'Cobre')],
           ),
           NumismaticPieceDefinition(
             denomination: '0.50',
+            currency: 'MXP',
             motifs: [NumismaticMotifRule('Cuauhtémoc', minYear: 1955, maxYear: 1959, material: 'Bronce')],
           ),
           NumismaticPieceDefinition(
             denomination: '1',
+            currency: 'MXP',
             motifs: [NumismaticMotifRule('Morelos Tepalcate', minYear: 1957, maxYear: 1967, material: 'Plata .100')],
           ),
         ],
@@ -262,16 +267,17 @@ void main() {
       }
     });
 
-    test('All piece definitions in registry are strictly unique per denomination within each emission rule', () {
+    test('All piece definitions in registry are strictly unique per denomination and currency within each emission rule', () {
       for (final rule in NumismaticRulesRegistry.allRules) {
-        final seenDenoms = <String>{};
+        final seenPieces = <String>{};
         for (final p in rule.pieces) {
+          final key = '${p.denomination}_${p.currency}';
           expect(
-            seenDenoms.contains(p.denomination),
+            seenPieces.contains(key),
             isFalse,
-            reason: 'Duplicate denomination "${p.denomination}" found in rule for ${rule.country} (${rule.minYear}-${rule.maxYear})',
+            reason: 'Duplicate piece "${p.denomination}" (${p.currency}) found in rule for ${rule.country} (${rule.minYear}-${rule.maxYear})',
           );
-          seenDenoms.add(p.denomination);
+          seenPieces.add(key);
         }
       }
     });

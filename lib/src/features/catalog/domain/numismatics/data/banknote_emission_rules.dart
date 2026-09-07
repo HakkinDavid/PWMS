@@ -5,15 +5,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.1 México Billetes - Época Revolucionaria y Pre-Banco de México (1823–1924)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1823,
-    maxYear: 1924,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cartón Fraccionario Revolucionario',
@@ -25,7 +21,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cartón Fraccionario Revolucionario',
@@ -37,7 +33,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cartón Fraccionario Revolucionario',
@@ -49,7 +45,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Billete Fraccionario Revolucionario',
@@ -61,7 +57,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Cuauhtémoc',
@@ -73,7 +69,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Morelos',
@@ -85,7 +81,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Hidalgo',
@@ -97,7 +93,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Juárez',
@@ -109,7 +105,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Madero',
@@ -121,7 +117,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Carranza',
@@ -133,7 +129,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Zaragoza',
@@ -145,7 +141,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Allende',
@@ -157,7 +153,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gobierno Constitucionalista / Cuauhtémoc',
@@ -173,15 +169,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.2 México Billetes - Primeras Emisiones Banco de México / ABNC (1925–1978)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1925,
-    maxYear: 1978,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Piedra del Sol (Calendario Azteca)',
@@ -193,7 +185,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Monumento a la Independencia',
@@ -205,7 +197,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'La Gitana / Josefa Ortiz de Domínguez',
@@ -217,7 +209,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'La Tehuana / Miguel Hidalgo',
@@ -229,7 +221,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Josefa Ortiz de Domínguez',
@@ -241,7 +233,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Ignacio Allende',
@@ -253,7 +245,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Miguel Hidalgo y Costilla',
@@ -265,7 +257,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'José María Morelos y Pavón',
@@ -277,7 +269,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuauhtémoc',
@@ -289,7 +281,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Los Niños Héroes',
@@ -301,7 +293,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Matías Romero',
@@ -317,15 +309,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.3 México Billetes - Familia AA Fábrica de Billetes Banxico (1969–1992)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1969,
-    maxYear: 1992,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Josefa Ortiz de Domínguez',
@@ -337,7 +325,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Miguel Hidalgo',
@@ -349,7 +337,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'José María Morelos',
@@ -361,7 +349,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez',
@@ -373,7 +361,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Venustiano Carranza',
@@ -385,7 +373,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Francisco I. Madero',
@@ -397,7 +385,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Sor Juana Inés de la Cruz',
@@ -413,15 +401,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.4 México Billetes - Familia A Altas Denominaciones Inflacionarias (1979–1992)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1979,
-    maxYear: 1992,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '2000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Justo Sierra',
@@ -433,7 +417,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Los Niños Héroes',
@@ -445,7 +429,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Lázaro Cárdenas',
@@ -457,7 +441,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Andrés Quintana Roo',
@@ -469,7 +453,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuauhtémoc',
@@ -481,7 +465,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100000',
-        isBanknote: true,
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plutarco Elías Calles',
@@ -497,15 +481,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.5 México Billetes - Familia B Nuevos Pesos N$ (1993–1995)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1993,
-    maxYear: 1995,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Lázaro Cárdenas',
@@ -517,7 +497,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Andrés Quintana Roo',
@@ -529,7 +509,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Cuauhtémoc',
@@ -541,7 +521,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Plutarco Elías Calles',
@@ -557,15 +537,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.6 México Billetes - Familia C (1994–2001)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1994,
-    maxYear: 2001,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Emiliano Zapata',
@@ -577,7 +553,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez',
@@ -589,7 +565,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'José María Morelos',
@@ -601,7 +577,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nezahualcóyotl',
@@ -613,7 +589,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Sor Juana Inés de la Cruz',
@@ -625,7 +601,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Ignacio Zaragoza',
@@ -641,15 +617,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.7 México Billetes - Familia D y D1 Introducción de Polímero (2002–2007)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 2002,
-    maxYear: 2007,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Emiliano Zapata',
@@ -661,7 +633,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez (Polímero)',
@@ -673,7 +645,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'José María Morelos',
@@ -685,7 +657,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nezahualcóyotl',
@@ -697,7 +669,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Sor Juana Inés de la Cruz',
@@ -709,7 +681,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Ignacio Zaragoza',
@@ -725,15 +697,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.8 México Billetes - Familia F y Conmemorativos del Centenario/Bicentenario (2006–2019)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 2006,
-    maxYear: 2019,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez / Monte Albán',
@@ -745,7 +713,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'José María Morelos / Acueducto de Morelia',
@@ -757,7 +725,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nezahualcóyotl / Tenochtitlan (Circulación Estándar)',
@@ -781,7 +749,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Sor Juana Inés de la Cruz / Hacienda de Panoaya (Circulación Estándar)',
@@ -799,7 +767,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Diego Rivera y Frida Kahlo',
@@ -811,7 +779,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Miguel Hidalgo / Universidad de Guanajuato',
@@ -827,15 +795,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.9 México Billetes - Familia G en Circulación y Polímeros de Vanguardia (2020–presente)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 2020,
-    maxYear: 2100,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez / Monte Albán (Familia F1)',
@@ -852,7 +816,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Fundación de Tenochtitlan / Ajolote y Xochimilco',
@@ -864,7 +828,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Sor Juana Inés de la Cruz / Bosques Templados y Mariposa Monarca',
@@ -876,7 +840,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Miguel Hidalgo y José María Morelos / Reserva El Pinacate',
@@ -888,7 +852,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez / Ballena Gris El Vizcaíno',
@@ -900,7 +864,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Madero, Hermila Galindo y Carmen Serdán / Calakmul',
@@ -916,15 +880,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B2.1 Estados Unidos Billetes - Large Size Notes (1861–1927)
   NumismaticEmissionRuleData(
     country: 'Estados Unidos',
-    minYear: 1861,
-    maxYear: 1927,
-    validCurrencies: ['USD'],
-    defaultCurrency: 'USD',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'George Washington / Chase / History Instructing Youth',
@@ -936,7 +896,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Alexander Hamilton / Thomas Jefferson',
@@ -948,7 +908,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Chief Onepapa / Abraham Lincoln / Woodchopper',
@@ -960,7 +920,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Bison / Daniel Webster / Michael Hillegas',
@@ -972,7 +932,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Alexander Hamilton / Stephen Decatur / George Washington',
@@ -984,7 +944,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Henry Clay / Benjamin Franklin / Ulysses S. Grant',
@@ -996,7 +956,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Abraham Lincoln / Thomas Hart Benton',
@@ -1008,7 +968,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Alexander Hamilton / John Marshall',
@@ -1020,7 +980,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Robert Morris / DeWitt Clinton / Alexander Hamilton',
@@ -1032,7 +992,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'James Madison',
@@ -1044,7 +1004,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Salmon P. Chase',
@@ -1060,15 +1020,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B2.2 Estados Unidos Billetes - Small Size Federal Reserve Notes (1928–presente)
   NumismaticEmissionRuleData(
     country: 'Estados Unidos',
-    minYear: 1928,
-    maxYear: 2100,
-    validCurrencies: ['USD'],
-    defaultCurrency: 'USD',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'George Washington / Great Seal',
@@ -1080,7 +1036,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Thomas Jefferson / Declaration of Independence',
@@ -1092,7 +1048,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Abraham Lincoln / Lincoln Memorial',
@@ -1104,7 +1060,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Alexander Hamilton / US Treasury',
@@ -1116,7 +1072,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Andrew Jackson / White House',
@@ -1128,7 +1084,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Ulysses S. Grant / US Capitol',
@@ -1140,7 +1096,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Benjamin Franklin / Independence Hall',
@@ -1152,7 +1108,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'William McKinley',
@@ -1164,7 +1120,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Grover Cleveland',
@@ -1176,7 +1132,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'James Madison',
@@ -1188,7 +1144,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Salmon P. Chase',
@@ -1200,7 +1156,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100000',
-        isBanknote: true,
+        currency: 'USD',
         motifs: [
           NumismaticMotifRule(
             'Woodrow Wilson (Gold Certificate)',
@@ -1215,15 +1171,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B3.1 España Billetes - Era de la Peseta (1874–2001)
   NumismaticEmissionRuleData(
     country: 'España',
-    minYear: 1874,
-    maxYear: 2001,
-    validCurrencies: ['ESP'],
-    defaultCurrency: 'ESP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Dama de Elche / Quijote',
@@ -1235,7 +1187,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'República / Santa María',
@@ -1247,7 +1199,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Jaime I / Séneca',
@@ -1259,7 +1211,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Rosalía de Castro / Alfonso X',
@@ -1271,7 +1223,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '25',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Calderón de la Barca / Álvaro de Bazán',
@@ -1283,7 +1235,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Velázquez / Eduardo Rosales',
@@ -1295,7 +1247,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Cervantes / Manuel de Falla',
@@ -1307,7 +1259,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Leopoldo Alas Clarín',
@@ -1319,7 +1271,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Francisco de Zurbarán / Rosalía de Castro / Menéndez Pidal',
@@ -1331,7 +1283,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Benito Pérez Galdós / José Celestino Mutis / Hernán Cortés',
@@ -1343,7 +1295,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Juan Ramón Jiménez / José Celestino Mutis',
@@ -1355,7 +1307,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Rey Juan Carlos I / Cristóbal Colón',
@@ -1367,7 +1319,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'ESP',
         motifs: [
           NumismaticMotifRule(
             'Rey Juan Carlos I y Príncipe Felipe',
@@ -1383,15 +1335,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B3.2 España & Unión Europea Billetes - Era del Euro (2002–presente)
   NumismaticEmissionRuleData(
     country: 'España',
-    minYear: 2002,
-    maxYear: 2100,
-    validCurrencies: ['EUR'],
-    defaultCurrency: 'EUR',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Clásica',
@@ -1403,7 +1351,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Románica',
@@ -1415,7 +1363,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Gótica',
@@ -1427,7 +1375,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Renacentista',
@@ -1439,7 +1387,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Barroca y Rococó',
@@ -1451,7 +1399,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Modernista del Hierro y Cristal',
@@ -1463,7 +1411,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Moderna del Siglo XX',
@@ -1477,15 +1425,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   ),
   NumismaticEmissionRuleData(
     country: 'Unión Europea',
-    minYear: 2002,
-    maxYear: 2100,
-    validCurrencies: ['EUR'],
-    defaultCurrency: 'EUR',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Clásica',
@@ -1497,7 +1441,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Románica',
@@ -1509,7 +1453,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Gótica',
@@ -1521,7 +1465,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Renacentista',
@@ -1533,7 +1477,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Barroca y Rococó',
@@ -1545,7 +1489,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Modernista del Hierro y Cristal',
@@ -1557,7 +1501,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'EUR',
         motifs: [
           NumismaticMotifRule(
             'Arquitectura Moderna del Siglo XX',
@@ -1576,15 +1520,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 0.50, 1, 5, 10, 20, 50, 100 Quetzales (Tecún Umán, José María Orellana, Justo Rufino Barrios, Miguel García Granados, Mariano Gálvez, Carlos Mérida, Francisco Marroquín): https://www.banguat.gob.gt
   NumismaticEmissionRuleData(
     country: 'Guatemala',
-    minYear: 1948,
-    maxYear: 2006,
-    validCurrencies: ['GTQ'],
-    defaultCurrency: 'GTQ',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.50',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Tecún Umán / Templo I de Tikal',
@@ -1596,7 +1536,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'General José María Orellana',
@@ -1608,7 +1548,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'General Justo Rufino Barrios',
@@ -1620,7 +1560,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'General Miguel García Granados',
@@ -1632,7 +1572,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Doctor Mariano Gálvez',
@@ -1644,7 +1584,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Licenciado Carlos Mérida',
@@ -1656,7 +1596,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Obispo Francisco Marroquín',
@@ -1678,15 +1618,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 10, 20, 50, 100, 200 Quetzales (Papel de algodón): https://www.banguat.gob.gt
   NumismaticEmissionRuleData(
     country: 'Guatemala',
-    minYear: 2007,
-    maxYear: 2100,
-    validCurrencies: ['GTQ'],
-    defaultCurrency: 'GTQ',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'General José María Orellana (Polímero)',
@@ -1698,7 +1634,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'General Justo Rufino Barrios (Polímero)',
@@ -1710,7 +1646,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'General Miguel García Granados',
@@ -1722,7 +1658,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Doctor Mariano Gálvez',
@@ -1734,7 +1670,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Licenciado Carlos Mérida',
@@ -1746,7 +1682,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Obispo Francisco Marroquín',
@@ -1758,7 +1694,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'GTQ',
         motifs: [
           NumismaticMotifRule(
             'Compositores de Marimba (Hurtado, Valverde y Alcántara)',
@@ -1777,15 +1713,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 1 a 10000 Pesos Oro (Santander, Bolívar, Nariño, Caldas, Camilo Torres, Policarpa Salavarrieta): https://www.banrep.gov.co
   NumismaticEmissionRuleData(
     country: 'Colombia',
-    minYear: 1960,
-    maxYear: 1993,
-    validCurrencies: ['COP'],
-    defaultCurrency: 'COP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Santander y Bolívar',
@@ -1797,7 +1729,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Policarpa Salavarrieta',
@@ -1809,7 +1741,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'José María Córdova',
@@ -1821,7 +1753,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Antonio Nariño',
@@ -1833,7 +1765,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Francisco José de Caldas',
@@ -1845,7 +1777,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Camilo Torres',
@@ -1857,7 +1789,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Antonio Nariño',
@@ -1869,7 +1801,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'José Celestino Mutis',
@@ -1881,7 +1813,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Francisco de Paula Santander',
@@ -1893,7 +1825,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Jorge Eliécer Gaitán',
@@ -1905,7 +1837,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Simón Bolívar / Paso del Ejército Libertador',
@@ -1917,7 +1849,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Rafael Núñez / Miguel Antonio Caro',
@@ -1929,7 +1861,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Mujer Indígena Emberá',
@@ -1955,15 +1887,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 100000 Pesos (Carlos Lleras Restrepo / Valle de Cocora): https://www.banrep.gov.co/es/billetes-monedas/billetes-circulacion
   NumismaticEmissionRuleData(
     country: 'Colombia',
-    minYear: 1994,
-    maxYear: 2100,
-    validCurrencies: ['COP'],
-    defaultCurrency: 'COP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Jorge Eliécer Gaitán',
@@ -1975,7 +1903,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Débora Arango / Caño Cristales',
@@ -1987,7 +1915,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'José Asunción Silva / Páramos',
@@ -1999,7 +1927,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Virginia Gutiérrez / Amazonia',
@@ -2011,7 +1939,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Alfonso López Michelsen / Sistema Hidráulico Zenú',
@@ -2023,7 +1951,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Gabriel García Márquez / Ciudad Perdida',
@@ -2035,7 +1963,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100000',
-        isBanknote: true,
+        currency: 'COP',
         motifs: [
           NumismaticMotifRule(
             'Carlos Lleras Restrepo / Valle de Cocora',
@@ -2055,15 +1983,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 1, 2, 5, 10, 20, 50, 100, 1000 Dollars (Scenes of Canada, Birds of Canada, Canadian Journey Series): https://www.bankofcanada.ca/banknotes/bank-note-series/
   NumismaticEmissionRuleData(
     country: 'Canadá',
-    minYear: 1935,
-    maxYear: 2010,
-    validCurrencies: ['CAD'],
-    defaultCurrency: 'CAD',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Reina Isabel II / Parlamento de Ottawa',
@@ -2075,7 +1999,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Reina Isabel II / Petirrojos Americanos',
@@ -2087,7 +2011,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Sir Wilfrid Laurier / Deportes de Invierno',
@@ -2099,7 +2023,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Sir John A. Macdonald / Recuerdo y Paz',
@@ -2111,7 +2035,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Reina Isabel II / Arte Indígena Haida (Bill Reid)',
@@ -2123,7 +2047,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'W.L. Mackenzie King / Las Cinco Valientes',
@@ -2135,7 +2059,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Sir Robert Borden / Innovación y Telecomunicaciones',
@@ -2147,7 +2071,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Reina Isabel II / Picogordos Sombríos',
@@ -2171,15 +2095,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 100 Dollars (Polímero - Sir Robert Borden / Innovación Médica e Insulina): https://www.bankofcanada.ca/banknotes/bank-note-series/polymer-series/
   NumismaticEmissionRuleData(
     country: 'Canadá',
-    minYear: 2011,
-    maxYear: 2100,
-    validCurrencies: ['CAD'],
-    defaultCurrency: 'CAD',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Sir Wilfrid Laurier / Innovación Espacial Canadarm2',
@@ -2191,7 +2111,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Viola Desmond / Tren Transcontinental de Canadá',
@@ -2203,7 +2123,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Reina Isabel II / Monumento Conmemorativo de Vimy',
@@ -2215,7 +2135,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'W.L. Mackenzie King / CCGS Amundsen en el Ártico',
@@ -2227,7 +2147,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'CAD',
         motifs: [
           NumismaticMotifRule(
             'Sir Robert Borden / Descubrimiento de la Insulina',
@@ -2246,15 +2166,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 1 a 1000 Pesos (José Martí, Che Guevara, Antonio Maceo, Máximo Gómez, Camilo Cienfuegos, Calixto García, Frank País, Ignacio Agramonte, Julio Antonio Mella): https://www.bc.gob.cu
   NumismaticEmissionRuleData(
     country: 'Cuba',
-    minYear: 1961,
-    maxYear: 2020,
-    validCurrencies: ['CUP', 'CUC'],
-    defaultCurrency: 'CUP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'José Martí / Entrada de Fidel Castro a La Habana',
@@ -2266,7 +2182,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Ernesto "Che" Guevara / Cortador de Caña',
@@ -2278,7 +2194,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Antonio Maceo / Protesta de Baraguá',
@@ -2290,7 +2206,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Máximo Gómez / Guerra de Todo el Pueblo',
@@ -2302,7 +2218,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Camilo Cienfuegos / Trabajo Voluntario',
@@ -2314,7 +2230,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Calixto García / Centro de Ingeniería Genética',
@@ -2326,7 +2242,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Carlos Manuel de Céspedes / Estatua de José Martí',
@@ -2338,7 +2254,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Frank País / Ciudad Escolar 26 de Julio',
@@ -2350,7 +2266,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Ignacio Agramonte / Asamblea de Guáimaro',
@@ -2362,7 +2278,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Julio Antonio Mella / Universidad de La Habana',
@@ -2381,15 +2297,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 1 a 1000 Pesos (José Martí, Che Guevara, Antonio Maceo, Máximo Gómez, Camilo Cienfuegos, Calixto García, Frank País, Ignacio Agramonte, Julio Antonio Mella): https://www.bc.gob.cu
   NumismaticEmissionRuleData(
     country: 'Cuba',
-    minYear: 2021,
-    maxYear: 2100,
-    validCurrencies: ['CUP'],
-    defaultCurrency: 'CUP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'José Martí / Entrada de Fidel Castro a La Habana',
@@ -2401,7 +2313,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Ernesto "Che" Guevara / Cortador de Caña',
@@ -2413,7 +2325,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Antonio Maceo / Protesta de Baraguá',
@@ -2425,7 +2337,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Máximo Gómez / Guerra de Todo el Pueblo',
@@ -2437,7 +2349,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Camilo Cienfuegos / Trabajo Voluntario',
@@ -2449,7 +2361,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Calixto García / Centro de Ingeniería Genética',
@@ -2461,7 +2373,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Carlos Manuel de Céspedes / Estatua de José Martí',
@@ -2473,7 +2385,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Frank País / Ciudad Escolar 26 de Julio',
@@ -2485,7 +2397,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Ignacio Agramonte / Asamblea de Guáimaro',
@@ -2497,7 +2409,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'CUP',
         motifs: [
           NumismaticMotifRule(
             'Julio Antonio Mella / Universidad de La Habana',
@@ -2529,15 +2441,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 20000 Pesos (Juan Bautista Alberdi): https://www.bcra.gob.ar
   NumismaticEmissionRuleData(
     country: 'Argentina',
-    minYear: 1992,
-    maxYear: 2100,
-    validCurrencies: ['ARS'],
-    defaultCurrency: 'ARS',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Carlos Pellegrini / Congreso Nacional',
@@ -2549,7 +2457,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Bartolomé Mitre / Museo Mitre',
@@ -2561,7 +2469,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'General José de San Martín / Monumento Cerro de la Gloria',
@@ -2573,7 +2481,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Manuel Belgrano / Monumento a la Bandera',
@@ -2585,7 +2493,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Guanaco / Estepa Patagónica',
@@ -2597,7 +2505,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Cóndor Andino / Cordillera de los Andes',
@@ -2609,7 +2517,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Taruca / Región Noroeste',
@@ -2621,7 +2529,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Ballena Franca Austral / Mar Argentino',
@@ -2633,7 +2541,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Yaguareté / Región Noreste',
@@ -2645,7 +2553,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Hornero / Región Pampeana',
@@ -2657,7 +2565,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Cecilia Grierson y Ramón Carrillo / Instituto Malbrán',
@@ -2669,7 +2577,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Manuel Belgrano y María Remedios del Valle',
@@ -2681,7 +2589,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20000',
-        isBanknote: true,
+        currency: 'ARS',
         motifs: [
           NumismaticMotifRule(
             'Juan Bautista Alberdi',
@@ -2708,15 +2616,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 200 Reais (Lobo-guará): https://www.bcb.gov.br/cedulasemoedas/cedulasreal
   NumismaticEmissionRuleData(
     country: 'Brasil',
-    minYear: 1994,
-    maxYear: 2100,
-    validCurrencies: ['BRL'],
-    defaultCurrency: 'BRL',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Beija-flor',
@@ -2728,7 +2632,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Tartaruga-marinha',
@@ -2740,7 +2644,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Garça',
@@ -2752,7 +2656,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Arara',
@@ -2764,7 +2668,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Mico-leão-dourado',
@@ -2776,7 +2680,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Onça-pintada',
@@ -2788,7 +2692,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Garoupa',
@@ -2800,7 +2704,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'BRL',
         motifs: [
           NumismaticMotifRule(
             'Efígie da República / Lobo-guará',
@@ -2825,15 +2729,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 20000 Pesos (Papel de algodón - Andrés Bello / Salar de Surire): https://www.bcentral.cl/billetes-y-monedas/billetes
   NumismaticEmissionRuleData(
     country: 'Chile',
-    minYear: 1975,
-    maxYear: 2100,
-    validCurrencies: ['CLP'],
-    defaultCurrency: 'CLP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Cardenal Raúl Silva Henríquez / Santuario de Maipú',
@@ -2845,7 +2745,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Ignacio Carrera Pinto / Torres del Paine',
@@ -2857,7 +2757,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
-        isBanknote: true,
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Manuel Rodríguez / Reserva Nacional Nalcas',
@@ -2869,7 +2769,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Gabriela Mistral / Parque Nacional La Campana',
@@ -2881,7 +2781,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Arturo Prat / Parque Nacional Alberto de Agostini',
@@ -2893,7 +2793,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20000',
-        isBanknote: true,
+        currency: 'CLP',
         motifs: [
           NumismaticMotifRule(
             'Andrés Bello / Salar de Surire',
@@ -2917,15 +2817,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 200 Soles (Santa Rosa de Lima / Tilsa Tsuchiya): https://www.bcrp.gob.pe
   NumismaticEmissionRuleData(
     country: 'Perú',
-    minYear: 1991,
-    maxYear: 2100,
-    validCurrencies: ['PEN'],
-    defaultCurrency: 'PEN',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Chabuca Granda / Vicuña y Flor de Amancaes',
@@ -2937,7 +2833,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'José María Arguedas / Cóndor Andino',
@@ -2949,7 +2845,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'María Rostworowski / Jaguar',
@@ -2961,7 +2857,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Pedro Paulet / Colibrí Cola de Espátula',
@@ -2973,7 +2869,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'PEN',
         motifs: [
           NumismaticMotifRule(
             'Tilsa Tsuchiya / Gallito de las Rocas',
@@ -2996,15 +2892,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 50 Pounds (Polímero - Alan Turing / Queen Elizabeth II / King Charles III): https://www.bankofengland.co.uk/banknotes
   NumismaticEmissionRuleData(
     country: 'Reino Unido',
-    minYear: 1970,
-    maxYear: 2100,
-    validCurrencies: ['GBP'],
-    defaultCurrency: 'GBP',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Sir Winston Churchill / Palacio de Westminster',
@@ -3016,7 +2908,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Jane Austen / Godmersham Park',
@@ -3028,7 +2920,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'J.M.W. Turner / El «Temerario»',
@@ -3040,7 +2932,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'GBP',
         motifs: [
           NumismaticMotifRule(
             'Alan Turing / Bombe de Bletchley Park',
@@ -3059,15 +2951,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 5, 10, 20, 50, 100, 200, 500 Francs (Victor Hugo, Voltaire, Berlioz, Debussy, Quentin de La Tour, Saint-Exupéry, Delacroix, Cézanne, Gustave Eiffel, Pierre et Marie Curie): https://www.banque-france.fr
   NumismaticEmissionRuleData(
     country: 'Francia',
-    minYear: 1960,
-    maxYear: 2001,
-    validCurrencies: ['FRF'],
-    defaultCurrency: 'FRF',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Victor Hugo / Plaza de los Vosgos',
@@ -3079,7 +2967,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Hector Berlioz / Capilla de los Inválidos',
@@ -3091,7 +2979,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Claude Debussy / El Mar',
@@ -3103,7 +2991,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Antoine de Saint-Exupéry / El Principito',
@@ -3115,7 +3003,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Paul Cézanne / Montagne Sainte-Victoire',
@@ -3127,7 +3015,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Gustave Eiffel / Torre Eiffel',
@@ -3139,7 +3027,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'FRF',
         motifs: [
           NumismaticMotifRule(
             'Pierre y Marie Curie / Radium',
@@ -3159,15 +3047,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 5, 10, 20, 50, 100, 200, 500, 1000 DM (Bettina von Arnim, Gauss, Droste-Hülshoff, Neumann, Clara Schumann, Paul Ehrlich, Maria Sibylla Merian, Gebrüder Grimm): https://www.bundesbank.de
   NumismaticEmissionRuleData(
     country: 'Alemania',
-    minYear: 1948,
-    maxYear: 2001,
-    validCurrencies: ['DEM', 'DDM'],
-    defaultCurrency: 'DEM',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '5',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Bettina von Arnim / Castillo Wiepersdorf',
@@ -3179,7 +3063,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Carl Friedrich Gauss / Campana de Gauss',
@@ -3191,7 +3075,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Annette von Droste-Hülshoff / Castillo Meersburg',
@@ -3203,7 +3087,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Balthasar Neumann / Residencia de Wurzburgo',
@@ -3215,7 +3099,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Clara Schumann / Conservatorio Hoch de Fráncfort',
@@ -3227,7 +3111,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Paul Ehrlich / Microscopio y Quimioterapia',
@@ -3239,7 +3123,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Maria Sibylla Merian / Diente de León y Oruga',
@@ -3251,7 +3135,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'DEM',
         motifs: [
           NumismaticMotifRule(
             'Wilhelm y Jacob Grimm / Diccionario Alemán',
@@ -3270,15 +3154,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 500, 1000, 2000, 5000, 10000, 50000, 100000, 500000 Liras (Mercurio, Verdi, Montessori, Galilei, Marconi, Colombo, Bellini, Volta, Bernini, Caravaggio, Raffaello): https://www.bancaditalia.it
   NumismaticEmissionRuleData(
     country: 'Italia',
-    minYear: 1946,
-    maxYear: 2001,
-    validCurrencies: ['ITL'],
-    defaultCurrency: 'ITL',
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
         denomination: '500',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Cabeza de Mercurio',
@@ -3290,7 +3170,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Maria Montessori / Niños en clase',
@@ -3302,7 +3182,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Guglielmo Marconi / Yate Elettra',
@@ -3314,7 +3194,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Vincenzo Bellini / Teatro Massimo Bellini',
@@ -3326,7 +3206,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Alessandro Volta / Tempio Voltiano',
@@ -3338,7 +3218,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50000',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Gian Lorenzo Bernini / Escultura de Apolo y Dafne',
@@ -3350,7 +3230,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100000',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Michelangelo Merisi da Caravaggio / Cesto de Frutas',
@@ -3362,7 +3242,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500000',
-        isBanknote: true,
+        currency: 'ITL',
         motifs: [
           NumismaticMotifRule(
             'Raffaello Sanzio / Triunfo de Galatea',

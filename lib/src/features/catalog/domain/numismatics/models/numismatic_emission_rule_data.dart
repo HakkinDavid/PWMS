@@ -5,22 +5,44 @@ import 'numismatic_piece_definition.dart';
 /// Metadata record representing a country's currency epoch emission rules (Coins or Banknotes).
 class NumismaticEmissionRuleData {
   final String country;
-  final int minYear;
-  final int maxYear;
-  final List<String> validCurrencies;
-  final String? defaultCurrency;
   final List<NumismaticPieceDefinition> pieces;
   final bool isBanknote;
 
   const NumismaticEmissionRuleData({
     required this.country,
-    required this.minYear,
-    required this.maxYear,
-    required this.validCurrencies,
-    this.defaultCurrency,
     this.pieces = const [],
     this.isBanknote = false,
   });
+
+  /// Dynamic lower bound year derived from pieces.
+  int get minYear {
+    if (pieces.isEmpty) return 0;
+    final validMinYears = pieces.map((p) => p.minYear).whereType<int>();
+    return validMinYears.isEmpty ? 0 : validMinYears.reduce((a, b) => a < b ? a : b);
+  }
+
+  /// Dynamic upper bound year derived from pieces.
+  int get maxYear {
+    if (pieces.isEmpty) return 9999;
+    final validMaxYears = pieces.map((p) => p.maxYear).whereType<int>();
+    return validMaxYears.isEmpty ? 9999 : validMaxYears.reduce((a, b) => a > b ? a : b);
+  }
+
+  /// List of distinct ISO currency codes supported in this epoch, derived dynamically from pieces.
+  List<String> get validCurrencies {
+    final seen = <String>{};
+    final list = <String>[];
+    for (final p in pieces) {
+      final c = p.currency.trim().toUpperCase();
+      if (c.isNotEmpty && seen.add(c)) {
+        list.add(c);
+      }
+    }
+    return list;
+  }
+
+  /// Primary / default currency ISO code (first registered currency).
+  String? get defaultCurrency => validCurrencies.isNotEmpty ? validCurrencies.first : null;
 
   /// List of distinct denomination strings supported in this epoch.
   List<String> get denominations {
@@ -91,15 +113,20 @@ class NumismaticEmissionRuleData {
     return map;
   }
 
-  /// Returns piece definitions that were actively minted in [year].
-  List<NumismaticPieceDefinition> getPiecesForYear(int? year) {
-    return pieces.where((p) => p.matchesYear(year)).toList();
+  /// Returns piece definitions that were actively minted in [year], optionally filtered by [currencyCode].
+  List<NumismaticPieceDefinition> getPiecesForYear(int? year, {String? currencyCode}) {
+    var active = pieces.where((p) => p.matchesYear(year));
+    if (currencyCode != null && currencyCode.trim().isNotEmpty) {
+      final cleanCurr = currencyCode.trim().toUpperCase();
+      active = active.where((p) => p.currency.toUpperCase() == cleanCurr);
+    }
+    return active.toList();
   }
 
-  /// Returns denomination strings that were actively minted in [year].
-  List<String> getDenominationsForYear(int? year) {
-    if (year == null) return denominations;
-    final activePieces = getPiecesForYear(year);
+  /// Returns denomination strings that were actively minted in [year], optionally filtered by [currencyCode].
+  List<String> getDenominationsForYear(int? year, {String? currencyCode}) {
+    if (year == null && currencyCode == null) return denominations;
+    final activePieces = getPiecesForYear(year, currencyCode: currencyCode);
     if (activePieces.isEmpty) return denominations;
     final list = <String>[];
     for (final p in activePieces) {
@@ -108,9 +135,21 @@ class NumismaticEmissionRuleData {
     return list;
   }
 
-  /// Returns the piece definition matching [targetDenom] and [year].
-  NumismaticPieceDefinition? getPieceForDenomination(String targetDenom, {int? year}) {
+  /// Returns the piece definition matching [targetDenom], [year], and optional [currencyCode].
+  NumismaticPieceDefinition? getPieceForDenomination(
+    String targetDenom, {
+    int? year,
+    String? currencyCode,
+  }) {
     final candidatePieces = getPiecesForYear(year);
+    if (currencyCode != null && currencyCode.trim().isNotEmpty) {
+      final cleanCurr = currencyCode.trim().toUpperCase();
+      for (final p in candidatePieces) {
+        if (p.matchesDenomination(targetDenom) && p.currency.toUpperCase() == cleanCurr) {
+          return p;
+        }
+      }
+    }
     for (final p in candidatePieces) {
       if (p.matchesDenomination(targetDenom)) {
         return p;
@@ -125,15 +164,15 @@ class NumismaticEmissionRuleData {
     return year >= minYear && year <= maxYear;
   }
 
-  bool hasDenomination(String targetDenom, {int? year}) {
-    if (year != null) {
-      return getPiecesForYear(year).any((p) => p.matchesDenomination(targetDenom));
+  bool hasDenomination(String targetDenom, {int? year, String? currencyCode}) {
+    if (year != null || currencyCode != null) {
+      return getPiecesForYear(year, currencyCode: currencyCode).any((p) => p.matchesDenomination(targetDenom));
     }
     return denominations.any((d) => matchesDenomination(d, targetDenom));
   }
 
-  String? getMaterialForDenomination(String targetDenom, {int? year}) {
-    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
+  String? getMaterialForDenomination(String targetDenom, {int? year, String? currencyCode}) {
+    final matchedPiece = getPieceForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (matchedPiece != null) {
       final mat = matchedPiece.getPrimaryMaterialForYear(year);
       if (mat != null) return mat;
@@ -151,8 +190,8 @@ class NumismaticEmissionRuleData {
     return null;
   }
 
-  List<String> getAllowedMaterialsForDenomination(String targetDenom, {int? year}) {
-    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
+  List<String> getAllowedMaterialsForDenomination(String targetDenom, {int? year, String? currencyCode}) {
+    final matchedPiece = getPieceForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (matchedPiece != null) {
       final mats = matchedPiece.getMaterialsForYear(year);
       if (mats.isNotEmpty) return mats;
@@ -162,15 +201,15 @@ class NumismaticEmissionRuleData {
         return entry.value;
       }
     }
-    final primary = getMaterialForDenomination(targetDenom, year: year);
+    final primary = getMaterialForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (primary != null && primary.isNotEmpty) {
       return [primary];
     }
     return const [];
   }
 
-  String? getDefaultMaterialForDenomination(String targetDenom, {int? year}) {
-    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
+  String? getDefaultMaterialForDenomination(String targetDenom, {int? year, String? currencyCode}) {
+    final matchedPiece = getPieceForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (matchedPiece != null) {
       final mat = matchedPiece.getPrimaryMaterialForYear(year);
       if (mat != null) return mat;
@@ -184,15 +223,16 @@ class NumismaticEmissionRuleData {
   }
 
 
-  bool isMaterialValidForDenomination(String targetDenom, String targetMaterial, {int? year}) {
-    final allowed = getAllowedMaterialsForDenomination(targetDenom, year: year);
+
+  bool isMaterialValidForDenomination(String targetDenom, String targetMaterial, {int? year, String? currencyCode}) {
+    final allowed = getAllowedMaterialsForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (allowed.isEmpty) return true;
     final cleanTarget = targetMaterial.trim().toLowerCase();
     return allowed.any((mat) => mat.trim().toLowerCase() == cleanTarget);
   }
 
-  List<String> getCommemorativeMotifsForDenomination(String targetDenom, {int? year}) {
-    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
+  List<String> getCommemorativeMotifsForDenomination(String targetDenom, {int? year, String? currencyCode}) {
+    final matchedPiece = getPieceForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (matchedPiece != null && matchedPiece.motifs.isNotEmpty) {
       final matching = matchedPiece.getMotifsForYear(year);
       if (matching.isNotEmpty) return matching;

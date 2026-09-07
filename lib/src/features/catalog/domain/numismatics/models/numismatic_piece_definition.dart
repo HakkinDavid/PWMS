@@ -4,29 +4,22 @@ import 'numismatic_motif_rule.dart';
 /// Represents a specific numismatic piece or banknote denomination definition within an epoch.
 class NumismaticPieceDefinition {
   final String denomination;
+  final String currency;
   final List<NumismaticMotifRule> motifs;
   final double? weightGrams;
   final double? diameterMm;
-  final bool isBanknote;
-  final String? currencyCode;
-  final int? _minYearOverride;
-  final int? _maxYearOverride;
 
   const NumismaticPieceDefinition({
     required this.denomination,
+    required this.currency,
     required this.motifs,
-    int? minYear,
-    int? maxYear,
     this.weightGrams,
     this.diameterMm,
-    this.isBanknote = false,
-    this.currencyCode,
-  })  : _minYearOverride = minYear,
-        _maxYearOverride = maxYear;
+  });
 
-  /// Dynamic lower bound year derived from motifs (or explicit override if motifs is empty).
+  /// Dynamic lower bound year derived from motifs.
   int? get minYear {
-    if (motifs.isEmpty) return _minYearOverride;
+    if (motifs.isEmpty) return null;
     var min = motifs.first.minYear;
     for (final m in motifs) {
       if (m.minYear < min) min = m.minYear;
@@ -34,9 +27,9 @@ class NumismaticPieceDefinition {
     return min;
   }
 
-  /// Dynamic upper bound year derived from motifs (or explicit override if motifs is empty).
+  /// Dynamic upper bound year derived from motifs.
   int? get maxYear {
-    if (motifs.isEmpty) return _maxYearOverride;
+    if (motifs.isEmpty) return null;
     var max = motifs.first.maxYear;
     for (final m in motifs) {
       if (m.maxYear > max) max = m.maxYear;
@@ -47,11 +40,7 @@ class NumismaticPieceDefinition {
   /// Evaluates whether this specific piece was active/minted in the given [year].
   bool matchesYear(int? year) {
     if (year == null) return true;
-    if (motifs.isEmpty) {
-      if (_minYearOverride != null && year < _minYearOverride!) return false;
-      if (_maxYearOverride != null && year > _maxYearOverride!) return false;
-      return true;
-    }
+    if (motifs.isEmpty) return true;
     return motifs.any((m) => m.matchesYear(year));
   }
 
@@ -123,4 +112,5 @@ class NumismaticPieceDefinition {
     return null;
   }
 }
+
 

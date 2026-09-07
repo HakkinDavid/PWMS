@@ -5,13 +5,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.1 Virreinato de Nueva España (1536–1821)
   NumismaticEmissionRuleData(
     country: 'Virreinato de Nueva España',
-    minYear: 1536,
-    maxYear: 1821,
-    validCurrencies: ['MXR', 'REAL', 'MXE', 'ESC', 'MRV'],
-    defaultCurrency: 'MXR',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/16',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Carlos y Juana - Monograma K-I / Columnas de Hércules (Tlaco Colonial)',
@@ -23,6 +20,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Carlos y Juana - K-I Coronadas / Castillo y León (Ochavo Colonial)',
@@ -34,6 +32,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Virreinal de Plata (Castillo y León)',
@@ -51,6 +50,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Virreinal (Columnario / Busto)',
@@ -62,6 +62,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Columnario / Busto',
@@ -73,6 +74,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Virreinal (Columnario / Busto)',
@@ -84,44 +86,55 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             '4 Reales (Columnario / Busto)',
             minYear: 1536,
             maxYear: 1821,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '4',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '4 Escudos de Oro Virreinal',
             minYear: 1732,
             maxYear: 1821,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Real de a Ocho / 8 Reales (Columnario / Busto)',
             minYear: 1536,
             maxYear: 1821,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '8',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '8 Escudos de Oro (Onza Virreinal)',
             minYear: 1732,
             maxYear: 1821,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.5',
+        currency: 'MXE',
         motifs: [
           NumismaticMotifRule(
             'Escudo de Oro Virreinal',
@@ -137,13 +150,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.2 Primer Imperio Mexicano - Agustín de Iturbide (1822–1823)
   NumismaticEmissionRuleData(
     country: 'Imperio Mexicano (Primer y Segundo Imperio)',
-    minYear: 1822,
-    maxYear: 1823,
-    validCurrencies: ['MXR', 'MXE'],
-    defaultCurrency: 'MXR',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -155,6 +165,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -166,6 +177,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -177,6 +189,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -188,6 +201,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -199,39 +213,49 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             '4 Reales Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '4',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '4 Escudos de Oro Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             '8 Reales Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '8',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '8 Escudos de Oro Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
@@ -241,13 +265,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.3 Segundo Imperio Mexicano - Maximiliano (1864–1867)
   NumismaticEmissionRuleData(
     country: 'Imperio Mexicano (Primer y Segundo Imperio)',
-    minYear: 1864,
-    maxYear: 1867,
-    validCurrencies: ['MXP', 'MXR'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Corona Imperial (Maximiliano)',
@@ -259,6 +280,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXE',
         motifs: [
           NumismaticMotifRule(
             'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
@@ -270,6 +292,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXE',
         motifs: [
           NumismaticMotifRule(
             'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
@@ -281,6 +304,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Busto Emperador Maximiliano',
@@ -292,6 +316,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Busto Emperador Maximiliano',
@@ -303,6 +328,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXE',
         motifs: [
           NumismaticMotifRule(
             'Busto Emperador Maximiliano',
@@ -317,13 +343,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.4 México - Período Virreinal novohispano (1536–1821)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1536,
-    maxYear: 1821,
-    validCurrencies: ['MXR', 'MXE', 'REAL', 'ESC'],
-    defaultCurrency: 'MXR',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Monograma Coronado de Fernando VII / León Rampante (Octavo de Real)',
@@ -335,6 +358,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Virreinal de Plata (Castillo y León)',
@@ -352,6 +376,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Virreinal (Columnario / Busto)',
@@ -363,6 +388,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Columnario / Busto',
@@ -374,6 +400,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Virreinal (Columnario / Busto)',
@@ -385,39 +412,49 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             '4 Reales (Columnario / Busto)',
             minYear: 1536,
             maxYear: 1821,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '4',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '4 Escudos de Oro Virreinal',
             minYear: 1732,
             maxYear: 1821,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Real de a Ocho / 8 Reales (Columnario / Busto)',
             minYear: 1536,
             maxYear: 1821,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '8',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '8 Escudos de Oro (Onza Virreinal)',
             minYear: 1732,
             maxYear: 1821,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
@@ -427,13 +464,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.5 México - Primer Imperio (1822–1823)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1822,
-    maxYear: 1823,
-    validCurrencies: ['MXR', 'MXE'],
-    defaultCurrency: 'MXR',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -445,6 +479,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -456,6 +491,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -467,6 +503,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -478,6 +515,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Agustín de Iturbide',
@@ -489,39 +527,49 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             '4 Reales Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '4',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '4 Escudos de Oro Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             '8 Reales Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Plata',
-            currencyCode: 'MXR',
           ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: '8',
+        currency: 'MXE',
+        motifs: [
           NumismaticMotifRule(
             '8 Escudos de Oro Agustín de Iturbide',
             minYear: 1822,
             maxYear: 1823,
             material: 'Oro',
-            currencyCode: 'MXE',
           ),
         ],
       ),
@@ -531,13 +579,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.6 México - República Mexicana Sistema de Reales y Escudos (1823–1897)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1823,
-    maxYear: 1897,
-    validCurrencies: ['MXR', 'MXE', 'REAL', 'ESC'],
-    defaultCurrency: 'MXR',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/16',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Águila Republicana (Cobre)',
@@ -549,6 +594,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Águila Republicana',
@@ -560,6 +606,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Gorro Frigio / Águila Republicana',
@@ -571,6 +618,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Resplandor',
@@ -582,6 +630,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Resplandor',
@@ -593,6 +642,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Resplandor',
@@ -604,6 +654,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '4',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Columnario / Busto / Escudos',
@@ -615,6 +666,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXR',
         motifs: [
           NumismaticMotifRule(
             'Resplandor (Cap and Rays) / Escudos Oro',
@@ -630,13 +682,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.7 México - Segundo Imperio Serie Maximiliano Decimal (1864–1867)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1864,
-    maxYear: 1867,
-    validCurrencies: ['MXP', 'MXR'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Corona Imperial (Maximiliano)',
@@ -648,6 +697,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
@@ -659,6 +709,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
@@ -670,6 +721,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Busto Emperador Maximiliano',
@@ -681,6 +733,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Busto Emperador Maximiliano',
@@ -692,6 +745,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Busto Emperador Maximiliano',
@@ -706,13 +760,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.8 México - República Restaurada Sistema Balanza Decimal (1868–1881)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1868,
-    maxYear: 1881,
-    validCurrencies: ['MXP', 'MXE', 'MXR'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -724,6 +775,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -735,6 +787,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -746,6 +799,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -757,6 +811,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -768,6 +823,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -779,6 +835,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -790,6 +847,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Dos y Medio Pesos Oro Balanza',
@@ -801,6 +859,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Balanza',
@@ -812,6 +871,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Balanza',
@@ -823,6 +883,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Balanza',
@@ -834,6 +895,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Resplandor (Acuñación concurrente)',
@@ -849,13 +911,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.9 México - Crisis del Níquel (1882–1883)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1882,
-    maxYear: 1883,
-    validCurrencies: ['MXP', 'MXE', 'MXR'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral Romano "I" / Escudo Republicano',
@@ -867,6 +926,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral Romano "II" / Escudo Republicano',
@@ -878,6 +938,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral Romano "V" / Escudo Republicano',
@@ -889,6 +950,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -900,6 +962,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -911,6 +974,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza',
@@ -922,6 +986,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Resplandor',
@@ -937,13 +1002,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.10 México - Porfiriato Decimal Resplandor (1884–1904)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1884,
-    maxYear: 1904,
-    validCurrencies: ['MXP', 'MXE', 'MXR'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral "1" y Corona de Laurel (Águila Porfiriana)',
@@ -955,6 +1017,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral "2" y Corona de Laurel (Águila Porfiriana)',
@@ -966,6 +1029,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata Balanza / Corona',
@@ -977,6 +1041,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata Balanza / Corona',
@@ -988,6 +1053,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Corona Porfiriana',
@@ -999,6 +1065,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata Gorro Frigio y Balanza',
@@ -1010,6 +1077,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Fuerte Resplandor',
@@ -1021,6 +1089,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '8',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Resplandor (Últimas emisiones)',
@@ -1036,13 +1105,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.11 México - Reforma Monetaria Porfiriana de 1905 (1905–1914)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1905,
-    maxYear: 1914,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Porfiriano Corona de Laurel',
@@ -1054,6 +1120,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral "2" con Rama de Laurel (Águila Porfiriana)',
@@ -1065,6 +1132,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral Romano "V" Radiante (Porfiriano)',
@@ -1076,6 +1144,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .800 Corona',
@@ -1087,6 +1156,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .800 Corona',
@@ -1098,6 +1168,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata Resplandor',
@@ -1109,6 +1180,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Fuerte Resplandor',
@@ -1126,6 +1198,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Hidalgo',
@@ -1137,6 +1210,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Hidalgo',
@@ -1152,13 +1226,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.12 México - Período Revolucionario / Constitucionalista (1915–1919)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1915,
-    maxYear: 1919,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral "1" y Guirnalda de Laurel (Águila Constitucionalista)',
@@ -1170,6 +1241,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral "2" y Guirnalda de Laurel (Águila Constitucionalista)',
@@ -1181,6 +1253,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Bronce Constitucionalista',
@@ -1192,6 +1265,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gorro Frigio Radiante (Emisión Reducida Ley .800)',
@@ -1202,6 +1276,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gorro Frigio Radiante (Emisión Reducida Ley .800)',
@@ -1212,6 +1287,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .800 Resplandor Reducido',
@@ -1223,6 +1299,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .800 Resplandor Reducido',
@@ -1234,6 +1311,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Hidalgo',
@@ -1245,6 +1323,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Dos y Medio Pesos Oro Hidalgo',
@@ -1256,6 +1335,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Hidalgo',
@@ -1267,6 +1347,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Hidalgo',
@@ -1278,6 +1359,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Calendario Azteca',
@@ -1293,13 +1375,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.13 México - Ley .720 y Centenario de Oro (1920–1942)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1920,
-    maxYear: 1942,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Bronce Espigas',
@@ -1311,6 +1390,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Numeral "2" y Corona de Laurel',
@@ -1322,6 +1402,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Níquel Josefa Chica',
@@ -1339,6 +1420,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Gorro Frigio Radiante (Ley .720)',
@@ -1356,6 +1438,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 Gorro Frigio',
@@ -1367,6 +1450,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 Resplandor',
@@ -1378,6 +1462,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 Resplandor',
@@ -1387,9 +1472,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           ),
         ],
       ),
-      // 2 Pesos 1921 Victoria Alada - PLATA .903
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Victoria Alada - Centenario de la Consumación de la Independencia',
@@ -1400,6 +1485,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro - Centenario de la Independencia (37.5g Oro Puro)',
@@ -1415,13 +1501,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.14 México - Segunda Guerra y Postguerra (1943–1949)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1943,
-    maxYear: 1949,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Espigas de Trigo',
@@ -1433,6 +1516,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Josefa Ortiz Grande',
@@ -1444,6 +1528,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Pirámide del Sol de Teotihuacán',
@@ -1455,6 +1540,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .720 Resplandor',
@@ -1472,6 +1558,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .500 Morelos Cachetón',
@@ -1483,6 +1570,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuauhtémoc (1947-1948)',
@@ -1494,6 +1582,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Oro Centenario',
@@ -1509,13 +1598,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.15 México - Década de 1950 (1950–1956)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1950,
-    maxYear: 1956,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Espigas de Trigo',
@@ -1527,6 +1613,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Latón Josefa',
@@ -1538,6 +1625,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Latón Benito Juárez',
@@ -1549,6 +1637,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Bronce Pirámide de Teotihuacán',
@@ -1560,6 +1649,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Balanza Cuproníquel',
@@ -1571,6 +1661,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .300 Morelos',
@@ -1588,6 +1679,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .300 Morelos',
@@ -1596,9 +1688,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           ),
         ],
       ),
-      // 5 Pesos 1950-1956 Plata (Ferrocarril, Hidalgo Laurel, Bicentenario Hidalgo, Hidalgo Chico)
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Inauguración del Ferrocarril del Sureste',
@@ -1624,9 +1716,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           ),
         ],
       ),
-      // 10 Pesos 1955-1956 Hidalgo
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Hidalgo Plata .900 (1955-1956)',
@@ -1642,13 +1734,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.16 México - Período de los Tepalcates y Conmemorativas (1957–1969)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1957,
-    maxYear: 1969,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Espigas de Trigo',
@@ -1660,6 +1749,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Latón Josefa',
@@ -1671,6 +1761,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Latón Benito Juárez',
@@ -1682,6 +1773,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Bronce Pirámide de Teotihuacán',
@@ -1693,6 +1785,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuproníquel Cuauhtémoc',
@@ -1704,6 +1797,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Plata .100 Morelos Tepalcate',
@@ -1720,6 +1814,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Centenario de la Constitución de 1857',
@@ -1735,6 +1830,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Centenario de la Constitución de 1857',
@@ -1750,6 +1846,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '25',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Juegos Olímpicos México 68 - Tipo 1 (Aros rectos / alineados)',
@@ -1769,13 +1866,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.17 México - Transición Pirámide de Bronce y Monedas de Cuproníquel (1970–1973)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1970,
-    maxYear: 1973,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Latón Josefa Chica',
@@ -1787,6 +1881,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Bronce Pirámide',
@@ -1798,6 +1893,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuproníquel Cuauhtémoc',
@@ -1809,6 +1905,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuproníquel José María Morelos',
@@ -1820,6 +1917,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuproníquel Vicente Guerrero',
@@ -1835,13 +1933,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.18 México - Serie Numismática Cuproníquel, Latón y Plata (1974–1983)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1974,
-    maxYear: 1983,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Latón Josefa',
@@ -1853,6 +1948,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Mazorca de Maíz',
@@ -1864,6 +1960,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Francisco I. Madero / Cabeza Olmeca',
@@ -1875,6 +1972,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cuauhtémoc',
@@ -1886,6 +1984,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'José María Morelos',
@@ -1897,6 +1996,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Vicente Guerrero / Quetzalcóatl',
@@ -1908,6 +2008,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Heptagonal Miguel Hidalgo',
@@ -1919,6 +2020,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cultura Maya - Jugador de Pelota',
@@ -1930,6 +2032,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Coyolxauhqui - Templo Mayor',
@@ -1941,6 +2044,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'José María Morelos (Plata .720)',
@@ -1956,13 +2060,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.19 México - Acero Inoxidable, Latón y Valores Medios (1984–1987)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1984,
-    maxYear: 1987,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Morelos Acero',
@@ -1974,6 +2075,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Latón Josefa Ortiz',
@@ -1985,6 +2087,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Miguel Hidalgo',
@@ -1996,6 +2099,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Bronce Guadalupe Victoria',
@@ -2007,6 +2111,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez',
@@ -2018,6 +2123,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Venustiano Carranza',
@@ -2029,6 +2135,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '200',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             '175 Aniversario de la Independencia',
@@ -2049,6 +2156,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Francisco I. Madero',
@@ -2064,13 +2172,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.20 México - Grandes Valores de Inflación Pre-N$ (1988–1992)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1988,
-    maxYear: 1992,
-    validCurrencies: ['MXP'],
-    defaultCurrency: 'MXP',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Miguel Hidalgo',
@@ -2082,6 +2187,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Guadalupe Victoria',
@@ -2093,6 +2199,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Benito Juárez',
@@ -2104,6 +2211,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Venustiano Carranza',
@@ -2115,6 +2223,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '500',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Francisco I. Madero',
@@ -2126,6 +2235,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Sor Juana Inés de la Cruz',
@@ -2137,6 +2247,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
+        currency: 'MXP',
         motifs: [
           NumismaticMotifRule(
             'Cincuentenario de la Expropiación Petrolera',
@@ -2151,13 +2262,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.21 México - Nuevos Pesos (N$ grabados físicamente 1992–1995)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1992,
-    maxYear: 1995,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
@@ -2169,6 +2277,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo del Sacrificio (Piedra del Sol)',
@@ -2180,6 +2289,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Ácatl - Decimotercer Día (Piedra del Sol)',
@@ -2191,6 +2301,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo de la Aceptación (Piedra del Sol)',
@@ -2202,6 +2313,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo del Resplandor (Piedra del Sol)',
@@ -2213,6 +2325,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo de los Días (Piedra del Sol)',
@@ -2224,6 +2337,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo de las Serpientes (Piedra del Sol)',
@@ -2235,6 +2349,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)',
@@ -2246,6 +2361,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)',
@@ -2257,6 +2373,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '50',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)',
@@ -2272,13 +2389,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.22 México - Familia C Primer Período (1996–2007)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 1996,
-    maxYear: 2007,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
@@ -2290,6 +2404,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Sacrificio (Piedra del Sol)',
@@ -2301,6 +2416,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Ácatl - Decimotercer Día (Piedra del Sol)',
@@ -2312,6 +2428,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de la Aceptación (Piedra del Sol)',
@@ -2323,6 +2440,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Resplandor (Piedra del Sol)',
@@ -2334,6 +2452,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de los Días (Piedra del Sol)',
@@ -2345,6 +2464,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de las Serpientes (Piedra del Sol)',
@@ -2356,6 +2476,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Piedra del Sol',
@@ -2377,6 +2498,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Octavio Paz - Cambio de Milenio',
@@ -2394,6 +2516,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '100',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             '32 Estados de la República - Fase 1 (Heráldicos)',
@@ -2440,13 +2563,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.23 México - Familia C Bicentenario y Centenario (2008–2010)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 2008,
-    maxYear: 2010,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
@@ -2458,6 +2578,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Sacrificio (Piedra del Sol)',
@@ -2469,6 +2590,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Ácatl - Decimotercer Día (Piedra del Sol)',
@@ -2480,6 +2602,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de la Aceptación (Piedra del Sol)',
@@ -2491,6 +2614,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Resplandor (Piedra del Sol)',
@@ -2502,6 +2626,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de los Días (Piedra del Sol)',
@@ -2513,6 +2638,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Ignacio López Rayón',
@@ -2703,6 +2829,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Piedra del Sol',
@@ -2714,6 +2841,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Octavio Paz - Premio Nobel de Literatura',
@@ -2729,13 +2857,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.24 México - Familia C Fraccionarias Acero Inoxidable (2011–2019)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 2011,
-    maxYear: 2019,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Sacrificio (Piedra del Sol)',
@@ -2747,6 +2872,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Ácatl - Decimotercer Día (Piedra del Sol)',
@@ -2758,6 +2884,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de la Aceptación (Piedra del Sol)',
@@ -2769,6 +2896,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Resplandor (Piedra del Sol)',
@@ -2780,6 +2908,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de los Días (Piedra del Sol)',
@@ -2791,6 +2920,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de las Serpientes (Piedra del Sol)',
@@ -2802,6 +2932,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Piedra del Sol',
@@ -2818,6 +2949,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Centenario del Ejército Mexicano',
@@ -2882,13 +3014,10 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.25 México - Familia C1 Dodecagonal (2020–presente)
   NumismaticEmissionRuleData(
     country: 'México',
-    minYear: 2020,
-    maxYear: 2100,
-    validCurrencies: ['MXN'],
-    defaultCurrency: 'MXN',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Sacrificio (Piedra del Sol)',
@@ -2900,6 +3029,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Ácatl - Decimotercer Día (Piedra del Sol)',
@@ -2911,6 +3041,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de la Aceptación (Piedra del Sol)',
@@ -2922,6 +3053,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '1',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo del Resplandor (Piedra del Sol)',
@@ -2933,6 +3065,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '2',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de los Días (Piedra del Sol)',
@@ -2944,6 +3077,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '5',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Anillo de las Serpientes (Piedra del Sol)',
@@ -2955,6 +3089,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '10',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             'Piedra del Sol',
@@ -2966,6 +3101,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       ),
       NumismaticPieceDefinition(
         denomination: '20',
+        currency: 'MXN',
         motifs: [
           NumismaticMotifRule(
             '500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)',
