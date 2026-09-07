@@ -15,14 +15,14 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/num
 void main() {
   group('Numismatic Data Migration Integrity Tests', () {
     test('All rule lists contain valid non-empty piece definitions', () {
-      expect(mexicoEmissionRules.length, equals(27));
+      expect(mexicoEmissionRules.length, equals(25));
       expect(usaEmissionRules.length, equals(9));
       expect(spainEmissionRules.length, equals(6));
       expect(worldCoinsEmissionRules.length, equals(51));
       expect(banknoteEmissionRules.length, equals(30));
 
       final allRules = NumismaticRulesRegistry.allRules;
-      expect(allRules.length, equals(123));
+      expect(allRules.length, equals(121));
 
       for (final rule in allRules) {
         expect(rule.pieces, isNotEmpty, reason: 'Rule for ${rule.country} (${rule.minYear}-${rule.maxYear}) has empty pieces');
@@ -49,7 +49,7 @@ void main() {
       expect(pieceCuartilla.material, equals('Plata'));
       expect(pieceCuartilla.effectiveAllowedMaterials, equals(['Plata', 'Cobre']));
 
-      // 1.25 Familia C Bicentenario y Centenario (2008–2010)
+      // 1.23 Familia C Bicentenario y Centenario (2008–2010)
       final bicentenarioMex = mexicoEmissionRules.firstWhere(
         (r) => r.country == 'México' && r.minYear == 2008 && !r.isBanknote,
       );
@@ -57,13 +57,13 @@ void main() {
       expect(piece5.motifs.length, equals(37)); // 37 Bicentenario motifs
       expect(piece5.allowsStandardForYear(2008), isFalse); // Strictly commemorative!
 
-      // 1.27 Conmemorativas Familia C1 Dodecagonal (2020–presente)
+      // 1.25 Conmemorativas Familia C1 Dodecagonal (2020–presente)
       final conmem2020 = mexicoEmissionRules.firstWhere(
         (r) => r.country == 'México' && r.minYear == 2020 && !r.isBanknote,
       );
       final piece20 = conmem2020.pieces.firstWhere((p) => p.denomination == '20');
       expect(piece20.motifs.length, greaterThanOrEqualTo(10));
-      expect(piece20.allowsStandardForYear(2020), isTrue); // Standard circulation exists concurrently
+      expect(piece20.allowsStandardForYear(2020), isFalse); // All $20 Dodecagonal coins are commemorative issues
     });
 
     test('USA rules preserve quarters and presidential dollar motifs', () {
@@ -72,7 +72,7 @@ void main() {
       );
       final quarter = modernUSA.pieces.firstWhere((p) => p.denomination == '0.25');
       expect(quarter.motifs.length, greaterThan(60)); // State Quarters + ATB + Women Quarters
-      expect(quarter.allowsStandardForYear(2004), isTrue);
+      expect(quarter.allowsStandardForYear(2004), isFalse); // 50 State Quarters only in 2004 (no generic eagle)
 
       final dollar = modernUSA.pieces.firstWhere((p) => p.denomination == '1');
       expect(dollar.motifs.length, greaterThan(40)); // Sacagawea + Presidential + Innovation

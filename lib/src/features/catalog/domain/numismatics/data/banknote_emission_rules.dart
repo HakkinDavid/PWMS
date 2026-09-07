@@ -3,13 +3,6 @@ import '../models/numismatic_models.dart';
 /// Banknote emission rules across all supported countries and eras.
 const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.1 México Billetes - Época Revolucionaria y Pre-Banco de México (1823–1924)
-  // Ref General: Banco de México - Historia del billete mexicano:
-  // https://www.banxico.org.mx/billetes-y-monedas/historia-billete-banco-mexico.html
-  // Ref General: Numista - Mexican Banknotes:
-  // https://en.numista.com/catalogue/mexico-banknotes-1.html
-  // Denominación - Modelo / Referencias:
-  // - 0.05, 0.10, 0.20, 0.50 Peso (Cartones y Billetes fraccionarios revolucionarios): https://en.numista.com/catalogue/pieces15170.html
-  // - 1, 2, 5, 10, 20, 50, 100, 500, 1000 Pesos (Gobierno Constitucionalista, Ejército del Norte, Banco de Londres y México): https://en.numista.com/catalogue/mexico-banknotes-1.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 1823,
@@ -18,38 +11,23 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '0.05', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '0.10', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '0.20', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '0.50', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '0.05', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S501', numistaUrl: 'https://en.numista.com/catalogue/pieces15170.html', motifName: 'Cartón Fraccionario Revolucionario', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '0.10', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S502', numistaUrl: 'https://en.numista.com/catalogue/pieces15171.html', motifName: 'Cartón Fraccionario Revolucionario', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '0.20', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S503', numistaUrl: 'https://en.numista.com/catalogue/pieces15172.html', motifName: 'Cartón Fraccionario Revolucionario', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '0.50', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S504', numistaUrl: 'https://en.numista.com/catalogue/pieces15173.html', motifName: 'Billete Fraccionario Revolucionario', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S511', numistaUrl: 'https://en.numista.com/catalogue/pieces15174.html', motifName: 'Gobierno Constitucionalista / Cuauhtémoc', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S512', numistaUrl: 'https://en.numista.com/catalogue/pieces15175.html', motifName: 'Gobierno Constitucionalista / Morelos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S513', numistaUrl: 'https://en.numista.com/catalogue/pieces15176.html', motifName: 'Gobierno Constitucionalista / Hidalgo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S514', numistaUrl: 'https://en.numista.com/catalogue/pieces15177.html', motifName: 'Gobierno Constitucionalista / Juárez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S515', numistaUrl: 'https://en.numista.com/catalogue/pieces15178.html', motifName: 'Gobierno Constitucionalista / Madero', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S516', numistaUrl: 'https://en.numista.com/catalogue/pieces15179.html', motifName: 'Gobierno Constitucionalista / Carranza', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S517', numistaUrl: 'https://en.numista.com/catalogue/pieces15180.html', motifName: 'Gobierno Constitucionalista / Zaragoza', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S518', numistaUrl: 'https://en.numista.com/catalogue/pieces15181.html', motifName: 'Gobierno Constitucionalista / Allende', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel', minYear: 1913, maxYear: 1916, kmNumber: 'P# S519', numistaUrl: 'https://en.numista.com/catalogue/pieces15182.html', motifName: 'Gobierno Constitucionalista / Cuauhtémoc', isBanknote: true),
     ],
   ),
 
   // B1.2 México Billetes - Primeras Emisiones Banco de México / ABNC (1925–1978)
-  // Ref General: Banco de México - Billetes impresos por American Bank Note Company (ABNC):
-  // https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // Ref General: Numista - Mexico - Banknotes (1925-1978):
-  // https://en.numista.com/catalogue/mexico-banknotes-2.html
-  // Denominación - Modelo / Referencias:
-  // - 1 Peso (ABNC - Calendario Azteca / Piedra del Sol): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 2 Pesos (ABNC - Monumento a la Independencia): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 5 Pesos (ABNC - La Gitana / Josefa Ortiz de Domínguez): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 10 Pesos (ABNC - La Tehuana / Miguel Hidalgo): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 20 Pesos (ABNC - Josefa Ortiz de Domínguez): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 50 Pesos (ABNC - Ignacio Allende): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 100 Pesos (ABNC - Miguel Hidalgo y Costilla): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 500 Pesos (ABNC - José María Morelos y Pavón): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 1000 Pesos (ABNC - Cuauhtémoc): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
-  // - 5000, 10000 Pesos (ABNC - Niños Héroes / Matías Romero): https://www.banxico.org.mx/billetes-y-monedas/billetes-abnc-banco-mexico.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 1925,
@@ -58,31 +36,21 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1936, maxYear: 1970, kmNumber: 'P# 30', numistaUrl: 'https://en.numista.com/catalogue/pieces20235.html', motifName: 'Piedra del Sol (Calendario Azteca)', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 1925, maxYear: 1945, kmNumber: 'P# 31', numistaUrl: 'https://en.numista.com/catalogue/pieces20236.html', motifName: 'Monumento a la Independencia', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1925, maxYear: 1978, kmNumber: 'P# 32', numistaUrl: 'https://en.numista.com/catalogue/pieces20237.html', motifName: 'La Gitana / Josefa Ortiz de Domínguez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1925, maxYear: 1978, kmNumber: 'P# 33', numistaUrl: 'https://en.numista.com/catalogue/pieces20238.html', motifName: 'La Tehuana / Miguel Hidalgo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1925, maxYear: 1978, kmNumber: 'P# 34', numistaUrl: 'https://en.numista.com/catalogue/pieces20239.html', motifName: 'Josefa Ortiz de Domínguez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1925, maxYear: 1978, kmNumber: 'P# 35', numistaUrl: 'https://en.numista.com/catalogue/pieces20240.html', motifName: 'Ignacio Allende', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1925, maxYear: 1978, kmNumber: 'P# 36', numistaUrl: 'https://en.numista.com/catalogue/pieces20241.html', motifName: 'Miguel Hidalgo y Costilla', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1925, maxYear: 1978, kmNumber: 'P# 37', numistaUrl: 'https://en.numista.com/catalogue/pieces20242.html', motifName: 'José María Morelos y Pavón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1925, maxYear: 1978, kmNumber: 'P# 38', numistaUrl: 'https://en.numista.com/catalogue/pieces20243.html', motifName: 'Cuauhtémoc', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 1953, maxYear: 1978, kmNumber: 'P# 39', numistaUrl: 'https://en.numista.com/catalogue/pieces20244.html', motifName: 'Los Niños Héroes', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 1943, maxYear: 1978, kmNumber: 'P# 40', numistaUrl: 'https://en.numista.com/catalogue/pieces20245.html', motifName: 'Matías Romero', isBanknote: true),
     ],
   ),
 
   // B1.3 México Billetes - Familia AA Fábrica de Billetes Banxico (1969–1992)
-  // Ref General: Banco de México - Billetes de la Familia AA desmonetizados:
-  // https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
-  // Denominación - Modelo / Referencias:
-  // - 5 Pesos (Josefa Ortiz de Domínguez): https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
-  // - 10 Pesos (Miguel Hidalgo): https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
-  // - 20 Pesos (José María Morelos): https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
-  // - 50 Pesos (Benito Juárez): https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
-  // - 100 Pesos (Venustiano Carranza): https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
-  // - 500 Pesos (Francisco I. Madero): https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
-  // - 1000 Pesos (Sor Juana Inés de la Cruz): https://www.banxico.org.mx/billetes-y-monedas/familia-aa-desmonetizados-ban.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 1969,
@@ -91,26 +59,17 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1969, maxYear: 1972, kmNumber: 'P# 61', numistaUrl: 'https://en.numista.com/catalogue/pieces20246.html', motifName: 'Josefa Ortiz de Domínguez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1969, maxYear: 1977, kmNumber: 'P# 62', numistaUrl: 'https://en.numista.com/catalogue/pieces20247.html', motifName: 'Miguel Hidalgo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1969, maxYear: 1977, kmNumber: 'P# 63', numistaUrl: 'https://en.numista.com/catalogue/pieces20248.html', motifName: 'José María Morelos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1973, maxYear: 1981, kmNumber: 'P# 64', numistaUrl: 'https://en.numista.com/catalogue/pieces20249.html', motifName: 'Benito Juárez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1974, maxYear: 1982, kmNumber: 'P# 65', numistaUrl: 'https://en.numista.com/catalogue/pieces20250.html', motifName: 'Venustiano Carranza', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1979, maxYear: 1984, kmNumber: 'P# 66', numistaUrl: 'https://en.numista.com/catalogue/pieces20251.html', motifName: 'Francisco I. Madero', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1978, maxYear: 1985, kmNumber: 'P# 67', numistaUrl: 'https://en.numista.com/catalogue/pieces20252.html', motifName: 'Sor Juana Inés de la Cruz', isBanknote: true),
     ],
   ),
 
   // B1.4 México Billetes - Familia A Altas Denominaciones Inflacionarias (1979–1992)
-  // Ref General: Banco de México - Billetes de la Familia A desmonetizados:
-  // https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
-  // Denominación - Modelo / Referencias:
-  // - 2000 Pesos (Justo Sierra): https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
-  // - 5000 Pesos (Niños Héroes): https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
-  // - 10000 Pesos (Lázaro Cárdenas): https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
-  // - 20000 Pesos (Andrés Quintana Roo): https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
-  // - 50000 Pesos (Cuauhtémoc): https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
-  // - 100000 Pesos (Plutarco Elías Calles): https://www.banxico.org.mx/billetes-y-monedas/familia-desmonetizados-banco.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 1979,
@@ -119,23 +78,16 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', minYear: 1983, maxYear: 1989, kmNumber: 'P# 78', numistaUrl: 'https://en.numista.com/catalogue/pieces20253.html', motifName: 'Justo Sierra', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 1980, maxYear: 1989, kmNumber: 'P# 79', numistaUrl: 'https://en.numista.com/catalogue/pieces20254.html', motifName: 'Los Niños Héroes', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 1982, maxYear: 1991, kmNumber: 'P# 80', numistaUrl: 'https://en.numista.com/catalogue/pieces20255.html', motifName: 'Lázaro Cárdenas', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', minYear: 1985, maxYear: 1992, kmNumber: 'P# 81', numistaUrl: 'https://en.numista.com/catalogue/pieces20256.html', motifName: 'Andrés Quintana Roo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50000', material: 'Papel de algodón', minYear: 1986, maxYear: 1992, kmNumber: 'P# 82', numistaUrl: 'https://en.numista.com/catalogue/pieces20257.html', motifName: 'Cuauhtémoc', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', minYear: 1988, maxYear: 1992, kmNumber: 'P# 83', numistaUrl: 'https://en.numista.com/catalogue/pieces20258.html', motifName: 'Plutarco Elías Calles', isBanknote: true),
     ],
   ),
 
   // B1.5 México Billetes - Familia B Nuevos Pesos N$ (1993–1995)
-  // Ref General: Banco de México - Billetes de la Familia B en proceso de retiro:
-  // https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
-  // Denominación - Modelo / Referencias:
-  // - 10 Nuevos Pesos (Lázaro Cárdenas): https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
-  // - 20 Nuevos Pesos (Andrés Quintana Roo): https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
-  // - 50 Nuevos Pesos (Cuauhtémoc): https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
-  // - 100 Nuevos Pesos (Plutarco Elías Calles): https://www.banxico.org.mx/billetes-y-monedas/familia-b-proceso-retiro-ban.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 1993,
@@ -144,23 +96,14 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1993, maxYear: 1995, kmNumber: 'P# 99', numistaUrl: 'https://en.numista.com/catalogue/pieces20259.html', motifName: 'Lázaro Cárdenas', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1993, maxYear: 1995, kmNumber: 'P# 100', numistaUrl: 'https://en.numista.com/catalogue/pieces20260.html', motifName: 'Andrés Quintana Roo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1993, maxYear: 1995, kmNumber: 'P# 101', numistaUrl: 'https://en.numista.com/catalogue/pieces20261.html', motifName: 'Cuauhtémoc', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1993, maxYear: 1995, kmNumber: 'P# 102', numistaUrl: 'https://en.numista.com/catalogue/pieces20262.html', motifName: 'Plutarco Elías Calles', isBanknote: true),
     ],
   ),
 
   // B1.6 México Billetes - Familia C (1994–2001)
-  // Ref General: Banco de México - Billetes de la Familia C en proceso de retiro:
-  // https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
-  // Denominación - Modelo / Referencias:
-  // - 10 Pesos (Emiliano Zapata): https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
-  // - 20 Pesos (Benito Juárez): https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
-  // - 50 Pesos (José María Morelos): https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
-  // - 100 Pesos (Nezahualcóyotl): https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
-  // - 200 Pesos (Sor Juana Inés de la Cruz): https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
-  // - 500 Pesos (Ignacio Zaragoza): https://www.banxico.org.mx/billetes-y-monedas/familia-c-circulacion-banco-m.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 1994,
@@ -169,25 +112,16 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1994, maxYear: 2000, kmNumber: 'P# 103', numistaUrl: 'https://en.numista.com/catalogue/pieces20263.html', motifName: 'Emiliano Zapata', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1994, maxYear: 2001, kmNumber: 'P# 104', numistaUrl: 'https://en.numista.com/catalogue/pieces20264.html', motifName: 'Benito Juárez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1994, maxYear: 2001, kmNumber: 'P# 105', numistaUrl: 'https://en.numista.com/catalogue/pieces20265.html', motifName: 'José María Morelos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1994, maxYear: 2001, kmNumber: 'P# 106', numistaUrl: 'https://en.numista.com/catalogue/pieces20266.html', motifName: 'Nezahualcóyotl', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 1994, maxYear: 2001, kmNumber: 'P# 107', numistaUrl: 'https://en.numista.com/catalogue/pieces20267.html', motifName: 'Sor Juana Inés de la Cruz', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1994, maxYear: 2001, kmNumber: 'P# 108', numistaUrl: 'https://en.numista.com/catalogue/pieces20268.html', motifName: 'Ignacio Zaragoza', isBanknote: true),
     ],
   ),
 
   // B1.7 México Billetes - Familia D y D1 Introducción de Polímero (2002–2007)
-  // Ref General: Banco de México - Billetes de las Familias D y D1:
-  // https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
-  // Denominación - Modelo / Referencias:
-  // - 10 Pesos (Emiliano Zapata): https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
-  // - 20 Pesos (Polímero - Benito Juárez): https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
-  // - 50 Pesos (José María Morelos): https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
-  // - 100 Pesos (Nezahualcóyotl): https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
-  // - 200 Pesos (Sor Juana Inés de la Cruz): https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
-  // - 500 Pesos (Ignacio Zaragoza): https://www.banxico.org.mx/billetes-y-monedas/familia-d1-proceso-retiro-ba.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 2002,
@@ -196,25 +130,16 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 2002, maxYear: 2004, kmNumber: 'P# 109', numistaUrl: 'https://en.numista.com/catalogue/pieces20263.html', motifName: 'Emiliano Zapata', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Polímero', minYear: 2002, maxYear: 2007, kmNumber: 'P# 110', numistaUrl: 'https://en.numista.com/catalogue/pieces20269.html', motifName: 'Benito Juárez (Polímero)', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 2002, maxYear: 2006, kmNumber: 'P# 111', numistaUrl: 'https://en.numista.com/catalogue/pieces20265.html', motifName: 'José María Morelos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 2002, maxYear: 2007, kmNumber: 'P# 112', numistaUrl: 'https://en.numista.com/catalogue/pieces20266.html', motifName: 'Nezahualcóyotl', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2002, maxYear: 2007, kmNumber: 'P# 113', numistaUrl: 'https://en.numista.com/catalogue/pieces20267.html', motifName: 'Sor Juana Inés de la Cruz', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2002, maxYear: 2007, kmNumber: 'P# 114', numistaUrl: 'https://en.numista.com/catalogue/pieces20268.html', motifName: 'Ignacio Zaragoza', isBanknote: true),
     ],
   ),
 
   // B1.8 México Billetes - Familia F y Conmemorativos del Centenario/Bicentenario (2006–2019)
-  // Ref General: Banco de México - Billetes de la Familia F en circulación:
-  // https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
-  // Denominación - Modelo / Referencias:
-  // - 20 Pesos (Polímero - Benito Juárez / Zona Arqueológica de Monte Albán): https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
-  // - 50 Pesos (Polímero - José María Morelos / Acueducto de Morelia): https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
-  // - 100 Pesos (Papel de algodón - Nezahualcóyotl / Centenario Revolución 2010 / Centenario Constitución 2017): https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
-  // - 200 Pesos (Papel de algodón - Sor Juana Inés de la Cruz / Bicentenario Independencia 2010): https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
-  // - 500 Pesos (Papel de algodón - Diego Rivera y Frida Kahlo): https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
-  // - 1000 Pesos (Papel de algodón - Miguel Hidalgo / Universidad de Guanajuato): https://www.banxico.org.mx/billetes-y-monedas/familia-f-circulacion-banco-m.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 2006,
@@ -223,13 +148,17 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'MXN',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '20', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Polímero', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Polímero', minYear: 2006, maxYear: 2019, kmNumber: 'P# 121', numistaUrl: 'https://en.numista.com/catalogue/pieces20270.html', motifName: 'Benito Juárez / Monte Albán', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Polímero', minYear: 2006, maxYear: 2019, kmNumber: 'P# 122', numistaUrl: 'https://en.numista.com/catalogue/pieces20271.html', motifName: 'José María Morelos / Acueducto de Morelia', isBanknote: true),
       NumismaticPieceDefinition(
         denomination: '100',
         material: 'Papel de algodón',
+        minYear: 2006,
+        maxYear: 2019,
         isBanknote: true,
         allowedMaterials: ['Papel de algodón', 'Polímero'],
+        kmNumber: 'P# 123',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces20272.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2009, 2010),
@@ -239,27 +168,22 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '200',
         material: 'Papel de algodón',
+        minYear: 2006,
+        maxYear: 2019,
         isBanknote: true,
+        kmNumber: 'P# 124',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces20273.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2009, 2010),
         ],
       ),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2010, maxYear: 2019, kmNumber: 'P# 125', numistaUrl: 'https://en.numista.com/catalogue/pieces20274.html', motifName: 'Diego Rivera y Frida Kahlo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 2008, maxYear: 2019, kmNumber: 'P# 126', numistaUrl: 'https://en.numista.com/catalogue/pieces20275.html', motifName: 'Miguel Hidalgo / Universidad de Guanajuato', isBanknote: true),
     ],
   ),
 
   // B1.9 México Billetes - Familia G en Circulación y Polímeros de Vanguardia (2020–presente)
-  // Ref General: Banco de México - Billetes de la Familia G:
-  // https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
-  // Denominación - Modelo / Referencias:
-  // - 20 Pesos (Polímero - Bicentenario de la Independencia Nacional): https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
-  // - 50 Pesos (Polímero - Fundación de Tenochtitlan / Ajolote y Xochimilco): https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
-  // - 100 Pesos (Polímero - Sor Juana Inés de la Cruz / Bosques Templados y Mariposa Monarca): https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
-  // - 200 Pesos (Papel de algodón - Miguel Hidalgo y José María Morelos / Reserva El Pinacate): https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
-  // - 500 Pesos (Papel de algodón - Benito Juárez / Ballena Gris y Pastos Marinos El Vizcaíno): https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
-  // - 1000 Pesos (Papel de algodón - Francisco I. Madero, Hermila Galindo y Carmen Serdán / Calakmul y Jaguar): https://www.banxico.org.mx/billetes-y-monedas/familia-g-circulacion-banco-m.html
   NumismaticEmissionRuleData(
     country: 'México',
     minYear: 2020,
@@ -271,31 +195,35 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '20',
         material: 'Polímero',
+        minYear: 2020,
+        maxYear: 2024,
         isBanknote: true,
+        kmNumber: 'P# 131',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces295133.html',
         motifs: [
           NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de la Independencia Nacional (2021)', 2021),
         ],
       ),
-      NumismaticPieceDefinition(denomination: '50', material: 'Polímero', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Polímero', minYear: 2020, maxYear: 2024, kmNumber: 'P# 132', numistaUrl: 'https://en.numista.com/catalogue/pieces307044.html', motifName: 'Fundación de Tenochtitlan / Ajolote y Xochimilco', isBanknote: true),
       NumismaticPieceDefinition(
         denomination: '100',
         material: 'Polímero',
+        minYear: 2020,
+        maxYear: 2024,
         isBanknote: true,
         allowedMaterials: ['Polímero', 'Papel de algodón'],
+        kmNumber: 'P# 133',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces247348.html',
+        motifName: 'Sor Juana Inés de la Cruz / Bosques Templados y Mariposa Monarca',
       ),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2019, maxYear: 2024, kmNumber: 'P# 134', numistaUrl: 'https://en.numista.com/catalogue/pieces180173.html', motifName: 'Miguel Hidalgo y José María Morelos / Reserva El Pinacate', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2018, maxYear: 2024, kmNumber: 'P# 135', numistaUrl: 'https://en.numista.com/catalogue/pieces146193.html', motifName: 'Benito Juárez / Ballena Gris El Vizcaíno', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 2020, maxYear: 2024, kmNumber: 'P# 136', numistaUrl: 'https://en.numista.com/catalogue/pieces249767.html', motifName: 'Madero, Hermila Galindo y Carmen Serdán / Calakmul', isBanknote: true),
     ],
   ),
 
   // B2.1 Estados Unidos Billetes - Large Size Notes (1861–1927)
-  // Ref General: US Bureau of Engraving and Printing - Large Size Currency: https://www.bep.gov
-  // Ref General: Numista - United States - Banknotes (Large Size):
-  // https://en.numista.com/catalogue/united-states-banknotes-1.html
-  // Denominación - Modelo / Referencias:
-  // - 1, 2, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000 Dollars (Legal Tender, Silver & Gold Certificates, National Bank Notes): https://www.bep.gov
   NumismaticEmissionRuleData(
     country: 'Estados Unidos',
     minYear: 1861,
@@ -304,33 +232,21 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'USD',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1862, maxYear: 1923, kmNumber: 'Fr# 1', numistaUrl: 'https://en.numista.com/catalogue/pieces28285.html', motifName: 'George Washington / Chase / History Instructing Youth', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 1862, maxYear: 1918, kmNumber: 'Fr# 41', numistaUrl: 'https://en.numista.com/catalogue/pieces28286.html', motifName: 'Alexander Hamilton / Thomas Jefferson', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1861, maxYear: 1923, kmNumber: 'Fr# 61', numistaUrl: 'https://en.numista.com/catalogue/pieces28287.html', motifName: 'Chief Onepapa / Abraham Lincoln / Woodchopper', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1861, maxYear: 1923, kmNumber: 'Fr# 83', numistaUrl: 'https://en.numista.com/catalogue/pieces28288.html', motifName: 'Bison / Daniel Webster / Michael Hillegas', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1861, maxYear: 1923, kmNumber: 'Fr# 114', numistaUrl: 'https://en.numista.com/catalogue/pieces28289.html', motifName: 'Alexander Hamilton / Stephen Decatur / George Washington', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1861, maxYear: 1918, kmNumber: 'Fr# 147', numistaUrl: 'https://en.numista.com/catalogue/pieces28290.html', motifName: 'Henry Clay / Benjamin Franklin / Ulysses S. Grant', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1861, maxYear: 1914, kmNumber: 'Fr# 167', numistaUrl: 'https://en.numista.com/catalogue/pieces28291.html', motifName: 'Abraham Lincoln / Thomas Hart Benton', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1861, maxYear: 1918, kmNumber: 'Fr# 185', numistaUrl: 'https://en.numista.com/catalogue/pieces28292.html', motifName: 'Alexander Hamilton / John Marshall', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1861, maxYear: 1918, kmNumber: 'Fr# 186', numistaUrl: 'https://en.numista.com/catalogue/pieces28293.html', motifName: 'Robert Morris / DeWitt Clinton / Alexander Hamilton', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 1878, maxYear: 1918, kmNumber: 'Fr# 188', numistaUrl: 'https://en.numista.com/catalogue/pieces28294.html', motifName: 'James Madison', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 1878, maxYear: 1918, kmNumber: 'Fr# 189', numistaUrl: 'https://en.numista.com/catalogue/pieces28295.html', motifName: 'Salmon P. Chase', isBanknote: true),
     ],
   ),
 
   // B2.2 Estados Unidos Billetes - Small Size Federal Reserve Notes (1928–presente)
-  // Ref General: US Bureau of Engraving and Printing - Currency Denominations:
-  // https://www.bep.gov/currency/denominations
-  // Ref General: US Federal Reserve - Currency: https://www.federalreserve.gov
-  // Denominación - Modelo / Referencias:
-  // - $1 (George Washington / Great Seal): https://www.federalreserve.gov/faqs/currency_12773.htm
-  // - $2 (Thomas Jefferson / Declaration of Independence): https://www.federalreserve.gov/faqs/currency_12773.htm
-  // - $5 (Abraham Lincoln / Lincoln Memorial): https://www.federalreserve.gov/faqs/currency_12773.htm
-  // - $10 (Alexander Hamilton / US Treasury): https://www.federalreserve.gov/faqs/currency_12773.htm
-  // - $20 (Andrew Jackson / White House): https://www.federalreserve.gov/faqs/currency_12773.htm
-  // - $50 (Ulysses S. Grant / US Capitol): https://www.federalreserve.gov/faqs/currency_12773.htm
-  // - $100 (Benjamin Franklin / Independence Hall): https://www.federalreserve.gov/faqs/currency_12773.htm
-  // - $500, $1000, $5000, $10000, $100000 (McKinley, Cleveland, Madison, Chase, Wilson): https://www.bep.gov
   NumismaticEmissionRuleData(
     country: 'Estados Unidos',
     minYear: 1928,
@@ -339,26 +255,22 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'USD',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1928, maxYear: 2024, kmNumber: 'P# 416', numistaUrl: 'https://en.numista.com/catalogue/pieces20276.html', motifName: 'George Washington / Great Seal', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 1928, maxYear: 2024, kmNumber: 'P# 417', numistaUrl: 'https://en.numista.com/catalogue/pieces20277.html', motifName: 'Thomas Jefferson / Declaration of Independence', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1928, maxYear: 2024, kmNumber: 'P# 418', numistaUrl: 'https://en.numista.com/catalogue/pieces20278.html', motifName: 'Abraham Lincoln / Lincoln Memorial', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1928, maxYear: 2024, kmNumber: 'P# 419', numistaUrl: 'https://en.numista.com/catalogue/pieces20279.html', motifName: 'Alexander Hamilton / US Treasury', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1928, maxYear: 2024, kmNumber: 'P# 420', numistaUrl: 'https://en.numista.com/catalogue/pieces20280.html', motifName: 'Andrew Jackson / White House', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1928, maxYear: 2024, kmNumber: 'P# 421', numistaUrl: 'https://en.numista.com/catalogue/pieces20281.html', motifName: 'Ulysses S. Grant / US Capitol', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1928, maxYear: 2024, kmNumber: 'P# 422', numistaUrl: 'https://en.numista.com/catalogue/pieces20282.html', motifName: 'Benjamin Franklin / Independence Hall', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1928, maxYear: 1945, kmNumber: 'P# 423', numistaUrl: 'https://en.numista.com/catalogue/pieces20283.html', motifName: 'William McKinley', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1928, maxYear: 1945, kmNumber: 'P# 424', numistaUrl: 'https://en.numista.com/catalogue/pieces20284.html', motifName: 'Grover Cleveland', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 1928, maxYear: 1945, kmNumber: 'P# 425', numistaUrl: 'https://en.numista.com/catalogue/pieces20285.html', motifName: 'James Madison', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 1928, maxYear: 1945, kmNumber: 'P# 426', numistaUrl: 'https://en.numista.com/catalogue/pieces20286.html', motifName: 'Salmon P. Chase', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', minYear: 1934, maxYear: 1934, kmNumber: 'P# 427', numistaUrl: 'https://en.numista.com/catalogue/pieces20287.html', motifName: 'Woodrow Wilson (Gold Certificate)', isBanknote: true),
     ],
   ),
 
   // B3.1 España Billetes - Era de la Peseta (1874–2001)
-  // Ref General: Banco de España - Billetes en pesetas:
-  // https://www.bde.es/wbe/es/para-ciudadanos/billetes-y-monedas/pesetas/
-  // Denominación - Modelo / Referencias:
-  // - 1 a 10000 Pesetas (Cervantes, Velázquez, Goya, Rosalía de Castro, Juan Ramón Jiménez, Benito Pérez Galdós, José Celestino Mutis, Hernán Cortés, Juan Carlos I): https://www.bde.es/wbe/es/para-ciudadanos/billetes-y-monedas/pesetas/
   NumismaticEmissionRuleData(
     country: 'España',
     minYear: 1874,
@@ -367,27 +279,23 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'ESP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '25', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1937, maxYear: 1953, kmNumber: 'P# 92', numistaUrl: 'https://en.numista.com/catalogue/pieces28296.html', motifName: 'Dama de Elche / Quijote', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 1938, maxYear: 1951, kmNumber: 'P# 93', numistaUrl: 'https://en.numista.com/catalogue/pieces28297.html', motifName: 'República / Santa María', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1935, maxYear: 1954, kmNumber: 'P# 94', numistaUrl: 'https://en.numista.com/catalogue/pieces28298.html', motifName: 'Jaime I / Séneca', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1935, maxYear: 1953, kmNumber: 'P# 95', numistaUrl: 'https://en.numista.com/catalogue/pieces28299.html', motifName: 'Rosalía de Castro / Alfonso X', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '25', material: 'Papel de algodón', minYear: 1928, maxYear: 1954, kmNumber: 'P# 96', numistaUrl: 'https://en.numista.com/catalogue/pieces28300.html', motifName: 'Calderón de la Barca / Álvaro de Bazán', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1928, maxYear: 1971, kmNumber: 'P# 97', numistaUrl: 'https://en.numista.com/catalogue/pieces28301.html', motifName: 'Velázquez / Eduardo Rosales', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1925, maxYear: 1970, kmNumber: 'P# 98', numistaUrl: 'https://en.numista.com/catalogue/pieces28302.html', motifName: 'Cervantes / Manuel de Falla', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 1980, maxYear: 1992, kmNumber: 'P# 157', numistaUrl: 'https://en.numista.com/catalogue/pieces28303.html', motifName: 'Leopoldo Alas Clarín', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1928, maxYear: 1979, kmNumber: 'P# 99', numistaUrl: 'https://en.numista.com/catalogue/pieces28304.html', motifName: 'Francisco de Zurbarán / Rosalía de Castro / Menéndez Pidal', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1874, maxYear: 1992, kmNumber: 'P# 100', numistaUrl: 'https://en.numista.com/catalogue/pieces28305.html', motifName: 'Benito Pérez Galdós / José Celestino Mutis / Hernán Cortés', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', minYear: 1980, maxYear: 1992, kmNumber: 'P# 158', numistaUrl: 'https://en.numista.com/catalogue/pieces28306.html', motifName: 'Juan Ramón Jiménez / José Celestino Mutis', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 1976, maxYear: 1992, kmNumber: 'P# 159', numistaUrl: 'https://en.numista.com/catalogue/pieces28307.html', motifName: 'Rey Juan Carlos I / Cristóbal Colón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 1985, maxYear: 1992, kmNumber: 'P# 160', numistaUrl: 'https://en.numista.com/catalogue/pieces28308.html', motifName: 'Rey Juan Carlos I y Príncipe Felipe', isBanknote: true),
     ],
   ),
 
   // B3.2 España & Unión Europea Billetes - Era del Euro (2002–presente)
-  // Ref General: Banco Central Europeo - Billetes en euros (Series 2002 y Europa):
-  // https://www.ecb.europa.eu/euro/banknotes/html/index.es.html
-  // Denominación - Modelo / Referencias:
-  // - 5, 10, 20, 50, 100, 200, 500 Euros (Arquitectura Clásica, Románica, Gótica, Renacentista, Barroca, Modernista): https://www.ecb.europa.eu/euro/banknotes/html/index.es.html
   NumismaticEmissionRuleData(
     country: 'España',
     minYear: 2002,
@@ -396,13 +304,13 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'EUR',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 1', numistaUrl: 'https://en.numista.com/catalogue/pieces28309.html', motifName: 'Arquitectura Clásica', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 2', numistaUrl: 'https://en.numista.com/catalogue/pieces28310.html', motifName: 'Arquitectura Románica', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 3', numistaUrl: 'https://en.numista.com/catalogue/pieces28311.html', motifName: 'Arquitectura Gótica', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 4', numistaUrl: 'https://en.numista.com/catalogue/pieces28312.html', motifName: 'Arquitectura Renacentista', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 5', numistaUrl: 'https://en.numista.com/catalogue/pieces28313.html', motifName: 'Arquitectura Barroca y Rococó', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 6', numistaUrl: 'https://en.numista.com/catalogue/pieces28314.html', motifName: 'Arquitectura Modernista del Hierro y Cristal', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2002, maxYear: 2019, kmNumber: 'P# 7', numistaUrl: 'https://en.numista.com/catalogue/pieces28315.html', motifName: 'Arquitectura Moderna del Siglo XX', isBanknote: true),
     ],
   ),
   NumismaticEmissionRuleData(
@@ -413,20 +321,20 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'EUR',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 1', numistaUrl: 'https://en.numista.com/catalogue/pieces28309.html', motifName: 'Arquitectura Clásica', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 2', numistaUrl: 'https://en.numista.com/catalogue/pieces28310.html', motifName: 'Arquitectura Románica', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 3', numistaUrl: 'https://en.numista.com/catalogue/pieces28311.html', motifName: 'Arquitectura Gótica', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 4', numistaUrl: 'https://en.numista.com/catalogue/pieces28312.html', motifName: 'Arquitectura Renacentista', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 5', numistaUrl: 'https://en.numista.com/catalogue/pieces28313.html', motifName: 'Arquitectura Barroca y Rococó', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2002, maxYear: 2024, kmNumber: 'P# 6', numistaUrl: 'https://en.numista.com/catalogue/pieces28314.html', motifName: 'Arquitectura Modernista del Hierro y Cristal', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2002, maxYear: 2019, kmNumber: 'P# 7', numistaUrl: 'https://en.numista.com/catalogue/pieces28315.html', motifName: 'Arquitectura Moderna del Siglo XX', isBanknote: true),
     ],
   ),
 
   // B4.1 Guatemala Billetes - Quetzales Clásicos y Modernos (1948–2006)
   // Ref General: Banco de Guatemala - Historia de los Billetes de Quetzal: https://www.banguat.gob.gt
   // Denominación - Modelo / Referencias:
-  // - 0.50, 1, 5, 10, 20, 50, 100, 200 Quetzales (Tecún Umán, José María Orellana, Justo Rufino Barrios, Miguel García Granados, Mariano Gálvez, Carlos Mérida, Francisco Marroquín): https://www.banguat.gob.gt
+  // - 0.50, 1, 5, 10, 20, 50, 100 Quetzales (Tecún Umán, José María Orellana, Justo Rufino Barrios, Miguel García Granados, Mariano Gálvez, Carlos Mérida, Francisco Marroquín): https://www.banguat.gob.gt
   NumismaticEmissionRuleData(
     country: 'Guatemala',
     minYear: 1948,
@@ -435,14 +343,13 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'GTQ',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '0.50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '0.50', material: 'Papel de algodón', minYear: 1972, maxYear: 1998, kmNumber: 'P# 68', numistaUrl: 'https://en.numista.com/catalogue/pieces205423.html', motifName: 'Tecún Umán / Templo I de Tikal', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1948, maxYear: 2006, kmNumber: 'P# 88', numistaUrl: 'https://en.numista.com/catalogue/pieces205425.html', motifName: 'General José María Orellana', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1948, maxYear: 2006, kmNumber: 'P# 89', numistaUrl: 'https://en.numista.com/catalogue/pieces205427.html', motifName: 'General Justo Rufino Barrios', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1948, maxYear: 2006, kmNumber: 'P# 90', numistaUrl: 'https://en.numista.com/catalogue/pieces205430.html', motifName: 'General Miguel García Granados', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1948, maxYear: 2006, kmNumber: 'P# 91', numistaUrl: 'https://en.numista.com/catalogue/pieces205432.html', motifName: 'Doctor Mariano Gálvez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1974, maxYear: 2006, kmNumber: 'P# 92', numistaUrl: 'https://en.numista.com/catalogue/pieces205434.html', motifName: 'Licenciado Carlos Mérida', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1972, maxYear: 2006, kmNumber: 'P# 93', numistaUrl: 'https://en.numista.com/catalogue/pieces205436.html', motifName: 'Obispo Francisco Marroquín', isBanknote: true),
     ],
   ),
 
@@ -461,13 +368,13 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'GTQ',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Polímero', minYear: 2007, maxYear: 2100, kmNumber: 'P# 117', numistaUrl: 'https://en.numista.com/catalogue/pieces205438.html', motifName: 'General José María Orellana (Polímero)', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Polímero', minYear: 2011, maxYear: 2100, kmNumber: 'P# 122', numistaUrl: 'https://en.numista.com/catalogue/pieces205440.html', motifName: 'General Justo Rufino Barrios (Polímero)', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 2007, maxYear: 2100, kmNumber: 'P# 119', numistaUrl: 'https://en.numista.com/catalogue/pieces205430.html', motifName: 'General Miguel García Granados', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 2007, maxYear: 2100, kmNumber: 'P# 120', numistaUrl: 'https://en.numista.com/catalogue/pieces205432.html', motifName: 'Doctor Mariano Gálvez', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 2007, maxYear: 2100, kmNumber: 'P# 121', numistaUrl: 'https://en.numista.com/catalogue/pieces205434.html', motifName: 'Licenciado Carlos Mérida', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 2007, maxYear: 2100, kmNumber: 'P# 118', numistaUrl: 'https://en.numista.com/catalogue/pieces205436.html', motifName: 'Obispo Francisco Marroquín', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2009, maxYear: 2100, kmNumber: 'P# 123', numistaUrl: 'https://en.numista.com/catalogue/pieces205442.html', motifName: 'Compositores de Marimba (Hurtado, Valverde y Alcántara)', isBanknote: true),
     ],
   ),
 
@@ -483,19 +390,19 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'COP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1960, maxYear: 1974, kmNumber: 'P# 404', numistaUrl: 'https://en.numista.com/catalogue/pieces205444.html', motifName: 'Santander y Bolívar', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 1960, maxYear: 1977, kmNumber: 'P# 405', numistaUrl: 'https://en.numista.com/catalogue/pieces205446.html', motifName: 'Policarpa Salavarrieta', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1960, maxYear: 1981, kmNumber: 'P# 406', numistaUrl: 'https://en.numista.com/catalogue/pieces205448.html', motifName: 'José María Córdova', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1960, maxYear: 1981, kmNumber: 'P# 407', numistaUrl: 'https://en.numista.com/catalogue/pieces205450.html', motifName: 'Antonio Nariño', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1960, maxYear: 1983, kmNumber: 'P# 408', numistaUrl: 'https://en.numista.com/catalogue/pieces205452.html', motifName: 'Francisco José de Caldas', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1960, maxYear: 1986, kmNumber: 'P# 409', numistaUrl: 'https://en.numista.com/catalogue/pieces205454.html', motifName: 'Camilo Torres', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1960, maxYear: 1992, kmNumber: 'P# 410', numistaUrl: 'https://en.numista.com/catalogue/pieces205456.html', motifName: 'Antonio Nariño', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 1974, maxYear: 1992, kmNumber: 'P# 417', numistaUrl: 'https://en.numista.com/catalogue/pieces205458.html', motifName: 'José Celestino Mutis', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1981, maxYear: 1993, kmNumber: 'P# 423', numistaUrl: 'https://en.numista.com/catalogue/pieces205460.html', motifName: 'Francisco de Paula Santander', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1982, maxYear: 1993, kmNumber: 'P# 425', numistaUrl: 'https://en.numista.com/catalogue/pieces205462.html', motifName: 'Jorge Eliécer Gaitán', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', minYear: 1984, maxYear: 1993, kmNumber: 'P# 429', numistaUrl: 'https://en.numista.com/catalogue/pieces205464.html', motifName: 'Simón Bolívar / Paso del Ejército Libertador', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 1986, maxYear: 1993, kmNumber: 'P# 431', numistaUrl: 'https://en.numista.com/catalogue/pieces205466.html', motifName: 'Rafael Núñez / Miguel Antonio Caro', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 1992, maxYear: 1993, kmNumber: 'P# 437', numistaUrl: 'https://en.numista.com/catalogue/pieces205468.html', motifName: 'Mujer Indígena Emberá', isBanknote: true),
     ],
   ),
 
@@ -518,13 +425,13 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'COP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 2001, maxYear: 2016, kmNumber: 'P# 451', numistaUrl: 'https://en.numista.com/catalogue/pieces205470.html', motifName: 'Jorge Eliécer Gaitán', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 457', numistaUrl: 'https://en.numista.com/catalogue/pieces103444.html', motifName: 'Débora Arango / Caño Cristales', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 458', numistaUrl: 'https://en.numista.com/catalogue/pieces103445.html', motifName: 'José Asunción Silva / Páramos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 459', numistaUrl: 'https://en.numista.com/catalogue/pieces103446.html', motifName: 'Virginia Gutiérrez / Amazonia', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 454', numistaUrl: 'https://en.numista.com/catalogue/pieces90535.html', motifName: 'Alfonso López Michelsen / Sistema Hidráulico Zenú', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50000', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 455', numistaUrl: 'https://en.numista.com/catalogue/pieces95267.html', motifName: 'Gabriel García Márquez / Ciudad Perdida', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 456', numistaUrl: 'https://en.numista.com/catalogue/pieces90534.html', motifName: 'Carlos Lleras Restrepo / Valle de Cocora', isBanknote: true),
     ],
   ),
 
@@ -541,14 +448,14 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'CAD',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1973, maxYear: 1989, kmNumber: 'P# 85', numistaUrl: 'https://en.numista.com/catalogue/pieces205472.html', motifName: 'Reina Isabel II / Parlamento de Ottawa', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 1986, maxYear: 1996, kmNumber: 'P# 94', numistaUrl: 'https://en.numista.com/catalogue/pieces205474.html', motifName: 'Reina Isabel II / Petirrojos Americanos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 2001, maxYear: 2013, kmNumber: 'P# 101', numistaUrl: 'https://en.numista.com/catalogue/pieces205476.html', motifName: 'Sir Wilfrid Laurier / Deportes de Invierno', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 2001, maxYear: 2013, kmNumber: 'P# 102', numistaUrl: 'https://en.numista.com/catalogue/pieces205478.html', motifName: 'Sir John A. Macdonald / Recuerdo y Paz', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 2004, maxYear: 2012, kmNumber: 'P# 103', numistaUrl: 'https://en.numista.com/catalogue/pieces205480.html', motifName: 'Reina Isabel II / Arte Indígena Haida (Bill Reid)', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 2004, maxYear: 2012, kmNumber: 'P# 104', numistaUrl: 'https://en.numista.com/catalogue/pieces205482.html', motifName: 'W.L. Mackenzie King / Las Cinco Valientes', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 2004, maxYear: 2011, kmNumber: 'P# 105', numistaUrl: 'https://en.numista.com/catalogue/pieces205484.html', motifName: 'Sir Robert Borden / Innovación y Telecomunicaciones', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1988, maxYear: 2000, kmNumber: 'P# 100', numistaUrl: 'https://en.numista.com/catalogue/pieces205486.html', motifName: 'Reina Isabel II / Picogordos Sombríos', isBanknote: true),
     ],
   ),
 
@@ -569,11 +476,11 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'CAD',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '5', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Polímero', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Polímero', minYear: 2013, maxYear: 2100, kmNumber: 'P# 106', numistaUrl: 'https://en.numista.com/catalogue/pieces50764.html', motifName: 'Sir Wilfrid Laurier / Innovación Espacial Canadarm2', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Polímero', minYear: 2013, maxYear: 2100, kmNumber: 'P# 107', numistaUrl: 'https://en.numista.com/catalogue/pieces50765.html', motifName: 'Viola Desmond / Tren Transcontinental de Canadá', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Polímero', minYear: 2012, maxYear: 2100, kmNumber: 'P# 108', numistaUrl: 'https://en.numista.com/catalogue/pieces40679.html', motifName: 'Reina Isabel II / Monumento Conmemorativo de Vimy', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Polímero', minYear: 2012, maxYear: 2100, kmNumber: 'P# 109', numistaUrl: 'https://en.numista.com/catalogue/pieces38118.html', motifName: 'W.L. Mackenzie King / CCGS Amundsen en el Ártico', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Polímero', minYear: 2011, maxYear: 2100, kmNumber: 'P# 110', numistaUrl: 'https://en.numista.com/catalogue/pieces38117.html', motifName: 'Sir Robert Borden / Descubrimiento de la Insulina', isBanknote: true),
     ],
   ),
 
@@ -589,16 +496,16 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'CUP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '3', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1961, maxYear: 2020, kmNumber: 'P# 114', numistaUrl: 'https://en.numista.com/catalogue/pieces205488.html', motifName: 'José Martí / Entrada de Fidel Castro a La Habana', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '3', material: 'Papel de algodón', minYear: 1983, maxYear: 2020, kmNumber: 'P# 115', numistaUrl: 'https://en.numista.com/catalogue/pieces205490.html', motifName: 'Ernesto "Che" Guevara / Cortador de Caña', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1961, maxYear: 2020, kmNumber: 'P# 116', numistaUrl: 'https://en.numista.com/catalogue/pieces205492.html', motifName: 'Antonio Maceo / Protesta de Baraguá', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1961, maxYear: 2020, kmNumber: 'P# 117', numistaUrl: 'https://en.numista.com/catalogue/pieces205494.html', motifName: 'Máximo Gómez / Guerra de Todo el Pueblo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1961, maxYear: 2020, kmNumber: 'P# 118', numistaUrl: 'https://en.numista.com/catalogue/pieces205496.html', motifName: 'Camilo Cienfuegos / Trabajo Voluntario', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1961, maxYear: 2020, kmNumber: 'P# 119', numistaUrl: 'https://en.numista.com/catalogue/pieces205498.html', motifName: 'Calixto García / Centro de Ingeniería Genética', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1961, maxYear: 2020, kmNumber: 'P# 120', numistaUrl: 'https://en.numista.com/catalogue/pieces205500.html', motifName: 'Carlos Manuel de Céspedes / Estatua de José Martí', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2010, maxYear: 2020, kmNumber: 'P# 129', numistaUrl: 'https://en.numista.com/catalogue/pieces73934.html', motifName: 'Frank País / Ciudad Escolar 26 de Julio', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2010, maxYear: 2020, kmNumber: 'P# 130', numistaUrl: 'https://en.numista.com/catalogue/pieces73935.html', motifName: 'Ignacio Agramonte / Asamblea de Guáimaro', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 2010, maxYear: 2020, kmNumber: 'P# 131', numistaUrl: 'https://en.numista.com/catalogue/pieces73936.html', motifName: 'Julio Antonio Mella / Universidad de La Habana', isBanknote: true),
     ],
   ),
 
@@ -614,16 +521,16 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'CUP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '3', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 132', numistaUrl: 'https://en.numista.com/catalogue/pieces205488.html', motifName: 'José Martí / Entrada de Fidel Castro a La Habana', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '3', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 133', numistaUrl: 'https://en.numista.com/catalogue/pieces205490.html', motifName: 'Ernesto "Che" Guevara / Cortador de Caña', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 134', numistaUrl: 'https://en.numista.com/catalogue/pieces205492.html', motifName: 'Antonio Maceo / Protesta de Baraguá', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 135', numistaUrl: 'https://en.numista.com/catalogue/pieces205494.html', motifName: 'Máximo Gómez / Guerra de Todo el Pueblo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 136', numistaUrl: 'https://en.numista.com/catalogue/pieces205496.html', motifName: 'Camilo Cienfuegos / Trabajo Voluntario', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 137', numistaUrl: 'https://en.numista.com/catalogue/pieces205498.html', motifName: 'Calixto García / Centro de Ingeniería Genética', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 138', numistaUrl: 'https://en.numista.com/catalogue/pieces205500.html', motifName: 'Carlos Manuel de Céspedes / Estatua de José Martí', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 139', numistaUrl: 'https://en.numista.com/catalogue/pieces73934.html', motifName: 'Frank País / Ciudad Escolar 26 de Julio', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 140', numistaUrl: 'https://en.numista.com/catalogue/pieces73935.html', motifName: 'Ignacio Agramonte / Asamblea de Guáimaro', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 2021, maxYear: 2100, kmNumber: 'P# 141', numistaUrl: 'https://en.numista.com/catalogue/pieces73936.html', motifName: 'Julio Antonio Mella / Universidad de La Habana', isBanknote: true),
     ],
   ),
 
@@ -652,19 +559,19 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'ARS',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1992, maxYear: 1995, kmNumber: 'P# 341', numistaUrl: 'https://en.numista.com/catalogue/pieces205502.html', motifName: 'Carlos Pellegrini / Congreso Nacional', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 1992, maxYear: 2018, kmNumber: 'P# 353', numistaUrl: 'https://en.numista.com/catalogue/pieces205504.html', motifName: 'Bartolomé Mitre / Museo Mitre', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1992, maxYear: 2020, kmNumber: 'P# 354', numistaUrl: 'https://en.numista.com/catalogue/pieces205506.html', motifName: 'General José de San Martín / Monumento Cerro de la Gloria', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1992, maxYear: 2100, kmNumber: 'P# 355', numistaUrl: 'https://en.numista.com/catalogue/pieces205508.html', motifName: 'Manuel Belgrano / Monumento a la Bandera', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1992, maxYear: 2100, kmNumber: 'P# 359', numistaUrl: 'https://en.numista.com/catalogue/pieces122394.html', motifName: 'Guanaco / Estepa Patagónica', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1992, maxYear: 2100, kmNumber: 'P# 360', numistaUrl: 'https://en.numista.com/catalogue/pieces146194.html', motifName: 'Cóndor Andino / Cordillera de los Andes', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1992, maxYear: 2100, kmNumber: 'P# 361', numistaUrl: 'https://en.numista.com/catalogue/pieces152864.html', motifName: 'Taruca / Región Noroeste', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 362', numistaUrl: 'https://en.numista.com/catalogue/pieces97931.html', motifName: 'Ballena Franca Austral / Mar Argentino', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 2016, maxYear: 2100, kmNumber: 'P# 363', numistaUrl: 'https://en.numista.com/catalogue/pieces89901.html', motifName: 'Yaguareté / Región Noreste', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 2017, maxYear: 2100, kmNumber: 'P# 364', numistaUrl: 'https://en.numista.com/catalogue/pieces128091.html', motifName: 'Hornero / Región Pampeana', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', minYear: 2023, maxYear: 2100, kmNumber: 'P# 367', numistaUrl: 'https://en.numista.com/catalogue/pieces367980.html', motifName: 'Cecilia Grierson y Ramón Carrillo / Instituto Malbrán', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 2024, maxYear: 2100, kmNumber: 'P# 368', numistaUrl: 'https://en.numista.com/catalogue/pieces403063.html', motifName: 'Manuel Belgrano y María Remedios del Valle', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', minYear: 2024, maxYear: 2100, kmNumber: 'P# 369', numistaUrl: 'https://en.numista.com/catalogue/pieces403064.html', motifName: 'Juan Bautista Alberdi', isBanknote: true),
     ],
   ),
 
@@ -688,19 +595,24 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'BRL',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1', material: 'Papel de algodón', minYear: 1994, maxYear: 2005, kmNumber: 'P# 243', numistaUrl: 'https://en.numista.com/catalogue/pieces205510.html', motifName: 'Efígie da República / Beija-flor', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2', material: 'Papel de algodón', minYear: 2001, maxYear: 2100, kmNumber: 'P# 253', numistaUrl: 'https://en.numista.com/catalogue/pieces51268.html', motifName: 'Efígie da República / Tartaruga-marinha', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1994, maxYear: 2100, kmNumber: 'P# 254', numistaUrl: 'https://en.numista.com/catalogue/pieces51269.html', motifName: 'Efígie da República / Garça', isBanknote: true),
       NumismaticPieceDefinition(
         denomination: '10',
         material: 'Papel de algodón',
+        minYear: 1994,
+        maxYear: 2100,
+        kmNumber: 'P# 255',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces42245.html',
+        motifName: 'Efígie da República / Arara',
         isBanknote: true,
         allowedMaterials: ['Papel de algodón', 'Polímero'],
       ),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 2002, maxYear: 2100, kmNumber: 'P# 256', numistaUrl: 'https://en.numista.com/catalogue/pieces42246.html', motifName: 'Efígie da República / Mico-leão-dourado', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1994, maxYear: 2100, kmNumber: 'P# 257', numistaUrl: 'https://en.numista.com/catalogue/pieces27494.html', motifName: 'Efígie da República / Onça-pintada', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1994, maxYear: 2100, kmNumber: 'P# 258', numistaUrl: 'https://en.numista.com/catalogue/pieces27495.html', motifName: 'Efígie da República / Garoupa', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 2020, maxYear: 2100, kmNumber: 'P# 259', numistaUrl: 'https://en.numista.com/catalogue/pieces233959.html', motifName: 'Efígie da República / Lobo-guará', isBanknote: true),
     ],
   ),
 
@@ -722,12 +634,12 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'CLP',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2000', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Polímero', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1977, maxYear: 2000, kmNumber: 'P# 155', numistaUrl: 'https://en.numista.com/catalogue/pieces205512.html', motifName: 'Cardenal Raúl Silva Henríquez / Santuario de Maipú', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Polímero', minYear: 2011, maxYear: 2100, kmNumber: 'P# 160', numistaUrl: 'https://en.numista.com/catalogue/pieces28227.html', motifName: 'Ignacio Carrera Pinto / Torres del Paine', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2000', material: 'Polímero', minYear: 2009, maxYear: 2100, kmNumber: 'P# 161', numistaUrl: 'https://en.numista.com/catalogue/pieces28228.html', motifName: 'Manuel Rodríguez / Reserva Nacional Nalcas', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Polímero', minYear: 2009, maxYear: 2100, kmNumber: 'P# 162', numistaUrl: 'https://en.numista.com/catalogue/pieces28229.html', motifName: 'Gabriela Mistral / Parque Nacional La Campana', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 2010, maxYear: 2100, kmNumber: 'P# 163', numistaUrl: 'https://en.numista.com/catalogue/pieces28230.html', motifName: 'Arturo Prat / Parque Nacional Alberto de Agostini', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20000', material: 'Papel de algodón', minYear: 2010, maxYear: 2100, kmNumber: 'P# 164', numistaUrl: 'https://en.numista.com/catalogue/pieces28231.html', motifName: 'Andrés Bello / Salar de Surire', isBanknote: true),
     ],
   ),
 
@@ -751,23 +663,38 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '10',
         material: 'Papel de algodón',
+        minYear: 1991,
+        maxYear: 2100,
+        kmNumber: 'P# 191',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces309789.html',
+        motifName: 'Chabuca Granda / Vicuña y Flor de Amancaes',
         isBanknote: true,
         allowedMaterials: ['Papel de algodón', 'Polímero'],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
         material: 'Papel de algodón',
+        minYear: 1991,
+        maxYear: 2100,
+        kmNumber: 'P# 192',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces309790.html',
+        motifName: 'José María Arguedas / Cóndor Andino',
         isBanknote: true,
         allowedMaterials: ['Papel de algodón', 'Polímero'],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
         material: 'Papel de algodón',
+        minYear: 1991,
+        maxYear: 2100,
+        kmNumber: 'P# 193',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces309791.html',
+        motifName: 'María Rostworowski / Jaguar',
         isBanknote: true,
         allowedMaterials: ['Papel de algodón', 'Polímero'],
       ),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1991, maxYear: 2100, kmNumber: 'P# 194', numistaUrl: 'https://en.numista.com/catalogue/pieces309792.html', motifName: 'Pedro Paulet / Colibrí Cola de Espátula', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 1991, maxYear: 2100, kmNumber: 'P# 195', numistaUrl: 'https://en.numista.com/catalogue/pieces309793.html', motifName: 'Tilsa Tsuchiya / Gallito de las Rocas', isBanknote: true),
     ],
   ),
 
@@ -790,24 +717,44 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '5',
         material: 'Polímero',
+        minYear: 2016,
+        maxYear: 2100,
+        kmNumber: 'P# 394',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces97127.html',
+        motifName: 'Sir Winston Churchill / Palacio de Westminster',
         isBanknote: true,
         allowedMaterials: ['Polímero', 'Papel de algodón'],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
         material: 'Polímero',
+        minYear: 2017,
+        maxYear: 2100,
+        kmNumber: 'P# 395',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces122416.html',
+        motifName: 'Jane Austen / Godmersham Park',
         isBanknote: true,
         allowedMaterials: ['Polímero', 'Papel de algodón'],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
         material: 'Polímero',
+        minYear: 2020,
+        maxYear: 2100,
+        kmNumber: 'P# 396',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces205514.html',
+        motifName: 'J.M.W. Turner / El «Temerario»',
         isBanknote: true,
         allowedMaterials: ['Polímero', 'Papel de algodón'],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
         material: 'Polímero',
+        minYear: 2021,
+        maxYear: 2100,
+        kmNumber: 'P# 397',
+        numistaUrl: 'https://en.numista.com/catalogue/pieces295191.html',
+        motifName: 'Alan Turing / Bombe de Bletchley Park',
         isBanknote: true,
         allowedMaterials: ['Polímero', 'Papel de algodón'],
       ),
@@ -826,13 +773,13 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'FRF',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1960, maxYear: 1970, kmNumber: 'P# 146', numistaUrl: 'https://en.numista.com/catalogue/pieces205516.html', motifName: 'Victor Hugo / Plaza de los Vosgos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1960, maxYear: 1980, kmNumber: 'P# 150', numistaUrl: 'https://en.numista.com/catalogue/pieces205518.html', motifName: 'Hector Berlioz / Capilla de los Inválidos', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1980, maxYear: 2001, kmNumber: 'P# 151', numistaUrl: 'https://en.numista.com/catalogue/pieces205520.html', motifName: 'Claude Debussy / El Mar', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1976, maxYear: 2001, kmNumber: 'P# 157', numistaUrl: 'https://en.numista.com/catalogue/pieces11438.html', motifName: 'Antoine de Saint-Exupéry / El Principito', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1978, maxYear: 2001, kmNumber: 'P# 158', numistaUrl: 'https://en.numista.com/catalogue/pieces11439.html', motifName: 'Paul Cézanne / Montagne Sainte-Victoire', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 1981, maxYear: 2001, kmNumber: 'P# 159', numistaUrl: 'https://en.numista.com/catalogue/pieces11440.html', motifName: 'Gustave Eiffel / Torre Eiffel', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1968, maxYear: 2001, kmNumber: 'P# 160', numistaUrl: 'https://en.numista.com/catalogue/pieces11441.html', motifName: 'Pierre y Marie Curie / Radium', isBanknote: true),
     ],
   ),
 
@@ -849,14 +796,14 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'DEM',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5', material: 'Papel de algodón', minYear: 1990, maxYear: 2001, kmNumber: 'P# 37', numistaUrl: 'https://en.numista.com/catalogue/pieces205522.html', motifName: 'Bettina von Arnim / Castillo Wiepersdorf', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10', material: 'Papel de algodón', minYear: 1989, maxYear: 2001, kmNumber: 'P# 38', numistaUrl: 'https://en.numista.com/catalogue/pieces205524.html', motifName: 'Carl Friedrich Gauss / Campana de Gauss', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '20', material: 'Papel de algodón', minYear: 1989, maxYear: 2001, kmNumber: 'P# 39', numistaUrl: 'https://en.numista.com/catalogue/pieces205526.html', motifName: 'Annette von Droste-Hülshoff / Castillo Meersburg', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50', material: 'Papel de algodón', minYear: 1989, maxYear: 2001, kmNumber: 'P# 40', numistaUrl: 'https://en.numista.com/catalogue/pieces205528.html', motifName: 'Balthasar Neumann / Residencia de Wurzburgo', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100', material: 'Papel de algodón', minYear: 1989, maxYear: 2001, kmNumber: 'P# 41', numistaUrl: 'https://en.numista.com/catalogue/pieces205530.html', motifName: 'Clara Schumann / Conservatorio Hoch de Fráncfort', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '200', material: 'Papel de algodón', minYear: 1989, maxYear: 2001, kmNumber: 'P# 42', numistaUrl: 'https://en.numista.com/catalogue/pieces205532.html', motifName: 'Paul Ehrlich / Microscopio y Quimioterapia', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1991, maxYear: 2001, kmNumber: 'P# 43', numistaUrl: 'https://en.numista.com/catalogue/pieces205534.html', motifName: 'Maria Sibylla Merian / Diente de León y Oruga', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1991, maxYear: 2001, kmNumber: 'P# 44', numistaUrl: 'https://en.numista.com/catalogue/pieces205536.html', motifName: 'Wilhelm y Jacob Grimm / Diccionario Alemán', isBanknote: true),
     ],
   ),
 
@@ -872,14 +819,14 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     defaultCurrency: 'ITL',
     isBanknote: true,
     pieces: [
-      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '50000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', isBanknote: true),
-      NumismaticPieceDefinition(denomination: '500000', material: 'Papel de algodón', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500', material: 'Papel de algodón', minYear: 1966, maxYear: 1979, kmNumber: 'P# 97', numistaUrl: 'https://en.numista.com/catalogue/pieces205538.html', motifName: 'Cabeza de Mercurio', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '1000', material: 'Papel de algodón', minYear: 1969, maxYear: 2001, kmNumber: 'P# 114', numistaUrl: 'https://en.numista.com/catalogue/pieces205540.html', motifName: 'Maria Montessori / Niños en clase', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '2000', material: 'Papel de algodón', minYear: 1973, maxYear: 2001, kmNumber: 'P# 115', numistaUrl: 'https://en.numista.com/catalogue/pieces205542.html', motifName: 'Guglielmo Marconi / Yate Elettra', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '5000', material: 'Papel de algodón', minYear: 1979, maxYear: 2001, kmNumber: 'P# 116', numistaUrl: 'https://en.numista.com/catalogue/pieces205544.html', motifName: 'Vincenzo Bellini / Teatro Massimo Bellini', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '10000', material: 'Papel de algodón', minYear: 1976, maxYear: 2001, kmNumber: 'P# 117', numistaUrl: 'https://en.numista.com/catalogue/pieces205546.html', motifName: 'Alessandro Volta / Tempio Voltiano', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '50000', material: 'Papel de algodón', minYear: 1984, maxYear: 2001, kmNumber: 'P# 118', numistaUrl: 'https://en.numista.com/catalogue/pieces205548.html', motifName: 'Gian Lorenzo Bernini / Escultura de Apolo y Dafne', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '100000', material: 'Papel de algodón', minYear: 1983, maxYear: 2001, kmNumber: 'P# 119', numistaUrl: 'https://en.numista.com/catalogue/pieces205550.html', motifName: 'Michelangelo Merisi da Caravaggio / Cesto de Frutas', isBanknote: true),
+      NumismaticPieceDefinition(denomination: '500000', material: 'Papel de algodón', minYear: 1997, maxYear: 2001, kmNumber: 'P# 120', numistaUrl: 'https://en.numista.com/catalogue/pieces205552.html', motifName: 'Raffaello Sanzio / Triunfo de Galatea', isBanknote: true),
     ],
   ),
 ];

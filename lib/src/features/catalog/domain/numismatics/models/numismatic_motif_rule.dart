@@ -3,11 +3,15 @@ class NumismaticMotifRule {
   final String? name;
   final int? minYear;
   final int? maxYear;
+  final String? kmNumber;
+  final String? numistaUrl;
 
   const NumismaticMotifRule(
     String name,
     int minYear, [
     int? maxYear,
+    this.kmNumber,
+    this.numistaUrl,
   ])  : name = name,
         minYear = minYear,
         maxYear = maxYear ?? minYear;
@@ -16,6 +20,8 @@ class NumismaticMotifRule {
   const NumismaticMotifRule.standard([
     this.minYear,
     this.maxYear,
+    this.kmNumber,
+    this.numistaUrl,
   ]) : name = null;
 
   /// Returns true if this rule represents the standard circulating edition.
@@ -28,3 +34,4 @@ class NumismaticMotifRule {
     return true;
   }
 }
+

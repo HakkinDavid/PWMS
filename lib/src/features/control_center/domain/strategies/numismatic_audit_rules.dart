@@ -839,18 +839,28 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                     instance: entity,
                     material: attrs.material,
                   );
+                  final denom = attrs.faceValueStr ?? (attrs.faceValueNumber != null ? (attrs.faceValueNumber == attrs.faceValueNumber!.toInt() ? attrs.faceValueNumber!.toInt().toString() : attrs.faceValueNumber.toString()) : null);
                   final availableMotifs = NumismaticDataHelper.getCommemorativeMotifs(
                     country: attrs.country,
                     year: yearInt,
                     currencyCode: attrs.currencyName,
-                    denomination: attrs.faceValueStr ?? (attrs.faceValueNumber != null ? (attrs.faceValueNumber == attrs.faceValueNumber!.toInt() ? attrs.faceValueNumber!.toInt().toString() : attrs.faceValueNumber.toString()) : null),
+                    denomination: denom,
+                    isBanknote: isBanknote,
+                  );
+                  final isStrictlyCommem = NumismaticDataHelper.isStrictlyCommemorative(
+                    country: attrs.country,
+                    year: yearInt,
+                    currencyCode: attrs.currencyName,
+                    denomination: denom,
                     isBanknote: isBanknote,
                   );
 
-                  final options = [
-                    AppStrings.noMotifStandardCirculation,
-                    ...availableMotifs,
-                  ];
+                  final options = (attrs.motif != null && availableMotifs.isNotEmpty)
+                      ? availableMotifs
+                      : [
+                          if (!isStrictlyCommem) AppStrings.noMotifStandardCirculation,
+                          ...availableMotifs,
+                        ];
 
                   customValue = await AppWheelPicker.show<String>(
                     ctx,
