@@ -216,17 +216,10 @@ class DatabaseBackupService {
   /// Limpia automáticamente el archivo ZIP temporal al finalizar.
   Future<void> exportAndShareBackup() async {
     final data = await exportDatabaseToJsonMap();
-    final jsonStr = const JsonEncoder.withIndent(AppTechnicalStrings.indentTwoSpaces).convert(data);
-
-    final archive = Archive();
-
-    // 1. Agregar el archivo de la base de datos
-    final jsonBytes = utf8.encode(jsonStr);
-    archive.addFile(ArchiveFile(AppTechnicalStorage.backupDatabaseFileName, jsonBytes.length, jsonBytes));
-
-    // 2. Recolectar todas las rutas de archivos multimedia referenciadas en las tablas
-    final Set<String> referencedPaths = {};
     final tables = data[AppTechnicalJsonKeys.keyTables] as Map<String, dynamic>? ?? {};
+
+    // 1. Recolectar todas las rutas de archivos multimedia referenciadas en las tablas
+    final Set<String> referencedPaths = {};
 
     final catalogList = tables[AppTechnicalStrings.tableCatalog] as List<dynamic>? ?? [];
     for (final item in catalogList) {
@@ -249,29 +242,25 @@ class DatabaseBackupService {
       }
     }
 
-    // 3. Incluir cada archivo físico en el archivo ZIP dentro de files/
+    final List<String> existingPhysicalFiles = [];
     for (final refPath in referencedPaths) {
       final file = await _resolvePhysicalFile(refPath);
       if (file != null && await file.exists()) {
-        final bytes = await file.readAsBytes();
-        final filename = p.basename(file.path);
-        archive.addFile(ArchiveFile(AppTechnicalStrings.backupArchiveFilePath(filename), bytes.length, bytes));
+        existingPhysicalFiles.add(file.path);
       }
-    }
-
-    final zipEncoder = ZipEncoder();
-    final zipBytes = zipEncoder.encode(archive);
-
-    if (zipBytes == null) {
-      throw Exception(AppStrings.backupZipCompressionError);
     }
 
     final tempDir = await getTemporaryDirectory();
     final timestamp = DateTime.now().toIso8601String().replaceAll(AppTechnicalDelimiters.colon, AppTechnicalDelimiters.dash).replaceAll(AppTechnicalDelimiters.dot, AppTechnicalDelimiters.dash);
     final tempZipFile = File(p.join(tempDir.path, AppTechnicalStrings.backupZipFileName(timestamp)));
 
+    await Isolate.run(() => _createZipBackupPackage(
+      data: data,
+      existingFilePaths: existingPhysicalFiles,
+      destZipPath: tempZipFile.path,
+    ));
+
     try {
-      await tempZipFile.writeAsBytes(zipBytes);
       await Share.shareXFiles(
         [XFile(tempZipFile.path)],
       );
@@ -292,32 +281,76 @@ class DatabaseBackupService {
     }
   }
 
+  static void _createZipBackupPackage({
+    required Map<String, dynamic> data,
+    required List<String> existingFilePaths,
+    required String destZipPath,
+  }) {
+    final jsonStr = const JsonEncoder.withIndent(AppTechnicalStrings.indentTwoSpaces).convert(data);
+    final jsonBytes = utf8.encode(jsonStr);
+
+    final archive = Archive();
+    archive.addFile(ArchiveFile(AppTechnicalStorage.backupDatabaseFileName, jsonBytes.length, jsonBytes));
+
+    for (final fPath in existingFilePaths) {
+      final f = File(fPath);
+      if (f.existsSync()) {
+        final bytes = f.readAsBytesSync();
+        final filename = p.basename(fPath);
+        archive.addFile(ArchiveFile(AppTechnicalStrings.backupArchiveFilePath(filename), bytes.length, bytes));
+      }
+    }
+
+    final zipEncoder = ZipEncoder();
+    final zipBytes = zipEncoder.encode(archive);
+    if (zipBytes == null) {
+      throw Exception(AppStrings.backupZipCompressionError);
+    }
+    File(destZipPath).writeAsBytesSync(zipBytes);
+  }
+
   /// Importa una copia de seguridad enviada como archivo (.zip o .json)
   Future<void> importDatabaseFromFile(File file) async {
-    final bytes = await file.readAsBytes();
+    final docsDir = await getApplicationDocumentsDirectory();
+    final mediaDir = Directory(p.join(docsDir.path, AppTechnicalStorage.dirMedia));
+    if (!await mediaDir.exists()) {
+      await mediaDir.create(recursive: true);
+    }
 
-    final isZip = file.path.toLowerCase().endsWith(AppTechnicalStorage.extZip) ||
-        (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B);
+    final filePath = file.path;
+    final mediaDirPath = mediaDir.path;
 
-    if (isZip) {
-      final docsDir = await getApplicationDocumentsDirectory();
-      final mediaDir = Directory(p.join(docsDir.path, AppTechnicalStorage.dirMedia));
-      if (!await mediaDir.exists()) {
-        await mediaDir.create(recursive: true);
+    final (migratedData, rawVersion) = await Isolate.run(() {
+      final fileObj = File(filePath);
+      final bytes = fileObj.readAsBytesSync();
+      final isZip = filePath.toLowerCase().endsWith(AppTechnicalStorage.extZip) ||
+          (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B);
+
+      String jsonContent;
+      if (isZip) {
+        jsonContent = _extractZipArchive(
+          zipBytes: bytes,
+          mediaDirPath: mediaDirPath,
+        );
+      } else {
+        jsonContent = utf8.decode(bytes);
       }
 
-      // Descompresión y extracción de archivos en Isolate secundario para no congelar la UI
-      final mediaDirPath = mediaDir.path;
-      final jsonContent = await Isolate.run(() => _extractZipArchive(
-        zipBytes: bytes,
-        mediaDirPath: mediaDirPath,
-      ));
+      final Map<String, dynamic> rawData = jsonDecode(jsonContent);
+      if (!rawData.containsKey(AppTechnicalJsonKeys.keyTables)) {
+        throw const FormatException(AppStrings.invalidBackupStructureError);
+      }
 
-      await importDatabaseFromJsonString(jsonContent);
-    } else {
-      final jsonStr = utf8.decode(bytes);
-      await importDatabaseFromJsonString(jsonStr);
-    }
+      final rawVer = rawData[AppTechnicalJsonKeys.keyVersion] ??
+          rawData[AppTechnicalJsonKeys.keySchemaVersion] ??
+          rawData[AppTechnicalJsonKeys.keyVersionCheck] ??
+          1;
+
+      final migrated = migrateImportedData(rawData, targetVersion: 6);
+      return (migrated, rawVer);
+    });
+
+    await _restoreMigratedTablesToDb(migratedData, rawVersion);
   }
 
   /// Descomprime los archivos multimedia y extrae el JSON en un isolate en segundo plano
@@ -755,12 +788,25 @@ class DatabaseBackupService {
 
   /// Importa la base de datos a partir de una cadena JSON
   Future<void> importDatabaseFromJsonString(String jsonString) async {
-    final Map<String, dynamic> rawData = jsonDecode(jsonString);
-    if (!rawData.containsKey(AppTechnicalJsonKeys.keyTables)) {
-      throw const FormatException(AppStrings.invalidBackupStructureError);
-    }
+    final (migratedData, rawVersion) = await Isolate.run(() {
+      final Map<String, dynamic> rawData = jsonDecode(jsonString);
+      if (!rawData.containsKey(AppTechnicalJsonKeys.keyTables)) {
+        throw const FormatException(AppStrings.invalidBackupStructureError);
+      }
 
-    final migratedData = migrateImportedData(rawData, targetVersion: _db.schemaVersion);
+      final rawVer = rawData[AppTechnicalJsonKeys.keyVersion] ??
+          rawData[AppTechnicalJsonKeys.keySchemaVersion] ??
+          rawData[AppTechnicalJsonKeys.keyVersionCheck] ??
+          1;
+
+      final migrated = migrateImportedData(rawData, targetVersion: 6);
+      return (migrated, rawVer);
+    });
+
+    await _restoreMigratedTablesToDb(migratedData, rawVersion);
+  }
+
+  Future<void> _restoreMigratedTablesToDb(Map<String, dynamic> migratedData, dynamic rawVersion) async {
     final tables = migratedData[AppTechnicalJsonKeys.keyTables] as Map<String, dynamic>;
 
     await _db.transaction(() async {
@@ -1055,7 +1101,6 @@ class DatabaseBackupService {
 
     // Execute decoupled migration post-processors (e.g. Numismatic standardization, History backfill)
     // Only needed if the imported backup is from an older schema version
-    final rawVersion = rawData[AppTechnicalJsonKeys.keyVersion] ?? rawData[AppTechnicalJsonKeys.keySchemaVersion] ?? rawData[AppTechnicalJsonKeys.keyVersionCheck] ?? 1;
     int importedVer = 1;
     if (rawVersion is int) {
       importedVer = rawVersion;
@@ -1064,9 +1109,9 @@ class DatabaseBackupService {
     } else if (rawVersion is String) {
       importedVer = double.tryParse(rawVersion)?.floor() ?? 1;
     }
-    // Always execute registered post-processors upon restore to ensure
-    // data normalization, numismatic standardization, and consistency regardless of schema version.
-    await DataMigrationRegistry.runAll(_db, _postProcessors);
+    if (importedVer < _db.schemaVersion) {
+      await DataMigrationRegistry.runAll(_db, _postProcessors);
+    }
 
     // Log backup restore event
     int totalImportedRecords = 0;

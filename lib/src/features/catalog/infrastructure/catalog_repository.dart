@@ -111,9 +111,13 @@ class CatalogRepository {
     bool isUnique = false,
   }) async {
     final cleanName = name.trim();
-    final all = await getAllCatalogItems();
-    final existing = all.where((e) => e.name.toLowerCase() == cleanName.toLowerCase()).firstOrNull;
-    if (existing != null) return existing;
+    final existingRow = await (_db.select(_db.catalogTable)
+      ..where((t) => t.name.lower().equals(cleanName.toLowerCase()))
+      ..limit(1)).getSingleOrNull();
+    if (existingRow != null) {
+      final item = await getCatalogItemById(existingRow.id);
+      if (item != null) return item;
+    }
 
     final newItem = CatalogItem(
       id: const Uuid().v4(),
@@ -130,20 +134,18 @@ class CatalogRepository {
   }
 
   Future<CatalogItem> saveCatalogItem(CatalogItem item) async {
-    final all = await getAllCatalogItems();
-
-    final existingItem = all.where((c) => c.id == item.id).firstOrNull;
+    final existingItem = await getCatalogItemById(item.id);
     if (existingItem != null && existingItem.mainPhotoPath != null && existingItem.mainPhotoPath!.isNotEmpty && existingItem.mainPhotoPath != item.mainPhotoPath) {
       final oldPhoto = existingItem.mainPhotoPath!;
-      final allSubs = await getAllSubspecies();
-      final isUsedElsewhere = all.any((c) => c.id != item.id && c.mainPhotoPath == oldPhoto) ||
-          allSubs.any((s) => s.photoPath == oldPhoto);
+      final countInCatalog = await (_db.select(_db.catalogTable)..where((c) => c.id.equals(item.id).not() & c.mainPhotoPath.equals(oldPhoto))).get();
+      final countInSubs = await (_db.select(_db.subspeciesTable)..where((s) => s.photoPath.equals(oldPhoto))).get();
+      final isUsedElsewhere = countInCatalog.isNotEmpty || countInSubs.isNotEmpty;
       if (!isUsedElsewhere) {
         await _fileStorageService.deleteFile(oldPhoto);
       }
     }
 
-    final isNewSpecies = !all.any((c) => c.id == item.id);
+    final isNewSpecies = existingItem == null;
     final finalName = item.name.trim();
     final finalType = item.type;
 
@@ -164,15 +166,20 @@ class CatalogRepository {
       await _db.into(_db.catalogTable).insertOnConflictUpdate(companion);
 
       await (_db.delete(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(item.id))).go();
-      for (final mag in item.magnitudes) {
-        await _db.into(_db.speciesMagnitudesTable).insert(SpeciesMagnitudesTableCompanion(
-          id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
-          speciesId: Value(item.id),
-          propertyName: Value(mag.propertyName),
-          dataType: Value(mag.dataType),
-          unitSymbol: Value(mag.unitSymbol),
-          createdAt: Value(mag.createdAt),
-        ));
+      if (item.magnitudes.isNotEmpty) {
+        await _db.batch((batch) {
+          batch.insertAll(
+            _db.speciesMagnitudesTable,
+            item.magnitudes.map((mag) => SpeciesMagnitudesTableCompanion(
+              id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
+              speciesId: Value(item.id),
+              propertyName: Value(mag.propertyName),
+              dataType: Value(mag.dataType),
+              unitSymbol: Value(mag.unitSymbol),
+              createdAt: Value(mag.createdAt),
+            )).toList(),
+          );
+        });
       }
     });
 
@@ -433,10 +440,9 @@ class CatalogRepository {
     final existingSub = await getSubspeciesById(subspecies.id);
     if (existingSub != null && existingSub.photoPath != null && existingSub.photoPath!.isNotEmpty && existingSub.photoPath != subspecies.photoPath) {
       final oldPhoto = existingSub.photoPath!;
-      final allItems = await getAllCatalogItems();
-      final allSubs = await getAllSubspecies();
-      final isUsedElsewhere = allItems.any((c) => c.mainPhotoPath == oldPhoto) ||
-          allSubs.any((s) => s.id != subspecies.id && s.photoPath == oldPhoto);
+      final countInCatalog = await (_db.select(_db.catalogTable)..where((c) => c.mainPhotoPath.equals(oldPhoto))).get();
+      final countInSubs = await (_db.select(_db.subspeciesTable)..where((s) => s.id.equals(subspecies.id).not() & s.photoPath.equals(oldPhoto))).get();
+      final isUsedElsewhere = countInCatalog.isNotEmpty || countInSubs.isNotEmpty;
       if (!isUsedElsewhere) {
         await _fileStorageService.deleteFile(oldPhoto);
       }

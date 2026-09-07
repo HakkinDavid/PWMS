@@ -58,6 +58,9 @@ class NotificationService {
         AppTechnicalStrings.notifKeyFromNotification(n.type, n.targetId): n
     };
 
+    final List<AppNotification> notifsToSave = [];
+    final List<MapEntry<int, AppNotification>> osNotifsToShow = [];
+
     // 1. Evaluate Entity Expirations & Warnings
     for (final entity in allEntities) {
       final species = catalogMap[entity.speciesId];
@@ -84,9 +87,9 @@ class NotificationService {
             createdAt: existing?.createdAt ?? now,
             updatedAt: now,
           );
-          await _notificationRepo.saveNotification(notif);
+          notifsToSave.add(notif);
           if (notif.isActive) {
-            _showOSNotification(100 + entity.id.hashCode.abs() % 10000, notif.title, notif.message);
+            osNotifsToShow.add(MapEntry(100 + entity.id.hashCode.abs() % 10000, notif));
           }
         }
       } else if (entity.isExpiringSoon(warningDays: warningDays, canExpire: canExpire, now: now)) {
@@ -108,9 +111,9 @@ class NotificationService {
             createdAt: existing?.createdAt ?? now,
             updatedAt: now,
           );
-          await _notificationRepo.saveNotification(notif);
+          notifsToSave.add(notif);
           if (notif.isActive) {
-            _showOSNotification(200 + entity.id.hashCode.abs() % 10000, notif.title, notif.message);
+            osNotifsToShow.add(MapEntry(200 + entity.id.hashCode.abs() % 10000, notif));
           }
         }
       }
@@ -157,9 +160,9 @@ class NotificationService {
           createdAt: existing?.createdAt ?? now,
           updatedAt: now,
         );
-        await _notificationRepo.saveNotification(notif);
+        notifsToSave.add(notif);
         if (notif.isActive) {
-          _showOSNotification(300 + reqSpeciesId.hashCode.abs() % 10000, notif.title, notif.message);
+          osNotifsToShow.add(MapEntry(300 + reqSpeciesId.hashCode.abs() % 10000, notif));
         }
       } else {
         // Condition satisfied: dismiss/clear existing unsatisfied need notification if any
@@ -167,6 +170,13 @@ class NotificationService {
           await _notificationRepo.dismissNotification(existing.id);
         }
       }
+    }
+
+    if (notifsToSave.isNotEmpty) {
+      await _notificationRepo.saveNotificationsBatch(notifsToSave);
+    }
+    for (final entry in osNotifsToShow) {
+      _showOSNotification(entry.key, entry.value.title, entry.value.message);
     }
   }
 

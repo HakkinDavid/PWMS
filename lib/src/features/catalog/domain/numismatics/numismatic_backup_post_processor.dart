@@ -9,11 +9,6 @@ class NumismaticMigrationPostProcessor implements IDataMigrationPostProcessor {
   Future<void> process(AppDatabase db) async {
     await NumismaticDomainRules.repairAndStandardizeImportedData(db);
   }
-
-  @override
-  Future<void> processAfterImport(AppDatabase db) async {
-    await process(db);
-  }
 }
 
 typedef NumismaticBackupPostProcessor = NumismaticMigrationPostProcessor;

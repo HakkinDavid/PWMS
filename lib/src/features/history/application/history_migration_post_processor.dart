@@ -18,11 +18,6 @@ class HistoryMigrationPostProcessor implements IDataMigrationPostProcessor {
     await backfillMissingHistory(db);
   }
 
-  @override
-  Future<void> processAfterImport(AppDatabase db) async {
-    await process(db);
-  }
-
   /// Reconstructs missing creation events for existing records using their original `createdAt` timestamps.
   static Future<void> backfillMissingHistory(AppDatabase db) async {
     final existingEvents = await db.select(db.historyEventsTable).get();

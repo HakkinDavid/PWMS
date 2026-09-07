@@ -201,8 +201,7 @@ class EntityRepository implements IEntityRepository {
 
   @override
   Future<List<WorldEntity>> getAllEntities() async {
-    final query = _db.select(_db.entitiesTable)
-      ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
+    final query = _db.select(_db.entitiesTable);
     final rows = await query.get();
     final effectiveLocs = await _getEffectiveLocationMap(rows);
 
@@ -262,6 +261,24 @@ class EntityRepository implements IEntityRepository {
     } else {
       return allEntities.where((e) => e.locationId == locationId).toList();
     }
+  }
+
+  @override
+  Future<List<WorldEntity>> getEntitiesBySubspecies(String subspeciesId) async {
+    final query = _db.select(_db.entitiesTable)
+      ..where((t) => t.subspeciesId.equals(subspeciesId))
+      ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
+    final rows = await query.get();
+    if (rows.isEmpty) return const [];
+    final effectiveLocs = await _getEffectiveLocationMap(rows);
+    final entityIds = rows.map((r) => r.id).toList();
+    final magMap = await _fetchMagnitudesForEntities(entityIds);
+
+    return rows.map((row) => _mapToDomainSync(
+      row,
+      resolvedLocations: effectiveLocs,
+      magnitudes: magMap[row.id] ?? const [],
+    )).toList();
   }
 
   @override
@@ -372,16 +389,21 @@ class EntityRepository implements IEntityRepository {
       // Persist 4NF Instance Magnitudes (1:N)
       final effectiveMags = _ensureDynamicNombreMagnitude(entity.id, entity.magnitudes, notes: entity.notes);
       await (_db.delete(_db.instanceMagnitudesTable)..where((t) => t.instanceId.equals(entity.id))).go();
-      for (final mag in effectiveMags) {
-        await _db.into(_db.instanceMagnitudesTable).insert(InstanceMagnitudesTableCompanion(
-          id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
-          instanceId: Value(entity.id),
-          propertyName: Value(mag.propertyName),
-          dataType: Value(mag.dataType),
-          magnitudeValue: Value(mag.magnitudeValue),
-          stringValue: Value(mag.stringValue),
-          unitSymbol: Value(mag.unitSymbol),
-        ));
+      if (effectiveMags.isNotEmpty) {
+        await _db.batch((batch) {
+          batch.insertAll(
+            _db.instanceMagnitudesTable,
+            effectiveMags.map((mag) => InstanceMagnitudesTableCompanion(
+              id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
+              instanceId: Value(entity.id),
+              propertyName: Value(mag.propertyName),
+              dataType: Value(mag.dataType),
+              magnitudeValue: Value(mag.magnitudeValue),
+              stringValue: Value(mag.stringValue),
+              unitSymbol: Value(mag.unitSymbol),
+            )).toList(),
+          );
+        });
       }
     });
 
@@ -440,6 +462,7 @@ class EntityRepository implements IEntityRepository {
     final speciesMagRows = await (_db.select(_db.speciesMagnitudesTable)..where((t) => t.speciesId.equals(speciesId))).get();
 
     final List<WorldEntity> createdEntities = [];
+    final now = DateTime.now();
 
     for (int i = 0; i < count; i++) {
       final newId = const Uuid().v4();
@@ -477,12 +500,85 @@ class EntityRepository implements IEntityRepository {
         magnitudes: initialMags,
         expirationDate: expirationDate,
         notes: notes,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: now,
+        updatedAt: now,
       );
 
-      await saveEntity(newEntity);
       createdEntities.add(newEntity);
+    }
+
+    if (count == 1) {
+      await saveEntity(createdEntities.first);
+      return createdEntities;
+    }
+
+    final speciesRow = await (_db.select(_db.catalogTable)..where((t) => t.id.equals(speciesId))).getSingleOrNull();
+    final speciesName = speciesRow?.name ?? AppStrings.typeObject;
+    final speciesType = speciesRow?.type ?? AppStrings.typeObject;
+
+    await _db.transaction(() async {
+      await _db.batch((batch) {
+        final entitiesCompanions = <EntitiesTableCompanion>[];
+        final locationsCompanions = <InstanceLocationsTableCompanion>[];
+        final magnitudesCompanions = <InstanceMagnitudesTableCompanion>[];
+
+        for (final entity in createdEntities) {
+          final directLocId = (entity.locationId != null && entity.locationId!.trim().isNotEmpty)
+              ? entity.locationId
+              : null;
+          entitiesCompanions.add(EntitiesTableCompanion(
+            id: Value(entity.id),
+            speciesId: Value(entity.speciesId),
+            subspeciesId: Value(entity.subspeciesId),
+            locationId: Value(directLocId),
+            expirationDate: Value(entity.expirationDate),
+            notes: Value(entity.notes),
+            createdAt: Value(entity.createdAt),
+            updatedAt: Value(entity.updatedAt),
+          ));
+
+          if (directLocId != null) {
+            locationsCompanions.add(InstanceLocationsTableCompanion(
+              instanceId: Value(entity.id),
+              locationId: Value(directLocId),
+              createdAt: Value(now),
+            ));
+          }
+
+          final effectiveMags = _ensureDynamicNombreMagnitude(entity.id, entity.magnitudes, notes: entity.notes);
+          for (final mag in effectiveMags) {
+            magnitudesCompanions.add(InstanceMagnitudesTableCompanion(
+              id: Value(mag.id.isEmpty ? const Uuid().v4() : mag.id),
+              instanceId: Value(entity.id),
+              propertyName: Value(mag.propertyName),
+              dataType: Value(mag.dataType),
+              magnitudeValue: Value(mag.magnitudeValue),
+              stringValue: Value(mag.stringValue),
+              unitSymbol: Value(mag.unitSymbol),
+            ));
+          }
+        }
+
+        batch.insertAll(_db.entitiesTable, entitiesCompanions, mode: InsertMode.insertOrReplace);
+        if (locationsCompanions.isNotEmpty) {
+          batch.insertAll(_db.instanceLocationsTable, locationsCompanions, mode: InsertMode.insertOrReplace);
+        }
+        if (magnitudesCompanions.isNotEmpty) {
+          batch.insertAll(_db.instanceMagnitudesTable, magnitudesCompanions, mode: InsertMode.insertOrReplace);
+        }
+      });
+    });
+
+    for (final entity in createdEntities) {
+      await _activityLogger.logEntityCreated(
+        entity.id,
+        speciesName,
+        speciesType,
+        speciesId: entity.speciesId,
+        subspeciesId: entity.subspeciesId,
+        locationId: entity.locationId,
+        timestamp: entity.createdAt,
+      );
     }
 
     return createdEntities;

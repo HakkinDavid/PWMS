@@ -61,6 +61,7 @@ class _VisualLocationsGraphState extends State<VisualLocationsGraph> {
     final theme = Theme.of(context);
     final canvasSize = Size(MediaQuery.of(context).size.width, 1000);
     final positions = _calculateNodePositions(canvasSize);
+    final countsMap = LocationRepository.computeAllRecursiveItemCounts(widget.nodes, widget.entities);
 
     return InteractiveViewer(
       transformationController: _transformationController,
@@ -88,7 +89,7 @@ class _VisualLocationsGraphState extends State<VisualLocationsGraph> {
             ...widget.nodes.map((node) {
               final pos = positions[node.id] ?? const Offset(100, 100);
               final isFocused = node.id == widget.focusNodeId;
-              final itemCount = LocationRepository.getRecursiveItemCount(node.id, widget.nodes, widget.entities);
+              final itemCount = countsMap[node.id] ?? 0;
 
               return Positioned(
                 left: pos.dx - 36,

@@ -76,22 +76,46 @@ class HistoryRepository implements IHistoryRepository {
     int limit = 50,
     int offset = 0,
   }) async {
+    final hasCategory = category != null && category.isNotEmpty && category != AppTechnicalStrings.categoryAll;
+    final cleanQuery = query?.trim();
+    final hasQuery = cleanQuery != null && cleanQuery.isNotEmpty;
+
+    if (!hasCategory && !hasQuery) {
+      final dbQuery = _db.select(_db.historyEventsTable)
+        ..orderBy([(t) => OrderingTerm.desc(t.timestamp)])
+        ..limit(limit, offset: offset);
+      final rows = await dbQuery.get();
+      return rows.map(_mapToDomain).toList();
+    }
+
+    if (!hasCategory && hasQuery) {
+      final dbQuery = _db.select(_db.historyEventsTable)
+        ..where((t) =>
+            t.description.contains(cleanQuery) |
+            t.entityId.contains(cleanQuery) |
+            t.metadata.contains(cleanQuery))
+        ..orderBy([(t) => OrderingTerm.desc(t.timestamp)])
+        ..limit(limit, offset: offset);
+      final rows = await dbQuery.get();
+      return rows.map(_mapToDomain).toList();
+    }
+
     final all = await getAllEvents();
     var filtered = all;
 
-    if (category != null && category.isNotEmpty && category != AppTechnicalStrings.categoryAll) {
+    if (hasCategory) {
       filtered = filtered.where((e) => e.category == category).toList();
     }
 
-    if (query != null && query.trim().isNotEmpty) {
-      final clean = query.trim().toLowerCase();
+    if (hasQuery) {
+      final cleanLower = cleanQuery.toLowerCase();
       filtered = filtered.where((e) {
-        if (e.description.toLowerCase().contains(clean)) return true;
-        if (e.entityId?.toLowerCase().contains(clean) ?? false) return true;
-        if (e.resolvedTargetId?.toLowerCase().contains(clean) ?? false) return true;
+        if (e.description.toLowerCase().contains(cleanLower)) return true;
+        if (e.entityId?.toLowerCase().contains(cleanLower) ?? false) return true;
+        if (e.resolvedTargetId?.toLowerCase().contains(cleanLower) ?? false) return true;
         if (e.metadata != null) {
           final metaStr = e.metadata.toString().toLowerCase();
-          if (metaStr.contains(clean)) return true;
+          if (metaStr.contains(cleanLower)) return true;
         }
         return false;
       }).toList();

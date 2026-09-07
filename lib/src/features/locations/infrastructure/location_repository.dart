@@ -116,12 +116,45 @@ class LocationRepository {
   }
 
   // Global Recursive Count Engine
-  static int getRecursiveItemCount(String nodeId, List<LocationNode> allNodes, List<WorldEntity> allEntities) {
-    int selfCount = allEntities.where((e) => e.locationId == nodeId).length;
-    final children = allNodes.where((n) => n.parentLocationId == nodeId);
-    for (final child in children) {
-      selfCount += getRecursiveItemCount(child.id, allNodes, allEntities);
+  static Map<String, int> computeAllRecursiveItemCounts(List<LocationNode> allNodes, List<WorldEntity> allEntities) {
+    final directCounts = <String, int>{};
+    for (final e in allEntities) {
+      if (e.locationId != null) {
+        directCounts[e.locationId!] = (directCounts[e.locationId!] ?? 0) + 1;
+      }
     }
-    return selfCount;
+
+    final childrenMap = <String, List<String>>{};
+    for (final n in allNodes) {
+      if (n.parentLocationId != null) {
+        (childrenMap[n.parentLocationId!] ??= []).add(n.id);
+      }
+    }
+
+    final memo = <String, int>{};
+    int countForNode(String nodeId, Set<String> visiting) {
+      if (memo.containsKey(nodeId)) return memo[nodeId]!;
+      if (visiting.contains(nodeId)) return 0; // prevent cycle
+      visiting.add(nodeId);
+
+      int total = directCounts[nodeId] ?? 0;
+      final children = childrenMap[nodeId] ?? const [];
+      for (final childId in children) {
+        total += countForNode(childId, visiting);
+      }
+      visiting.remove(nodeId);
+      memo[nodeId] = total;
+      return total;
+    }
+
+    for (final n in allNodes) {
+      countForNode(n.id, <String>{});
+    }
+    return memo;
+  }
+
+  static int getRecursiveItemCount(String nodeId, List<LocationNode> allNodes, List<WorldEntity> allEntities) {
+    final counts = computeAllRecursiveItemCounts(allNodes, allEntities);
+    return counts[nodeId] ?? 0;
   }
 }

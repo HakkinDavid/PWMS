@@ -112,6 +112,7 @@ class NumismaticDataHelper {
     int? year,
     String? currencyCode,
     String? denomination,
+    String? material,
     bool? isBanknote,
   }) =>
       NumismaticMatrix.getCommemorativeMotifs(
@@ -119,6 +120,7 @@ class NumismaticDataHelper {
         year: year,
         currencyCode: currencyCode,
         denomination: denomination,
+        material: material,
         isBanknote: isBanknote ?? false,
       );
 

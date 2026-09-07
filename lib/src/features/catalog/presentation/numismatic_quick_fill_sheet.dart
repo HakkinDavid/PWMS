@@ -459,8 +459,8 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
         isBanknote: !widget.isCoin,
       );
       if (availableMotifs.isNotEmpty) {
-        if (_motif == null || (_motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized && !availableMotifs.contains(_motif))) {
-          _motif = availableMotifs.first;
+        if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized && !availableMotifs.contains(_motif)) {
+          _motif = null;
         }
       } else if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized) {
         _motif = null;

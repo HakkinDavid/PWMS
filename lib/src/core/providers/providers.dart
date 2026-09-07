@@ -220,9 +220,6 @@ final recentEntitiesProvider = FutureProvider<List<WorldEntity>>((ref) async {
 
 // Recent Activity Provider
 final recentActivityProvider = FutureProvider<List<ActivityEvent>>((ref) async {
-  ref.watch(entityListProvider);
-  ref.watch(catalogListProvider);
-  ref.watch(locationNodeListProvider);
   final repo = ref.watch(historyRepositoryProvider);
   return repo.getRecentEvents(limit: 15);
 });
@@ -232,9 +229,6 @@ final historySearchQueryProvider = StateProvider<String>((ref) => AppTechnicalSt
 final historySelectedCategoryProvider = StateProvider<String>((ref) => AppTechnicalStrings.categoryAll);
 
 final allHistoryEventsStreamProvider = FutureProvider<List<ActivityEvent>>((ref) async {
-  ref.watch(entityListProvider);
-  ref.watch(catalogListProvider);
-  ref.watch(locationNodeListProvider);
   final repo = ref.watch(historyRepositoryProvider);
   return repo.getAllEvents();
 });

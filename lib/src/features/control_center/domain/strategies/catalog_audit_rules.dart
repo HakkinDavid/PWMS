@@ -101,8 +101,7 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
           },
           onFix: (ctx, ref) async {
             if (parentSpecies != null) {
-              final countBefore = (await ref.read(entityRepositoryProvider).getAllEntities())
-                  .where((e) => e.subspeciesId == sub.id).length;
+              final countBefore = (await ref.read(entityRepositoryProvider).getEntitiesBySubspecies(sub.id)).length;
 
               await InstantiateSpeciesSheet.show(
                 ctx,
@@ -110,8 +109,7 @@ class UninstantiatedSubspeciesStrategy implements IAuditRuleStrategy {
                 initialSubspecies: sub,
               );
 
-              final countAfter = (await ref.read(entityRepositoryProvider).getAllEntities())
-                  .where((e) => e.subspeciesId == sub.id).length;
+              final countAfter = (await ref.read(entityRepositoryProvider).getEntitiesBySubspecies(sub.id)).length;
 
               return countAfter > countBefore;
             }

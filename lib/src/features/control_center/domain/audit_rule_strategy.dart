@@ -62,7 +62,9 @@ class AuditCardData {
   final String question;
   final IconData icon;
   final Color themeColor;
-  final Widget tile;
+  final Widget? _tile;
+  final Widget Function(BuildContext)? tileBuilder;
+  Widget get tile => _tile ?? (tileBuilder != null ? Builder(builder: tileBuilder!) : const SizedBox.shrink());
   final CatalogItem? species;
   final Subspecies? subspecies;
   final WorldEntity? entity;
@@ -83,7 +85,8 @@ class AuditCardData {
     required this.question,
     required this.icon,
     required this.themeColor,
-    required this.tile,
+    Widget? tile,
+    this.tileBuilder,
     this.species,
     this.subspecies,
     this.entity,
@@ -94,7 +97,7 @@ class AuditCardData {
     this.fixIcon,
     required this.onConfirm,
     required this.onFix,
-  });
+  }) : _tile = tile;
 }
 
 class AuditEvaluationContext {

@@ -299,6 +299,7 @@ class NumismaticMatrix {
     int? year,
     String? currencyCode,
     String? denomination,
+    String? material,
     bool isBanknote = false,
   }) {
     if (country == null || year == null) return const [];
@@ -307,6 +308,11 @@ class NumismaticMatrix {
 
     final result = <String>[];
     for (final rule in rules) {
+      if (material != null && material.trim().isNotEmpty && denomination != null) {
+        if (!rule.isMaterialValidForDenomination(denomination, material, year: year)) {
+          continue;
+        }
+      }
       if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
         final cleanDenom = denomination.trim();
         for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom, year: year)) {

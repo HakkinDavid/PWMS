@@ -563,8 +563,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     if (dateFormatted.contains(cleanQuery) || evt.timestamp.toString().contains(cleanQuery)) return true;
 
     if (evt.metadata != null) {
-      final metaString = jsonEncode(evt.metadata).toLowerCase();
-      if (metaString.contains(cleanQuery)) return true;
+      for (final val in evt.metadata!.values) {
+        if (val != null && val.toString().toLowerCase().contains(cleanQuery)) {
+          return true;
+        }
+      }
     }
 
     return false;

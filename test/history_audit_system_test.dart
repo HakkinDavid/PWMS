@@ -85,7 +85,7 @@ void main() {
       expect(initialEvents, isEmpty);
 
       // Run post-processor
-      await const HistoryMigrationPostProcessor().processAfterImport(db);
+      await const HistoryMigrationPostProcessor().process(db);
 
       // Verify all records generated chronological events
       final events = await historyRepo.getAllEvents();
@@ -110,7 +110,7 @@ void main() {
       expect(relEvents.length, 1);
 
       // Running again should be idempotent (deduplicated)
-      await const HistoryMigrationPostProcessor().processAfterImport(db);
+      await const HistoryMigrationPostProcessor().process(db);
       final eventsAfterSecondRun = await historyRepo.getAllEvents();
       expect(eventsAfterSecondRun.length, 5);
     });

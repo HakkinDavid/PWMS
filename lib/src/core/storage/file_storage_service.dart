@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 
@@ -19,7 +19,7 @@ class FileStorageService {
     return mediaDir;
   }
 
-  /// Copies a file from sourcePath to the local PWMS media directory.
+  /// Copies a file from sourcePath to the local PWMS media directory with SHA-256 deduplication.
   /// Returns the relative file path stored.
   Future<String> saveFile(String sourcePath) async {
     final file = File(sourcePath);
@@ -27,24 +27,32 @@ class FileStorageService {
       throw Exception(AppStrings.sourceFileNotFoundAtPath(sourcePath));
     }
 
+    final bytes = await file.readAsBytes();
+    final hash = sha256.convert(bytes).toString();
     final ext = p.extension(sourcePath);
-    final filename = AppTechnicalStrings.fileNameWithExtension(const Uuid().v4(), ext);
+    final filename = AppTechnicalStrings.fileNameWithExtension(hash, ext);
     final targetDir = await _storageDir;
     final targetPath = p.join(targetDir.path, filename);
+    final targetFile = File(targetPath);
 
-    await file.copy(targetPath);
+    if (!await targetFile.exists()) {
+      await file.copy(targetPath);
+    }
     return filename; // Relative path stored in DB
   }
 
-  /// Saves raw bytes to the local PWMS media directory and returns the relative filename.
+  /// Saves raw bytes to the local PWMS media directory with SHA-256 deduplication and returns the relative filename.
   Future<String> saveBytes(List<int> bytes, {String extension = AppTechnicalStorage.extJpg}) async {
     final ext = AppTechnicalStrings.withDotPrefix(extension);
-    final filename = AppTechnicalStrings.fileNameWithExtension(const Uuid().v4(), ext);
+    final hash = sha256.convert(bytes).toString();
+    final filename = AppTechnicalStrings.fileNameWithExtension(hash, ext);
     final targetDir = await _storageDir;
     final targetPath = p.join(targetDir.path, filename);
 
     final file = File(targetPath);
-    await file.writeAsBytes(bytes);
+    if (!await file.exists()) {
+      await file.writeAsBytes(bytes);
+    }
     return filename;
   }
 

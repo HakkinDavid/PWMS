@@ -151,6 +151,32 @@ WHERE id IN (
 );
 ''';
 
+  static const databaseIndicesSql = [
+    'CREATE INDEX IF NOT EXISTS idx_locations_parent ON locations_table (parent_location_id);',
+    'CREATE INDEX IF NOT EXISTS idx_subspecies_species ON subspecies_table (species_id);',
+    'CREATE INDEX IF NOT EXISTS idx_species_magnitudes_species ON species_magnitudes_table (species_id);',
+    'CREATE INDEX IF NOT EXISTS idx_entities_species ON entities_table (species_id);',
+    'CREATE INDEX IF NOT EXISTS idx_entities_subspecies ON entities_table (subspecies_id);',
+    'CREATE INDEX IF NOT EXISTS idx_entities_location ON entities_table (location_id);',
+    'CREATE INDEX IF NOT EXISTS idx_entities_expiration ON entities_table (expiration_date);',
+    'CREATE INDEX IF NOT EXISTS idx_entities_updated ON entities_table (updated_at);',
+    'CREATE INDEX IF NOT EXISTS idx_instance_magnitudes_instance ON instance_magnitudes_table (instance_id);',
+    'CREATE INDEX IF NOT EXISTS idx_instance_locations_location ON instance_locations_table (location_id);',
+    'CREATE INDEX IF NOT EXISTS idx_relations_source ON relations_table (source_entity_id);',
+    'CREATE INDEX IF NOT EXISTS idx_relations_target ON relations_table (target_entity_id);',
+    'CREATE INDEX IF NOT EXISTS idx_relations_type ON relations_table (relation_type);',
+    'CREATE INDEX IF NOT EXISTS idx_attachments_species ON attachments_table (species_id);',
+    'CREATE INDEX IF NOT EXISTS idx_attachments_instance ON attachments_table (instance_id);',
+    'CREATE INDEX IF NOT EXISTS idx_history_events_entity ON history_events_table (entity_id);',
+    'CREATE INDEX IF NOT EXISTS idx_history_events_type ON history_events_table (event_type);',
+    'CREATE INDEX IF NOT EXISTS idx_history_events_timestamp ON history_events_table (timestamp);',
+    'CREATE INDEX IF NOT EXISTS idx_species_req_source ON species_requirements_table (source_id);',
+    'CREATE INDEX IF NOT EXISTS idx_species_req_required ON species_requirements_table (required_species_id);',
+    'CREATE INDEX IF NOT EXISTS idx_notifications_target ON notifications_table (target_id);',
+    'CREATE INDEX IF NOT EXISTS idx_notifications_status ON notifications_table (status);',
+    'CREATE INDEX IF NOT EXISTS idx_notifications_snoozed ON notifications_table (snoozed_until);',
+  ];
+
   // SQL Keywords
   static const sqlKeywordSelect = 'SELECT';
   static const sqlKeywordInsert = 'INSERT';
@@ -336,6 +362,7 @@ WHERE id IN (
   static const regexMetalNote = r'Metal:\s*([^|]+)';
   static const regexGradoNote = r'Grado:\s*([^|\n]+)';
   static const regexNonVersionChars = r'[^0-9.]';
+  static const regexFourDigitYearParentheses = r'\(\d{4}[^\)]*\)';
 
   // ---------------------------------------------------------------------------
   // JSON Keys

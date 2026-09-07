@@ -73,6 +73,14 @@ class FastLazyRegistryHandler extends ITaxonomyHandler {
 
 /// Handler 2: ProductTaxonomyDictionary (Rule-based Regex and Keyword scoring)
 class ProductTaxonomyDictionaryHandler extends ITaxonomyHandler {
+  static final Map<CategoryDefinition, List<RegExp>> _compiledRegexes = {
+    for (final def in ProductTaxonomyDictionary.definitions)
+      if (def.regexPatterns != null)
+        def: def.regexPatterns!
+            .map((p) => RegExp(p, caseSensitive: false))
+            .toList()
+  };
+
   @override
   TaxonomyResolution? process(TaxonomyRequestContext context) {
     CategoryDefinition? bestMatch;
@@ -81,9 +89,10 @@ class ProductTaxonomyDictionaryHandler extends ITaxonomyHandler {
     for (final def in ProductTaxonomyDictionary.definitions) {
       int score = 0;
 
-      if (def.regexPatterns != null) {
-        for (final pattern in def.regexPatterns!) {
-          if (RegExp(pattern, caseSensitive: false).hasMatch(context.combinedText)) {
+      final compiled = _compiledRegexes[def];
+      if (compiled != null) {
+        for (final reg in compiled) {
+          if (reg.hasMatch(context.combinedText)) {
             score += 50;
             break;
           }

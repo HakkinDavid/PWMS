@@ -230,6 +230,7 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
+          await _createIndices();
         },
         onUpgrade: (m, from, to) async {
           for (int v = from; v < to; v++) {
@@ -256,13 +257,21 @@ class AppDatabase extends _$AppDatabase {
               await m.createTable(ignoredAuditCardsTable);
             }
           }
+          await _createIndices();
         },
         beforeOpen: (details) async {
+          await _createIndices();
           if (details.wasCreated || details.hadUpgrade) {
             await DataMigrationRegistry.runAll(this);
           }
         },
       );
+
+  Future<void> _createIndices() async {
+    for (final sql in AppTechnicalStrings.databaseIndicesSql) {
+      await customStatement(sql);
+    }
+  }
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: AppTechnicalStrings.dbName);

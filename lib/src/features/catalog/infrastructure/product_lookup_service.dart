@@ -29,8 +29,6 @@ class ProductLookupResult {
     this.extraAttributes = const {},
   });
 
-  String get productName => subspeciesName;
-
   ProductLookupResult copyWith({
     String? generalSpeciesName,
     String? subspeciesName,

@@ -255,7 +255,7 @@ class OwnershipCheckStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in sampleEntities) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
       final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 
@@ -347,7 +347,7 @@ class LocationVerificationStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in locationCheckSample) {
-      final species = context.allCatalog.where((c) => c.id == entity.speciesId).firstOrNull;
+      final species = context.speciesById[entity.speciesId];
       final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
       final breadcrumb = AuditRuleHelper.getEntityBreadcrumb(context, entity);
 

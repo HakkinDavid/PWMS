@@ -31,19 +31,32 @@ class NumismaticAttributes {
 class NumismaticParser {
   NumismaticParser._();
 
-  static final List<MapEntry<String, String>> _sortedSingularReplacements =
-      AppTechnicalNumismatics.currencySingularReplacements.entries.toList()
-        ..sort((a, b) => b.key.length.compareTo(a.key.length));
+  static final List<MapEntry<RegExp, String>> _singularPatterns =
+      (AppTechnicalNumismatics.currencySingularReplacements.entries.toList()
+            ..sort((a, b) => b.key.length.compareTo(a.key.length)))
+          .map((entry) => MapEntry(
+                RegExp(AppTechnicalStrings.regexWordBoundary + RegExp.escape(entry.key) + AppTechnicalStrings.regexWordBoundary, caseSensitive: false),
+                entry.value,
+              ))
+          .toList();
+
+  static final RegExp _multipleSpacesRegExp = RegExp(AppTechnicalStrings.regexMultipleSpaces);
+
+  static final Map<String, String> _normalizedCurrencyToIsoMap = () {
+    final map = <String, String>{};
+    for (final entry in NumismaticDictionary.currencyMap.entries) {
+      final norm = normalizeCurrencyText(entry.value);
+      map.putIfAbsent(norm, () => entry.key);
+    }
+    return map;
+  }();
 
   /// Helper to convert plural currency name to singular if count == 1.
   static String adjustSingularPlural(String text, double? count) {
     if (count == 1 || count == 1.0) {
       var result = text;
-      for (final entry in _sortedSingularReplacements) {
-        result = result.replaceAll(
-          RegExp(AppTechnicalStrings.regexWordBoundary + RegExp.escape(entry.key) + AppTechnicalStrings.regexWordBoundary, caseSensitive: false),
-          entry.value,
-        );
+      for (final entry in _singularPatterns) {
+        result = result.replaceAll(entry.key, entry.value);
       }
       return result.trim();
     }
@@ -56,11 +69,8 @@ class NumismaticParser {
     var result = text.trim();
     if (result.isEmpty) return result;
 
-    for (final entry in _sortedSingularReplacements) {
-      result = result.replaceAll(
-        RegExp(AppTechnicalStrings.regexWordBoundary + RegExp.escape(entry.key) + AppTechnicalStrings.regexWordBoundary, caseSensitive: false),
-        entry.value,
-      );
+    for (final entry in _singularPatterns) {
+      result = result.replaceAll(entry.key, entry.value);
     }
 
     var lower = result.toLowerCase();
@@ -69,7 +79,7 @@ class NumismaticParser {
     }
 
     return lower
-        .replaceAll(RegExp(AppTechnicalStrings.regexMultipleSpaces), AppTechnicalStrings.space)
+        .replaceAll(_multipleSpacesRegExp, AppTechnicalStrings.space)
         .trim();
   }
 
@@ -84,10 +94,9 @@ class NumismaticParser {
     }
 
     final normClean = normalizeCurrencyText(clean);
-    for (final entry in NumismaticDictionary.currencyMap.entries) {
-      if (normalizeCurrencyText(entry.value) == normClean) {
-        return entry.key;
-      }
+    final matchIso = _normalizedCurrencyToIsoMap[normClean];
+    if (matchIso != null) {
+      return matchIso;
     }
 
     return upper;
@@ -104,10 +113,9 @@ class NumismaticParser {
     }
 
     final normClean = normalizeCurrencyText(clean);
-    for (final entry in NumismaticDictionary.currencyMap.entries) {
-      if (normalizeCurrencyText(entry.value) == normClean) {
-        return adjustSingularPlural(entry.value, count);
-      }
+    final matchIso = _normalizedCurrencyToIsoMap[normClean];
+    if (matchIso != null) {
+      return adjustSingularPlural(NumismaticDictionary.currencyMap[matchIso]!, count);
     }
 
     return adjustSingularPlural(clean, count);

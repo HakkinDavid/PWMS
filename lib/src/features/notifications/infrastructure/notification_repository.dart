@@ -51,6 +51,25 @@ class NotificationRepository {
     await _db.into(_db.notificationsTable).insertOnConflictUpdate(companion);
   }
 
+  Future<void> saveNotificationsBatch(List<AppNotification> notifications) async {
+    if (notifications.isEmpty) return;
+    await _db.batch((batch) {
+      final companions = notifications.map((notification) => NotificationsTableCompanion(
+        id: Value(notification.id),
+        type: Value(notification.type),
+        title: Value(notification.title),
+        message: Value(notification.message),
+        targetId: Value(notification.targetId),
+        targetType: Value(notification.targetType),
+        status: Value(notification.status),
+        snoozedUntil: Value(notification.snoozedUntil),
+        createdAt: Value(notification.createdAt),
+        updatedAt: Value(notification.updatedAt),
+      )).toList();
+      batch.insertAll(_db.notificationsTable, companions, mode: InsertMode.insertOrReplace);
+    });
+  }
+
   Future<void> snoozeNotification(String id, Duration duration) async {
     final snoozedUntil = DateTime.now().add(duration);
     final query = _db.update(_db.notificationsTable)..where((t) => t.id.equals(id));

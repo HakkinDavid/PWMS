@@ -237,6 +237,7 @@ class NumismaticOutlierDetector {
             year: year,
             currencyCode: currency,
             denomination: denomStr,
+            material: material,
             isBanknote: isBanknote,
           );
           final effectiveMotif = attrs.motif;
@@ -251,7 +252,7 @@ class NumismaticOutlierDetector {
             } else {
               isMotifMismatch = true;
             }
-          } else if (motifs.length > 1) {
+          } else if (!isBanknote && motifs.length > 1) {
             isMotifMismatch = true;
           }
 

@@ -648,6 +648,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '100',
         material: 'Papel de algodón',
+        allowedMaterials: ['Papel de algodón', 'Polímero'],
         minYear: 2006,
         maxYear: 2019,
         isBanknote: true,

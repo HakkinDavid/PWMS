@@ -5,7 +5,6 @@ import 'package:platinum_world_management_system/src/features/history/applicatio
 /// Interface for post-processors executed after database import or migration.
 abstract class IDataMigrationPostProcessor {
   Future<void> process(AppDatabase db);
-  Future<void> processAfterImport(AppDatabase db);
 }
 
 /// Central registry managing and coordinating all database post-processors
