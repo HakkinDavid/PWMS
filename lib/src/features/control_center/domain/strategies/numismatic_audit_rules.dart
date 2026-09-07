@@ -341,6 +341,7 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
         if (instAttrs.material == null || instAttrs.material!.trim().isEmpty) missingMags.add(AppStrings.materialPropertyName);
         if (instAttrs.country == null || instAttrs.country!.trim().isEmpty) missingMags.add(AppStrings.issuerPropertyName);
         if (instAttrs.grade == null || instAttrs.grade!.trim().isEmpty) missingMags.add(AppStrings.gradePropertyName);
+        if (instAttrs.motif == null || instAttrs.motif!.trim().isEmpty) missingMags.add(AppStrings.motifPropertyName);
 
         if (missingMags.isNotEmpty) {
           cards.add(AuditRuleHelper.forEntity(
@@ -557,6 +558,110 @@ class NumismaticMissingMagnitudesStrategy implements IAuditRuleStrategy {
                     propertyName: AppStrings.gradePropertyName,
                     dataType: AppTechnicalStrings.datatypeStringLower,
                     stringValue: NumismaticDataHelper.resolveGrade(chosenGrade),
+                  );
+                }
+              }
+
+              // 7. Motif
+              if (currentAttrs.motif == null || currentAttrs.motif!.trim().isEmpty) {
+                final yearInt = currentAttrs.year != null ? int.tryParse(currentAttrs.year!) : (parsedSub.year != null ? int.tryParse(parsedSub.year!) : null);
+                final isBanknote = NumismaticDataHelper.isBanknotePiece(
+                  species: species,
+                  instance: freshEntity,
+                  material: currentAttrs.material,
+                );
+                final availableMotifs = NumismaticDataHelper.getCommemorativeMotifs(
+                  country: currentAttrs.country ?? parsedSub.country,
+                  year: yearInt,
+                  currencyCode: currentAttrs.currencyName ?? parsedSub.currencyName,
+                  denomination: currentAttrs.faceValueStr ?? (currentAttrs.faceValueNumber != null ? (currentAttrs.faceValueNumber == currentAttrs.faceValueNumber!.toInt() ? currentAttrs.faceValueNumber!.toInt().toString() : currentAttrs.faceValueNumber.toString()) : null),
+                  isBanknote: isBanknote,
+                );
+
+                String? chosenMotif;
+                if (availableMotifs.isNotEmpty) {
+                  final items = [...availableMotifs, AppStrings.otherSpecifyOption];
+                  final selected = await AppWheelPicker.show<String>(
+                    ctx,
+                    items: items,
+                    initialValue: items.first,
+                    labelBuilder: (m) => m,
+                    title: AppStrings.motifLabel,
+                  );
+                  if (selected == AppStrings.otherSpecifyOption) {
+                    final textCtrl = TextEditingController();
+                    final formKey = GlobalKey<FormState>();
+                    final ok = await showDialog<bool>(
+                      context: ctx,
+                      builder: (dialogCtx) => AlertDialog(
+                        title: const Text(AppStrings.motifLabel),
+                        content: Form(
+                          key: formKey,
+                          child: TextFormField(
+                            controller: textCtrl,
+                            decoration: const InputDecoration(labelText: AppStrings.motifLabel),
+                            validator: (val) {
+                              if (val == null || val.trim().isEmpty) return AppStrings.selectMotifPrompt;
+                              return null;
+                            },
+                          ),
+                        ),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text(AppStrings.cancel)),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (formKey.currentState?.validate() ?? false) Navigator.pop(dialogCtx, true);
+                            },
+                            child: const Text(AppStrings.confirm),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (ok == true && textCtrl.text.trim().isNotEmpty) {
+                      chosenMotif = textCtrl.text.trim();
+                    }
+                  } else if (selected != null && selected.isNotEmpty) {
+                    chosenMotif = selected;
+                  }
+                } else {
+                  final textCtrl = TextEditingController();
+                  final formKey = GlobalKey<FormState>();
+                  final ok = await showDialog<bool>(
+                    context: ctx,
+                    builder: (dialogCtx) => AlertDialog(
+                      title: const Text(AppStrings.motifLabel),
+                      content: Form(
+                        key: formKey,
+                        child: TextFormField(
+                          controller: textCtrl,
+                          decoration: const InputDecoration(labelText: AppStrings.motifLabel),
+                          validator: (val) {
+                            if (val == null || val.trim().isEmpty) return AppStrings.selectMotifPrompt;
+                            return null;
+                          },
+                        ),
+                      ),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text(AppStrings.cancel)),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (formKey.currentState?.validate() ?? false) Navigator.pop(dialogCtx, true);
+                          },
+                          child: const Text(AppStrings.confirm),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (ok == true && textCtrl.text.trim().isNotEmpty) {
+                    chosenMotif = textCtrl.text.trim();
+                  }
+                }
+
+                if (chosenMotif != null && chosenMotif.isNotEmpty) {
+                  setOrUpdateMagnitude(
+                    propertyName: AppStrings.motifPropertyName,
+                    dataType: AppTechnicalStrings.datatypeStringLower,
+                    stringValue: chosenMotif.trim(),
                   );
                 }
               }

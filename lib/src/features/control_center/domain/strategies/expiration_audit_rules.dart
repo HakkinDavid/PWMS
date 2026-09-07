@@ -167,11 +167,8 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
         final missingMags = species.magnitudes.where((sm) {
           final smNorm = sm.propertyName.trim().toLowerCase();
           if (isNumismatic) {
-            // Motivo is commemorative-only (optional on circulating coins)
-            // and Grado is audited via EmptyDataAuditStrategy with dedicated WheelPicker
-            if (smNorm == AppStrings.motifPropertyName.toLowerCase() ||
-                smNorm == AppTechnicalStrings.magMotivoLower ||
-                smNorm == AppStrings.gradePropertyName.toLowerCase() ||
+            // Grado is audited via EmptyDataAuditStrategy with dedicated WheelPicker
+            if (smNorm == AppStrings.gradePropertyName.toLowerCase() ||
                 smNorm == AppTechnicalStrings.magGradoLower ||
                 smNorm == AppTechnicalStrings.magConservacionWithAccentLower ||
                 smNorm == AppTechnicalStrings.magConservacionWithoutAccentLower) {

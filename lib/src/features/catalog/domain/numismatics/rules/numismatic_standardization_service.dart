@@ -140,6 +140,16 @@ class NumismaticStandardizationService {
           unitSymbol: null,
         );
       }
+      if (pName == AppStrings.motifPropertyName.toLowerCase() ||
+          pName == AppTechnicalStrings.magMotivoLower) {
+        return m.copyWith(
+          propertyName: AppStrings.motifPropertyName,
+          dataType: AppTechnicalStrings.datatypeStringLower,
+          stringValue: m.stringValue?.trim(),
+          magnitudeValue: null,
+          unitSymbol: null,
+        );
+      }
       return m;
     }).toList();
 
