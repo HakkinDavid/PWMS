@@ -122,21 +122,6 @@ class NumismaticDataHelper {
         isBanknote: isBanknote ?? false,
       );
 
-  static bool isStrictlyCommemorative({
-    String? country,
-    int? year,
-    String? currencyCode,
-    String? denomination,
-    bool? isBanknote,
-  }) =>
-      NumismaticMatrix.isStrictlyCommemorative(
-        country: country,
-        year: year,
-        currencyCode: currencyCode,
-        denomination: denomination,
-        isBanknote: isBanknote ?? false,
-      );
-
   static bool matchesDenomination(String d1, String d2) =>
       NumismaticMatrix.matchesDenomination(d1, d2);
 

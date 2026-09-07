@@ -13,7 +13,6 @@ class NumismaticInferenceResult {
   final List<String> validMaterials;
   final String? inferredMaterial;
   final List<String> availableMotifs;
-  final bool isStrictlyCommemorative;
   final List<NumismaticEmissionOutlier> outliers;
 
   const NumismaticInferenceResult({
@@ -26,7 +25,6 @@ class NumismaticInferenceResult {
     this.validMaterials = const [],
     this.inferredMaterial,
     this.availableMotifs = const [],
-    this.isStrictlyCommemorative = false,
     this.outliers = const [],
   });
 }

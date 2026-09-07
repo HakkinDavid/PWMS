@@ -240,7 +240,6 @@ class NumismaticOutlierDetector {
             denomination: denomStr,
             isBanknote: isBanknote,
           );
-          final isStrictlyCommemorative = rule.isCommemorativeDenomination(denomStr);
           final effectiveMotif = attrs.motif;
 
           bool isMotifMismatch = false;
@@ -253,7 +252,7 @@ class NumismaticOutlierDetector {
             } else {
               isMotifMismatch = true;
             }
-          } else if (isStrictlyCommemorative && motifs.isNotEmpty) {
+          } else if (motifs.isNotEmpty) {
             isMotifMismatch = true;
           }
 

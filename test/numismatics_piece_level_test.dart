@@ -101,22 +101,21 @@ void main() {
   });
 
   group('NumismaticEmissionRuleData Piece-Level Granularity Tests', () {
-    test('synthesizes pieces seamlessly from legacy definitions', () {
+    test('supports piece definitions and derives denomination metadata correctly', () {
       const rule = NumismaticEmissionRuleData(
         country: 'México',
         minYear: 1993,
         maxYear: 1995,
         validCurrencies: ['MXN'],
         defaultCurrency: 'MXN',
-        denominations: ['10', '20', '50'],
-        denominationMaterials: {
-          '10': 'Plata / Aluminio-Bronce',
-          '20': 'Plata / Latón',
-          '50': 'Plata / Latón',
-        },
+        pieces: [
+          NumismaticPieceDefinition(denomination: '10', material: 'Plata / Aluminio-Bronce'),
+          NumismaticPieceDefinition(denomination: '20', material: 'Plata / Latón'),
+          NumismaticPieceDefinition(denomination: '50', material: 'Plata / Latón'),
+        ],
       );
 
-      expect(rule.effectivePieces.length, equals(3));
+      expect(rule.pieces.length, equals(3));
       expect(rule.denominations, equals(['10', '20', '50']));
       expect(rule.denominationMaterials['10'], equals('Plata / Aluminio-Bronce'));
     });

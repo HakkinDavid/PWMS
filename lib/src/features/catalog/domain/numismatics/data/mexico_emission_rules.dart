@@ -1507,7 +1507,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1995,
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
-    defaultCommemorativeReason: 'Nuevo Peso',
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',

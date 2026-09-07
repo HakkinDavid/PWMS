@@ -131,7 +131,6 @@ class NumismaticMatrix {
     List<String> validMaterials = const [];
     String? inferredMaterial;
     List<String> availableMotifs = const [];
-    bool isStrictlyCommemorative = false;
 
     if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
       final cleanDenom = denomination.trim();
@@ -139,7 +138,6 @@ class NumismaticMatrix {
       validMaterials = matchingEpoch.getAllowedMaterialsForDenomination(cleanDenom, year: year);
       inferredMaterial = matchingEpoch.getMaterialForDenomination(cleanDenom, year: year);
       availableMotifs = matchingEpoch.getCommemorativeMotifsForDenomination(cleanDenom, year: year);
-      isStrictlyCommemorative = matchingEpoch.isCommemorativeDenomination(cleanDenom, year: year);
     }
 
     return NumismaticInferenceResult(
@@ -152,7 +150,6 @@ class NumismaticMatrix {
       validMaterials: validMaterials,
       inferredMaterial: inferredMaterial,
       availableMotifs: availableMotifs,
-      isStrictlyCommemorative: isStrictlyCommemorative,
     );
   }
 
@@ -333,28 +330,5 @@ class NumismaticMatrix {
       }
     }
     return result;
-  }
-
-  /// Checks if (country, year, currency, denomination, isBanknote) is strictly a commemorative emission.
-  static bool isStrictlyCommemorative({
-    String? country,
-    int? year,
-    String? currencyCode,
-    String? denomination,
-    bool isBanknote = false,
-  }) {
-    if (country == null || year == null || denomination == null) return false;
-    if (denomination == AppStrings.otherSpecifyOption) return false;
-
-    final rule = findRule(
-      country,
-      year,
-      currencyCode: currencyCode,
-      denomination: denomination,
-      isBanknote: isBanknote,
-    );
-    if (rule == null) return false;
-
-    return rule.isCommemorativeDenomination(denomination.trim(), year: year);
   }
 }

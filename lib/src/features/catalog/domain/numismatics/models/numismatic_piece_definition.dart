@@ -67,12 +67,6 @@ class NumismaticPieceDefinition {
   /// Effective visual motif name representing this piece.
   String? get effectiveMotifName => motifName ?? commonName;
 
-  /// Returns true if this piece supports standard generic circulation in [year] without a special motif.
-  bool allowsStandardForYear(int? year) {
-    if (motifs.isEmpty) return true;
-    return motifs.any((m) => m.matchesYear(year));
-  }
-
   /// Returns commemorative motif names matching the specified [year] (excluding standard circulation tokens).
   List<String> getMotifsForYear(int? year) {
     if (motifs.isEmpty) return const [];

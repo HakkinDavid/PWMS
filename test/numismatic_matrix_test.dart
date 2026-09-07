@@ -117,9 +117,6 @@ void main() {
 
       final mat1Real = NumismaticDataHelper.inferMaterial(country: 'Brasil', year: 2017, denomination: '1');
       expect(mat1Real, equals('Bimetálica'));
-
-      final isCommemorative1Real = NumismaticDataHelper.isStrictlyCommemorative(country: 'Brasil', year: 2017, denomination: '1');
-      expect(isCommemorative1Real, isFalse);
     });
 
     test('Spain 1999 physical stamped year on Euro coins infers EUR and modern alloys', () {
@@ -132,14 +129,6 @@ void main() {
 
       final matEuro2 = NumismaticDataHelper.inferMaterial(country: 'España', year: 2002, denomination: '2');
       expect(matEuro2, equals('Bimetálica'));
-
-      // Standard circulating 2 Euro is not forced as commemorative
-      final isCommemorative2Euro = NumismaticDataHelper.isStrictlyCommemorative(country: 'España', year: 2005, denomination: '2');
-      expect(isCommemorative2Euro, isFalse);
-
-      // Spain 1995 2000 Pesetas is a commemorative plata coin
-      final isCommemorative2000Ptas = NumismaticDataHelper.isStrictlyCommemorative(country: 'España', year: 1995, denomination: '2000');
-      expect(isCommemorative2000Ptas, isTrue);
     });
 
     test('Modern commemorative editions for Mexico, Canada, and Colombia', () {

@@ -10,13 +10,6 @@ class NumismaticEmissionRuleData {
   final List<String> validCurrencies;
   final String? defaultCurrency;
   final List<NumismaticPieceDefinition> pieces;
-  final List<String> _explicitDenominations;
-  final Map<String, String> _explicitDenominationMaterials;
-  final Map<String, List<String>> _explicitDenominationAllowedMaterials;
-  final Set<String> _explicitCommemorativeDenominations;
-  final List<String> _explicitCommemorativeReasons;
-  final Map<String, List<NumismaticMotifRule>> _explicitCommemorativeMotifsByDenomination;
-  final String? defaultCommemorativeReason;
   final bool isBanknote;
 
   const NumismaticEmissionRuleData({
@@ -25,51 +18,12 @@ class NumismaticEmissionRuleData {
     required this.maxYear,
     required this.validCurrencies,
     this.defaultCurrency,
-    List<NumismaticPieceDefinition> pieces = const [],
-    List<String> denominations = const [],
-    Map<String, String> denominationMaterials = const {},
-    Map<String, List<String>> denominationAllowedMaterials = const {},
-    Set<String> commemorativeDenominations = const {},
-    List<String> commemorativeReasons = const [],
-    Map<String, List<NumismaticMotifRule>> commemorativeMotifsByDenomination = const {},
-    this.defaultCommemorativeReason,
+    this.pieces = const [],
     this.isBanknote = false,
-  })  : pieces = pieces,
-        _explicitDenominations = denominations,
-        _explicitDenominationMaterials = denominationMaterials,
-        _explicitDenominationAllowedMaterials = denominationAllowedMaterials,
-        _explicitCommemorativeDenominations = commemorativeDenominations,
-        _explicitCommemorativeReasons = commemorativeReasons,
-        _explicitCommemorativeMotifsByDenomination = commemorativeMotifsByDenomination;
-
-  /// Returns effective piece definitions (either explicitly declared, or synthesized from legacy maps).
-  List<NumismaticPieceDefinition> get effectivePieces {
-    if (pieces.isNotEmpty) {
-      return pieces;
-    }
-    final syn = <NumismaticPieceDefinition>[];
-    for (final d in _explicitDenominations) {
-      final mat = _explicitDenominationMaterials[d];
-      final allowed = _explicitDenominationAllowedMaterials[d] ?? (mat != null ? [mat] : const []);
-      final motifs = _explicitCommemorativeMotifsByDenomination[d] ?? const [];
-      syn.add(NumismaticPieceDefinition(
-        denomination: d,
-        minYear: minYear,
-        maxYear: maxYear,
-        material: mat,
-        allowedMaterials: allowed,
-        motifs: motifs,
-        isBanknote: isBanknote,
-      ));
-    }
-    return syn;
-  }
+  });
 
   /// List of distinct denomination strings supported in this epoch.
   List<String> get denominations {
-    if (_explicitDenominations.isNotEmpty) {
-      return _explicitDenominations;
-    }
     final list = <String>[];
     for (final p in pieces) {
       if (!list.contains(p.denomination)) list.add(p.denomination);
@@ -79,9 +33,6 @@ class NumismaticEmissionRuleData {
 
   /// Standard material map by denomination.
   Map<String, String> get denominationMaterials {
-    if (_explicitDenominationMaterials.isNotEmpty) {
-      return _explicitDenominationMaterials;
-    }
     final map = <String, String>{};
     for (final p in pieces) {
       if (p.material != null && p.material!.trim().isNotEmpty) {
@@ -93,9 +44,6 @@ class NumismaticEmissionRuleData {
 
   /// Allowed materials map by denomination.
   Map<String, List<String>> get denominationAllowedMaterials {
-    if (_explicitDenominationAllowedMaterials.isNotEmpty) {
-      return _explicitDenominationAllowedMaterials;
-    }
     final map = <String, List<String>>{};
     for (final p in pieces) {
       if (p.effectiveAllowedMaterials.isNotEmpty) {
@@ -107,11 +55,8 @@ class NumismaticEmissionRuleData {
 
   /// List of commemorative reasons / motif names in this epoch.
   List<String> get commemorativeReasons {
-    if (_explicitCommemorativeReasons.isNotEmpty) {
-      return _explicitCommemorativeReasons;
-    }
     final reasons = <String>{};
-    for (final p in effectivePieces) {
+    for (final p in pieces) {
       for (final m in p.motifs) {
         if (m.name.trim().isNotEmpty) {
           reasons.add(m.name);
@@ -123,10 +68,7 @@ class NumismaticEmissionRuleData {
 
   /// Set of strictly commemorative denominations.
   Set<String> get commemorativeDenominations {
-    if (_explicitCommemorativeDenominations.isNotEmpty) {
-      return _explicitCommemorativeDenominations;
-    }
-    return effectivePieces
+    return pieces
         .where((p) => p.motifs.isNotEmpty)
         .map((p) => p.denomination)
         .toSet();
@@ -134,9 +76,6 @@ class NumismaticEmissionRuleData {
 
   /// Commemorative motifs grouped by denomination.
   Map<String, List<NumismaticMotifRule>> get commemorativeMotifsByDenomination {
-    if (_explicitCommemorativeMotifsByDenomination.isNotEmpty) {
-      return _explicitCommemorativeMotifsByDenomination;
-    }
     final map = <String, List<NumismaticMotifRule>>{};
     for (final p in pieces) {
       if (p.motifs.isNotEmpty) {
@@ -148,7 +87,7 @@ class NumismaticEmissionRuleData {
 
   /// Returns piece definitions that were actively minted in [year].
   List<NumismaticPieceDefinition> getPiecesForYear(int? year) {
-    return effectivePieces.where((p) => p.matchesYear(year)).toList();
+    return pieces.where((p) => p.matchesYear(year)).toList();
   }
 
   /// Returns denomination strings that were actively minted in [year].
@@ -242,17 +181,6 @@ class NumismaticEmissionRuleData {
     return allowed.any((mat) => mat.trim().toLowerCase() == cleanTarget);
   }
 
-  bool isCommemorativeDenomination(String targetDenom, {int? year}) {
-    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
-    if (matchedPiece != null && matchedPiece.motifs.isNotEmpty) {
-      return !matchedPiece.allowsStandardForYear(year);
-    }
-    if (_explicitCommemorativeDenominations.isNotEmpty) {
-      return _explicitCommemorativeDenominations.any((d) => matchesDenomination(d, targetDenom));
-    }
-    return false;
-  }
-
   List<String> getCommemorativeMotifsForDenomination(String targetDenom, {int? year}) {
     final matchedPiece = getPieceForDenomination(targetDenom, year: year);
     if (matchedPiece != null && matchedPiece.motifs.isNotEmpty) {
@@ -267,16 +195,6 @@ class NumismaticEmissionRuleData {
             .map((m) => m.name)
             .toList();
         return matching;
-      }
-    }
-    if (commemorativeReasons.isNotEmpty) {
-      if (commemorativeDenominations.isEmpty || isCommemorativeDenomination(targetDenom, year: year)) {
-        return commemorativeReasons;
-      }
-    }
-    if (defaultCommemorativeReason != null && defaultCommemorativeReason!.trim().isNotEmpty) {
-      if (commemorativeDenominations.isEmpty || isCommemorativeDenomination(targetDenom, year: year)) {
-        return [defaultCommemorativeReason!];
       }
     }
     return const [];
