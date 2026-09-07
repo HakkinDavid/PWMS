@@ -6,7 +6,6 @@ class NumismaticMotifRule {
   final String material;
   final double? weightGrams;
   final double? diameterMm;
-  final bool isCommemorative;
 
   const NumismaticMotifRule(
     this.name, {
@@ -15,7 +14,6 @@ class NumismaticMotifRule {
     required this.material,
     this.weightGrams,
     this.diameterMm,
-    this.isCommemorative = false,
   }) : maxYear = maxYear ?? minYear;
 
   /// Evaluates whether this specific motif / type was active/minted in the given [year].
