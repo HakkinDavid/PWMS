@@ -205,7 +205,7 @@ void main() {
       expect(result.availableDenominations, contains('20'));
       expect(result.validMaterials, isNotEmpty);
       expect(result.inferredMaterial, isNotNull);
-      expect(result.availableMotifs, contains('Bicentenario de la Independencia Nacional (2021)'));
+      expect(result.availableMotifs, contains('Bicentenario de la Independencia Nacional'));
     });
 
     test('evaluates banknote context accurately in a single pass', () {

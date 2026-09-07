@@ -16,7 +16,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Tlaco / Dieciseisavo de Real de Cobre', 1536, 1821),
+          NumismaticMotifRule('Tlaco de Cobre', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -25,7 +25,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Octavo Virreinal de Cobre', 1536, 1821),
+          NumismaticMotifRule('Virreinal de Cobre', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -35,7 +35,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Cuartilla de Real Virreinal', 1536, 1821),
+          NumismaticMotifRule('Virreinal (Castillo y León)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -44,7 +44,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Medio Real Virreinal', 1536, 1821),
+          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -53,7 +53,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Un Real Virreinal (Columnario / Busto)', 1536, 1821),
+          NumismaticMotifRule('Columnario / Busto', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -62,7 +62,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Dos Reales Virreinal', 1536, 1821),
+          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -72,7 +72,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Cuatro Reales Plata / 4 Escudos Oro', 1536, 1821),
+          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -82,7 +82,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Ocho Reales (Columnario / Busto) / 8 Escudos Oro', 1536, 1821),
+          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -91,7 +91,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1772,
         maxYear: 1820,
         motifs: [
-          NumismaticMotifRule('Medio Escudo de Oro Virreinal', 1772, 1820),
+          NumismaticMotifRule('Escudo de Oro Virreinal', 1772, 1820),
         ],
       ),
     ],
@@ -111,7 +111,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Octavo de Real - Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -120,7 +120,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Cuartilla - Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -129,7 +129,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Medio Real - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -138,7 +138,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Un Real - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -147,7 +147,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Dos Reales - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -157,7 +157,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Cuatro Escudos Oro / 4 Reales Plata - Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -167,7 +167,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Ocho Reales Plata / 8 Escudos Oro - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
     ],
@@ -187,7 +187,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Un Centavo - Corona Imperial Maximiliano', 1864, 1867),
+          NumismaticMotifRule('Corona Imperial (Maximiliano)', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -196,7 +196,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Plata - Maximiliano', 1864, 1867),
+          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -205,7 +205,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Plata - Maximiliano', 1864, 1867),
+          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -214,7 +214,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1866,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata - Busto Maximiliano', 1866, 1867),
+          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -223,7 +223,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1866,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Un Peso Plata - Busto Emperador Maximiliano', 1866, 1867),
+          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -232,7 +232,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1866,
         maxYear: 1866,
         motifs: [
-          NumismaticMotifRule('Veinte Pesos Oro - Busto Emperador Maximiliano', 1866),
+          NumismaticMotifRule('Busto Emperador Maximiliano', 1866),
         ],
       ),
     ],
@@ -252,7 +252,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1814,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Octavo Virreinal de Cobre', 1814, 1821),
+          NumismaticMotifRule('Virreinal de Cobre', 1814, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -262,7 +262,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Cuartilla de Real Virreinal', 1536, 1821),
+          NumismaticMotifRule('Virreinal (Castillo y León)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -271,7 +271,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Medio Real Virreinal', 1536, 1821),
+          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -280,7 +280,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Un Real Virreinal (Columnario / Busto)', 1536, 1821),
+          NumismaticMotifRule('Columnario / Busto', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -289,7 +289,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Dos Reales Virreinal', 1536, 1821),
+          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -299,7 +299,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Cuatro Reales Plata / 4 Escudos Oro', 1536, 1821),
+          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -309,7 +309,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Ocho Reales (Columnario / Busto) / 8 Escudos Oro', 1536, 1821),
+          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
         ],
       ),
     ],
@@ -329,7 +329,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Octavo de Real - Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -338,7 +338,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Cuartilla - Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -347,7 +347,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Medio Real - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -356,7 +356,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Un Real - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -365,7 +365,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Dos Reales - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -375,7 +375,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Cuatro Escudos Oro / 4 Reales Plata - Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
       NumismaticPieceDefinition(
@@ -385,7 +385,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1822,
         maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Ocho Reales Plata / 8 Escudos Oro - Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
         ],
       ),
     ],
@@ -405,7 +405,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1829,
         maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Dieciseisavo de Real (Octavillo)', 1829, 1863),
+          NumismaticMotifRule('Águila Republicana (Cobre)', 1829, 1863),
         ],
       ),
       NumismaticPieceDefinition(
@@ -414,7 +414,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1829,
         maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Octavo de Real Republicano', 1829, 1863),
+          NumismaticMotifRule('Águila Republicana', 1829, 1863),
         ],
       ),
       NumismaticPieceDefinition(
@@ -424,7 +424,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1824,
         maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Cuartilla de Real Republicana', 1824, 1863),
+          NumismaticMotifRule('Gorro Frigio / Águila Republicana', 1824, 1863),
         ],
       ),
       NumismaticPieceDefinition(
@@ -433,7 +433,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1824,
         maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Medio Real Resplandor', 1824, 1863),
+          NumismaticMotifRule('Resplandor', 1824, 1863),
         ],
       ),
       NumismaticPieceDefinition(
@@ -442,7 +442,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1824,
         maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Un Real Resplandor', 1824, 1863),
+          NumismaticMotifRule('Resplandor', 1824, 1863),
         ],
       ),
       NumismaticPieceDefinition(
@@ -451,7 +451,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1824,
         maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Dos Reales Resplandor', 1824, 1863),
+          NumismaticMotifRule('Resplandor', 1824, 1863),
         ],
       ),
       NumismaticPieceDefinition(
@@ -461,7 +461,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1824,
         maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Cuatro Reales Plata / 4 Escudos Oro', 1824, 1863),
+          NumismaticMotifRule('Columnario / Busto / Escudos', 1824, 1863),
         ],
       ),
       NumismaticPieceDefinition(
@@ -471,7 +471,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1823,
         maxYear: 1897,
         motifs: [
-          NumismaticMotifRule('Ocho Reales Resplandor (Cap and Rays) / 8 Escudos Oro', 1823, 1897),
+          NumismaticMotifRule('Resplandor (Cap and Rays) / Escudos Oro', 1823, 1897),
         ],
       ),
     ],
@@ -491,7 +491,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Un Centavo - Corona Imperial Maximiliano', 1864, 1867),
+          NumismaticMotifRule('Corona Imperial (Maximiliano)', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -500,7 +500,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Plata - Maximiliano', 1864, 1867),
+          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -509,7 +509,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Plata - Maximiliano', 1864, 1867),
+          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -518,7 +518,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1866,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata - Busto Maximiliano', 1866, 1867),
+          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -527,7 +527,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1866,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Un Peso Plata - Busto Emperador Maximiliano', 1866, 1867),
+          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -536,7 +536,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1866,
         maxYear: 1866,
         motifs: [
-          NumismaticMotifRule('Veinte Pesos Oro - Busto Emperador Maximiliano', 1866),
+          NumismaticMotifRule('Busto Emperador Maximiliano', 1866),
         ],
       ),
     ],
@@ -556,7 +556,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1869,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Un Centavo Balanza', 1869, 1881),
+          NumismaticMotifRule('Balanza', 1869, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -565,7 +565,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1869,
         maxYear: 1879,
         motifs: [
-          NumismaticMotifRule('Dos Centavos Balanza', 1869, 1879),
+          NumismaticMotifRule('Balanza', 1869, 1879),
         ],
       ),
       NumismaticPieceDefinition(
@@ -574,7 +574,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1869,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Balanza', 1869, 1881),
+          NumismaticMotifRule('Balanza', 1869, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -583,7 +583,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1869,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Balanza', 1869, 1881),
+          NumismaticMotifRule('Balanza', 1869, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -592,7 +592,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1869,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Veinticinco Centavos Balanza', 1869, 1881),
+          NumismaticMotifRule('Balanza', 1869, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -601,7 +601,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1869,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Balanza', 1869, 1881),
+          NumismaticMotifRule('Balanza', 1869, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -610,7 +610,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1869,
         maxYear: 1873,
         motifs: [
-          NumismaticMotifRule('Un Peso Balanza', 1869, 1873),
+          NumismaticMotifRule('Balanza', 1869, 1873),
         ],
       ),
       NumismaticPieceDefinition(
@@ -628,7 +628,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1870,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Cinco Pesos Oro Balanza', 1870, 1881),
+          NumismaticMotifRule('Oro Balanza', 1870, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -637,7 +637,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1870,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Diez Pesos Oro Balanza', 1870, 1881),
+          NumismaticMotifRule('Oro Balanza', 1870, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -646,7 +646,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1870,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Veinte Pesos Oro Balanza', 1870, 1881),
+          NumismaticMotifRule('Oro Balanza', 1870, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -655,7 +655,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1868,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Ocho Reales Resplandor (Acuñación concurrente)', 1868, 1881),
+          NumismaticMotifRule('Resplandor (Acuñación concurrente)', 1868, 1881),
         ],
       ),
     ],
@@ -676,7 +676,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Un Centavo de Níquel', 1882, 1883),
+          NumismaticMotifRule('de Níquel', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -686,7 +686,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Dos Centavos de Níquel', 1882, 1883),
+          NumismaticMotifRule('de Níquel', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -696,7 +696,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos de Níquel', 1882, 1883),
+          NumismaticMotifRule('de Níquel', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -705,7 +705,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Balanza', 1882, 1883),
+          NumismaticMotifRule('Balanza', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -714,7 +714,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Veinticinco Centavos Balanza', 1882, 1883),
+          NumismaticMotifRule('Balanza', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -723,7 +723,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Balanza', 1882, 1883),
+          NumismaticMotifRule('Balanza', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -732,7 +732,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Ocho Reales Resplandor', 1882, 1883),
+          NumismaticMotifRule('Resplandor', 1882, 1883),
         ],
       ),
     ],
@@ -752,7 +752,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1898,
         motifs: [
-          NumismaticMotifRule('Un Centavo Porfiriano Cobre', 1884, 1898),
+          NumismaticMotifRule('Porfiriano Cobre', 1884, 1898),
         ],
       ),
       NumismaticPieceDefinition(
@@ -761,7 +761,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1898,
         motifs: [
-          NumismaticMotifRule('Dos Centavos Porfiriano Cobre', 1884, 1898),
+          NumismaticMotifRule('Porfiriano Cobre', 1884, 1898),
         ],
       ),
       NumismaticPieceDefinition(
@@ -770,7 +770,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Plata Balanza / Corona', 1884, 1904),
+          NumismaticMotifRule('Plata Balanza / Corona', 1884, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -779,7 +779,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Plata Balanza / Corona', 1884, 1904),
+          NumismaticMotifRule('Plata Balanza / Corona', 1884, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -788,7 +788,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1898,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Corona Porfiriana', 1898, 1904),
+          NumismaticMotifRule('Corona Porfiriana', 1898, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -797,7 +797,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata Gorro Frigio y Balanza', 1884, 1904),
+          NumismaticMotifRule('Plata Gorro Frigio y Balanza', 1884, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -806,7 +806,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1898,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Un Peso Fuerte Resplandor', 1898, 1904),
+          NumismaticMotifRule('Fuerte Resplandor', 1898, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -815,7 +815,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1897,
         motifs: [
-          NumismaticMotifRule('Ocho Reales Resplandor (Últimas emisiones)', 1884, 1897),
+          NumismaticMotifRule('Resplandor (Últimas emisiones)', 1884, 1897),
         ],
       ),
     ],
@@ -835,7 +835,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Un Centavo Porfiriano Corona de Laurel', 1905, 1914),
+          NumismaticMotifRule('Porfiriano Corona de Laurel', 1905, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -844,7 +844,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1906,
         motifs: [
-          NumismaticMotifRule('Dos Centavos Porfiriano Bronce', 1905, 1906),
+          NumismaticMotifRule('Porfiriano Bronce', 1905, 1906),
         ],
       ),
       NumismaticPieceDefinition(
@@ -853,7 +853,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Porfiriano Níquel', 1905, 1914),
+          NumismaticMotifRule('Porfiriano Níquel', 1905, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -862,7 +862,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Plata .800 Corona', 1905, 1914),
+          NumismaticMotifRule('Plata .800 Corona', 1905, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -871,7 +871,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Plata .800 Corona', 1905, 1914),
+          NumismaticMotifRule('Plata .800 Corona', 1905, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -880,7 +880,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata Resplandor', 1905, 1914),
+          NumismaticMotifRule('Plata Resplandor', 1905, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -889,7 +889,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1909,
         motifs: [
-          NumismaticMotifRule('Un Peso Fuerte Resplandor', 1905, 1909),
+          NumismaticMotifRule('Fuerte Resplandor', 1905, 1909),
         ],
       ),
       NumismaticPieceDefinition(
@@ -898,7 +898,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1910,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Un Peso Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
+          NumismaticMotifRule('Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -907,7 +907,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1910,
         motifs: [
-          NumismaticMotifRule('Cinco Pesos Oro Hidalgo', 1905, 1910),
+          NumismaticMotifRule('Oro Hidalgo', 1905, 1910),
         ],
       ),
       NumismaticPieceDefinition(
@@ -916,7 +916,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1910,
         motifs: [
-          NumismaticMotifRule('Diez Pesos Oro Hidalgo', 1905, 1910),
+          NumismaticMotifRule('Oro Hidalgo', 1905, 1910),
         ],
       ),
     ],
@@ -936,7 +936,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1915,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Un Centavo Revolucionario Bronce', 1915, 1919),
+          NumismaticMotifRule('Revolucionario Bronce', 1915, 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -945,7 +945,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Dos Centavos Revolucionario', 1915, 1916),
+          NumismaticMotifRule('Revolucionario', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -954,7 +954,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1915,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Bronce Constitucionalista', 1915, 1919),
+          NumismaticMotifRule('Bronce Constitucionalista', 1915, 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -963,7 +963,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1919,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Plata .800', 1919),
+          NumismaticMotifRule('Plata .800', 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -972,7 +972,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1919,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Plata .800', 1919),
+          NumismaticMotifRule('Plata .800', 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -981,7 +981,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1918,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata .800 Resplandor Reducido', 1918, 1919),
+          NumismaticMotifRule('Plata .800 Resplandor Reducido', 1918, 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -990,7 +990,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1918,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Un Peso Plata .800 Resplandor Reducido', 1918, 1919),
+          NumismaticMotifRule('Plata .800 Resplandor Reducido', 1918, 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -999,7 +999,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1919,
         maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Dos Pesos Oro Hidalgo', 1919, 1920),
+          NumismaticMotifRule('Oro Hidalgo', 1919, 1920),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1017,7 +1017,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1919,
         maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Cinco Pesos Oro Hidalgo', 1919, 1920),
+          NumismaticMotifRule('Oro Hidalgo', 1919, 1920),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1026,7 +1026,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1916,
         maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Diez Pesos Oro Hidalgo', 1916, 1920),
+          NumismaticMotifRule('Oro Hidalgo', 1916, 1920),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1035,7 +1035,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1917,
         maxYear: 1921,
         motifs: [
-          NumismaticMotifRule('Veinte Pesos Oro Calendario Azteca', 1917, 1921),
+          NumismaticMotifRule('Oro Calendario Azteca', 1917, 1921),
         ],
       ),
     ],
@@ -1055,7 +1055,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1920,
         maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Un Centavo Bronce Espigas', 1920, 1942),
+          NumismaticMotifRule('Bronce Espigas', 1920, 1942),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1064,7 +1064,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1920,
         maxYear: 1941,
         motifs: [
-          NumismaticMotifRule('Dos Centavos Bronce', 1920, 1941),
+          NumismaticMotifRule('Bronce', 1920, 1941),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1073,7 +1073,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1920,
         maxYear: 1935,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Níquel Josefa Chica', 1920, 1935),
+          NumismaticMotifRule('Níquel Josefa Chica', 1920, 1935),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1082,7 +1082,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1936,
         maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Bronce Josefa Ortiz de Perfil', 1936, 1942),
+          NumismaticMotifRule('Bronce Josefa Ortiz de Perfil', 1936, 1942),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1091,7 +1091,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1925,
         maxYear: 1935,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Plata .720', 1925, 1935),
+          NumismaticMotifRule('Plata .720', 1925, 1935),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1100,7 +1100,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1936,
         maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Bronce', 1936, 1940),
+          NumismaticMotifRule('Bronce', 1936, 1940),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1109,7 +1109,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1920,
         maxYear: 1935,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Plata .720 Gorro Frigio', 1920, 1935),
+          NumismaticMotifRule('Plata .720 Gorro Frigio', 1920, 1935),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1118,7 +1118,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1920,
         maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata .720 Resplandor', 1920, 1942),
+          NumismaticMotifRule('Plata .720 Resplandor', 1920, 1942),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1127,7 +1127,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1920,
         maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Un Peso Plata .720 Resplandor', 1920, 1942),
+          NumismaticMotifRule('Plata .720 Resplandor', 1920, 1942),
         ],
       ),
       // 2 Pesos 1921 Victoria Alada - PLATA .903
@@ -1146,7 +1146,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1921,
         maxYear: 1931,
         motifs: [
-          NumismaticMotifRule('Cincuenta Pesos Oro - Centenario de la Independencia (37.5g Oro Puro)', 1921, 1931),
+          NumismaticMotifRule('Oro - Centenario de la Independencia (37.5g Oro Puro)', 1921, 1931),
         ],
       ),
     ],
@@ -1166,7 +1166,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1943,
         maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Un Centavo Espigas de Trigo', 1943, 1949),
+          NumismaticMotifRule('Espigas de Trigo', 1943, 1949),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1175,7 +1175,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1943,
         maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Josefa Ortiz Grande', 1943, 1949),
+          NumismaticMotifRule('Josefa Ortiz Grande', 1943, 1949),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1184,7 +1184,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1943,
         maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Pirámide del Sol de Teotihuacán', 1943, 1949),
+          NumismaticMotifRule('Pirámide del Sol de Teotihuacán', 1943, 1949),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1193,7 +1193,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1943,
         maxYear: 1945,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata .720 Resplandor', 1943, 1945),
+          NumismaticMotifRule('Plata .720 Resplandor', 1943, 1945),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1202,7 +1202,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1947,
         maxYear: 1948,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata .420 Cuauhtémoc', 1947, 1948),
+          NumismaticMotifRule('Plata .420 Cuauhtémoc', 1947, 1948),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1211,7 +1211,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1947,
         maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Un Peso Plata .500 Morelos Cachetón', 1947, 1949),
+          NumismaticMotifRule('Plata .500 Morelos Cachetón', 1947, 1949),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1229,7 +1229,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1943,
         maxYear: 1947,
         motifs: [
-          NumismaticMotifRule('Cincuenta Pesos Oro Centenario', 1943, 1947),
+          NumismaticMotifRule('Oro Centenario', 1943, 1947),
         ],
       ),
     ],
@@ -1249,7 +1249,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1950,
         maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Un Centavo Espigas de Trigo', 1950, 1956),
+          NumismaticMotifRule('Espigas de Trigo', 1950, 1956),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1258,7 +1258,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1950,
         maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Latón Josefa', 1950, 1956),
+          NumismaticMotifRule('Latón Josefa', 1950, 1956),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1267,7 +1267,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1955,
         maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Latón Benito Juárez', 1955, 1956),
+          NumismaticMotifRule('Latón Benito Juárez', 1955, 1956),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1276,7 +1276,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1950,
         maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Bronce Pirámide de Teotihuacán', 1950, 1956),
+          NumismaticMotifRule('Bronce Pirámide de Teotihuacán', 1950, 1956),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1285,7 +1285,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1950,
         maxYear: 1953,
         motifs: [
-          NumismaticMotifRule('Veinticinco Centavos Balanza Cuproníquel', 1950, 1953),
+          NumismaticMotifRule('Balanza Cuproníquel', 1950, 1953),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1294,7 +1294,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1950,
         maxYear: 1951,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Plata .300 Morelos', 1950, 1951),
+          NumismaticMotifRule('Plata .300 Morelos', 1950, 1951),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1303,7 +1303,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1955,
         maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Bronce Cuauhtémoc', 1955, 1956),
+          NumismaticMotifRule('Bronce Cuauhtémoc', 1955, 1956),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1312,7 +1312,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1950,
         maxYear: 1950,
         motifs: [
-          NumismaticMotifRule('Un Peso Plata .300 Morelos', 1950),
+          NumismaticMotifRule('Plata .300 Morelos', 1950),
         ],
       ),
       // 5 Pesos 1950 Ferrocarril
@@ -1382,7 +1382,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1957,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Un Centavo Espigas de Trigo', 1957, 1969),
+          NumismaticMotifRule('Espigas de Trigo', 1957, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1391,7 +1391,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1957,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Latón Josefa', 1957, 1969),
+          NumismaticMotifRule('Latón Josefa', 1957, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1400,7 +1400,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1957,
         maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Latón Benito Juárez', 1957, 1967),
+          NumismaticMotifRule('Latón Benito Juárez', 1957, 1967),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1409,7 +1409,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1957,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Bronce Pirámide de Teotihuacán', 1957, 1969),
+          NumismaticMotifRule('Bronce Pirámide de Teotihuacán', 1957, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1418,7 +1418,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1964,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Cuproníquel Cuauhtémoc', 1964, 1969),
+          NumismaticMotifRule('Cuproníquel Cuauhtémoc', 1964, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1427,7 +1427,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1957,
         maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Un Peso Plata .100 Morelos Tepalcate', 1957, 1967),
+          NumismaticMotifRule('Plata .100 Morelos Tepalcate', 1957, 1967),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1494,7 +1494,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1970,
         maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Latón Josefa Chica', 1970, 1973),
+          NumismaticMotifRule('Latón Josefa Chica', 1970, 1973),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1503,7 +1503,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1970,
         maxYear: 1971,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Bronce Pirámide', 1970, 1971),
+          NumismaticMotifRule('Bronce Pirámide', 1970, 1971),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1512,7 +1512,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1970,
         maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Cuproníquel Cuauhtémoc', 1970, 1973),
+          NumismaticMotifRule('Cuproníquel Cuauhtémoc', 1970, 1973),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1521,7 +1521,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1970,
         maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Un Peso Cuproníquel José María Morelos', 1970, 1973),
+          NumismaticMotifRule('Cuproníquel José María Morelos', 1970, 1973),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1530,7 +1530,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1971,
         maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Cinco Pesos Cuproníquel Vicente Guerrero', 1971, 1973),
+          NumismaticMotifRule('Cuproníquel Vicente Guerrero', 1971, 1973),
         ],
       ),
     ],
@@ -1550,7 +1550,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1974,
         maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('Cinco Centavos Latón Josefa', 1974, 1976),
+          NumismaticMotifRule('Latón Josefa', 1974, 1976),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1559,7 +1559,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1974,
         maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('Diez Centavos Mazorca de Maíz', 1974, 1980),
+          NumismaticMotifRule('Mazorca de Maíz', 1974, 1980),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1569,7 +1569,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1974,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Veinte Centavos Francisco I. Madero / Cabeza Olmeca', 1974, 1983),
+          NumismaticMotifRule('Francisco I. Madero / Cabeza Olmeca', 1974, 1983),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1578,7 +1578,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1974,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Cincuenta Centavos Cuauhtémoc', 1974, 1983),
+          NumismaticMotifRule('Cuauhtémoc', 1974, 1983),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1587,7 +1587,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1974,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Un Peso José María Morelos', 1974, 1983),
+          NumismaticMotifRule('José María Morelos', 1974, 1983),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1596,7 +1596,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1974,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Cinco Pesos Vicente Guerrero / Quetzalcóatl', 1974, 1983),
+          NumismaticMotifRule('Vicente Guerrero / Quetzalcóatl', 1974, 1983),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1605,7 +1605,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1974,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Diez Pesos Heptagonal Miguel Hidalgo', 1974, 1983),
+          NumismaticMotifRule('Heptagonal Miguel Hidalgo', 1974, 1983),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1614,7 +1614,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1980,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Veinte Pesos Cultura Maya - Jugador de Pelota', 1980, 1983),
+          NumismaticMotifRule('Cultura Maya - Jugador de Pelota', 1980, 1983),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1623,7 +1623,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1982,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Cincuenta Pesos Coyolxauhqui - Templo Mayor', 1982, 1983),
+          NumismaticMotifRule('Coyolxauhqui - Templo Mayor', 1982, 1983),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1632,7 +1632,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1977,
         maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Cien Pesos Plata .720 José María Morelos', 1977, 1983),
+          NumismaticMotifRule('José María Morelos (Plata .720)', 1977, 1983),
         ],
       ),
     ],
@@ -1652,7 +1652,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1984,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Un Peso Morelos Acero', 1984, 1987),
+          NumismaticMotifRule('Morelos Acero', 1984, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1661,7 +1661,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1985,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Cinco Pesos Latón Josefa Ortiz', 1985, 1987),
+          NumismaticMotifRule('Latón Josefa Ortiz', 1985, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1670,7 +1670,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1985,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Diez Pesos Acero Miguel Hidalgo', 1985, 1987),
+          NumismaticMotifRule('Miguel Hidalgo (Acero)', 1985, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1679,7 +1679,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1985,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Veinte Pesos Bronce Guadalupe Victoria', 1985, 1987),
+          NumismaticMotifRule('Bronce Guadalupe Victoria', 1985, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1689,7 +1689,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1984,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Cincuenta Pesos Benito Juárez', 1984, 1987),
+          NumismaticMotifRule('Benito Juárez', 1984, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1698,7 +1698,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1984,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Cien Pesos Venustiano Carranza', 1984, 1987),
+          NumismaticMotifRule('Venustiano Carranza', 1984, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1718,7 +1718,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1986,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Quinientos Pesos Francisco I. Madero', 1986, 1987),
+          NumismaticMotifRule('Francisco I. Madero', 1986, 1987),
         ],
       ),
     ],
@@ -1738,7 +1738,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Diez Pesos Acero Miguel Hidalgo', 1988, 1990),
+          NumismaticMotifRule('Miguel Hidalgo (Acero)', 1988, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1747,7 +1747,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Veinte Pesos Guadalupe Victoria', 1988, 1990),
+          NumismaticMotifRule('Guadalupe Victoria', 1988, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1757,7 +1757,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Cincuenta Pesos Benito Juárez Acero', 1988, 1992),
+          NumismaticMotifRule('Benito Juárez (Acero)', 1988, 1992),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1766,7 +1766,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Cien Pesos Venustiano Carranza', 1988, 1992),
+          NumismaticMotifRule('Venustiano Carranza', 1988, 1992),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1775,7 +1775,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Quinientos Pesos Francisco I. Madero', 1988, 1992),
+          NumismaticMotifRule('Francisco I. Madero', 1988, 1992),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1784,7 +1784,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1988,
         maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Mil Pesos Sor Juana Inés de la Cruz', 1988, 1992),
+          NumismaticMotifRule('Sor Juana Inés de la Cruz', 1988, 1992),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1814,9 +1814,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
-          'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
-          1992,
-          1995,
+            'Nuevo Peso - Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
+            1992,
+            1995,
           ),
         ],
       ),
@@ -1827,9 +1827,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
-          'Anillo del Sacrificio (Piedra del Sol)',
-          1992,
-          1995,
+            'Nuevo Peso - Anillo del Sacrificio (Piedra del Sol)',
+            1992,
+            1995,
           ),
         ],
       ),
@@ -1840,9 +1840,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
-          'Ácatl - Decimotercer Día (Piedra del Sol)',
-          1992,
-          1995,
+            'Nuevo Peso - Ácatl - Decimotercer Día (Piedra del Sol)',
+            1992,
+            1995,
           ),
         ],
       ),
@@ -1853,9 +1853,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
-          'Anillo de la Aceptación (Piedra del Sol)',
-          1992,
-          1995,
+            'Nuevo Peso - Anillo de la Aceptación (Piedra del Sol)',
+            1992,
+            1995,
           ),
         ],
       ),
@@ -1866,9 +1866,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
-          'Nuevo Peso - Anillo del Resplandor (Piedra del Sol)',
-          1992,
-          1995,
+            'Nuevo Peso - Anillo del Resplandor (Piedra del Sol)',
+            1992,
+            1995,
           ),
         ],
       ),
@@ -1879,9 +1879,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
-          'Nuevo Peso - Anillo de los Días (Piedra del Sol)',
-          1992,
-          1995,
+            'Nuevo Peso - Anillo de los Días (Piedra del Sol)',
+            1992,
+            1995,
           ),
         ],
       ),
@@ -1892,15 +1892,16 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
-          'Nuevo Peso - Anillo de las Serpientes (Piedra del Sol)',
-          1992,
-          1995,
+            'Nuevo Peso - Anillo de las Serpientes (Piedra del Sol)',
+            1992,
+            1995,
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
         material: 'Bimetálica',
+        allowedMaterials: ['Bimetálica', 'Plata'],
         minYear: 1992,
         maxYear: 1995,
         motifs: [
@@ -1910,6 +1911,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '20',
         material: 'Bimetálica',
+        allowedMaterials: ['Bimetálica', 'Plata'],
         minYear: 1993,
         maxYear: 1995,
         motifs: [
@@ -1919,6 +1921,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '50',
         material: 'Bimetálica',
+        allowedMaterials: ['Bimetálica', 'Plata'],
         minYear: 1993,
         maxYear: 1995,
         motifs: [
@@ -1943,9 +1946,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         motifs: [
           NumismaticMotifRule(
-          'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
-          1996,
-          2007,
+            'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
+            1996,
+            2007,
           ),
         ],
       ),
@@ -1955,7 +1958,11 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1996,
         maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('10 Centavos Acero Inoxidable', 1996, 2007),
+          NumismaticMotifRule(
+            'Anillo del Sacrificio (Piedra del Sol)',
+            1996,
+            2007,
+          ),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1964,7 +1971,11 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1996,
         maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('20 Centavos Bronce de Aluminio', 1996, 2007),
+          NumismaticMotifRule(
+            'Ácatl - Decimotercer Día (Piedra del Sol)',
+            1996,
+            2007,
+          ),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1973,7 +1984,11 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1996,
         maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('50 Centavos Bronce de Aluminio', 1996, 2007),
+          NumismaticMotifRule(
+            'Anillo de la Aceptación (Piedra del Sol)',
+            1996,
+            2007,
+          ),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1983,9 +1998,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 2007,
         motifs: [
           NumismaticMotifRule(
-          'Anillo del Resplandor (Piedra del Sol)',
-          1996,
-          2007,
+            'Anillo del Resplandor (Piedra del Sol)',
+            1996,
+            2007,
           ),
         ],
       ),
@@ -1995,7 +2010,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1996,
         maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('2 Pesos Bimetálica', 1996, 2007),
+          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 1996, 2007),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2004,7 +2019,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1996,
         maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('5 Pesos Bimetálica', 1996, 2007),
+          NumismaticMotifRule('Anillo de las Serpientes (Piedra del Sol)', 1996, 2007),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2013,6 +2028,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1997,
         maxYear: 2007,
         motifs: [
+          NumismaticMotifRule('Piedra del Sol', 1997, 2007),
           NumismaticMotifRule('Cambio de Milenio - Glifo Año 2000', 2000),
           NumismaticMotifRule('Cambio de Milenio - Glifo Año 2001', 2001),
         ],
@@ -2060,7 +2076,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2008,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('5 Centavos Acero Inoxidable', 2008, 2010),
+          NumismaticMotifRule('Rayos Solares del Anillo de los Quincunces (Piedra del Sol)', 2008, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2069,7 +2085,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2008,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('10 Centavos Acero Inoxidable', 2008, 2010),
+          NumismaticMotifRule('Anillo del Sacrificio (Piedra del Sol)', 2008, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2078,7 +2094,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2008,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('20 Centavos Bronce de Aluminio', 2008, 2010),
+          NumismaticMotifRule('Ácatl - Decimotercer Día (Piedra del Sol)', 2008, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2087,7 +2103,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2008,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('50 Centavos Bronce de Aluminio', 2008, 2010),
+          NumismaticMotifRule('Anillo de la Aceptación (Piedra del Sol)', 2008, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2096,7 +2112,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2008,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('1 Peso Bimetálica', 2008, 2010),
+          NumismaticMotifRule('Anillo del Resplandor (Piedra del Sol)', 2008, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2105,7 +2121,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2008,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('2 Pesos Bimetálica', 2008, 2010),
+          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 2008, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2165,7 +2181,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2008,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('10 Pesos Piedra del Sol', 2008, 2010),
+          NumismaticMotifRule('Piedra del Sol', 2008, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2194,7 +2210,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2011,
         maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('10 Centavos Acero Inoxidable', 2011, 2019),
+          NumismaticMotifRule('Anillo del Sacrificio (Piedra del Sol)', 2011, 2019),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2203,7 +2219,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2011,
         maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('20 Centavos Acero Inoxidable', 2011, 2019),
+          NumismaticMotifRule('Ácatl - Decimotercer Día (Piedra del Sol)', 2011, 2019),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2212,7 +2228,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2011,
         maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('50 Centavos Acero Inoxidable', 2011, 2019),
+          NumismaticMotifRule('Anillo de la Aceptación (Piedra del Sol)', 2011, 2019),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2221,7 +2237,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2011,
         maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('1 Peso Bimetálica', 2011, 2019),
+          NumismaticMotifRule('Anillo del Resplandor (Piedra del Sol)', 2011, 2019),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2230,7 +2246,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2011,
         maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('2 Pesos Bimetálica', 2011, 2019),
+          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 2011, 2019),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2239,7 +2255,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2011,
         maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('5 Pesos Bimetálica', 2011, 2019),
+          NumismaticMotifRule('Anillo de las Serpientes (Piedra del Sol)', 2011, 2019),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2248,6 +2264,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2011,
         maxYear: 2019,
         motifs: [
+          NumismaticMotifRule('Piedra del Sol', 2011, 2019),
           NumismaticMotifRule('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza', 2012),
         ],
       ),
@@ -2287,7 +2304,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2020,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('10 Centavos Acero Inoxidable', 2020, 2100),
+          NumismaticMotifRule('Anillo del Sacrificio (Piedra del Sol)', 2020, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2296,7 +2313,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2020,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('20 Centavos Acero Inoxidable', 2020, 2100),
+          NumismaticMotifRule('Ácatl - Decimotercer Día (Piedra del Sol)', 2020, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2305,7 +2322,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2020,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('50 Centavos Acero Inoxidable', 2020, 2100),
+          NumismaticMotifRule('Anillo de la Aceptación (Piedra del Sol)', 2020, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2314,7 +2331,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2020,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('1 Peso Bimetálica', 2020, 2100),
+          NumismaticMotifRule('Anillo del Resplandor (Piedra del Sol)', 2020, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2323,7 +2340,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2020,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('2 Pesos Bimetálica', 2020, 2100),
+          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 2020, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2332,7 +2349,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2020,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('5 Pesos Bimetálica', 2020, 2100),
+          NumismaticMotifRule('Anillo de las Serpientes (Piedra del Sol)', 2020, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2341,7 +2358,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 2020,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('10 Pesos Bimetálica Piedra del Sol', 2020, 2100),
+          NumismaticMotifRule('Piedra del Sol', 2020, 2100),
         ],
       ),
       NumismaticPieceDefinition(

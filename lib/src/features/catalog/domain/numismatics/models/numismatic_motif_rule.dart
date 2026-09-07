@@ -6,10 +6,9 @@ class NumismaticMotifRule {
 
   const NumismaticMotifRule(
     this.name,
-    int minYear, [
+    this.minYear, [
     int? maxYear,
-  ])  : minYear = minYear,
-        maxYear = maxYear ?? minYear;
+  ]) : maxYear = maxYear ?? minYear;
 
   bool matchesYear(int? year) {
     if (year == null) return true;

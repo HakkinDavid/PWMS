@@ -16,7 +16,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1796,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Cuartillo de Real Plata (Castillo y León / Busto)', 1796, 1859),
+          NumismaticMotifRule('Castillo y León / Busto', 1796, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -25,7 +25,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Medio Real Plata Colonial y República del Centro de América', 1733, 1859),
+          NumismaticMotifRule('Colonial y República del Centro de América', 1733, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -34,7 +34,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('1 Real de Plata', 1733, 1859),
+          NumismaticMotifRule('Plata Colonial', 1733, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -43,7 +43,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('2 Reales de Plata', 1733, 1859),
+          NumismaticMotifRule('Plata', 1733, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -52,7 +52,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('4 Reales de Plata', 1733, 1859),
+          NumismaticMotifRule('Plata', 1733, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -61,7 +61,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('8 Reales de Plata (Columnario / Busto / Volcán del Centro de América)', 1733, 1859),
+          NumismaticMotifRule('Plata (Columnario / Busto / Volcán del Centro de América)', 1733, 1859),
         ],
       ),
     ],
@@ -81,7 +81,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1871,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('1 Centavo de Peso (Cobre / Cuproníquel)', 1871, 1924),
+          NumismaticMotifRule('Peso (Cobre / Cuproníquel)', 1871, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -90,7 +90,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('5 Centavos / Cuarto de Real', 1881, 1924),
+          NumismaticMotifRule('Cuarto de Real', 1881, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -99,7 +99,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('10 Centavos / 1 Real Plata .900/.720', 1860, 1924),
+          NumismaticMotifRule('1 Real Plata .900/.720', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -108,7 +108,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('25 Centavos / 2 Reales Plata .900/.720', 1860, 1924),
+          NumismaticMotifRule('Plata .900/.720', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -117,7 +117,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('50 Centavos / 4 Reales Plata .900/.720', 1860, 1924),
+          NumismaticMotifRule('Plata .900/.720', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -126,7 +126,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('1 Peso de Plata .900 (Carrera / República de Guatemala)', 1860, 1924),
+          NumismaticMotifRule('Plata .900 (Carrera / República de Guatemala)', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -135,7 +135,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('2 Pesos Plata', 1860, 1924),
+          NumismaticMotifRule('Plata', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -144,7 +144,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('4 Pesos Plata / Oro', 1860, 1924),
+          NumismaticMotifRule('Plata / Oro', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -153,7 +153,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1869,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('5 Pesos Oro .900', 1869, 1924),
+          NumismaticMotifRule('Oro .900', 1869, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -162,7 +162,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1869,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('10 Pesos Oro .900', 1869, 1924),
+          NumismaticMotifRule('Oro .900', 1869, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -171,7 +171,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1869,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('20 Pesos Oro .900', 1869, 1924),
+          NumismaticMotifRule('Oro .900', 1869, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -180,7 +180,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Cuartillo de Real Plata', 1860, 1924),
+          NumismaticMotifRule('Plata Colonial', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -189,7 +189,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Medio Real Plata', 1860, 1924),
+          NumismaticMotifRule('Plata Colonial', 1860, 1924),
         ],
       ),
     ],
@@ -209,7 +209,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Medio Centavo de Quetzal', 1925, 1949),
+          NumismaticMotifRule('de Quetzal', 1925, 1949),
         ],
       ),
       NumismaticPieceDefinition(
@@ -218,7 +218,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('1 Centavo de Quetzal (Fray Bartolomé de las Casas)', 1925, 1964),
+          NumismaticMotifRule('Quetzal (Fray Bartolomé de las Casas)', 1925, 1964),
         ],
       ),
       NumismaticPieceDefinition(
@@ -227,7 +227,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('5 Centavos Plata .720 (Ceiba / Árbol de la Libertad)', 1925, 1964),
+          NumismaticMotifRule('Plata .720 (Ceiba / Árbol de la Libertad)', 1925, 1964),
         ],
       ),
       NumismaticPieceDefinition(
@@ -236,7 +236,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('10 Centavos Plata .720 (Monolito de Quiriguá)', 1925, 1964),
+          NumismaticMotifRule('Plata .720 (Monolito de Quiriguá)', 1925, 1964),
         ],
       ),
       NumismaticPieceDefinition(
@@ -245,7 +245,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('25 Centavos Plata .720 (Mujer Indígena Santiago Atitlán)', 1925, 1964),
+          NumismaticMotifRule('Plata .720 (Mujer Indígena Santiago Atitlán)', 1925, 1964),
         ],
       ),
       NumismaticPieceDefinition(
@@ -254,7 +254,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('50 Centavos Plata .720 (Monja Blanca)', 1925, 1964),
+          NumismaticMotifRule('Plata .720 (Monja Blanca)', 1925, 1964),
         ],
       ),
       NumismaticPieceDefinition(
@@ -263,7 +263,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('1 Quetzal Plata .720 (Quetzal sobre Columna)', 1925, 1964),
+          NumismaticMotifRule('Quetzal sobre Columna (Plata .720)', 1925, 1964),
         ],
       ),
       NumismaticPieceDefinition(
@@ -272,7 +272,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1926,
         maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('5 Quetzales Oro .900', 1926),
+          NumismaticMotifRule('Quetzal sobre Columna (Oro .900)', 1926),
         ],
       ),
       NumismaticPieceDefinition(
@@ -281,7 +281,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1926,
         maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('10 Quetzales Oro .900', 1926),
+          NumismaticMotifRule('Quetzal sobre Columna (Oro .900)', 1926),
         ],
       ),
       NumismaticPieceDefinition(
@@ -290,7 +290,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1926,
         maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('20 Quetzales Oro .900', 1926),
+          NumismaticMotifRule('Quetzal sobre Columna (Oro .900)', 1926),
         ],
       ),
     ],
@@ -310,7 +310,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1965,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('1 Centavo Fray Bartolomé de las Casas', 1965, 2100),
+          NumismaticMotifRule('Fray Bartolomé de las Casas', 1965, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -319,7 +319,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1965,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('5 Centavos Árbol de la Libertad (Ceiba)', 1965, 2100),
+          NumismaticMotifRule('Árbol de la Libertad (Ceiba)', 1965, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -328,7 +328,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1965,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('10 Centavos Monolito de Quiriguá', 1965, 2100),
+          NumismaticMotifRule('Monolito de Quiriguá', 1965, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -337,7 +337,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1965,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('25 Centavos Concepción Ramírez (Mujer Tz\', 1965, 2100),
+          NumismaticMotifRule("Concepción Ramírez (Mujer Tz'utujil)", 1965, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -346,7 +346,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1965,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('50 Centavos Monja Blanca (Lycaste skinneri alba)', 1965, 2100),
+          NumismaticMotifRule('Monja Blanca (Lycaste skinneri alba)', 1965, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -356,13 +356,13 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1996,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('1 Quetzal - Paz Firme y Duradera (1996+)', 1996, 2100),
+          NumismaticMotifRule('Paz Firme y Duradera (1996+)', 1996, 2100),
         ],
       ),
     ],
   ),
 
-  // 5.1 Colombia - Virreinato de Nueva Granada y Reales Predecimales (1500–1846)
+  // 1.8 Colombia - Virreinato de Nueva Granada y Reales Predecimales (1500–1846)
   NumismaticEmissionRuleData(
     country: 'Colombia',
     minYear: 1500,
@@ -376,7 +376,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Cuartillo de Real Plata Santa Fe de Bogotá / Popayán', 1500, 1846),
+          NumismaticMotifRule('Santa Fe de Bogotá / Popayán', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -385,7 +385,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Medio Real Plata', 1500, 1846),
+          NumismaticMotifRule('Plata Colonial', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -394,7 +394,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('1 Real de Plata', 1500, 1846),
+          NumismaticMotifRule('Plata Colonial', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -403,7 +403,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('2 Reales de Plata', 1500, 1846),
+          NumismaticMotifRule('Plata', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -412,7 +412,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('4 Reales de Plata', 1500, 1846),
+          NumismaticMotifRule('Plata', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -421,7 +421,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('8 Reales de Plata (Columnario / Busto / Libertad de la Nueva Granada)', 1500, 1846),
+          NumismaticMotifRule('Plata (Columnario / Busto / Libertad de la Nueva Granada)', 1500, 1846),
         ],
       ),
     ],
@@ -441,7 +441,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('1 Centavo Cobre / Bronce', 1847, 1904),
+          NumismaticMotifRule('Cobre / Bronce', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -450,7 +450,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('2 Centavos Cobre / Cuproníquel', 1847, 1904),
+          NumismaticMotifRule('Cobre / Cuproníquel', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -459,7 +459,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Medio Décimo / 5 Centavos Plata .666/.835', 1847, 1904),
+          NumismaticMotifRule('Plata .666/.835 (Libertad)', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -468,7 +468,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('1 Décimo / 10 Centavos Plata .666/.835', 1847, 1904),
+          NumismaticMotifRule('Plata .666/.835 (Libertad)', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -477,7 +477,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('2 Décimos / 20 Centavos Plata .666/.835', 1847, 1904),
+          NumismaticMotifRule('Plata .666/.835 (Libertad)', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -486,7 +486,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Medio Peso / 50 Centavos Plata .835/.900', 1847, 1904),
+          NumismaticMotifRule('Plata .835/.900 (Libertad)', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -495,7 +495,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('1 Peso de Plata .900 (Estados Unidos de Colombia / República de Colombia)', 1847, 1904),
+          NumismaticMotifRule('Plata .900 (Estados Unidos de Colombia / República de Colombia)', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -504,7 +504,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('2 Pesos Oro .900', 1847, 1904),
+          NumismaticMotifRule('Oro .900', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -513,7 +513,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('5 Pesos Oro .900', 1847, 1904),
+          NumismaticMotifRule('Oro .900', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -522,7 +522,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('10 Pesos Oro .900', 1847, 1904),
+          NumismaticMotifRule('Oro .900', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -531,7 +531,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('20 Pesos Oro .900 (Doble Cóndor)', 1847, 1904),
+          NumismaticMotifRule('Oro .900 (Doble Cóndor)', 1847, 1904),
         ],
       ),
     ],
@@ -551,7 +551,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('1 Centavo (Cacique Calarcá / República)', 1905, 1979),
+          NumismaticMotifRule('(Cacique Calarcá / República)', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -560,7 +560,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('2 Centavos (Francisco de Paula Santander)', 1905, 1979),
+          NumismaticMotifRule('(Francisco de Paula Santander)', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -569,7 +569,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('5 Centavos Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Cuproníquel', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -578,7 +578,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('10 Centavos Plata / Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Plata / Cuproníquel', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -587,7 +587,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('20 Centavos Plata / Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Plata / Cuproníquel', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -596,7 +596,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('50 Centavos Plata .500 (Simón Bolívar)', 1905, 1979),
+          NumismaticMotifRule('Plata .500 (Simón Bolívar)', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -605,7 +605,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('1 Peso Cuproníquel (Simón Bolívar)', 1905, 1979),
+          NumismaticMotifRule('Cuproníquel (Simón Bolívar)', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -614,7 +614,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('2 Pesos Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Cuproníquel', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -623,7 +623,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('5 Pesos Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Cuproníquel', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -632,7 +632,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('10 Pesos Oro .900', 1905, 1979),
+          NumismaticMotifRule('Oro .900', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -641,7 +641,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('20 Pesos Oro .900', 1905, 1979),
+          NumismaticMotifRule('Oro .900', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -650,7 +650,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1970,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('50 Pesos Cuproníquel', 1970, 1979),
+          NumismaticMotifRule('Cuproníquel', 1970, 1979),
         ],
       ),
     ],
@@ -670,7 +670,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1980,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('1 Peso Simón Bolívar', 1980, 1990),
+          NumismaticMotifRule('Simón Bolívar', 1980, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -679,7 +679,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1980,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('2 Pesos Simón Bolívar', 1980, 1990),
+          NumismaticMotifRule('Simón Bolívar', 1980, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -688,7 +688,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1980,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('5 Pesos Simón Bolívar', 1980, 1990),
+          NumismaticMotifRule('Simón Bolívar', 1980, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -697,7 +697,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1980,
         maxYear: 1994,
         motifs: [
-          NumismaticMotifRule('10 Pesos Simón Bolívar', 1980, 1994),
+          NumismaticMotifRule('Simón Bolívar', 1980, 1994),
         ],
       ),
       NumismaticPieceDefinition(
@@ -706,7 +706,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1980,
         maxYear: 1994,
         motifs: [
-          NumismaticMotifRule('20 Pesos Simón Bolívar', 1980, 1994),
+          NumismaticMotifRule('Simón Bolívar', 1980, 1994),
         ],
       ),
       NumismaticPieceDefinition(
@@ -715,7 +715,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1989,
         maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('50 Pesos Escudo de Colombia', 1989, 2011),
+          NumismaticMotifRule('Escudo de Colombia', 1989, 2011),
         ],
       ),
       NumismaticPieceDefinition(
@@ -724,7 +724,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1992,
         maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('100 Pesos Escudo de Colombia', 1992, 2011),
+          NumismaticMotifRule('Escudo de Colombia', 1992, 2011),
         ],
       ),
       NumismaticPieceDefinition(
@@ -733,7 +733,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('200 Pesos Figura Quimbaya', 1994, 2011),
+          NumismaticMotifRule('Figura Quimbaya', 1994, 2011),
         ],
       ),
       NumismaticPieceDefinition(
@@ -742,7 +742,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1993,
         maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('500 Pesos Árbol de Guacarí (Samanea saman)', 1993, 2011),
+          NumismaticMotifRule('Árbol de Guacarí (Samanea saman)', 1993, 2011),
         ],
       ),
     ],
@@ -848,7 +848,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1858,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('5 Cents Plata / Castor de Níquel / Victory Tombac', 1858, 1952),
+          NumismaticMotifRule('Plata / Castor de Níquel / Victory Tombac', 1858, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -857,7 +857,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1858,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('10 Cents Plata .800/.925 (Bluenose Schooner)', 1858, 1952),
+          NumismaticMotifRule('Plata .800/.925 (Bluenose Schooner)', 1858, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -866,7 +866,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1858,
         maxYear: 1858,
         motifs: [
-          NumismaticMotifRule('20 Cents Plata .925 (Victoria)', 1858),
+          NumismaticMotifRule('Plata .925 (Victoria)', 1858),
         ],
       ),
       NumismaticPieceDefinition(
@@ -875,7 +875,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1870,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('25 Cents Plata .800/.925 (Caribou / Hojas de Arce)', 1870, 1952),
+          NumismaticMotifRule('Plata .800/.925 (Caribou / Hojas de Arce)', 1870, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -884,7 +884,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1870,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('50 Cents Plata .800/.925 (Escudo de Canadá)', 1870, 1952),
+          NumismaticMotifRule('Plata .800/.925 (Escudo de Canadá)', 1870, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -902,7 +902,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1912,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('5 Dollars Oro .900 (Jorge V)', 1912, 1914),
+          NumismaticMotifRule('Oro .900 (Jorge V)', 1912, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -911,7 +911,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1912,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('10 Dollars Oro .900 (Jorge V)', 1912, 1914),
+          NumismaticMotifRule('Oro .900 (Jorge V)', 1912, 1914),
         ],
       ),
     ],
@@ -931,7 +931,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1953,
         maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('1 Cent Hojas de Arce (Isabel II)', 1953, 1967),
+          NumismaticMotifRule('Hojas de Arce (Isabel II)', 1953, 1967),
         ],
       ),
       NumismaticPieceDefinition(
@@ -940,7 +940,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1953,
         maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('5 Cents Beaver Castor (Isabel II)', 1953, 1967),
+          NumismaticMotifRule('Beaver Castor (Isabel II)', 1953, 1967),
         ],
       ),
       NumismaticPieceDefinition(
@@ -949,7 +949,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1953,
         maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('10 Cents Plata .800 Bluenose', 1953, 1967),
+          NumismaticMotifRule('Plata .800 Bluenose', 1953, 1967),
         ],
       ),
       NumismaticPieceDefinition(
@@ -958,7 +958,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1953,
         maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('25 Cents Plata .800 Caribou Estándar (1953-1966)', 1953, 1966),
+          NumismaticMotifRule('Plata .800 Caribou Estándar (1953-1966)', 1953, 1966),
           NumismaticMotifRule('Lince del Centenario de la Confederación', 1967, 1967),
         ],
       ),
@@ -968,7 +968,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1953,
         maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('50 Cents Plata .800 Escudo de Armas (1953-1966)', 1953, 1966),
+          NumismaticMotifRule('Plata .800 Escudo de Armas (1953-1966)', 1953, 1966),
           NumismaticMotifRule('Lobo Aullador del Centenario de la Confederación', 1967, 1967),
         ],
       ),
@@ -999,7 +999,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1968,
         maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('1 Cent Hojas de Arce', 1968, 1986),
+          NumismaticMotifRule('Hojas de Arce', 1968, 1986),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1008,7 +1008,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1968,
         maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('5 Cents Beaver Castor', 1968, 1986),
+          NumismaticMotifRule('Beaver Castor', 1968, 1986),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1017,7 +1017,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1968,
         maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('10 Cents Bluenose', 1968, 1986),
+          NumismaticMotifRule('Bluenose', 1968, 1986),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1026,7 +1026,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1968,
         maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('25 Cents Níquel Caribou Estándar (1968-1986)', 1968, 1986),
+          NumismaticMotifRule('Níquel Caribou Estándar (1968-1986)', 1968, 1986),
           NumismaticMotifRule('Centenario de la Policía Montada RCMP', 1973, 1973),
         ],
       ),
@@ -1036,7 +1036,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1968,
         maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('50 Cents Escudo de Armas', 1968, 1986),
+          NumismaticMotifRule('Escudo de Armas', 1968, 1986),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1045,7 +1045,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1968,
         maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('1 Dollar Níquel Voyageur Estándar (1968-1986)', 1968, 1986),
+          NumismaticMotifRule('Níquel Voyageur Estándar (1968-1986)', 1968, 1986),
           NumismaticMotifRule('Centenario de Manitoba', 1970, 1970),
           NumismaticMotifRule('Centenario de Columbia Británica', 1971, 1971),
           NumismaticMotifRule('Centenario de la Isla del Príncipe Eduardo', 1973, 1973),
@@ -1071,7 +1071,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1987,
         maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('1 Cent Hojas de Arce', 1987, 1999),
+          NumismaticMotifRule('Hojas de Arce', 1987, 1999),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1080,7 +1080,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1987,
         maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('5 Cents Beaver Castor', 1987, 1999),
+          NumismaticMotifRule('Beaver Castor', 1987, 1999),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1089,7 +1089,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1987,
         maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('10 Cents Bluenose', 1987, 1999),
+          NumismaticMotifRule('Bluenose', 1987, 1999),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1098,7 +1098,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1987,
         maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('25 Cents Caribou Estándar (1987-1999)', 1987, 1999),
+          NumismaticMotifRule('Caribou Estándar (1987-1999)', 1987, 1999),
           NumismaticMotifRule('125 Aniversario de la Confederación de Canadá', 1992, 1992),
           NumismaticMotifRule('Millennium Series - 12 Diseños Mensuales', 1999, 1999),
         ],
@@ -1109,7 +1109,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1987,
         maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('50 Cents Escudo de Armas', 1987, 1999),
+          NumismaticMotifRule('Escudo de Armas', 1987, 1999),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1151,7 +1151,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2000,
         maxYear: 2012,
         motifs: [
-          NumismaticMotifRule('1 Cent Hojas de Arce', 2000, 2012),
+          NumismaticMotifRule('Hojas de Arce', 2000, 2012),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1160,7 +1160,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('5 Cents Beaver Castor', 2000, 2100),
+          NumismaticMotifRule('Beaver Castor', 2000, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1169,7 +1169,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('10 Cents Bluenose', 2000, 2100),
+          NumismaticMotifRule('Bluenose', 2000, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1178,7 +1178,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('25 Cents Caribou Estándar (2000+)', 2000, 2100),
+          NumismaticMotifRule('Caribou Estándar (2000+)', 2000, 2100),
           NumismaticMotifRule('Millennium Series - 12 Diseños', 2000, 2000),
           NumismaticMotifRule('Amapola del Día del Recuerdo', 2004, 2004),
           NumismaticMotifRule('Juegos Olímpicos de Invierno Vancouver 2010 (2007-2010)', 2007, 2010),
@@ -1192,7 +1192,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('50 Cents Escudo de Armas', 2000, 2100),
+          NumismaticMotifRule('Escudo de Armas', 2000, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1252,7 +1252,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1961,
         motifs: [
-          NumismaticMotifRule('1 Centavo Cuproníquel (Estrella Solitaria)', 1915, 1961),
+          NumismaticMotifRule('Cuproníquel (Estrella Solitaria)', 1915, 1961),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1261,7 +1261,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('2 Centavos Cuproníquel', 1915, 1916),
+          NumismaticMotifRule('Cuproníquel', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1270,7 +1270,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1961,
         motifs: [
-          NumismaticMotifRule('5 Centavos Cuproníquel', 1915, 1961),
+          NumismaticMotifRule('Cuproníquel', 1915, 1961),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1279,7 +1279,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('10 Centavos Plata .900', 1915, 1952),
+          NumismaticMotifRule('Plata .900', 1915, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1288,7 +1288,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('20 Centavos Plata .900', 1915, 1952),
+          NumismaticMotifRule('Plata .900', 1915, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1297,7 +1297,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('40 Centavos Plata .900', 1915, 1952),
+          NumismaticMotifRule('Plata .900', 1915, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1306,7 +1306,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1953,
         motifs: [
-          NumismaticMotifRule('1 Peso Plata .900 Estrella Radiante (1915-1939)', 1915, 1939),
+          NumismaticMotifRule('Plata .900 Estrella Radiante (1915-1939)', 1915, 1939),
           NumismaticMotifRule('Centenario del Natalicio de José Martí', 1953, 1953),
         ],
       ),
@@ -1316,7 +1316,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('2 Pesos Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1325,7 +1325,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('4 Pesos Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1334,7 +1334,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('5 Pesos Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1343,7 +1343,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('10 Pesos Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1352,7 +1352,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('20 Pesos Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
         ],
       ),
     ],
@@ -1372,7 +1372,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('1 Centavo Aluminio', 1963, 1993),
+          NumismaticMotifRule('Aluminio', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1381,7 +1381,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('2 Centavos Aluminio', 1963, 1993),
+          NumismaticMotifRule('Aluminio', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1390,7 +1390,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('5 Centavos Aluminio', 1963, 1993),
+          NumismaticMotifRule('Aluminio', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1399,7 +1399,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('20 Centavos Aluminio', 1963, 1993),
+          NumismaticMotifRule('Aluminio', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1408,7 +1408,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1962,
         maxYear: 1962,
         motifs: [
-          NumismaticMotifRule('40 Centavos Cuproníquel', 1962),
+          NumismaticMotifRule('Cuproníquel', 1962),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1417,7 +1417,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1962,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('1 Peso Cuproníquel (Patria o Muerte)', 1962, 1993),
+          NumismaticMotifRule('Cuproníquel (Patria o Muerte)', 1962, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1426,7 +1426,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1990,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('3 Pesos Ernesto Che Guevara - Hasta la Victoria Siempre', 1990, 1993),
+          NumismaticMotifRule('Ernesto Che Guevara - Hasta la Victoria Siempre', 1990, 1993),
         ],
       ),
     ],
@@ -1446,7 +1446,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('1 Centavo Aluminio', 1994, 2020),
+          NumismaticMotifRule('Aluminio', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1455,7 +1455,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('2 Centavos Aluminio', 1994, 2020),
+          NumismaticMotifRule('Aluminio', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1464,7 +1464,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('5 Centavos Aluminio', 1994, 2020),
+          NumismaticMotifRule('Aluminio', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1473,7 +1473,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('10 Centavos Castillo de la Real Fuerza', 1994, 2020),
+          NumismaticMotifRule('Castillo de la Real Fuerza', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1482,7 +1482,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('25 Centavos Castillo del Morro', 1994, 2020),
+          NumismaticMotifRule('Castillo del Morro', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1491,7 +1491,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('50 Centavos Plaza de la Revolución', 1994, 2020),
+          NumismaticMotifRule('Plaza de la Revolución', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1500,7 +1500,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('1 Peso José Martí', 1994, 2020),
+          NumismaticMotifRule('José Martí', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1509,7 +1509,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('3 Pesos Ernesto Che Guevara', 1994, 2020),
+          NumismaticMotifRule('Ernesto Che Guevara', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1518,7 +1518,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('5 Pesos Antonio Maceo - Protesta de Baraguá', 1994, 2020),
+          NumismaticMotifRule('Antonio Maceo - Protesta de Baraguá', 1994, 2020),
         ],
       ),
     ],
@@ -1538,7 +1538,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('5 Centavos Aluminio', 2021, 2100),
+          NumismaticMotifRule('Aluminio', 2021, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1547,7 +1547,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('20 Centavos Patria o Muerte', 2021, 2100),
+          NumismaticMotifRule('Patria o Muerte', 2021, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1556,7 +1556,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('1 Peso José Martí', 2021, 2100),
+          NumismaticMotifRule('José Martí', 2021, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1565,7 +1565,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('3 Pesos Ernesto Che Guevara', 2021, 2100),
+          NumismaticMotifRule('Ernesto Che Guevara', 2021, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1574,7 +1574,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('5 Pesos Antonio Maceo', 2021, 2100),
+          NumismaticMotifRule('Antonio Maceo', 2021, 2100),
         ],
       ),
     ],
@@ -1594,7 +1594,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Cuartillo de Real Cobre', 1813, 1880),
+          NumismaticMotifRule('Cobre Colonial', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1603,7 +1603,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Medio Real Plata Primera Moneda Patria (Sol de Mayo / Provincias del Río de la Plata)', 1813, 1880),
+          NumismaticMotifRule('Primera Moneda Patria (Sol de Mayo / Provincias del Río de la Plata)', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1612,7 +1612,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('1 Real de Plata', 1813, 1880),
+          NumismaticMotifRule('Plata Colonial', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1621,7 +1621,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('2 Reales de Plata', 1813, 1880),
+          NumismaticMotifRule('Plata', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1630,7 +1630,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('4 Reales de Plata', 1813, 1880),
+          NumismaticMotifRule('Plata', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1639,7 +1639,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('8 Reales de Plata Primera Moneda Patria (En Unión y Libertad)', 1813, 1880),
+          NumismaticMotifRule('Plata Primera Moneda Patria (En Unión y Libertad)', 1813, 1880),
         ],
       ),
     ],
@@ -1659,7 +1659,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('1 Centavo Bronce (Libertad de Oudiné)', 1881, 1969),
+          NumismaticMotifRule('Bronce (Libertad de Oudiné)', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1668,7 +1668,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('2 Centavos Bronce (Libertad de Oudiné)', 1881, 1969),
+          NumismaticMotifRule('Bronce (Libertad de Oudiné)', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1677,7 +1677,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('5 Centavos Cuproníquel / Bronce de aluminio', 1881, 1969),
+          NumismaticMotifRule('Cuproníquel / Bronce de aluminio', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1686,7 +1686,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('10 Centavos Cuproníquel / Bronce de aluminio', 1881, 1969),
+          NumismaticMotifRule('Cuproníquel / Bronce de aluminio', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1695,7 +1695,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('20 Centavos Cuproníquel / Bronce de aluminio', 1881, 1969),
+          NumismaticMotifRule('Cuproníquel / Bronce de aluminio', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1704,7 +1704,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('50 Centavos Plata .900 / Cuproníquel', 1881, 1969),
+          NumismaticMotifRule('Plata .900 / Cuproníquel', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1713,7 +1713,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('1 Peso Patacón de Plata .900 / Cuproníquel', 1881, 1969),
+          NumismaticMotifRule('Patacón de Plata .900 / Cuproníquel', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1722,7 +1722,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1940,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('2 Pesos Cuproníquel', 1940, 1969),
+          NumismaticMotifRule('Cuproníquel', 1940, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1731,7 +1731,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1896,
         motifs: [
-          NumismaticMotifRule('5 Pesos Argentino de Oro .900 (Oudiné)', 1881, 1896),
+          NumismaticMotifRule('Argentino de Oro .900 (Oudiné)', 1881, 1896),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1740,7 +1740,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1962,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('10 Pesos General San Martín', 1962, 1969),
+          NumismaticMotifRule('General San Martín', 1962, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1749,7 +1749,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1962,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('20 Pesos Primera Moneda Patria', 1962, 1969),
+          NumismaticMotifRule('Primera Moneda Patria', 1962, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1758,7 +1758,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1960,
         maxYear: 1960,
         motifs: [
-          NumismaticMotifRule('25 Pesos Sesquicentenario de la Revolución de Mayo', 1960),
+          NumismaticMotifRule('Sesquicentenario de la Revolución de Mayo', 1960),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1777,7 +1777,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1966,
         maxYear: 1966,
         motifs: [
-          NumismaticMotifRule('100 Pesos Sesquicentenario de la Independencia (Casa de Tucumán)', 1966),
+          NumismaticMotifRule('Sesquicentenario de la Independencia (Casa de Tucumán)', 1966),
         ],
       ),
     ],
@@ -1797,7 +1797,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1970,
         maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('1 Centavo Ley', 1970, 1975),
+          NumismaticMotifRule('Ley', 1970, 1975),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1806,7 +1806,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1970,
         maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('5 Centavos Ley', 1970, 1975),
+          NumismaticMotifRule('Ley', 1970, 1975),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1815,7 +1815,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1970,
         maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('10 Centavos Ley', 1970, 1976),
+          NumismaticMotifRule('Ley', 1970, 1976),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1824,7 +1824,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1970,
         maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('20 Centavos Ley', 1970, 1976),
+          NumismaticMotifRule('Ley', 1970, 1976),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1833,7 +1833,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1970,
         maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('50 Centavos Ley', 1970, 1976),
+          NumismaticMotifRule('Ley', 1970, 1976),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1842,7 +1842,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1974,
         maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('1 Peso San Martín', 1974, 1976),
+          NumismaticMotifRule('San Martín', 1974, 1976),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1851,7 +1851,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1976,
         maxYear: 1977,
         motifs: [
-          NumismaticMotifRule('5 Pesos San Martín', 1976, 1977),
+          NumismaticMotifRule('San Martín', 1976, 1977),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1860,7 +1860,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1976,
         maxYear: 1978,
         motifs: [
-          NumismaticMotifRule('10 Pesos San Martín', 1976, 1978),
+          NumismaticMotifRule('San Martín', 1976, 1978),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1911,7 +1911,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('1 Centavo Aluminio', 1983, 1985),
+          NumismaticMotifRule('Aluminio', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1920,7 +1920,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('5 Centavos Aluminio', 1983, 1985),
+          NumismaticMotifRule('Aluminio', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1929,7 +1929,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('10 Centavos Aluminio', 1983, 1985),
+          NumismaticMotifRule('Aluminio', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1938,7 +1938,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('50 Centavos Aluminio', 1983, 1985),
+          NumismaticMotifRule('Aluminio', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1947,7 +1947,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1984,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('1 Peso Argentino Cabildo', 1984, 1985),
+          NumismaticMotifRule('Argentino Cabildo', 1984, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1956,7 +1956,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1984,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('5 Pesos Argentinos Congreso', 1984, 1985),
+          NumismaticMotifRule('Argentinos Congreso', 1984, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1965,7 +1965,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1984,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('10 Pesos Argentinos Casa de Tucumán', 1984, 1985),
+          NumismaticMotifRule('Argentinos Casa de Tucumán', 1984, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1974,7 +1974,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1984,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('50 Pesos Argentinos Casa del Acuerdo', 1984, 1985),
+          NumismaticMotifRule('Argentinos Casa del Acuerdo', 1984, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1983,7 +1983,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1985,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('100 Pesos Argentinos Cabildo de Jujuy', 1985),
+          NumismaticMotifRule('Argentinos Cabildo de Jujuy', 1985),
         ],
       ),
     ],
@@ -2003,7 +2003,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1985,
         maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Medio Centavo Austral Hornero', 1985, 1987),
+          NumismaticMotifRule('Austral Hornero', 1985, 1987),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2012,7 +2012,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1985,
         maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('1 Centavo Ñandú', 1985, 1988),
+          NumismaticMotifRule('Ñandú', 1985, 1988),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2021,7 +2021,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1985,
         maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('5 Centavos Puma', 1985, 1988),
+          NumismaticMotifRule('Puma', 1985, 1988),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2030,7 +2030,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1985,
         maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('10 Centavos Cóndor', 1985, 1988),
+          NumismaticMotifRule('Cóndor', 1985, 1988),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2039,7 +2039,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1985,
         maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('50 Centavos Libertad', 1985, 1988),
+          NumismaticMotifRule('Libertad', 1985, 1988),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2048,7 +2048,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1989,
         maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('1 Austral Cabildo', 1989),
+          NumismaticMotifRule('Cabildo', 1989),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2057,7 +2057,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1989,
         maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('5 Australes Congreso', 1989),
+          NumismaticMotifRule('Congreso', 1989),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2066,7 +2066,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1989,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('10 Australes Casa de Tucumán', 1989, 1990),
+          NumismaticMotifRule('Casa de Tucumán', 1989, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2075,7 +2075,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1989,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('50 Australes Libertad', 1989, 1990),
+          NumismaticMotifRule('Libertad', 1989, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2084,7 +2084,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1989,
         maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('100 Australes Escudo de Armas', 1989, 1990),
+          NumismaticMotifRule('Escudo de Armas', 1989, 1990),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2093,7 +2093,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1990,
         maxYear: 1991,
         motifs: [
-          NumismaticMotifRule('500 Australes Escudo de Armas', 1990, 1991),
+          NumismaticMotifRule('Escudo de Armas', 1990, 1991),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2102,7 +2102,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1990,
         maxYear: 1991,
         motifs: [
-          NumismaticMotifRule('1000 Australes Escudo de Armas', 1990, 1991),
+          NumismaticMotifRule('Escudo de Armas', 1990, 1991),
         ],
       ),
     ],
@@ -2122,7 +2122,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1992,
         maxYear: 2000,
         motifs: [
-          NumismaticMotifRule('1 Centavo Laurel', 1992, 2000),
+          NumismaticMotifRule('Laurel', 1992, 2000),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2131,7 +2131,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1992,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('5 Centavos Sol de Mayo', 1992, 2016),
+          NumismaticMotifRule('Sol de Mayo', 1992, 2016),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2140,7 +2140,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1992,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('10 Centavos Escudo de Armas', 1992, 2016),
+          NumismaticMotifRule('Escudo de Armas', 1992, 2016),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2149,7 +2149,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1992,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('25 Centavos Cabildo de Buenos Aires', 1992, 2016),
+          NumismaticMotifRule('Cabildo de Buenos Aires', 1992, 2016),
         ],
       ),
       NumismaticPieceDefinition(
@@ -2158,7 +2158,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1992,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('50 Centavos Casa de Tucumán Estándar (1992-2016)', 1992, 2016),
+          NumismaticMotifRule('Casa de Tucumán Estándar (1992-2016)', 1992, 2016),
           NumismaticMotifRule('Convención Nacional Constituyente', 1994, 1994),
           NumismaticMotifRule('50 Aniversario de UNICEF', 1994, 1994),
           NumismaticMotifRule('50 Aniversario del Voto Femenino', 1997, 1997),
@@ -2173,7 +2173,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('1 Peso Sol de Mayo Bimetálica Estándar (1994-2016)', 1994, 2016),
+          NumismaticMotifRule('Sol de Mayo Bimetálica Estándar (1994-2016)', 1994, 2016),
           NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Pucará de Tilcara', 2010, 2010),
           NumismaticMotifRule('Bicentenario de la Revolución de Mayo - El Palmar', 2010, 2010),
           NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Aconcagua', 2010, 2010),
@@ -2188,7 +2188,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2010,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('2 Pesos Sol de Mayo Estándar (2011-2016)', 2011, 2016),
+          NumismaticMotifRule('Sol de Mayo Estándar (2011-2016)', 2011, 2016),
           NumismaticMotifRule('Bicentenario de la Creación de la Bandera Nacional', 2012, 2012),
           NumismaticMotifRule('30 Aniversario de la Guerra de Malvinas', 2012, 2012),
           NumismaticMotifRule('Bicentenario del Combate de San Lorenzo', 2013, 2013),
@@ -2433,8 +2433,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1972,
         maxYear: 1980,
         motifs: [
-          NumismaticMotifRule(
-          'Mapa do Brasil e Ramo de Café (1972-1980)',
+          NumismaticMotifRule('Mapa do Brasil e Ramo de Café (1972-1980)',
           1972,
           1980,
           ),
@@ -2447,8 +2446,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1972,
         maxYear: 1984,
         motifs: [
-          NumismaticMotifRule(
-          'Cana-de-Açúcar e Brasão das Armas (1972-1984)',
+          NumismaticMotifRule('Cana-de-Açúcar e Brasão das Armas (1972-1984)',
           1972,
           1984,
           ),
@@ -2461,8 +2459,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1972,
         maxYear: 1986,
         motifs: [
-          NumismaticMotifRule(
-          'Ramo de Soja e Brasão das Armas (1972-1986)',
+          NumismaticMotifRule('Ramo de Soja e Brasão das Armas (1972-1986)',
           1972,
           1986,
           ),
@@ -2568,8 +2565,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1986,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule(
-          'Juscelino Kubitschek e Brasília (1986-1988)',
+          NumismaticMotifRule('Juscelino Kubitschek e Brasília (1986-1988)',
           1986,
           1993,
           ),
@@ -2582,8 +2578,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1989,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule(
-          'Centenário da República - Efigie da República (1989-1993)',
+          NumismaticMotifRule('Centenário da República - Efigie da República (1989-1993)',
           1989,
           1993,
           ),
@@ -2652,8 +2647,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 1997,
         motifs: [
-          NumismaticMotifRule(
-          'Efigie da República (1ª Familia 1994-1997)',
+          NumismaticMotifRule('Efigie da República (1ª Familia 1994-1997)',
           1994,
           1997,
           ),
@@ -2666,8 +2660,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 1995,
         motifs: [
-          NumismaticMotifRule(
-          'Efigie da República (1ª Familia 1994-1995)',
+          NumismaticMotifRule('Efigie da República (1ª Familia 1994-1995)',
           1994,
           1995,
           ),
@@ -2689,8 +2682,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 1995,
         motifs: [
-          NumismaticMotifRule(
-          'Efigie da República (1ª Familia 1994-1995)',
+          NumismaticMotifRule('Efigie da República (1ª Familia 1994-1995)',
           1994,
           1995,
           ),
@@ -2760,8 +2752,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1998,
         maxYear: 2024,
         motifs: [
-          NumismaticMotifRule(
-          'Efigie da República com Grafismos Marajoaras (2ª Familia 1998+)',
+          NumismaticMotifRule('Efigie da República com Grafismos Marajoaras (2ª Familia 1998+)',
           1998,
           2024,
           ),
@@ -3140,7 +3131,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1975,
         maxYear: 2017,
         motifs: [
-          NumismaticMotifRule('Bernardo O\', 1975, 2017),
+          NumismaticMotifRule("Bernardo O'Higgins", 1975, 2017),
         ],
       ),
       NumismaticPieceDefinition(
@@ -3150,7 +3141,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1976,
         maxYear: 2015,
         motifs: [
-          NumismaticMotifRule('Bernardo O\', 1976, 2015),
+          NumismaticMotifRule("Bernardo O'Higgins (Forma Octagonal)", 1976, 2015),
         ],
       ),
       NumismaticPieceDefinition(
@@ -3160,7 +3151,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1975,
         maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Bernardo O\'Higgins', 1975, 2024),
+          NumismaticMotifRule("Bernardo O'Higgins", 1975, 2024),
           NumismaticMotifRule('Ángel de la Libertad (1976-1990)', 1976, 1990),
         ],
       ),
@@ -3171,7 +3162,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1981,
         maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Bernardo O\', 1981, 2024),
+          NumismaticMotifRule("Bernardo O'Higgins (Forma Decagonal)", 1981, 2024),
         ],
       ),
       NumismaticPieceDefinition(
@@ -3553,8 +3544,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1991,
         maxYear: 2024,
         motifs: [
-          NumismaticMotifRule(
-          'Escudo de Armas y Ramas de Laurel y Roble (Circulación Estándar)',
+          NumismaticMotifRule('Escudo de Armas y Ramas de Laurel y Roble (Circulación Estándar)',
           1991,
           2024,
           ),
@@ -3800,13 +3790,11 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1969,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule(
-          'Britannia Sedente con Escudo y Tridente (1969-2008)',
+          NumismaticMotifRule('Britannia Sedente con Escudo y Tridente (1969-2008)',
           1969,
           2008,
           ),
-          NumismaticMotifRule(
-          'Royal Shield of Arms - Sección del Escudo Real (2008-2016)',
+          NumismaticMotifRule('Royal Shield of Arms - Sección del Escudo Real (2008-2016)',
           2008,
           2016,
           ),
@@ -3839,8 +3827,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule(
-          'Royal Arms - Escudo Real de Armas del Reino Unido (1983, 1993, 2003, 2008)',
+          NumismaticMotifRule('Royal Arms - Escudo Real de Armas del Reino Unido (1983, 1993, 2003, 2008)',
           1983,
           2016,
           ),
@@ -3856,8 +3843,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1997,
         maxYear: 2016,
         motifs: [
-          NumismaticMotifRule(
-          'Desarrollo de la Tecnología - Anillos de la Historia Industrial (1997-2015)',
+          NumismaticMotifRule('Desarrollo de la Tecnología - Anillos de la Historia Industrial (1997-2015)',
           1997,
           2015,
           ),
@@ -3955,13 +3941,11 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2017,
         maxYear: 2024,
         motifs: [
-          NumismaticMotifRule(
-          'Royal Shield of Arms - Sección del Escudo Real (2017-2022)',
+          NumismaticMotifRule('Royal Shield of Arms - Sección del Escudo Real (2017-2022)',
           2017,
           2022,
           ),
-          NumismaticMotifRule(
-          'Salmón del Atlántico - Rey Carlos III (2023+)',
+          NumismaticMotifRule('Salmón del Atlántico - Rey Carlos III (2023+)',
           2023,
           2100,
           ),
@@ -3981,13 +3965,11 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2017,
         maxYear: 2024,
         motifs: [
-          NumismaticMotifRule(
-          'Nations of the Crown - Rosa, Puerro, Cardo y Trébol (2017-2022)',
+          NumismaticMotifRule('Nations of the Crown - Rosa, Puerro, Cardo y Trébol (2017-2022)',
           2017,
           2022,
           ),
-          NumismaticMotifRule(
-          'Flora y Fauna Británica - Abejas de Carlos III (2023+)',
+          NumismaticMotifRule('Flora y Fauna Británica - Abejas de Carlos III (2023+)',
           2023,
           2100,
           ),
@@ -3999,13 +3981,11 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2017,
         maxYear: 2024,
         motifs: [
-          NumismaticMotifRule(
-          'Britannia con Escudo y Tridente por Antony Dufort (2015-2022)',
+          NumismaticMotifRule('Britannia con Escudo y Tridente por Antony Dufort (2015-2022)',
           2017,
           2022,
           ),
-          NumismaticMotifRule(
-          'Corona de Flora Nacional - Rey Carlos III (2023+)',
+          NumismaticMotifRule('Corona de Flora Nacional - Rey Carlos III (2023+)',
           2023,
           2100,
           ),
@@ -4282,7 +4262,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1960,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Épi d\', 1960, 2001),
+          NumismaticMotifRule("Épi d'épi", 1960, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -4355,8 +4335,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1988,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule(
-          'Génie de la Bastille / Génie de la Liberté (1988-2001)',
+          NumismaticMotifRule('Génie de la Bastille / Génie de la Liberté (1988-2001)',
           1988,
           2001,
           ),
@@ -4374,8 +4353,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1992,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule(
-          'Le Mont-Saint-Michel (1992-2001)',
+          NumismaticMotifRule('Le Mont-Saint-Michel (1992-2001)',
           1992,
           2001,
           ),
@@ -4398,8 +4376,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1984,
         maxYear: 1998,
         motifs: [
-          NumismaticMotifRule(
-          'Panthéon de París (1984-1998)',
+          NumismaticMotifRule('Panthéon de París (1984-1998)',
           1984,
           1998,
           ),
@@ -4727,8 +4704,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1951,
         maxYear: 1974,
         motifs: [
-          NumismaticMotifRule(
-          'Bundesadler - Águila Federal Alemana (Silberadler 1951-1974)',
+          NumismaticMotifRule('Bundesadler - Águila Federal Alemana (Silberadler 1951-1974)',
           1951,
           1974,
           ),
@@ -4853,8 +4829,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1987,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule(
-          'Bundesadler - Águila Federal Alemana (Circulación Estándar)',
+          NumismaticMotifRule('Bundesadler - Águila Federal Alemana (Circulación Estándar)',
           1987,
           2001,
           ),
@@ -5191,8 +5166,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1982,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule(
-          'Ingranaggio - Engranaje Industrial (1977-2001)',
+          NumismaticMotifRule('Ingranaggio - Engranaje Industrial (1977-2001)',
           1982,
           2001,
           ),
@@ -5208,8 +5182,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1982,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule(
-          'Piazza del Quirinale y Valor en Braille (1982-2001)',
+          NumismaticMotifRule('Piazza del Quirinale y Valor en Braille (1982-2001)',
           1982,
           2001,
           ),

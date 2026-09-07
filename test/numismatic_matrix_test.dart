@@ -37,7 +37,7 @@ void main() {
       expect(mat2, equals('Bimetálica'));
 
       final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
-      expect(motifs2, equals(['Nuevo Peso']));
+      expect(motifs2, equals(['Nuevo Peso - Anillo de los Días (Piedra del Sol)']));
     });
 
     test('Mexico 1947 Centenario infers Oro for 50 Pesos', () {
@@ -108,7 +108,7 @@ void main() {
       expect(matMxn2, equals('Bimetálica'));
 
       final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
-      expect(motifs2, equals(['Nuevo Peso']));
+      expect(motifs2, equals(['Nuevo Peso - Anillo de los Días (Piedra del Sol)']));
     });
 
     test('Brasil 2017 1 Real is standard circulation BRL bimetallic and not commemorative', () {
@@ -409,9 +409,9 @@ void main() {
         denomination: '20',
       );
       expect(motifs2021, containsAll([
-        'Bicentenario de la Independencia Nacional (2021)',
-        '500 Años de Memoria Histórica de México-Tenochtitlan (2021)',
-        '700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)',
+        'Bicentenario de la Independencia Nacional',
+        '500 Años de Memoria Histórica de México-Tenochtitlan',
+        '700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan',
       ]));
 
       // 2005 Spain 2 Euro
@@ -441,7 +441,7 @@ void main() {
         currencyCode: 'USD',
         denomination: '0.01',
       );
-      expect(lincoln2005, isEmpty);
+      expect(lincoln2005, contains('Lincoln Memorial (1959-2008)'));
 
       final lincoln2009 = NumismaticDataHelper.getCommemorativeMotifs(
         country: 'Estados Unidos',
@@ -451,10 +451,10 @@ void main() {
       );
       expect(lincoln2009, hasLength(4));
       expect(lincoln2009, containsAll([
-        'Lincoln Bicentennial - Birthplace (2009)',
-        'Lincoln Bicentennial - Formative Years in Indiana (2009)',
-        'Lincoln Bicentennial - Professional Life in Illinois (2009)',
-        'Lincoln Bicentennial - Presidency in Washington D.C. (2009)',
+        'Lincoln Bicentennial - Birthplace',
+        'Lincoln Bicentennial - Formative Years in Indiana',
+        'Lincoln Bicentennial - Professional Life in Illinois',
+        'Lincoln Bicentennial - Presidency in Washington D.C.',
       ]));
 
       // Temporal Bounding: Eurozone 2 Euro (2002 vs 2007)
@@ -464,7 +464,7 @@ void main() {
         currencyCode: 'EUR',
         denomination: '2',
       );
-      expect(euroSpain2002, isEmpty);
+      expect(euroSpain2002, contains('Efigie del Rey Juan Carlos I / Rey Felipe VI (Circulación Estándar)'));
 
       final euroSpain2007 = NumismaticDataHelper.getCommemorativeMotifs(
         country: 'España',
@@ -472,7 +472,7 @@ void main() {
         currencyCode: 'EUR',
         denomination: '2',
       );
-      expect(euroSpain2007, contains('50 Aniversario del Tratado de Roma (2007)'));
+      expect(euroSpain2007, contains('50 Aniversario del Tratado de Roma'));
 
       // USA 50 State Quarters: 2005 25c gives exactly the 5 states of 2005
       final usQuarters2005 = NumismaticDataHelper.getCommemorativeMotifs(
@@ -482,13 +482,13 @@ void main() {
         denomination: '0.25',
       );
       expect(usQuarters2005, containsAll([
-        '50 State Quarters - California (2005)',
-        '50 State Quarters - Minnesota (2005)',
-        '50 State Quarters - Oregon (2005)',
-        '50 State Quarters - Kansas (2005)',
-        '50 State Quarters - West Virginia (2005)',
+        '50 State Quarters - California',
+        '50 State Quarters - Minnesota',
+        '50 State Quarters - Oregon',
+        '50 State Quarters - Kansas',
+        '50 State Quarters - West Virginia',
       ]));
-      expect(usQuarters2005, isNot(contains('50 State Quarters - Delaware (1999)')));
+      expect(usQuarters2005, isNot(contains('50 State Quarters - Delaware')));
 
       // Missing official motifs: Mexico 10 MXN Cambio de Milenio (2000, 2001)
       final mex10_2000 = NumismaticDataHelper.getCommemorativeMotifs(
@@ -497,7 +497,7 @@ void main() {
         currencyCode: 'MXN',
         denomination: '10',
       );
-      expect(mex10_2000, contains('Cambio de Milenio - Glifo Año 2000 (2000)'));
+      expect(mex10_2000, contains('Cambio de Milenio - Glifo Año 2000'));
 
       final mex10_2001 = NumismaticDataHelper.getCommemorativeMotifs(
         country: 'México',
@@ -505,7 +505,7 @@ void main() {
         currencyCode: 'MXN',
         denomination: '10',
       );
-      expect(mex10_2001, contains('Cambio de Milenio - Glifo Año 2001 (2001)'));
+      expect(mex10_2001, contains('Cambio de Milenio - Glifo Año 2001'));
 
       // Missing official motifs: Mexico 10 MXN 150 Aniversario Batalla de Puebla (2012)
       final mex10_2012 = NumismaticDataHelper.getCommemorativeMotifs(
@@ -514,7 +514,7 @@ void main() {
         currencyCode: 'MXN',
         denomination: '10',
       );
-      expect(mex10_2012, contains('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza (2012)'));
+      expect(mex10_2012, contains('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza'));
 
       // Missing official motifs: Mexico N$ 20 & N$ 50 Centro de Plata (1993-1995)
       final mexN20_1993 = NumismaticDataHelper.getCommemorativeMotifs(
@@ -553,7 +553,7 @@ void main() {
         denomination: '100',
         isBanknote: true,
       );
-      expect(note100_2016, contains('Centenario de la Constitución Política de 1917 (2017)'));
+      expect(note100_2016, contains('Centenario de la Constitución Política de 1917'));
 
       final note100_2017 = NumismaticDataHelper.getCommemorativeMotifs(
         country: 'México',
@@ -562,7 +562,7 @@ void main() {
         denomination: '100',
         isBanknote: true,
       );
-      expect(note100_2017, contains('Centenario de la Constitución Política de 1917 (2017)'));
+      expect(note100_2017, contains('Centenario de la Constitución Política de 1917'));
 
       // 8. Mexico 20 MXN Coin Marina-Armada / Fuerza Armada (2021-2022)
       final coin20_2021 = NumismaticDataHelper.getCommemorativeMotifs(

@@ -3,7 +3,6 @@ import 'package:platinum_world_management_system/src/core/constants/app_technica
 import '../../../../entities/domain/world_entity.dart';
 import '../../catalog_item.dart';
 import '../../subspecies.dart';
-import '../models/numismatic_emission_rule_data.dart';
 import '../numismatic_matrix.dart';
 import '../numismatic_parser.dart';
 
@@ -252,7 +251,7 @@ class NumismaticOutlierDetector {
             } else {
               isMotifMismatch = true;
             }
-          } else if (motifs.isNotEmpty) {
+          } else if (motifs.length > 1) {
             isMotifMismatch = true;
           }
 

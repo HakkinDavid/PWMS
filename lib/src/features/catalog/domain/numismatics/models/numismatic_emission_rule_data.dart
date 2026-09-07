@@ -1,4 +1,3 @@
-import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'numismatic_motif_rule.dart';
 import 'numismatic_piece_definition.dart';
 
@@ -210,8 +209,8 @@ class NumismaticEmissionRuleData {
     final c1 = motif1.trim().toLowerCase();
     final c2 = motif2.trim().toLowerCase();
     if (c1 == c2 || c1.contains(c2) || c2.contains(c1)) return true;
-    final b1 = c1.replaceAll(RegExp(AppTechnicalStrings.regexMotifParenthesizedYears), AppTechnicalStrings.empty).trim();
-    final b2 = c2.replaceAll(RegExp(AppTechnicalStrings.regexMotifParenthesizedYears), AppTechnicalStrings.empty).trim();
+    final b1 = c1.replaceAll(RegExp(r'\(\d{4}[^\)]*\)'), '').trim();
+    final b2 = c2.replaceAll(RegExp(r'\(\d{4}[^\)]*\)'), '').trim();
     if (b1.isNotEmpty && b2.isNotEmpty) {
       if (b1 == b2 || b1.contains(b2) || b2.contains(b1)) return true;
     }

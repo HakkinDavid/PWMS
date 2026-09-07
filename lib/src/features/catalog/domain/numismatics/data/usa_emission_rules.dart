@@ -16,7 +16,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1787,
         maxYear: 1787,
         motifs: [
-          NumismaticMotifRule('Fugio Cent - Mind Your Business / We Are One', 1787),
+          NumismaticMotifRule('Mind Your Business / We Are One', 1787),
         ],
       ),
       NumismaticPieceDefinition(
@@ -25,7 +25,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1776,
         maxYear: 1776,
         motifs: [
-          NumismaticMotifRule('Continental Currency Dollar - Sun Dial', 1776),
+          NumismaticMotifRule('Sun Dial (Continental Currency)', 1776),
         ],
       ),
       NumismaticPieceDefinition(
@@ -34,7 +34,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1775,
         maxYear: 1791,
         motifs: [
-          NumismaticMotifRule('8 Reales Español de Libre Circulación (Spanish Milled Dollar)', 1775, 1791),
+          NumismaticMotifRule('Spanish Milled Dollar (Libre Circulación)', 1775, 1791),
         ],
       ),
     ],
@@ -54,7 +54,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1793,
         maxYear: 1857,
         motifs: [
-          NumismaticMotifRule('Half Cent (Liberty Cap, Draped Bust, Classic Head, Braided Hair)', 1793, 1857),
+          NumismaticMotifRule('Liberty Cap / Draped Bust / Classic Head / Braided Hair', 1793, 1857),
         ],
       ),
       NumismaticPieceDefinition(
@@ -63,7 +63,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1793,
         maxYear: 1857,
         motifs: [
-          NumismaticMotifRule('Large Cent (Flowing Hair, Draped Bust, Classic Head, Coronet, Braided Hair)', 1793, 1857),
+          NumismaticMotifRule('Flowing Hair / Draped Bust / Classic Head / Coronet / Braided Hair', 1793, 1857),
         ],
       ),
       NumismaticPieceDefinition(
@@ -72,7 +72,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1794,
         maxYear: 1857,
         motifs: [
-          NumismaticMotifRule('Half Dime Plata .892/.900 (Flowing Hair, Draped Bust, Capped Bust, Seated Liberty)', 1794, 1857),
+          NumismaticMotifRule('Plata .892/.900 (Flowing Hair / Draped Bust / Capped Bust / Seated Liberty)', 1794, 1857),
         ],
       ),
       NumismaticPieceDefinition(
@@ -81,7 +81,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1796,
         maxYear: 1857,
         motifs: [
-          NumismaticMotifRule('Dime Plata .892/.900 (Draped Bust, Capped Bust, Seated Liberty)', 1796, 1857),
+          NumismaticMotifRule('Plata .892/.900 (Draped Bust / Capped Bust / Seated Liberty)', 1796, 1857),
         ],
       ),
       NumismaticPieceDefinition(
@@ -90,7 +90,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1796,
         maxYear: 1857,
         motifs: [
-          NumismaticMotifRule('Quarter Dollar Plata .892/.900 (Draped Bust, Capped Bust, Seated Liberty)', 1796, 1857),
+          NumismaticMotifRule('Plata .892/.900 (Draped Bust / Capped Bust / Seated Liberty)', 1796, 1857),
         ],
       ),
       NumismaticPieceDefinition(
@@ -99,7 +99,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1794,
         maxYear: 1857,
         motifs: [
-          NumismaticMotifRule('Half Dollar Plata .892/.900 (Flowing Hair, Draped Bust, Capped Bust, Seated Liberty)', 1794, 1857),
+          NumismaticMotifRule('Plata .892/.900 (Flowing Hair / Draped Bust / Capped Bust / Seated Liberty)', 1794, 1857),
         ],
       ),
       NumismaticPieceDefinition(
@@ -135,7 +135,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1854,
         maxYear: 1857,
         motifs: [
-          NumismaticMotifRule('Three Dollar Piece Oro .900 (Indian Princess Head)', 1854, 1857),
+          NumismaticMotifRule('Indian Princess Head (Oro .900)', 1854, 1857),
         ],
       ),
       NumismaticPieceDefinition(
@@ -192,7 +192,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1864,
         maxYear: 1873,
         motifs: [
-          NumismaticMotifRule('Two Cent Piece - In God We Trust', 1864, 1873),
+          NumismaticMotifRule('Shield (In God We Trust)', 1864, 1873),
         ],
       ),
       NumismaticPieceDefinition(
@@ -202,7 +202,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifs: [
-          NumismaticMotifRule('Three Cent Piece (Silver / Nickel Liberty Head)', 1858, 1873),
+          NumismaticMotifRule('Star / Liberty Head', 1858, 1873),
         ],
       ),
       NumismaticPieceDefinition(
@@ -275,7 +275,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1858,
         maxYear: 1873,
         motifs: [
-          NumismaticMotifRule('Three Dollar Piece Oro .900', 1858, 1873),
+          NumismaticMotifRule('Indian Princess Head (Oro .900)', 1858, 1873),
         ],
       ),
       NumismaticPieceDefinition(
@@ -349,7 +349,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1875,
         maxYear: 1878,
         motifs: [
-          NumismaticMotifRule('Twenty Cent Piece Plata .900 (Seated Liberty)', 1875, 1878),
+          NumismaticMotifRule('Seated Liberty (Plata .900)', 1875, 1878),
         ],
       ),
       NumismaticPieceDefinition(
@@ -376,18 +376,15 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1933,
         motifs: [
-          NumismaticMotifRule(
-          'Morgan Dollar (1878-1921)',
+          NumismaticMotifRule('Morgan Dollar (1878-1921)',
           1878,
           1921,
           ),
-          NumismaticMotifRule(
-          'Peace Dollar (1921-1935)',
+          NumismaticMotifRule('Peace Dollar (1921-1935)',
           1921,
           1935,
           ),
-          NumismaticMotifRule(
-          'Trade Dollar (1873-1885)',
+          NumismaticMotifRule('Trade Dollar (1873-1885)',
           1873,
           1885,
           ),
@@ -417,7 +414,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1874,
         maxYear: 1889,
         motifs: [
-          NumismaticMotifRule('Three Dollar Piece Oro .900', 1874, 1889),
+          NumismaticMotifRule('Indian Princess Head (Oro .900)', 1874, 1889),
         ],
       ),
       NumismaticPieceDefinition(
@@ -426,7 +423,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1879,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Four Dollar Stella Oro .900 (Flowing Hair / Coiled Hair)', 1879, 1880),
+          NumismaticMotifRule('Stella - Flowing Hair / Coiled Hair (Oro .900)', 1879, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -462,7 +459,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1915,
         maxYear: 1915,
         motifs: [
-          NumismaticMotifRule('Panama-Pacific 50 Dollars Oro .900 (Octagonal / Round)', 1915),
+          NumismaticMotifRule('Panama-Pacific - Minerva / Búho (Oro .900)', 1915),
         ],
       ),
     ],
@@ -483,18 +480,15 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1934,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule(
-          'Lincoln Wheat Cent (1909-1958)',
+          NumismaticMotifRule('Lincoln Wheat Cent (1909-1958)',
           1934,
           1958,
           ),
-          NumismaticMotifRule(
-          '1943 Steel Cent (Acero bañado en zinc)',
+          NumismaticMotifRule('1943 Steel Cent (Acero bañado en zinc)',
           1943,
           1943,
           ),
-          NumismaticMotifRule(
-          'Lincoln Memorial Cent (1959-1982 Bronce)',
+          NumismaticMotifRule('Lincoln Memorial Cent (1959-1982 Bronce)',
           1959,
           1964,
           ),
@@ -507,18 +501,15 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1934,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule(
-          'Buffalo / Indian Head Nickel (1913-1938)',
+          NumismaticMotifRule('Buffalo / Indian Head Nickel (1913-1938)',
           1934,
           1938,
           ),
-          NumismaticMotifRule(
-          'Jefferson Nickel Estándar (1938-1942, 1946-1964)',
+          NumismaticMotifRule('Jefferson Nickel Estándar (1938-1942, 1946-1964)',
           1938,
           1964,
           ),
-          NumismaticMotifRule(
-          'Jefferson War Nickel Plata .350 (1942-1945 Mintmark sobre Monticello)',
+          NumismaticMotifRule('Jefferson War Nickel Plata .350 (1942-1945 Mintmark sobre Monticello)',
           1942,
           1945,
           ),
@@ -530,13 +521,11 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1934,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule(
-          'Winged Liberty Head "Mercury" Dime Plata .900 (1916-1945)',
+          NumismaticMotifRule('Winged Liberty Head "Mercury" Dime Plata .900 (1916-1945)',
           1934,
           1945,
           ),
-          NumismaticMotifRule(
-          'Roosevelt Dime Plata .900 (1946-1964)',
+          NumismaticMotifRule('Roosevelt Dime Plata .900 (1946-1964)',
           1946,
           1964,
           ),
@@ -557,18 +546,15 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1934,
         maxYear: 1964,
         motifs: [
-          NumismaticMotifRule(
-          'Walking Liberty Half Dollar Plata .900 (1916-1947)',
+          NumismaticMotifRule('Walking Liberty Half Dollar Plata .900 (1916-1947)',
           1934,
           1947,
           ),
-          NumismaticMotifRule(
-          'Franklin Half Dollar Plata .900 (1948-1963)',
+          NumismaticMotifRule('Franklin Half Dollar Plata .900 (1948-1963)',
           1948,
           1963,
           ),
-          NumismaticMotifRule(
-          'Kennedy Half Dollar Plata .900',
+          NumismaticMotifRule('Kennedy Half Dollar Plata .900',
           1964,
           1964,
           ),
@@ -675,13 +661,11 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1971,
         maxYear: 1981,
         motifs: [
-          NumismaticMotifRule(
-          'Washington Quarter Clad Estándar (1971-1974, 1977-1981)',
+          NumismaticMotifRule('Washington Quarter Clad Estándar (1971-1974, 1977-1981)',
           1971,
           1981,
           ),
-          NumismaticMotifRule(
-          'Bicentenario de los Estados Unidos - Tamborilero Colonial (1776-1976)',
+          NumismaticMotifRule('Bicentenario de los Estados Unidos - Tamborilero Colonial (1776-1976)',
           1975,
           1976,
           ),
@@ -693,13 +677,11 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1971,
         maxYear: 1981,
         motifs: [
-          NumismaticMotifRule(
-          'Kennedy Half Dollar Clad Cuproníquel (1971-1974, 1977-1981)',
+          NumismaticMotifRule('Kennedy Half Dollar Clad Cuproníquel (1971-1974, 1977-1981)',
           1971,
           1981,
           ),
-          NumismaticMotifRule(
-          'Bicentenario de los Estados Unidos - Independence Hall (1776-1976)',
+          NumismaticMotifRule('Bicentenario de los Estados Unidos - Independence Hall (1776-1976)',
           1975,
           1976,
           ),
@@ -711,18 +693,15 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1971,
         maxYear: 1981,
         motifs: [
-          NumismaticMotifRule(
-          'Eisenhower Dollar Clad - Águila Apolo 11 (1971-1974, 1977-1978)',
+          NumismaticMotifRule('Eisenhower Dollar Clad - Águila Apolo 11 (1971-1974, 1977-1978)',
           1971,
           1978,
           ),
-          NumismaticMotifRule(
-          'Eisenhower Bicentennial - Moon and Liberty Bell (1776-1976)',
+          NumismaticMotifRule('Eisenhower Bicentennial - Moon and Liberty Bell (1776-1976)',
           1975,
           1976,
           ),
-          NumismaticMotifRule(
-          'Susan B. Anthony Dollar (1979-1981)',
+          NumismaticMotifRule('Susan B. Anthony Dollar (1979-1981)',
           1979,
           1981,
           ),
@@ -773,33 +752,27 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 1982,
         maxYear: 1999,
         motifs: [
-          NumismaticMotifRule(
-          'Washington Quarter Clad Estándar (1982-1998)',
+          NumismaticMotifRule('Washington Quarter Clad Estándar (1982-1998)',
           1982,
           1998,
           ),
-          NumismaticMotifRule(
-          '50 State Quarters - Delaware',
+          NumismaticMotifRule('50 State Quarters - Delaware',
           1999,
           1999,
           ),
-          NumismaticMotifRule(
-          '50 State Quarters - Pennsylvania',
+          NumismaticMotifRule('50 State Quarters - Pennsylvania',
           1999,
           1999,
           ),
-          NumismaticMotifRule(
-          '50 State Quarters - New Jersey',
+          NumismaticMotifRule('50 State Quarters - New Jersey',
           1999,
           1999,
           ),
-          NumismaticMotifRule(
-          '50 State Quarters - Georgia',
+          NumismaticMotifRule('50 State Quarters - Georgia',
           1999,
           1999,
           ),
-          NumismaticMotifRule(
-          '50 State Quarters - Connecticut',
+          NumismaticMotifRule('50 State Quarters - Connecticut',
           1999,
           1999,
           ),
@@ -840,33 +813,27 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule(
-          'Lincoln Memorial (1959-2008)',
+          NumismaticMotifRule('Lincoln Memorial (1959-2008)',
           2000,
           2008,
           ),
-          NumismaticMotifRule(
-          'Lincoln Bicentennial - Birthplace',
+          NumismaticMotifRule('Lincoln Bicentennial - Birthplace',
           2009,
           2009,
           ),
-          NumismaticMotifRule(
-          'Lincoln Bicentennial - Formative Years in Indiana',
+          NumismaticMotifRule('Lincoln Bicentennial - Formative Years in Indiana',
           2009,
           2009,
           ),
-          NumismaticMotifRule(
-          'Lincoln Bicentennial - Professional Life in Illinois',
+          NumismaticMotifRule('Lincoln Bicentennial - Professional Life in Illinois',
           2009,
           2009,
           ),
-          NumismaticMotifRule(
-          'Lincoln Bicentennial - Presidency in Washington D.C.',
+          NumismaticMotifRule('Lincoln Bicentennial - Presidency in Washington D.C.',
           2009,
           2009,
           ),
-          NumismaticMotifRule(
-          'Union Shield - Escudo de la Unión (2010+)',
+          NumismaticMotifRule('Union Shield - Escudo de la Unión (2010+)',
           2010,
           2100,
           ),
@@ -878,33 +845,27 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         minYear: 2000,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule(
-          'Jefferson Nickel - Monticello (1938-2003)',
+          NumismaticMotifRule('Jefferson Nickel - Monticello (1938-2003)',
           2000,
           2003,
           ),
-          NumismaticMotifRule(
-          'Westward Journey - Peace Medal',
+          NumismaticMotifRule('Westward Journey - Peace Medal',
           2004,
           2004,
           ),
-          NumismaticMotifRule(
-          'Westward Journey - Keelboat',
+          NumismaticMotifRule('Westward Journey - Keelboat',
           2004,
           2004,
           ),
-          NumismaticMotifRule(
-          'Westward Journey - American Bison',
+          NumismaticMotifRule('Westward Journey - American Bison',
           2005,
           2005,
           ),
-          NumismaticMotifRule(
-          'Westward Journey - Ocean in View',
+          NumismaticMotifRule('Westward Journey - Ocean in View',
           2005,
           2005,
           ),
-          NumismaticMotifRule(
-          'Jefferson Nickel - Return to Monticello (2006+)',
+          NumismaticMotifRule('Jefferson Nickel - Return to Monticello (2006+)',
           2006,
           2100,
           ),
@@ -1076,8 +1037,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         maxYear: 2100,
         motifs: [
           // Sacagawea Dollar (2000-2008)
-          NumismaticMotifRule(
-          'Sacagawea Dollar - Águila en Vuelo (2000-2008)',
+          NumismaticMotifRule('Sacagawea Dollar - Águila en Vuelo (2000-2008)',
           2000,
           2008,
           ),

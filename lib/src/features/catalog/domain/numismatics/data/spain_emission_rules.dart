@@ -16,7 +16,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('1/16 Real (Medio Maravedí / Maravedí Cobre)', 1500, 1868),
+          NumismaticMotifRule('Medio Maravedí / Maravedí Cobre', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -25,7 +25,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('1/8 Real (2 Maravedís / 4 Maravedís Cobre)', 1500, 1868),
+          NumismaticMotifRule('2 Maravedís / 4 Maravedís Cobre', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -35,7 +35,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('Cuartillo de Real Plata / 8 Maravedís Cobre', 1500, 1868),
+          NumismaticMotifRule('Castillo y León / Maravedís', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -44,7 +44,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('Medio Real Plata', 1500, 1868),
+          NumismaticMotifRule('Plata Colonial', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -53,7 +53,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('1 Real de Plata', 1500, 1868),
+          NumismaticMotifRule('Plata Colonial', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -62,7 +62,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('2 Reales de Plata (Pistolete / Dos Reales)', 1500, 1868),
+          NumismaticMotifRule('Pistolete / Dos Reales', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -71,7 +71,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('4 Reales de Plata (Medio Duro)', 1500, 1868),
+          NumismaticMotifRule('Medio Duro', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -80,7 +80,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('8 Reales de Plata (Real de a Ocho / Columnario / Busto / Duro)', 1500, 1868),
+          NumismaticMotifRule('Real de a Ocho / Columnario / Busto / Duro', 1500, 1868),
         ],
       ),
     ],
@@ -100,7 +100,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1870,
         motifs: [
-          NumismaticMotifRule('1 Céntimo de Peseta (León rampante / Hispania)', 1870),
+          NumismaticMotifRule('Peseta (León rampante / Hispania)', 1870),
         ],
       ),
       NumismaticPieceDefinition(
@@ -109,7 +109,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1870,
         motifs: [
-          NumismaticMotifRule('2 Céntimos de Peseta (León rampante / Hispania)', 1870),
+          NumismaticMotifRule('Peseta (León rampante / Hispania)', 1870),
         ],
       ),
       NumismaticPieceDefinition(
@@ -118,7 +118,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1879,
         motifs: [
-          NumismaticMotifRule('5 Céntimos de Peseta (Perra Chica)', 1870, 1879),
+          NumismaticMotifRule('Peseta (Perra Chica)', 1870, 1879),
         ],
       ),
       NumismaticPieceDefinition(
@@ -127,7 +127,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1879,
         motifs: [
-          NumismaticMotifRule('10 Céntimos de Peseta (Perra Gorda)', 1870, 1879),
+          NumismaticMotifRule('Peseta (Perra Gorda)', 1870, 1879),
         ],
       ),
       NumismaticPieceDefinition(
@@ -136,7 +136,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1925,
         maxYear: 1937,
         motifs: [
-          NumismaticMotifRule('25 Céntimos con agujero (Carabela / Gallega)', 1925, 1937),
+          NumismaticMotifRule('con agujero (Carabela / Gallega)', 1925, 1937),
         ],
       ),
       NumismaticPieceDefinition(
@@ -145,7 +145,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('50 Céntimos de Plata .835', 1869, 1926),
+          NumismaticMotifRule('Plata .835', 1869, 1926),
         ],
       ),
       NumismaticPieceDefinition(
@@ -154,7 +154,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1937,
         motifs: [
-          NumismaticMotifRule('1 Peseta de Plata .835 (Hispania / Reyes)', 1869, 1937),
+          NumismaticMotifRule('Plata .835 (Hispania / Reyes)', 1869, 1937),
         ],
       ),
       NumismaticPieceDefinition(
@@ -163,7 +163,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1905,
         motifs: [
-          NumismaticMotifRule('2 Pesetas de Plata .835', 1869, 1905),
+          NumismaticMotifRule('Plata .835 Estándar', 1869, 1905),
         ],
       ),
       NumismaticPieceDefinition(
@@ -172,7 +172,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1899,
         motifs: [
-          NumismaticMotifRule('5 Pesetas de Plata .900 (Duro de Plata)', 1869, 1899),
+          NumismaticMotifRule('Duro de Plata (.900)', 1869, 1899),
         ],
       ),
       NumismaticPieceDefinition(
@@ -181,7 +181,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1878,
         maxYear: 1879,
         motifs: [
-          NumismaticMotifRule('10 Pesetas Oro .900 (Alfonso XII)', 1878, 1879),
+          NumismaticMotifRule('Alfonso XII (Oro .900)', 1878, 1879),
         ],
       ),
       NumismaticPieceDefinition(
@@ -190,7 +190,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1889,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('20 Pesetas Oro .900 (Alfonso XIII)', 1889, 1904),
+          NumismaticMotifRule('Alfonso XIII (Oro .900)', 1889, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -199,7 +199,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1876,
         maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('25 Pesetas Oro .900 (Alfonso XII)', 1876, 1881),
+          NumismaticMotifRule('Alfonso XII (Oro .900)', 1876, 1881),
         ],
       ),
       NumismaticPieceDefinition(
@@ -208,7 +208,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1897,
         motifs: [
-          NumismaticMotifRule('100 Pesetas Oro .900', 1870, 1897),
+          NumismaticMotifRule('Oro .900 Estándar', 1870, 1897),
         ],
       ),
     ],
@@ -228,7 +228,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1940,
         maxYear: 1953,
         motifs: [
-          NumismaticMotifRule('5 Céntimos Jinete Ibérico', 1940, 1953),
+          NumismaticMotifRule('Jinete Ibérico', 1940, 1953),
         ],
       ),
       NumismaticPieceDefinition(
@@ -237,7 +237,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1940,
         maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('10 Céntimos Jinete Ibérico', 1940, 1959),
+          NumismaticMotifRule('Jinete Ibérico', 1940, 1959),
         ],
       ),
       NumismaticPieceDefinition(
@@ -246,7 +246,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1949,
         maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('50 Céntimos Timón y Ancla con agujero', 1949, 1975),
+          NumismaticMotifRule('Timón y Ancla con agujero', 1949, 1975),
         ],
       ),
       NumismaticPieceDefinition(
@@ -255,7 +255,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1944,
         maxYear: 1981,
         motifs: [
-          NumismaticMotifRule('1 Peseta (Rubia de Franco / Juan Carlos I)', 1944, 1981),
+          NumismaticMotifRule('(Rubia de Franco / Juan Carlos I)', 1944, 1981),
         ],
       ),
       NumismaticPieceDefinition(
@@ -264,7 +264,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1953,
         maxYear: 1953,
         motifs: [
-          NumismaticMotifRule('2.50 Pesetas Franco', 1953),
+          NumismaticMotifRule('Franco', 1953),
         ],
       ),
       NumismaticPieceDefinition(
@@ -273,7 +273,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1949,
         maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('5 Pesetas (Duro de Franco / Juan Carlos I)', 1949, 1980),
+          NumismaticMotifRule('(Duro de Franco / Juan Carlos I)', 1949, 1980),
         ],
       ),
       NumismaticPieceDefinition(
@@ -282,7 +282,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1957,
         maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('25 Pesetas con agujero (Corona / Juan Carlos I)', 1957, 1980),
+          NumismaticMotifRule('con agujero (Corona / Juan Carlos I)', 1957, 1980),
         ],
       ),
       NumismaticPieceDefinition(
@@ -291,7 +291,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1957,
         maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('50 Pesetas (Franco / Juan Carlos I)', 1957, 1980),
+          NumismaticMotifRule('(Franco / Juan Carlos I)', 1957, 1980),
         ],
       ),
       NumismaticPieceDefinition(
@@ -301,13 +301,11 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1966,
         maxYear: 1975,
         motifs: [
-          NumismaticMotifRule(
-          '100 Pesetas Franco Plata .800',
+          NumismaticMotifRule('Franco Plata .800',
           1966,
           1966,
           ),
-          NumismaticMotifRule(
-          '100 Pesetas Juan Carlos I Cuproníquel',
+          NumismaticMotifRule('Juan Carlos I Cuproníquel',
           1975,
           1975,
           ),
@@ -330,7 +328,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1983,
         maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('10 Céntimos Aluminio', 1983, 1998),
+          NumismaticMotifRule('Aluminio', 1983, 1998),
         ],
       ),
       NumismaticPieceDefinition(
@@ -339,7 +337,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1980,
         maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('50 Céntimos España 82', 1980, 1989),
+          NumismaticMotifRule('España 82', 1980, 1989),
         ],
       ),
       NumismaticPieceDefinition(
@@ -348,7 +346,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1982,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('1 Peseta Aluminio (Grande 1982-1989 / Lenteja 1989-2001)', 1982, 2001),
+          NumismaticMotifRule('Grande / Lenteja', 1982, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -357,7 +355,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1982,
         maxYear: 1984,
         motifs: [
-          NumismaticMotifRule('2 Pesetas Aluminio España 82', 1982, 1984),
+          NumismaticMotifRule('España 82', 1982, 1984),
         ],
       ),
       NumismaticPieceDefinition(
@@ -366,7 +364,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1989,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('5 Pesetas Bronce de aluminio', 1989, 2001),
+          NumismaticMotifRule('Bronce de aluminio', 1989, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -375,7 +373,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1983,
         maxYear: 2000,
         motifs: [
-          NumismaticMotifRule('10 Pesetas Cuproníquel', 1983, 2000),
+          NumismaticMotifRule('Cuproníquel', 1983, 2000),
         ],
       ),
       NumismaticPieceDefinition(
@@ -384,8 +382,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1990,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule(
-          'Corona Real y Letra M (1990-2000)',
+          NumismaticMotifRule('Corona Real y Letra M (1990-2000)',
           1990,
           2000,
           ),
@@ -407,7 +404,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1990,
         maxYear: 2000,
         motifs: [
-          NumismaticMotifRule('50 Pesetas Flor de Lis / Pantalla', 1990, 2000),
+          NumismaticMotifRule('Flor de Lis / Pantalla', 1990, 2000),
         ],
       ),
       NumismaticPieceDefinition(
@@ -416,7 +413,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1982,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('100 Pesetas (20 Duros)', 1982, 2001),
+          NumismaticMotifRule('(20 Duros)', 1982, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -425,7 +422,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1986,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('200 Pesetas Cuproníquel', 1986, 2001),
+          NumismaticMotifRule('Cuproníquel', 1986, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -434,7 +431,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1987,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('500 Pesetas Bronce de aluminio', 1987, 2001),
+          NumismaticMotifRule('Bronce de aluminio', 1987, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -533,8 +530,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule(
-          'Efigie del Rey Juan Carlos I / Rey Felipe VI (Circulación Estándar)',
+          NumismaticMotifRule('Efigie del Rey Juan Carlos I / Rey Felipe VI (Circulación Estándar)',
           1999,
           2100,
           ),
@@ -573,7 +569,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2002,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('10 Euros Plata Conmemorativa', 2002, 2100),
+          NumismaticMotifRule('Plata Conmemorativa', 2002, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -582,7 +578,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2002,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('12 Euros Plata Conmemorativa', 2002, 2010),
+          NumismaticMotifRule('Plata Conmemorativa', 2002, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -591,7 +587,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2010,
         maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('20 Euros Plata Conmemorativa', 2010, 2011),
+          NumismaticMotifRule('Plata Conmemorativa', 2010, 2011),
         ],
       ),
       NumismaticPieceDefinition(
@@ -600,7 +596,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2012,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('30 Euros Plata Conmemorativa', 2012, 2020),
+          NumismaticMotifRule('Plata Conmemorativa', 2012, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -609,7 +605,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('40 Euros Plata Conmemorativa', 2021, 2100),
+          NumismaticMotifRule('Plata Conmemorativa', 2021, 2100),
         ],
       ),
     ],
@@ -629,7 +625,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('1 Céntimo de Euro Común (Globo Terráqueo)', 1999, 2100),
+          NumismaticMotifRule('Euro Común (Globo Terráqueo)', 1999, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -638,7 +634,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('2 Céntimos de Euro Común (Globo Terráqueo)', 1999, 2100),
+          NumismaticMotifRule('Euro Común (Globo Terráqueo)', 1999, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -647,7 +643,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('5 Céntimos de Euro Común (Globo Terráqueo)', 1999, 2100),
+          NumismaticMotifRule('Euro Común (Globo Terráqueo)', 1999, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -656,7 +652,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('10 Céntimos de Euro Común (Mapa Europeo)', 1999, 2100),
+          NumismaticMotifRule('Euro Común (Mapa Europeo)', 1999, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -665,7 +661,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('20 Céntimos de Euro Común (Mapa Europeo)', 1999, 2100),
+          NumismaticMotifRule('Euro Común (Mapa Europeo)', 1999, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -674,7 +670,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('50 Céntimos de Euro Común (Mapa Europeo)', 1999, 2100),
+          NumismaticMotifRule('Euro Común (Mapa Europeo)', 1999, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -683,7 +679,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('1 Euro Común (Mapa Europeo)', 1999, 2100),
+          NumismaticMotifRule('Común (Mapa Europeo)', 1999, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -692,8 +688,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1999,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule(
-          'Mapa de Europa / Unión Europea (Cara Común Estándar)',
+          NumismaticMotifRule('Mapa de Europa / Unión Europea (Cara Común Estándar)',
           1999,
           2100,
           ),

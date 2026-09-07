@@ -660,7 +660,7 @@ void main() {
       expect(cards.length, 1);
       final card = cards.first;
       expect(card.type, AuditCardType.numismaticEmissionOutlier);
-      expect(card.question, contains('Esperado: "Nuevo Peso"'));
+      expect(card.question, contains('Esperado: "Nuevo Peso - Anillo de los Días (Piedra del Sol)"'));
 
       late BuildContext buildCtx;
       late WidgetRef widgetRef;
@@ -691,15 +691,15 @@ void main() {
       card.onFix(buildCtx, widgetRef).then((res) => fixResult = res);
       await tester.pumpAndSettle();
 
-      // Should NOT open any dialog or AppWheelPicker because there is only 1 canonical motif ("Nuevo Peso")
+      // Should NOT open any dialog or AppWheelPicker because there is only 1 canonical motif ("Nuevo Peso - Anillo de los Días (Piedra del Sol)")
       expect(find.byType(AlertDialog), findsNothing);
       expect(find.byType(AppWheelPicker<String>), findsNothing);
       expect(fixResult, isTrue);
 
-      // Verify the entity was updated with "Nuevo Peso" in the database
+      // Verify the entity was updated with "Nuevo Peso - Anillo de los Días (Piedra del Sol)" in the database
       final updatedMags = await (db.select(db.instanceMagnitudesTable)..where((tbl) => tbl.instanceId.equals('e_n2'))).get();
       final motifMag = updatedMags.firstWhere((m) => m.propertyName == 'Motivo');
-      expect(motifMag.stringValue, 'Nuevo Peso');
+      expect(motifMag.stringValue, 'Nuevo Peso - Anillo de los Días (Piedra del Sol)');
 
       // Allow AppToast timer to complete
       await tester.pump(const Duration(seconds: 4));

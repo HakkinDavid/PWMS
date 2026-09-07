@@ -10,7 +10,6 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/num
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/models/numismatic_models.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_domain_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_matrix.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/rules/numismatic_outlier_detector.dart';
 
 void main() {
   group('Numismatic Data Migration Integrity Tests', () {
@@ -124,7 +123,7 @@ void main() {
       ));
       expect(res2.matchingPiece, isNotNull);
       expect(res2.availableMotifs.length, equals(5)); // 5 state quarters for 2004
-      expect(res2.availableMotifs, contains('50 State Quarters - Florida (2004)'));
+      expect(res2.availableMotifs, contains('50 State Quarters - Florida'));
 
       // Test Spain 1994 25 Pesetas (País Vasco)
       final res3 = NumismaticMatrix.evaluate(const NumismaticQueryContext(
@@ -134,7 +133,7 @@ void main() {
         currencyCode: 'ESP',
       ));
       expect(res3.matchingPiece, isNotNull);
-      expect(res3.availableMotifs, contains('País Vasco (1994)'));
+      expect(res3.availableMotifs, contains('País Vasco'));
     });
 
     test('Outlier detector alerts when strictly commemorative coin is missing motif', () {
@@ -170,7 +169,7 @@ void main() {
           InstanceMagnitude(id: 'm3', instanceId: 'inst-sp1-1994', propertyName: 'Divisa', dataType: 'string', stringValue: 'ESP'),
           InstanceMagnitude(id: 'm4', instanceId: 'inst-sp1-1994', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 1.0),
           InstanceMagnitude(id: 'm5', instanceId: 'inst-sp1-1994', propertyName: 'Material', dataType: 'string', stringValue: 'Aluminio'),
-          InstanceMagnitude(id: 'm6', instanceId: 'inst-sp1-1994', propertyName: 'Motivo', dataType: 'string', stringValue: '1 Peseta Aluminio (Grande 1982-1989 / Lenteja 1989-2001)'),
+          InstanceMagnitude(id: 'm6', instanceId: 'inst-sp1-1994', propertyName: 'Motivo', dataType: 'string', stringValue: 'Grande / Lenteja'),
         ],
       );
 

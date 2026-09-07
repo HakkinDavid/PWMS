@@ -653,8 +653,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         maxYear: 2019,
         isBanknote: true,
         motifs: [
-          NumismaticMotifRule(
-          'Nezahualcóyotl / Tenochtitlan (Circulación Estándar)',
+          NumismaticMotifRule('Nezahualcóyotl / Tenochtitlan (Circulación Estándar)',
           2006,
           2019,
           ),
@@ -669,8 +668,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         maxYear: 2019,
         isBanknote: true,
         motifs: [
-          NumismaticMotifRule(
-          'Sor Juana Inés de la Cruz / Hacienda de Panoaya (Circulación Estándar)',
+          NumismaticMotifRule('Sor Juana Inés de la Cruz / Hacienda de Panoaya (Circulación Estándar)',
           2006,
           2019,
           ),
@@ -716,8 +714,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         maxYear: 2024,
         isBanknote: true,
         motifs: [
-          NumismaticMotifRule(
-          'Benito Juárez / Monte Albán (Familia F1)',
+          NumismaticMotifRule('Benito Juárez / Monte Albán (Familia F1)',
           2020,
           2024,
           ),

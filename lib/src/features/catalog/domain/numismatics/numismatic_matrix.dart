@@ -8,8 +8,6 @@ import 'numismatic_parser.dart';
 class NumismaticMatrix {
   NumismaticMatrix._();
 
-  static List<NumismaticEmissionRuleData> get _emissionRules => NumismaticRulesRegistry.allRules;
-
   /// Exposes numeric and fractional denomination comparator.
   static bool matchesDenomination(String d1, String d2) =>
       NumismaticEmissionRuleData.matchesDenomination(d1, d2);

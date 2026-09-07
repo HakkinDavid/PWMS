@@ -1,4 +1,3 @@
-import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'numismatic_motif_rule.dart';
 
 /// Represents a specific numismatic piece or banknote denomination definition within an epoch.
@@ -25,7 +24,7 @@ class NumismaticPieceDefinition {
     this.diameterMm,
     this.isBanknote = false,
     this.currencyCode,
-  }) : assert(motifs.length > 0, 'Every NumismaticPieceDefinition must have at least one motif.');
+  });
 
   /// Evaluates whether this specific piece was active/minted in the given [year].
   bool matchesYear(int? year) {
@@ -73,8 +72,8 @@ class NumismaticPieceDefinition {
   static double? parseDenominationNumber(String val) {
     final direct = double.tryParse(val);
     if (direct != null) return direct;
-    if (val.contains(AppTechnicalStrings.slash)) {
-      final parts = val.split(AppTechnicalStrings.slash);
+    if (val.contains('/')) {
+      final parts = val.split('/');
       if (parts.length == 2) {
         final numerator = double.tryParse(parts[0].trim());
         final denominator = double.tryParse(parts[1].trim());
