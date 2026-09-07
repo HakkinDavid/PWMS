@@ -71,9 +71,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['GTQ'],
     defaultCurrency: 'GTQ',
-    commemorativeReasons: [
-      'Paz Firme y Duradera',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Aluminio-Magnesio (Magnalio)'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Cuproníquel'),
@@ -85,6 +82,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         material: 'Latón',
         allowedMaterials: ['Latón', 'Bimetálica'],
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Acuerdo de Paz Firme y Duradera (1996+)', 1996, 2100),
         ],
       ),
@@ -160,9 +158,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2011,
     validCurrencies: ['COP'],
     defaultCurrency: 'COP',
-    commemorativeReasons: [
-      'Árbol de Guacarí',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '1', material: 'Bronce de aluminio'),
       NumismaticPieceDefinition(denomination: '2', material: 'Bronce de aluminio'),
@@ -176,6 +171,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '500',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Árbol de Guacarí (Samanea saman)', 1993, 2011),
         ],
       ),
@@ -189,19 +185,12 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['COP'],
     defaultCurrency: 'COP',
-    commemorativeDenominations: {'10000', '20000'},
-    commemorativeReasons: [
-      'Biodiversidad de Colombia',
-      'Bicentenario de la Independencia (2019)',
-      'Policarpa Salavarrieta (2022)',
-      'Batalla Naval del Lago de Maracaibo (2023)',
-      'Museo Nacional de Colombia (2023)',
-    ],
     pieces: [
       NumismaticPieceDefinition(
         denomination: '50',
         material: 'Acero bañado en níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Oso de Anteojos (Tremarctos ornatus)', 2012, 2100),
         ],
       ),
@@ -209,6 +198,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Bronce de aluminio',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Frailejón (Espeletia grandiflora)', 2012, 2100),
         ],
       ),
@@ -216,6 +206,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '200',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Guacamaya Bandera (Ara macao)', 2012, 2100),
         ],
       ),
@@ -223,6 +214,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '500',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Rana de Cristal (Anura Centrolenidae)', 2012, 2100),
         ],
       ),
@@ -230,6 +222,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1000',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Tortuga Caguama (Caretta caretta)', 2012, 2100),
         ],
       ),
@@ -237,6 +230,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '10000',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de la Independencia de Colombia (2019)', 2019),
           NumismaticMotifRule('Bicentenario del Sacrificio de Policarpa Salavarrieta (2022)', 2022),
           NumismaticMotifRule('Bicentenario de la Batalla Naval del Lago de Maracaibo (2023)', 2023),
@@ -246,6 +240,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '20000',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario del Museo Nacional de Colombia (2023)', 2023),
         ],
       ),
@@ -279,9 +274,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1967,
     validCurrencies: ['CAD'],
     defaultCurrency: 'CAD',
-    commemorativeReasons: [
-      'Centennial Coinage (1967)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Níquel'),
@@ -290,6 +282,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.25',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Lince del Centenario (1967)', 1967),
         ],
       ),
@@ -297,6 +290,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.50',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Lobo Aullador del Centenario (1967)', 1967),
         ],
       ),
@@ -304,6 +298,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Ganso de Canadá del Centenario (1967)', 1967),
         ],
       ),
@@ -317,11 +312,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1986,
     validCurrencies: ['CAD'],
     defaultCurrency: 'CAD',
-    commemorativeReasons: [
-      'RCMP Centennial (1973)',
-      'Winnipeg Centennial (1974)',
-      'Constitution Act (1982)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Níquel'),
@@ -330,6 +320,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.25',
         material: 'Níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Policía Montada RCMP (1973)', 1973),
         ],
       ),
@@ -338,6 +329,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de Manitoba (1970)', 1970),
           NumismaticMotifRule('Centenario de Columbia Británica (1971)', 1971),
           NumismaticMotifRule('Centenario de la Isla del Príncipe Eduardo (1973)', 1973),
@@ -356,11 +348,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1999,
     validCurrencies: ['CAD'],
     defaultCurrency: 'CAD',
-    commemorativeReasons: [
-      '125 Aniversario de Canadá (1992)',
-      'Millennium Series (1999)',
-      'Creación de Nunavut (1999)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Cuproníquel'),
@@ -369,6 +356,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.25',
         material: 'Níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('125 Aniversario de la Confederación de Canadá (1992)', 1992),
           NumismaticMotifRule('Millennium Series - 12 Diseños Mensuales (1999)', 1999),
         ],
@@ -378,6 +366,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Acero bañado en latón',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('125 Aniversario de Canadá (1992)', 1992),
           NumismaticMotifRule('Monumento Nacional a la Guerra (1994)', 1994),
           NumismaticMotifRule('Mantenimiento de la Paz de la ONU (1995)', 1995),
@@ -387,6 +376,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Creación del Territorio de Nunavut (1999)', 1999),
         ],
       ),
@@ -400,12 +390,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['CAD'],
     defaultCurrency: 'CAD',
-    commemorativeReasons: [
-      'Lucky Loonie',
-      'Vancouver 2010 Winter Olympics',
-      'Canada 150',
-      'Toonie Commemorative Series',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero bañado en cobre'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Acero bañado en níquel'),
@@ -414,6 +398,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.25',
         material: 'Acero bañado en níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Millennium Series - 12 Diseños (2000)', 2000),
           NumismaticMotifRule('Amapola del Día del Recuerdo (2004)', 2004),
           NumismaticMotifRule('Juegos Olímpicos de Invierno Vancouver 2010 (2007-2010)', 2007, 2010),
@@ -426,6 +411,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Acero bañado en latón',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Lucky Loonie (2004, 2008, 2010, 2012, 2014, 2016)', 2004, 2016),
           NumismaticMotifRule('Terry Fox (2005)', 2005),
           NumismaticMotifRule('Centenario de los Montreal Canadiens (2009)', 2009),
@@ -440,6 +426,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Camino del Conocimiento (2000)', 2000),
           NumismaticMotifRule('10 Aniversario del Toonie (2006)', 2006),
           NumismaticMotifRule('400 Años de la Ciudad de Quebec (2008)', 2008),
@@ -466,10 +453,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1961,
     validCurrencies: ['CUP'],
     defaultCurrency: 'CUP',
-    commemorativeDenominations: {'1'},
-    commemorativeReasons: [
-      'Centenario del Natalicio de José Martí (1953)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Cuproníquel'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Cuproníquel'),
@@ -481,6 +464,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario del Natalicio de José Martí (1953)', 1953),
         ],
       ),
@@ -499,10 +483,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1993,
     validCurrencies: ['CUP'],
     defaultCurrency: 'CUP',
-    commemorativeDenominations: {'3'},
-    commemorativeReasons: [
-      'Che Guevara',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Aluminio'),
@@ -514,6 +494,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '3',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Ernesto Che Guevara - Hasta la Victoria Siempre', 1983, 1993),
         ],
       ),
@@ -527,12 +508,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2020,
     validCurrencies: ['CUP', 'CUC'],
     defaultCurrency: 'CUP',
-    commemorativeDenominations: {'1', '3', '5'},
-    commemorativeReasons: [
-      'Héroes de la Revolución Cubana',
-      'Che Guevara',
-      'Antonio Maceo',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Aluminio'),
@@ -544,6 +519,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('José Martí', 1994, 2020),
         ],
       ),
@@ -551,6 +527,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '3',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Ernesto Che Guevara', 1994, 2020),
         ],
       ),
@@ -558,6 +535,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '5',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Antonio Maceo - Protesta de Baraguá', 1994, 2020),
         ],
       ),
@@ -571,10 +549,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['CUP'],
     defaultCurrency: 'CUP',
-    commemorativeDenominations: {'1', '3', '5'},
-    commemorativeReasons: [
-      'Héroes Nacionales',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.05', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '0.20', material: 'Acero bañado en latón'),
@@ -582,6 +556,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Acero bañado en níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('José Martí', 2021, 2100),
         ],
       ),
@@ -589,6 +564,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '3',
         material: 'Acero bañado en níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Ernesto Che Guevara', 2021, 2100),
         ],
       ),
@@ -596,6 +572,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '5',
         material: 'Acero bañado en latón',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Antonio Maceo', 2021, 2100),
         ],
       ),
@@ -626,11 +603,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1969,
     validCurrencies: ['ARM'],
     defaultCurrency: 'ARM',
-    commemorativeDenominations: {'25', '50', '100'},
-    commemorativeReasons: [
-      'Sesquicentenario de la Revolución de Mayo (1960)',
-      'Sesquicentenario de la Independencia (1966)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Bronce'),
@@ -647,6 +619,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '25',
         material: 'Acero',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Sesquicentenario de la Revolución de Mayo (1960)', 1960),
         ],
       ),
@@ -654,6 +627,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '50',
         material: 'Acero',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Reorganización Nacional (1962)', 1962),
           NumismaticMotifRule('Sesquicentenario de la Declaración de la Independencia (1966)', 1966),
         ],
@@ -662,6 +636,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Acero',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Sesquicentenario de la Declaración de la Independencia (1966)', 1966),
         ],
       ),
@@ -675,12 +650,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1983,
     validCurrencies: ['ARL'],
     defaultCurrency: 'ARL',
-    commemorativeDenominations: {'20', '50', '100'},
-    commemorativeReasons: [
-      'Mundial de Fútbol Argentina 1978',
-      'Bicentenario de San Martín (1978)',
-      'Centenario de la Campaña del Desierto (1979)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce de aluminio'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Bronce de aluminio'),
@@ -694,6 +663,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '20',
         material: 'Bronce de aluminio',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio José María Minella', 1978),
           NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Monumental', 1978),
           NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín (1978)', 1978),
@@ -703,6 +673,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '50',
         material: 'Bronce de aluminio',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Ciudad de Mendoza', 1978),
           NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín (1978)', 1978),
         ],
@@ -711,6 +682,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Bronce de aluminio',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Monumental', 1978),
           NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín (1978)', 1978),
           NumismaticMotifRule('Centenario de la Campaña del Desierto (1979)', 1979),
@@ -769,12 +741,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2016,
     validCurrencies: ['ARS'],
     defaultCurrency: 'ARS',
-    commemorativeReasons: [
-      'Bicentenario de la Revolución de Mayo (2010)',
-      'Bicentenario de la Primera Moneda Patria (2013)',
-      'Guerra de Malvinas (2012)',
-      'Bicentenario de la Independencia (2016)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce de aluminio'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Bronce de aluminio'),
@@ -784,6 +750,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.50',
         material: 'Bronce de aluminio',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Convención Nacional Constituyente (1994)', 1994),
           NumismaticMotifRule('50 Aniversario de UNICEF (1994)', 1994),
           NumismaticMotifRule('50 Aniversario del Voto Femenino (1997)', 1997),
@@ -796,6 +763,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Pucará de Tilcara (2010)', 2010),
           NumismaticMotifRule('Bicentenario de la Revolución de Mayo - El Palmar (2010)', 2010),
           NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Aconcagua (2010)', 2010),
@@ -812,6 +780,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de la Creación de la Bandera Nacional (2012)', 2012),
           NumismaticMotifRule('30 Aniversario de la Guerra de Malvinas (2012)', 2012),
           NumismaticMotifRule('Bicentenario de la Declaración de la Independencia (2016)', 2016),
@@ -830,14 +799,12 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['ARS'],
     defaultCurrency: 'ARS',
-    commemorativeReasons: [
-      'Serie Árboles de la República Argentina',
-    ],
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
         material: 'Acero bañado en cobre',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Jacarandá (Jacaranda mimosifolia)', 2017, 2100),
         ],
       ),
@@ -845,6 +812,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '2',
         material: 'Acero bañado en latón',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Palo Borracho (Ceiba speciosa)', 2017, 2100),
         ],
       ),
@@ -852,6 +820,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '5',
         material: 'Acero bañado en níquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Arrayán (Luma apiculata)', 2017, 2100),
         ],
       ),
@@ -859,6 +828,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '10',
         material: 'Alpaca (Plata alemana)',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Caldén (Prosopis caldenia)', 2018, 2100),
         ],
       ),
@@ -896,9 +866,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1985,
     validCurrencies: ['BRB', 'BRC'],
     defaultCurrency: 'BRB',
-    commemorativeReasons: [
-      'Sesquicentenário da Independência do Brasil (1972)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.10', material: 'Bronce de aluminio'),
       NumismaticPieceDefinition(denomination: '0.20', material: 'Bronce de aluminio'),
@@ -909,6 +876,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '5',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Sesquicentenário da Independência do Brasil (1972)', 1972),
         ],
       ),
@@ -916,6 +884,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '10',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Sesquicentenário da Independência do Brasil (1972)', 1972),
         ],
       ),
@@ -923,6 +892,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '20',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Sesquicentenário da Independência do Brasil (1972)', 1972),
           NumismaticMotifRule('Centenário da Imigração Italiana (1975)', 1975),
         ],
@@ -938,10 +908,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1993,
     validCurrencies: ['BRN', 'BRE', 'BRR'],
     defaultCurrency: 'BRN',
-    commemorativeReasons: [
-      'Centenário da Abolição da Escravidão (1988)',
-      'Centenário da Proclamação da República (1989)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Acero inoxidable'),
@@ -955,6 +921,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Acero inoxidable',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenário da Abolição da Escravidão - Lei Áurea (1988)', 1988),
         ],
       ),
@@ -962,6 +929,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '200',
         material: 'Acero inoxidable',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenário da Proclamação da República (1989)', 1989),
         ],
       ),
@@ -978,10 +946,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1997,
     validCurrencies: ['BRL'],
     defaultCurrency: 'BRL',
-    commemorativeReasons: [
-      '50 Anos da FAO (1995)',
-      '30 Anos do Banco Central do Brasil (1995)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Acero inoxidable'),
@@ -989,6 +953,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.10',
         material: 'Acero inoxidable',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('FAO - 50 Anos da FAO (1995)', 1995),
         ],
       ),
@@ -996,6 +961,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.25',
         material: 'Acero inoxidable',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('FAO - 50 Anos da FAO (1995)', 1995),
         ],
       ),
@@ -1004,6 +970,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Acero inoxidable',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('30 Anos do Banco Central do Brasil (1995)', 1995),
         ],
       ),
@@ -1017,13 +984,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['BRL'],
     defaultCurrency: 'BRL',
-    commemorativeReasons: [
-      'Derechos Humanos (1998)',
-      'Centenario de JK (2002)',
-      'Banco Central do Brasil',
-      'Juegos Olímpicos Río 2016',
-      '25 Años Plano Real (2019)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero bañado en cobre'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Acero bañado en cobre'),
@@ -1034,6 +994,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('50 Aniversario de la Declaración Universal de los Derechos Humanos (1998)', 1998),
           NumismaticMotifRule('Centenario de Juscelino Kubitschek (2002)', 2002),
           NumismaticMotifRule('40 Aniversario del Banco Central do Brasil (2005)', 2005),
@@ -1138,11 +1099,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['CLP'],
     defaultCurrency: 'CLP',
-    commemorativeReasons: [
-      'Pueblos Originarios de Chile',
-      'Cardenal Raúl Silva Henríquez',
-      'Ángel de la Libertad',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '1', material: 'Aluminio'),
       NumismaticPieceDefinition(
@@ -1155,6 +1111,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         material: 'Bronce de aluminio',
         allowedMaterials: ['Bronce de aluminio', 'Aluminio-Bronce'],
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bernardo O\'Higgins', 1975, 2100),
           NumismaticMotifRule('Ángel de la Libertad (1976-1990)', 1976, 1990),
         ],
@@ -1164,6 +1121,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         material: 'Bronce de aluminio',
         allowedMaterials: ['Bronce de aluminio', 'Aluminio-Bronce'],
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bernardo O\'Higgins (Forma Decagonal)', 1981, 2100),
         ],
       ),
@@ -1171,6 +1129,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Pueblos Originarios - Mujer Mapuche', 2001, 2100),
           NumismaticMotifRule('Escudo Nacional de 8 Lados (1981-2000)', 1981, 2000),
         ],
@@ -1179,6 +1138,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '500',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Cardenal Raúl Silva Henríquez', 2000, 2100),
         ],
       ),
@@ -1209,11 +1169,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1984,
     validCurrencies: ['PEH'],
     defaultCurrency: 'PEH',
-    commemorativeDenominations: {'100'},
-    commemorativeReasons: [
-      'Túpac Amaru II',
-      'Centenario de la Guerra del Pacífico (1979)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Cobre'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Cobre'),
@@ -1225,6 +1180,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Libertad Parada', 1863, 1969),
           NumismaticMotifRule('Túpac Amaru II (1970-1977)', 1970, 1977),
         ],
@@ -1234,6 +1190,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '5',
         material: 'Oro',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Almirante Miguel Grau', 1970, 1977),
         ],
       ),
@@ -1241,6 +1198,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '10',
         material: 'Oro',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Túpac Amaru II', 1977, 1984),
         ],
       ),
@@ -1250,6 +1208,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Oro',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Guerra del Pacífico (1979)', 1979),
         ],
       ),
@@ -1263,9 +1222,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1990,
     validCurrencies: ['PEI'],
     defaultCurrency: 'PEI',
-    commemorativeReasons: [
-      'Héroes Nacionales del Perú',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Aluminio'),
@@ -1275,6 +1231,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Latón',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Gran Almirante Miguel Grau', 1985, 1988),
         ],
       ),
@@ -1282,6 +1239,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '5',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Gran Almirante Miguel Grau', 1985, 1988),
         ],
       ),
@@ -1290,6 +1248,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '50',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Andrés Avelino Cáceres', 1989, 1990),
         ],
       ),
@@ -1297,6 +1256,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('César Vallejo', 1989, 1990),
         ],
       ),
@@ -1311,13 +1271,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['PEN'],
     defaultCurrency: 'PEN',
-    commemorativeReasons: [
-      'Serie Riqueza y Orgullo del Perú',
-      'Serie Recursos Naturales del Perú',
-      'Serie Fauna Silvestre Amenazada del Perú',
-      'Serie Constructores de la República',
-      'Serie La Mujer en el Proceso de Independencia',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Aluminio'),
@@ -1328,6 +1281,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Alpaca (Plata alemana)',
         motifs: [
+          NumismaticMotifRule.standard(),
           // Serie Riqueza y Orgullo del Perú (2010-2016)
           NumismaticMotifRule('Tumi de Oro (Lambayeque)', 2010),
           NumismaticMotifRule('Sarcófagos de Karajía (Amazonas)', 2010),
@@ -1416,12 +1370,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2016,
     validCurrencies: ['GBP'],
     defaultCurrency: 'GBP',
-    commemorativeReasons: [
-      'Beatrix Potter Series',
-      'London 2012 Olympic Series',
-      'Kew Gardens 250th Anniversary',
-      'British History Commemoratives',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.005', material: 'Bronce'),
       NumismaticPieceDefinition(
@@ -1449,6 +1397,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.50',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Ingreso a la Comunidad Económica Europea EEC (1973)', 1973),
           NumismaticMotifRule('Presidencia Británica de la CEE (1992-1993)', 1992, 1993),
           NumismaticMotifRule('50 Aniversario del Día D desembarco de Normandía (1994)', 1994),
@@ -1476,6 +1425,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Níquel-Latón',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Escudos de Armas del Reino Unido (1983, 1993, 2003, 2008)', 1983, 2008),
           NumismaticMotifRule('Puentes del Reino Unido (2004-2007)', 2004, 2007),
           NumismaticMotifRule('Ciudades Capitales Británicas (2010-2011)', 2010, 2011),
@@ -1487,6 +1437,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Desarrollo de la Tecnología (1997+)', 1997, 2015),
           NumismaticMotifRule('Rugby World Cup (1999)', 1999),
           NumismaticMotifRule('Centenario de la Radio Transatlántica de Marconi (2001)', 2001),
@@ -1522,12 +1473,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['GBP'],
     defaultCurrency: 'GBP',
-    commemorativeReasons: [
-      'Brexit (2020)',
-      'Pride UK 50th Anniversary',
-      'King Charles III Coronation',
-      'British Cultural Icons',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero bañado en cobre'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Acero bañado en cobre'),
@@ -1538,6 +1483,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '0.50',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Sir Isaac Newton (2017)', 2017),
           NumismaticMotifRule('Centenario de la Ley de Representación Popular (2018)', 2018),
           NumismaticMotifRule('Stephen Hawking (2019)', 2019),
@@ -1552,6 +1498,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nations of the Crown (2017+)', 2017, 2022),
           NumismaticMotifRule('Flora y Fauna Británica - Abejas de Carlos III (2023+)', 2023, 2100),
         ],
@@ -1560,6 +1507,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Jane Austen (2017)', 2017),
           NumismaticMotifRule('Centenario de la RAF Royal Air Force (2018)', 2018),
           NumismaticMotifRule('75 Aniversario del Día D (2019)', 2019),
@@ -1626,12 +1574,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2001,
     validCurrencies: ['FRF'],
     defaultCurrency: 'FRF',
-    commemorativeDenominations: {'50'},
-    commemorativeReasons: [
-      'Bicentenaire de la Révolution',
-      'Hercule de Dupré',
-      'Grands Personnages de France',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Bronce de aluminio'),
@@ -1645,6 +1587,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '10',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Jean Monnet (1988)', 1988),
           NumismaticMotifRule('Bicentenario de la Revolución Francesa (1989)', 1989),
           NumismaticMotifRule('Centenario de la Torre Eiffel (1989)', 1989),
@@ -1657,6 +1600,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '20',
         material: 'Trimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Juegos Olímpicos de Albertville 1992 - Pierre de Coubertin (1992)', 1992),
           NumismaticMotifRule('Juegos del Mediterráneo (1993)', 1993),
         ],
@@ -1665,6 +1609,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '50',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Hercule de Dupré (1974-1980)', 1974, 1980),
         ],
       ),
@@ -1672,6 +1617,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '100',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Marie Curie (1984)', 1984),
           NumismaticMotifRule('Émile Zola (1985)', 1985),
           NumismaticMotifRule('Estatua de la Libertad (1986)', 1986),
@@ -1742,10 +1688,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1974,
     validCurrencies: ['DEM', 'DDM'],
     defaultCurrency: 'DEM',
-    commemorativeReasons: [
-      'Juegos Olímpicos de Múnich 1972',
-      'Grandes Personalidades de la Historia Alemana',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero bañado en cobre'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Bronce'),
@@ -1758,6 +1700,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '5',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario del Germanisches Nationalmuseum (1952)', 1952),
           NumismaticMotifRule('150 Aniversario del Fallecimiento de Friedrich von Schiller (1955)', 1955),
           NumismaticMotifRule('300 Aniversario del Natalicio de Ludwig Wilhelm von Baden (1955)', 1955),
@@ -1781,6 +1724,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '10',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Emblema Espiral', 1972),
           NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Rayos de Luz', 1972),
           NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Pareja de Atletas', 1972),
@@ -1798,10 +1742,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2001,
     validCurrencies: ['DEM'],
     defaultCurrency: 'DEM',
-    commemorativeReasons: [
-      'Serie Conmemorativa de 10 Marcos de Plata',
-      'Historia de la República Federal de Alemania',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero bañado en cobre'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Acero bañado en cobre'),
@@ -1815,6 +1755,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '10',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('750 Años de Berlín (1987)', 1987),
           NumismaticMotifRule('Bicentenario del Natalicio de Arthur Schopenhauer (1988)', 1988),
           NumismaticMotifRule('Centenario del Fallecimiento de Carl Zeiss (1988)', 1988),
@@ -1878,12 +1819,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 1981,
     validCurrencies: ['ITL'],
     defaultCurrency: 'ITL',
-    commemorativeReasons: [
-      'Le Caravelle di Colombo',
-      'Centenario dell\'Unità d\'Italia',
-      'Dante Alighieri',
-      'Guglielmo Marconi',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '1', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '2', material: 'Aluminio'),
@@ -1897,6 +1832,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '500',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Le Caravelle di Cristoforo Colombo (1958-1967)', 1958, 1967),
           NumismaticMotifRule('Centenario de la Unificación de Italia - Proclama del Reino de Italia (1961)', 1961),
           NumismaticMotifRule('Centenario del Nacimiento de Dante Alighieri (1965)', 1965),
@@ -1914,10 +1850,6 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     maxYear: 2001,
     validCurrencies: ['ITL'],
     defaultCurrency: 'ITL',
-    commemorativeReasons: [
-      '500 Lire Bimetalliche Commemorative',
-      '1000 Lire Mappa d\'Europa',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '1', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '2', material: 'Aluminio'),
@@ -1930,6 +1862,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '200',
         material: 'Bronce de aluminio',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Aeronautica Militare (1993)', 1993),
           NumismaticMotifRule('Centenario del Nacimiento de Maria Montessori (1990)', 1990),
           NumismaticMotifRule('70 Aniversario de la Guardia di Finanza (1996)', 1996),
@@ -1940,6 +1873,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '500',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('República Italiana Clásica Bimetálica', 1982, 2001),
           NumismaticMotifRule('Centenario del Banco de Italia (1993)', 1993),
           NumismaticMotifRule('Centenario de Luca Pacioli (1994)', 1994),
@@ -1954,6 +1888,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         denomination: '1000',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Mapa de la Unión Europea con Fronteras Erróneas (1997)', 1997),
           NumismaticMotifRule('Mapa de la Unión Europea con Fronteras Corregidas (1997-1998)', 1997, 1998),
         ],

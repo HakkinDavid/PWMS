@@ -150,10 +150,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     maxYear: 1981,
     validCurrencies: ['USD'],
     defaultCurrency: 'USD',
-    commemorativeReasons: [
-      'Bicentenario de los Estados Unidos (1776-1976)',
-      'Susan B. Anthony Dollar (1979-1981)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Latón'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Cuproníquel'),
@@ -162,6 +158,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         denomination: '0.25',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de los Estados Unidos - Tamborilero Colonial (1776-1976)', 1975, 1976),
         ],
       ),
@@ -169,6 +166,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         denomination: '0.50',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de los Estados Unidos - Independence Hall (1776-1976)', 1975, 1976),
         ],
       ),
@@ -176,6 +174,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         denomination: '1',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Eisenhower Bicentennial - Moon and Liberty Bell (1776-1976)', 1975, 1976),
           NumismaticMotifRule('Susan B. Anthony Dollar (1979-1981)', 1979, 1981),
         ],
@@ -190,10 +189,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     maxYear: 1999,
     validCurrencies: ['USD'],
     defaultCurrency: 'USD',
-    commemorativeReasons: [
-      '50 State Quarters Program (1999)',
-      'Susan B. Anthony Dollar (1999)',
-    ],
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
@@ -206,6 +201,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         denomination: '0.25',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('50 State Quarters - Delaware (1999)', 1999),
           NumismaticMotifRule('50 State Quarters - Pennsylvania (1999)', 1999),
           NumismaticMotifRule('50 State Quarters - New Jersey (1999)', 1999),
@@ -218,6 +214,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         denomination: '1',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Susan B. Anthony Dollar (1999)', 1999),
         ],
       ),
@@ -231,22 +228,12 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['USD'],
     defaultCurrency: 'USD',
-    commemorativeReasons: [
-      '50 State Quarters (1999-2008)',
-      'America the Beautiful Quarters (2010-2021)',
-      'American Women Quarters (2022-2025)',
-      'Lincoln Bicentennial (2009)',
-      'Westward Journey (2004-2005)',
-      'Sacagawea Dollar (2000-2008)',
-      'Native American Dollar (2009+)',
-      'Presidential Dollar (2007-2016, 2020)',
-      'American Innovation Dollar (2018+)',
-    ],
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
         material: 'Zinc bañado en cobre',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Lincoln Bicentennial - Birthplace (2009)', 2009),
           NumismaticMotifRule('Lincoln Bicentennial - Formative Years in Indiana (2009)', 2009),
           NumismaticMotifRule('Lincoln Bicentennial - Professional Life in Illinois (2009)', 2009),
@@ -258,6 +245,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         denomination: '0.05',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Westward Journey - Peace Medal (2004)', 2004),
           NumismaticMotifRule('Westward Journey - Keelboat (2004)', 2004),
           NumismaticMotifRule('Westward Journey - American Bison (2005)', 2005),
@@ -270,6 +258,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         denomination: '0.25',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           // 50 State Quarters (2000-2008)
           NumismaticMotifRule('50 State Quarters - Massachusetts (2000)', 2000),
           NumismaticMotifRule('50 State Quarters - Maryland (2000)', 2000),
@@ -409,6 +398,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         material: 'Latón de manganeso sobre núcleo de cobre',
         allowedMaterials: ['Latón de manganeso sobre núcleo de cobre', 'Latón de manganeso (Clad)', 'Latón de manganeso', 'Latón'],
         motifs: [
+          NumismaticMotifRule.standard(),
           // Sacagawea Dollar (2000-2008)
           NumismaticMotifRule('Sacagawea Dollar (2000-2008)', 2000, 2008),
           // Native American Dollar (2009-present)

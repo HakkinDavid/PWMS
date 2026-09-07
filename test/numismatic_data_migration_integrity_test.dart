@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
+import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/banknote_emission_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/mexico_emission_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
@@ -6,7 +8,9 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/num
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/usa_emission_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/world_coins_emission_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/models/numismatic_models.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_domain_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_matrix.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/rules/numismatic_outlier_detector.dart';
 
 void main() {
   group('Numismatic Data Migration Integrity Tests', () {
@@ -51,6 +55,7 @@ void main() {
       );
       final piece5 = bicentenarioMex.pieces.firstWhere((p) => p.denomination == '5');
       expect(piece5.motifs.length, equals(37)); // 37 Bicentenario motifs
+      expect(piece5.allowsStandardForYear(2008), isFalse); // Strictly commemorative!
 
       // 1.27 Conmemorativas Familia C1 Dodecagonal (2020–presente)
       final conmem2020 = mexicoEmissionRules.firstWhere(
@@ -58,6 +63,7 @@ void main() {
       );
       final piece20 = conmem2020.pieces.firstWhere((p) => p.denomination == '20');
       expect(piece20.motifs.length, greaterThanOrEqualTo(10));
+      expect(piece20.allowsStandardForYear(2020), isTrue); // Standard circulation exists concurrently
     });
 
     test('USA rules preserve quarters and presidential dollar motifs', () {
@@ -66,6 +72,7 @@ void main() {
       );
       final quarter = modernUSA.pieces.firstWhere((p) => p.denomination == '0.25');
       expect(quarter.motifs.length, greaterThan(60)); // State Quarters + ATB + Women Quarters
+      expect(quarter.allowsStandardForYear(2004), isTrue);
 
       final dollar = modernUSA.pieces.firstWhere((p) => p.denomination == '1');
       expect(dollar.motifs.length, greaterThan(40)); // Sacagawea + Presidential + Innovation
@@ -76,13 +83,19 @@ void main() {
         (r) => r.country == 'España' && r.minYear == 1982,
       );
       final piece25 = pesetaAutonomica.pieces.firstWhere((p) => p.denomination == '25');
-      expect(piece25.motifs.length, equals(10));
+      expect(piece25.motifs.length, equals(11)); // 10 motifs + 1 standard
+      expect(piece25.allowsStandardForYear(1994), isTrue);
+
+      final piece2000 = pesetaAutonomica.pieces.firstWhere((p) => p.denomination == '2000');
+      expect(piece2000.motifs.length, equals(8));
+      expect(piece2000.allowsStandardForYear(1994), isFalse); // Strictly commemorative silver coin!
 
       final euroSpain = spainEmissionRules.firstWhere(
         (r) => r.country == 'España' && r.minYear == 1999,
       );
       final piece2Euro = euroSpain.pieces.firstWhere((p) => p.denomination == '2');
       expect(piece2Euro.motifs.length, greaterThanOrEqualTo(25));
+      expect(piece2Euro.allowsStandardForYear(2014), isTrue);
     });
 
     test('Banknote rules preserve Bank of Mexico and international families', () {
@@ -94,6 +107,7 @@ void main() {
       expect(piece20.material, equals('Polímero'));
       expect(piece20.isBanknote, isTrue);
       expect(piece20.motifs, isNotEmpty);
+      expect(piece20.allowsStandardForYear(2021), isTrue);
     });
 
     test('NumismaticMatrix evaluation executes with complete parity', () {
@@ -128,6 +142,46 @@ void main() {
       ));
       expect(res3.matchingPiece, isNotNull);
       expect(res3.availableMotifs, contains('País Vasco (1994)'));
+    });
+
+    test('Outlier detector alerts when strictly commemorative coin is missing motif', () {
+      final now = DateTime.now();
+
+      // Mexico $5 2008 without motif -> should alert that motif is required!
+      final entityMex5 = WorldEntity(
+        id: 'inst-mex5-2008',
+        speciesId: 'sp-coin',
+        createdAt: now,
+        updatedAt: now,
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-mex5-2008', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-mex5-2008', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2008.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-mex5-2008', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-mex5-2008', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 5.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-mex5-2008', propertyName: 'Material', dataType: 'string', stringValue: 'Bimetálica'),
+        ],
+      );
+
+      final outliersMex5 = NumismaticDomainRules.checkEmissionOutliers(instance: entityMex5);
+      expect(outliersMex5.any((o) => o.type == NumismaticEmissionOutlierType.motifMismatch), isTrue);
+
+      // Spain 25 Pesetas 1994 without motif -> standard circulation is valid, no motif outlier
+      final entitySpain25 = WorldEntity(
+        id: 'inst-sp25-1994',
+        speciesId: 'sp-coin',
+        createdAt: now,
+        updatedAt: now,
+        magnitudes: const [
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-sp25-1994', propertyName: 'País', dataType: 'string', stringValue: 'España'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-sp25-1994', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1994.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-sp25-1994', propertyName: 'Divisa', dataType: 'string', stringValue: 'ESP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-sp25-1994', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 25.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-sp25-1994', propertyName: 'Material', dataType: 'string', stringValue: 'Bronce de aluminio'),
+        ],
+      );
+
+      final outliersSpain25 = NumismaticDomainRules.checkEmissionOutliers(instance: entitySpain25);
+      expect(outliersSpain25.any((o) => o.type == NumismaticEmissionOutlierType.motifMismatch), isFalse);
     });
   });
 }

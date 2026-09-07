@@ -270,9 +270,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1914,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeReasons: [
-      'Un Peso Caballito - Centenario de la Independencia (1910-1914)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Bronce'),
@@ -284,6 +281,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '1',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Un Peso Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
         ],
       ),
@@ -322,10 +320,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1942,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeDenominations: {'2'},
-    commemorativeReasons: [
-      'Centenario de la Consumación de la Independencia (1921)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Bronce'),
@@ -338,6 +332,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '2',
         material: 'Oro',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Victoria Alada - Centenario de la Consumación de la Independencia (1921)', 1921),
         ],
       ),
@@ -349,6 +344,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '50',
         material: 'Oro',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Consumación de la Independencia - 50 Pesos Oro (1921-1931)', 1921, 1931),
         ],
       ),
@@ -362,9 +358,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1949,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeReasons: [
-      'Cuauhtémoc Plata Ley .900 (1947-1948)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Bronce'),
@@ -377,6 +370,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '5',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Cuauhtémoc (1947-1948)', 1947, 1948),
         ],
       ),
@@ -391,10 +385,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1956,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeReasons: [
-      'Inauguración del Ferrocarril del Sureste (1950)',
-      'Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo (1953)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Latón'),
@@ -407,6 +397,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '5',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Inauguración del Ferrocarril del Sureste (1950)', 1950),
           NumismaticMotifRule('Hidalgo - Laurel (1951-1954)', 1951, 1954),
           NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo (1953)', 1953),
@@ -423,12 +414,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1969,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeDenominations: {'25'},
-    commemorativeReasons: [
-      'Centenario de la Constitución de 1857 (1957)',
-      '150 Aniversario de la Independencia y 50 de la Revolución (1960)',
-      'Juegos Olímpicos México 68 (1968)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Bronce'),
       NumismaticPieceDefinition(denomination: '0.05', material: 'Latón'),
@@ -439,6 +424,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '1',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
         ],
       ),
@@ -446,6 +432,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '5',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
         ],
       ),
@@ -453,6 +440,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '10',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Constitución de 1857 (1957)', 1957),
           NumismaticMotifRule('150 Aniversario de la Independencia y 50 de la Revolución (1960)', 1960),
         ],
@@ -491,10 +479,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1983,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeDenominations: {'100'},
-    commemorativeReasons: [
-      'Morelos Plata Ley .720 (1977-1979)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.05', material: 'Latón'),
       NumismaticPieceDefinition(denomination: '0.10', material: 'Cuproníquel'),
@@ -512,6 +496,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '50',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Coyolxauhqui - Templo Mayor (1982-1984)', 1982, 1984),
         ],
       ),
@@ -519,6 +504,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '100',
         material: 'Plata',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('José María Morelos Plata Ley .720 (1977-1979)', 1977, 1979),
         ],
       ),
@@ -532,12 +518,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1987,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeDenominations: {'200'},
-    commemorativeReasons: [
-      '175 Aniversario de la Independencia',
-      '75 Aniversario de la Revolución',
-      'Copa Mundial de la FIFA México 1986',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '1', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '5', material: 'Latón'),
@@ -549,6 +529,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '200',
         material: 'Cuproníquel',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('175 Aniversario de la Independencia', 1985),
           NumismaticMotifRule('75 Aniversario de la Revolución', 1985),
           NumismaticMotifRule('Copa Mundial de la FIFA México 1986', 1986),
@@ -565,10 +546,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1992,
     validCurrencies: ['MXP'],
     defaultCurrency: 'MXP',
-    commemorativeDenominations: {'5000'},
-    commemorativeReasons: [
-      'Cincuentenario de la Expropiación Petrolera (1988)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '10', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '20', material: 'Latón'),
@@ -597,11 +574,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 1995,
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
-    commemorativeDenominations: {'1', '2', '5', '10', '20', '50'},
-    commemorativeReasons: [
-      'Don Miguel Hidalgo y Costilla (1993-1995)',
-      'Niños Héroes (1993-1995)',
-    ],
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
@@ -623,6 +595,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '1',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -630,6 +603,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -637,6 +611,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '5',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso', 1992, 1995),
         ],
       ),
@@ -644,6 +619,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '10',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)', 1992, 1995),
         ],
       ),
@@ -651,6 +627,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '20',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)', 1993, 1995),
         ],
       ),
@@ -658,6 +635,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '50',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)', 1993, 1995),
         ],
       ),
@@ -671,18 +649,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 2007,
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
-    commemorativeDenominations: {'20', '100'},
-    commemorativeReasons: [
-      'Cambio de Milenio (2000-2001)',
-      'Octavio Paz - Cambio de Milenio',
-      'Fuego Nuevo - Señorío de Xiuhtecuhtli',
-      '32 Estados de la República',
-      '470 Aniversario de la Casa de Moneda de México',
-      '80 Aniversario del Banco de México',
-      '400 Aniversario de Don Quijote de la Mancha',
-      'Bicentenario del Natalicio de Benito Juárez',
-      '180 Aniversario de la Unión Federal',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.05', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '0.10', material: 'Acero inoxidable'),
@@ -695,6 +661,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '10',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Cambio de Milenio - Glifo Año 2000 (2000)', 2000),
           NumismaticMotifRule('Cambio de Milenio - Glifo Año 2001 (2001)', 2001),
         ],
@@ -703,6 +670,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '20',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Octavio Paz - Cambio de Milenio (2000)', 2000, 2001),
           NumismaticMotifRule('Fuego Nuevo - Señorío de Xiuhtecuhtli (2000)', 2000, 2001),
         ],
@@ -730,12 +698,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 2010,
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
-    commemorativeDenominations: {'5', '20'},
-    commemorativeReasons: [
-      'Bicentenario de la Independencia de México (1810-2010)',
-      'Centenario de la Revolución Mexicana (1910-2010)',
-      'Octavio Paz - Premio Nobel de Literatura (2010)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.05', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '0.10', material: 'Acero inoxidable'),
@@ -797,6 +759,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '20',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Octavio Paz - Premio Nobel de Literatura (2010)', 2010, 2011),
         ],
       ),
@@ -810,23 +773,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 2019,
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
-    commemorativeDenominations: {'20'},
-    commemorativeReasons: [
-      '150 Aniversario de la Batalla de Puebla (2012)',
-      'Centenario del Ejército Mexicano (2013)',
-      '150 Aniversario de Belisario Domínguez (2013)',
-      'Centenario de la Gesta Heroica de Veracruz (2014)',
-      'Centenario de la Toma de Zacatecas (2014)',
-      'Centenario de la Fuerza Aérea Mexicana (2015)',
-      'Bicentenario Luctuoso de Morelos (2015)',
-      'Plan DN-III-E (2016)',
-      'Centenario de la Promulgación de la Constitución Política de 1917 (2017)',
-      'Centenario de la Constitución Política de 1917 (2017)',
-      'Centenario de la Constitución (2017)',
-      'Plan Marina (2018)',
-      '500 Años del Puerto de Veracruz (2019)',
-      'Emiliano Zapata (2019)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.10', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '0.20', material: 'Acero inoxidable'),
@@ -838,6 +784,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '10',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza (2012)', 2012),
         ],
       ),
@@ -845,6 +792,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '20',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario del Ejército Mexicano (2013)', 2013),
           NumismaticMotifRule('150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez (2013)', 2013),
           NumismaticMotifRule('Centenario de la Gesta Heroica de Veracruz (2014)', 2014),
@@ -868,23 +816,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
-    commemorativeDenominations: {'20'},
-    commemorativeReasons: [
-      'Fundación Lunar de Tenochtitlan (2021)',
-      'Memoria Histórica de Tenochtitlan (2021)',
-      'Bicentenario de la Independencia (2021)',
-      'Bicentenario de la Marina-Armada de México (2021-2022)',
-      'Bicentenario de la Marina-Armada (1821-2021)',
-      'Bicentenario de la Marina-Armada de México (2021)',
-      'Marina-Armada de México / Fuerza Armada (2021)',
-      'Bicentenario de la Marina-Armada (2022)',
-      'Llegada de los Menonitas a México (2022)',
-      'Bicentenario del Heroico Colegio Militar (2023)',
-      'Relaciones Diplomáticas México-EE.UU. (2023)',
-      'Villa de Colima (2023)',
-      'Instauración del Senado de la República (2024)',
-      'Heroico Batallón de Infantería de Marina (2024)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.10', material: 'Acero inoxidable'),
       NumismaticPieceDefinition(denomination: '0.20', material: 'Acero inoxidable'),
@@ -897,6 +828,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '20',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)', 2020),
           NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (Dodecagonal 2020)', 2020),
           NumismaticMotifRule('700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan (2021)', 2021),

@@ -13,6 +13,7 @@ class NumismaticPieceDefinition {
   final double? weightGrams;
   final double? diameterMm;
   final bool isBanknote;
+  final String? currencyCode;
 
   const NumismaticPieceDefinition({
     required this.denomination,
@@ -25,6 +26,7 @@ class NumismaticPieceDefinition {
     this.weightGrams,
     this.diameterMm,
     this.isBanknote = false,
+    this.currencyCode,
   });
 
   /// Evaluates whether this specific piece was active/minted in the given [year].
@@ -60,12 +62,18 @@ class NumismaticPieceDefinition {
     return const [];
   }
 
-  /// Returns commemorative motif names matching the specified [year].
+  /// Returns true if this piece supports standard generic circulation in [year] without a special motif.
+  bool allowsStandardForYear(int? year) {
+    if (motifs.isEmpty) return true;
+    return motifs.any((m) => m.isStandard && m.matchesYear(year));
+  }
+
+  /// Returns commemorative motif names matching the specified [year] (excluding standard circulation tokens).
   List<String> getMotifsForYear(int? year) {
     if (motifs.isEmpty) return const [];
     return motifs
-        .where((m) => m.matchesYear(year))
-        .map((m) => m.name)
+        .where((m) => !m.isStandard && m.matchesYear(year))
+        .map((m) => m.name!)
         .toList();
   }
 

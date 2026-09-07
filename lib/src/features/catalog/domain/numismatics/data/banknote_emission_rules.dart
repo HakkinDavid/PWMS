@@ -222,14 +222,6 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
     isBanknote: true,
-    commemorativeDenominations: {'100', '200'},
-    commemorativeReasons: [
-      'Centenario de la Revolución Mexicana (2010)',
-      'Centenario de la Constitución Política de 1917 (2017)',
-      'Centenario de la Constitución Política (2017)',
-      'Centenario de la Constitución Política de 1917',
-      'Bicentenario de la Independencia de México (2010)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '20', material: 'Polímero', isBanknote: true),
       NumismaticPieceDefinition(denomination: '50', material: 'Polímero', isBanknote: true),
@@ -239,6 +231,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         isBanknote: true,
         allowedMaterials: ['Papel de algodón', 'Polímero'],
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2009, 2010),
           NumismaticMotifRule('Centenario de la Constitución Política de 1917 (2017)', 2016, 2017),
         ],
@@ -248,6 +241,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         material: 'Papel de algodón',
         isBanknote: true,
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de la Independencia de México (2010)', 2009, 2010),
         ],
       ),
@@ -273,15 +267,13 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     validCurrencies: ['MXN'],
     defaultCurrency: 'MXN',
     isBanknote: true,
-    commemorativeReasons: [
-      'Bicentenario de la Independencia Nacional (2021)',
-    ],
     pieces: [
       NumismaticPieceDefinition(
         denomination: '20',
         material: 'Polímero',
         isBanknote: true,
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Bicentenario de la Independencia Nacional (2021)', 2021),
         ],
       ),

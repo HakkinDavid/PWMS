@@ -56,10 +56,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
     maxYear: 1981,
     validCurrencies: ['ESP'],
     defaultCurrency: 'ESP',
-    commemorativeReasons: [
-      '100 Pesetas Franco Plata .800 (1966)',
-      '100 Pesetas Juan Carlos I (1975)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.05', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '0.10', material: 'Aluminio'),
@@ -88,11 +84,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
     maxYear: 2001,
     validCurrencies: ['ESP'],
     defaultCurrency: 'ESP',
-    commemorativeDenominations: {'2000'},
-    commemorativeReasons: [
-      'Serie Comunidades Autónomas 25 Pesetas',
-      'Serie Conmemorativa 2000 Pesetas Plata',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.10', material: 'Aluminio'),
       NumismaticPieceDefinition(denomination: '0.50', material: 'Aluminio'),
@@ -104,6 +95,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         denomination: '25',
         material: 'Bronce de aluminio',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('Juegos Olímpicos de Barcelona 92 (1990-1992)', 1990, 1992),
           NumismaticMotifRule('Castilla y León (1993)', 1993),
           NumismaticMotifRule('País Vasco (1994)', 1994),
@@ -144,13 +136,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['EUR'],
     defaultCurrency: 'EUR',
-    commemorativeReasons: [
-      'Patrimonio Mundial de la UNESCO',
-      'Tratado de Roma (2007)',
-      '10 Años de la Unión Económica y Monetaria (2009)',
-      'Proclamación de Felipe VI (2014)',
-      'Erasmus (2022)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero bañado en cobre'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Acero bañado en cobre'),
@@ -163,6 +148,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('IV Centenario de Don Quijote de la Mancha', 2005),
           NumismaticMotifRule('50 Aniversario del Tratado de Roma (2007)', 2007),
           NumismaticMotifRule('10 Años de la Unión Económica y Monetaria (2009)', 2009),
@@ -207,13 +193,6 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
     maxYear: 2100,
     validCurrencies: ['EUR'],
     defaultCurrency: 'EUR',
-    commemorativeReasons: [
-      'Tratado de Roma (2007)',
-      '10 Años de la Unión Económica y Monetaria (2009)',
-      '10 Años del Euro (2012)',
-      '30 Años de la Bandera Europea (2015)',
-      '35 Años del Programa Erasmus (2022)',
-    ],
     pieces: [
       NumismaticPieceDefinition(denomination: '0.01', material: 'Acero bañado en cobre'),
       NumismaticPieceDefinition(denomination: '0.02', material: 'Acero bañado en cobre'),
@@ -226,6 +205,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         denomination: '2',
         material: 'Bimetálica',
         motifs: [
+          NumismaticMotifRule.standard(),
           NumismaticMotifRule('50 Aniversario del Tratado de Roma (2007)', 2007),
           NumismaticMotifRule('10 Años de la Unión Económica y Monetaria (2009)', 2009),
           NumismaticMotifRule('10 Años de los Billetes y Monedas en Euros (2012)', 2012),

@@ -14,7 +14,7 @@ class NumismaticEmissionRuleData {
   final Map<String, String> _explicitDenominationMaterials;
   final Map<String, List<String>> _explicitDenominationAllowedMaterials;
   final Set<String> _explicitCommemorativeDenominations;
-  final List<String> commemorativeReasons;
+  final List<String> _explicitCommemorativeReasons;
   final Map<String, List<NumismaticMotifRule>> _explicitCommemorativeMotifsByDenomination;
   final String? defaultCommemorativeReason;
   final bool isBanknote;
@@ -30,7 +30,7 @@ class NumismaticEmissionRuleData {
     Map<String, String> denominationMaterials = const {},
     Map<String, List<String>> denominationAllowedMaterials = const {},
     Set<String> commemorativeDenominations = const {},
-    this.commemorativeReasons = const [],
+    List<String> commemorativeReasons = const [],
     Map<String, List<NumismaticMotifRule>> commemorativeMotifsByDenomination = const {},
     this.defaultCommemorativeReason,
     this.isBanknote = false,
@@ -39,6 +39,7 @@ class NumismaticEmissionRuleData {
         _explicitDenominationMaterials = denominationMaterials,
         _explicitDenominationAllowedMaterials = denominationAllowedMaterials,
         _explicitCommemorativeDenominations = commemorativeDenominations,
+        _explicitCommemorativeReasons = commemorativeReasons,
         _explicitCommemorativeMotifsByDenomination = commemorativeMotifsByDenomination;
 
   /// Returns effective piece definitions (either explicitly declared, or synthesized from legacy maps).
@@ -104,8 +105,32 @@ class NumismaticEmissionRuleData {
     return map;
   }
 
+  /// List of commemorative reasons / motif names in this epoch.
+  List<String> get commemorativeReasons {
+    if (_explicitCommemorativeReasons.isNotEmpty) {
+      return _explicitCommemorativeReasons;
+    }
+    final reasons = <String>{};
+    for (final p in effectivePieces) {
+      for (final m in p.motifs) {
+        if (!m.isStandard && m.name != null && m.name!.trim().isNotEmpty) {
+          reasons.add(m.name!);
+        }
+      }
+    }
+    return reasons.toList();
+  }
+
   /// Set of strictly commemorative denominations.
-  Set<String> get commemorativeDenominations => _explicitCommemorativeDenominations;
+  Set<String> get commemorativeDenominations {
+    if (_explicitCommemorativeDenominations.isNotEmpty) {
+      return _explicitCommemorativeDenominations;
+    }
+    return effectivePieces
+        .where((p) => p.motifs.any((m) => !m.isStandard))
+        .map((p) => p.denomination)
+        .toSet();
+  }
 
   /// Commemorative motifs grouped by denomination.
   Map<String, List<NumismaticMotifRule>> get commemorativeMotifsByDenomination {
@@ -138,16 +163,10 @@ class NumismaticEmissionRuleData {
     return list;
   }
 
-  /// Finds the piece definition matching [targetDenom] and optional [year].
+  /// Returns the piece definition matching [targetDenom] and [year].
   NumismaticPieceDefinition? getPieceForDenomination(String targetDenom, {int? year}) {
-    final candidatePieces = year != null ? getPiecesForYear(year) : effectivePieces;
+    final candidatePieces = getPiecesForYear(year);
     for (final p in candidatePieces) {
-      if (p.matchesDenomination(targetDenom)) {
-        return p;
-      }
-    }
-    // Fallback without year constraint
-    for (final p in effectivePieces) {
       if (p.matchesDenomination(targetDenom)) {
         return p;
       }
@@ -162,36 +181,16 @@ class NumismaticEmissionRuleData {
   }
 
   bool hasDenomination(String targetDenom, {int? year}) {
-    final denoms = getDenominationsForYear(year);
-    return denoms.any((d) => matchesDenomination(d, targetDenom));
-  }
-
-  List<String> getAllowedMaterialsForDenomination(String targetDenom, {int? year}) {
-    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
-    if (matchedPiece != null && matchedPiece.effectiveAllowedMaterials.isNotEmpty) {
-      return matchedPiece.effectiveAllowedMaterials;
+    if (year != null) {
+      return getPiecesForYear(year).any((p) => p.matchesDenomination(targetDenom));
     }
-
-    for (final entry in denominationAllowedMaterials.entries) {
-      if (matchesDenomination(entry.key, targetDenom)) {
-        return entry.value;
-      }
-    }
-    final singleMat = getMaterialForDenomination(targetDenom, year: year);
-    if (singleMat != null) {
-      return [singleMat];
-    }
-    return const [];
+    return denominations.any((d) => matchesDenomination(d, targetDenom));
   }
 
   String? getMaterialForDenomination(String targetDenom, {int? year}) {
     final matchedPiece = getPieceForDenomination(targetDenom, year: year);
     if (matchedPiece != null && matchedPiece.material != null) {
       return matchedPiece.material;
-    }
-
-    if (denominationMaterials.containsKey(targetDenom)) {
-      return denominationMaterials[targetDenom];
     }
     for (final entry in denominationMaterials.entries) {
       if (matchesDenomination(entry.key, targetDenom)) {
@@ -206,6 +205,36 @@ class NumismaticEmissionRuleData {
     return null;
   }
 
+  List<String> getAllowedMaterialsForDenomination(String targetDenom, {int? year}) {
+    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
+    if (matchedPiece != null && matchedPiece.effectiveAllowedMaterials.isNotEmpty) {
+      return matchedPiece.effectiveAllowedMaterials;
+    }
+    for (final entry in denominationAllowedMaterials.entries) {
+      if (matchesDenomination(entry.key, targetDenom)) {
+        return entry.value;
+      }
+    }
+    final primary = getMaterialForDenomination(targetDenom, year: year);
+    if (primary != null && primary.isNotEmpty) {
+      return [primary];
+    }
+    return const [];
+  }
+
+  String? getDefaultMaterialForDenomination(String targetDenom, {int? year}) {
+    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
+    if (matchedPiece != null && matchedPiece.material != null) {
+      return matchedPiece.material;
+    }
+    for (final entry in denominationMaterials.entries) {
+      if (matchesDenomination(entry.key, targetDenom)) {
+        return entry.value;
+      }
+    }
+    return null;
+  }
+
   bool isMaterialValidForDenomination(String targetDenom, String targetMaterial, {int? year}) {
     final allowed = getAllowedMaterialsForDenomination(targetDenom, year: year);
     if (allowed.isEmpty) return true;
@@ -214,8 +243,12 @@ class NumismaticEmissionRuleData {
   }
 
   bool isCommemorativeDenomination(String targetDenom, {int? year}) {
-    if (commemorativeDenominations.isNotEmpty) {
-      return commemorativeDenominations.any((d) => matchesDenomination(d, targetDenom));
+    final matchedPiece = getPieceForDenomination(targetDenom, year: year);
+    if (matchedPiece != null && matchedPiece.motifs.isNotEmpty) {
+      return !matchedPiece.allowsStandardForYear(year);
+    }
+    if (_explicitCommemorativeDenominations.isNotEmpty) {
+      return _explicitCommemorativeDenominations.any((d) => matchesDenomination(d, targetDenom));
     }
     return false;
   }
@@ -230,8 +263,8 @@ class NumismaticEmissionRuleData {
     for (final entry in commemorativeMotifsByDenomination.entries) {
       if (matchesDenomination(entry.key, targetDenom)) {
         final matching = entry.value
-            .where((m) => m.matchesYear(year))
-            .map((m) => m.name)
+            .where((m) => !m.isStandard && m.matchesYear(year))
+            .map((m) => m.name!)
             .toList();
         return matching;
       }
