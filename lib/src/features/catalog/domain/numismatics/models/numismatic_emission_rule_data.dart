@@ -104,16 +104,8 @@ class NumismaticEmissionRuleData {
     return map;
   }
 
-  /// Set of commemorative denominations.
-  Set<String> get commemorativeDenominations {
-    if (_explicitCommemorativeDenominations.isNotEmpty) {
-      return _explicitCommemorativeDenominations;
-    }
-    return pieces
-        .where((p) => p.motifs.isNotEmpty)
-        .map((p) => p.denomination)
-        .toSet();
-  }
+  /// Set of strictly commemorative denominations.
+  Set<String> get commemorativeDenominations => _explicitCommemorativeDenominations;
 
   /// Commemorative motifs grouped by denomination.
   Map<String, List<NumismaticMotifRule>> get commemorativeMotifsByDenomination {
