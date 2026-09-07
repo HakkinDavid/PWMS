@@ -3,17 +3,11 @@ class NumismaticMotifRule {
   final String name;
   final int minYear;
   final int maxYear;
-  final String? kmNumber;
-  final String? numistaUrl;
-  final bool isStandard;
 
   const NumismaticMotifRule(
     this.name,
     int minYear, [
     int? maxYear,
-    this.kmNumber,
-    this.numistaUrl,
-    this.isStandard = false,
   ])  : minYear = minYear,
         maxYear = maxYear ?? minYear;
 
