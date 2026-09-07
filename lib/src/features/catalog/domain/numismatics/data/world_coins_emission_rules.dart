@@ -12,56 +12,68 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        minYear: 1796,
-        maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Castillo y León / Busto', 1796, 1859),
+          NumismaticMotifRule(
+            'Castillo y León / Busto',
+            minYear: 1796,
+            maxYear: 1859,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1733,
-        maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Colonial y República del Centro de América', 1733, 1859),
+          NumismaticMotifRule(
+            'Colonial y República del Centro de América',
+            minYear: 1733,
+            maxYear: 1859,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1733,
-        maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Columnario y Busto Real / Escudo Coronado (Ceca de Guatemala)', 1733, 1859),
+          NumismaticMotifRule(
+            'Columnario y Busto Real / Escudo Coronado (Ceca de Guatemala)',
+            minYear: 1733,
+            maxYear: 1859,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1733,
-        maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)', 1733, 1859),
+          NumismaticMotifRule(
+            'Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)',
+            minYear: 1733,
+            maxYear: 1859,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        minYear: 1733,
-        maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)', 1733, 1859),
+          NumismaticMotifRule(
+            'Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)',
+            minYear: 1733,
+            maxYear: 1859,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1733,
-        maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Plata (Columnario / Busto / Volcán del Centro de América)', 1733, 1859),
+          NumismaticMotifRule(
+            'Plata (Columnario / Busto / Volcán del Centro de América)',
+            minYear: 1733,
+            maxYear: 1859,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -77,119 +89,145 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1871,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Peso (Cobre / Cuproníquel)', 1871, 1924),
+          NumismaticMotifRule(
+            'Peso (Cobre / Cuproníquel)',
+            minYear: 1871,
+            maxYear: 1924,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Níquel',
-        minYear: 1881,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Cuarto de Real', 1881, 1924),
+          NumismaticMotifRule(
+            'Cuarto de Real',
+            minYear: 1881,
+            maxYear: 1924,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('1 Real Plata .900/.720', 1860, 1924),
+          NumismaticMotifRule(
+            '1 Real Plata .900/.720',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Quetzal y Escudo Nacional', 1860, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Quetzal y Escudo Nacional',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Quetzal y Escudo Nacional', 1860, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Quetzal y Escudo Nacional',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Plata .900 (Carrera / República de Guatemala)', 1860, 1924),
+          NumismaticMotifRule(
+            'Plata .900 (Carrera / República de Guatemala)',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Escudo Nacional de Guatemala', 1860, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Escudo Nacional de Guatemala',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Escudo Nacional de Guatemala', 1860, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Escudo Nacional de Guatemala',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1869,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Escudo con Quetzal', 1869, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Escudo con Quetzal',
+            minYear: 1869,
+            maxYear: 1924,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1869,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Escudo con Quetzal', 1869, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Escudo con Quetzal',
+            minYear: 1869,
+            maxYear: 1924,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1869,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Escudo con Quetzal', 1869, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Escudo con Quetzal',
+            minYear: 1869,
+            maxYear: 1924,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Escudo de la República de Guatemala', 1860, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Escudo de la República de Guatemala',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1860,
-        maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Busto de Rafael Carrera / Escudo de la República de Guatemala', 1860, 1924),
+          NumismaticMotifRule(
+            'Busto de Rafael Carrera / Escudo de la República de Guatemala',
+            minYear: 1860,
+            maxYear: 1924,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -205,92 +243,109 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
-        material: 'Cuproníquel',
-        minYear: 1925,
-        maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Quetzal sobre Pedestal (Medio Centavo) / Escudo Nacional', 1925, 1949),
+          NumismaticMotifRule(
+            'Quetzal sobre Pedestal (Medio Centavo) / Escudo Nacional',
+            minYear: 1925,
+            maxYear: 1949,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1925,
-        maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('Quetzal (Fray Bartolomé de las Casas)', 1925, 1964),
+          NumismaticMotifRule(
+            'Quetzal (Fray Bartolomé de las Casas)',
+            minYear: 1925,
+            maxYear: 1964,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Plata',
-        minYear: 1925,
-        maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('Plata .720 (Ceiba / Árbol de la Libertad)', 1925, 1964),
+          NumismaticMotifRule(
+            'Plata .720 (Ceiba / Árbol de la Libertad)',
+            minYear: 1925,
+            maxYear: 1964,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1925,
-        maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('Plata .720 (Monolito de Quiriguá)', 1925, 1964),
+          NumismaticMotifRule(
+            'Plata .720 (Monolito de Quiriguá)',
+            minYear: 1925,
+            maxYear: 1964,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Plata',
-        minYear: 1925,
-        maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('Plata .720 (Mujer Indígena Santiago Atitlán)', 1925, 1964),
+          NumismaticMotifRule(
+            'Plata .720 (Mujer Indígena Santiago Atitlán)',
+            minYear: 1925,
+            maxYear: 1964,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1925,
-        maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('Plata .720 (Monja Blanca)', 1925, 1964),
+          NumismaticMotifRule(
+            'Plata .720 (Monja Blanca)',
+            minYear: 1925,
+            maxYear: 1964,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1925,
-        maxYear: 1964,
         motifs: [
-          NumismaticMotifRule('Quetzal sobre Columna (Plata .720)', 1925, 1964),
+          NumismaticMotifRule(
+            'Quetzal sobre Columna (Plata .720)',
+            minYear: 1925,
+            maxYear: 1964,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1926,
-        maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('Quetzal sobre Columna (Oro .900)', 1926),
+          NumismaticMotifRule(
+            'Quetzal sobre Columna (Oro .900)',
+            minYear: 1926,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1926,
-        maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('Quetzal sobre Columna (Oro .900)', 1926),
+          NumismaticMotifRule(
+            'Quetzal sobre Columna (Oro .900)',
+            minYear: 1926,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1926,
-        maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('Quetzal sobre Columna (Oro .900)', 1926),
+          NumismaticMotifRule(
+            'Quetzal sobre Columna (Oro .900)',
+            minYear: 1926,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -306,57 +361,68 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio-Magnesio (Magnalio)',
-        minYear: 1965,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Fray Bartolomé de las Casas', 1965, 2100),
+          NumismaticMotifRule(
+            'Fray Bartolomé de las Casas',
+            minYear: 1965,
+            maxYear: 2100,
+            material: 'Aluminio-Magnesio (Magnalio)',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1965,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Árbol de la Libertad (Ceiba)', 1965, 2100),
+          NumismaticMotifRule(
+            'Árbol de la Libertad (Ceiba)',
+            minYear: 1965,
+            maxYear: 2100,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Cuproníquel',
-        minYear: 1965,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Monolito de Quiriguá', 1965, 2100),
+          NumismaticMotifRule(
+            'Monolito de Quiriguá',
+            minYear: 1965,
+            maxYear: 2100,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Cuproníquel',
-        minYear: 1965,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule("Concepción Ramírez (Mujer Tz'utujil)", 1965, 2100),
+          NumismaticMotifRule(
+            "Concepción Ramírez (Mujer Tz'utujil)",
+            minYear: 1965,
+            maxYear: 2100,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Latón',
-        minYear: 1965,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Monja Blanca (Lycaste skinneri alba)', 1965, 2100),
+          NumismaticMotifRule(
+            'Monja Blanca (Lycaste skinneri alba)',
+            minYear: 1965,
+            maxYear: 2100,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Latón',
-        allowedMaterials: ['Latón', 'Bimetálica'],
-        minYear: 1996,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Paz Firme y Duradera (1996+)', 1996, 2100),
+          NumismaticMotifRule(
+            'Paz Firme y Duradera (1996+)',
+            minYear: 1996,
+            maxYear: 2100,
+            material: 'Latón',
+          ),
         ],
       ),
     ],
@@ -372,56 +438,68 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        minYear: 1500,
-        maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Santa Fe de Bogotá / Popayán', 1500, 1846),
+          NumismaticMotifRule(
+            'Santa Fe de Bogotá / Popayán',
+            minYear: 1500,
+            maxYear: 1846,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1500,
-        maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Monograma Real Coronado / Columnas de Hércules', 1500, 1846),
+          NumismaticMotifRule(
+            'Monograma Real Coronado / Columnas de Hércules',
+            minYear: 1500,
+            maxYear: 1846,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1500,
-        maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Escudo Real Coronado / Columnario Virreinal', 1500, 1846),
+          NumismaticMotifRule(
+            'Escudo Real Coronado / Columnario Virreinal',
+            minYear: 1500,
+            maxYear: 1846,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1500,
-        maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Columnario Virreinal / Escudo Real Coronado', 1500, 1846),
+          NumismaticMotifRule(
+            'Columnario Virreinal / Escudo Real Coronado',
+            minYear: 1500,
+            maxYear: 1846,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        minYear: 1500,
-        maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Columnario Virreinal / Escudo Real Coronado', 1500, 1846),
+          NumismaticMotifRule(
+            'Columnario Virreinal / Escudo Real Coronado',
+            minYear: 1500,
+            maxYear: 1846,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1500,
-        maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Plata (Columnario / Busto / Libertad de la Nueva Granada)', 1500, 1846),
+          NumismaticMotifRule(
+            'Plata (Columnario / Busto / Libertad de la Nueva Granada)',
+            minYear: 1500,
+            maxYear: 1846,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -437,101 +515,123 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Cobre / Bronce', 1847, 1904),
+          NumismaticMotifRule(
+            'Cobre / Bronce',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Cobre',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Cobre / Cuproníquel', 1847, 1904),
+          NumismaticMotifRule(
+            'Cobre / Cuproníquel',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Plata',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata .666/.835 (Libertad)', 1847, 1904),
+          NumismaticMotifRule(
+            'Plata .666/.835 (Libertad)',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata .666/.835 (Libertad)', 1847, 1904),
+          NumismaticMotifRule(
+            'Plata .666/.835 (Libertad)',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata .666/.835 (Libertad)', 1847, 1904),
+          NumismaticMotifRule(
+            'Plata .666/.835 (Libertad)',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata .835/.900 (Libertad)', 1847, 1904),
+          NumismaticMotifRule(
+            'Plata .835/.900 (Libertad)',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata .900 (Estados Unidos de Colombia / República de Colombia)', 1847, 1904),
+          NumismaticMotifRule(
+            'Plata .900 (Estados Unidos de Colombia / República de Colombia)',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Oro',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Perfil de la Libertad / Escudo con Cóndor Andino', 1847, 1904),
+          NumismaticMotifRule(
+            'Perfil de la Libertad / Escudo con Cóndor Andino',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Perfil de la Libertad / Escudo con Cóndor Andino', 1847, 1904),
+          NumismaticMotifRule(
+            'Perfil de la Libertad / Escudo con Cóndor Andino',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Perfil de la Libertad / Escudo con Cóndor Andino', 1847, 1904),
+          NumismaticMotifRule(
+            'Perfil de la Libertad / Escudo con Cóndor Andino',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1847,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Oro .900 (Doble Cóndor)', 1847, 1904),
+          NumismaticMotifRule(
+            'Oro .900 (Doble Cóndor)',
+            minYear: 1847,
+            maxYear: 1904,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -547,110 +647,134 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('(Cacique Calarcá / República)', 1905, 1979),
+          NumismaticMotifRule(
+            '(Cacique Calarcá / República)',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('(Francisco de Paula Santander)', 1905, 1979),
+          NumismaticMotifRule(
+            '(Francisco de Paula Santander)',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Corona de Laurel (o Policarpa Salavarrieta)', 1905, 1979),
+          NumismaticMotifRule(
+            'Escudo Nacional / Corona de Laurel (o Policarpa Salavarrieta)',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar / Escudo Nacional', 1905, 1979),
+          NumismaticMotifRule(
+            'Simón Bolívar / Escudo Nacional',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar / Escudo Nacional', 1905, 1979),
+          NumismaticMotifRule(
+            'Simón Bolívar / Escudo Nacional',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Plata .500 (Simón Bolívar)', 1905, 1979),
+          NumismaticMotifRule(
+            'Plata .500 (Simón Bolívar)',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Cuproníquel (Simón Bolívar)', 1905, 1979),
+          NumismaticMotifRule(
+            'Cuproníquel (Simón Bolívar)',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Cuproníquel',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)', 1905, 1979),
+          NumismaticMotifRule(
+            'Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)', 1905, 1979),
+          NumismaticMotifRule(
+            'Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar / Escudo de Armas con Cóndor', 1905, 1979),
+          NumismaticMotifRule(
+            'Simón Bolívar / Escudo de Armas con Cóndor',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1905,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar / Escudo de Armas con Cóndor', 1905, 1979),
+          NumismaticMotifRule(
+            'Simón Bolívar / Escudo de Armas con Cóndor',
+            minYear: 1905,
+            maxYear: 1979,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        minYear: 1970,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Camilo Torres / Escudo Nacional', 1970, 1979),
+          NumismaticMotifRule(
+            'Camilo Torres / Escudo Nacional',
+            minYear: 1970,
+            maxYear: 1979,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -666,83 +790,101 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bronce de aluminio',
-        minYear: 1980,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar', 1980, 1990),
+          NumismaticMotifRule(
+            'Simón Bolívar',
+            minYear: 1980,
+            maxYear: 1990,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bronce de aluminio',
-        minYear: 1980,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar', 1980, 1990),
+          NumismaticMotifRule(
+            'Simón Bolívar',
+            minYear: 1980,
+            maxYear: 1990,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1980,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar', 1980, 1990),
+          NumismaticMotifRule(
+            'Simón Bolívar',
+            minYear: 1980,
+            maxYear: 1990,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Cuproníquel',
-        minYear: 1980,
-        maxYear: 1994,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar', 1980, 1994),
+          NumismaticMotifRule(
+            'Simón Bolívar',
+            minYear: 1980,
+            maxYear: 1994,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Cuproníquel',
-        minYear: 1980,
-        maxYear: 1994,
         motifs: [
-          NumismaticMotifRule('Simón Bolívar', 1980, 1994),
+          NumismaticMotifRule(
+            'Simón Bolívar',
+            minYear: 1980,
+            maxYear: 1994,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Acero inoxidable',
-        minYear: 1989,
-        maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('Escudo de Colombia', 1989, 2011),
+          NumismaticMotifRule(
+            'Escudo de Colombia',
+            minYear: 1989,
+            maxYear: 2011,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('Escudo de Colombia', 1992, 2011),
+          NumismaticMotifRule(
+            'Escudo de Colombia',
+            minYear: 1992,
+            maxYear: 2011,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        material: 'Cuproníquel',
-        minYear: 1994,
-        maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('Figura Quimbaya', 1994, 2011),
+          NumismaticMotifRule(
+            'Figura Quimbaya',
+            minYear: 1994,
+            maxYear: 2011,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Bimetálica',
-        minYear: 1993,
-        maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('Árbol de Guacarí (Samanea saman)', 1993, 2011),
+          NumismaticMotifRule(
+            'Árbol de Guacarí (Samanea saman)',
+            minYear: 1993,
+            maxYear: 2011,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -758,67 +900,87 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Acero bañado en níquel',
-        minYear: 2012,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Oso de Anteojos (Tremarctos ornatus)', 2012, 2100),
+          NumismaticMotifRule(
+            'Oso de Anteojos (Tremarctos ornatus)',
+            minYear: 2012,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Bronce de aluminio',
-        minYear: 2012,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Frailejón (Espeletia grandiflora)', 2012, 2100),
+          NumismaticMotifRule(
+            'Frailejón (Espeletia grandiflora)',
+            minYear: 2012,
+            maxYear: 2100,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        material: 'Cuproníquel',
-        minYear: 2012,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Guacamaya Bandera (Ara macao)', 2012, 2100),
+          NumismaticMotifRule(
+            'Guacamaya Bandera (Ara macao)',
+            minYear: 2012,
+            maxYear: 2100,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Bimetálica',
-        minYear: 2012,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Rana de Cristal (Anura Centrolenidae)', 2012, 2100),
+          NumismaticMotifRule(
+            'Rana de Cristal (Anura Centrolenidae)',
+            minYear: 2012,
+            maxYear: 2100,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        material: 'Bimetálica',
-        minYear: 2012,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Tortuga Caguama (Caretta caretta)', 2012, 2100),
+          NumismaticMotifRule(
+            'Tortuga Caguama (Caretta caretta)',
+            minYear: 2012,
+            maxYear: 2100,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10000',
-        material: 'Cuproníquel',
-        minYear: 2019,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Bicentenario de la Independencia de Colombia', 2019, 2019),
-          NumismaticMotifRule('Bicentenario del Sacrificio de Policarpa Salavarrieta', 2022, 2022),
-          NumismaticMotifRule('Bicentenario de la Batalla Naval del Lago de Maracaibo', 2023, 2023),
+          NumismaticMotifRule(
+            'Bicentenario de la Independencia de Colombia',
+            minYear: 2019,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Sacrificio de Policarpa Salavarrieta',
+            minYear: 2022,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Batalla Naval del Lago de Maracaibo',
+            minYear: 2023,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20000',
-        material: 'Cuproníquel',
-        minYear: 2023,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Bicentenario del Museo Nacional de Colombia', 2023, 2023),
+          NumismaticMotifRule(
+            'Bicentenario del Museo Nacional de Colombia',
+            minYear: 2023,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -834,84 +996,100 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1858,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Large Cent / Small Cent (Hojas de Arce)', 1858, 1952),
+          NumismaticMotifRule(
+            'Large Cent / Small Cent (Hojas de Arce)',
+            minYear: 1858,
+            maxYear: 1952,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Níquel',
-        allowedMaterials: ['Níquel', 'Plata', 'Latón dorado (Tombac)'],
-        minYear: 1858,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Plata / Castor de Níquel / Victory Tombac', 1858, 1952),
+          NumismaticMotifRule(
+            'Plata / Castor de Níquel / Victory Tombac',
+            minYear: 1858,
+            maxYear: 1952,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1858,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Plata .800/.925 (Bluenose Schooner)', 1858, 1952),
+          NumismaticMotifRule(
+            'Plata .800/.925 (Bluenose Schooner)',
+            minYear: 1858,
+            maxYear: 1952,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1858,
-        maxYear: 1858,
         motifs: [
-          NumismaticMotifRule('Plata .925 (Victoria)', 1858),
+          NumismaticMotifRule(
+            'Plata .925 (Victoria)',
+            minYear: 1858,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Plata',
-        minYear: 1870,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Plata .800/.925 (Caribou / Hojas de Arce)', 1870, 1952),
+          NumismaticMotifRule(
+            'Plata .800/.925 (Caribou / Hojas de Arce)',
+            minYear: 1870,
+            maxYear: 1952,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1870,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Plata .800/.925 (Escudo de Canadá)', 1870, 1952),
+          NumismaticMotifRule(
+            'Plata .800/.925 (Escudo de Canadá)',
+            minYear: 1870,
+            maxYear: 1952,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1935,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Silver Dollar Plata .800 (Voyageur / Jorge V / Jorge VI)', 1935, 1952),
+          NumismaticMotifRule(
+            'Silver Dollar Plata .800 (Voyageur / Jorge V / Jorge VI)',
+            minYear: 1935,
+            maxYear: 1952,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1912,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Oro .900 (Jorge V)', 1912, 1914),
+          NumismaticMotifRule(
+            'Oro .900 (Jorge V)',
+            minYear: 1912,
+            maxYear: 1914,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1912,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Oro .900 (Jorge V)', 1912, 1914),
+          NumismaticMotifRule(
+            'Oro .900 (Jorge V)',
+            minYear: 1912,
+            maxYear: 1914,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -927,59 +1105,83 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1953,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Hojas de Arce (Isabel II)', 1953, 1967),
+          NumismaticMotifRule(
+            'Hojas de Arce (Isabel II)',
+            minYear: 1953,
+            maxYear: 1967,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Níquel',
-        minYear: 1953,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Beaver Castor (Isabel II)', 1953, 1967),
+          NumismaticMotifRule(
+            'Beaver Castor (Isabel II)',
+            minYear: 1953,
+            maxYear: 1967,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1953,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Plata .800 Bluenose', 1953, 1967),
+          NumismaticMotifRule(
+            'Plata .800 Bluenose',
+            minYear: 1953,
+            maxYear: 1967,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Plata',
-        minYear: 1953,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Plata .800 Caribou Estándar (1953-1966)', 1953, 1966),
-          NumismaticMotifRule('Lince del Centenario de la Confederación', 1967, 1967),
+          NumismaticMotifRule(
+            'Plata .800 Caribou Estándar (1953-1966)',
+            minYear: 1953,
+            maxYear: 1966,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Lince del Centenario de la Confederación',
+            minYear: 1967,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1953,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Plata .800 Escudo de Armas (1953-1966)', 1953, 1966),
-          NumismaticMotifRule('Lobo Aullador del Centenario de la Confederación', 1967, 1967),
+          NumismaticMotifRule(
+            'Plata .800 Escudo de Armas (1953-1966)',
+            minYear: 1953,
+            maxYear: 1966,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Lobo Aullador del Centenario de la Confederación',
+            minYear: 1967,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1953,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Silver Dollar Plata .800 Voyageur (1953-1966)', 1953, 1966),
-          NumismaticMotifRule('Ganso de Canadá del Centenario de la Confederación', 1967, 1967),
+          NumismaticMotifRule(
+            'Silver Dollar Plata .800 Voyageur (1953-1966)',
+            minYear: 1953,
+            maxYear: 1966,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Ganso de Canadá del Centenario de la Confederación',
+            minYear: 1967,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -995,63 +1197,103 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1968,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Hojas de Arce', 1968, 1986),
+          NumismaticMotifRule(
+            'Hojas de Arce',
+            minYear: 1968,
+            maxYear: 1986,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Níquel',
-        minYear: 1968,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Beaver Castor', 1968, 1986),
+          NumismaticMotifRule(
+            'Beaver Castor',
+            minYear: 1968,
+            maxYear: 1986,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Níquel',
-        minYear: 1968,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Bluenose', 1968, 1986),
+          NumismaticMotifRule(
+            'Bluenose',
+            minYear: 1968,
+            maxYear: 1986,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Níquel',
-        minYear: 1968,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Níquel Caribou Estándar (1968-1986)', 1968, 1986),
-          NumismaticMotifRule('Centenario de la Policía Montada RCMP', 1973, 1973),
+          NumismaticMotifRule(
+            'Níquel Caribou Estándar (1968-1986)',
+            minYear: 1968,
+            maxYear: 1986,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Policía Montada RCMP',
+            minYear: 1973,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Níquel',
-        minYear: 1968,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas', 1968, 1986),
+          NumismaticMotifRule(
+            'Escudo de Armas',
+            minYear: 1968,
+            maxYear: 1986,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Níquel',
-        minYear: 1968,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Níquel Voyageur Estándar (1968-1986)', 1968, 1986),
-          NumismaticMotifRule('Centenario de Manitoba', 1970, 1970),
-          NumismaticMotifRule('Centenario de Columbia Británica', 1971, 1971),
-          NumismaticMotifRule('Centenario de la Isla del Príncipe Eduardo', 1973, 1973),
-          NumismaticMotifRule('Centenario de Winnipeg', 1974, 1974),
-          NumismaticMotifRule('Ley Constitucional de Canadá', 1982, 1982),
-          NumismaticMotifRule('450 Aniversario del Viaje de Jacques Cartier', 1984, 1984),
+          NumismaticMotifRule(
+            'Níquel Voyageur Estándar (1968-1986)',
+            minYear: 1968,
+            maxYear: 1986,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Manitoba',
+            minYear: 1970,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Columbia Británica',
+            minYear: 1971,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Isla del Príncipe Eduardo',
+            minYear: 1973,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Winnipeg',
+            minYear: 1974,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            'Ley Constitucional de Canadá',
+            minYear: 1982,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            '450 Aniversario del Viaje de Jacques Cartier',
+            minYear: 1984,
+            material: 'Níquel',
+          ),
         ],
       ),
     ],
@@ -1067,71 +1309,109 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1987,
-        maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('Hojas de Arce', 1987, 1999),
+          NumismaticMotifRule(
+            'Hojas de Arce',
+            minYear: 1987,
+            maxYear: 1999,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1987,
-        maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('Beaver Castor', 1987, 1999),
+          NumismaticMotifRule(
+            'Beaver Castor',
+            minYear: 1987,
+            maxYear: 1999,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Níquel',
-        minYear: 1987,
-        maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('Bluenose', 1987, 1999),
+          NumismaticMotifRule(
+            'Bluenose',
+            minYear: 1987,
+            maxYear: 1999,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Níquel',
-        minYear: 1987,
-        maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('Caribou Estándar (1987-1999)', 1987, 1999),
-          NumismaticMotifRule('125 Aniversario de la Confederación de Canadá', 1992, 1992),
-          NumismaticMotifRule('Millennium Series - 12 Diseños Mensuales', 1999, 1999),
+          NumismaticMotifRule(
+            'Caribou Estándar (1987-1999)',
+            minYear: 1987,
+            maxYear: 1999,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            '125 Aniversario de la Confederación de Canadá',
+            minYear: 1992,
+            material: 'Níquel',
+          ),
+          NumismaticMotifRule(
+            'Millennium Series - 12 Diseños Mensuales',
+            minYear: 1999,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Níquel',
-        minYear: 1987,
-        maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas', 1987, 1999),
+          NumismaticMotifRule(
+            'Escudo de Armas',
+            minYear: 1987,
+            maxYear: 1999,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero bañado en latón',
-        minYear: 1987,
-        maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('Loonie - Colimbo Común Estándar (1987-1999)', 1987, 1999),
-          NumismaticMotifRule('125 Aniversario de Canadá', 1992, 1992),
-          NumismaticMotifRule('Monumento Nacional a la Guerra', 1994, 1994),
-          NumismaticMotifRule('Mantenimiento de la Paz de la ONU', 1995, 1995),
+          NumismaticMotifRule(
+            'Loonie - Colimbo Común Estándar (1987-1999)',
+            minYear: 1987,
+            maxYear: 1999,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            '125 Aniversario de Canadá',
+            minYear: 1992,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Monumento Nacional a la Guerra',
+            minYear: 1994,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Mantenimiento de la Paz de la ONU',
+            minYear: 1995,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 1996,
-        maxYear: 1999,
         motifs: [
-          NumismaticMotifRule('Toonie - Oso Polar Estándar (1996-1999)', 1996, 1999),
-          NumismaticMotifRule('Creación del Territorio de Nunavut', 1999, 1999),
+          NumismaticMotifRule(
+            'Toonie - Oso Polar Estándar (1996-1999)',
+            minYear: 1996,
+            maxYear: 1999,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Creación del Territorio de Nunavut',
+            minYear: 1999,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -1147,92 +1427,217 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero bañado en cobre',
-        minYear: 2000,
-        maxYear: 2012,
         motifs: [
-          NumismaticMotifRule('Hojas de Arce', 2000, 2012),
+          NumismaticMotifRule(
+            'Hojas de Arce',
+            minYear: 2000,
+            maxYear: 2012,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero bañado en níquel',
-        minYear: 2000,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Beaver Castor', 2000, 2100),
+          NumismaticMotifRule(
+            'Beaver Castor',
+            minYear: 2000,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero bañado en níquel',
-        minYear: 2000,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Bluenose', 2000, 2100),
+          NumismaticMotifRule(
+            'Bluenose',
+            minYear: 2000,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Acero bañado en níquel',
-        minYear: 2000,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Caribou Estándar (2000+)', 2000, 2100),
-          NumismaticMotifRule('Millennium Series - 12 Diseños', 2000, 2000),
-          NumismaticMotifRule('Amapola del Día del Recuerdo', 2004, 2004),
-          NumismaticMotifRule('Juegos Olímpicos de Invierno Vancouver 2010 (2007-2010)', 2007, 2010),
-          NumismaticMotifRule('Guerra de 1812 (2012-2013)', 2012, 2013),
-          NumismaticMotifRule('Canada 150 - Esperanza por un Futuro Verde', 2017, 2017),
+          NumismaticMotifRule(
+            'Caribou Estándar (2000+)',
+            minYear: 2000,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
+          NumismaticMotifRule(
+            'Millennium Series - 12 Diseños',
+            minYear: 2000,
+            material: 'Acero bañado en níquel',
+          ),
+          NumismaticMotifRule(
+            'Amapola del Día del Recuerdo',
+            minYear: 2004,
+            material: 'Acero bañado en níquel',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos de Invierno Vancouver 2010 (2007-2010)',
+            minYear: 2007,
+            maxYear: 2010,
+            material: 'Acero bañado en níquel',
+          ),
+          NumismaticMotifRule(
+            'Guerra de 1812 (2012-2013)',
+            minYear: 2012,
+            maxYear: 2013,
+            material: 'Acero bañado en níquel',
+          ),
+          NumismaticMotifRule(
+            'Canada 150 - Esperanza por un Futuro Verde',
+            minYear: 2017,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Acero bañado en níquel',
-        minYear: 2000,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas', 2000, 2100),
+          NumismaticMotifRule(
+            'Escudo de Armas',
+            minYear: 2000,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero bañado en latón',
-        minYear: 2000,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Loonie - Colimbo Común Estándar (2000+)', 2000, 2100),
-          NumismaticMotifRule('Lucky Loonie (2004, 2008, 2010, 2012, 2014, 2016)', 2004, 2016),
-          NumismaticMotifRule('Terry Fox', 2005, 2005),
-          NumismaticMotifRule('Centenario de los Montreal Canadiens', 2009, 2009),
-          NumismaticMotifRule('Centenario de la Marina Real Canadiense', 2010, 2010),
-          NumismaticMotifRule('Canada 150 - Conectando una Nación', 2017, 2017),
-          NumismaticMotifRule('Despenalización de la Homosexualidad', 2019, 2019),
-          NumismaticMotifRule('Oscar Peterson', 2022, 2022),
-          NumismaticMotifRule('Elsie MacGill', 2023, 2023),
+          NumismaticMotifRule(
+            'Loonie - Colimbo Común Estándar (2000+)',
+            minYear: 2000,
+            maxYear: 2100,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Lucky Loonie (2004, 2008, 2010, 2012, 2014, 2016)',
+            minYear: 2004,
+            maxYear: 2016,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Terry Fox',
+            minYear: 2005,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Centenario de los Montreal Canadiens',
+            minYear: 2009,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Marina Real Canadiense',
+            minYear: 2010,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Canada 150 - Conectando una Nación',
+            minYear: 2017,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Despenalización de la Homosexualidad',
+            minYear: 2019,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Oscar Peterson',
+            minYear: 2022,
+            material: 'Acero bañado en latón',
+          ),
+          NumismaticMotifRule(
+            'Elsie MacGill',
+            minYear: 2023,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 2000,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Toonie - Oso Polar Estándar (2000+)', 2000, 2100),
-          NumismaticMotifRule('Camino del Conocimiento', 2000, 2000),
-          NumismaticMotifRule('10 Aniversario del Toonie', 2006, 2006),
-          NumismaticMotifRule('400 Años de la Ciudad de Quebec', 2008, 2008),
-          NumismaticMotifRule('HMS Shannon', 2012, 2012),
-          NumismaticMotifRule('Sir John A. Macdonald', 2015, 2015),
-          NumismaticMotifRule('Batalla del Atlántico', 2016, 2016),
-          NumismaticMotifRule('Canada 150 - Danza de los Espíritus', 2017, 2017),
-          NumismaticMotifRule('Armisticio de 1918', 2018, 2018),
-          NumismaticMotifRule('75 Aniversario del Día D', 2019, 2019),
-          NumismaticMotifRule('75 Aniversario del Fin de la Segunda Guerra Mundial', 2020, 2020),
-          NumismaticMotifRule('Descubrimiento de la Insulina', 2021, 2021),
-          NumismaticMotifRule('Homenaje a la Reina Isabel II - Anillo Negro', 2022, 2022),
-          NumismaticMotifRule('Día Nacional de los Pueblos Indígenas', 2023, 2023),
-          NumismaticMotifRule('Centenario de la Real Fuerza Aérea Canadiense', 2024, 2024),
+          NumismaticMotifRule(
+            'Toonie - Oso Polar Estándar (2000+)',
+            minYear: 2000,
+            maxYear: 2100,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Camino del Conocimiento',
+            minYear: 2000,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '10 Aniversario del Toonie',
+            minYear: 2006,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '400 Años de la Ciudad de Quebec',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'HMS Shannon',
+            minYear: 2012,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Sir John A. Macdonald',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Batalla del Atlántico',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Canada 150 - Danza de los Espíritus',
+            minYear: 2017,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Armisticio de 1918',
+            minYear: 2018,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '75 Aniversario del Día D',
+            minYear: 2019,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '75 Aniversario del Fin de la Segunda Guerra Mundial',
+            minYear: 2020,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Descubrimiento de la Insulina',
+            minYear: 2021,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Homenaje a la Reina Isabel II - Anillo Negro',
+            minYear: 2022,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Día Nacional de los Pueblos Indígenas',
+            minYear: 2023,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Real Fuerza Aérea Canadiense',
+            minYear: 2024,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -1248,111 +1653,139 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cuproníquel',
-        minYear: 1915,
-        maxYear: 1961,
         motifs: [
-          NumismaticMotifRule('Cuproníquel (Estrella Solitaria)', 1915, 1961),
+          NumismaticMotifRule(
+            'Cuproníquel (Estrella Solitaria)',
+            minYear: 1915,
+            maxYear: 1961,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Cuproníquel',
-        minYear: 1915,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Estrella de Cinco Puntas / Escudo de la Palma Real', 1915, 1916),
+          NumismaticMotifRule(
+            'Estrella de Cinco Puntas / Escudo de la Palma Real',
+            minYear: 1915,
+            maxYear: 1916,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1915,
-        maxYear: 1961,
         motifs: [
-          NumismaticMotifRule('Estrella de Cinco Puntas / Escudo de la Palma Real', 1915, 1961),
+          NumismaticMotifRule(
+            'Estrella de Cinco Puntas / Escudo de la Palma Real',
+            minYear: 1915,
+            maxYear: 1961,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1915,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Estrella Radiante / Escudo de la Palma Real', 1915, 1952),
+          NumismaticMotifRule(
+            'Estrella Radiante / Escudo de la Palma Real',
+            minYear: 1915,
+            maxYear: 1952,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1915,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Estrella Radiante / Escudo de la Palma Real', 1915, 1952),
+          NumismaticMotifRule(
+            'Estrella Radiante / Escudo de la Palma Real',
+            minYear: 1915,
+            maxYear: 1952,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.40',
-        material: 'Plata',
-        minYear: 1915,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Estrella Radiante / Escudo de la Palma Real', 1915, 1952),
+          NumismaticMotifRule(
+            'Estrella Radiante / Escudo de la Palma Real',
+            minYear: 1915,
+            maxYear: 1952,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1915,
-        maxYear: 1953,
         motifs: [
-          NumismaticMotifRule('Plata .900 Estrella Radiante (1915-1939)', 1915, 1939),
-          NumismaticMotifRule('Centenario del Natalicio de José Martí', 1953, 1953),
+          NumismaticMotifRule(
+            'Plata .900 Estrella Radiante (1915-1939)',
+            minYear: 1915,
+            maxYear: 1939,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Natalicio de José Martí',
+            minYear: 1953,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Oro',
-        minYear: 1915,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule(
+            'Oro .900 (José Martí)',
+            minYear: 1915,
+            maxYear: 1916,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Oro',
-        minYear: 1915,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule(
+            'Oro .900 (José Martí)',
+            minYear: 1915,
+            maxYear: 1916,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1915,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule(
+            'Oro .900 (José Martí)',
+            minYear: 1915,
+            maxYear: 1916,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1915,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule(
+            'Oro .900 (José Martí)',
+            minYear: 1915,
+            maxYear: 1916,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1915,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Oro .900 (José Martí)', 1915, 1916),
+          NumismaticMotifRule(
+            'Oro .900 (José Martí)',
+            minYear: 1915,
+            maxYear: 1916,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -1368,65 +1801,78 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio',
-        minYear: 1963,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
+          NumismaticMotifRule(
+            'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
+            minYear: 1963,
+            maxYear: 1993,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Aluminio',
-        minYear: 1963,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
+          NumismaticMotifRule(
+            'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
+            minYear: 1963,
+            maxYear: 1993,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1963,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
+          NumismaticMotifRule(
+            'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
+            minYear: 1963,
+            maxYear: 1993,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Aluminio',
-        minYear: 1963,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
+          NumismaticMotifRule(
+            'Escudo Nacional / Caña de Azúcar (Patria o Muerte)',
+            minYear: 1963,
+            maxYear: 1993,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.40',
-        material: 'Cuproníquel',
-        minYear: 1962,
-        maxYear: 1962,
         motifs: [
-          NumismaticMotifRule('Estrella de Cinco Puntas / Escudo Nacional', 1962),
+          NumismaticMotifRule(
+            'Estrella de Cinco Puntas / Escudo Nacional',
+            minYear: 1962,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1962,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Cuproníquel (Patria o Muerte)', 1962, 1993),
+          NumismaticMotifRule(
+            'Cuproníquel (Patria o Muerte)',
+            minYear: 1962,
+            maxYear: 1993,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        material: 'Cuproníquel',
-        minYear: 1990,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Ernesto Che Guevara - Hasta la Victoria Siempre', 1990, 1993),
+          NumismaticMotifRule(
+            'Ernesto Che Guevara - Hasta la Victoria Siempre',
+            minYear: 1990,
+            maxYear: 1993,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -1442,83 +1888,101 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 1994, 2020),
+          NumismaticMotifRule(
+            'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Aluminio',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 1994, 2020),
+          NumismaticMotifRule(
+            'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 1994, 2020),
+          NumismaticMotifRule(
+            'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero bañado en níquel',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Castillo de la Real Fuerza', 1994, 2020),
+          NumismaticMotifRule(
+            'Castillo de la Real Fuerza',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Cuproníquel',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Castillo del Morro', 1994, 2020),
+          NumismaticMotifRule(
+            'Castillo del Morro',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Plaza de la Revolución', 1994, 2020),
+          NumismaticMotifRule(
+            'Plaza de la Revolución',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('José Martí', 1994, 2020),
+          NumismaticMotifRule(
+            'José Martí',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        material: 'Cuproníquel',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Ernesto Che Guevara', 1994, 2020),
+          NumismaticMotifRule(
+            'Ernesto Che Guevara',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bimetálica',
-        minYear: 1994,
-        maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Antonio Maceo - Protesta de Baraguá', 1994, 2020),
+          NumismaticMotifRule(
+            'Antonio Maceo - Protesta de Baraguá',
+            minYear: 1994,
+            maxYear: 2020,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -1534,47 +1998,57 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 2021,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 2021, 2100),
+          NumismaticMotifRule(
+            'Escudo Nacional / Numeral con Laureles (Patria o Muerte)',
+            minYear: 2021,
+            maxYear: 2100,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Acero bañado en latón',
-        minYear: 2021,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Patria o Muerte', 2021, 2100),
+          NumismaticMotifRule(
+            'Patria o Muerte',
+            minYear: 2021,
+            maxYear: 2100,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero bañado en níquel',
-        minYear: 2021,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('José Martí', 2021, 2100),
+          NumismaticMotifRule(
+            'José Martí',
+            minYear: 2021,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        material: 'Acero bañado en níquel',
-        minYear: 2021,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Ernesto Che Guevara', 2021, 2100),
+          NumismaticMotifRule(
+            'Ernesto Che Guevara',
+            minYear: 2021,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Acero bañado en latón',
-        minYear: 2021,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Antonio Maceo', 2021, 2100),
+          NumismaticMotifRule(
+            'Antonio Maceo',
+            minYear: 2021,
+            maxYear: 2100,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
     ],
@@ -1590,56 +2064,68 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Cobre',
-        minYear: 1813,
-        maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Sol de Mayo / Corona de Laurel (Cuartillo)', 1813, 1880),
+          NumismaticMotifRule(
+            'Sol de Mayo / Corona de Laurel (Cuartillo)',
+            minYear: 1813,
+            maxYear: 1880,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1813,
-        maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Primera Moneda Patria (Sol de Mayo / Provincias del Río de la Plata)', 1813, 1880),
+          NumismaticMotifRule(
+            'Primera Moneda Patria (Sol de Mayo / Provincias del Río de la Plata)',
+            minYear: 1813,
+            maxYear: 1880,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1813,
-        maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Escudo de la Asamblea del Año XIII / Sol de Mayo', 1813, 1880),
+          NumismaticMotifRule(
+            'Escudo de la Asamblea del Año XIII / Sol de Mayo',
+            minYear: 1813,
+            maxYear: 1880,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1813,
-        maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Sol de Mayo Radiante', 1813, 1880),
+          NumismaticMotifRule(
+            'Escudo Nacional / Sol de Mayo Radiante',
+            minYear: 1813,
+            maxYear: 1880,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        minYear: 1813,
-        maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Escudo Nacional / Sol de Mayo Radiante', 1813, 1880),
+          NumismaticMotifRule(
+            'Escudo Nacional / Sol de Mayo Radiante',
+            minYear: 1813,
+            maxYear: 1880,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1813,
-        maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Plata Primera Moneda Patria (En Unión y Libertad)', 1813, 1880),
+          NumismaticMotifRule(
+            'Plata Primera Moneda Patria (En Unión y Libertad)',
+            minYear: 1813,
+            maxYear: 1880,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -1655,129 +2141,158 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1881,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Bronce (Libertad de Oudiné)', 1881, 1969),
+          NumismaticMotifRule(
+            'Bronce (Libertad de Oudiné)',
+            minYear: 1881,
+            maxYear: 1969,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1881,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Bronce (Libertad de Oudiné)', 1881, 1969),
+          NumismaticMotifRule(
+            'Bronce (Libertad de Oudiné)',
+            minYear: 1881,
+            maxYear: 1969,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1881,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Libertad de Oudiné / Escudo Nacional', 1881, 1969),
+          NumismaticMotifRule(
+            'Libertad de Oudiné / Escudo Nacional',
+            minYear: 1881,
+            maxYear: 1969,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Cuproníquel',
-        minYear: 1881,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Libertad de Oudiné / Escudo Nacional', 1881, 1969),
+          NumismaticMotifRule(
+            'Libertad de Oudiné / Escudo Nacional',
+            minYear: 1881,
+            maxYear: 1969,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Cuproníquel',
-        minYear: 1881,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Libertad de Oudiné / Escudo Nacional', 1881, 1969),
+          NumismaticMotifRule(
+            'Libertad de Oudiné / Escudo Nacional',
+            minYear: 1881,
+            maxYear: 1969,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1881,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Plata .900 / Cuproníquel', 1881, 1969),
+          NumismaticMotifRule(
+            'Plata .900 / Cuproníquel',
+            minYear: 1881,
+            maxYear: 1969,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1881,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Patacón de Plata .900 / Cuproníquel', 1881, 1969),
+          NumismaticMotifRule(
+            'Patacón de Plata .900 / Cuproníquel',
+            minYear: 1881,
+            maxYear: 1969,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Cuproníquel',
-        minYear: 1940,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('General José de San Martín / Escudo Nacional', 1940, 1969),
+          NumismaticMotifRule(
+            'General José de San Martín / Escudo Nacional',
+            minYear: 1940,
+            maxYear: 1969,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1881,
-        maxYear: 1896,
         motifs: [
-          NumismaticMotifRule('Argentino de Oro .900 (Oudiné)', 1881, 1896),
+          NumismaticMotifRule(
+            'Argentino de Oro .900 (Oudiné)',
+            minYear: 1881,
+            maxYear: 1896,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Cuproníquel',
-        minYear: 1962,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('General San Martín', 1962, 1969),
+          NumismaticMotifRule(
+            'General San Martín',
+            minYear: 1962,
+            maxYear: 1969,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Cuproníquel',
-        minYear: 1962,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Primera Moneda Patria', 1962, 1969),
+          NumismaticMotifRule(
+            'Primera Moneda Patria',
+            minYear: 1962,
+            maxYear: 1969,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '25',
-        material: 'Acero',
-        minYear: 1960,
-        maxYear: 1960,
         motifs: [
-          NumismaticMotifRule('Sesquicentenario de la Revolución de Mayo', 1960),
+          NumismaticMotifRule(
+            'Sesquicentenario de la Revolución de Mayo',
+            minYear: 1960,
+            material: 'Acero',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Acero',
-        minYear: 1962,
-        maxYear: 1966,
         motifs: [
-          NumismaticMotifRule('Centenario de la Reorganización Nacional', 1962, 1962),
-          NumismaticMotifRule('Sesquicentenario de la Declaración de la Independencia', 1966, 1966),
+          NumismaticMotifRule(
+            'Centenario de la Reorganización Nacional',
+            minYear: 1962,
+            material: 'Acero',
+          ),
+          NumismaticMotifRule(
+            'Sesquicentenario de la Declaración de la Independencia',
+            minYear: 1966,
+            material: 'Acero',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Acero',
-        minYear: 1966,
-        maxYear: 1966,
         motifs: [
-          NumismaticMotifRule('Sesquicentenario de la Independencia (Casa de Tucumán)', 1966),
+          NumismaticMotifRule(
+            'Sesquicentenario de la Independencia (Casa de Tucumán)',
+            minYear: 1966,
+            material: 'Acero',
+          ),
         ],
       ),
     ],
@@ -1793,105 +2308,143 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce de aluminio',
-        minYear: 1970,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Ley', 1970, 1975),
+          NumismaticMotifRule(
+            'Ley',
+            minYear: 1970,
+            maxYear: 1975,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Bronce de aluminio',
-        minYear: 1970,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Ley', 1970, 1975),
+          NumismaticMotifRule(
+            'Ley',
+            minYear: 1970,
+            maxYear: 1975,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Bronce de aluminio',
-        minYear: 1970,
-        maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('Ley', 1970, 1976),
+          NumismaticMotifRule(
+            'Ley',
+            minYear: 1970,
+            maxYear: 1976,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce de aluminio',
-        minYear: 1970,
-        maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('Ley', 1970, 1976),
+          NumismaticMotifRule(
+            'Ley',
+            minYear: 1970,
+            maxYear: 1976,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce de aluminio',
-        minYear: 1970,
-        maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('Ley', 1970, 1976),
+          NumismaticMotifRule(
+            'Ley',
+            minYear: 1970,
+            maxYear: 1976,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bronce de aluminio',
-        minYear: 1974,
-        maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('San Martín', 1974, 1976),
+          NumismaticMotifRule(
+            'San Martín',
+            minYear: 1974,
+            maxYear: 1976,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bronce de aluminio',
-        minYear: 1976,
-        maxYear: 1977,
         motifs: [
-          NumismaticMotifRule('San Martín', 1976, 1977),
+          NumismaticMotifRule(
+            'San Martín',
+            minYear: 1976,
+            maxYear: 1977,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bronce de aluminio',
-        minYear: 1976,
-        maxYear: 1978,
         motifs: [
-          NumismaticMotifRule('San Martín', 1976, 1978),
+          NumismaticMotifRule(
+            'San Martín',
+            minYear: 1976,
+            maxYear: 1978,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bronce de aluminio',
-        minYear: 1977,
-        maxYear: 1978,
         motifs: [
-          NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio José María Minella (1977-1978)', 1977, 1978),
-          NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín', 1978, 1978),
+          NumismaticMotifRule(
+            'Mundial de Fútbol Argentina 1978 - Estadio José María Minella (1977-1978)',
+            minYear: 1977,
+            maxYear: 1978,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Natalicio del General José de San Martín',
+            minYear: 1978,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Bronce de aluminio',
-        minYear: 1977,
-        maxYear: 1978,
         motifs: [
-          NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Ciudad de Mendoza (1977-1978)', 1977, 1978),
-          NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín', 1978, 1978),
+          NumismaticMotifRule(
+            'Mundial de Fútbol Argentina 1978 - Estadio Ciudad de Mendoza (1977-1978)',
+            minYear: 1977,
+            maxYear: 1978,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Natalicio del General José de San Martín',
+            minYear: 1978,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Bronce de aluminio',
-        minYear: 1977,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Mundial de Fútbol Argentina 1978 - Estadio Monumental (1977-1978)', 1977, 1978),
-          NumismaticMotifRule('Bicentenario del Natalicio del General José de San Martín', 1978, 1978),
-          NumismaticMotifRule('Centenario de la Campaña del Desierto', 1979, 1979),
+          NumismaticMotifRule(
+            'Mundial de Fútbol Argentina 1978 - Estadio Monumental (1977-1978)',
+            minYear: 1977,
+            maxYear: 1978,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Natalicio del General José de San Martín',
+            minYear: 1978,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Campaña del Desierto',
+            minYear: 1979,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
     ],
@@ -1907,83 +2460,100 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio',
-        minYear: 1983,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Cabildo de Buenos Aires / Escudo Nacional', 1983, 1985),
+          NumismaticMotifRule(
+            'Cabildo de Buenos Aires / Escudo Nacional',
+            minYear: 1983,
+            maxYear: 1985,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1983,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Casa de Tucumán / Escudo Nacional', 1983, 1985),
+          NumismaticMotifRule(
+            'Casa de Tucumán / Escudo Nacional',
+            minYear: 1983,
+            maxYear: 1985,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Aluminio',
-        minYear: 1983,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Casa del Acuerdo de San Nicolás / Escudo Nacional', 1983, 1985),
+          NumismaticMotifRule(
+            'Casa del Acuerdo de San Nicolás / Escudo Nacional',
+            minYear: 1983,
+            maxYear: 1985,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Aluminio',
-        minYear: 1983,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Monumento Nacional a la Bandera / Escudo Nacional', 1983, 1985),
+          NumismaticMotifRule(
+            'Monumento Nacional a la Bandera / Escudo Nacional',
+            minYear: 1983,
+            maxYear: 1985,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Aluminio',
-        minYear: 1984,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Argentino Cabildo', 1984, 1985),
+          NumismaticMotifRule(
+            'Argentino Cabildo',
+            minYear: 1984,
+            maxYear: 1985,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Latón',
-        minYear: 1984,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Argentinos Congreso', 1984, 1985),
+          NumismaticMotifRule(
+            'Argentinos Congreso',
+            minYear: 1984,
+            maxYear: 1985,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Latón',
-        minYear: 1984,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Argentinos Casa de Tucumán', 1984, 1985),
+          NumismaticMotifRule(
+            'Argentinos Casa de Tucumán',
+            minYear: 1984,
+            maxYear: 1985,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Latón',
-        minYear: 1984,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Argentinos Casa del Acuerdo', 1984, 1985),
+          NumismaticMotifRule(
+            'Argentinos Casa del Acuerdo',
+            minYear: 1984,
+            maxYear: 1985,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Latón',
-        minYear: 1985,
-        maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Argentinos Cabildo de Jujuy', 1985),
+          NumismaticMotifRule(
+            'Argentinos Cabildo de Jujuy',
+            minYear: 1985,
+            material: 'Latón',
+          ),
         ],
       ),
     ],
@@ -1999,110 +2569,132 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
-        material: 'Aluminio',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Austral Hornero', 1985, 1987),
+          NumismaticMotifRule(
+            'Austral Hornero',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio',
-        minYear: 1985,
-        maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('Ñandú', 1985, 1988),
+          NumismaticMotifRule(
+            'Ñandú',
+            minYear: 1985,
+            maxYear: 1988,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1985,
-        maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('Puma', 1985, 1988),
+          NumismaticMotifRule(
+            'Puma',
+            minYear: 1985,
+            maxYear: 1988,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Aluminio',
-        minYear: 1985,
-        maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('Cóndor', 1985, 1988),
+          NumismaticMotifRule(
+            'Cóndor',
+            minYear: 1985,
+            maxYear: 1988,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Aluminio',
-        minYear: 1985,
-        maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('Libertad', 1985, 1988),
+          NumismaticMotifRule(
+            'Libertad',
+            minYear: 1985,
+            maxYear: 1988,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Aluminio',
-        minYear: 1989,
-        maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('Cabildo', 1989),
+          NumismaticMotifRule(
+            'Cabildo',
+            minYear: 1989,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Aluminio',
-        minYear: 1989,
-        maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('Congreso', 1989),
+          NumismaticMotifRule(
+            'Congreso',
+            minYear: 1989,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Aluminio',
-        minYear: 1989,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Casa de Tucumán', 1989, 1990),
+          NumismaticMotifRule(
+            'Casa de Tucumán',
+            minYear: 1989,
+            maxYear: 1990,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        minYear: 1989,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Libertad', 1989, 1990),
+          NumismaticMotifRule(
+            'Libertad',
+            minYear: 1989,
+            maxYear: 1990,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Cuproníquel',
-        minYear: 1989,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas', 1989, 1990),
+          NumismaticMotifRule(
+            'Escudo de Armas',
+            minYear: 1989,
+            maxYear: 1990,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Cuproníquel',
-        minYear: 1990,
-        maxYear: 1991,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas', 1990, 1991),
+          NumismaticMotifRule(
+            'Escudo de Armas',
+            minYear: 1990,
+            maxYear: 1991,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        material: 'Cuproníquel',
-        minYear: 1990,
-        maxYear: 1991,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas', 1990, 1991),
+          NumismaticMotifRule(
+            'Escudo de Armas',
+            minYear: 1990,
+            maxYear: 1991,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -2118,82 +2710,164 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 2000,
         motifs: [
-          NumismaticMotifRule('Laurel', 1992, 2000),
+          NumismaticMotifRule(
+            'Laurel',
+            minYear: 1992,
+            maxYear: 2000,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Sol de Mayo', 1992, 2016),
+          NumismaticMotifRule(
+            'Sol de Mayo',
+            minYear: 1992,
+            maxYear: 2016,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas', 1992, 2016),
+          NumismaticMotifRule(
+            'Escudo de Armas',
+            minYear: 1992,
+            maxYear: 2016,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Cabildo de Buenos Aires', 1992, 2016),
+          NumismaticMotifRule(
+            'Cabildo de Buenos Aires',
+            minYear: 1992,
+            maxYear: 2016,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Casa de Tucumán Estándar (1992-2016)', 1992, 2016),
-          NumismaticMotifRule('Convención Nacional Constituyente', 1994, 1994),
-          NumismaticMotifRule('50 Aniversario de UNICEF', 1994, 1994),
-          NumismaticMotifRule('50 Aniversario del Voto Femenino', 1997, 1997),
-          NumismaticMotifRule('Mercosur', 1998, 1998),
-          NumismaticMotifRule('Centenario del Natalicio de Jorge Luis Borges', 1999, 1999),
-          NumismaticMotifRule('Fallecimiento de Eva Perón - 50 Aniversario', 2002, 2002),
+          NumismaticMotifRule(
+            'Casa de Tucumán Estándar (1992-2016)',
+            minYear: 1992,
+            maxYear: 2016,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Convención Nacional Constituyente',
+            minYear: 1994,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario de UNICEF',
+            minYear: 1994,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario del Voto Femenino',
+            minYear: 1997,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Mercosur',
+            minYear: 1998,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Natalicio de Jorge Luis Borges',
+            minYear: 1999,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Fallecimiento de Eva Perón - 50 Aniversario',
+            minYear: 2002,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 1994,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Sol de Mayo Bimetálica Estándar (1994-2016)', 1994, 2016),
-          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Pucará de Tilcara', 2010, 2010),
-          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - El Palmar', 2010, 2010),
-          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Aconcagua', 2010, 2010),
-          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Mar del Plata', 2010, 2010),
-          NumismaticMotifRule('Bicentenario de la Revolución de Mayo - Glaciar Perito Moreno', 2010, 2010),
-          NumismaticMotifRule('Bicentenario de la Primera Moneda Patria - Asamblea del Año XIII', 2013, 2013),
+          NumismaticMotifRule(
+            'Sol de Mayo Bimetálica Estándar (1994-2016)',
+            minYear: 1994,
+            maxYear: 2016,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Revolución de Mayo - Pucará de Tilcara',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Revolución de Mayo - El Palmar',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Revolución de Mayo - Aconcagua',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Revolución de Mayo - Mar del Plata',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Revolución de Mayo - Glaciar Perito Moreno',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Primera Moneda Patria - Asamblea del Año XIII',
+            minYear: 2013,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 2010,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Sol de Mayo Estándar (2011-2016)', 2011, 2016),
-          NumismaticMotifRule('Bicentenario de la Creación de la Bandera Nacional', 2012, 2012),
-          NumismaticMotifRule('30 Aniversario de la Guerra de Malvinas', 2012, 2012),
-          NumismaticMotifRule('Bicentenario del Combate de San Lorenzo', 2013, 2013),
-          NumismaticMotifRule('Centenario del Vuelo de Jorge Newbery', 2014, 2014),
-          NumismaticMotifRule('Bicentenario de la Declaración de la Independencia', 2016, 2016),
+          NumismaticMotifRule(
+            'Sol de Mayo Estándar (2011-2016)',
+            minYear: 2011,
+            maxYear: 2016,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Creación de la Bandera Nacional',
+            minYear: 2012,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '30 Aniversario de la Guerra de Malvinas',
+            minYear: 2012,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Combate de San Lorenzo',
+            minYear: 2013,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Vuelo de Jorge Newbery',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Declaración de la Independencia',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -2209,38 +2883,46 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero bañado en cobre',
-        minYear: 2017,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Jacarandá (Jacaranda mimosifolia)', 2017, 2100),
+          NumismaticMotifRule(
+            'Jacarandá (Jacaranda mimosifolia)',
+            minYear: 2017,
+            maxYear: 2100,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Acero bañado en latón',
-        minYear: 2017,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Palo Borracho (Ceiba speciosa)', 2017, 2100),
+          NumismaticMotifRule(
+            'Palo Borracho (Ceiba speciosa)',
+            minYear: 2017,
+            maxYear: 2100,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Acero bañado en níquel',
-        minYear: 2017,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Arrayán (Luma apiculata)', 2017, 2100),
+          NumismaticMotifRule(
+            'Arrayán (Luma apiculata)',
+            minYear: 2017,
+            maxYear: 2100,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Alpaca (Plata alemana)',
-        minYear: 2018,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Caldén (Prosopis caldenia)', 2018, 2100),
+          NumismaticMotifRule(
+            'Caldén (Prosopis caldenia)',
+            minYear: 2018,
+            maxYear: 2100,
+            material: 'Alpaca (Plata alemana)',
+          ),
         ],
       ),
     ],
@@ -2256,119 +2938,145 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Cobre',
-        minYear: 1868,
-        maxYear: 1870,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1868, 1870),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1868,
+            maxYear: 1870,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Cobre',
-        minYear: 1868,
-        maxYear: 1870,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1868, 1870),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1868,
+            maxYear: 1870,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '40',
-        material: 'Cobre',
-        minYear: 1873,
-        maxYear: 1889,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1889),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1889,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '80',
-        material: 'Cobre',
-        minYear: 1818,
-        maxYear: 1832,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1818, 1832),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1818,
+            maxYear: 1832,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Cuproníquel',
-        minYear: 1871,
-        maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1871, 1940),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1871,
+            maxYear: 1940,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        material: 'Cuproníquel',
-        minYear: 1871,
-        maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1871, 1940),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1871,
+            maxYear: 1940,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '300',
-        material: 'Cuproníquel',
-        minYear: 1936,
-        maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1936, 1940),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1936,
+            maxYear: 1940,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '400',
-        material: 'Cuproníquel',
-        minYear: 1901,
-        maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1901, 1940),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1901,
+            maxYear: 1940,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Plata',
-        minYear: 1851,
-        maxYear: 1913,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1913),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1913,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '640',
-        material: 'Plata',
-        minYear: 1695,
-        maxYear: 1834,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1695, 1834),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1695,
+            maxYear: 1834,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '960',
-        material: 'Plata',
-        minYear: 1810,
-        maxYear: 1834,
         motifs: [
-          NumismaticMotifRule('Patacão Colonial/Imperial', 1810, 1834),
+          NumismaticMotifRule(
+            'Patacão Colonial/Imperial',
+            minYear: 1810,
+            maxYear: 1834,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        material: 'Plata',
-        minYear: 1851,
-        maxYear: 1913,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1913),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1913,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2000',
-        material: 'Plata',
-        minYear: 1851,
-        maxYear: 1935,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1935),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1935,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -2384,96 +3092,121 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Bronce de aluminio',
-        minYear: 1942,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1942, 1979),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1942,
+            maxYear: 1979,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce de aluminio',
-        minYear: 1942,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1942, 1979),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1942,
+            maxYear: 1979,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce de aluminio',
-        minYear: 1942,
-        maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1942, 1979),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1942,
+            maxYear: 1979,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bronce de aluminio',
-        minYear: 1942,
-        maxYear: 1984,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1942, 1984),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1942,
+            maxYear: 1984,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bronce de aluminio',
-        minYear: 1942,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1942, 1956),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1942,
+            maxYear: 1956,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1972,
-        maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('Mapa do Brasil e Ramo de Café (1972-1980)',
-          1972,
-          1980,
+          NumismaticMotifRule(
+            'Mapa do Brasil e Ramo de Café (1972-1980)',
+            minYear: 1972,
+            maxYear: 1980,
+            material: 'Cuproníquel',
           ),
-          NumismaticMotifRule('Sesquicentenário da Independência do Brasil', 1972),
+          NumismaticMotifRule(
+            'Sesquicentenário da Independência do Brasil',
+            minYear: 1972,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Cuproníquel',
-        minYear: 1972,
-        maxYear: 1984,
         motifs: [
-          NumismaticMotifRule('Cana-de-Açúcar e Brasão das Armas (1972-1984)',
-          1972,
-          1984,
+          NumismaticMotifRule(
+            'Cana-de-Açúcar e Brasão das Armas (1972-1984)',
+            minYear: 1972,
+            maxYear: 1984,
+            material: 'Cuproníquel',
           ),
-          NumismaticMotifRule('Sesquicentenário da Independência do Brasil', 1972),
+          NumismaticMotifRule(
+            'Sesquicentenário da Independência do Brasil',
+            minYear: 1972,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Cuproníquel',
-        minYear: 1972,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Ramo de Soja e Brasão das Armas (1972-1986)',
-          1972,
-          1986,
+          NumismaticMotifRule(
+            'Ramo de Soja e Brasão das Armas (1972-1986)',
+            minYear: 1972,
+            maxYear: 1986,
+            material: 'Cuproníquel',
           ),
-          NumismaticMotifRule('Sesquicentenário da Independência do Brasil', 1972),
-          NumismaticMotifRule('Centenário da Imigração Italiana', 1975),
+          NumismaticMotifRule(
+            'Sesquicentenário da Independência do Brasil',
+            minYear: 1972,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Centenário da Imigração Italiana',
+            minYear: 1975,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        minYear: 1981,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1981, 1986),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1981,
+            maxYear: 1986,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -2489,127 +3222,154 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1990),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1990,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1990),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1990,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1992),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1992,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1992),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1992,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1992),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1992,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1992),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1992,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1992),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1992,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1986, 1993),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1986,
+            maxYear: 1993,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Acero inoxidable',
-        minYear: 1986,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Juscelino Kubitschek e Brasília (1986-1988)',
-          1986,
-          1993,
+          NumismaticMotifRule(
+            'Juscelino Kubitschek e Brasília (1986-1988)',
+            minYear: 1986,
+            maxYear: 1993,
+            material: 'Acero inoxidable',
           ),
-          NumismaticMotifRule('Centenário da Abolição da Escravidão - Lei Áurea', 1988),
+          NumismaticMotifRule(
+            'Centenário da Abolição da Escravidão - Lei Áurea',
+            minYear: 1988,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        material: 'Acero inoxidable',
-        minYear: 1989,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Centenário da República - Efigie da República (1989-1993)',
-          1989,
-          1993,
+          NumismaticMotifRule(
+            'Centenário da República - Efigie da República (1989-1993)',
+            minYear: 1989,
+            maxYear: 1993,
+            material: 'Acero inoxidable',
           ),
-          NumismaticMotifRule('Centenário da Proclamação da República', 1989),
+          NumismaticMotifRule(
+            'Centenário da Proclamação da República',
+            minYear: 1989,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Acero inoxidable',
-        minYear: 1992,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1992, 1993),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1992,
+            maxYear: 1993,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        material: 'Acero inoxidable',
-        minYear: 1992,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1992, 1993),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1992,
+            maxYear: 1993,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        material: 'Acero inoxidable',
-        minYear: 1993,
-        maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1993),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1993,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
     ],
@@ -2625,68 +3385,83 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero inoxidable',
-        minYear: 1994,
-        maxYear: 1997,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1994, 1997),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1994,
+            maxYear: 1997,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero inoxidable',
-        minYear: 1994,
-        maxYear: 1997,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1994, 1997),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1994,
+            maxYear: 1997,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero inoxidable',
-        minYear: 1994,
-        maxYear: 1997,
         motifs: [
-          NumismaticMotifRule('Efigie da República (1ª Familia 1994-1997)',
-          1994,
-          1997,
+          NumismaticMotifRule(
+            'Efigie da República (1ª Familia 1994-1997)',
+            minYear: 1994,
+            maxYear: 1997,
+            material: 'Acero inoxidable',
           ),
-          NumismaticMotifRule('FAO - 50 Anos da FAO', 1995),
+          NumismaticMotifRule(
+            'FAO - 50 Anos da FAO',
+            minYear: 1995,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Acero inoxidable',
-        minYear: 1994,
-        maxYear: 1995,
         motifs: [
-          NumismaticMotifRule('Efigie da República (1ª Familia 1994-1995)',
-          1994,
-          1995,
+          NumismaticMotifRule(
+            'Efigie da República (1ª Familia 1994-1995)',
+            minYear: 1994,
+            maxYear: 1995,
+            material: 'Acero inoxidable',
           ),
-          NumismaticMotifRule('FAO - 50 Anos da FAO', 1995),
+          NumismaticMotifRule(
+            'FAO - 50 Anos da FAO',
+            minYear: 1995,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Acero inoxidable',
-        minYear: 1994,
-        maxYear: 1995,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1994, 1995),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1994,
+            maxYear: 1995,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero inoxidable',
-        minYear: 1994,
-        maxYear: 1995,
         motifs: [
-          NumismaticMotifRule('Efigie da República (1ª Familia 1994-1995)',
-          1994,
-          1995,
+          NumismaticMotifRule(
+            'Efigie da República (1ª Familia 1994-1995)',
+            minYear: 1994,
+            maxYear: 1995,
+            material: 'Acero inoxidable',
           ),
-          NumismaticMotifRule('30 Anos do Banco Central do Brasil', 1995),
+          NumismaticMotifRule(
+            '30 Anos do Banco Central do Brasil',
+            minYear: 1995,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
     ],
@@ -2702,86 +3477,183 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero bañado en cobre',
-        minYear: 1998,
-        maxYear: 2004,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1998, 2004),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1998,
+            maxYear: 2004,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero bañado en cobre',
-        minYear: 1998,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1998, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1998,
+            maxYear: 2024,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero bañado en bronce',
-        minYear: 1998,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1998, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1998,
+            maxYear: 2024,
+            material: 'Acero bañado en bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Acero bañado en bronce',
-        minYear: 1998,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1998, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1998,
+            maxYear: 2024,
+            material: 'Acero bañado en bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        allowedMaterials: ['Cuproníquel', 'Acero inoxidable'],
-        minYear: 1998,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1998, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1998,
+            maxYear: 2024,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 1998,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Efigie da República com Grafismos Marajoaras (2ª Familia 1998+)',
-          1998,
-          2024,
+          NumismaticMotifRule(
+            'Efigie da República com Grafismos Marajoaras (2ª Familia 1998+)',
+            minYear: 1998,
+            maxYear: 2024,
+            material: 'Bimetálica',
           ),
-          NumismaticMotifRule('50 Aniversario de la Declaración Universal de los Derechos Humanos', 1998),
-          NumismaticMotifRule('Centenario de Juscelino Kubitschek', 2002),
-          NumismaticMotifRule('40 Aniversario del Banco Central do Brasil', 2005),
-          NumismaticMotifRule('Centenario de la Inmigración Japonesa a Brasil', 2008),
-          NumismaticMotifRule('Entrega de la Bandera Olímpica - Londres 2012 a Río 2016', 2012),
-          NumismaticMotifRule('50 Aniversario del Banco Central do Brasil', 2015),
-          NumismaticMotifRule('25 Años del Plano Real', 2019),
-          // Jogos Rio 2016
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo', 2014),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Natación', 2014),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Paratriatlón', 2014),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Golf', 2014),
-          // Jogos Rio 2016
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Baloncesto', 2015),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Vela', 2015),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Paracanotaje', 2015),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Rugby', 2015),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Fútbol', 2015),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Voleibol', 2015),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo Paralímpico', 2015),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Judo', 2015),
-          // Jogos Rio 2016
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Boxeo', 2016),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Natación Paralímpica', 2016),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Olímpica Vinicius', 2016),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Paralímpica Tom', 2016),
+          NumismaticMotifRule(
+            '50 Aniversario de la Declaración Universal de los Derechos Humanos',
+            minYear: 1998,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Juscelino Kubitschek',
+            minYear: 2002,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '40 Aniversario del Banco Central do Brasil',
+            minYear: 2005,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Inmigración Japonesa a Brasil',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Entrega de la Bandera Olímpica - Londres 2012 a Río 2016',
+            minYear: 2012,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario del Banco Central do Brasil',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '25 Años del Plano Real',
+            minYear: 2019,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Natación',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Paratriatlón',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Golf',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Baloncesto',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Vela',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Paracanotaje',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Rugby',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Fútbol',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Voleibol',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo Paralímpico',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Judo',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Boxeo',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Natación Paralímpica',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Olímpica Vinicius',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Paralímpica Tom',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -2797,56 +3669,68 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        minYear: 1790,
-        maxYear: 1808,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1790, 1808),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1790,
+            maxYear: 1808,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1773,
-        maxYear: 1817,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1773, 1817),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1773,
+            maxYear: 1817,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1773,
-        maxYear: 1817,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1773, 1817),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1773,
+            maxYear: 1817,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1773,
-        maxYear: 1817,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1773, 1817),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1773,
+            maxYear: 1817,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        minYear: 1773,
-        maxYear: 1817,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1773, 1817),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1773,
+            maxYear: 1817,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1773,
-        maxYear: 1817,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1773, 1817),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1773,
+            maxYear: 1817,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -2862,128 +3746,156 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
-        material: 'Cobre',
-        minYear: 1851,
-        maxYear: 1853,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1853),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1853,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1851,
-        maxYear: 1853,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1853),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1853,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Cobre',
-        minYear: 1851,
-        maxYear: 1853,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1853),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1853,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1870,
-        maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1870, 1942),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1870,
+            maxYear: 1942,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Cuproníquel',
-        minYear: 1870,
-        maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1870, 1942),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1870,
+            maxYear: 1942,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Cuproníquel',
-        minYear: 1870,
-        maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1870, 1942),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1870,
+            maxYear: 1942,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1851,
-        maxYear: 1888,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1888),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1888,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1851,
-        maxYear: 1933,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1933),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1933,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Oro',
-        minYear: 1873,
-        maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1880),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1880,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1851,
-        maxYear: 1894,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1894),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1894,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1851,
-        maxYear: 1894,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1851, 1894),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1851,
+            maxYear: 1894,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1926,
-        maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1926, 1959),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1926,
+            maxYear: 1959,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Oro',
-        minYear: 1926,
-        maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1926, 1959),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1926,
+            maxYear: 1959,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Oro',
-        minYear: 1926,
-        maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1926, 1959),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1926,
+            maxYear: 1959,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -2999,119 +3911,145 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
-        material: 'Aluminio',
-        minYear: 1960,
-        maxYear: 1962,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1960, 1962),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1960,
+            maxYear: 1962,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio',
-        minYear: 1960,
-        maxYear: 1971,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1960, 1971),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1960,
+            maxYear: 1971,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Aluminio',
-        minYear: 1960,
-        maxYear: 1971,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1960, 1971),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1960,
+            maxYear: 1971,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1960,
-        maxYear: 1971,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1960, 1971),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1960,
+            maxYear: 1971,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Bronce de aluminio',
-        minYear: 1971,
-        maxYear: 1972,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 1972),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 1972,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce de aluminio',
-        minYear: 1971,
-        maxYear: 1972,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 1972),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 1972,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1971,
-        maxYear: 1972,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 1972),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 1972,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1971,
-        maxYear: 1972,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 1972),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 1972,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Cuproníquel',
-        minYear: 1971,
-        maxYear: 1972,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 1972),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 1972,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1971,
-        maxYear: 1972,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 1972),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 1972,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1974, 1975),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1974,
+            maxYear: 1975,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1974, 1975),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1974,
+            maxYear: 1975,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1974, 1975),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1974,
+            maxYear: 1975,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -3127,62 +4065,80 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Aluminio',
-        minYear: 1975,
-        maxYear: 2017,
         motifs: [
-          NumismaticMotifRule("Bernardo O'Higgins", 1975, 2017),
+          NumismaticMotifRule(
+            "Bernardo O'Higgins",
+            minYear: 1975,
+            maxYear: 2017,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bronce de aluminio',
-        allowedMaterials: ['Bronce de aluminio', 'Aluminio-Bronce'],
-        minYear: 1976,
-        maxYear: 2015,
         motifs: [
-          NumismaticMotifRule("Bernardo O'Higgins (Forma Octagonal)", 1976, 2015),
+          NumismaticMotifRule(
+            "Bernardo O'Higgins (Forma Octagonal)",
+            minYear: 1976,
+            maxYear: 2015,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bronce de aluminio',
-        allowedMaterials: ['Bronce de aluminio', 'Aluminio-Bronce'],
-        minYear: 1975,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule("Bernardo O'Higgins", 1975, 2024),
-          NumismaticMotifRule('Ángel de la Libertad (1976-1990)', 1976, 1990),
+          NumismaticMotifRule(
+            "Bernardo O'Higgins",
+            minYear: 1975,
+            maxYear: 2024,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Ángel de la Libertad (1976-1990)',
+            minYear: 1976,
+            maxYear: 1990,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Bronce de aluminio',
-        allowedMaterials: ['Bronce de aluminio', 'Aluminio-Bronce'],
-        minYear: 1981,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule("Bernardo O'Higgins (Forma Decagonal)", 1981, 2024),
+          NumismaticMotifRule(
+            "Bernardo O'Higgins (Forma Decagonal)",
+            minYear: 1981,
+            maxYear: 2024,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Bimetálica',
-        allowedMaterials: ['Bimetálica', 'Bronce de aluminio'],
-        minYear: 1981,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Pueblos Originarios - Mujer Mapuche', 2001, 2024),
-          NumismaticMotifRule('Escudo Nacional de 8 Lados (1981-2000)', 1981, 2000),
+          NumismaticMotifRule(
+            'Pueblos Originarios - Mujer Mapuche',
+            minYear: 2001,
+            maxYear: 2024,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Escudo Nacional de 8 Lados (1981-2000)',
+            minYear: 1981,
+            maxYear: 2000,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Bimetálica',
-        minYear: 2000,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Cardenal Raúl Silva Henríquez', 2000, 2024),
+          NumismaticMotifRule(
+            'Cardenal Raúl Silva Henríquez',
+            minYear: 2000,
+            maxYear: 2024,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -3198,56 +4154,68 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        minYear: 1794,
-        maxYear: 1808,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1794, 1808),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1794,
+            maxYear: 1808,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1772,
-        maxYear: 1824,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1772, 1824),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1772,
+            maxYear: 1824,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1772,
-        maxYear: 1824,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1772, 1824),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1772,
+            maxYear: 1824,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1772,
-        maxYear: 1824,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1772, 1824),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1772,
+            maxYear: 1824,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        minYear: 1772,
-        maxYear: 1824,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1772, 1824),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1772,
+            maxYear: 1824,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1772,
-        maxYear: 1824,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1772, 1824),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1772,
+            maxYear: 1824,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -3263,122 +4231,151 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1863,
-        maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1863, 1949),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1863,
+            maxYear: 1949,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Cobre',
-        minYear: 1863,
-        maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1863, 1949),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1863,
+            maxYear: 1949,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Latón',
-        minYear: 1918,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1918, 1975),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1918,
+            maxYear: 1975,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Latón',
-        minYear: 1918,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1918, 1975),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1918,
+            maxYear: 1975,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Latón',
-        minYear: 1918,
-        maxYear: 1975,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1918, 1975),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1918,
+            maxYear: 1975,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1864,
-        maxYear: 1935,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1864, 1935),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1864,
+            maxYear: 1935,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Latón', 'Cuproníquel'],
-        minYear: 1863,
-        maxYear: 1977,
         motifs: [
-          NumismaticMotifRule('Libertad Parada (Plata)', 1863, 1969),
-          NumismaticMotifRule('Túpac Amaru II (1970-1977)', 1970, 1977),
+          NumismaticMotifRule(
+            'Libertad Parada (Plata)',
+            minYear: 1863,
+            maxYear: 1969,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Túpac Amaru II (1970-1977)',
+            minYear: 1970,
+            maxYear: 1977,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Oro',
-        minYear: 1950,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1950, 1969),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1950,
+            maxYear: 1969,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Latón',
-        minYear: 1970,
-        maxYear: 1977,
         motifs: [
-          NumismaticMotifRule('Almirante Miguel Grau', 1970, 1977),
+          NumismaticMotifRule(
+            'Almirante Miguel Grau',
+            minYear: 1970,
+            maxYear: 1977,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Latón',
-        minYear: 1977,
-        maxYear: 1984,
         motifs: [
-          NumismaticMotifRule('Túpac Amaru II', 1977, 1984),
+          NumismaticMotifRule(
+            'Túpac Amaru II',
+            minYear: 1977,
+            maxYear: 1984,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1950,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1950, 1969),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1950,
+            maxYear: 1969,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Oro',
-        minYear: 1950,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1950, 1969),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1950,
+            maxYear: 1969,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Cuproníquel',
-        allowedMaterials: ['Cuproníquel', 'Oro'],
-        minYear: 1979,
-        maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('Centenario de la Guerra del Pacífico', 1979, 1980),
+          NumismaticMotifRule(
+            'Centenario de la Guerra del Pacífico',
+            minYear: 1979,
+            maxYear: 1980,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -3394,92 +4391,111 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1985, 1987),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1985, 1987),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Latón',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1985, 1987),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Latón',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1985, 1987),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Latón',
-        minYear: 1985,
-        maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('Gran Almirante Miguel Grau', 1985, 1988),
+          NumismaticMotifRule(
+            'Gran Almirante Miguel Grau',
+            minYear: 1985,
+            maxYear: 1988,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1985,
-        maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('Gran Almirante Miguel Grau', 1985, 1988),
+          NumismaticMotifRule(
+            'Gran Almirante Miguel Grau',
+            minYear: 1985,
+            maxYear: 1988,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Cuproníquel',
-        minYear: 1988,
-        maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1988, 1989),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1988,
+            maxYear: 1989,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        minYear: 1989,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Andrés Avelino Cáceres', 1989, 1990),
+          NumismaticMotifRule(
+            'Andrés Avelino Cáceres',
+            minYear: 1989,
+            maxYear: 1990,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Cuproníquel',
-        minYear: 1989,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('César Vallejo', 1989, 1990),
+          NumismaticMotifRule(
+            'César Vallejo',
+            minYear: 1989,
+            maxYear: 1990,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Cuproníquel',
-        minYear: 1990,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1990),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1990,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -3495,132 +4511,335 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Aluminio',
-        minYear: 1991,
-        maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1991, 2011),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1991,
+            maxYear: 2011,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1991,
-        maxYear: 2018,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1991, 2018),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1991,
+            maxYear: 2018,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Latón',
-        minYear: 1991,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1991, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1991,
+            maxYear: 2024,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Latón',
-        minYear: 1991,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1991, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1991,
+            maxYear: 2024,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Alpaca (Plata alemana)',
-        minYear: 1991,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1991, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1991,
+            maxYear: 2024,
+            material: 'Alpaca (Plata alemana)',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Alpaca (Plata alemana)',
-        minYear: 1991,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Escudo de Armas y Ramas de Laurel y Roble (Circulación Estándar)',
-          1991,
-          2024,
+          NumismaticMotifRule(
+            'Escudo de Armas y Ramas de Laurel y Roble (Circulación Estándar)',
+            minYear: 1991,
+            maxYear: 2024,
+            material: 'Alpaca (Plata alemana)',
           ),
-          // Serie Riqueza y Orgullo del Perú (2010-2016)
-          NumismaticMotifRule('Tumi de Oro (Lambayeque)', 2010),
-          NumismaticMotifRule('Sarcófagos de Karajía (Amazonas)', 2010),
-          NumismaticMotifRule('Estela de Raimondi (Áncash)', 2010),
-          NumismaticMotifRule('Chullpas de Sillustani (Puno)', 2011),
-          NumismaticMotifRule('Monasterio de Santa Catalina (Arequipa)', 2011),
-          NumismaticMotifRule('Machu Picchu (Cusco)', 2011),
-          NumismaticMotifRule('Gran Pajatén (San Martín)', 2011),
-          NumismaticMotifRule('Piedra de Saywite (Apurímac)', 2012),
-          NumismaticMotifRule('Fortaleza del Real Felipe (Callao)', 2012),
-          NumismaticMotifRule('Templo del Sol - Vilcashuamán (Ayacucho)', 2012),
-          NumismaticMotifRule('Kuntur Wasi (Cajamarca)', 2012),
-          NumismaticMotifRule('Templo Inca Huaytará (Huancavelica)', 2013),
-          NumismaticMotifRule('Complejo Arqueológico de Kotosh (Huánuco)', 2013),
-          NumismaticMotifRule('Arte Textil Paracas (Ica)', 2013),
-          NumismaticMotifRule('Complejo Arqueológico de Tunanmarca (Junín)', 2013),
-          NumismaticMotifRule('Ciudad Sagrada de Caral (Lima)', 2013),
-          NumismaticMotifRule('Huaca de la Luna (La Libertad)', 2014),
-          NumismaticMotifRule('Antiguo Hotel Palace (Loreto)', 2014),
-          NumismaticMotifRule('Catedral de Lima (Lima)', 2014),
-          NumismaticMotifRule('Petroglifos de Pusharo (Madre de Dios)', 2015),
-          NumismaticMotifRule('Arquitectura Moqueguana (Moquegua)', 2015),
-          NumismaticMotifRule('Sitio Arqueológico de Huarautambo (Pasco)', 2015),
-          NumismaticMotifRule('Complejo Arqueológico de Cabeza de Vaca (Tumbes)', 2016),
-          NumismaticMotifRule('Cerámica Vicús (Piura)', 2016),
-          NumismaticMotifRule('Cerámica Shipibo-Konibo (Ucayali)', 2016),
-          NumismaticMotifRule('Arco Parabólico de Tacna (Tacna)', 2016),
-          // Serie Recursos Naturales del Perú
-          NumismaticMotifRule('El Cacao (Theobroma cacao)', 2013),
-          NumismaticMotifRule('La Quinua (Chenopodium quinoa)', 2013),
-          NumismaticMotifRule('La Anchoveta (Engraulis ringens)', 2013),
-          // Casa Nacional de Moneda
-          NumismaticMotifRule('Casa Nacional de Moneda - 450 Años', 2015),
-          // Serie Fauna Silvestre Amenazada del Perú (2017-2019)
-          NumismaticMotifRule('Oso Andino de Anteojos (Tremarctos ornatus)', 2017),
-          NumismaticMotifRule('Cocodrilo de Tumbes (Crocodylus acutus)', 2017),
-          NumismaticMotifRule('Cóndor Andino (Vultur gryphus)', 2017),
-          NumismaticMotifRule('Tapir Andino (Tapirus pinchaque)', 2018),
-          NumismaticMotifRule('Pava Aliblanca (Penelope albipennis)', 2018),
-          NumismaticMotifRule('Jaguar (Panthera onca)', 2018),
-          NumismaticMotifRule('Suri (Rhea pennata)', 2018),
-          NumismaticMotifRule('Mono Choro de Cola Amarilla (Lagothrix flavicauda)', 2019),
-          NumismaticMotifRule('Gato Andino (Leopardus jacobita)', 2019),
-          NumismaticMotifRule('Rana Gigante del Titicaca (Telmatobius culeus)', 2019),
-          // Serie Constructores de la República (2020-2022)
-          NumismaticMotifRule('Juan Pablo Viscardo y Guzmán', 2020),
-          NumismaticMotifRule('Hipólito Unanue', 2020),
-          NumismaticMotifRule('Toribio Rodríguez de Mendoza', 2021),
-          NumismaticMotifRule('Manuel Lorenzo de Vidaurre', 2021),
-          NumismaticMotifRule('Francisco Xavier de Luna Pizarro', 2022),
-          NumismaticMotifRule('José Baquíjano y Carrillo', 2022),
-          NumismaticMotifRule('José Faustino Sánchez Carrión', 2022),
-          // Serie La Mujer en el Proceso de Independencia
-          NumismaticMotifRule('Brigida Silva de Ochoa', 2020),
-          NumismaticMotifRule('María Parado de Bellido', 2020),
+          NumismaticMotifRule(
+            'Tumi de Oro (Lambayeque)',
+            minYear: 2010,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Sarcófagos de Karajía (Amazonas)',
+            minYear: 2010,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Estela de Raimondi (Áncash)',
+            minYear: 2010,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Chullpas de Sillustani (Puno)',
+            minYear: 2011,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Monasterio de Santa Catalina (Arequipa)',
+            minYear: 2011,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Machu Picchu (Cusco)',
+            minYear: 2011,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Gran Pajatén (San Martín)',
+            minYear: 2011,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Piedra de Saywite (Apurímac)',
+            minYear: 2012,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Fortaleza del Real Felipe (Callao)',
+            minYear: 2012,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Templo del Sol - Vilcashuamán (Ayacucho)',
+            minYear: 2012,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Kuntur Wasi (Cajamarca)',
+            minYear: 2012,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Templo Inca Huaytará (Huancavelica)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Complejo Arqueológico de Kotosh (Huánuco)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Arte Textil Paracas (Ica)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Complejo Arqueológico de Tunanmarca (Junín)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Ciudad Sagrada de Caral (Lima)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Huaca de la Luna (La Libertad)',
+            minYear: 2014,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Antiguo Hotel Palace (Loreto)',
+            minYear: 2014,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Catedral de Lima (Lima)',
+            minYear: 2014,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Petroglifos de Pusharo (Madre de Dios)',
+            minYear: 2015,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Arquitectura Moqueguana (Moquegua)',
+            minYear: 2015,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Sitio Arqueológico de Huarautambo (Pasco)',
+            minYear: 2015,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Complejo Arqueológico de Cabeza de Vaca (Tumbes)',
+            minYear: 2016,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Cerámica Vicús (Piura)',
+            minYear: 2016,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Cerámica Shipibo-Konibo (Ucayali)',
+            minYear: 2016,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Arco Parabólico de Tacna (Tacna)',
+            minYear: 2016,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'El Cacao (Theobroma cacao)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'La Quinua (Chenopodium quinoa)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'La Anchoveta (Engraulis ringens)',
+            minYear: 2013,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Casa Nacional de Moneda - 450 Años',
+            minYear: 2015,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Oso Andino de Anteojos (Tremarctos ornatus)',
+            minYear: 2017,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Cocodrilo de Tumbes (Crocodylus acutus)',
+            minYear: 2017,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Cóndor Andino (Vultur gryphus)',
+            minYear: 2017,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Tapir Andino (Tapirus pinchaque)',
+            minYear: 2018,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Pava Aliblanca (Penelope albipennis)',
+            minYear: 2018,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Jaguar (Panthera onca)',
+            minYear: 2018,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Suri (Rhea pennata)',
+            minYear: 2018,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Mono Choro de Cola Amarilla (Lagothrix flavicauda)',
+            minYear: 2019,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Gato Andino (Leopardus jacobita)',
+            minYear: 2019,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Rana Gigante del Titicaca (Telmatobius culeus)',
+            minYear: 2019,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Juan Pablo Viscardo y Guzmán',
+            minYear: 2020,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Hipólito Unanue',
+            minYear: 2020,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Toribio Rodríguez de Mendoza',
+            minYear: 2021,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Manuel Lorenzo de Vidaurre',
+            minYear: 2021,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Francisco Xavier de Luna Pizarro',
+            minYear: 2022,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'José Baquíjano y Carrillo',
+            minYear: 2022,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'José Faustino Sánchez Carrión',
+            minYear: 2022,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'Brigida Silva de Ochoa',
+            minYear: 2020,
+            material: 'Alpaca (Plata alemana)',
+          ),
+          NumismaticMotifRule(
+            'María Parado de Bellido',
+            minYear: 2020,
+            material: 'Alpaca (Plata alemana)',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 1994,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Líneas de Nazca - El Colibrí', 1994, 2024),
+          NumismaticMotifRule(
+            'Líneas de Nazca - El Colibrí',
+            minYear: 1994,
+            maxYear: 2024,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bimetálica',
-        minYear: 1994,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Líneas de Nazca - El Ave Fragata', 1994, 2024),
+          NumismaticMotifRule(
+            'Líneas de Nazca - El Ave Fragata',
+            minYear: 1994,
+            maxYear: 2024,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -3636,83 +4855,101 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Cobre',
-        minYear: 1860,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1860, 1956),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1860,
+            maxYear: 1956,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Cobre',
-        minYear: 1860,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1860, 1967),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1860,
+            maxYear: 1967,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cobre',
-        minYear: 1860,
-        maxYear: 1970,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1860, 1970),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1860,
+            maxYear: 1970,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        material: 'Níquel-Latón',
-        minYear: 1937,
-        maxYear: 1970,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1937, 1970),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1937,
+            maxYear: 1970,
+            material: 'Níquel-Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '6',
-        material: 'Cuproníquel',
-        minYear: 1947,
-        maxYear: 1970,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1947, 1970),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1947,
+            maxYear: 1970,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1s',
-        material: 'Cuproníquel',
-        minYear: 1947,
-        maxYear: 1970,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1947, 1970),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1947,
+            maxYear: 1970,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2s',
-        material: 'Cuproníquel',
-        minYear: 1947,
-        maxYear: 1970,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1947, 1970),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1947,
+            maxYear: 1970,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2.5s',
-        material: 'Cuproníquel',
-        minYear: 1947,
-        maxYear: 1970,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1947, 1970),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1947,
+            maxYear: 1970,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5s',
-        material: 'Cuproníquel',
-        minYear: 1951,
-        maxYear: 1965,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1951, 1965),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1951,
+            maxYear: 1965,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -3728,155 +4965,352 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.005',
-        material: 'Bronce',
-        minYear: 1971,
-        maxYear: 1984,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 1984),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 1984,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero bañado en cobre',
-        allowedMaterials: ['Acero bañado en cobre', 'Bronce'],
-        minYear: 1971,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 2016),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 2016,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Acero bañado en cobre',
-        allowedMaterials: ['Acero bañado en cobre', 'Bronce'],
-        minYear: 1971,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1971, 2016),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1971,
+            maxYear: 2016,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero bañado en níquel',
-        allowedMaterials: ['Acero bañado en níquel', 'Cuproníquel'],
-        minYear: 1968,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1968, 2016),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1968,
+            maxYear: 2016,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero bañado en níquel',
-        allowedMaterials: ['Acero bañado en níquel', 'Cuproníquel'],
-        minYear: 1968,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1968, 2016),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1968,
+            maxYear: 2016,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Cuproníquel',
-        minYear: 1982,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1982, 2016),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1982,
+            maxYear: 2016,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1969,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Britannia Sedente con Escudo y Tridente (1969-2008)',
-          1969,
-          2008,
+          NumismaticMotifRule(
+            'Britannia Sedente con Escudo y Tridente (1969-2008)',
+            minYear: 1969,
+            maxYear: 2008,
+            material: 'Cuproníquel',
           ),
-          NumismaticMotifRule('Royal Shield of Arms - Sección del Escudo Real (2008-2016)',
-          2008,
-          2016,
+          NumismaticMotifRule(
+            'Royal Shield of Arms - Sección del Escudo Real (2008-2016)',
+            minYear: 2008,
+            maxYear: 2016,
+            material: 'Cuproníquel',
           ),
-          NumismaticMotifRule('Ingreso a la Comunidad Económica Europea EEC', 1973),
-          NumismaticMotifRule('Presidencia Británica de la CEE (1992-1993)', 1992, 1993),
-          NumismaticMotifRule('50 Aniversario del Día D desembarco de Normandía', 1994),
-          NumismaticMotifRule('50 Aniversario del NHS Servicio Nacional de Salud', 1998),
-          NumismaticMotifRule('25 Años de la CEE', 1998),
-          NumismaticMotifRule('150 Aniversario de las Bibliotecas Públicas', 2000),
-          NumismaticMotifRule('100 Años de la Fundación de la WSPU Movimiento Sufragista', 2003),
-          NumismaticMotifRule('50 Años de la Milla en Cuatro Minutos por Roger Bannister', 2004),
-          NumismaticMotifRule('250 Aniversario del Diccionario de Samuel Johnson', 2005),
-          NumismaticMotifRule('Bicentenario de Isambard Kingdom Brunel', 2006),
-          NumismaticMotifRule('Centenario del Movimiento Scout', 2007),
-          NumismaticMotifRule('250 Aniversario de los Jardines Botánicos Reales de Kew', 2009),
-          NumismaticMotifRule('Juegos Olímpicos y Paralímpicos de Londres 2012 - 29 Deportes', 2011),
-          NumismaticMotifRule('Centenario de Benjamin Britten', 2013),
-          NumismaticMotifRule('Centenario del Inicio de la Primera Guerra Mundial', 2014),
-          NumismaticMotifRule('75 Aniversario de la Batalla de Inglaterra', 2015),
-          NumismaticMotifRule('950 Aniversario de la Batalla de Hastings', 2016),
-          NumismaticMotifRule('Serie Beatrix Potter - Peter Rabbit', 2016),
-          NumismaticMotifRule('Serie Beatrix Potter - Jemima Puddle-Duck', 2016),
-          NumismaticMotifRule('Serie Beatrix Potter - Squirrel Nutkin', 2016),
-          NumismaticMotifRule('Serie Beatrix Potter - Mrs. Tiggy-Winkle', 2016),
+          NumismaticMotifRule(
+            'Ingreso a la Comunidad Económica Europea EEC',
+            minYear: 1973,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Presidencia Británica de la CEE (1992-1993)',
+            minYear: 1992,
+            maxYear: 1993,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario del Día D desembarco de Normandía',
+            minYear: 1994,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario del NHS Servicio Nacional de Salud',
+            minYear: 1998,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '25 Años de la CEE',
+            minYear: 1998,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario de las Bibliotecas Públicas',
+            minYear: 2000,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '100 Años de la Fundación de la WSPU Movimiento Sufragista',
+            minYear: 2003,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '50 Años de la Milla en Cuatro Minutos por Roger Bannister',
+            minYear: 2004,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario del Diccionario de Samuel Johnson',
+            minYear: 2005,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de Isambard Kingdom Brunel',
+            minYear: 2006,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Movimiento Scout',
+            minYear: 2007,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario de los Jardines Botánicos Reales de Kew',
+            minYear: 2009,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos y Paralímpicos de Londres 2012 - 29 Deportes',
+            minYear: 2011,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Benjamin Britten',
+            minYear: 2013,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Inicio de la Primera Guerra Mundial',
+            minYear: 2014,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '75 Aniversario de la Batalla de Inglaterra',
+            minYear: 2015,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '950 Aniversario de la Batalla de Hastings',
+            minYear: 2016,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Serie Beatrix Potter - Peter Rabbit',
+            minYear: 2016,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Serie Beatrix Potter - Jemima Puddle-Duck',
+            minYear: 2016,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Serie Beatrix Potter - Squirrel Nutkin',
+            minYear: 2016,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Serie Beatrix Potter - Mrs. Tiggy-Winkle',
+            minYear: 2016,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Níquel-Latón',
-        minYear: 1983,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Royal Arms - Escudo Real de Armas del Reino Unido (1983, 1993, 2003, 2008)',
-          1983,
-          2016,
+          NumismaticMotifRule(
+            'Royal Arms - Escudo Real de Armas del Reino Unido (1983, 1993, 2003, 2008)',
+            minYear: 1983,
+            maxYear: 2016,
+            material: 'Níquel-Latón',
           ),
-          NumismaticMotifRule('Puentes del Reino Unido (2004-2007)', 2004, 2007),
-          NumismaticMotifRule('Ciudades Capitales Británicas (2010-2011)', 2010, 2011),
-          NumismaticMotifRule('Flora Heráldica Británica (2013-2014)', 2013, 2014),
-          NumismaticMotifRule('Última Emisión Redonda - The Last Round Pound', 2016),
+          NumismaticMotifRule(
+            'Puentes del Reino Unido (2004-2007)',
+            minYear: 2004,
+            maxYear: 2007,
+            material: 'Níquel-Latón',
+          ),
+          NumismaticMotifRule(
+            'Ciudades Capitales Británicas (2010-2011)',
+            minYear: 2010,
+            maxYear: 2011,
+            material: 'Níquel-Latón',
+          ),
+          NumismaticMotifRule(
+            'Flora Heráldica Británica (2013-2014)',
+            minYear: 2013,
+            maxYear: 2014,
+            material: 'Níquel-Latón',
+          ),
+          NumismaticMotifRule(
+            'Última Emisión Redonda - The Last Round Pound',
+            minYear: 2016,
+            material: 'Níquel-Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 1997,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Desarrollo de la Tecnología - Anillos de la Historia Industrial (1997-2015)',
-          1997,
-          2015,
+          NumismaticMotifRule(
+            'Desarrollo de la Tecnología - Anillos de la Historia Industrial (1997-2015)',
+            minYear: 1997,
+            maxYear: 2015,
+            material: 'Bimetálica',
           ),
-          NumismaticMotifRule('Rugby World Cup', 1999),
-          NumismaticMotifRule('Centenario de la Radio Transatlántica de Marconi', 2001),
-          NumismaticMotifRule('Commonwealth Games Manchester', 2002),
-          NumismaticMotifRule('50 Aniversario del Descubrimiento del ADN', 2003),
-          NumismaticMotifRule('200 Años de la Locomotora de Vapor de Trevithick', 2004),
-          NumismaticMotifRule('400 Años de la Conspiración de la Pólvora', 2005),
-          NumismaticMotifRule('60 Aniversario del Fin de la Segunda Guerra Mundial', 2005),
-          NumismaticMotifRule('Bicentenario de Isambard Kingdom Brunel', 2006),
-          NumismaticMotifRule('Bicentenario de la Abolición del Comercio de Esclavos', 2007),
-          NumismaticMotifRule('Tercentenario del Acta de Unión', 2007),
-          NumismaticMotifRule('Centenario de los Juegos Olímpicos de Londres 1908', 2008),
-          NumismaticMotifRule('Bicentenario de Charles Darwin', 2009),
-          NumismaticMotifRule('250 Aniversario del Nacimiento de Robert Burns', 2009),
-          NumismaticMotifRule('Centenario de Florence Nightingale', 2010),
-          NumismaticMotifRule('400 Aniversario de la Biblia del Rey Jacobo', 2011),
-          NumismaticMotifRule('Bicentenario de Charles Dickens', 2012),
-          NumismaticMotifRule('150 Años del Metro de Londres', 2013),
-          NumismaticMotifRule('350 Aniversario de la Guinea de Oro', 2013),
-          NumismaticMotifRule('Centenario de la Primera Guerra Mundial - Tu País te Necesita', 2014),
-          NumismaticMotifRule('800 Aniversario de la Carta Magna', 2015),
-          NumismaticMotifRule('400 Aniversario de William Shakespeare', 2016),
+          NumismaticMotifRule(
+            'Rugby World Cup',
+            minYear: 1999,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Radio Transatlántica de Marconi',
+            minYear: 2001,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Commonwealth Games Manchester',
+            minYear: 2002,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario del Descubrimiento del ADN',
+            minYear: 2003,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '200 Años de la Locomotora de Vapor de Trevithick',
+            minYear: 2004,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '400 Años de la Conspiración de la Pólvora',
+            minYear: 2005,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '60 Aniversario del Fin de la Segunda Guerra Mundial',
+            minYear: 2005,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de Isambard Kingdom Brunel',
+            minYear: 2006,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Abolición del Comercio de Esclavos',
+            minYear: 2007,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Tercentenario del Acta de Unión',
+            minYear: 2007,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de los Juegos Olímpicos de Londres 1908',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de Charles Darwin',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario del Nacimiento de Robert Burns',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Florence Nightingale',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '400 Aniversario de la Biblia del Rey Jacobo',
+            minYear: 2011,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de Charles Dickens',
+            minYear: 2012,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '150 Años del Metro de Londres',
+            minYear: 2013,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '350 Aniversario de la Guinea de Oro',
+            minYear: 2013,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Primera Guerra Mundial - Tu País te Necesita',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '800 Aniversario de la Carta Magna',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '400 Aniversario de William Shakespeare',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1990,
-        maxYear: 2016,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1990, 2016),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1990,
+            maxYear: 2016,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -3892,119 +5326,194 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero bañado en cobre',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 2017, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 2017,
+            maxYear: 2024,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Acero bañado en cobre',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 2017, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 2017,
+            maxYear: 2024,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero bañado en níquel',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 2017, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 2017,
+            maxYear: 2024,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero bañado en níquel',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 2017, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 2017,
+            maxYear: 2024,
+            material: 'Acero bañado en níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Cuproníquel',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 2017, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 2017,
+            maxYear: 2024,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Royal Shield of Arms - Sección del Escudo Real (2017-2022)',
-          2017,
-          2022,
+          NumismaticMotifRule(
+            'Royal Shield of Arms - Sección del Escudo Real (2017-2022)',
+            minYear: 2017,
+            maxYear: 2022,
+            material: 'Cuproníquel',
           ),
-          NumismaticMotifRule('Salmón del Atlántico - Rey Carlos III (2023+)',
-          2023,
-          2100,
+          NumismaticMotifRule(
+            'Salmón del Atlántico - Rey Carlos III (2023+)',
+            minYear: 2023,
+            maxYear: 2100,
+            material: 'Cuproníquel',
           ),
-          NumismaticMotifRule('Sir Isaac Newton', 2017),
-          NumismaticMotifRule('Centenario de la Ley de Representación Popular', 2018),
-          NumismaticMotifRule('Stephen Hawking', 2019),
-          NumismaticMotifRule('Salida del Reino Unido de la Unión Europea - Brexit', 2020),
-          NumismaticMotifRule('Dinosaurios de la Colección del Museo de Historia Natural - Megalosaurus', 2020),
-          NumismaticMotifRule('50 Aniversario del Orgullo Gay - Pride UK', 2022),
-          NumismaticMotifRule('Homenaje a la Reina Isabel II', 2022),
-          NumismaticMotifRule('Coronación del Rey Carlos III', 2023),
+          NumismaticMotifRule(
+            'Sir Isaac Newton',
+            minYear: 2017,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Ley de Representación Popular',
+            minYear: 2018,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Stephen Hawking',
+            minYear: 2019,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Salida del Reino Unido de la Unión Europea - Brexit',
+            minYear: 2020,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Dinosaurios de la Colección del Museo de Historia Natural - Megalosaurus',
+            minYear: 2020,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario del Orgullo Gay - Pride UK',
+            minYear: 2022,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Homenaje a la Reina Isabel II',
+            minYear: 2022,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Coronación del Rey Carlos III',
+            minYear: 2023,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Nations of the Crown - Rosa, Puerro, Cardo y Trébol (2017-2022)',
-          2017,
-          2022,
+          NumismaticMotifRule(
+            'Nations of the Crown - Rosa, Puerro, Cardo y Trébol (2017-2022)',
+            minYear: 2017,
+            maxYear: 2022,
+            material: 'Bimetálica',
           ),
-          NumismaticMotifRule('Flora y Fauna Británica - Abejas de Carlos III (2023+)',
-          2023,
-          2100,
+          NumismaticMotifRule(
+            'Flora y Fauna Británica - Abejas de Carlos III (2023+)',
+            minYear: 2023,
+            maxYear: 2100,
+            material: 'Bimetálica',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Britannia con Escudo y Tridente por Antony Dufort (2015-2022)',
-          2017,
-          2022,
+          NumismaticMotifRule(
+            'Britannia con Escudo y Tridente por Antony Dufort (2015-2022)',
+            minYear: 2017,
+            maxYear: 2022,
+            material: 'Bimetálica',
           ),
-          NumismaticMotifRule('Corona de Flora Nacional - Rey Carlos III (2023+)',
-          2023,
-          2100,
+          NumismaticMotifRule(
+            'Corona de Flora Nacional - Rey Carlos III (2023+)',
+            minYear: 2023,
+            maxYear: 2100,
+            material: 'Bimetálica',
           ),
-          NumismaticMotifRule('Jane Austen', 2017),
-          NumismaticMotifRule('Centenario de la RAF Royal Air Force', 2018),
-          NumismaticMotifRule('75 Aniversario del Día D', 2019),
-          NumismaticMotifRule('100 Años de Agatha Christie', 2020),
-          NumismaticMotifRule('75 Aniversario de la Victoria en Europa VE Day', 2020),
-          NumismaticMotifRule('Alexander Graham Bell', 2022),
-          NumismaticMotifRule('J.R.R. Tolkien', 2023),
+          NumismaticMotifRule(
+            'Jane Austen',
+            minYear: 2017,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la RAF Royal Air Force',
+            minYear: 2018,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '75 Aniversario del Día D',
+            minYear: 2019,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '100 Años de Agatha Christie',
+            minYear: 2020,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '75 Aniversario de la Victoria en Europa VE Day',
+            minYear: 2020,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Alexander Graham Bell',
+            minYear: 2022,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'J.R.R. Tolkien',
+            minYear: 2023,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 2017,
-        maxYear: 2024,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 2017, 2024),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 2017,
+            maxYear: 2024,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -4020,92 +5529,112 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/12',
-        material: 'Cobre',
-        minYear: 1655,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1655, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1655,
+            maxYear: 1793,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/6',
-        material: 'Cobre',
-        minYear: 1655,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1655, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1655,
+            maxYear: 1793,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Cobre',
-        minYear: 1655,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1655, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1655,
+            maxYear: 1793,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1641,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1641, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1641,
+            maxYear: 1793,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1641,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1641, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1641,
+            maxYear: 1793,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Oro',
-        minYear: 1640,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1640, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1640,
+            maxYear: 1793,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        material: 'Plata',
-        minYear: 1640,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1640, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1640,
+            maxYear: 1793,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '6',
-        material: 'Plata',
-        minYear: 1640,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1640, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1640,
+            maxYear: 1793,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '12',
-        material: 'Oro',
-        minYear: 1640,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1640, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1640,
+            maxYear: 1793,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '24',
-        material: 'Oro',
-        minYear: 1640,
-        maxYear: 1793,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1640, 1793),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1640,
+            maxYear: 1793,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -4121,128 +5650,156 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1795,
-        maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1795, 1920),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1795,
+            maxYear: 1920,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1795,
-        maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1795, 1920),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1795,
+            maxYear: 1920,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Aluminio',
-        minYear: 1945,
-        maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1945, 1959),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1945,
+            maxYear: 1959,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Aluminio',
-        minYear: 1945,
-        maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1945, 1959),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1945,
+            maxYear: 1959,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Aluminio',
-        minYear: 1945,
-        maxYear: 1946,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1945, 1946),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1945,
+            maxYear: 1946,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Cuproníquel',
-        minYear: 1903,
-        maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1903, 1940),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1903,
+            maxYear: 1940,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Aluminio-Bronce',
-        minYear: 1920,
-        maxYear: 1958,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1920, 1958),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1920,
+            maxYear: 1958,
+            material: 'Aluminio-Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Aluminio-Bronce',
-        minYear: 1920,
-        maxYear: 1958,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1920, 1958),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1920,
+            maxYear: 1958,
+            material: 'Aluminio-Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Aluminio-Bronce',
-        minYear: 1920,
-        maxYear: 1958,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1920, 1958),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1920,
+            maxYear: 1958,
+            material: 'Aluminio-Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1933,
-        maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1933, 1952),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1933,
+            maxYear: 1952,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Plata',
-        minYear: 1929,
-        maxYear: 1939,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1929, 1939),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1929,
+            maxYear: 1939,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Plata',
-        minYear: 1929,
-        maxYear: 1939,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1929, 1939),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1929,
+            maxYear: 1939,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        minYear: 1950,
-        maxYear: 1958,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1950, 1958),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1950,
+            maxYear: 1958,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Cuproníquel',
-        minYear: 1954,
-        maxYear: 1958,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1954, 1958),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1954,
+            maxYear: 1958,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -4258,141 +5815,239 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero inoxidable',
-        minYear: 1960,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule("Épi d'épi", 1960, 2001),
+          NumismaticMotifRule(
+            "Épi d'épi",
+            minYear: 1960,
+            maxYear: 2001,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Bronce de aluminio',
-        minYear: 1965,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Marianne de Lagriffoul', 1965, 2001),
+          NumismaticMotifRule(
+            'Marianne de Lagriffoul',
+            minYear: 1965,
+            maxYear: 2001,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Bronce de aluminio',
-        minYear: 1962,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Marianne de Lagriffoul', 1962, 2001),
+          NumismaticMotifRule(
+            'Marianne de Lagriffoul',
+            minYear: 1962,
+            maxYear: 2001,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce de aluminio',
-        minYear: 1962,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Marianne de Lagriffoul', 1962, 2001),
+          NumismaticMotifRule(
+            'Marianne de Lagriffoul',
+            minYear: 1962,
+            maxYear: 2001,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Níquel',
-        minYear: 1965,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Semeuse de Roty', 1965, 2001),
+          NumismaticMotifRule(
+            'Semeuse de Roty',
+            minYear: 1965,
+            maxYear: 2001,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Níquel',
-        minYear: 1960,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Semeuse de Roty', 1960, 2001),
+          NumismaticMotifRule(
+            'Semeuse de Roty',
+            minYear: 1960,
+            maxYear: 2001,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Níquel',
-        minYear: 1979,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Semeuse de Roty', 1979, 2001),
+          NumismaticMotifRule(
+            'Semeuse de Roty',
+            minYear: 1979,
+            maxYear: 2001,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        allowedMaterials: ['Cuproníquel', 'Plata'],
-        minYear: 1960,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Semeuse de Roty', 1960, 2001),
+          NumismaticMotifRule(
+            'Semeuse de Roty',
+            minYear: 1960,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bimetálica',
-        minYear: 1988,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Génie de la Bastille / Génie de la Liberté (1988-2001)',
-          1988,
-          2001,
+          NumismaticMotifRule(
+            'Génie de la Bastille / Génie de la Liberté (1988-2001)',
+            minYear: 1988,
+            maxYear: 2001,
+            material: 'Bimetálica',
           ),
-          NumismaticMotifRule('Jean Monnet', 1988),
-          NumismaticMotifRule('Bicentenario de la Revolución Francesa', 1989),
-          NumismaticMotifRule('Centenario de la Torre Eiffel', 1989),
-          NumismaticMotifRule('Guglielmo Marconi', 1992),
-          NumismaticMotifRule('Mont Saint-Michel', 1992),
-          NumismaticMotifRule('Gaston Phébus', 1994),
+          NumismaticMotifRule(
+            'Jean Monnet',
+            minYear: 1988,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Revolución Francesa',
+            minYear: 1989,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Torre Eiffel',
+            minYear: 1989,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Guglielmo Marconi',
+            minYear: 1992,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Mont Saint-Michel',
+            minYear: 1992,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Gaston Phébus',
+            minYear: 1994,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Trimetálica',
-        minYear: 1992,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Le Mont-Saint-Michel (1992-2001)',
-          1992,
-          2001,
+          NumismaticMotifRule(
+            'Le Mont-Saint-Michel (1992-2001)',
+            minYear: 1992,
+            maxYear: 2001,
+            material: 'Trimetálica',
           ),
-          NumismaticMotifRule('Juegos Olímpicos de Albertville 1992 - Pierre de Coubertin', 1992),
-          NumismaticMotifRule('Juegos del Mediterráneo', 1993),
+          NumismaticMotifRule(
+            'Juegos Olímpicos de Albertville 1992 - Pierre de Coubertin',
+            minYear: 1992,
+            material: 'Trimetálica',
+          ),
+          NumismaticMotifRule(
+            'Juegos del Mediterráneo',
+            minYear: 1993,
+            material: 'Trimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Plata',
-        minYear: 1974,
-        maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('Hercule de Dupré (1974-1980)', 1974, 1980),
+          NumismaticMotifRule(
+            'Hercule de Dupré (1974-1980)',
+            minYear: 1974,
+            maxYear: 1980,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Plata',
-        minYear: 1984,
-        maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('Panthéon de París (1984-1998)',
-          1984,
-          1998,
+          NumismaticMotifRule(
+            'Panthéon de París (1984-1998)',
+            minYear: 1984,
+            maxYear: 1998,
+            material: 'Plata',
           ),
-          NumismaticMotifRule('Marie Curie', 1984),
-          NumismaticMotifRule('Émile Zola', 1985),
-          NumismaticMotifRule('Estatua de la Libertad', 1986),
-          NumismaticMotifRule('La Fayette', 1987),
-          NumismaticMotifRule('Fraternité', 1988),
-          NumismaticMotifRule('Droits de l\'Homme', 1989),
-          NumismaticMotifRule('Charlemagne', 1990),
-          NumismaticMotifRule('René Descartes', 1991),
-          NumismaticMotifRule('Jean Monnet', 1992),
-          NumismaticMotifRule('Liberté par Louvre', 1993),
-          NumismaticMotifRule('André Malraux', 1996),
-          NumismaticMotifRule('Clovis', 1996),
-          NumismaticMotifRule('Paul Cézanne', 1998),
+          NumismaticMotifRule(
+            'Marie Curie',
+            minYear: 1984,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Émile Zola',
+            minYear: 1985,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Estatua de la Libertad',
+            minYear: 1986,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'La Fayette',
+            minYear: 1987,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Fraternité',
+            minYear: 1988,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Droits de l\'Homme',
+            minYear: 1989,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Charlemagne',
+            minYear: 1990,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'René Descartes',
+            minYear: 1991,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Jean Monnet',
+            minYear: 1992,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Liberté par Louvre',
+            minYear: 1993,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'André Malraux',
+            minYear: 1996,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Clovis',
+            minYear: 1996,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Paul Cézanne',
+            minYear: 1998,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -4408,119 +6063,145 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1873,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1916),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1916,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Cobre',
-        minYear: 1873,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1916),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1916,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1873,
-        maxYear: 1915,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1915),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1915,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Cuproníquel',
-        minYear: 1873,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1916),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1916,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Cuproníquel',
-        minYear: 1873,
-        maxYear: 1877,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1877),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1877,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Níquel',
-        minYear: 1909,
-        maxYear: 1912,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1909, 1912),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1909,
+            maxYear: 1912,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1873,
-        maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1919),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1919,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1873,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1916),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1916,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1873,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1914),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1914,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        material: 'Plata',
-        minYear: 1908,
-        maxYear: 1918,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1908, 1918),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1908,
+            maxYear: 1918,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Plata',
-        minYear: 1874,
-        maxYear: 1915,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1874, 1915),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1874,
+            maxYear: 1915,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1873,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1914),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1914,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1873,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1873, 1914),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1873,
+            maxYear: 1914,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -4536,92 +6217,111 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1923,
-        maxYear: 1948,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1923, 1948),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1923,
+            maxYear: 1948,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1923,
-        maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1923, 1940),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1923,
+            maxYear: 1940,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.04',
-        material: 'Bronce',
-        minYear: 1932,
-        maxYear: 1932,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1932),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1932,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Bronce de aluminio',
-        minYear: 1923,
-        maxYear: 1944,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1923, 1944),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1923,
+            maxYear: 1944,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Bronce de aluminio',
-        minYear: 1923,
-        maxYear: 1945,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1923, 1945),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1923,
+            maxYear: 1945,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce de aluminio',
-        minYear: 1927,
-        maxYear: 1939,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1927, 1939),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1927,
+            maxYear: 1939,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Níquel',
-        minYear: 1924,
-        maxYear: 1939,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1924, 1939),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1924,
+            maxYear: 1939,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1925,
-        maxYear: 1939,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1925, 1939),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1925,
+            maxYear: 1939,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '3',
-        material: 'Plata',
-        minYear: 1924,
-        maxYear: 1933,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1924, 1933),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1924,
+            maxYear: 1933,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Plata',
-        minYear: 1927,
-        maxYear: 1939,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1927, 1939),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1927,
+            maxYear: 1939,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -4637,107 +6337,205 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero bañado en cobre',
-        minYear: 1948,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1948, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1948,
+            maxYear: 2001,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1950,
-        maxYear: 1968,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1950, 1968),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1950,
+            maxYear: 1968,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero bañado en latón',
-        minYear: 1949,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1949, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1949,
+            maxYear: 2001,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero bañado en latón',
-        minYear: 1949,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1949, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1949,
+            maxYear: 2001,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1949,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1949, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1949,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1950,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1950, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1950,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Cuproníquel',
-        minYear: 1951,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1951, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1951,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Plata',
-        minYear: 1951,
-        maxYear: 1974,
         motifs: [
-          NumismaticMotifRule('Bundesadler - Águila Federal Alemana (Silberadler 1951-1974)',
-          1951,
-          1974,
+          NumismaticMotifRule(
+            'Bundesadler - Águila Federal Alemana (Silberadler 1951-1974)',
+            minYear: 1951,
+            maxYear: 1974,
+            material: 'Plata',
           ),
-          NumismaticMotifRule('Centenario del Germanisches Nationalmuseum', 1952),
-          NumismaticMotifRule('150 Aniversario del Fallecimiento de Friedrich von Schiller', 1955),
-          NumismaticMotifRule('300 Aniversario del Natalicio de Ludwig Wilhelm von Baden', 1955),
-          NumismaticMotifRule('Centenario del Fallecimiento de Joseph von Eichendorff', 1957),
-          NumismaticMotifRule('150 Aniversario del Natalicio de Johann Gottlieb Fichte', 1964),
-          NumismaticMotifRule('250 Aniversario del Fallecimiento de Gottfried Wilhelm Leibniz', 1966),
-          NumismaticMotifRule('Centenario de Wilhelm Conrad Röntgen', 1967),
-          NumismaticMotifRule('Centenario del Fallecimiento de Wilhelm von Humboldt', 1967),
-          NumismaticMotifRule('150 Aniversario del Natalicio de Karl Marx', 1968),
-          NumismaticMotifRule('500 Aniversario del Fallecimiento de Johannes Gutenberg', 1968),
-          NumismaticMotifRule('150 Aniversario del Natalicio de Friedrich Wilhelm Raiffeisen', 1968),
-          NumismaticMotifRule('Centenario de la Fundación del Reichstag', 1971),
-          NumismaticMotifRule('500 Aniversario del Natalicio de Alberto Durero', 1971),
-          NumismaticMotifRule('500 Aniversario del Natalicio de Nicolás Copérnico', 1973),
-          NumismaticMotifRule('125 Aniversario de la Asamblea Nacional de Frankfurt en Paulskirche', 1973),
-          NumismaticMotifRule('25 Años de la Ley Fundamental de la RFA', 1974),
-          NumismaticMotifRule('250 Aniversario del Natalicio de Immanuel Kant', 1974),
+          NumismaticMotifRule(
+            'Centenario del Germanisches Nationalmuseum',
+            minYear: 1952,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario del Fallecimiento de Friedrich von Schiller',
+            minYear: 1955,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '300 Aniversario del Natalicio de Ludwig Wilhelm von Baden',
+            minYear: 1955,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Fallecimiento de Joseph von Eichendorff',
+            minYear: 1957,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario del Natalicio de Johann Gottlieb Fichte',
+            minYear: 1964,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario del Fallecimiento de Gottfried Wilhelm Leibniz',
+            minYear: 1966,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Wilhelm Conrad Röntgen',
+            minYear: 1967,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Fallecimiento de Wilhelm von Humboldt',
+            minYear: 1967,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario del Natalicio de Karl Marx',
+            minYear: 1968,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '500 Aniversario del Fallecimiento de Johannes Gutenberg',
+            minYear: 1968,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario del Natalicio de Friedrich Wilhelm Raiffeisen',
+            minYear: 1968,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Fundación del Reichstag',
+            minYear: 1971,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '500 Aniversario del Natalicio de Alberto Durero',
+            minYear: 1971,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '500 Aniversario del Natalicio de Nicolás Copérnico',
+            minYear: 1973,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '125 Aniversario de la Asamblea Nacional de Frankfurt en Paulskirche',
+            minYear: 1973,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '25 Años de la Ley Fundamental de la RFA',
+            minYear: 1974,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario del Natalicio de Immanuel Kant',
+            minYear: 1974,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Plata',
-        minYear: 1972,
-        maxYear: 1972,
         motifs: [
-          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Emblema Espiral', 1972),
-          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Rayos de Luz', 1972),
-          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Pareja de Atletas', 1972),
-          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Instalaciones Deportivas Estadio Olímpico', 1972),
-          NumismaticMotifRule('Juegos Olímpicos de Múnich 1972 - Bucle conmemorativo', 1972),
+          NumismaticMotifRule(
+            'Juegos Olímpicos de Múnich 1972 - Emblema Espiral',
+            minYear: 1972,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos de Múnich 1972 - Rayos de Luz',
+            minYear: 1972,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos de Múnich 1972 - Pareja de Atletas',
+            minYear: 1972,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos de Múnich 1972 - Instalaciones Deportivas Estadio Olímpico',
+            minYear: 1972,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos de Múnich 1972 - Bucle conmemorativo',
+            minYear: 1972,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -4753,113 +6551,236 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Acero bañado en cobre',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Acero bañado en cobre',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Acero bañado en cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero bañado en latón',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero bañado en latón',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Acero bañado en latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Cuproníquel',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1975,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1975, 2001),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1975,
+            maxYear: 2001,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Plata',
-        minYear: 1987,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Bundesadler - Águila Federal Alemana (Circulación Estándar)',
-          1987,
-          2001,
+          NumismaticMotifRule(
+            'Bundesadler - Águila Federal Alemana (Circulación Estándar)',
+            minYear: 1987,
+            maxYear: 2001,
+            material: 'Plata',
           ),
-          NumismaticMotifRule('750 Años de Berlín', 1987),
-          NumismaticMotifRule('Bicentenario del Natalicio de Arthur Schopenhauer', 1988),
-          NumismaticMotifRule('Centenario del Fallecimiento de Carl Zeiss', 1988),
-          NumismaticMotifRule('40 Años de la República Federal de Alemania', 1989),
-          NumismaticMotifRule('2000 Años de Bonn', 1989),
-          NumismaticMotifRule('800 Años del Puerto de Hamburgo', 1989),
-          NumismaticMotifRule('800 Años de la Orden Teutónica', 1990),
-          NumismaticMotifRule('200 Aniversario de la Puerta de Brandeburgo', 1991),
-          NumismaticMotifRule('125 Aniversario del Natalicio de Käthe Kollwitz', 1992),
-          NumismaticMotifRule('150 Aniversario de la Orden Pour le Mérite', 1992),
-          NumismaticMotifRule('1000 Años de Potsdam', 1993),
-          NumismaticMotifRule('150 Aniversario del Natalicio de Robert Koch', 1993),
-          NumismaticMotifRule('50 Aniversario del Levantamiento del 20 de Julio de 1944', 1994),
-          NumismaticMotifRule('250 Aniversario del Natalicio de Johann Gottfried Herder', 1994),
-          NumismaticMotifRule('Centenario del Descubrimiento de los Rayos X', 1995),
-          NumismaticMotifRule('150 Aniversario del Descubrimiento de Neptuno por Johann Gottfried Galle', 1996),
-          NumismaticMotifRule('500 Aniversario del Reformador Philipp Melanchthon', 1997),
-          NumismaticMotifRule('Centenario del Motor Diesel', 1997),
-          NumismaticMotifRule('350 Años de la Paz de Westfalia', 1998),
-          NumismaticMotifRule('50 Años del Deutsche Mark', 1998),
-          NumismaticMotifRule('900 Aniversario del Natalicio de Hildegarda de Bingen', 1998),
-          NumismaticMotifRule('50 Años de la Ley Fundamental', 1999),
-          NumismaticMotifRule('250 Aniversario del Natalicio de Johann Wolfgang von Goethe', 1999),
-          NumismaticMotifRule('Exposición Universal Expo 2000 Hannover', 2000),
-          NumismaticMotifRule('250 Aniversario del Fallecimiento de Johann Sebastian Bach', 2000),
-          NumismaticMotifRule('10 Años de la Unidad Alemana', 2000),
-          NumismaticMotifRule('50 Años del Tribunal Constitucional Federal', 2001),
+          NumismaticMotifRule(
+            '750 Años de Berlín',
+            minYear: 1987,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Natalicio de Arthur Schopenhauer',
+            minYear: 1988,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Fallecimiento de Carl Zeiss',
+            minYear: 1988,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '40 Años de la República Federal de Alemania',
+            minYear: 1989,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '2000 Años de Bonn',
+            minYear: 1989,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '800 Años del Puerto de Hamburgo',
+            minYear: 1989,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '800 Años de la Orden Teutónica',
+            minYear: 1990,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '200 Aniversario de la Puerta de Brandeburgo',
+            minYear: 1991,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '125 Aniversario del Natalicio de Käthe Kollwitz',
+            minYear: 1992,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario de la Orden Pour le Mérite',
+            minYear: 1992,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '1000 Años de Potsdam',
+            minYear: 1993,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario del Natalicio de Robert Koch',
+            minYear: 1993,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario del Levantamiento del 20 de Julio de 1944',
+            minYear: 1994,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario del Natalicio de Johann Gottfried Herder',
+            minYear: 1994,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Descubrimiento de los Rayos X',
+            minYear: 1995,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario del Descubrimiento de Neptuno por Johann Gottfried Galle',
+            minYear: 1996,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '500 Aniversario del Reformador Philipp Melanchthon',
+            minYear: 1997,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Motor Diesel',
+            minYear: 1997,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '350 Años de la Paz de Westfalia',
+            minYear: 1998,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '50 Años del Deutsche Mark',
+            minYear: 1998,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '900 Aniversario del Natalicio de Hildegarda de Bingen',
+            minYear: 1998,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '50 Años de la Ley Fundamental',
+            minYear: 1999,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario del Natalicio de Johann Wolfgang von Goethe',
+            minYear: 1999,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Exposición Universal Expo 2000 Hannover',
+            minYear: 2000,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '250 Aniversario del Fallecimiento de Johann Sebastian Bach',
+            minYear: 2000,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '10 Años de la Unidad Alemana',
+            minYear: 2000,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            '50 Años del Tribunal Constitucional Federal',
+            minYear: 2001,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -4875,119 +6796,145 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1861,
-        maxYear: 1918,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1861, 1918),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1861,
+            maxYear: 1918,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1861,
-        maxYear: 1918,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1861, 1918),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1861,
+            maxYear: 1918,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Bronce',
-        minYear: 1861,
-        maxYear: 1943,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1861, 1943),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1861,
+            maxYear: 1943,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Bronce',
-        minYear: 1862,
-        maxYear: 1943,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1862, 1943),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1862,
+            maxYear: 1943,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Níquel',
-        minYear: 1894,
-        maxYear: 1943,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1894, 1943),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1894,
+            maxYear: 1943,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Níquel',
-        minYear: 1861,
-        maxYear: 1943,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1861, 1943),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1861,
+            maxYear: 1943,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero inoxidable',
-        minYear: 1861,
-        maxYear: 1943,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1861, 1943),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1861,
+            maxYear: 1943,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Acero inoxidable',
-        minYear: 1861,
-        maxYear: 1943,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1861, 1943),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1861,
+            maxYear: 1943,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Plata',
-        minYear: 1861,
-        maxYear: 1941,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1861, 1941),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1861,
+            maxYear: 1941,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Plata',
-        minYear: 1926,
-        maxYear: 1936,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1926, 1936),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1926,
+            maxYear: 1936,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Plata',
-        minYear: 1927,
-        maxYear: 1936,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1927, 1936),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1927,
+            maxYear: 1936,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Oro',
-        minYear: 1864,
-        maxYear: 1936,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1864, 1936),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1864,
+            maxYear: 1936,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Oro',
-        minYear: 1864,
-        maxYear: 1937,
         motifs: [
-          NumismaticMotifRule('Circulación Estándar', 1864, 1937),
+          NumismaticMotifRule(
+            'Circulación Estándar',
+            minYear: 1864,
+            maxYear: 1937,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -5003,87 +6950,121 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Aluminio',
-        minYear: 1946,
-        maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('Italina / Cornucopia', 1946, 1959),
+          NumismaticMotifRule(
+            'Italina / Cornucopia',
+            minYear: 1946,
+            maxYear: 1959,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Aluminio',
-        minYear: 1946,
-        maxYear: 1959,
         motifs: [
-          NumismaticMotifRule('Spiga / Olivo', 1946, 1959),
+          NumismaticMotifRule(
+            'Spiga / Olivo',
+            minYear: 1946,
+            maxYear: 1959,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Aluminio',
-        minYear: 1946,
-        maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('Timone / Delfino', 1946, 1998),
+          NumismaticMotifRule(
+            'Timone / Delfino',
+            minYear: 1946,
+            maxYear: 1998,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Aluminio',
-        minYear: 1946,
-        maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('Spighe / Aratro', 1946, 1998),
+          NumismaticMotifRule(
+            'Spighe / Aratro',
+            minYear: 1946,
+            maxYear: 1998,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bronce de aluminio',
-        minYear: 1956,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Quercia', 1956, 2001),
+          NumismaticMotifRule(
+            'Quercia',
+            minYear: 1956,
+            maxYear: 2001,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Acero inoxidable',
-        minYear: 1954,
-        maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('Vulcano', 1954, 1989),
+          NumismaticMotifRule(
+            'Vulcano',
+            minYear: 1954,
+            maxYear: 1989,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Acero inoxidable',
-        minYear: 1954,
-        maxYear: 1989,
         motifs: [
-          NumismaticMotifRule('Minerva', 1954, 1989),
+          NumismaticMotifRule(
+            'Minerva',
+            minYear: 1954,
+            maxYear: 1989,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        material: 'Bronce de aluminio',
-        minYear: 1977,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Ingranaggio', 1977, 2001),
+          NumismaticMotifRule(
+            'Ingranaggio',
+            minYear: 1977,
+            maxYear: 2001,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Plata',
-        minYear: 1958,
-        maxYear: 1981,
         motifs: [
-          NumismaticMotifRule('Le Caravelle di Cristoforo Colombo (1958-1967)', 1958, 1967),
-          NumismaticMotifRule('Centenario de la Unificación de Italia - Proclama del Reino de Italia', 1961),
-          NumismaticMotifRule('Centenario del Nacimiento de Dante Alighieri', 1965),
-          NumismaticMotifRule('Centenario del Nacimiento de Guglielmo Marconi', 1974),
-          NumismaticMotifRule('Bimilenario de Virgilio', 1981),
+          NumismaticMotifRule(
+            'Le Caravelle di Cristoforo Colombo (1958-1967)',
+            minYear: 1958,
+            maxYear: 1967,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Unificación de Italia - Proclama del Reino de Italia',
+            minYear: 1961,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Nacimiento de Dante Alighieri',
+            minYear: 1965,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Nacimiento de Guglielmo Marconi',
+            minYear: 1974,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Bimilenario de Virgilio',
+            minYear: 1981,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -5099,110 +7080,172 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Aluminio',
-        minYear: 1982,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Italina / Cornucopia', 1982, 2001),
+          NumismaticMotifRule(
+            'Italina / Cornucopia',
+            minYear: 1982,
+            maxYear: 2001,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Aluminio',
-        minYear: 1982,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Spiga / Olivo', 1982, 2001),
+          NumismaticMotifRule(
+            'Spiga / Olivo',
+            minYear: 1982,
+            maxYear: 2001,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Aluminio',
-        minYear: 1982,
-        maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('Timone / Delfino', 1982, 1998),
+          NumismaticMotifRule(
+            'Timone / Delfino',
+            minYear: 1982,
+            maxYear: 1998,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Aluminio',
-        minYear: 1982,
-        maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('Spighe / Aratro', 1982, 1998),
+          NumismaticMotifRule(
+            'Spighe / Aratro',
+            minYear: 1982,
+            maxYear: 1998,
+            material: 'Aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bronce de aluminio',
-        minYear: 1982,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Quercia', 1982, 2001),
+          NumismaticMotifRule(
+            'Quercia',
+            minYear: 1982,
+            maxYear: 2001,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Acero inoxidable',
-        minYear: 1990,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Vulcano Micro', 1990, 2001),
+          NumismaticMotifRule(
+            'Vulcano Micro',
+            minYear: 1990,
+            maxYear: 2001,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Acero inoxidable',
-        minYear: 1990,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Minerva Micro', 1990, 2001),
+          NumismaticMotifRule(
+            'Minerva Micro',
+            minYear: 1990,
+            maxYear: 2001,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        material: 'Bronce de aluminio',
-        minYear: 1982,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Ingranaggio - Engranaje Industrial (1977-2001)',
-          1982,
-          2001,
+          NumismaticMotifRule(
+            'Ingranaggio - Engranaje Industrial (1977-2001)',
+            minYear: 1982,
+            maxYear: 2001,
+            material: 'Bronce de aluminio',
           ),
-          NumismaticMotifRule('Centenario de la Aeronautica Militare', 1993),
-          NumismaticMotifRule('Centenario del Nacimiento de Maria Montessori', 1990),
-          NumismaticMotifRule('70 Aniversario de la Guardia di Finanza', 1996),
-          NumismaticMotifRule('50 Aniversario de la Declaración Universal de los Derechos Humanos', 1998),
+          NumismaticMotifRule(
+            'Centenario de la Aeronautica Militare',
+            minYear: 1993,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            'Centenario del Nacimiento de Maria Montessori',
+            minYear: 1990,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            '70 Aniversario de la Guardia di Finanza',
+            minYear: 1996,
+            material: 'Bronce de aluminio',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario de la Declaración Universal de los Derechos Humanos',
+            minYear: 1998,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Bimetálica',
-        minYear: 1982,
-        maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Piazza del Quirinale y Valor en Braille (1982-2001)',
-          1982,
-          2001,
+          NumismaticMotifRule(
+            'Piazza del Quirinale y Valor en Braille (1982-2001)',
+            minYear: 1982,
+            maxYear: 2001,
+            material: 'Bimetálica',
           ),
-          NumismaticMotifRule('Centenario del Banco de Italia', 1993),
-          NumismaticMotifRule('Centenario de Luca Pacioli', 1994),
-          NumismaticMotifRule('70 Aniversario del ISTAT', 1996),
-          NumismaticMotifRule('50 Aniversario de la Policía de Tráfico Polizia Stradale', 1997),
-          NumismaticMotifRule('Centenario de la Federación Italiana de Fútbol FIGC', 1998),
-          NumismaticMotifRule('20 Años del IFAD', 1998),
-          NumismaticMotifRule('Elecciones al Parlamento Europeo', 1999),
+          NumismaticMotifRule(
+            'Centenario del Banco de Italia',
+            minYear: 1993,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de Luca Pacioli',
+            minYear: 1994,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '70 Aniversario del ISTAT',
+            minYear: 1996,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario de la Policía de Tráfico Polizia Stradale',
+            minYear: 1997,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Federación Italiana de Fútbol FIGC',
+            minYear: 1998,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '20 Años del IFAD',
+            minYear: 1998,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Elecciones al Parlamento Europeo',
+            minYear: 1999,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        material: 'Bimetálica',
-        minYear: 1997,
-        maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('Mapa de la Unión Europea con Fronteras Erróneas', 1997),
-          NumismaticMotifRule('Mapa de la Unión Europea con Fronteras Corregidas (1997-1998)', 1997, 1998),
+          NumismaticMotifRule(
+            'Mapa de la Unión Europea con Fronteras Erróneas',
+            minYear: 1997,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Mapa de la Unión Europea con Fronteras Corregidas (1997-1998)',
+            minYear: 1997,
+            maxYear: 1998,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],

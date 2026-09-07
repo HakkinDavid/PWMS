@@ -12,86 +12,123 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/16',
-        material: 'Cobre',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Carlos y Juana - Monograma K-I / Columnas de Hércules (Tlaco Colonial)', 1536, 1821),
+          NumismaticMotifRule(
+            'Carlos y Juana - Monograma K-I / Columnas de Hércules (Tlaco Colonial)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
-        material: 'Cobre',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Carlos y Juana - K-I Coronadas / Castillo y León (Ochavo Colonial)', 1536, 1821),
+          NumismaticMotifRule(
+            'Carlos y Juana - K-I Coronadas / Castillo y León (Ochavo Colonial)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Cobre'],
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal (Castillo y León)', 1536, 1821),
+          NumismaticMotifRule(
+            'Virreinal de Plata (Castillo y León)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Tlaco / Cuartilla de Cobre',
+            minYear: 1794,
+            maxYear: 1821,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
+          NumismaticMotifRule(
+            'Virreinal (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Columnario / Busto', 1536, 1821),
+          NumismaticMotifRule(
+            'Columnario / Busto',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
+          NumismaticMotifRule(
+            'Virreinal (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
+          NumismaticMotifRule(
+            '4 Reales (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '4 Escudos de Oro Virreinal',
+            minYear: 1732,
+            maxYear: 1821,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
+          NumismaticMotifRule(
+            'Real de a Ocho / 8 Reales (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '8 Escudos de Oro (Onza Virreinal)',
+            minYear: 1732,
+            maxYear: 1821,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.5',
-        material: 'Oro',
-        minYear: 1772,
-        maxYear: 1820,
         motifs: [
-          NumismaticMotifRule('Escudo de Oro Virreinal', 1772, 1820),
+          NumismaticMotifRule(
+            'Escudo de Oro Virreinal',
+            minYear: 1772,
+            maxYear: 1820,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -107,67 +144,95 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/8',
-        material: 'Cobre',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Cobre',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Oro',
-        allowedMaterials: ['Oro', 'Plata'],
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            '4 Reales Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '4 Escudos de Oro Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            '8 Reales Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '8 Escudos de Oro Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
     ],
@@ -183,56 +248,67 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1864,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Corona Imperial (Maximiliano)', 1864, 1867),
+          NumismaticMotifRule(
+            'Corona Imperial (Maximiliano)',
+            minYear: 1864,
+            maxYear: 1867,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Plata',
-        minYear: 1864,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
+          NumismaticMotifRule(
+            'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
+            minYear: 1864,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1864,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
+          NumismaticMotifRule(
+            'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
+            minYear: 1864,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1866,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
+          NumismaticMotifRule(
+            'Busto Emperador Maximiliano',
+            minYear: 1866,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1866,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
+          NumismaticMotifRule(
+            'Busto Emperador Maximiliano',
+            minYear: 1866,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1866,
-        maxYear: 1866,
         motifs: [
-          NumismaticMotifRule('Busto Emperador Maximiliano', 1866),
+          NumismaticMotifRule(
+            'Busto Emperador Maximiliano',
+            minYear: 1866,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -248,68 +324,101 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/8',
-        material: 'Cobre',
-        minYear: 1814,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Monograma Coronado de Fernando VII / León Rampante (Octavo de Real)', 1814, 1821),
+          NumismaticMotifRule(
+            'Monograma Coronado de Fernando VII / León Rampante (Octavo de Real)',
+            minYear: 1814,
+            maxYear: 1821,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Cobre'],
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal (Castillo y León)', 1536, 1821),
+          NumismaticMotifRule(
+            'Virreinal de Plata (Castillo y León)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Tlaco / Cuartilla de Cobre',
+            minYear: 1794,
+            maxYear: 1821,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
+          NumismaticMotifRule(
+            'Virreinal (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Columnario / Busto', 1536, 1821),
+          NumismaticMotifRule(
+            'Columnario / Busto',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal (Columnario / Busto)', 1536, 1821),
+          NumismaticMotifRule(
+            'Virreinal (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
+          NumismaticMotifRule(
+            '4 Reales (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '4 Escudos de Oro Virreinal',
+            minYear: 1732,
+            maxYear: 1821,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1536,
-        maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Columnario / Busto / Escudos', 1536, 1821),
+          NumismaticMotifRule(
+            'Real de a Ocho / 8 Reales (Columnario / Busto)',
+            minYear: 1536,
+            maxYear: 1821,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '8 Escudos de Oro (Onza Virreinal)',
+            minYear: 1732,
+            maxYear: 1821,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
     ],
@@ -325,67 +434,95 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/8',
-        material: 'Cobre',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Cobre',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Oro',
-        allowedMaterials: ['Oro', 'Plata'],
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            '4 Reales Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '4 Escudos de Oro Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1822,
-        maxYear: 1823,
         motifs: [
-          NumismaticMotifRule('Agustín de Iturbide', 1822, 1823),
+          NumismaticMotifRule(
+            '8 Reales Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Plata',
+            currencyCode: 'MXR',
+          ),
+          NumismaticMotifRule(
+            '8 Escudos de Oro Agustín de Iturbide',
+            minYear: 1822,
+            maxYear: 1823,
+            material: 'Oro',
+            currencyCode: 'MXE',
+          ),
         ],
       ),
     ],
@@ -401,77 +538,90 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1/16',
-        material: 'Cobre',
-        minYear: 1829,
-        maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Águila Republicana (Cobre)', 1829, 1863),
+          NumismaticMotifRule(
+            'Águila Republicana (Cobre)',
+            minYear: 1829,
+            maxYear: 1863,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/8',
-        material: 'Cobre',
-        minYear: 1829,
-        maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Águila Republicana', 1829, 1863),
+          NumismaticMotifRule(
+            'Águila Republicana',
+            minYear: 1829,
+            maxYear: 1863,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Cobre'],
-        minYear: 1824,
-        maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Gorro Frigio / Águila Republicana', 1824, 1863),
+          NumismaticMotifRule(
+            'Gorro Frigio / Águila Republicana',
+            minYear: 1824,
+            maxYear: 1863,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1/2',
-        material: 'Plata',
-        minYear: 1824,
-        maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Resplandor', 1824, 1863),
+          NumismaticMotifRule(
+            'Resplandor',
+            minYear: 1824,
+            maxYear: 1863,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1824,
-        maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Resplandor', 1824, 1863),
+          NumismaticMotifRule(
+            'Resplandor',
+            minYear: 1824,
+            maxYear: 1863,
+            material: 'Plata .800',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1824,
-        maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Resplandor', 1824, 1863),
+          NumismaticMotifRule(
+            'Resplandor',
+            minYear: 1824,
+            maxYear: 1863,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '4',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1824,
-        maxYear: 1863,
         motifs: [
-          NumismaticMotifRule('Columnario / Busto / Escudos', 1824, 1863),
+          NumismaticMotifRule(
+            'Columnario / Busto / Escudos',
+            minYear: 1824,
+            maxYear: 1863,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Oro'],
-        minYear: 1823,
-        maxYear: 1897,
         motifs: [
-          NumismaticMotifRule('Resplandor (Cap and Rays) / Escudos Oro', 1823, 1897),
+          NumismaticMotifRule(
+            'Resplandor (Cap and Rays) / Escudos Oro',
+            minYear: 1823,
+            maxYear: 1897,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -487,56 +637,67 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1864,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Corona Imperial (Maximiliano)', 1864, 1867),
+          NumismaticMotifRule(
+            'Corona Imperial (Maximiliano)',
+            minYear: 1864,
+            maxYear: 1867,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Plata',
-        minYear: 1864,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
+          NumismaticMotifRule(
+            'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
+            minYear: 1864,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1864,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
+          NumismaticMotifRule(
+            'Escudo Imperial (Maximiliano) / Corona de Laurel y Encino',
+            minYear: 1864,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1866,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
+          NumismaticMotifRule(
+            'Busto Emperador Maximiliano',
+            minYear: 1866,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1866,
-        maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Busto Emperador Maximiliano', 1866, 1867),
+          NumismaticMotifRule(
+            'Busto Emperador Maximiliano',
+            minYear: 1866,
+            maxYear: 1867,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1866,
-        maxYear: 1866,
         motifs: [
-          NumismaticMotifRule('Busto Emperador Maximiliano', 1866),
+          NumismaticMotifRule(
+            'Busto Emperador Maximiliano',
+            minYear: 1866,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -552,110 +713,134 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1869,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Balanza', 1869, 1881),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1869,
+            maxYear: 1881,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Cobre',
-        minYear: 1869,
-        maxYear: 1879,
         motifs: [
-          NumismaticMotifRule('Balanza', 1869, 1879),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1869,
+            maxYear: 1879,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Plata',
-        minYear: 1869,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Balanza', 1869, 1881),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1869,
+            maxYear: 1881,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1869,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Balanza', 1869, 1881),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1869,
+            maxYear: 1881,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Plata',
-        minYear: 1869,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Balanza', 1869, 1881),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1869,
+            maxYear: 1881,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1869,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Balanza', 1869, 1881),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1869,
+            maxYear: 1881,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1869,
-        maxYear: 1873,
         motifs: [
-          NumismaticMotifRule('Balanza', 1869, 1873),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1869,
+            maxYear: 1873,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
-        material: 'Oro',
-        minYear: 1870,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Dos y Medio Pesos Oro Balanza', 1870, 1881),
+          NumismaticMotifRule(
+            'Dos y Medio Pesos Oro Balanza',
+            minYear: 1870,
+            maxYear: 1881,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1870,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Oro Balanza', 1870, 1881),
+          NumismaticMotifRule(
+            'Oro Balanza',
+            minYear: 1870,
+            maxYear: 1881,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1870,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Oro Balanza', 1870, 1881),
+          NumismaticMotifRule(
+            'Oro Balanza',
+            minYear: 1870,
+            maxYear: 1881,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1870,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Oro Balanza', 1870, 1881),
+          NumismaticMotifRule(
+            'Oro Balanza',
+            minYear: 1870,
+            maxYear: 1881,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1868,
-        maxYear: 1881,
         motifs: [
-          NumismaticMotifRule('Resplandor (Acuñación concurrente)', 1868, 1881),
+          NumismaticMotifRule(
+            'Resplandor (Acuñación concurrente)',
+            minYear: 1868,
+            maxYear: 1881,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -671,68 +856,79 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Níquel',
-        allowedMaterials: ['Níquel', 'Cuproníquel'],
-        minYear: 1882,
-        maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Numeral Romano "I" / Escudo Republicano', 1882, 1883),
+          NumismaticMotifRule(
+            'Numeral Romano "I" / Escudo Republicano',
+            minYear: 1882,
+            maxYear: 1883,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Níquel',
-        allowedMaterials: ['Níquel', 'Cuproníquel'],
-        minYear: 1882,
-        maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Numeral Romano "II" / Escudo Republicano', 1882, 1883),
+          NumismaticMotifRule(
+            'Numeral Romano "II" / Escudo Republicano',
+            minYear: 1882,
+            maxYear: 1883,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Níquel',
-        allowedMaterials: ['Níquel', 'Cuproníquel'],
-        minYear: 1882,
-        maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Numeral Romano "V" / Escudo Republicano', 1882, 1883),
+          NumismaticMotifRule(
+            'Numeral Romano "V" / Escudo Republicano',
+            minYear: 1882,
+            maxYear: 1883,
+            material: 'Níquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1882,
-        maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Balanza', 1882, 1883),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1882,
+            maxYear: 1883,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Plata',
-        minYear: 1882,
-        maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Balanza', 1882, 1883),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1882,
+            maxYear: 1883,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1882,
-        maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Balanza', 1882, 1883),
+          NumismaticMotifRule(
+            'Balanza',
+            minYear: 1882,
+            maxYear: 1883,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1882,
-        maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('Resplandor', 1882, 1883),
+          NumismaticMotifRule(
+            'Resplandor',
+            minYear: 1882,
+            maxYear: 1883,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -748,74 +944,90 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Cobre',
-        minYear: 1884,
-        maxYear: 1898,
         motifs: [
-          NumismaticMotifRule('Numeral "1" y Corona de Laurel (Águila Porfiriana)', 1884, 1898),
+          NumismaticMotifRule(
+            'Numeral "1" y Corona de Laurel (Águila Porfiriana)',
+            minYear: 1884,
+            maxYear: 1898,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Cobre',
-        minYear: 1884,
-        maxYear: 1898,
         motifs: [
-          NumismaticMotifRule('Numeral "2" y Corona de Laurel (Águila Porfiriana)', 1884, 1898),
+          NumismaticMotifRule(
+            'Numeral "2" y Corona de Laurel (Águila Porfiriana)',
+            minYear: 1884,
+            maxYear: 1898,
+            material: 'Cobre',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Plata',
-        minYear: 1884,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata Balanza / Corona', 1884, 1904),
+          NumismaticMotifRule(
+            'Plata Balanza / Corona',
+            minYear: 1884,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1884,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata Balanza / Corona', 1884, 1904),
+          NumismaticMotifRule(
+            'Plata Balanza / Corona',
+            minYear: 1884,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1898,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Corona Porfiriana', 1898, 1904),
+          NumismaticMotifRule(
+            'Corona Porfiriana',
+            minYear: 1898,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1884,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Plata Gorro Frigio y Balanza', 1884, 1904),
+          NumismaticMotifRule(
+            'Plata Gorro Frigio y Balanza',
+            minYear: 1884,
+            maxYear: 1904,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1898,
-        maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Fuerte Resplandor', 1898, 1904),
+          NumismaticMotifRule(
+            'Fuerte Resplandor',
+            minYear: 1898,
+            maxYear: 1904,
+            material: 'Plata .800',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '8',
-        material: 'Plata',
-        minYear: 1884,
-        maxYear: 1897,
         motifs: [
-          NumismaticMotifRule('Resplandor (Últimas emisiones)', 1884, 1897),
+          NumismaticMotifRule(
+            'Resplandor (Últimas emisiones)',
+            minYear: 1884,
+            maxYear: 1897,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -831,84 +1043,107 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1905,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Porfiriano Corona de Laurel', 1905, 1914),
+          NumismaticMotifRule(
+            'Porfiriano Corona de Laurel',
+            minYear: 1905,
+            maxYear: 1914,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1905,
-        maxYear: 1906,
         motifs: [
-          NumismaticMotifRule('Numeral "2" con Rama de Laurel (Águila Porfiriana)', 1905, 1906),
+          NumismaticMotifRule(
+            'Numeral "2" con Rama de Laurel (Águila Porfiriana)',
+            minYear: 1905,
+            maxYear: 1906,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        minYear: 1905,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Numeral Romano "V" Radiante (Porfiriano)', 1905, 1914),
+          NumismaticMotifRule(
+            'Numeral Romano "V" Radiante (Porfiriano)',
+            minYear: 1905,
+            maxYear: 1914,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1905,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Plata .800 Corona', 1905, 1914),
+          NumismaticMotifRule(
+            'Plata .800 Corona',
+            minYear: 1905,
+            maxYear: 1914,
+            material: 'Plata .800',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1905,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Plata .800 Corona', 1905, 1914),
+          NumismaticMotifRule(
+            'Plata .800 Corona',
+            minYear: 1905,
+            maxYear: 1914,
+            material: 'Plata .800',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1905,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Plata Resplandor', 1905, 1914),
+          NumismaticMotifRule(
+            'Plata Resplandor',
+            minYear: 1905,
+            maxYear: 1914,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1905,
-        maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Fuerte Resplandor', 1905, 1909),
-          NumismaticMotifRule('Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
+          NumismaticMotifRule(
+            'Fuerte Resplandor',
+            minYear: 1905,
+            maxYear: 1909,
+            material: 'Plata .800',
+          ),
+          NumismaticMotifRule(
+            'Caballito - Centenario de la Independencia (1910-1914)',
+            minYear: 1910,
+            maxYear: 1914,
+            material: 'Plata .900',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1905,
-        maxYear: 1910,
         motifs: [
-          NumismaticMotifRule('Oro Hidalgo', 1905, 1910),
+          NumismaticMotifRule(
+            'Oro Hidalgo',
+            minYear: 1905,
+            maxYear: 1910,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1905,
-        maxYear: 1910,
         motifs: [
-          NumismaticMotifRule('Oro Hidalgo', 1905, 1910),
+          NumismaticMotifRule(
+            'Oro Hidalgo',
+            minYear: 1905,
+            maxYear: 1910,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -924,110 +1159,132 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1915,
-        maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Numeral "1" y Guirnalda de Laurel (Águila Constitucionalista)', 1915, 1919),
+          NumismaticMotifRule(
+            'Numeral "1" y Guirnalda de Laurel (Águila Constitucionalista)',
+            minYear: 1915,
+            maxYear: 1919,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1915,
-        maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Numeral "2" y Guirnalda de Laurel (Águila Constitucionalista)', 1915, 1916),
+          NumismaticMotifRule(
+            'Numeral "2" y Guirnalda de Laurel (Águila Constitucionalista)',
+            minYear: 1915,
+            maxYear: 1916,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Bronce',
-        minYear: 1915,
-        maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Bronce Constitucionalista', 1915, 1919),
+          NumismaticMotifRule(
+            'Bronce Constitucionalista',
+            minYear: 1915,
+            maxYear: 1919,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        minYear: 1919,
-        maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Gorro Frigio Radiante (Emisión Reducida Ley .800)', 1919),
+          NumismaticMotifRule(
+            'Gorro Frigio Radiante (Emisión Reducida Ley .800)',
+            minYear: 1919,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1919,
-        maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Gorro Frigio Radiante (Emisión Reducida Ley .800)', 1919),
+          NumismaticMotifRule(
+            'Gorro Frigio Radiante (Emisión Reducida Ley .800)',
+            minYear: 1919,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1918,
-        maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Plata .800 Resplandor Reducido', 1918, 1919),
+          NumismaticMotifRule(
+            'Plata .800 Resplandor Reducido',
+            minYear: 1918,
+            maxYear: 1919,
+            material: 'Plata .800',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1918,
-        maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Plata .800 Resplandor Reducido', 1918, 1919),
+          NumismaticMotifRule(
+            'Plata .800 Resplandor Reducido',
+            minYear: 1918,
+            maxYear: 1919,
+            material: 'Plata .800',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Oro',
-        minYear: 1919,
-        maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Oro Hidalgo', 1919, 1920),
+          NumismaticMotifRule(
+            'Oro Hidalgo',
+            minYear: 1919,
+            maxYear: 1920,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2.5',
-        material: 'Oro',
-        minYear: 1918,
-        maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Dos y Medio Pesos Oro Hidalgo', 1918, 1920),
+          NumismaticMotifRule(
+            'Dos y Medio Pesos Oro Hidalgo',
+            minYear: 1918,
+            maxYear: 1920,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Oro',
-        minYear: 1919,
-        maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Oro Hidalgo', 1919, 1920),
+          NumismaticMotifRule(
+            'Oro Hidalgo',
+            minYear: 1919,
+            maxYear: 1920,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Oro',
-        minYear: 1916,
-        maxYear: 1920,
         motifs: [
-          NumismaticMotifRule('Oro Hidalgo', 1916, 1920),
+          NumismaticMotifRule(
+            'Oro Hidalgo',
+            minYear: 1916,
+            maxYear: 1920,
+            material: 'Oro',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Oro',
-        minYear: 1917,
-        maxYear: 1921,
         motifs: [
-          NumismaticMotifRule('Oro Calendario Azteca', 1917, 1921),
+          NumismaticMotifRule(
+            'Oro Calendario Azteca',
+            minYear: 1917,
+            maxYear: 1921,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -1043,88 +1300,113 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1920,
-        maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Bronce Espigas', 1920, 1942),
+          NumismaticMotifRule(
+            'Bronce Espigas',
+            minYear: 1920,
+            maxYear: 1942,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.02',
-        material: 'Bronce',
-        minYear: 1920,
-        maxYear: 1941,
         motifs: [
-          NumismaticMotifRule('Numeral "2" y Corona de Laurel', 1920, 1941),
+          NumismaticMotifRule(
+            'Numeral "2" y Corona de Laurel',
+            minYear: 1920,
+            maxYear: 1941,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Cuproníquel',
-        allowedMaterials: ['Cuproníquel', 'Bronce'],
-        minYear: 1920,
-        maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Níquel Josefa Chica', 1920, 1935),
-          NumismaticMotifRule('Bronce Josefa Ortiz de Perfil', 1936, 1942),
+          NumismaticMotifRule(
+            'Níquel Josefa Chica',
+            minYear: 1920,
+            maxYear: 1935,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Bronce Josefa Ortiz de Perfil',
+            minYear: 1936,
+            maxYear: 1942,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Bronce'],
-        minYear: 1925,
-        maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Gorro Frigio Radiante (Ley .720)', 1925, 1935),
-          NumismaticMotifRule('Numeral "10" con Corona de Laurel', 1936, 1940),
+          NumismaticMotifRule(
+            'Gorro Frigio Radiante (Ley .720)',
+            minYear: 1925,
+            maxYear: 1935,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Numeral "10" con Corona de Laurel',
+            minYear: 1936,
+            maxYear: 1940,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Plata',
-        minYear: 1920,
-        maxYear: 1935,
         motifs: [
-          NumismaticMotifRule('Plata .720 Gorro Frigio', 1920, 1935),
+          NumismaticMotifRule(
+            'Plata .720 Gorro Frigio',
+            minYear: 1920,
+            maxYear: 1935,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1920,
-        maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Plata .720 Resplandor', 1920, 1942),
+          NumismaticMotifRule(
+            'Plata .720 Resplandor',
+            minYear: 1920,
+            maxYear: 1942,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1920,
-        maxYear: 1942,
         motifs: [
-          NumismaticMotifRule('Plata .720 Resplandor', 1920, 1942),
+          NumismaticMotifRule(
+            'Plata .720 Resplandor',
+            minYear: 1920,
+            maxYear: 1942,
+            material: 'Plata .720',
+          ),
         ],
       ),
       // 2 Pesos 1921 Victoria Alada - PLATA .903
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Plata',
-        minYear: 1921,
-        maxYear: 1921,
         motifs: [
-          NumismaticMotifRule('Victoria Alada - Centenario de la Consumación de la Independencia', 1921),
+          NumismaticMotifRule(
+            'Victoria Alada - Centenario de la Consumación de la Independencia',
+            minYear: 1921,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Oro',
-        minYear: 1921,
-        maxYear: 1931,
         motifs: [
-          NumismaticMotifRule('Oro - Centenario de la Independencia (37.5g Oro Puro)', 1921, 1931),
+          NumismaticMotifRule(
+            'Oro - Centenario de la Independencia (37.5g Oro Puro)',
+            minYear: 1921,
+            maxYear: 1931,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -1140,66 +1422,85 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1943,
-        maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Espigas de Trigo', 1943, 1949),
+          NumismaticMotifRule(
+            'Espigas de Trigo',
+            minYear: 1943,
+            maxYear: 1949,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Bronce',
-        minYear: 1943,
-        maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Josefa Ortiz Grande', 1943, 1949),
+          NumismaticMotifRule(
+            'Josefa Ortiz Grande',
+            minYear: 1943,
+            maxYear: 1949,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce',
-        minYear: 1943,
-        maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Pirámide del Sol de Teotihuacán', 1943, 1949),
+          NumismaticMotifRule(
+            'Pirámide del Sol de Teotihuacán',
+            minYear: 1943,
+            maxYear: 1949,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        minYear: 1943,
-        maxYear: 1948,
         motifs: [
-          NumismaticMotifRule('Plata .720 Resplandor', 1943, 1945),
-          NumismaticMotifRule('Plata .420 Cuauhtémoc', 1947, 1948),
+          NumismaticMotifRule(
+            'Plata .720 Resplandor',
+            minYear: 1943,
+            maxYear: 1945,
+            material: 'Plata .720',
+          ),
+          NumismaticMotifRule(
+            'Plata .420 Cuauhtémoc',
+            minYear: 1947,
+            maxYear: 1948,
+            material: 'Plata .420',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1947,
-        maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('Plata .500 Morelos Cachetón', 1947, 1949),
+          NumismaticMotifRule(
+            'Plata .500 Morelos Cachetón',
+            minYear: 1947,
+            maxYear: 1949,
+            material: 'Plata .500',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Plata',
-        minYear: 1947,
-        maxYear: 1948,
         motifs: [
-          NumismaticMotifRule('Cuauhtémoc (1947-1948)', 1947, 1948),
+          NumismaticMotifRule(
+            'Cuauhtémoc (1947-1948)',
+            minYear: 1947,
+            maxYear: 1948,
+            material: 'Plata .900',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Oro',
-        minYear: 1943,
-        maxYear: 1947,
         motifs: [
-          NumismaticMotifRule('Oro Centenario', 1943, 1947),
+          NumismaticMotifRule(
+            'Oro Centenario',
+            minYear: 1943,
+            maxYear: 1947,
+            material: 'Oro',
+          ),
         ],
       ),
     ],
@@ -1215,90 +1516,124 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1950,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Espigas de Trigo', 1950, 1956),
+          NumismaticMotifRule(
+            'Espigas de Trigo',
+            minYear: 1950,
+            maxYear: 1956,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Latón',
-        minYear: 1950,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Latón Josefa', 1950, 1956),
+          NumismaticMotifRule(
+            'Latón Josefa',
+            minYear: 1950,
+            maxYear: 1956,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Latón',
-        minYear: 1955,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Latón Benito Juárez', 1955, 1956),
+          NumismaticMotifRule(
+            'Latón Benito Juárez',
+            minYear: 1955,
+            maxYear: 1956,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce',
-        minYear: 1950,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Bronce Pirámide de Teotihuacán', 1950, 1956),
+          NumismaticMotifRule(
+            'Bronce Pirámide de Teotihuacán',
+            minYear: 1950,
+            maxYear: 1956,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.25',
-        material: 'Cuproníquel',
-        minYear: 1950,
-        maxYear: 1953,
         motifs: [
-          NumismaticMotifRule('Balanza Cuproníquel', 1950, 1953),
+          NumismaticMotifRule(
+            'Balanza Cuproníquel',
+            minYear: 1950,
+            maxYear: 1953,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Plata',
-        allowedMaterials: ['Plata', 'Bronce'],
-        minYear: 1950,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Plata .300 Morelos', 1950, 1951),
-          NumismaticMotifRule('Bronce Cuauhtémoc', 1955, 1956),
+          NumismaticMotifRule(
+            'Plata .300 Morelos',
+            minYear: 1950,
+            maxYear: 1951,
+            material: 'Plata .300',
+          ),
+          NumismaticMotifRule(
+            'Bronce Cuauhtémoc',
+            minYear: 1955,
+            maxYear: 1956,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1950,
-        maxYear: 1950,
         motifs: [
-          NumismaticMotifRule('Plata .300 Morelos', 1950),
+          NumismaticMotifRule(
+            'Plata .300 Morelos',
+            minYear: 1950,
+            material: 'Plata .300',
+          ),
         ],
       ),
       // 5 Pesos 1950-1956 Plata (Ferrocarril, Hidalgo Laurel, Bicentenario Hidalgo, Hidalgo Chico)
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Plata',
-        minYear: 1950,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Inauguración del Ferrocarril del Sureste', 1950),
-          NumismaticMotifRule('Hidalgo - Laurel (1951-1954)', 1951, 1954),
-          NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo', 1953),
-          NumismaticMotifRule('Hidalgo Chico (1955-1957)', 1955, 1956),
+          NumismaticMotifRule(
+            'Inauguración del Ferrocarril del Sureste',
+            minYear: 1950,
+            material: 'Plata .720',
+          ),
+          NumismaticMotifRule(
+            'Hidalgo - Laurel (1951-1954)',
+            minYear: 1951,
+            maxYear: 1954,
+            material: 'Plata .720',
+          ),
+          NumismaticMotifRule(
+            'Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo',
+            minYear: 1953,
+            material: 'Plata .720',
+          ),
+          NumismaticMotifRule(
+            'Hidalgo Chico (1955-1957)',
+            minYear: 1955,
+            maxYear: 1956,
+            material: 'Plata .720',
+          ),
         ],
       ),
       // 10 Pesos 1955-1956 Hidalgo
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Plata',
-        minYear: 1955,
-        maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Hidalgo Plata .900 (1955-1956)', 1955, 1956),
+          NumismaticMotifRule(
+            'Hidalgo Plata .900 (1955-1956)',
+            minYear: 1955,
+            maxYear: 1956,
+            material: 'Plata .900',
+          ),
         ],
       ),
     ],
@@ -1314,87 +1649,118 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.01',
-        material: 'Bronce',
-        minYear: 1957,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Espigas de Trigo', 1957, 1969),
+          NumismaticMotifRule(
+            'Espigas de Trigo',
+            minYear: 1957,
+            maxYear: 1969,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Latón',
-        minYear: 1957,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Latón Josefa', 1957, 1969),
+          NumismaticMotifRule(
+            'Latón Josefa',
+            minYear: 1957,
+            maxYear: 1969,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Latón',
-        minYear: 1957,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Latón Benito Juárez', 1957, 1967),
+          NumismaticMotifRule(
+            'Latón Benito Juárez',
+            minYear: 1957,
+            maxYear: 1967,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce',
-        minYear: 1957,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Bronce Pirámide de Teotihuacán', 1957, 1969),
+          NumismaticMotifRule(
+            'Bronce Pirámide de Teotihuacán',
+            minYear: 1957,
+            maxYear: 1969,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1964,
-        maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Cuproníquel Cuauhtémoc', 1964, 1969),
+          NumismaticMotifRule(
+            'Cuproníquel Cuauhtémoc',
+            minYear: 1964,
+            maxYear: 1969,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
-        minYear: 1957,
-        maxYear: 1967,
         motifs: [
-          NumismaticMotifRule('Plata .100 Morelos Tepalcate', 1957, 1967),
-          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
+          NumismaticMotifRule(
+            'Plata .100 Morelos Tepalcate',
+            minYear: 1957,
+            maxYear: 1967,
+            material: 'Plata .100',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Constitución de 1857',
+            minYear: 1957,
+            material: 'Plata',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Plata',
-        minYear: 1957,
-        maxYear: 1957,
         motifs: [
-          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
-          NumismaticMotifRule('Hidalgo Chico', 1957),
+          NumismaticMotifRule(
+            'Centenario de la Constitución de 1857',
+            minYear: 1957,
+            material: 'Plata .720',
+          ),
+          NumismaticMotifRule(
+            'Hidalgo Chico',
+            minYear: 1957,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Plata',
-        minYear: 1957,
-        maxYear: 1960,
         motifs: [
-          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
-          NumismaticMotifRule('150 Aniversario de la Independencia y 50 de la Revolución', 1960),
+          NumismaticMotifRule(
+            'Centenario de la Constitución de 1857',
+            minYear: 1957,
+            material: 'Plata .720',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario de la Independencia y 50 de la Revolución',
+            minYear: 1960,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '25',
-        material: 'Plata',
-        minYear: 1968,
-        maxYear: 1968,
         motifs: [
-          NumismaticMotifRule('Juegos Olímpicos México 68 - Tipo 1 (Aros rectos / alineados)', 1968),
-          NumismaticMotifRule('Juegos Olímpicos México 68 - Tipo 2 (Aros caídos / desiguales)', 1968),
+          NumismaticMotifRule(
+            'Juegos Olímpicos México 68 - Tipo 1 (Aros rectos / alineados)',
+            minYear: 1968,
+            material: 'Plata',
+          ),
+          NumismaticMotifRule(
+            'Juegos Olímpicos México 68 - Tipo 2 (Aros caídos / desiguales)',
+            minYear: 1968,
+            material: 'Plata',
+          ),
         ],
       ),
     ],
@@ -1410,47 +1776,57 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Latón',
-        minYear: 1970,
-        maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Latón Josefa Chica', 1970, 1973),
+          NumismaticMotifRule(
+            'Latón Josefa Chica',
+            minYear: 1970,
+            maxYear: 1973,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce',
-        minYear: 1970,
-        maxYear: 1971,
         motifs: [
-          NumismaticMotifRule('Bronce Pirámide', 1970, 1971),
+          NumismaticMotifRule(
+            'Bronce Pirámide',
+            minYear: 1970,
+            maxYear: 1971,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1970,
-        maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Cuproníquel Cuauhtémoc', 1970, 1973),
+          NumismaticMotifRule(
+            'Cuproníquel Cuauhtémoc',
+            minYear: 1970,
+            maxYear: 1973,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1970,
-        maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Cuproníquel José María Morelos', 1970, 1973),
+          NumismaticMotifRule(
+            'Cuproníquel José María Morelos',
+            minYear: 1970,
+            maxYear: 1973,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1971,
-        maxYear: 1973,
         motifs: [
-          NumismaticMotifRule('Cuproníquel Vicente Guerrero', 1971, 1973),
+          NumismaticMotifRule(
+            'Cuproníquel Vicente Guerrero',
+            minYear: 1971,
+            maxYear: 1973,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -1466,93 +1842,112 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Latón',
-        minYear: 1974,
-        maxYear: 1976,
         motifs: [
-          NumismaticMotifRule('Latón Josefa', 1974, 1976),
+          NumismaticMotifRule(
+            'Latón Josefa',
+            minYear: 1974,
+            maxYear: 1976,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1980,
         motifs: [
-          NumismaticMotifRule('Mazorca de Maíz', 1974, 1980),
+          NumismaticMotifRule(
+            'Mazorca de Maíz',
+            minYear: 1974,
+            maxYear: 1980,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Latón',
-        allowedMaterials: ['Latón', 'Cuproníquel'],
-        minYear: 1974,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Francisco I. Madero / Cabeza Olmeca', 1974, 1983),
+          NumismaticMotifRule(
+            'Francisco I. Madero / Cabeza Olmeca',
+            minYear: 1974,
+            maxYear: 1983,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Cuauhtémoc', 1974, 1983),
+          NumismaticMotifRule(
+            'Cuauhtémoc',
+            minYear: 1974,
+            maxYear: 1983,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('José María Morelos', 1974, 1983),
+          NumismaticMotifRule(
+            'José María Morelos',
+            minYear: 1974,
+            maxYear: 1983,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Vicente Guerrero / Quetzalcóatl', 1974, 1983),
+          NumismaticMotifRule(
+            'Vicente Guerrero / Quetzalcóatl',
+            minYear: 1974,
+            maxYear: 1983,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Cuproníquel',
-        minYear: 1974,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Heptagonal Miguel Hidalgo', 1974, 1983),
+          NumismaticMotifRule(
+            'Heptagonal Miguel Hidalgo',
+            minYear: 1974,
+            maxYear: 1983,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Cuproníquel',
-        minYear: 1980,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Cultura Maya - Jugador de Pelota', 1980, 1983),
+          NumismaticMotifRule(
+            'Cultura Maya - Jugador de Pelota',
+            minYear: 1980,
+            maxYear: 1983,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        minYear: 1982,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('Coyolxauhqui - Templo Mayor', 1982, 1983),
+          NumismaticMotifRule(
+            'Coyolxauhqui - Templo Mayor',
+            minYear: 1982,
+            maxYear: 1983,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Plata',
-        minYear: 1977,
-        maxYear: 1983,
         motifs: [
-          NumismaticMotifRule('José María Morelos (Plata .720)', 1977, 1983),
+          NumismaticMotifRule(
+            'José María Morelos (Plata .720)',
+            minYear: 1977,
+            maxYear: 1983,
+            material: 'Plata .720',
+          ),
         ],
       ),
     ],
@@ -1568,77 +1963,99 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Acero inoxidable',
-        minYear: 1984,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Morelos Acero', 1984, 1987),
+          NumismaticMotifRule(
+            'Morelos Acero',
+            minYear: 1984,
+            maxYear: 1987,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Latón',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Latón Josefa Ortiz', 1985, 1987),
+          NumismaticMotifRule(
+            'Latón Josefa Ortiz',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Acero inoxidable',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Miguel Hidalgo', 1985, 1987),
+          NumismaticMotifRule(
+            'Miguel Hidalgo',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Latón',
-        minYear: 1985,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Bronce Guadalupe Victoria', 1985, 1987),
+          NumismaticMotifRule(
+            'Bronce Guadalupe Victoria',
+            minYear: 1985,
+            maxYear: 1987,
+            material: 'Bronce',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Cuproníquel',
-        allowedMaterials: ['Cuproníquel', 'Acero inoxidable'],
-        minYear: 1984,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Benito Juárez', 1984, 1987),
+          NumismaticMotifRule(
+            'Benito Juárez',
+            minYear: 1984,
+            maxYear: 1987,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Bronce de aluminio',
-        minYear: 1984,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Venustiano Carranza', 1984, 1987),
+          NumismaticMotifRule(
+            'Venustiano Carranza',
+            minYear: 1984,
+            maxYear: 1987,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '200',
-        material: 'Cuproníquel',
-        minYear: 1985,
-        maxYear: 1986,
         motifs: [
-          NumismaticMotifRule('175 Aniversario de la Independencia', 1985),
-          NumismaticMotifRule('75 Aniversario de la Revolución', 1985),
-          NumismaticMotifRule('Copa Mundial de la FIFA México 1986', 1986),
+          NumismaticMotifRule(
+            '175 Aniversario de la Independencia',
+            minYear: 1985,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            '75 Aniversario de la Revolución',
+            minYear: 1985,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Copa Mundial de la FIFA México 1986',
+            minYear: 1986,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Cuproníquel',
-        minYear: 1986,
-        maxYear: 1987,
         motifs: [
-          NumismaticMotifRule('Francisco I. Madero', 1986, 1987),
+          NumismaticMotifRule(
+            'Francisco I. Madero',
+            minYear: 1986,
+            maxYear: 1987,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -1654,66 +2071,78 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Acero inoxidable',
-        minYear: 1988,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Miguel Hidalgo', 1988, 1990),
+          NumismaticMotifRule(
+            'Miguel Hidalgo',
+            minYear: 1988,
+            maxYear: 1990,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Latón',
-        minYear: 1988,
-        maxYear: 1990,
         motifs: [
-          NumismaticMotifRule('Guadalupe Victoria', 1988, 1990),
+          NumismaticMotifRule(
+            'Guadalupe Victoria',
+            minYear: 1988,
+            maxYear: 1990,
+            material: 'Latón',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Acero inoxidable',
-        allowedMaterials: ['Acero inoxidable', 'Cuproníquel'],
-        minYear: 1988,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Benito Juárez', 1988, 1992),
+          NumismaticMotifRule(
+            'Benito Juárez',
+            minYear: 1988,
+            maxYear: 1992,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Bronce de aluminio',
-        minYear: 1988,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Venustiano Carranza', 1988, 1992),
+          NumismaticMotifRule(
+            'Venustiano Carranza',
+            minYear: 1988,
+            maxYear: 1992,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '500',
-        material: 'Cuproníquel',
-        minYear: 1988,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Francisco I. Madero', 1988, 1992),
+          NumismaticMotifRule(
+            'Francisco I. Madero',
+            minYear: 1988,
+            maxYear: 1992,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1000',
-        material: 'Bronce de aluminio',
-        minYear: 1988,
-        maxYear: 1992,
         motifs: [
-          NumismaticMotifRule('Sor Juana Inés de la Cruz', 1988, 1992),
+          NumismaticMotifRule(
+            'Sor Juana Inés de la Cruz',
+            minYear: 1988,
+            maxYear: 1992,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5000',
-        material: 'Cuproníquel',
-        minYear: 1988,
-        maxYear: 1988,
         motifs: [
-          NumismaticMotifRule('Cincuentenario de la Expropiación Petrolera', 1988),
+          NumismaticMotifRule(
+            'Cincuentenario de la Expropiación Petrolera',
+            minYear: 1988,
+            material: 'Cuproníquel',
+          ),
         ],
       ),
     ],
@@ -1729,120 +2158,112 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero inoxidable',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
-            1992,
-            1995,
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Acero inoxidable',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero inoxidable',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo del Sacrificio (Piedra del Sol)',
-            1992,
-            1995,
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Acero inoxidable',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Ácatl - Decimotercer Día (Piedra del Sol)',
-            1992,
-            1995,
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Bronce de aluminio',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce de aluminio',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo de la Aceptación (Piedra del Sol)',
-            1992,
-            1995,
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Bronce de aluminio',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo del Resplandor (Piedra del Sol)',
-            1992,
-            1995,
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Plata .720',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo de los Días (Piedra del Sol)',
-            1992,
-            1995,
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Bimetálica',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bimetálica',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
           NumismaticMotifRule(
             'Nuevo Peso - Anillo de las Serpientes (Piedra del Sol)',
-            1992,
-            1995,
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Bimetálica',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bimetálica',
-        minYear: 1992,
-        maxYear: 1995,
         motifs: [
-          NumismaticMotifRule('Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)', 1992, 1995),
+          NumismaticMotifRule(
+            'Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)',
+            minYear: 1992,
+            maxYear: 1995,
+            material: 'Plata .925',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bimetálica',
-        minYear: 1993,
-        maxYear: 1995,
         motifs: [
-          NumismaticMotifRule('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)', 1993, 1995),
+          NumismaticMotifRule(
+            'Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)',
+            minYear: 1993,
+            maxYear: 1995,
+            material: 'Plata .925',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '50',
-        material: 'Bimetálica',
-        minYear: 1993,
-        maxYear: 1995,
         motifs: [
-          NumismaticMotifRule('Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)', 1993, 1995),
+          NumismaticMotifRule(
+            'Nuevo Peso - Niños Héroes (Centro de Plata Sterling .925)',
+            minYear: 1993,
+            maxYear: 1995,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -1858,122 +2279,159 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero inoxidable',
-        minYear: 1996,
-        maxYear: 2007,
         motifs: [
           NumismaticMotifRule(
             'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
-            1996,
-            2007,
+            minYear: 1996,
+            maxYear: 2007,
+            material: 'Acero inoxidable',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero inoxidable',
-        minYear: 1996,
-        maxYear: 2007,
         motifs: [
           NumismaticMotifRule(
             'Anillo del Sacrificio (Piedra del Sol)',
-            1996,
-            2007,
+            minYear: 1996,
+            maxYear: 2007,
+            material: 'Acero inoxidable',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce de aluminio',
-        minYear: 1996,
-        maxYear: 2007,
         motifs: [
           NumismaticMotifRule(
             'Ácatl - Decimotercer Día (Piedra del Sol)',
-            1996,
-            2007,
+            minYear: 1996,
+            maxYear: 2007,
+            material: 'Bronce de aluminio',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce de aluminio',
-        minYear: 1996,
-        maxYear: 2007,
         motifs: [
           NumismaticMotifRule(
             'Anillo de la Aceptación (Piedra del Sol)',
-            1996,
-            2007,
+            minYear: 1996,
+            maxYear: 2007,
+            material: 'Bronce de aluminio',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 1996,
-        maxYear: 2007,
         motifs: [
           NumismaticMotifRule(
             'Anillo del Resplandor (Piedra del Sol)',
-            1996,
-            2007,
+            minYear: 1996,
+            maxYear: 2007,
+            material: 'Plata .720',
           ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 1996,
-        maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 1996, 2007),
+          NumismaticMotifRule(
+            'Anillo de los Días (Piedra del Sol)',
+            minYear: 1996,
+            maxYear: 2007,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bimetálica',
-        minYear: 1996,
-        maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('Anillo de las Serpientes (Piedra del Sol)', 1996, 2007),
+          NumismaticMotifRule(
+            'Anillo de las Serpientes (Piedra del Sol)',
+            minYear: 1996,
+            maxYear: 2007,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bimetálica',
-        minYear: 1997,
-        maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('Piedra del Sol', 1997, 2007),
-          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2000', 2000),
-          NumismaticMotifRule('Cambio de Milenio - Glifo Año 2001', 2001),
+          NumismaticMotifRule(
+            'Piedra del Sol',
+            minYear: 1997,
+            maxYear: 2007,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Cambio de Milenio - Glifo Año 2000',
+            minYear: 2000,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Cambio de Milenio - Glifo Año 2001',
+            minYear: 2001,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bimetálica',
-        minYear: 2000,
-        maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('Octavio Paz - Cambio de Milenio', 2000, 2001),
-          NumismaticMotifRule('Fuego Nuevo - Señorío de Xiuhtecuhtli', 2000, 2001),
+          NumismaticMotifRule(
+            'Octavio Paz - Cambio de Milenio',
+            minYear: 2000,
+            maxYear: 2001,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Fuego Nuevo - Señorío de Xiuhtecuhtli',
+            minYear: 2000,
+            maxYear: 2001,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Bimetálica',
-        allowedMaterials: ['Bimetálica', 'Plata'],
-        minYear: 2003,
-        maxYear: 2007,
         motifs: [
-          NumismaticMotifRule('32 Estados de la República - Fase 1 (Heráldicos)', 2003, 2005),
-          NumismaticMotifRule('32 Estados de la República - Fase 2 (Emblemáticos)', 2005, 2007),
-          NumismaticMotifRule('180 Aniversario de la Unión Federal', 2004),
-          NumismaticMotifRule('470 Aniversario de la Casa de Moneda de México', 2005),
-          NumismaticMotifRule('80 Aniversario del Banco de México', 2005),
-          NumismaticMotifRule('400 Aniversario de la Primera Edición de Don Quijote de la Mancha', 2005),
-          NumismaticMotifRule('Bicentenario del Natalicio de Benito Juárez', 2006),
+          NumismaticMotifRule(
+            '32 Estados de la República - Fase 1 (Heráldicos)',
+            minYear: 2003,
+            maxYear: 2005,
+            material: 'Bimetálica (Núcleo Plata)',
+          ),
+          NumismaticMotifRule(
+            '32 Estados de la República - Fase 2 (Emblemáticos)',
+            minYear: 2005,
+            maxYear: 2007,
+            material: 'Bimetálica (Núcleo Plata)',
+          ),
+          NumismaticMotifRule(
+            '180 Aniversario de la Unión Federal',
+            minYear: 2004,
+            material: 'Bimetálica (Núcleo Plata)',
+          ),
+          NumismaticMotifRule(
+            '470 Aniversario de la Casa de Moneda de México',
+            minYear: 2005,
+            material: 'Bimetálica (Núcleo Plata)',
+          ),
+          NumismaticMotifRule(
+            '80 Aniversario del Banco de México',
+            minYear: 2005,
+            material: 'Bimetálica (Núcleo Plata)',
+          ),
+          NumismaticMotifRule(
+            '400 Aniversario de la Primera Edición de Don Quijote de la Mancha',
+            minYear: 2005,
+            material: 'Bimetálica (Núcleo Plata)',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Natalicio de Benito Juárez',
+            minYear: 2006,
+            material: 'Bimetálica (Núcleo Plata)',
+          ),
         ],
       ),
     ],
@@ -1989,125 +2447,280 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.05',
-        material: 'Acero inoxidable',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Rayos Solares del Anillo de los Quincunces (Piedra del Sol)', 2008, 2010),
+          NumismaticMotifRule(
+            'Rayos Solares del Anillo de los Quincunces (Piedra del Sol)',
+            minYear: 2008,
+            maxYear: 2010,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero inoxidable',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Anillo del Sacrificio (Piedra del Sol)', 2008, 2010),
+          NumismaticMotifRule(
+            'Anillo del Sacrificio (Piedra del Sol)',
+            minYear: 2008,
+            maxYear: 2010,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Bronce de aluminio',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Ácatl - Decimotercer Día (Piedra del Sol)', 2008, 2010),
+          NumismaticMotifRule(
+            'Ácatl - Decimotercer Día (Piedra del Sol)',
+            minYear: 2008,
+            maxYear: 2010,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce de aluminio',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Anillo de la Aceptación (Piedra del Sol)', 2008, 2010),
+          NumismaticMotifRule(
+            'Anillo de la Aceptación (Piedra del Sol)',
+            minYear: 2008,
+            maxYear: 2010,
+            material: 'Bronce de aluminio',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Anillo del Resplandor (Piedra del Sol)', 2008, 2010),
+          NumismaticMotifRule(
+            'Anillo del Resplandor (Piedra del Sol)',
+            minYear: 2008,
+            maxYear: 2010,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 2008, 2010),
+          NumismaticMotifRule(
+            'Anillo de los Días (Piedra del Sol)',
+            minYear: 2008,
+            maxYear: 2010,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bimetálica',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          // 2008 - Independencia
-          NumismaticMotifRule('Ignacio López Rayón', 2008),
-          NumismaticMotifRule('Francisco Xavier Mina', 2008),
-          NumismaticMotifRule('Mariano Matamoros', 2008),
-          NumismaticMotifRule('Carlos María de Bustamante', 2008),
-          NumismaticMotifRule('Hermenegildo Galeana', 2008),
-          NumismaticMotifRule('Francisco Primo de Verdad y Ramos (Con puntos)', 2008),
-          NumismaticMotifRule('Francisco Primo de Verdad y Ramos (Sin puntos - Variedad especial)', 2008),
-          // 2008 - Revolución
-          NumismaticMotifRule('Álvaro Obregón', 2008),
-          NumismaticMotifRule('José Vasconcelos', 2008),
-          NumismaticMotifRule('Francisco Villa', 2008),
-          NumismaticMotifRule('Heriberto Jara', 2008),
-          NumismaticMotifRule('Ricardo Flores Magón', 2008),
-          NumismaticMotifRule('Francisco J. Múgica', 2008),
-          // 2009 - Independencia
-          NumismaticMotifRule('José María Cos', 2009),
-          NumismaticMotifRule('Pedro Moreno', 2009),
-          NumismaticMotifRule('Agustín de Iturbide', 2009),
-          NumismaticMotifRule('Servando Teresa de Mier', 2009),
-          NumismaticMotifRule('Nicolás Bravo', 2009),
-          NumismaticMotifRule('Leona Vicario', 2009),
-          // 2009 - Revolución
-          NumismaticMotifRule('Filomeno Mata', 2009),
-          NumismaticMotifRule('Carmen Serdán', 2009),
-          NumismaticMotifRule('Andrés Molina Enríquez', 2009),
-          NumismaticMotifRule('Luis Cabrera', 2009),
-          NumismaticMotifRule('Eulalio Gutiérrez', 2009),
-          NumismaticMotifRule('Otilio Montaño', 2009),
-          // 2010 - Independencia
-          NumismaticMotifRule('Miguel Hidalgo y Costilla', 2010),
-          NumismaticMotifRule('José María Morelos y Pavón', 2010),
-          NumismaticMotifRule('Vicente Guerrero', 2010),
-          NumismaticMotifRule('Ignacio Allende', 2010),
-          NumismaticMotifRule('Guadalupe Victoria', 2010),
-          NumismaticMotifRule('Josefa Ortiz de Domínguez', 2010),
-          // 2010 - Revolución
-          NumismaticMotifRule('Belisario Domínguez', 2010),
-          NumismaticMotifRule('Francisco I. Madero', 2010),
-          NumismaticMotifRule('Emiliano Zapata', 2010),
-          NumismaticMotifRule('Venustiano Carranza', 2010),
-          NumismaticMotifRule('La Soldadera (Adelita)', 2010),
-          NumismaticMotifRule('José María Pino Suárez', 2010),
+          NumismaticMotifRule(
+            'Ignacio López Rayón',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Francisco Xavier Mina',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Mariano Matamoros',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Carlos María de Bustamante',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Hermenegildo Galeana',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Francisco Primo de Verdad y Ramos (Con puntos)',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Francisco Primo de Verdad y Ramos (Sin puntos - Variedad especial)',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Álvaro Obregón',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'José Vasconcelos',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Francisco Villa',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Heriberto Jara',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Ricardo Flores Magón',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Francisco J. Múgica',
+            minYear: 2008,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'José María Cos',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Pedro Moreno',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Agustín de Iturbide',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Servando Teresa de Mier',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Nicolás Bravo',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Leona Vicario',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Filomeno Mata',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Carmen Serdán',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Andrés Molina Enríquez',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Luis Cabrera',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Eulalio Gutiérrez',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Otilio Montaño',
+            minYear: 2009,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Miguel Hidalgo y Costilla',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'José María Morelos y Pavón',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Vicente Guerrero',
+            minYear: 2010,
+            material: 'Cuproníquel',
+          ),
+          NumismaticMotifRule(
+            'Ignacio Allende',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Guadalupe Victoria',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Josefa Ortiz de Domínguez',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Belisario Domínguez',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Francisco I. Madero',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Emiliano Zapata',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Venustiano Carranza',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'La Soldadera (Adelita)',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'José María Pino Suárez',
+            minYear: 2010,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bimetálica',
-        minYear: 2008,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Piedra del Sol', 2008, 2010),
+          NumismaticMotifRule(
+            'Piedra del Sol',
+            minYear: 2008,
+            maxYear: 2010,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bimetálica',
-        minYear: 2010,
-        maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Octavio Paz - Premio Nobel de Literatura', 2010, 2011),
+          NumismaticMotifRule(
+            'Octavio Paz - Premio Nobel de Literatura',
+            minYear: 2010,
+            maxYear: 2011,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -2123,85 +2736,144 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero inoxidable',
-        minYear: 2011,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Anillo del Sacrificio (Piedra del Sol)', 2011, 2019),
+          NumismaticMotifRule(
+            'Anillo del Sacrificio (Piedra del Sol)',
+            minYear: 2011,
+            maxYear: 2019,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Acero inoxidable',
-        minYear: 2011,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Ácatl - Decimotercer Día (Piedra del Sol)', 2011, 2019),
+          NumismaticMotifRule(
+            'Ácatl - Decimotercer Día (Piedra del Sol)',
+            minYear: 2011,
+            maxYear: 2019,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Acero inoxidable',
-        minYear: 2011,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Anillo de la Aceptación (Piedra del Sol)', 2011, 2019),
+          NumismaticMotifRule(
+            'Anillo de la Aceptación (Piedra del Sol)',
+            minYear: 2011,
+            maxYear: 2019,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 2011,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Anillo del Resplandor (Piedra del Sol)', 2011, 2019),
+          NumismaticMotifRule(
+            'Anillo del Resplandor (Piedra del Sol)',
+            minYear: 2011,
+            maxYear: 2019,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 2011,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 2011, 2019),
+          NumismaticMotifRule(
+            'Anillo de los Días (Piedra del Sol)',
+            minYear: 2011,
+            maxYear: 2019,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bimetálica',
-        minYear: 2011,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Anillo de las Serpientes (Piedra del Sol)', 2011, 2019),
+          NumismaticMotifRule(
+            'Anillo de las Serpientes (Piedra del Sol)',
+            minYear: 2011,
+            maxYear: 2019,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bimetálica',
-        minYear: 2011,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Piedra del Sol', 2011, 2019),
-          NumismaticMotifRule('150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza', 2012),
+          NumismaticMotifRule(
+            'Piedra del Sol',
+            minYear: 2011,
+            maxYear: 2019,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza',
+            minYear: 2012,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bimetálica',
-        minYear: 2013,
-        maxYear: 2019,
         motifs: [
-          NumismaticMotifRule('Centenario del Ejército Mexicano', 2013),
-          NumismaticMotifRule('150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez', 2013),
-          NumismaticMotifRule('Centenario de la Gesta Heroica de Veracruz', 2014),
-          NumismaticMotifRule('Centenario de la Toma de Zacatecas', 2014),
-          NumismaticMotifRule('Centenario de la Fuerza Aérea Mexicana', 2015),
-          NumismaticMotifRule('Bicentenario Luctuoso del Generalísimo José María Morelos y Pavón', 2015),
-          NumismaticMotifRule('Cincuenta Aniversario de la Aplicación del Plan DN-III-E', 2016),
-          NumismaticMotifRule('Centenario de la Promulgación de la Constitución Política de 1917', 2017),
-          NumismaticMotifRule('50 Aniversario de la Aplicación del Plan Marina', 2018),
-          NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz', 2019),
-          NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar', 2019),
+          NumismaticMotifRule(
+            'Centenario del Ejército Mexicano',
+            minYear: 2013,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '150 Aniversario del Natalicio y 100 Aniversario Luctuoso de Belisario Domínguez',
+            minYear: 2013,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Gesta Heroica de Veracruz',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Toma de Zacatecas',
+            minYear: 2014,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Fuerza Aérea Mexicana',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario Luctuoso del Generalísimo José María Morelos y Pavón',
+            minYear: 2015,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Cincuenta Aniversario de la Aplicación del Plan DN-III-E',
+            minYear: 2016,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Promulgación de la Constitución Política de 1917',
+            minYear: 2017,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '50 Aniversario de la Aplicación del Plan Marina',
+            minYear: 2018,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '500 Años de la Fundación de la Ciudad y Puerto de Veracruz',
+            minYear: 2019,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Muerte del General Emiliano Zapata Salazar',
+            minYear: 2019,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],
@@ -2217,85 +2889,145 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
     pieces: [
       NumismaticPieceDefinition(
         denomination: '0.10',
-        material: 'Acero inoxidable',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Anillo del Sacrificio (Piedra del Sol)', 2020, 2100),
+          NumismaticMotifRule(
+            'Anillo del Sacrificio (Piedra del Sol)',
+            minYear: 2020,
+            maxYear: 2100,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.20',
-        material: 'Acero inoxidable',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Ácatl - Decimotercer Día (Piedra del Sol)', 2020, 2100),
+          NumismaticMotifRule(
+            'Ácatl - Decimotercer Día (Piedra del Sol)',
+            minYear: 2020,
+            maxYear: 2100,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Acero inoxidable',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Anillo de la Aceptación (Piedra del Sol)', 2020, 2100),
+          NumismaticMotifRule(
+            'Anillo de la Aceptación (Piedra del Sol)',
+            minYear: 2020,
+            maxYear: 2100,
+            material: 'Acero inoxidable',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Bimetálica',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Anillo del Resplandor (Piedra del Sol)', 2020, 2100),
+          NumismaticMotifRule(
+            'Anillo del Resplandor (Piedra del Sol)',
+            minYear: 2020,
+            maxYear: 2100,
+            material: 'Plata .720',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '2',
-        material: 'Bimetálica',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Anillo de los Días (Piedra del Sol)', 2020, 2100),
+          NumismaticMotifRule(
+            'Anillo de los Días (Piedra del Sol)',
+            minYear: 2020,
+            maxYear: 2100,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '5',
-        material: 'Bimetálica',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Anillo de las Serpientes (Piedra del Sol)', 2020, 2100),
+          NumismaticMotifRule(
+            'Anillo de las Serpientes (Piedra del Sol)',
+            minYear: 2020,
+            maxYear: 2100,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '10',
-        material: 'Bimetálica',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Piedra del Sol', 2020, 2100),
+          NumismaticMotifRule(
+            'Piedra del Sol',
+            minYear: 2020,
+            maxYear: 2100,
+            material: 'Bimetálica',
+          ),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '20',
-        material: 'Bimetálica',
-        minYear: 2020,
-        maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)', 2020),
-          NumismaticMotifRule('Centenario de la Muerte del General Emiliano Zapata Salazar (Dodecagonal 2020)', 2020),
-          NumismaticMotifRule('700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan', 2021),
-          NumismaticMotifRule('500 Años de Memoria Histórica de México-Tenochtitlan', 2021),
-          NumismaticMotifRule('Bicentenario de la Independencia Nacional', 2021),
-          NumismaticMotifRule('Bicentenario de la Marina-Armada de México (2021-2022)', 2021, 2022),
-          NumismaticMotifRule('Cien Años de la Llegada de los Menonitas a México', 2022),
-          NumismaticMotifRule('Bicentenario del Heroico Colegio Militar', 2023),
-          NumismaticMotifRule('Doscientos Años de Relaciones Diplomáticas México-Estados Unidos', 2023),
-          NumismaticMotifRule('500 Años de la Fundación de la Villa de Colima', 2023),
-          NumismaticMotifRule('Bicentenario de la Instauración del Senado de la República', 2024),
-          NumismaticMotifRule('Cien Años del Heroico Batallón de Infantería de Marina', 2024),
+          NumismaticMotifRule(
+            '500 Años de la Fundación de la Ciudad y Puerto de Veracruz (Dodecagonal 2020)',
+            minYear: 2020,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Centenario de la Muerte del General Emiliano Zapata Salazar (Dodecagonal 2020)',
+            minYear: 2020,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '700 Años de la Fundación Lunar de la Ciudad de México-Tenochtitlan',
+            minYear: 2021,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '500 Años de Memoria Histórica de México-Tenochtitlan',
+            minYear: 2021,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Independencia Nacional',
+            minYear: 2021,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Marina-Armada de México (2021-2022)',
+            minYear: 2021,
+            maxYear: 2022,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Cien Años de la Llegada de los Menonitas a México',
+            minYear: 2022,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario del Heroico Colegio Militar',
+            minYear: 2023,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Doscientos Años de Relaciones Diplomáticas México-Estados Unidos',
+            minYear: 2023,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            '500 Años de la Fundación de la Villa de Colima',
+            minYear: 2023,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Bicentenario de la Instauración del Senado de la República',
+            minYear: 2024,
+            material: 'Bimetálica',
+          ),
+          NumismaticMotifRule(
+            'Cien Años del Heroico Batallón de Infantería de Marina',
+            minYear: 2024,
+            material: 'Bimetálica',
+          ),
         ],
       ),
     ],

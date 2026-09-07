@@ -134,8 +134,9 @@ class NumismaticEmissionRuleData {
 
   String? getMaterialForDenomination(String targetDenom, {int? year}) {
     final matchedPiece = getPieceForDenomination(targetDenom, year: year);
-    if (matchedPiece != null && matchedPiece.material != null) {
-      return matchedPiece.material;
+    if (matchedPiece != null) {
+      final mat = matchedPiece.getPrimaryMaterialForYear(year);
+      if (mat != null) return mat;
     }
     for (final entry in denominationMaterials.entries) {
       if (matchesDenomination(entry.key, targetDenom)) {
@@ -152,8 +153,9 @@ class NumismaticEmissionRuleData {
 
   List<String> getAllowedMaterialsForDenomination(String targetDenom, {int? year}) {
     final matchedPiece = getPieceForDenomination(targetDenom, year: year);
-    if (matchedPiece != null && matchedPiece.effectiveAllowedMaterials.isNotEmpty) {
-      return matchedPiece.effectiveAllowedMaterials;
+    if (matchedPiece != null) {
+      final mats = matchedPiece.getMaterialsForYear(year);
+      if (mats.isNotEmpty) return mats;
     }
     for (final entry in denominationAllowedMaterials.entries) {
       if (matchesDenomination(entry.key, targetDenom)) {
@@ -169,8 +171,9 @@ class NumismaticEmissionRuleData {
 
   String? getDefaultMaterialForDenomination(String targetDenom, {int? year}) {
     final matchedPiece = getPieceForDenomination(targetDenom, year: year);
-    if (matchedPiece != null && matchedPiece.material != null) {
-      return matchedPiece.material;
+    if (matchedPiece != null) {
+      final mat = matchedPiece.getPrimaryMaterialForYear(year);
+      if (mat != null) return mat;
     }
     for (final entry in denominationMaterials.entries) {
       if (matchesDenomination(entry.key, targetDenom)) {
@@ -179,6 +182,7 @@ class NumismaticEmissionRuleData {
     }
     return null;
   }
+
 
   bool isMaterialValidForDenomination(String targetDenom, String targetMaterial, {int? year}) {
     final allowed = getAllowedMaterialsForDenomination(targetDenom, year: year);

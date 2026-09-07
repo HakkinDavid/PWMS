@@ -5,14 +5,16 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/num
 
 void main() {
   group('NumismaticPieceDefinition Unit Tests', () {
-    test('matchesYear correctly evaluates boundaries and intervals', () {
+    test('matchesYear correctly evaluates boundaries and intervals derived from motifs', () {
       const piece = NumismaticPieceDefinition(
         denomination: '0.50',
-        minYear: 1955,
-        maxYear: 1959,
-        material: 'Bronce',
         motifs: [
-          NumismaticMotifRule('Cuauhtémoc', 1955, 1959),
+          NumismaticMotifRule(
+            'Cuauhtémoc',
+            minYear: 1955,
+            maxYear: 1959,
+            material: 'Bronce',
+          ),
         ],
       );
 
@@ -27,9 +29,8 @@ void main() {
     test('matchesDenomination accurately handles fractions, decimals and integers', () {
       const pieceCuartilla = NumismaticPieceDefinition(
         denomination: '1/4',
-        material: 'Plata',
         motifs: [
-          NumismaticMotifRule('Cuartilla', 1800),
+          NumismaticMotifRule('Cuartilla', minYear: 1800, material: 'Plata'),
         ],
       );
       expect(pieceCuartilla.matchesDenomination('1/4'), isTrue);
@@ -38,9 +39,8 @@ void main() {
 
       const pieceOctavo = NumismaticPieceDefinition(
         denomination: '1/8',
-        material: 'Cobre',
         motifs: [
-          NumismaticMotifRule('Octavo', 1800),
+          NumismaticMotifRule('Octavo', minYear: 1800, material: 'Cobre'),
         ],
       );
       expect(pieceOctavo.matchesDenomination('1/8'), isTrue);
@@ -48,9 +48,8 @@ void main() {
 
       const piece50c = NumismaticPieceDefinition(
         denomination: '0.50',
-        material: 'Bronce',
         motifs: [
-          NumismaticMotifRule('50 Centavos', 1950),
+          NumismaticMotifRule('50 Centavos', minYear: 1950, material: 'Bronce'),
         ],
       );
       expect(piece50c.matchesDenomination('0.50'), isTrue);
@@ -59,33 +58,33 @@ void main() {
       expect(piece50c.matchesDenomination('0.20'), isFalse);
     });
 
-    test('effectiveAllowedMaterials resolves primary and concurrent alloys', () {
+    test('effectiveAllowedMaterials and getMaterialsForYear resolves primary and concurrent alloys', () {
       const singleMatPiece = NumismaticPieceDefinition(
         denomination: '1',
-        material: 'Plata',
         motifs: [
-          NumismaticMotifRule('Un Peso', 1900),
+          NumismaticMotifRule('Un Peso', minYear: 1900, material: 'Plata'),
         ],
       );
       expect(singleMatPiece.effectiveAllowedMaterials, equals(['Plata']));
+      expect(singleMatPiece.getMaterialsForYear(1900), equals(['Plata']));
 
       const multiMatPiece = NumismaticPieceDefinition(
         denomination: '100',
-        material: 'Polímero',
-        allowedMaterials: ['Polímero', 'Papel de algodón'],
         motifs: [
-          NumismaticMotifRule('Cien Pesos', 2020),
+          NumismaticMotifRule('Cien Pesos Polímero', minYear: 2020, material: 'Polímero'),
+          NumismaticMotifRule('Cien Pesos Algodón', minYear: 2020, material: 'Papel de algodón'),
         ],
       );
-      expect(multiMatPiece.effectiveAllowedMaterials, equals(['Polímero', 'Papel de algodón']));
+      expect(multiMatPiece.effectiveAllowedMaterials, containsAll(['Polímero', 'Papel de algodón']));
+      expect(multiMatPiece.getMaterialsForYear(2020), containsAll(['Polímero', 'Papel de algodón']));
     });
 
     test('getMotifsForYear filters temporally bounded motifs', () {
       const piece = NumismaticPieceDefinition(
         denomination: '100',
         motifs: [
-          NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', 2009, 2010),
-          NumismaticMotifRule('Centenario de la Constitución Política de 1917 (2017)', 2016, 2017),
+          NumismaticMotifRule('Centenario de la Revolución Mexicana (2010)', minYear: 2009, maxYear: 2010, material: 'Polímero'),
+          NumismaticMotifRule('Centenario de la Constitución Política de 1917 (2017)', minYear: 2016, maxYear: 2017, material: 'Papel de algodón'),
         ],
       );
 
@@ -94,14 +93,16 @@ void main() {
       expect(piece.getMotifsForYear(2014), isEmpty);
     });
 
-    test('NumismaticMotifRule handles descriptive names, standard flag and year matching', () {
+    test('NumismaticMotifRule handles descriptive names, material and year matching', () {
       const standardMotif = NumismaticMotifRule(
         'Lincoln Memorial (1959-2008)',
-        2000,
-        2008,
+        minYear: 2000,
+        maxYear: 2008,
+        material: 'Zinc recubierto de cobre',
       );
 
       expect(standardMotif.name, equals('Lincoln Memorial (1959-2008)'));
+      expect(standardMotif.material, equals('Zinc recubierto de cobre'));
       expect(standardMotif.matchesYear(2004), isTrue);
       expect(standardMotif.matchesYear(1999), isFalse);
       expect(standardMotif.matchesYear(2009), isFalse);
@@ -109,10 +110,12 @@ void main() {
 
       const commemorativeMotif = NumismaticMotifRule(
         'Lincoln Bicentennial - Birthplace (2009)',
-        2009,
+        minYear: 2009,
+        material: 'Zinc recubierto de cobre',
       );
       expect(commemorativeMotif.minYear, equals(2009));
       expect(commemorativeMotif.maxYear, equals(2009));
+      expect(commemorativeMotif.material, equals('Zinc recubierto de cobre'));
       expect(commemorativeMotif.matchesYear(2009), isTrue);
       expect(commemorativeMotif.matchesYear(2010), isFalse);
     });
@@ -129,18 +132,15 @@ void main() {
         pieces: [
           NumismaticPieceDefinition(
             denomination: '10',
-            material: 'Plata / Aluminio-Bronce',
-            motifs: [NumismaticMotifRule('10 Nuevos Pesos', 1993, 1995)],
+            motifs: [NumismaticMotifRule('10 Nuevos Pesos', minYear: 1993, maxYear: 1995, material: 'Plata / Aluminio-Bronce')],
           ),
           NumismaticPieceDefinition(
             denomination: '20',
-            material: 'Plata / Latón',
-            motifs: [NumismaticMotifRule('20 Nuevos Pesos', 1993, 1995)],
+            motifs: [NumismaticMotifRule('20 Nuevos Pesos', minYear: 1993, maxYear: 1995, material: 'Plata / Latón')],
           ),
           NumismaticPieceDefinition(
             denomination: '50',
-            material: 'Plata / Latón',
-            motifs: [NumismaticMotifRule('50 Nuevos Pesos', 1993, 1995)],
+            motifs: [NumismaticMotifRule('50 Nuevos Pesos', minYear: 1993, maxYear: 1995, material: 'Plata / Latón')],
           ),
         ],
       );
@@ -160,24 +160,15 @@ void main() {
         pieces: [
           NumismaticPieceDefinition(
             denomination: '0.01',
-            minYear: 1905,
-            maxYear: 1914,
-            material: 'Cobre',
-            motifs: [NumismaticMotifRule('Centavito Porfiriano', 1905, 1914)],
+            motifs: [NumismaticMotifRule('Centavito Porfiriano', minYear: 1905, maxYear: 1914, material: 'Cobre')],
           ),
           NumismaticPieceDefinition(
             denomination: '0.50',
-            minYear: 1955,
-            maxYear: 1959,
-            material: 'Bronce',
-            motifs: [NumismaticMotifRule('Cuauhtémoc', 1955, 1959)],
+            motifs: [NumismaticMotifRule('Cuauhtémoc', minYear: 1955, maxYear: 1959, material: 'Bronce')],
           ),
           NumismaticPieceDefinition(
             denomination: '1',
-            minYear: 1957,
-            maxYear: 1967,
-            material: 'Plata .100',
-            motifs: [NumismaticMotifRule('Morelos Tepalcate', 1957, 1967)],
+            motifs: [NumismaticMotifRule('Morelos Tepalcate', minYear: 1957, maxYear: 1967, material: 'Plata .100')],
           ),
         ],
       );
@@ -243,28 +234,29 @@ void main() {
       final mex92 = NumismaticMatrix.findRule('México', 1993, isBanknote: false);
       expect(mex92, isNotNull);
       final piece10 = mex92!.getPieceForDenomination('10', year: 1993);
-      expect(piece10?.effectiveAllowedMaterials, contains('Bimetálica'));
+      expect(piece10?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
 
       final piece20 = mex92.getPieceForDenomination('20', year: 1993);
-      expect(piece20?.effectiveAllowedMaterials, contains('Bimetálica'));
+      expect(piece20?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
 
       final piece50 = mex92.getPieceForDenomination('50', year: 1993);
-      expect(piece50?.effectiveAllowedMaterials, contains('Bimetálica'));
+      expect(piece50?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
 
       final mex03 = NumismaticMatrix.findRule('México', 2005, isBanknote: false);
       expect(mex03, isNotNull);
       final piece100 = mex03!.getPieceForDenomination('100', year: 2005);
-      expect(piece100?.effectiveAllowedMaterials, containsAll(['Bimetálica', 'Plata']));
+      expect(piece100?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
     });
 
-    test('All piece definitions in registry have canonical materials and valid allowedMaterials', () {
-      final allRules = NumismaticMatrix.findRules('México', 2000)
-          .followedBy(NumismaticMatrix.findRules('España', 2000))
-          .followedBy(NumismaticMatrix.findRules('Estados Unidos', 2000));
+    test('All piece definitions in registry have valid non-empty motifs with explicit materials', () {
+      final allRules = NumismaticRulesRegistry.allRules;
       for (final r in allRules) {
         for (final p in r.pieces) {
-          if (p.allowedMaterials.isNotEmpty && p.material != null) {
-            expect(p.allowedMaterials, contains(p.material));
+          expect(p.motifs, isNotEmpty);
+          for (final m in p.motifs) {
+            expect(m.material.trim(), isNotEmpty);
+            expect(m.minYear, greaterThanOrEqualTo(1000));
+            expect(m.maxYear, greaterThanOrEqualTo(m.minYear));
           }
         }
       }
@@ -324,4 +316,5 @@ void main() {
     });
   });
 }
+
 
