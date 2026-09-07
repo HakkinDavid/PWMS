@@ -11,9 +11,7 @@ import 'data_migration_post_processor.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_backup_post_processor.dart';
 import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';
-import 'package:platinum_world_management_system/src/features/history/application/history_migration_post_processor.dart';
 import 'package:platinum_world_management_system/src/features/history/infrastructure/history_repository.dart';
 
 class DatabaseBackupService {
@@ -254,11 +252,11 @@ class DatabaseBackupService {
     final timestamp = DateTime.now().toIso8601String().replaceAll(AppTechnicalDelimiters.colon, AppTechnicalDelimiters.dash).replaceAll(AppTechnicalDelimiters.dot, AppTechnicalDelimiters.dash);
     final tempZipFile = File(p.join(tempDir.path, AppTechnicalStrings.backupZipFileName(timestamp)));
 
-    await Isolate.run(() => _createZipBackupPackage(
-      data: data,
-      existingFilePaths: existingPhysicalFiles,
-      destZipPath: tempZipFile.path,
-    ));
+    await _runCreateZipInIsolate(
+      tempZipFile.path,
+      data,
+      existingPhysicalFiles,
+    );
 
     try {
       await Share.shareXFiles(
@@ -281,34 +279,6 @@ class DatabaseBackupService {
     }
   }
 
-  static void _createZipBackupPackage({
-    required Map<String, dynamic> data,
-    required List<String> existingFilePaths,
-    required String destZipPath,
-  }) {
-    final jsonStr = const JsonEncoder.withIndent(AppTechnicalStrings.indentTwoSpaces).convert(data);
-    final jsonBytes = utf8.encode(jsonStr);
-
-    final archive = Archive();
-    archive.addFile(ArchiveFile(AppTechnicalStorage.backupDatabaseFileName, jsonBytes.length, jsonBytes));
-
-    for (final fPath in existingFilePaths) {
-      final f = File(fPath);
-      if (f.existsSync()) {
-        final bytes = f.readAsBytesSync();
-        final filename = p.basename(fPath);
-        archive.addFile(ArchiveFile(AppTechnicalStrings.backupArchiveFilePath(filename), bytes.length, bytes));
-      }
-    }
-
-    final zipEncoder = ZipEncoder();
-    final zipBytes = zipEncoder.encode(archive);
-    if (zipBytes == null) {
-      throw Exception(AppStrings.backupZipCompressionError);
-    }
-    File(destZipPath).writeAsBytesSync(zipBytes);
-  }
-
   /// Importa una copia de seguridad enviada como archivo (.zip o .json)
   Future<void> importDatabaseFromFile(File file) async {
     final docsDir = await getApplicationDocumentsDirectory();
@@ -320,489 +290,20 @@ class DatabaseBackupService {
     final filePath = file.path;
     final mediaDirPath = mediaDir.path;
 
-    final (migratedData, rawVersion) = await Isolate.run(() {
-      final fileObj = File(filePath);
-      final bytes = fileObj.readAsBytesSync();
-      final isZip = filePath.toLowerCase().endsWith(AppTechnicalStorage.extZip) ||
-          (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B);
-
-      String jsonContent;
-      if (isZip) {
-        jsonContent = _extractZipArchive(
-          zipBytes: bytes,
-          mediaDirPath: mediaDirPath,
-        );
-      } else {
-        jsonContent = utf8.decode(bytes);
-      }
-
-      final Map<String, dynamic> rawData = jsonDecode(jsonContent);
-      if (!rawData.containsKey(AppTechnicalJsonKeys.keyTables)) {
-        throw const FormatException(AppStrings.invalidBackupStructureError);
-      }
-
-      final rawVer = rawData[AppTechnicalJsonKeys.keyVersion] ??
-          rawData[AppTechnicalJsonKeys.keySchemaVersion] ??
-          rawData[AppTechnicalJsonKeys.keyVersionCheck] ??
-          1;
-
-      final migrated = migrateImportedData(rawData, targetVersion: 6);
-      return (migrated, rawVer);
-    });
+    final (migratedData, rawVersion) = await _runImportFromFileInIsolate(filePath, mediaDirPath);
 
     await _restoreMigratedTablesToDb(migratedData, rawVersion);
-  }
-
-  /// Descomprime los archivos multimedia y extrae el JSON en un isolate en segundo plano
-  static String _extractZipArchive({
-    required List<int> zipBytes,
-    required String mediaDirPath,
-  }) {
-    final archive = ZipDecoder().decodeBytes(zipBytes);
-    String? jsonContent;
-
-    final mediaDir = Directory(mediaDirPath);
-    if (!mediaDir.existsSync()) {
-      mediaDir.createSync(recursive: true);
-    }
-
-    for (final archiveFile in archive) {
-      if (!archiveFile.isFile) continue;
-
-      final name = archiveFile.name;
-      final baseName = p.basename(name);
-
-      // Ignorar carpetas/archivos de metadatos del sistema de macOS (__MACOSX, ._*, .DS_Store)
-      if (name.contains(AppTechnicalStrings.macOsMetadataDir) ||
-          baseName.startsWith(AppTechnicalStrings.dotUnderscore) ||
-          baseName.startsWith(AppTechnicalDelimiters.dot)) {
-        continue;
-      }
-
-      if (baseName == AppTechnicalStorage.backupDatabaseFileName ||
-          (jsonContent == null && baseName.endsWith(AppTechnicalStorage.extJson))) {
-        jsonContent = utf8.decode(archiveFile.content as List<int>);
-      } else if (name.startsWith(AppTechnicalStrings.dirFilesPrefix) ||
-          name.contains(AppTechnicalStrings.slashFilesPrefix)) {
-        if (baseName.isNotEmpty) {
-          final content = archiveFile.content as List<int>;
-          File(p.join(mediaDirPath, baseName)).writeAsBytesSync(content);
-        }
-      }
-    }
-
-    if (jsonContent == null) {
-      throw Exception(AppStrings.backupZipMissingDatabaseJsonError);
-    }
-
-    return jsonContent;
   }
 
   /// Realiza la migración secuencial paso a paso de los datos JSON importados
   /// según la versión de origen (e.g. 1.0, 2.0 -> N) y aplica autorreparación retroactiva
   Map<String, dynamic> migrateImportedData(Map<String, dynamic> data, {required int targetVersion}) {
-    final rawVersion = data[AppTechnicalJsonKeys.keyVersion] ?? data[AppTechnicalJsonKeys.keySchemaVersion] ?? data[AppTechnicalJsonKeys.keyVersionCheck] ?? 1;
-    int importedVersion = 1;
-
-    if (rawVersion is int) {
-      importedVersion = rawVersion;
-    } else if (rawVersion is num) {
-      importedVersion = rawVersion.floor();
-    } else if (rawVersion is String) {
-      final parsed = double.tryParse(rawVersion);
-      if (parsed != null) {
-        importedVersion = parsed.floor();
-      }
-    }
-
-    if (importedVersion < 1) importedVersion = 1;
-
-    Map<String, dynamic> currentData = Map<String, dynamic>.from(data);
-
-    for (int v = importedVersion; v < targetVersion; v++) {
-      currentData = _migrateJsonStep(currentData, fromVersion: v, toVersion: v + 1);
-    }
-
-    // Aplicar autorreparación y estandarización retroactiva de magnitudes, tipos y rutas
-    currentData = _repairAndStandardizeImportedData(currentData);
-
-    currentData[AppTechnicalJsonKeys.keyVersion] = targetVersion;
-    return currentData;
-  }
-
-  Map<String, dynamic> _migrateJsonStep(Map<String, dynamic> data, {required int fromVersion, required int toVersion}) {
-    final tables = Map<String, dynamic>.from(data[AppTechnicalJsonKeys.keyTables] as Map<String, dynamic>? ?? {});
-
-    if (fromVersion == 1 && toVersion >= 2) {
-      // Migración 1 -> 2:
-      // Asegurar tabla de appSettings y columnas predeterminadas agregadas en v2
-      tables.putIfAbsent(AppTechnicalDb.tableAppSettings, () => <Map<String, dynamic>>[]);
-
-      final catalog = (tables[AppTechnicalStrings.tableCatalog] as List? ?? []);
-      final List<Map<String, dynamic>> updatedCatalog = [];
-      for (var item in catalog) {
-        if (item is Map) {
-          final m = Map<String, dynamic>.from(item);
-          m.putIfAbsent(AppTechnicalDb.colType, () => AppStrings.typeObject);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyCustomAttributes, () => AppTechnicalStrings.emptyJsonMap);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyIsUnique, () => false);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyIsNonPerishable, () => true);
-          updatedCatalog.add(m);
-        }
-      }
-      tables[AppTechnicalStrings.tableCatalog] = updatedCatalog;
-
-      final speciesMagnitudes = (tables[AppTechnicalDb.tableSpeciesMagnitudes] as List? ?? []);
-      final List<Map<String, dynamic>> updatedSM = [];
-      for (var item in speciesMagnitudes) {
-        if (item is Map) {
-          final m = Map<String, dynamic>.from(item);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyDataType, () => AppTechnicalStrings.datatypeRealLower);
-          updatedSM.add(m);
-        }
-      }
-      tables[AppTechnicalDb.tableSpeciesMagnitudes] = updatedSM;
-
-      final instanceMagnitudes = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
-      final List<Map<String, dynamic>> updatedIM = [];
-      for (var item in instanceMagnitudes) {
-        if (item is Map) {
-          final m = Map<String, dynamic>.from(item);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyDataType, () => AppTechnicalStrings.datatypeRealLower);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyMagnitudeValue, () => 0.0);
-          updatedIM.add(m);
-        }
-      }
-      tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
-
-      final speciesRequirements = (tables[AppTechnicalDb.tableRequirements] as List? ?? []);
-      final List<Map<String, dynamic>> updatedSR = [];
-      for (var item in speciesRequirements) {
-        if (item is Map) {
-          final m = Map<String, dynamic>.from(item);
-          m.putIfAbsent(AppTechnicalJsonKeys.keySourceType, () => AppTechnicalStrings.sourceTypeSpecies);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyRequiredQuantity, () => 1.0);
-          updatedSR.add(m);
-        }
-      }
-      tables[AppTechnicalDb.tableRequirements] = updatedSR;
-
-      final notifications = (tables[AppTechnicalDb.tableNotifications] as List? ?? []);
-      final List<Map<String, dynamic>> updatedNotif = [];
-      for (var item in notifications) {
-        if (item is Map) {
-          final m = Map<String, dynamic>.from(item);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyStatus, () => AppTechnicalNotifications.notifStatusActive);
-          updatedNotif.add(m);
-        }
-      }
-      tables[AppTechnicalDb.tableNotifications] = updatedNotif;
-    }
-
-    if (fromVersion == 2 && toVersion >= 3) {
-      // Migración 2 -> 3:
-      // Agregar campo instanceId en la tabla de attachments
-      final attachments = (tables[AppTechnicalDb.tableAttachments] as List? ?? []);
-      final List<Map<String, dynamic>> updatedAtt = [];
-      for (var item in attachments) {
-        if (item is Map) {
-          final m = Map<String, dynamic>.from(item);
-          m.putIfAbsent(AppTechnicalJsonKeys.keyInstanceId, () => null);
-          updatedAtt.add(m);
-        }
-      }
-      tables[AppTechnicalDb.tableAttachments] = updatedAtt;
-    }
-
-    if (fromVersion == 3 && toVersion >= 4) {
-      // Migración 3 -> 4:
-      // Enforce que entidades contenidas no tengan ubicación directa en el respaldo
-      final relations = (tables[AppTechnicalDb.tableRelations] as List? ?? []);
-      final containedIds = <String>{};
-      for (final r in relations) {
-        if (r is Map) {
-          final relType = r[AppTechnicalJsonKeys.keyRelationType]?.toString();
-          if (relType == AppTechnicalDb.relGuardadoEn || relType == AppTechnicalDb.relParteDe) {
-            final srcId = r[AppTechnicalJsonKeys.keySourceEntityId]?.toString();
-            if (srcId != null) containedIds.add(srcId);
-          }
-        }
-      }
-
-      // 1. Limpiar ubicaciones directas en instanceLocations
-      final instanceLocations = (tables[AppTechnicalDb.tableInstanceLocations] as List? ?? []);
-      final List<Map<String, dynamic>> updatedInstLocs = [];
-      for (final il in instanceLocations) {
-        if (il is Map) {
-          final instId = il[AppTechnicalJsonKeys.keyInstanceId]?.toString();
-          if (!containedIds.contains(instId)) {
-            updatedInstLocs.add(Map<String, dynamic>.from(il));
-          }
-        }
-      }
-      tables[AppTechnicalDb.tableInstanceLocations] = updatedInstLocs;
-
-      // 2. Limpiar locationId en entities
-      final entities = (tables[AppTechnicalDb.tableEntities] as List? ?? []);
-      final List<Map<String, dynamic>> updatedEntities = [];
-      for (final e in entities) {
-        if (e is Map) {
-          final m = Map<String, dynamic>.from(e);
-          final eId = m[AppTechnicalDb.colId]?.toString();
-          if (containedIds.contains(eId)) {
-            m[AppTechnicalJsonKeys.keyLocationId] = null;
-          }
-          updatedEntities.add(m);
-        }
-      }
-      tables[AppTechnicalDb.tableEntities] = updatedEntities;
-    }
-
-    if (fromVersion == 4 && toVersion >= 5) {
-      // Migración 4 -> 5:
-      // Permitir magnitudes de instancia con magnitudeValue nullable de forma nativa.
-      // Preserva explícitamente null cuando no se especificó un valor numérico.
-      final instanceMagnitudes = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
-      final List<Map<String, dynamic>> updatedIM = [];
-      for (var item in instanceMagnitudes) {
-        if (item is Map) {
-          final m = Map<String, dynamic>.from(item);
-          if (m.containsKey(AppTechnicalJsonKeys.keyMagnitudeValue)) {
-            final rawVal = m[AppTechnicalJsonKeys.keyMagnitudeValue];
-            m[AppTechnicalJsonKeys.keyMagnitudeValue] = rawVal != null ? (rawVal as num).toDouble() : null;
-          }
-          updatedIM.add(m);
-        }
-      }
-      tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
-    }
-
-    if (fromVersion == 5 && toVersion >= 6) {
-      // Migración 5 -> 6:
-      // Agregar tabla ignored_audit_cards para anomalías/tarjetas del Centro de Control omitidas
-      tables.putIfAbsent(AppTechnicalDb.tableIgnoredAuditCards, () => <Map<String, dynamic>>[]);
-    }
-
-    data[AppTechnicalJsonKeys.keyTables] = tables;
-    return data;
-  }
-
-  /// Realiza la autorreparación retroactiva de datos numismáticos y sanitización de rutas
-  /// para respaldos creados en versiones previas donde dataType/stringValue no fueron exportados.
-  Map<String, dynamic> _repairAndStandardizeImportedData(Map<String, dynamic> data) {
-    final tables = Map<String, dynamic>.from(data[AppTechnicalJsonKeys.keyTables] as Map<String, dynamic>? ?? {});
-
-    // Asegurar tabla appSettings e ignoredAuditCards
-    tables.putIfAbsent(AppTechnicalDb.tableAppSettings, () => <Map<String, dynamic>>[]);
-    tables.putIfAbsent(AppTechnicalDb.tableIgnoredAuditCards, () => <Map<String, dynamic>>[]);
-
-    // 1. Construir mapas de búsqueda rápida
-    final catalogList = (tables[AppTechnicalStrings.tableCatalog] as List? ?? []);
-    final speciesMap = <String, Map<String, dynamic>>{};
-    final List<Map<String, dynamic>> sanitizedCatalog = [];
-    for (final c in catalogList) {
-      if (c is Map) {
-        final m = Map<String, dynamic>.from(c);
-        if (m[AppTechnicalJsonKeys.keyMainPhotoPath] != null) {
-          m[AppTechnicalJsonKeys.keyMainPhotoPath] = _sanitizeMediaPath(m[AppTechnicalJsonKeys.keyMainPhotoPath].toString());
-        }
-        speciesMap[m[AppTechnicalDb.colId].toString()] = m;
-        sanitizedCatalog.add(m);
-      }
-    }
-    tables[AppTechnicalStrings.tableCatalog] = sanitizedCatalog;
-
-    final subspeciesList = (tables[AppTechnicalDb.tableSubspecies] as List? ?? []);
-    final subspeciesMap = <String, Map<String, dynamic>>{};
-    final List<Map<String, dynamic>> sanitizedSubspecies = [];
-    for (final s in subspeciesList) {
-      if (s is Map) {
-        final m = Map<String, dynamic>.from(s);
-        if (m[AppTechnicalJsonKeys.keyPhotoPath] != null) {
-          m[AppTechnicalJsonKeys.keyPhotoPath] = _sanitizeMediaPath(m[AppTechnicalJsonKeys.keyPhotoPath].toString());
-        }
-        subspeciesMap[m[AppTechnicalDb.colId].toString()] = m;
-        sanitizedSubspecies.add(m);
-      }
-    }
-    tables[AppTechnicalDb.tableSubspecies] = sanitizedSubspecies;
-
-    final attachmentsList = (tables[AppTechnicalDb.tableAttachments] as List? ?? []);
-    final List<Map<String, dynamic>> sanitizedAttachments = [];
-    for (final a in attachmentsList) {
-      if (a is Map) {
-        final m = Map<String, dynamic>.from(a);
-        if (m[AppTechnicalJsonKeys.keyFilePath] != null) {
-          m[AppTechnicalJsonKeys.keyFilePath] = _sanitizeMediaPath(m[AppTechnicalJsonKeys.keyFilePath].toString());
-        }
-        sanitizedAttachments.add(m);
-      }
-    }
-    tables[AppTechnicalDb.tableAttachments] = sanitizedAttachments;
-
-    final entitiesList = (tables[AppTechnicalDb.tableEntities] as List? ?? []);
-    final entityMap = <String, Map<String, dynamic>>{};
-    for (final e in entitiesList) {
-      if (e is Map) {
-        final m = Map<String, dynamic>.from(e);
-        entityMap[m[AppTechnicalDb.colId].toString()] = m;
-      }
-    }
-
-    // 2. Reparar y estandarizar speciesMagnitudes
-    final speciesMagnitudes = (tables[AppTechnicalDb.tableSpeciesMagnitudes] as List? ?? []);
-    final List<Map<String, dynamic>> updatedSM = [];
-    final Set<String> seenSmKeys = {};
-    for (final item in speciesMagnitudes) {
-      if (item is Map) {
-        final m = Map<String, dynamic>.from(item);
-        final specId = m[AppTechnicalJsonKeys.keySpeciesId]?.toString() ?? AppTechnicalStrings.empty;
-        final propName = (m[AppTechnicalJsonKeys.keyPropertyName] ?? AppTechnicalStrings.empty).toString().trim();
-        final dedupKey = AppTechnicalStrings.compositeKey(specId, propName.toLowerCase());
-        if (seenSmKeys.contains(dedupKey)) {
-          continue;
-        }
-        seenSmKeys.add(dedupKey);
-
-        var dt = m[AppTechnicalJsonKeys.keyDataType]?.toString();
-
-        if (dt == null || dt.isEmpty || dt == AppTechnicalStrings.datatypeRealLower) {
-          if (propName == AppStrings.currencyPropertyName || propName == AppStrings.materialPropertyName || propName == AppStrings.gradePropertyName) {
-            dt = AppTechnicalStrings.datatypeStringLower;
-          } else if (propName == AppStrings.mintagePropertyName || propName == AppStrings.mintageYearLabel || propName == AppStrings.yearUnitSymbol) {
-            dt = AppTechnicalStrings.datatypeIntegerLower;
-          } else {
-            dt ??= AppTechnicalStrings.datatypeRealLower;
-          }
-        }
-        m[AppTechnicalJsonKeys.keyDataType] = dt;
-        updatedSM.add(m);
-      }
-    }
-    tables[AppTechnicalDb.tableSpeciesMagnitudes] = updatedSM;
-
-    // 3. Reparar y estandarizar instanceMagnitudes
-    final instanceMagnitudes = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
-    final List<Map<String, dynamic>> updatedIM = [];
-    for (final item in instanceMagnitudes) {
-      if (item is Map) {
-        final m = Map<String, dynamic>.from(item);
-        final propName = (m[AppTechnicalJsonKeys.keyPropertyName] ?? AppTechnicalStrings.empty).toString().trim();
-        final instId = m[AppTechnicalJsonKeys.keyInstanceId]?.toString();
-        var dt = m[AppTechnicalJsonKeys.keyDataType]?.toString();
-        var strVal = m[AppTechnicalJsonKeys.keyStringValue]?.toString();
-        var numVal = (m[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble();
-        var unit = m[AppTechnicalJsonKeys.keyUnitSymbol]?.toString();
-
-        final entity = instId != null ? entityMap[instId] : null;
-        final speciesId = entity?[AppTechnicalJsonKeys.keySpeciesId]?.toString();
-        final species = speciesId != null ? speciesMap[speciesId] : null;
-        final subspeciesId = entity?[AppTechnicalJsonKeys.keySubspeciesId]?.toString();
-        final subspecies = subspeciesId != null ? subspeciesMap[subspeciesId] : null;
-
-        if (propName == AppStrings.currencyPropertyName) {
-          dt = AppTechnicalStrings.datatypeStringLower;
-          unit = null;
-          if (strVal == null || strVal.trim().isEmpty) {
-            if (subspecies != null) {
-              final subNotes = subspecies[AppTechnicalDb.colNotes]?.toString() ?? AppTechnicalStrings.empty;
-              final subName = subspecies[AppTechnicalJsonKeys.keySubspeciesName]?.toString() ?? AppTechnicalStrings.empty;
-
-              final notesMatch = RegExp(AppTechnicalStrings.regexMonedaNote).firstMatch(subNotes);
-              if (notesMatch != null) {
-                strVal = notesMatch.group(1)?.trim();
-              } else if (subName.isNotEmpty && subName != AppStrings.genericSubspeciesName) {
-                final parsed = NumismaticDataHelper.parseSubspeciesName(subName);
-                strVal = parsed.currencyName;
-              }
-            }
-          }
-          if (strVal != null && strVal.isNotEmpty) {
-            strVal = NumismaticDataHelper.resolveCurrencyIsoCode(strVal);
-          }
-        } else if (propName == AppStrings.materialPropertyName) {
-          dt = AppTechnicalStrings.datatypeStringLower;
-          unit = null;
-          if (strVal == null || strVal.trim().isEmpty) {
-            if (subspecies != null) {
-              final subNotes = subspecies[AppTechnicalDb.colNotes]?.toString() ?? AppTechnicalStrings.empty;
-              final matMatch = RegExp(AppTechnicalStrings.regexMaterialNote).firstMatch(subNotes);
-              final metalMatch = RegExp(AppTechnicalStrings.regexMetalNote).firstMatch(subNotes);
-              if (matMatch != null) {
-                strVal = matMatch.group(1)?.trim();
-              } else if (metalMatch != null) {
-                strVal = metalMatch.group(1)?.trim();
-              } else if (species?[AppTechnicalDb.colName] == AppStrings.banknoteRectangleLabel) {
-                strVal = AppStrings.materialPaper;
-              }
-            } else if (species?[AppTechnicalDb.colName] == AppStrings.banknoteRectangleLabel) {
-              strVal = AppStrings.materialPaper;
-            }
-          }
-        } else if (propName == AppStrings.gradePropertyName) {
-          dt = AppTechnicalStrings.datatypeStringLower;
-          unit = null;
-          if (strVal == null && entity?[AppTechnicalDb.colNotes] != null) {
-            final entNotes = entity![AppTechnicalDb.colNotes].toString();
-            final gradeMatch = RegExp(AppTechnicalStrings.regexGradoNote).firstMatch(entNotes);
-            if (gradeMatch != null) {
-              final g = gradeMatch.group(1)?.trim();
-              if (g != null && g != AppStrings.unspecifiedGrade && g.isNotEmpty) {
-                strVal = g;
-              }
-            }
-          }
-        } else if (propName == AppStrings.issuerPropertyName || propName == AppTechnicalStrings.magPaisWithAccent || propName == AppTechnicalStrings.magPaisWithoutAccent) {
-          dt = AppTechnicalStrings.datatypeStringLower;
-          unit = null;
-          if (strVal == null || strVal.trim().isEmpty) {
-            if (subspecies != null) {
-              final subName = subspecies[AppTechnicalJsonKeys.keySubspeciesName]?.toString() ?? AppTechnicalStrings.empty;
-              if (subName.isNotEmpty && subName != AppStrings.genericSubspeciesName) {
-                final parsed = NumismaticDataHelper.parseSubspeciesName(subName);
-                strVal = parsed.country;
-              }
-            }
-          }
-        } else if (propName == AppStrings.mintagePropertyName || propName == AppStrings.mintageYearLabel || propName == AppStrings.yearUnitSymbol) {
-          dt = AppTechnicalStrings.datatypeIntegerLower;
-          unit ??= AppStrings.yearUnitSymbol;
-        } else if (propName == AppStrings.nominalValuePropertyName) {
-          dt = AppTechnicalStrings.datatypeRealLower;
-        } else {
-          dt ??= AppTechnicalStrings.datatypeRealLower;
-        }
-
-        m[AppTechnicalJsonKeys.keyDataType] = dt;
-        m[AppTechnicalJsonKeys.keyStringValue] = strVal;
-        m[AppTechnicalJsonKeys.keyMagnitudeValue] = numVal;
-        m[AppTechnicalJsonKeys.keyUnitSymbol] = unit;
-        updatedIM.add(m);
-      }
-    }
-    tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
-
-    data[AppTechnicalJsonKeys.keyTables] = tables;
-    return data;
+    return _migrateImportedDataPure(data, targetVersion: targetVersion);
   }
 
   /// Importa la base de datos a partir de una cadena JSON
   Future<void> importDatabaseFromJsonString(String jsonString) async {
-    final (migratedData, rawVersion) = await Isolate.run(() {
-      final Map<String, dynamic> rawData = jsonDecode(jsonString);
-      if (!rawData.containsKey(AppTechnicalJsonKeys.keyTables)) {
-        throw const FormatException(AppStrings.invalidBackupStructureError);
-      }
-
-      final rawVer = rawData[AppTechnicalJsonKeys.keyVersion] ??
-          rawData[AppTechnicalJsonKeys.keySchemaVersion] ??
-          rawData[AppTechnicalJsonKeys.keyVersionCheck] ??
-          1;
-
-      final migrated = migrateImportedData(rawData, targetVersion: 6);
-      return (migrated, rawVer);
-    });
-
+    final (migratedData, rawVersion) = await _runImportFromJsonStringInIsolate(jsonString);
     await _restoreMigratedTablesToDb(migratedData, rawVersion);
   }
 
@@ -1130,4 +631,542 @@ class DatabaseBackupService {
       schemaVersion: schemaVer,
     );
   }
+}
+
+typedef _ZipPackageParams = ({
+  Map<String, dynamic> data,
+  List<String> existingFilePaths,
+  String destZipPath,
+});
+
+typedef _ImportFileParams = ({
+  String filePath,
+  String mediaDirPath,
+});
+
+typedef _ImportResult = (Map<String, dynamic> migratedData, dynamic rawVersion);
+
+void _isolateCreateZipPackageTask(_ZipPackageParams params) {
+  final jsonStr = const JsonEncoder.withIndent(AppTechnicalStrings.indentTwoSpaces).convert(params.data);
+  final jsonBytes = utf8.encode(jsonStr);
+
+  final archive = Archive();
+  archive.addFile(ArchiveFile(AppTechnicalStorage.backupDatabaseFileName, jsonBytes.length, jsonBytes));
+
+  for (final fPath in params.existingFilePaths) {
+    final f = File(fPath);
+    if (f.existsSync()) {
+      final bytes = f.readAsBytesSync();
+      final filename = p.basename(fPath);
+      archive.addFile(ArchiveFile(AppTechnicalStrings.backupArchiveFilePath(filename), bytes.length, bytes));
+    }
+  }
+
+  final zipEncoder = ZipEncoder();
+  final zipBytes = zipEncoder.encode(archive);
+  if (zipBytes == null) {
+    throw Exception(AppStrings.backupZipCompressionError);
+  }
+  File(params.destZipPath).writeAsBytesSync(zipBytes);
+}
+
+String _extractZipArchiveBytes({
+  required List<int> zipBytes,
+  required String mediaDirPath,
+}) {
+  final archive = ZipDecoder().decodeBytes(zipBytes);
+  String? jsonContent;
+
+  final mediaDir = Directory(mediaDirPath);
+  if (!mediaDir.existsSync()) {
+    mediaDir.createSync(recursive: true);
+  }
+
+  for (final archiveFile in archive) {
+    if (!archiveFile.isFile) continue;
+
+    final name = archiveFile.name;
+    final baseName = p.basename(name);
+
+    // Ignorar carpetas/archivos de metadatos del sistema de macOS (__MACOSX, ._*, .DS_Store)
+    if (name.contains(AppTechnicalStrings.macOsMetadataDir) ||
+        baseName.startsWith(AppTechnicalStrings.dotUnderscore) ||
+        baseName.startsWith(AppTechnicalDelimiters.dot)) {
+      continue;
+    }
+
+    if (baseName == AppTechnicalStorage.backupDatabaseFileName ||
+        (jsonContent == null && baseName.endsWith(AppTechnicalStorage.extJson))) {
+      jsonContent = utf8.decode(archiveFile.content as List<int>);
+    } else if (name.startsWith(AppTechnicalStrings.dirFilesPrefix) ||
+        name.contains(AppTechnicalStrings.slashFilesPrefix)) {
+      if (baseName.isNotEmpty) {
+        final content = archiveFile.content as List<int>;
+        File(p.join(mediaDirPath, baseName)).writeAsBytesSync(content);
+      }
+    }
+  }
+
+  if (jsonContent == null) {
+    throw Exception(AppStrings.backupZipMissingDatabaseJsonError);
+  }
+
+  return jsonContent;
+}
+
+_ImportResult _isolateImportFromFileTask(_ImportFileParams params) {
+  final fileObj = File(params.filePath);
+  final bytes = fileObj.readAsBytesSync();
+  final isZip = params.filePath.toLowerCase().endsWith(AppTechnicalStorage.extZip) ||
+      (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B);
+
+  String jsonContent;
+  if (isZip) {
+    jsonContent = _extractZipArchiveBytes(
+      zipBytes: bytes,
+      mediaDirPath: params.mediaDirPath,
+    );
+  } else {
+    jsonContent = utf8.decode(bytes);
+  }
+
+  final Map<String, dynamic> rawData = jsonDecode(jsonContent);
+  if (!rawData.containsKey(AppTechnicalJsonKeys.keyTables)) {
+    throw const FormatException(AppStrings.invalidBackupStructureError);
+  }
+
+  final rawVer = rawData[AppTechnicalJsonKeys.keyVersion] ??
+      rawData[AppTechnicalJsonKeys.keySchemaVersion] ??
+      rawData[AppTechnicalJsonKeys.keyVersionCheck] ??
+      1;
+
+  final migrated = _migrateImportedDataPure(rawData, targetVersion: 6);
+  return (migrated, rawVer);
+}
+
+_ImportResult _isolateImportFromJsonStringTask(String jsonString) {
+  final Map<String, dynamic> rawData = jsonDecode(jsonString);
+  if (!rawData.containsKey(AppTechnicalJsonKeys.keyTables)) {
+    throw const FormatException(AppStrings.invalidBackupStructureError);
+  }
+
+  final rawVer = rawData[AppTechnicalJsonKeys.keyVersion] ??
+      rawData[AppTechnicalJsonKeys.keySchemaVersion] ??
+      rawData[AppTechnicalJsonKeys.keyVersionCheck] ??
+      1;
+
+  final migrated = _migrateImportedDataPure(rawData, targetVersion: 6);
+  return (migrated, rawVer);
+}
+
+Future<void> _runCreateZipInIsolate(String destZipPath, Map<String, dynamic> data, List<String> existingFilePaths) {
+  return Isolate.run(() => _isolateCreateZipPackageTask((
+    destZipPath: destZipPath,
+    data: data,
+    existingFilePaths: existingFilePaths,
+  )));
+}
+
+Future<_ImportResult> _runImportFromFileInIsolate(String filePath, String mediaDirPath) {
+  return Isolate.run(() => _isolateImportFromFileTask((
+    filePath: filePath,
+    mediaDirPath: mediaDirPath,
+  )));
+}
+
+Future<_ImportResult> _runImportFromJsonStringInIsolate(String jsonString) {
+  return Isolate.run(() => _isolateImportFromJsonStringTask(jsonString));
+}
+
+String _sanitizeMediaPathPure(String? rawPath) {
+  if (rawPath == null || rawPath.trim().isEmpty) return AppTechnicalStrings.empty;
+  final trimmed = rawPath.trim();
+  if (trimmed.startsWith(AppTechnicalStrings.schemeHttp) || trimmed.startsWith(AppTechnicalStrings.schemeHttps)) {
+    return trimmed;
+  }
+  return p.basename(trimmed);
+}
+
+Map<String, dynamic> _migrateImportedDataPure(Map<String, dynamic> data, {required int targetVersion}) {
+  final rawVersion = data[AppTechnicalJsonKeys.keyVersion] ?? data[AppTechnicalJsonKeys.keySchemaVersion] ?? data[AppTechnicalJsonKeys.keyVersionCheck] ?? 1;
+  int importedVersion = 1;
+
+  if (rawVersion is int) {
+    importedVersion = rawVersion;
+  } else if (rawVersion is num) {
+    importedVersion = rawVersion.floor();
+  } else if (rawVersion is String) {
+    final parsed = double.tryParse(rawVersion);
+    if (parsed != null) {
+      importedVersion = parsed.floor();
+    }
+  }
+
+  if (importedVersion < 1) importedVersion = 1;
+
+  Map<String, dynamic> currentData = Map<String, dynamic>.from(data);
+
+  for (int v = importedVersion; v < targetVersion; v++) {
+    currentData = _migrateJsonStepPure(currentData, fromVersion: v, toVersion: v + 1);
+  }
+
+  // Aplicar autorreparación y estandarización retroactiva de magnitudes, tipos y rutas
+  currentData = _repairAndStandardizeImportedDataPure(currentData);
+
+  currentData[AppTechnicalJsonKeys.keyVersion] = targetVersion;
+  return currentData;
+}
+
+Map<String, dynamic> _migrateJsonStepPure(Map<String, dynamic> data, {required int fromVersion, required int toVersion}) {
+  final tables = Map<String, dynamic>.from(data[AppTechnicalJsonKeys.keyTables] as Map<String, dynamic>? ?? {});
+
+  if (fromVersion == 1 && toVersion >= 2) {
+    // Migración 1 -> 2:
+    // Asegurar tabla de appSettings y columnas predeterminadas agregadas en v2
+    tables.putIfAbsent(AppTechnicalDb.tableAppSettings, () => <Map<String, dynamic>>[]);
+
+    final catalog = (tables[AppTechnicalStrings.tableCatalog] as List? ?? []);
+    final List<Map<String, dynamic>> updatedCatalog = [];
+    for (var item in catalog) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        m.putIfAbsent(AppTechnicalDb.colType, () => AppStrings.typeObject);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyCustomAttributes, () => AppTechnicalStrings.emptyJsonMap);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyIsUnique, () => false);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyIsNonPerishable, () => true);
+        updatedCatalog.add(m);
+      }
+    }
+    tables[AppTechnicalStrings.tableCatalog] = updatedCatalog;
+
+    final speciesMagnitudes = (tables[AppTechnicalDb.tableSpeciesMagnitudes] as List? ?? []);
+    final List<Map<String, dynamic>> updatedSM = [];
+    for (var item in speciesMagnitudes) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyDataType, () => AppTechnicalStrings.datatypeRealLower);
+        updatedSM.add(m);
+      }
+    }
+    tables[AppTechnicalDb.tableSpeciesMagnitudes] = updatedSM;
+
+    final instanceMagnitudes = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
+    final List<Map<String, dynamic>> updatedIM = [];
+    for (var item in instanceMagnitudes) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyDataType, () => AppTechnicalStrings.datatypeRealLower);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyMagnitudeValue, () => 0.0);
+        updatedIM.add(m);
+      }
+    }
+    tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
+
+    final speciesRequirements = (tables[AppTechnicalDb.tableRequirements] as List? ?? []);
+    final List<Map<String, dynamic>> updatedSR = [];
+    for (var item in speciesRequirements) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        m.putIfAbsent(AppTechnicalJsonKeys.keySourceType, () => AppTechnicalStrings.sourceTypeSpecies);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyRequiredQuantity, () => 1.0);
+        updatedSR.add(m);
+      }
+    }
+    tables[AppTechnicalDb.tableRequirements] = updatedSR;
+
+    final notifications = (tables[AppTechnicalDb.tableNotifications] as List? ?? []);
+    final List<Map<String, dynamic>> updatedNotif = [];
+    for (var item in notifications) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyStatus, () => AppTechnicalNotifications.notifStatusActive);
+        updatedNotif.add(m);
+      }
+    }
+    tables[AppTechnicalDb.tableNotifications] = updatedNotif;
+  }
+
+  if (fromVersion == 2 && toVersion >= 3) {
+    // Migración 2 -> 3:
+    // Agregar campo instanceId en la tabla de attachments
+    final attachments = (tables[AppTechnicalDb.tableAttachments] as List? ?? []);
+    final List<Map<String, dynamic>> updatedAtt = [];
+    for (var item in attachments) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        m.putIfAbsent(AppTechnicalJsonKeys.keyInstanceId, () => null);
+        updatedAtt.add(m);
+      }
+    }
+    tables[AppTechnicalDb.tableAttachments] = updatedAtt;
+  }
+
+  if (fromVersion == 3 && toVersion >= 4) {
+    // Migración 3 -> 4:
+    // Enforce que entidades contenidas no tengan ubicación directa en el respaldo
+    final relations = (tables[AppTechnicalDb.tableRelations] as List? ?? []);
+    final containedIds = <String>{};
+    for (final r in relations) {
+      if (r is Map) {
+        final relType = r[AppTechnicalJsonKeys.keyRelationType]?.toString();
+        if (relType == AppTechnicalDb.relGuardadoEn || relType == AppTechnicalDb.relParteDe) {
+          final srcId = r[AppTechnicalJsonKeys.keySourceEntityId]?.toString();
+          if (srcId != null) containedIds.add(srcId);
+        }
+      }
+    }
+
+    // 1. Limpiar ubicaciones directas en instanceLocations
+    final instanceLocations = (tables[AppTechnicalDb.tableInstanceLocations] as List? ?? []);
+    final List<Map<String, dynamic>> updatedInstLocs = [];
+    for (final il in instanceLocations) {
+      if (il is Map) {
+        final instId = il[AppTechnicalJsonKeys.keyInstanceId]?.toString();
+        if (!containedIds.contains(instId)) {
+          updatedInstLocs.add(Map<String, dynamic>.from(il));
+        }
+      }
+    }
+    tables[AppTechnicalDb.tableInstanceLocations] = updatedInstLocs;
+
+    // 2. Limpiar locationId en entities
+    final entities = (tables[AppTechnicalDb.tableEntities] as List? ?? []);
+    final List<Map<String, dynamic>> updatedEntities = [];
+    for (final e in entities) {
+      if (e is Map) {
+        final m = Map<String, dynamic>.from(e);
+        final eId = m[AppTechnicalDb.colId]?.toString();
+        if (containedIds.contains(eId)) {
+          m[AppTechnicalJsonKeys.keyLocationId] = null;
+        }
+        updatedEntities.add(m);
+      }
+    }
+    tables[AppTechnicalDb.tableEntities] = updatedEntities;
+  }
+
+  if (fromVersion == 4 && toVersion >= 5) {
+    // Migración 4 -> 5:
+    // Permitir magnitudes de instancia con magnitudeValue nullable de forma nativa.
+    // Preserva explícitamente null cuando no se especificó un valor numérico.
+    final instanceMagnitudes = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
+    final List<Map<String, dynamic>> updatedIM = [];
+    for (var item in instanceMagnitudes) {
+      if (item is Map) {
+        final m = Map<String, dynamic>.from(item);
+        if (m.containsKey(AppTechnicalJsonKeys.keyMagnitudeValue)) {
+          final rawVal = m[AppTechnicalJsonKeys.keyMagnitudeValue];
+          m[AppTechnicalJsonKeys.keyMagnitudeValue] = rawVal != null ? (rawVal as num).toDouble() : null;
+        }
+        updatedIM.add(m);
+      }
+    }
+    tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
+  }
+
+  if (fromVersion == 5 && toVersion >= 6) {
+    // Migración 5 -> 6:
+    // Agregar tabla ignored_audit_cards para anomalías/tarjetas del Centro de Control omitidas
+    tables.putIfAbsent(AppTechnicalDb.tableIgnoredAuditCards, () => <Map<String, dynamic>>[]);
+  }
+
+  data[AppTechnicalJsonKeys.keyTables] = tables;
+  return data;
+}
+
+Map<String, dynamic> _repairAndStandardizeImportedDataPure(Map<String, dynamic> data) {
+  final tables = Map<String, dynamic>.from(data[AppTechnicalJsonKeys.keyTables] as Map<String, dynamic>? ?? {});
+
+  // Asegurar tabla appSettings e ignoredAuditCards
+  tables.putIfAbsent(AppTechnicalDb.tableAppSettings, () => <Map<String, dynamic>>[]);
+  tables.putIfAbsent(AppTechnicalDb.tableIgnoredAuditCards, () => <Map<String, dynamic>>[]);
+
+  // 1. Construir mapas de búsqueda rápida
+  final catalogList = (tables[AppTechnicalStrings.tableCatalog] as List? ?? []);
+  final speciesMap = <String, Map<String, dynamic>>{};
+  final List<Map<String, dynamic>> sanitizedCatalog = [];
+  for (final c in catalogList) {
+    if (c is Map) {
+      final m = Map<String, dynamic>.from(c);
+      if (m[AppTechnicalJsonKeys.keyMainPhotoPath] != null) {
+        m[AppTechnicalJsonKeys.keyMainPhotoPath] = _sanitizeMediaPathPure(m[AppTechnicalJsonKeys.keyMainPhotoPath].toString());
+      }
+      speciesMap[m[AppTechnicalDb.colId].toString()] = m;
+      sanitizedCatalog.add(m);
+    }
+  }
+  tables[AppTechnicalStrings.tableCatalog] = sanitizedCatalog;
+
+  final subspeciesList = (tables[AppTechnicalDb.tableSubspecies] as List? ?? []);
+  final subspeciesMap = <String, Map<String, dynamic>>{};
+  final List<Map<String, dynamic>> sanitizedSubspecies = [];
+  for (final s in subspeciesList) {
+    if (s is Map) {
+      final m = Map<String, dynamic>.from(s);
+      if (m[AppTechnicalJsonKeys.keyPhotoPath] != null) {
+        m[AppTechnicalJsonKeys.keyPhotoPath] = _sanitizeMediaPathPure(m[AppTechnicalJsonKeys.keyPhotoPath].toString());
+      }
+      subspeciesMap[m[AppTechnicalDb.colId].toString()] = m;
+      sanitizedSubspecies.add(m);
+    }
+  }
+  tables[AppTechnicalDb.tableSubspecies] = sanitizedSubspecies;
+
+  final attachmentsList = (tables[AppTechnicalDb.tableAttachments] as List? ?? []);
+  final List<Map<String, dynamic>> sanitizedAttachments = [];
+  for (final a in attachmentsList) {
+    if (a is Map) {
+      final m = Map<String, dynamic>.from(a);
+      if (m[AppTechnicalJsonKeys.keyFilePath] != null) {
+        m[AppTechnicalJsonKeys.keyFilePath] = _sanitizeMediaPathPure(m[AppTechnicalJsonKeys.keyFilePath].toString());
+      }
+      sanitizedAttachments.add(m);
+    }
+  }
+  tables[AppTechnicalDb.tableAttachments] = sanitizedAttachments;
+
+  final entitiesList = (tables[AppTechnicalDb.tableEntities] as List? ?? []);
+  final entityMap = <String, Map<String, dynamic>>{};
+  for (final e in entitiesList) {
+    if (e is Map) {
+      final m = Map<String, dynamic>.from(e);
+      entityMap[m[AppTechnicalDb.colId].toString()] = m;
+    }
+  }
+
+  // 2. Reparar y estandarizar speciesMagnitudes
+  final speciesMagnitudes = (tables[AppTechnicalDb.tableSpeciesMagnitudes] as List? ?? []);
+  final List<Map<String, dynamic>> updatedSM = [];
+  final Set<String> seenSmKeys = {};
+  for (final item in speciesMagnitudes) {
+    if (item is Map) {
+      final m = Map<String, dynamic>.from(item);
+      final specId = m[AppTechnicalJsonKeys.keySpeciesId]?.toString() ?? AppTechnicalStrings.empty;
+      final propName = (m[AppTechnicalJsonKeys.keyPropertyName] ?? AppTechnicalStrings.empty).toString().trim();
+      final dedupKey = AppTechnicalStrings.compositeKey(specId, propName.toLowerCase());
+      if (seenSmKeys.contains(dedupKey)) {
+        continue;
+      }
+      seenSmKeys.add(dedupKey);
+
+      var dt = m[AppTechnicalJsonKeys.keyDataType]?.toString();
+
+      if (dt == null || dt.isEmpty || dt == AppTechnicalStrings.datatypeRealLower) {
+        if (propName == AppStrings.currencyPropertyName || propName == AppStrings.materialPropertyName || propName == AppStrings.gradePropertyName) {
+          dt = AppTechnicalStrings.datatypeStringLower;
+        } else if (propName == AppStrings.mintagePropertyName || propName == AppStrings.mintageYearLabel || propName == AppStrings.yearUnitSymbol) {
+          dt = AppTechnicalStrings.datatypeIntegerLower;
+        } else {
+          dt ??= AppTechnicalStrings.datatypeRealLower;
+        }
+      }
+      m[AppTechnicalJsonKeys.keyDataType] = dt;
+      updatedSM.add(m);
+    }
+  }
+  tables[AppTechnicalDb.tableSpeciesMagnitudes] = updatedSM;
+
+  // 3. Reparar y estandarizar instanceMagnitudes
+  final instanceMagnitudes = (tables[AppTechnicalDb.tableInstanceMagnitudes] as List? ?? []);
+  final List<Map<String, dynamic>> updatedIM = [];
+  for (final item in instanceMagnitudes) {
+    if (item is Map) {
+      final m = Map<String, dynamic>.from(item);
+      final propName = (m[AppTechnicalJsonKeys.keyPropertyName] ?? AppTechnicalStrings.empty).toString().trim();
+      final instId = m[AppTechnicalJsonKeys.keyInstanceId]?.toString();
+      var dt = m[AppTechnicalJsonKeys.keyDataType]?.toString();
+      var strVal = m[AppTechnicalJsonKeys.keyStringValue]?.toString();
+      var numVal = (m[AppTechnicalJsonKeys.keyMagnitudeValue] as num?)?.toDouble();
+      var unit = m[AppTechnicalJsonKeys.keyUnitSymbol]?.toString();
+
+      final entity = instId != null ? entityMap[instId] : null;
+      final speciesId = entity?[AppTechnicalJsonKeys.keySpeciesId]?.toString();
+      final species = speciesId != null ? speciesMap[speciesId] : null;
+      final subspeciesId = entity?[AppTechnicalJsonKeys.keySubspeciesId]?.toString();
+      final subspecies = subspeciesId != null ? subspeciesMap[subspeciesId] : null;
+
+      if (propName == AppStrings.currencyPropertyName) {
+        dt = AppTechnicalStrings.datatypeStringLower;
+        unit = null;
+        if (strVal == null || strVal.trim().isEmpty) {
+          if (subspecies != null) {
+            final subNotes = subspecies[AppTechnicalDb.colNotes]?.toString() ?? AppTechnicalStrings.empty;
+            final subName = subspecies[AppTechnicalJsonKeys.keySubspeciesName]?.toString() ?? AppTechnicalStrings.empty;
+
+            final notesMatch = RegExp(AppTechnicalStrings.regexMonedaNote).firstMatch(subNotes);
+            if (notesMatch != null) {
+              strVal = notesMatch.group(1)?.trim();
+            } else if (subName.isNotEmpty && subName != AppStrings.genericSubspeciesName) {
+              final parsed = NumismaticDataHelper.parseSubspeciesName(subName);
+              strVal = parsed.currencyName;
+            }
+          }
+        }
+        if (strVal != null && strVal.isNotEmpty) {
+          strVal = NumismaticDataHelper.resolveCurrencyIsoCode(strVal);
+        }
+      } else if (propName == AppStrings.materialPropertyName) {
+        dt = AppTechnicalStrings.datatypeStringLower;
+        unit = null;
+        if (strVal == null || strVal.trim().isEmpty) {
+          if (subspecies != null) {
+            final subNotes = subspecies[AppTechnicalDb.colNotes]?.toString() ?? AppTechnicalStrings.empty;
+            final matMatch = RegExp(AppTechnicalStrings.regexMaterialNote).firstMatch(subNotes);
+            final metalMatch = RegExp(AppTechnicalStrings.regexMetalNote).firstMatch(subNotes);
+            if (matMatch != null) {
+              strVal = matMatch.group(1)?.trim();
+            } else if (metalMatch != null) {
+              strVal = metalMatch.group(1)?.trim();
+            } else if (species?[AppTechnicalDb.colName] == AppStrings.banknoteRectangleLabel) {
+              strVal = AppStrings.materialPaper;
+            }
+          } else if (species?[AppTechnicalDb.colName] == AppStrings.banknoteRectangleLabel) {
+            strVal = AppStrings.materialPaper;
+          }
+        }
+      } else if (propName == AppStrings.gradePropertyName) {
+        dt = AppTechnicalStrings.datatypeStringLower;
+        unit = null;
+        if (strVal == null && entity?[AppTechnicalDb.colNotes] != null) {
+          final entNotes = entity![AppTechnicalDb.colNotes].toString();
+          final gradeMatch = RegExp(AppTechnicalStrings.regexGradoNote).firstMatch(entNotes);
+          if (gradeMatch != null) {
+            final g = gradeMatch.group(1)?.trim();
+            if (g != null && g != AppStrings.unspecifiedGrade && g.isNotEmpty) {
+              strVal = g;
+            }
+          }
+        }
+      } else if (propName == AppStrings.issuerPropertyName || propName == AppTechnicalStrings.magPaisWithAccent || propName == AppTechnicalStrings.magPaisWithoutAccent) {
+        dt = AppTechnicalStrings.datatypeStringLower;
+        unit = null;
+        if (strVal == null || strVal.trim().isEmpty) {
+          if (subspecies != null) {
+            final subName = subspecies[AppTechnicalJsonKeys.keySubspeciesName]?.toString() ?? AppTechnicalStrings.empty;
+            if (subName.isNotEmpty && subName != AppStrings.genericSubspeciesName) {
+              final parsed = NumismaticDataHelper.parseSubspeciesName(subName);
+              strVal = parsed.country;
+            }
+          }
+        }
+      } else if (propName == AppStrings.mintagePropertyName || propName == AppStrings.mintageYearLabel || propName == AppStrings.yearUnitSymbol) {
+        dt = AppTechnicalStrings.datatypeIntegerLower;
+        unit ??= AppStrings.yearUnitSymbol;
+      } else if (propName == AppStrings.nominalValuePropertyName) {
+        dt = AppTechnicalStrings.datatypeRealLower;
+      } else {
+        dt ??= AppTechnicalStrings.datatypeRealLower;
+      }
+
+      m[AppTechnicalJsonKeys.keyDataType] = dt;
+      m[AppTechnicalJsonKeys.keyStringValue] = strVal;
+      m[AppTechnicalJsonKeys.keyMagnitudeValue] = numVal;
+      m[AppTechnicalJsonKeys.keyUnitSymbol] = unit;
+      updatedIM.add(m);
+    }
+  }
+  tables[AppTechnicalDb.tableInstanceMagnitudes] = updatedIM;
+
+  data[AppTechnicalJsonKeys.keyTables] = tables;
+  return data;
 }
