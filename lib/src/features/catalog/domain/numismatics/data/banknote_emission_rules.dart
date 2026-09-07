@@ -2,7 +2,7 @@ import '../models/numismatic_emission_rule_data.dart';
 import '../models/numismatic_motif_rule.dart';
 
 /// Banknote emission rules across all supported countries and eras.
-final List<NumismaticEmissionRuleData> banknoteEmissionRules = [
+const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.1 México Billetes - Época Revolucionaria y Pre-Banco de México (1823–1924)
   // Ref General: Banco de México - Historia del billete mexicano:
   // https://www.banxico.org.mx/billetes-y-monedas/historia-billete-banco-mexico.html
