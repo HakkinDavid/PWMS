@@ -258,14 +258,10 @@ class NumismaticOutlierDetector {
           }
 
           if (isMotifMismatch) {
-            final expectedMotif = motifs.isNotEmpty ? motifs.first : null;
-            final desc = motifs.isNotEmpty
-                ? (motifs.length > 1
-                    ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.motifPropertyName, currentValue: effectiveMotif)
-                    : AppStrings.numismaticMotifMismatchDesc(denomStr, expectedMotif!, currentMotif: effectiveMotif))
-                : (effectiveMotif != null && effectiveMotif.trim().isNotEmpty
-                    ? 'La pieza tiene asignado el motivo "$effectiveMotif", pero la emisión para $denomStr no es conmemorativa'
-                    : 'La emisión para $denomStr no posee motivos conmemorativos');
+            final expectedMotif = motifs.isNotEmpty ? motifs.first : AppStrings.motifPropertyName;
+            final desc = motifs.length > 1
+                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.motifPropertyName, currentValue: effectiveMotif)
+                : AppStrings.numismaticMotifMismatchDesc(denomStr, expectedMotif, currentMotif: effectiveMotif);
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.motifMismatch,
               title: AppStrings.numismaticEmissionOutlierCardTitle,

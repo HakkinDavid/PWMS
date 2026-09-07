@@ -563,6 +563,8 @@ void main() {
     });
 
     testWidgets('NumismaticEmissionOutlierStrategy motif onFix auto-resolves to "Nuevo Peso" for 2 Nuevos Pesos without dialog', (WidgetTester tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(() => db.close());
       final now = DateTime.now();
 
       await db.into(db.catalogTable).insert(
@@ -610,7 +612,7 @@ void main() {
                 id: m.id,
                 instanceId: m.instanceId,
                 propertyName: m.propertyName,
-                dataType: m.dataType,
+                dataType: Value(m.dataType),
                 stringValue: Value(m.stringValue),
                 magnitudeValue: Value(m.magnitudeValue),
               ),

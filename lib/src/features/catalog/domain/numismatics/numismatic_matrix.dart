@@ -48,7 +48,7 @@ class NumismaticMatrix {
           // If denomination is also provided, verify if denomination matches
           if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
             final cleanDenom = denomination.trim();
-            if (rule.hasDenomination(cleanDenom)) {
+            if (rule.hasDenomination(cleanDenom, year: year)) {
               return rule;
             }
           }
@@ -61,13 +61,99 @@ class NumismaticMatrix {
     if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
       final cleanDenom = denomination.trim();
       for (final rule in rules) {
-        if (rule.hasDenomination(cleanDenom)) {
+        if (rule.hasDenomination(cleanDenom, year: year)) {
           return rule;
         }
       }
     }
 
     return rules.first;
+  }
+
+  /// Evaluates the complete numismatic query context in a single pass.
+  static NumismaticInferenceResult evaluate(NumismaticQueryContext context) {
+    final country = context.country;
+    final year = context.year;
+    final currencyCode = context.currencyCode;
+    final denomination = context.denomination;
+    final isBanknote = context.isBanknote;
+
+    if (country == null || country.trim().isEmpty || country == AppStrings.otherSpecifyOption) {
+      return NumismaticInferenceResult(
+        availableCurrencies: NumismaticDictionary.currencyMap.keys.toList(),
+        availableDenominations: [...NumismaticDictionary.denominations],
+      );
+    }
+
+    final rules = findRules(country, year, isBanknote: isBanknote);
+    if (rules.isEmpty) {
+      return NumismaticInferenceResult(
+        availableCurrencies: NumismaticDictionary.getCurrenciesForCountry(country),
+        availableDenominations: [...NumismaticDictionary.denominations],
+      );
+    }
+
+    final matchingEpoch = findRule(
+      country,
+      year,
+      currencyCode: currencyCode,
+      denomination: denomination,
+      isBanknote: isBanknote,
+    ) ?? rules.first;
+
+    // 1. Currencies
+    final availableCurrencies = <String>[];
+    for (final r in rules) {
+      for (final c in r.validCurrencies) {
+        if (!availableCurrencies.contains(c)) availableCurrencies.add(c);
+      }
+    }
+    final inferredCurrency = availableCurrencies.length == 1
+        ? availableCurrencies.first
+        : matchingEpoch.defaultCurrency;
+
+    // 2. Pieces & Denominations
+    final availablePieces = <NumismaticPieceDefinition>[];
+    for (final r in rules) {
+      for (final p in r.getPiecesForYear(year)) {
+        if (!availablePieces.any((existing) => existing.matchesDenomination(p.denomination))) {
+          availablePieces.add(p);
+        }
+      }
+    }
+
+    final availableDenoms = availablePieces.isNotEmpty
+        ? availablePieces.map((p) => p.denomination).toList()
+        : rules.expand((r) => r.getDenominationsForYear(year)).toSet().toList();
+
+    // 3. Piece-level resolution if denomination provided
+    NumismaticPieceDefinition? matchingPiece;
+    List<String> validMaterials = const [];
+    String? inferredMaterial;
+    List<String> availableMotifs = const [];
+    bool isStrictlyCommemorative = false;
+
+    if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
+      final cleanDenom = denomination.trim();
+      matchingPiece = matchingEpoch.getPieceForDenomination(cleanDenom, year: year);
+      validMaterials = matchingEpoch.getAllowedMaterialsForDenomination(cleanDenom, year: year);
+      inferredMaterial = matchingEpoch.getMaterialForDenomination(cleanDenom, year: year);
+      availableMotifs = matchingEpoch.getCommemorativeMotifsForDenomination(cleanDenom, year: year);
+      isStrictlyCommemorative = matchingEpoch.isCommemorativeDenomination(cleanDenom, year: year);
+    }
+
+    return NumismaticInferenceResult(
+      matchingEpoch: matchingEpoch,
+      matchingPiece: matchingPiece,
+      availableCurrencies: availableCurrencies,
+      inferredCurrency: inferredCurrency,
+      availableDenominations: [...availableDenoms, AppStrings.otherSpecifyOption],
+      availablePieces: availablePieces,
+      validMaterials: validMaterials,
+      inferredMaterial: inferredMaterial,
+      availableMotifs: availableMotifs,
+      isStrictlyCommemorative: isStrictlyCommemorative,
+    );
   }
 
   /// Returns valid currency ISO codes for a given country, year, and piece type.
@@ -115,6 +201,27 @@ class NumismaticMatrix {
     return null;
   }
 
+  /// Returns active piece definitions for a given (country, year, isBanknote).
+  static List<NumismaticPieceDefinition> getAvailablePieces({
+    String? country,
+    int? year,
+    bool isBanknote = false,
+  }) {
+    if (country == null || year == null) return const [];
+    final rules = findRules(country, year, isBanknote: isBanknote);
+    if (rules.isEmpty) return const [];
+
+    final result = <NumismaticPieceDefinition>[];
+    for (final r in rules) {
+      for (final p in r.getPiecesForYear(year)) {
+        if (!result.any((existing) => existing.matchesDenomination(p.denomination))) {
+          result.add(p);
+        }
+      }
+    }
+    return result;
+  }
+
   /// Returns valid denominations for a given (country, year, currency, isBanknote).
   static List<String> getDenominations({
     String? country,
@@ -126,14 +233,14 @@ class NumismaticMatrix {
       if (currencyCode != null && currencyCode.trim().isNotEmpty) {
         final rule = findRule(country, year, currencyCode: currencyCode, isBanknote: isBanknote);
         if (rule != null) {
-          return [...rule.denominations, AppStrings.otherSpecifyOption];
+          return [...rule.getDenominationsForYear(year), AppStrings.otherSpecifyOption];
         }
       }
       final rules = findRules(country, year, isBanknote: isBanknote);
       if (rules.isNotEmpty) {
         final allDenoms = <String>[];
         for (final r in rules) {
-          for (final d in r.denominations) {
+          for (final d in r.getDenominationsForYear(year)) {
             if (!allDenoms.contains(d)) allDenoms.add(d);
           }
         }
@@ -164,7 +271,7 @@ class NumismaticMatrix {
     if (rule == null) return null;
 
     final cleanDenom = denomination.trim();
-    return rule.getMaterialForDenomination(cleanDenom);
+    return rule.getMaterialForDenomination(cleanDenom, year: year);
   }
 
   /// Returns all valid/allowed materials for a piece (supporting transition years and concurrent alloys).
@@ -184,7 +291,7 @@ class NumismaticMatrix {
     final cleanDenom = denomination.trim();
     final result = <String>[];
     for (final rule in rules) {
-      for (final mat in rule.getAllowedMaterialsForDenomination(cleanDenom)) {
+      for (final mat in rule.getAllowedMaterialsForDenomination(cleanDenom, year: year)) {
         if (!result.contains(mat)) result.add(mat);
       }
     }
@@ -248,6 +355,6 @@ class NumismaticMatrix {
     );
     if (rule == null) return false;
 
-    return rule.isCommemorativeDenomination(denomination.trim());
+    return rule.isCommemorativeDenomination(denomination.trim(), year: year);
   }
 }
