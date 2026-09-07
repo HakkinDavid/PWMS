@@ -650,13 +650,6 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                     denomination: denom,
                     isBanknote: isBanknote,
                   );
-                  final isStrictlyCommem = NumismaticDataHelper.isStrictlyCommemorative(
-                    country: attrs.country,
-                    year: yearInt,
-                    currencyCode: attrs.currencyName,
-                    denomination: denom,
-                    isBanknote: isBanknote,
-                  );
 
                   if (availableMotifs.isNotEmpty) {
                     customValue = await AppWheelPicker.show<String>(
