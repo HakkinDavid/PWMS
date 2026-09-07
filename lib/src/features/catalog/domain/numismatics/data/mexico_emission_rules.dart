@@ -887,17 +887,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '1',
         material: 'Plata',
         minYear: 1905,
-        maxYear: 1909,
-        motifs: [
-          NumismaticMotifRule('Fuerte Resplandor', 1905, 1909),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '1',
-        material: 'Plata',
-        minYear: 1910,
         maxYear: 1914,
         motifs: [
+          NumismaticMotifRule('Fuerte Resplandor', 1905, 1909),
           NumismaticMotifRule('Caballito - Centenario de la Independencia (1910-1914)', 1910, 1914),
         ],
       ),
@@ -1070,36 +1062,22 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '0.05',
         material: 'Cuproníquel',
+        allowedMaterials: ['Cuproníquel', 'Bronce'],
         minYear: 1920,
-        maxYear: 1935,
-        motifs: [
-          NumismaticMotifRule('Níquel Josefa Chica', 1920, 1935),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '0.05',
-        material: 'Bronce',
-        minYear: 1936,
         maxYear: 1942,
         motifs: [
+          NumismaticMotifRule('Níquel Josefa Chica', 1920, 1935),
           NumismaticMotifRule('Bronce Josefa Ortiz de Perfil', 1936, 1942),
         ],
       ),
       NumismaticPieceDefinition(
         denomination: '0.10',
         material: 'Plata',
+        allowedMaterials: ['Plata', 'Bronce'],
         minYear: 1925,
-        maxYear: 1935,
-        motifs: [
-          NumismaticMotifRule('Plata .720', 1925, 1935),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '0.10',
-        material: 'Bronce',
-        minYear: 1936,
         maxYear: 1940,
         motifs: [
+          NumismaticMotifRule('Plata .720', 1925, 1935),
           NumismaticMotifRule('Bronce', 1936, 1940),
         ],
       ),
@@ -1191,17 +1169,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '0.50',
         material: 'Plata',
         minYear: 1943,
-        maxYear: 1945,
-        motifs: [
-          NumismaticMotifRule('Plata .720 Resplandor', 1943, 1945),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '0.50',
-        material: 'Plata',
-        minYear: 1947,
         maxYear: 1948,
         motifs: [
+          NumismaticMotifRule('Plata .720 Resplandor', 1943, 1945),
           NumismaticMotifRule('Plata .420 Cuauhtémoc', 1947, 1948),
         ],
       ),
@@ -1291,18 +1261,11 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '0.50',
         material: 'Plata',
+        allowedMaterials: ['Plata', 'Bronce'],
         minYear: 1950,
-        maxYear: 1951,
-        motifs: [
-          NumismaticMotifRule('Plata .300 Morelos', 1950, 1951),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '0.50',
-        material: 'Bronce',
-        minYear: 1955,
         maxYear: 1956,
         motifs: [
+          NumismaticMotifRule('Plata .300 Morelos', 1950, 1951),
           NumismaticMotifRule('Bronce Cuauhtémoc', 1955, 1956),
         ],
       ),
@@ -1315,44 +1278,17 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           NumismaticMotifRule('Plata .300 Morelos', 1950),
         ],
       ),
-      // 5 Pesos 1950 Ferrocarril
+      // 5 Pesos 1950-1956 Plata (Ferrocarril, Hidalgo Laurel, Bicentenario Hidalgo, Hidalgo Chico)
       NumismaticPieceDefinition(
         denomination: '5',
         material: 'Plata',
         minYear: 1950,
-        maxYear: 1950,
-        motifs: [
-          NumismaticMotifRule('Inauguración del Ferrocarril del Sureste', 1950),
-        ],
-      ),
-      // 5 Pesos 1951-1954 Hidalgo Laurel
-      NumismaticPieceDefinition(
-        denomination: '5',
-        material: 'Plata',
-        minYear: 1951,
-        maxYear: 1954,
-        motifs: [
-          NumismaticMotifRule('Hidalgo - Laurel (1951-1954)', 1951, 1954),
-        ],
-      ),
-      // 5 Pesos 1953 Año de Hidalgo
-      NumismaticPieceDefinition(
-        denomination: '5',
-        material: 'Plata',
-        minYear: 1953,
-        maxYear: 1953,
-        motifs: [
-          NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo', 1953),
-        ],
-      ),
-      // 5 Pesos 1955-1957 Hidalgo Chico
-      NumismaticPieceDefinition(
-        denomination: '5',
-        material: 'Plata',
-        minYear: 1955,
         maxYear: 1956,
         motifs: [
-          NumismaticMotifRule('Hidalgo Chico (1955-1957)', 1955, 1957),
+          NumismaticMotifRule('Inauguración del Ferrocarril del Sureste', 1950),
+          NumismaticMotifRule('Hidalgo - Laurel (1951-1954)', 1951, 1954),
+          NumismaticMotifRule('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo', 1953),
+          NumismaticMotifRule('Hidalgo Chico (1955-1957)', 1955, 1956),
         ],
       ),
       // 10 Pesos 1955-1956 Hidalgo
@@ -1428,14 +1364,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         maxYear: 1967,
         motifs: [
           NumismaticMotifRule('Plata .100 Morelos Tepalcate', 1957, 1967),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '1',
-        material: 'Plata',
-        minYear: 1957,
-        maxYear: 1957,
-        motifs: [
           NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
         ],
       ),
@@ -1453,17 +1381,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         denomination: '10',
         material: 'Plata',
         minYear: 1957,
-        maxYear: 1957,
-        motifs: [
-          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '10',
-        material: 'Plata',
-        minYear: 1960,
         maxYear: 1960,
         motifs: [
+          NumismaticMotifRule('Centenario de la Constitución de 1857', 1957),
           NumismaticMotifRule('150 Aniversario de la Independencia y 50 de la Revolución', 1960),
         ],
       ),

@@ -46,7 +46,13 @@ class NumismaticEmissionRuleData {
     final map = <String, List<String>>{};
     for (final p in pieces) {
       if (p.effectiveAllowedMaterials.isNotEmpty) {
-        map[p.denomination] = p.effectiveAllowedMaterials;
+        final current = map[p.denomination] ?? <String>[];
+        for (final mat in p.effectiveAllowedMaterials) {
+          if (!current.contains(mat)) {
+            current.add(mat);
+          }
+        }
+        map[p.denomination] = current;
       }
     }
     return map;
@@ -78,7 +84,7 @@ class NumismaticEmissionRuleData {
     final map = <String, List<NumismaticMotifRule>>{};
     for (final p in pieces) {
       if (p.motifs.isNotEmpty) {
-        map[p.denomination] = p.motifs;
+        (map[p.denomination] ??= []).addAll(p.motifs);
       }
     }
     return map;

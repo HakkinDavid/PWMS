@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/models/numismatic_models.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_matrix.dart';
 
@@ -267,6 +268,59 @@ void main() {
           }
         }
       }
+    });
+
+    test('All piece definitions in registry are strictly unique per denomination within each emission rule', () {
+      for (final rule in NumismaticRulesRegistry.allRules) {
+        final seenDenoms = <String>{};
+        for (final p in rule.pieces) {
+          expect(
+            seenDenoms.contains(p.denomination),
+            isFalse,
+            reason: 'Duplicate denomination "${p.denomination}" found in rule for ${rule.country} (${rule.minYear}-${rule.maxYear})',
+          );
+          seenDenoms.add(p.denomination);
+        }
+      }
+    });
+
+    test('Consolidated multi-motif piece definitions resolve motifs accurately by year', () {
+      // Mexico 1905-1914 1 Peso (Resplandor vs Caballito)
+      final mex1905 = NumismaticMatrix.findRule('México', 1908);
+      expect(mex1905, isNotNull);
+      final piece1P = mex1905!.getPieceForDenomination('1', year: 1908);
+      expect(piece1P, isNotNull);
+      expect(piece1P!.getMotifsForYear(1908), equals(['Fuerte Resplandor']));
+
+      final piece1PCaballito = mex1905.getPieceForDenomination('1', year: 1910);
+      expect(piece1PCaballito!.getMotifsForYear(1910), contains('Caballito - Centenario de la Independencia (1910-1914)'));
+
+      // Mexico 1950-1956 5 Pesos (Ferrocarril, Hidalgo Laurel, Bicentenario, Hidalgo Chico)
+      final mex1950 = NumismaticMatrix.findRule('México', 1953);
+      expect(mex1950, isNotNull);
+      final piece5P = mex1950!.getPieceForDenomination('5', year: 1953);
+      expect(piece5P, isNotNull);
+      expect(piece5P!.getMotifsForYear(1950), contains('Inauguración del Ferrocarril del Sureste'));
+      expect(piece5P.getMotifsForYear(1952), contains('Hidalgo - Laurel (1951-1954)'));
+      expect(piece5P.getMotifsForYear(1953), contains('Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo'));
+      expect(piece5P.getMotifsForYear(1955), contains('Hidalgo Chico (1955-1957)'));
+
+      // USA 1 Dollar (Silver Dollar vs Gold Dollar)
+      final usa1850 = NumismaticMatrix.findRule('Estados Unidos', 1850);
+      expect(usa1850, isNotNull);
+      final piece1Dollar = usa1850!.getPieceForDenomination('1', year: 1850);
+      expect(piece1Dollar, isNotNull);
+      expect(piece1Dollar!.effectiveAllowedMaterials, containsAll(['Plata', 'Oro']));
+      expect(piece1Dollar.getMotifsForYear(1840).length, equals(1)); // Only Silver Dollar (1794-1857)
+      expect(piece1Dollar.getMotifsForYear(1850).length, equals(2)); // Both Silver and Gold Dollar
+    });
+
+    test('commemorativeMotifsByDenomination preserves all multi-motif rules without overwrite', () {
+      final mex1950 = NumismaticMatrix.findRule('México', 1950);
+      expect(mex1950, isNotNull);
+      final motifs5P = mex1950!.commemorativeMotifsByDenomination['5'];
+      expect(motifs5P, isNotNull);
+      expect(motifs5P!.length, equals(4));
     });
   });
 }

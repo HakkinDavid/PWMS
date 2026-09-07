@@ -105,18 +105,11 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '1',
         material: 'Plata',
+        allowedMaterials: ['Plata', 'Oro'],
         minYear: 1794,
         maxYear: 1857,
         motifs: [
           NumismaticMotifRule('Silver Dollar Plata .892/.900 (Flowing Hair, Draped Bust, Gobrecht, Seated Liberty)', 1794, 1857),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '1',
-        material: 'Oro',
-        minYear: 1849,
-        maxYear: 1857,
-        motifs: [
           NumismaticMotifRule('Gold Dollar Oro .900 (Liberty Head Type 1 / Indian Princess Type 2)', 1849, 1857),
         ],
       ),
@@ -245,18 +238,11 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '1',
         material: 'Plata',
+        allowedMaterials: ['Plata', 'Oro'],
         minYear: 1858,
         maxYear: 1873,
         motifs: [
           NumismaticMotifRule('Seated Liberty Dollar Plata .900', 1858, 1873),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '1',
-        material: 'Oro',
-        minYear: 1858,
-        maxYear: 1873,
-        motifs: [
           NumismaticMotifRule('Gold Dollar Oro .900 (Indian Princess Type 3)', 1858, 1873),
         ],
       ),
@@ -373,6 +359,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '1',
         material: 'Plata',
+        allowedMaterials: ['Plata', 'Oro'],
         minYear: 1874,
         maxYear: 1933,
         motifs: [
@@ -388,14 +375,6 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
           1873,
           1885,
           ),
-        ],
-      ),
-      NumismaticPieceDefinition(
-        denomination: '1',
-        material: 'Oro',
-        minYear: 1874,
-        maxYear: 1889,
-        motifs: [
           NumismaticMotifRule('Gold Dollar Oro .900 (Indian Princess Type 3)', 1874, 1889),
         ],
       ),
