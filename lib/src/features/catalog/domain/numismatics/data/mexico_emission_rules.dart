@@ -1821,7 +1821,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '10',
         material: 'Bimetálica',
-        allowedMaterials: ['Bimetálica', 'Plata'],
         minYear: 1992,
         maxYear: 1995,
         motifs: [
@@ -1831,7 +1830,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '20',
         material: 'Bimetálica',
-        allowedMaterials: ['Bimetálica', 'Plata'],
         minYear: 1993,
         maxYear: 1995,
         motifs: [
@@ -1841,7 +1839,6 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '50',
         material: 'Bimetálica',
-        allowedMaterials: ['Bimetálica', 'Plata'],
         minYear: 1993,
         maxYear: 1995,
         motifs: [
