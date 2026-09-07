@@ -2116,7 +2116,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           NumismaticMotifRule(
             'Benito Juárez',
             minYear: 1984,
-            maxYear: 1987,
+            maxYear: 1988,
             material: 'Cuproníquel',
           ),
         ],
