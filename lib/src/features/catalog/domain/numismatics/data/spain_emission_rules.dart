@@ -44,7 +44,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1500, 1868),
+          NumismaticMotifRule('Monograma Real Coronado / Columnas y Castillo (Medio Real)', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -53,7 +53,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1500,
         maxYear: 1868,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1500, 1868),
+          NumismaticMotifRule('Escudo Real Coronado / Columnario y Busto (Un Real)', 1500, 1868),
         ],
       ),
       NumismaticPieceDefinition(
@@ -145,7 +145,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1926,
         motifs: [
-          NumismaticMotifRule('Plata .835', 1869, 1926),
+          NumismaticMotifRule('Hispania Recostada / Reyes Alfonso XII y XIII (Escudo de España)', 1869, 1926),
         ],
       ),
       NumismaticPieceDefinition(
@@ -163,7 +163,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1869,
         maxYear: 1905,
         motifs: [
-          NumismaticMotifRule('Plata .835 Estándar', 1869, 1905),
+          NumismaticMotifRule('Hispania / Bustos Reales (Alfonso XII y XIII)', 1869, 1905),
         ],
       ),
       NumismaticPieceDefinition(
@@ -208,7 +208,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1870,
         maxYear: 1897,
         motifs: [
-          NumismaticMotifRule('Oro .900 Estándar', 1870, 1897),
+          NumismaticMotifRule('Hispania de Pie / Busto de Alfonso XIII Niño (Escudo Real)', 1870, 1897),
         ],
       ),
     ],
@@ -328,7 +328,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1983,
         maxYear: 1998,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1983, 1998),
+          NumismaticMotifRule('Busto del Rey Juan Carlos I / Escudo de España', 1983, 1998),
         ],
       ),
       NumismaticPieceDefinition(
@@ -364,7 +364,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1989,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Bronce de aluminio', 1989, 2001),
+          NumismaticMotifRule('Busto del Rey Juan Carlos I / Numeral 5 PTAS (Duro Pequeño)', 1989, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -373,7 +373,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1983,
         maxYear: 2000,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1983, 2000),
+          NumismaticMotifRule('Busto del Rey Juan Carlos I / Homenajes Culturales', 1983, 2000),
         ],
       ),
       NumismaticPieceDefinition(
@@ -422,7 +422,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1986,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1986, 2001),
+          NumismaticMotifRule('Rey Juan Carlos I y Príncipe Felipe / Patrimonio Cultural', 1986, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -431,7 +431,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 1987,
         maxYear: 2001,
         motifs: [
-          NumismaticMotifRule('Bronce de aluminio', 1987, 2001),
+          NumismaticMotifRule('Reyes Juan Carlos I y Sofía / Escudo Nacional', 1987, 2001),
         ],
       ),
       NumismaticPieceDefinition(
@@ -569,7 +569,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2002,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Plata Conmemorativa', 2002, 2100),
+          NumismaticMotifRule('Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)', 2002, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -578,7 +578,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2002,
         maxYear: 2010,
         motifs: [
-          NumismaticMotifRule('Plata Conmemorativa', 2002, 2010),
+          NumismaticMotifRule('Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)', 2002, 2010),
         ],
       ),
       NumismaticPieceDefinition(
@@ -587,7 +587,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2010,
         maxYear: 2011,
         motifs: [
-          NumismaticMotifRule('Plata Conmemorativa', 2010, 2011),
+          NumismaticMotifRule('Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)', 2010, 2011),
         ],
       ),
       NumismaticPieceDefinition(
@@ -596,7 +596,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2012,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Plata Conmemorativa', 2012, 2020),
+          NumismaticMotifRule('Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)', 2012, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -605,7 +605,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Plata Conmemorativa', 2021, 2100),
+          NumismaticMotifRule('Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)', 2021, 2100),
         ],
       ),
     ],

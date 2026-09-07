@@ -16,7 +16,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Tlaco de Cobre', 1536, 1821),
+          NumismaticMotifRule('Carlos y Juana - Monograma K-I / Columnas de Hércules (Tlaco Colonial)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -25,7 +25,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1536,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal de Cobre', 1536, 1821),
+          NumismaticMotifRule('Carlos y Juana - K-I Coronadas / Castillo y León (Ochavo Colonial)', 1536, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -196,7 +196,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
+          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -205,7 +205,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
+          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -252,7 +252,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1814,
         maxYear: 1821,
         motifs: [
-          NumismaticMotifRule('Virreinal de Cobre', 1814, 1821),
+          NumismaticMotifRule('Monograma Coronado de Fernando VII / León Rampante (Octavo de Real)', 1814, 1821),
         ],
       ),
       NumismaticPieceDefinition(
@@ -500,7 +500,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
+          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -509,7 +509,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1864,
         maxYear: 1867,
         motifs: [
-          NumismaticMotifRule('Plata (Maximiliano)', 1864, 1867),
+          NumismaticMotifRule('Escudo Imperial (Maximiliano) / Corona de Laurel y Encino', 1864, 1867),
         ],
       ),
       NumismaticPieceDefinition(
@@ -676,7 +676,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('de Níquel', 1882, 1883),
+          NumismaticMotifRule('Numeral Romano "I" / Escudo Republicano', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -686,7 +686,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('de Níquel', 1882, 1883),
+          NumismaticMotifRule('Numeral Romano "II" / Escudo Republicano', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -696,7 +696,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1882,
         maxYear: 1883,
         motifs: [
-          NumismaticMotifRule('de Níquel', 1882, 1883),
+          NumismaticMotifRule('Numeral Romano "V" / Escudo Republicano', 1882, 1883),
         ],
       ),
       NumismaticPieceDefinition(
@@ -752,7 +752,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1898,
         motifs: [
-          NumismaticMotifRule('Porfiriano Cobre', 1884, 1898),
+          NumismaticMotifRule('Numeral "1" y Corona de Laurel (Águila Porfiriana)', 1884, 1898),
         ],
       ),
       NumismaticPieceDefinition(
@@ -761,7 +761,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1884,
         maxYear: 1898,
         motifs: [
-          NumismaticMotifRule('Porfiriano Cobre', 1884, 1898),
+          NumismaticMotifRule('Numeral "2" y Corona de Laurel (Águila Porfiriana)', 1884, 1898),
         ],
       ),
       NumismaticPieceDefinition(
@@ -844,7 +844,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1906,
         motifs: [
-          NumismaticMotifRule('Porfiriano Bronce', 1905, 1906),
+          NumismaticMotifRule('Numeral "2" con Rama de Laurel (Águila Porfiriana)', 1905, 1906),
         ],
       ),
       NumismaticPieceDefinition(
@@ -853,7 +853,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1905,
         maxYear: 1914,
         motifs: [
-          NumismaticMotifRule('Porfiriano Níquel', 1905, 1914),
+          NumismaticMotifRule('Numeral Romano "V" Radiante (Porfiriano)', 1905, 1914),
         ],
       ),
       NumismaticPieceDefinition(
@@ -928,7 +928,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1915,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Revolucionario Bronce', 1915, 1919),
+          NumismaticMotifRule('Numeral "1" y Guirnalda de Laurel (Águila Constitucionalista)', 1915, 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -937,7 +937,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Revolucionario', 1915, 1916),
+          NumismaticMotifRule('Numeral "2" y Guirnalda de Laurel (Águila Constitucionalista)', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -955,7 +955,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1919,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Plata .800', 1919),
+          NumismaticMotifRule('Gorro Frigio Radiante (Emisión Reducida Ley .800)', 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -964,7 +964,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1919,
         maxYear: 1919,
         motifs: [
-          NumismaticMotifRule('Plata .800', 1919),
+          NumismaticMotifRule('Gorro Frigio Radiante (Emisión Reducida Ley .800)', 1919),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1056,7 +1056,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1920,
         maxYear: 1941,
         motifs: [
-          NumismaticMotifRule('Bronce', 1920, 1941),
+          NumismaticMotifRule('Numeral "2" y Corona de Laurel', 1920, 1941),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1077,8 +1077,8 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         minYear: 1925,
         maxYear: 1940,
         motifs: [
-          NumismaticMotifRule('Plata .720', 1925, 1935),
-          NumismaticMotifRule('Bronce', 1936, 1940),
+          NumismaticMotifRule('Gorro Frigio Radiante (Ley .720)', 1925, 1935),
+          NumismaticMotifRule('Numeral "10" con Corona de Laurel', 1936, 1940),
         ],
       ),
       NumismaticPieceDefinition(

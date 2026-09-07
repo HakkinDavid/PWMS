@@ -34,7 +34,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1733, 1859),
+          NumismaticMotifRule('Columnario y Busto Real / Escudo Coronado (Ceca de Guatemala)', 1733, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -43,7 +43,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Plata', 1733, 1859),
+          NumismaticMotifRule('Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)', 1733, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -52,7 +52,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1733,
         maxYear: 1859,
         motifs: [
-          NumismaticMotifRule('Plata', 1733, 1859),
+          NumismaticMotifRule('Columnario de los Dos Mundos / Busto Real (Ceca de Guatemala)', 1733, 1859),
         ],
       ),
       NumismaticPieceDefinition(
@@ -108,7 +108,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Plata .900/.720', 1860, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Quetzal y Escudo Nacional', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -117,7 +117,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Plata .900/.720', 1860, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Quetzal y Escudo Nacional', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -135,7 +135,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Plata', 1860, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Escudo Nacional de Guatemala', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -144,7 +144,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Plata / Oro', 1860, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Escudo Nacional de Guatemala', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -153,7 +153,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1869,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1869, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Escudo con Quetzal', 1869, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -162,7 +162,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1869,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1869, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Escudo con Quetzal', 1869, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -171,7 +171,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1869,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1869, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Escudo con Quetzal', 1869, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -180,7 +180,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1860, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Escudo de la República de Guatemala', 1860, 1924),
         ],
       ),
       NumismaticPieceDefinition(
@@ -189,7 +189,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1860,
         maxYear: 1924,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1860, 1924),
+          NumismaticMotifRule('Busto de Rafael Carrera / Escudo de la República de Guatemala', 1860, 1924),
         ],
       ),
     ],
@@ -209,7 +209,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1925,
         maxYear: 1949,
         motifs: [
-          NumismaticMotifRule('de Quetzal', 1925, 1949),
+          NumismaticMotifRule('Quetzal sobre Pedestal (Medio Centavo) / Escudo Nacional', 1925, 1949),
         ],
       ),
       NumismaticPieceDefinition(
@@ -385,7 +385,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1500, 1846),
+          NumismaticMotifRule('Monograma Real Coronado / Columnas de Hércules', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -394,7 +394,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1500, 1846),
+          NumismaticMotifRule('Escudo Real Coronado / Columnario Virreinal', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -403,7 +403,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Plata', 1500, 1846),
+          NumismaticMotifRule('Columnario Virreinal / Escudo Real Coronado', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -412,7 +412,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1500,
         maxYear: 1846,
         motifs: [
-          NumismaticMotifRule('Plata', 1500, 1846),
+          NumismaticMotifRule('Columnario Virreinal / Escudo Real Coronado', 1500, 1846),
         ],
       ),
       NumismaticPieceDefinition(
@@ -504,7 +504,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1847, 1904),
+          NumismaticMotifRule('Perfil de la Libertad / Escudo con Cóndor Andino', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -513,7 +513,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1847, 1904),
+          NumismaticMotifRule('Perfil de la Libertad / Escudo con Cóndor Andino', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -522,7 +522,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1847,
         maxYear: 1904,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1847, 1904),
+          NumismaticMotifRule('Perfil de la Libertad / Escudo con Cóndor Andino', 1847, 1904),
         ],
       ),
       NumismaticPieceDefinition(
@@ -569,7 +569,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Escudo Nacional / Corona de Laurel (o Policarpa Salavarrieta)', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -578,7 +578,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Plata / Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Simón Bolívar / Escudo Nacional', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -587,7 +587,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Plata / Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Simón Bolívar / Escudo Nacional', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -614,7 +614,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -623,7 +623,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1905, 1979),
+          NumismaticMotifRule('Simón Bolívar / Francisco de Paula Santander (Escudo Nacional)', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -632,7 +632,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1905, 1979),
+          NumismaticMotifRule('Simón Bolívar / Escudo de Armas con Cóndor', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -641,7 +641,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1905,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Oro .900', 1905, 1979),
+          NumismaticMotifRule('Simón Bolívar / Escudo de Armas con Cóndor', 1905, 1979),
         ],
       ),
       NumismaticPieceDefinition(
@@ -650,7 +650,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1970,
         maxYear: 1979,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1970, 1979),
+          NumismaticMotifRule('Camilo Torres / Escudo Nacional', 1970, 1979),
         ],
       ),
     ],
@@ -1261,7 +1261,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1916,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1915, 1916),
+          NumismaticMotifRule('Estrella de Cinco Puntas / Escudo de la Palma Real', 1915, 1916),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1270,7 +1270,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1961,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1915, 1961),
+          NumismaticMotifRule('Estrella de Cinco Puntas / Escudo de la Palma Real', 1915, 1961),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1279,7 +1279,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Plata .900', 1915, 1952),
+          NumismaticMotifRule('Estrella Radiante / Escudo de la Palma Real', 1915, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1288,7 +1288,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Plata .900', 1915, 1952),
+          NumismaticMotifRule('Estrella Radiante / Escudo de la Palma Real', 1915, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1297,7 +1297,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1915,
         maxYear: 1952,
         motifs: [
-          NumismaticMotifRule('Plata .900', 1915, 1952),
+          NumismaticMotifRule('Estrella Radiante / Escudo de la Palma Real', 1915, 1952),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1372,7 +1372,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1963, 1993),
+          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1381,7 +1381,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1963, 1993),
+          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1390,7 +1390,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1963, 1993),
+          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1399,7 +1399,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1963,
         maxYear: 1993,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1963, 1993),
+          NumismaticMotifRule('Escudo Nacional / Caña de Azúcar (Patria o Muerte)', 1963, 1993),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1408,7 +1408,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1962,
         maxYear: 1962,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1962),
+          NumismaticMotifRule('Estrella de Cinco Puntas / Escudo Nacional', 1962),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1446,7 +1446,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1994, 2020),
+          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1455,7 +1455,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1994, 2020),
+          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1464,7 +1464,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1994,
         maxYear: 2020,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1994, 2020),
+          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 1994, 2020),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1538,7 +1538,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 2021,
         maxYear: 2100,
         motifs: [
-          NumismaticMotifRule('Aluminio', 2021, 2100),
+          NumismaticMotifRule('Escudo Nacional / Numeral con Laureles (Patria o Muerte)', 2021, 2100),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1594,7 +1594,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Cobre Colonial', 1813, 1880),
+          NumismaticMotifRule('Sol de Mayo / Corona de Laurel (Cuartillo)', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1612,7 +1612,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Plata Colonial', 1813, 1880),
+          NumismaticMotifRule('Escudo de la Asamblea del Año XIII / Sol de Mayo', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1621,7 +1621,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Plata', 1813, 1880),
+          NumismaticMotifRule('Escudo Nacional / Sol de Mayo Radiante', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1630,7 +1630,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1813,
         maxYear: 1880,
         motifs: [
-          NumismaticMotifRule('Plata', 1813, 1880),
+          NumismaticMotifRule('Escudo Nacional / Sol de Mayo Radiante', 1813, 1880),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1677,7 +1677,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Cuproníquel / Bronce de aluminio', 1881, 1969),
+          NumismaticMotifRule('Libertad de Oudiné / Escudo Nacional', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1686,7 +1686,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Cuproníquel / Bronce de aluminio', 1881, 1969),
+          NumismaticMotifRule('Libertad de Oudiné / Escudo Nacional', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1695,7 +1695,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1881,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Cuproníquel / Bronce de aluminio', 1881, 1969),
+          NumismaticMotifRule('Libertad de Oudiné / Escudo Nacional', 1881, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1722,7 +1722,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1940,
         maxYear: 1969,
         motifs: [
-          NumismaticMotifRule('Cuproníquel', 1940, 1969),
+          NumismaticMotifRule('General José de San Martín / Escudo Nacional', 1940, 1969),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1911,7 +1911,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1983, 1985),
+          NumismaticMotifRule('Cabildo de Buenos Aires / Escudo Nacional', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1920,7 +1920,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1983, 1985),
+          NumismaticMotifRule('Casa de Tucumán / Escudo Nacional', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1929,7 +1929,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1983, 1985),
+          NumismaticMotifRule('Casa del Acuerdo de San Nicolás / Escudo Nacional', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
@@ -1938,7 +1938,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         minYear: 1983,
         maxYear: 1985,
         motifs: [
-          NumismaticMotifRule('Aluminio', 1983, 1985),
+          NumismaticMotifRule('Monumento Nacional a la Bandera / Escudo Nacional', 1983, 1985),
         ],
       ),
       NumismaticPieceDefinition(
