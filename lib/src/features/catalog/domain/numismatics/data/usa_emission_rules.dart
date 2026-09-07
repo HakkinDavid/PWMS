@@ -1011,7 +1011,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
       NumismaticPieceDefinition(
         denomination: '1',
         material: 'Latón de manganeso sobre núcleo de cobre',
-        allowedMaterials: ['Latón de manganeso sobre núcleo de cobre', 'Latón de manganeso (Clad)', 'Latón de manganeso', 'Latón'],
+        allowedMaterials: ['Latón de manganeso sobre núcleo de cobre'],
         minYear: 2000,
         maxYear: 2100,
         motifs: [
