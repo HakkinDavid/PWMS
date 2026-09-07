@@ -37,7 +37,7 @@ void main() {
       expect(mat2, equals('Bimetálica'));
 
       final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
-      expect(motifs2, isEmpty);
+      expect(motifs2, equals(['Nuevo Peso']));
     });
 
     test('Mexico 1947 Centenario infers Oro for 50 Pesos', () {
@@ -108,7 +108,7 @@ void main() {
       expect(matMxn2, equals('Bimetálica'));
 
       final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
-      expect(motifs2, isEmpty);
+      expect(motifs2, equals(['Nuevo Peso']));
     });
 
     test('Brasil 2017 1 Real is standard circulation BRL bimetallic and not commemorative', () {

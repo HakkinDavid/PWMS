@@ -590,8 +590,29 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
       '20': 'Bimetálica',
       '50': 'Bimetálica',
     },
-    commemorativeDenominations: {'10', '20', '50'},
+    commemorativeDenominations: {'0.05', '0.10', '0.20', '0.50', '1', '2', '5', '10', '20', '50'},
     commemorativeMotifsByDenomination: {
+      '0.05': [
+        NumismaticMotifRule('Nuevo Peso', 1992, 1995),
+      ],
+      '0.10': [
+        NumismaticMotifRule('Nuevo Peso', 1992, 1995),
+      ],
+      '0.20': [
+        NumismaticMotifRule('Nuevo Peso', 1992, 1995),
+      ],
+      '0.50': [
+        NumismaticMotifRule('Nuevo Peso', 1992, 1995),
+      ],
+      '1': [
+        NumismaticMotifRule('Nuevo Peso', 1992, 1995),
+      ],
+      '2': [
+        NumismaticMotifRule('Nuevo Peso', 1992, 1995),
+      ],
+      '5': [
+        NumismaticMotifRule('Nuevo Peso', 1992, 1995),
+      ],
       '10': [
         NumismaticMotifRule('Nuevo Peso - Piedra del Sol (Centro de Plata Sterling .925)', 1992, 1995),
       ],

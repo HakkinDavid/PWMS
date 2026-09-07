@@ -561,5 +561,146 @@ void main() {
       // Allow AppToast timer to complete
       await tester.pump(const Duration(seconds: 4));
     });
+
+    testWidgets('NumismaticEmissionOutlierStrategy motif onFix auto-resolves to "Nuevo Peso" for 2 Nuevos Pesos without dialog', (WidgetTester tester) async {
+      final now = DateTime.now();
+
+      await db.into(db.catalogTable).insert(
+            CatalogTableCompanion.insert(
+              id: 'sp_coin_n2',
+              name: 'Moneda Numismática',
+              mainPhotoPath: const Value('local/coin.jpg'),
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.subspeciesTable).insert(
+            SubspeciesTableCompanion.insert(
+              id: 'sub_n2',
+              speciesId: 'sp_coin_n2',
+              subspeciesName: '2 Nuevos Pesos 1993',
+              createdAt: now,
+            ),
+          );
+
+      await db.into(db.entitiesTable).insert(
+            EntitiesTableCompanion.insert(
+              id: 'e_n2',
+              speciesId: 'sp_coin_n2',
+              subspeciesId: const Value('sub_n2'),
+              locationId: const Value('loc_1'),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+
+      // Add magnitudes for Mexico 1993 2 MXN coin with incorrect motif
+      final mags = [
+        InstanceMagnitude(id: 'm1_n2', instanceId: 'e_n2', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+        InstanceMagnitude(id: 'm2_n2', instanceId: 'e_n2', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
+        InstanceMagnitude(id: 'm3_n2', instanceId: 'e_n2', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
+        InstanceMagnitude(id: 'm4_n2', instanceId: 'e_n2', propertyName: 'Valor nominal', stringValue: '2', dataType: 'string'),
+        InstanceMagnitude(id: 'm5_n2', instanceId: 'e_n2', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
+        InstanceMagnitude(id: 'm6_n2', instanceId: 'e_n2', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
+      ];
+
+      for (final m in mags) {
+        await db.into(db.instanceMagnitudesTable).insert(
+              InstanceMagnitudesTableCompanion.insert(
+                id: m.id,
+                instanceId: m.instanceId,
+                propertyName: m.propertyName,
+                dataType: m.dataType,
+                stringValue: Value(m.stringValue),
+                magnitudeValue: Value(m.magnitudeValue),
+              ),
+            );
+      }
+
+      final species = CatalogItem(
+        id: 'sp_coin_n2',
+        name: 'Moneda Numismática',
+        type: 'Moneda',
+        mainPhotoPath: 'local/coin.jpg',
+        createdAt: now,
+      );
+      final sub = Subspecies(
+        id: 'sub_n2',
+        speciesId: 'sp_coin_n2',
+        subspeciesName: '2 Nuevos Pesos 1993',
+        createdAt: now,
+      );
+      final entity = WorldEntity(
+        id: 'e_n2',
+        speciesId: 'sp_coin_n2',
+        subspeciesId: 'sub_n2',
+        locationId: 'loc_1',
+        createdAt: now,
+        updatedAt: now,
+        magnitudes: mags,
+      );
+
+      final context = AuditEvaluationContext(
+        db: db,
+        allEntities: [entity],
+        allCatalog: [species],
+        allSubspecies: [sub],
+        allLocations: const [],
+        allRelations: const [],
+        allSpeciesMagnitudes: const [],
+        allInstanceMagnitudes: mags,
+        allRequirements: const [],
+        effectiveLocationMap: const {},
+      );
+
+      const strategy = NumismaticEmissionOutlierStrategy();
+      final cards = await strategy.evaluate(context);
+      expect(cards.length, 1);
+      final card = cards.first;
+      expect(card.type, AuditCardType.numismaticEmissionOutlier);
+      expect(card.question, contains('Esperado: "Nuevo Peso"'));
+
+      late BuildContext buildCtx;
+      late WidgetRef widgetRef;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Consumer(
+                builder: (ctx, ref, _) {
+                  buildCtx = ctx;
+                  widgetRef = ref;
+                  return const SizedBox();
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Trigger onFix
+      bool? fixResult;
+      card.onFix(buildCtx, widgetRef).then((res) => fixResult = res);
+      await tester.pumpAndSettle();
+
+      // Should NOT open any dialog or AppWheelPicker because there is only 1 canonical motif ("Nuevo Peso")
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(AppWheelPicker<String>), findsNothing);
+      expect(fixResult, isTrue);
+
+      // Verify the entity was updated with "Nuevo Peso" in the database
+      final updatedMags = await (db.select(db.instanceMagnitudesTable)..where((tbl) => tbl.instanceId.equals('e_n2'))).get();
+      final motifMag = updatedMags.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(motifMag.stringValue, 'Nuevo Peso');
+
+      // Allow AppToast timer to complete
+      await tester.pump(const Duration(seconds: 4));
+    });
   });
 }
