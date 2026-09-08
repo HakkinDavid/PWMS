@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../domain/numismatic_data_helper.dart';
 
 /// Presentation widget displaying rich metallurgical metadata, purity badges, and alloy breakdowns
@@ -141,27 +143,27 @@ class NumismaticMaterialBadge extends StatelessWidget {
   static String? _getPillText(NumismaticMaterialDefinition def) {
     if (def.fineness != null) {
       if (def.fineness! >= 0.999) {
-        return 'Puro .999';
+        return AppStrings.materialPureFineness;
       }
-      return 'Ley .${(def.fineness! * 1000).toInt()}';
+      return AppStrings.materialLeyFineness((def.fineness! * 1000).toInt());
     }
     if (def.structure == NumismaticMaterialStructure.bimetallic) {
-      return 'Bimetálica';
+      return AppStrings.materialPillBimetallic;
     }
     if (def.structure == NumismaticMaterialStructure.trimetallic) {
-      return 'Trimetálica';
+      return AppStrings.materialPillTrimetallic;
     }
     if (def.structure == NumismaticMaterialStructure.plated) {
-      return 'Bañada';
+      return AppStrings.materialPillPlated;
     }
     if (def.structure == NumismaticMaterialStructure.clad) {
-      return 'Clad';
+      return AppStrings.materialPillClad;
     }
     if (def.family == NumismaticMaterialFamily.polymer) {
-      return 'Polímero';
+      return AppStrings.materialPillPolymer;
     }
     if (def.family == NumismaticMaterialFamily.paper) {
-      return 'Papel';
+      return AppStrings.materialPillPaper;
     }
     return null;
   }
@@ -171,22 +173,22 @@ class NumismaticMaterialBadge extends StatelessWidget {
     parts.add(def.displayName);
 
     if (def.fineness != null) {
-      final pct = (def.fineness! * 100).toStringAsFixed(1).replaceAll('.0', '');
-      parts.add('Pureza: $pct% (${def.fineness})');
+      final pct = (def.fineness! * 100).toStringAsFixed(1).replaceAll(AppTechnicalStrings.pointZero, AppTechnicalStrings.empty);
+      parts.add(AppStrings.materialPurityTooltip(pct, def.fineness!));
     }
 
     if (def.alloyComposition != null && def.alloyComposition!.isNotEmpty) {
-      parts.add('Composición: ${def.alloyComposition}');
+      parts.add(AppStrings.materialAlloyTooltip(def.alloyComposition!));
     }
 
     if (def.coreMaterial != null && def.ringMaterial != null) {
-      parts.add('Centro: ${def.coreMaterial}\nAnillo: ${def.ringMaterial}');
+      parts.add(AppStrings.materialBimetallicTooltip(def.coreMaterial!, def.ringMaterial!));
     }
 
     if (def.platingMaterial != null) {
-      parts.add('Recubrimiento: ${def.platingMaterial}');
+      parts.add(AppStrings.materialPlatedTooltip(def.platingMaterial!));
     }
 
-    return parts.join('\n');
+    return parts.join(AppTechnicalStrings.newline);
   }
 }

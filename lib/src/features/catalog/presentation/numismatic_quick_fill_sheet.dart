@@ -304,19 +304,23 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       effectiveComposition = AppStrings.materialPaper;
     }
 
-    final speciesType = widget.isCoin ? AppStrings.coinCircularLabel : AppStrings.banknoteRectangleLabel;
-
-    final title = NumismaticDataHelper.buildSubspeciesName(
-      faceValueStr: effectiveDenom,
-      faceValueNumber: faceVal,
-      currencyName: effectiveCurrencyName,
-      country: effectiveCountry,
-      year: effectiveYear,
-    );
-
     final effectiveMotif = (_motif == AppStrings.otherSpecifyOption || _motif == AppStrings.otherSpecifyParenthesized)
         ? (_customMotifController.text.trim().isNotEmpty ? _customMotifController.text.trim() : null)
         : ((_motif != null && _motif!.trim().isNotEmpty) ? _motif!.trim() : null);
+
+    final speciesType = widget.isCoin ? AppStrings.coinCircularLabel : AppStrings.banknoteRectangleLabel;
+
+    final title = NumismaticDataHelper.buildSpecimenTitle(
+      attrs: NumismaticAttributes(
+        faceValueStr: effectiveDenom,
+        faceValueNumber: faceVal,
+        currencyCode: effectiveCurrencyCode,
+        currencyName: effectiveCurrencyName,
+        country: effectiveCountry,
+        year: effectiveYear,
+        motif: effectiveMotif,
+      ),
+    );
 
     final result = NumismaticScanResult(
       speciesType: speciesType,
@@ -807,7 +811,14 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     value: _denomination,
                     enabled: !_isDenominationNull,
                     items: [null, ...availableDenoms],
-                    labelBuilder: (d) => d ?? AppStrings.noSelectionPrompt,
+                    labelBuilder: (d) {
+                      if (d == null) return AppStrings.noSelectionPrompt;
+                      return NumismaticDataHelper.formatDenominationLabel(
+                        denomination: d,
+                        currencyCode: _currencyCode == AppStrings.otherSpecifyOption ? null : _currencyCode,
+                        isBanknote: !widget.isCoin,
+                      );
+                    },
                     title: AppStrings.denominationLabel,
                     decoration: InputDecoration(
                       labelText: AppStrings.denominationLabel,

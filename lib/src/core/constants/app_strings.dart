@@ -628,6 +628,18 @@ class AppStrings {
   static const numismaticsCategory = 'Numismática';
   static const pieceInstantiatedDirectlyPrefix = 'Pieza "';
   static const pieceInstantiatedDirectlySuffix = '" instanciada directamente.';
+  static const materialPureFineness = 'Puro .999';
+  static String materialLeyFineness(int thousandths) => 'Ley .$thousandths';
+  static const materialPillBimetallic = 'Bimetálica';
+  static const materialPillTrimetallic = 'Trimetálica';
+  static const materialPillPlated = 'Bañada';
+  static const materialPillClad = 'Clad';
+  static const materialPillPolymer = 'Polímero';
+  static const materialPillPaper = 'Papel';
+  static String materialPurityTooltip(String pct, double fineness) => 'Pureza: $pct% ($fineness)';
+  static String materialAlloyTooltip(String alloy) => 'Composición: $alloy';
+  static String materialBimetallicTooltip(String core, String ring) => 'Centro: $core\nAnillo: $ring';
+  static String materialPlatedTooltip(String plating) => 'Recubrimiento: $plating';
 
   // Gestión de Población y Caducidad
   static const heterogeneousGroupQuantityError = 'No se puede modificar la cantidad en grupos heterogéneos.';
@@ -1448,6 +1460,8 @@ class AppStrings {
   static const magMaterial = 'Material';
   static const magGrado = 'Grado';
   static const magEmisor = 'Emisor';
+  static String numismaticEstimatedFineContent(String fineWeight, String metalName, String purityPct) =>
+      'Contenido fino estimado: $fineWeight g $metalName (Ley $purityPct%)';
 
   // Taxonomy & Product Defaults
   static const speciesBook = 'Libro';

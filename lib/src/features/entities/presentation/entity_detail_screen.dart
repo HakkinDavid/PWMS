@@ -799,8 +799,9 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                           itemCount: _workingMagnitudes.length,
                           itemBuilder: (ctx, idx) {
                             final mag = _workingMagnitudes[idx];
-                            final isMaterialProp = mag.propertyName.toLowerCase() == 'material' ||
-                                mag.propertyName.toLowerCase() == 'composición';
+                            final isMaterialProp = mag.propertyName.toLowerCase() == AppTechnicalStrings.magMaterialLower ||
+                                mag.propertyName.toLowerCase() == AppTechnicalStrings.magComposicionWithAccentLower ||
+                                mag.propertyName.toLowerCase() == AppTechnicalStrings.magComposicionWithoutAccentLower;
 
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -876,12 +877,17 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                         ),
                       Builder(
                         builder: (_) {
-                          final materialMag = _workingMagnitudes.where((m) =>
-                              m.propertyName.toLowerCase() == 'material' ||
-                              m.propertyName.toLowerCase() == 'composición').firstOrNull;
-                          final weightMag = _workingMagnitudes.where((m) =>
-                              m.propertyName.toLowerCase() == 'peso' ||
-                              m.propertyName.toLowerCase() == 'weight').firstOrNull;
+                          final materialMag = _workingMagnitudes.where((m) {
+                            final nameLower = m.propertyName.toLowerCase();
+                            return nameLower == AppTechnicalStrings.magMaterialLower ||
+                                nameLower == AppTechnicalStrings.magComposicionWithAccentLower ||
+                                nameLower == AppTechnicalStrings.magComposicionWithoutAccentLower;
+                          }).firstOrNull;
+                          final weightMag = _workingMagnitudes.where((m) {
+                            final nameLower = m.propertyName.toLowerCase();
+                            return nameLower == AppTechnicalStrings.magPesoLower ||
+                                nameLower == AppTechnicalStrings.magWeightLower;
+                          }).firstOrNull;
 
                           if (materialMag != null && weightMag != null && weightMag.magnitudeValue != null) {
                             final matString = materialMag.stringValue ?? materialMag.displayValue;
@@ -892,7 +898,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                             final matDef = NumismaticDataHelper.getMaterialDefinition(matString);
 
                             if (fineWeight != null && matDef != null && matDef.fineness != null) {
-                              final purityPct = (matDef.fineness! * 100).toStringAsFixed(1).replaceAll('.0', '');
+                              final purityPct = (matDef.fineness! * 100).toStringAsFixed(1).replaceAll(AppTechnicalStrings.pointZero, AppTechnicalStrings.empty);
                               return Container(
                                 margin: const EdgeInsets.only(top: 10),
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -907,7 +913,7 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        'Contenido fino estimado: $fineWeight g ${matDef.shortName} (Ley $purityPct%)',
+                                        AppStrings.numismaticEstimatedFineContent(fineWeight.toString(), matDef.shortName, purityPct),
                                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                                       ),
                                     ),

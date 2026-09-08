@@ -435,4 +435,165 @@ void main() {
       expect(EntityDisplayHelper.getInstanceCustomName(loaded, otherSpecies), isNull);
     });
   });
+
+  group('NumismaticNamingEngine Subunit and Canonical Motif Formatting Tests', () {
+    test('formatDenominationLabel formats clean brief labels for wheel pickers', () {
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.20', currencyCode: 'MXP'), equals('20 Centavos'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.50', currencyCode: 'MXN'), equals('50 Centavos'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '1', currencyCode: 'MXN'), equals('1 Peso'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '5', currencyCode: 'MXN'), equals('5 Pesos'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.25', currencyCode: 'USD'), equals('Quarter Dollar (25 Cents)'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.50', currencyCode: 'EUR'), equals('50 Céntimos de Euro'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '1/2', currencyCode: 'REAL'), equals('Medio Real (1/2 Real)'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '8', currencyCode: 'REAL'), equals('8 Reales (Real de a 8)'));
+    });
+
+    test('formatDenominationWithFullCurrency resolves natural subunits and case-consistent plurals', () {
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.20', currencyCode: 'MXP'),
+        equals('20 Centavos de Pesos Mexicanos Antiguos'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '50', currencyCode: 'MXP'),
+        equals('50 Pesos Mexicanos Antiguos'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '20', currencyCode: 'MXN'),
+        equals('20 Pesos Mexicanos'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '1', currencyCode: 'USD'),
+        equals('1 Dólar Estadounidense'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.25', currencyCode: 'USD'),
+        equals('25 Cents de Dólares Estadounidenses'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.50', currencyCode: 'EUR'),
+        equals('50 Céntimos de Euro'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '8', currencyCode: 'MXR'),
+        equals('8 Reales Mexicanos Coloniales e Imperiales'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '1/2', currencyCode: 'REAL'),
+        equals('1/2 Real Español'),
+      );
+    });
+
+    test('buildSpecimenTitle formats museum-grade title with Country, Year, and Commemorative Motif', () {
+      final specimen1 = NumismaticDataHelper.buildSpecimenTitle(
+        attrs: const NumismaticAttributes(
+          faceValueStr: '0.20',
+          currencyCode: 'MXP',
+          country: 'México',
+          year: '1975',
+          motif: 'Francisco I. Madero',
+        ),
+      );
+      expect(specimen1, equals('20 Centavos de Pesos Mexicanos Antiguos - México (1975) - Francisco I. Madero'));
+
+      final specimen2 = NumismaticDataHelper.buildSpecimenTitle(
+        attrs: const NumismaticAttributes(
+          faceValueStr: '50',
+          currencyCode: 'MXP',
+          country: 'México',
+          year: '1982',
+          motif: 'Coyolxauhqui',
+        ),
+      );
+      expect(specimen2, equals('50 Pesos Mexicanos Antiguos - México (1982) - Coyolxauhqui'));
+
+      final specimen3 = NumismaticDataHelper.buildSpecimenTitle(
+        attrs: const NumismaticAttributes(
+          faceValueStr: '20',
+          currencyCode: 'MXN',
+          country: 'México',
+          year: '2021',
+          motif: '500 Años de Memoria Histórica de México-Tenochtitlan',
+        ),
+      );
+      expect(specimen3, equals('20 Pesos Mexicanos - México (2021) - 500 Años de Memoria Histórica de México-Tenochtitlan'));
+
+      final specimen4 = NumismaticDataHelper.buildSpecimenTitle(
+        attrs: const NumismaticAttributes(
+          faceValueStr: '1',
+          currencyCode: 'USD',
+          country: 'Estados Unidos',
+          year: '1921',
+          motif: 'Morgan',
+        ),
+      );
+      expect(specimen4, equals('1 Dólar Estadounidense - Estados Unidos (1921) - Morgan'));
+
+      final specimen5 = NumismaticDataHelper.buildSpecimenTitle(
+        attrs: const NumismaticAttributes(
+          faceValueStr: '8',
+          currencyCode: 'MXR',
+          country: 'Virreinato de Nueva España',
+          year: '1790',
+          motif: 'Carlos IV',
+        ),
+      );
+      expect(specimen5, equals('8 Reales Mexicanos Coloniales e Imperiales - Virreinato de Nueva España (1790) - Carlos IV'));
+    });
+
+    test('deriveInstanceName integrates motif from instance magnitudes into dynamic Nombre', () {
+      final monedaSpecies = CatalogItem(
+        id: 'sp_moneda_motif',
+        name: 'Moneda',
+        type: AppStrings.typeObject,
+        createdAt: DateTime.now(),
+      );
+
+      final commemorativeCoin = WorldEntity(
+        id: 'commem_coin_1',
+        speciesId: monedaSpecies.id,
+        magnitudes: const [
+          InstanceMagnitude(
+            id: 'm1',
+            instanceId: 'commem_coin_1',
+            propertyName: AppStrings.nominalValuePropertyName,
+            dataType: AppTechnicalStrings.datatypeRealLower,
+            magnitudeValue: 0.20,
+          ),
+          InstanceMagnitude(
+            id: 'm2',
+            instanceId: 'commem_coin_1',
+            propertyName: AppStrings.currencyPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: 'MXP',
+          ),
+          InstanceMagnitude(
+            id: 'm3',
+            instanceId: 'commem_coin_1',
+            propertyName: AppStrings.issuerPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: 'México',
+          ),
+          InstanceMagnitude(
+            id: 'm4',
+            instanceId: 'commem_coin_1',
+            propertyName: AppStrings.mintagePropertyName,
+            dataType: AppTechnicalStrings.datatypeIntegerLower,
+            magnitudeValue: 1975.0,
+          ),
+          InstanceMagnitude(
+            id: 'm5',
+            instanceId: 'commem_coin_1',
+            propertyName: AppStrings.motifPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: 'Francisco I. Madero',
+          ),
+        ],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      final derived = NumismaticDataHelper.deriveInstanceName(commemorativeCoin);
+      expect(derived, equals('20 Centavos de Pesos Mexicanos Antiguos - México (1975) - Francisco I. Madero'));
+    });
+  });
 }

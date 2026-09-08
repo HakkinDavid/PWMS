@@ -11,6 +11,7 @@ import 'numismatics/data/numismatic_denominations_registry.dart';
 import 'numismatics/data/numismatic_materials_registry.dart';
 import 'numismatics/data/numismatic_rules_registry.dart';
 import 'numismatics/numismatic_dictionary.dart';
+import 'numismatics/numismatic_naming_engine.dart';
 import 'numismatics/numismatic_parser.dart';
 import 'numismatics/numismatic_domain_rules.dart';
 import 'numismatics/numismatic_matrix.dart';
@@ -21,8 +22,10 @@ export 'numismatics/data/numismatic_currencies_registry.dart';
 export 'numismatics/data/numismatic_denominations_registry.dart';
 export 'numismatics/data/numismatic_materials_registry.dart';
 export 'numismatics/data/numismatic_rules_registry.dart';
+export 'numismatics/models/numismatic_currency_definition.dart';
 export 'numismatics/models/numismatic_material_definition.dart';
 export 'numismatics/numismatic_dictionary.dart';
+export 'numismatics/numismatic_naming_engine.dart';
 export 'numismatics/numismatic_parser.dart';
 export 'numismatics/numismatic_domain_rules.dart';
 export 'numismatics/numismatic_matrix.dart';
@@ -243,6 +246,34 @@ class NumismaticDataHelper {
 
   static String buildInstanceDisplayName(NumismaticAttributes attrs, {String? defaultSpeciesName}) =>
       NumismaticParser.buildInstanceDisplayName(attrs, defaultSpeciesName: defaultSpeciesName);
+
+  static String buildSpecimenTitle({required NumismaticAttributes attrs, String? defaultSpeciesName}) =>
+      NumismaticNamingEngine.buildSpecimenTitle(attrs: attrs, defaultSpeciesName: defaultSpeciesName);
+
+  static String formatDenominationLabel({
+    required String denomination,
+    String? currencyCode,
+    bool isBanknote = false,
+  }) =>
+      NumismaticNamingEngine.formatDenominationLabel(
+        denomination: denomination,
+        currencyCode: currencyCode,
+        isBanknote: isBanknote,
+      );
+
+  static String formatDenominationWithFullCurrency({
+    required String denomination,
+    String? currencyCode,
+    double? faceValueNumber,
+  }) =>
+      NumismaticNamingEngine.formatDenominationWithFullCurrency(
+        denomination: denomination,
+        currencyCode: currencyCode,
+        faceValueNumber: faceValueNumber,
+      );
+
+  static NumismaticCurrencyDefinition? getCurrencyDefinition(String? currencyCodeOrName) =>
+      currencyCodeOrName != null ? NumismaticCurrenciesRegistry.resolve(currencyCodeOrName) : null;
 
   static String buildAttachmentFileName({
     required String subspeciesName,

@@ -183,9 +183,9 @@ void main() {
     final currencyField = find.byType(AppWheelPickerField<String?>).at(1);
     await selectWheelOption(tester, currencyField, 'MXP (Pesos Mexicanos Antiguos)');
 
-    // 4. Select Denomination (5)
+    // 4. Select Denomination (5 Pesos)
     final denomField = find.byType(AppWheelPickerField<String?>).at(2);
-    await selectWheelOption(tester, denomField, '5');
+    await selectWheelOption(tester, denomField, '5 Pesos');
 
     // 5. Select Material (Cuproníquel)
     final matField = find.byType(AppWheelPickerField<String?>).at(3);
@@ -254,9 +254,9 @@ void main() {
     // Verify Currency was auto-inferred as MXP (Pesos Mexicanos Antiguos)
     expect(find.text('MXP (Pesos Mexicanos Antiguos)'), findsOneWidget);
 
-    // 3. Select Denomination (50)
+    // 3. Select Denomination (50 Pesos)
     final denomField = find.byType(AppWheelPickerField<String?>).at(2);
-    await selectWheelOption(tester, denomField, '50');
+    await selectWheelOption(tester, denomField, '50 Pesos');
 
     // Verify Material was auto-inferred as Cuproníquel (Coyolxauhqui)
     expect(find.text('Cuproníquel'), findsWidgets);
@@ -364,7 +364,7 @@ void main() {
 
     expect(submittedResult, isNotNull);
     expect(submittedResult!.faceValueNumber, equals(0.5));
-    expect(submittedResult!.subspeciesName, equals('0.50 Pesos Mexicanos Antiguos - México (1975)'));
+    expect(submittedResult!.subspeciesName, equals('50 Centavos de Pesos Mexicanos Antiguos - México (1975)'));
     expect(submittedResult!.country, equals('México'));
     expect(submittedResult!.currencyCode, equals('MXP'));
   });
@@ -411,9 +411,9 @@ void main() {
     final currencyField = find.byType(AppWheelPickerField<String?>).at(1);
     await selectWheelOption(tester, currencyField, 'MXP (Pesos Mexicanos Antiguos)');
 
-    // 4. Select Denomination (1)
+    // 4. Select Denomination (1 Peso)
     final denomField = find.byType(AppWheelPickerField<String?>).at(2);
-    await selectWheelOption(tester, denomField, '1');
+    await selectWheelOption(tester, denomField, '1 Peso');
 
     // 5. Select Material (Cuproníquel)
     final matField = find.byType(AppWheelPickerField<String?>).at(3);
@@ -489,7 +489,7 @@ void main() {
     await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(0), 'México');
     await tester.enterText(find.widgetWithText(TextFormField, AppStrings.mintageYearLabel), '1982');
     await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(1), 'MXP (Pesos Mexicanos Antiguos)');
-    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(2), '5');
+    await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(2), '5 Pesos');
     await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(3), 'Cuproníquel');
     await selectWheelOption(tester, find.byType(AppWheelPickerField<String?>).at(4), 'Muy buena');
 

@@ -487,6 +487,11 @@ WHERE id IN (
   static const androidDefaultNotificationIcon = '@mipmap/ic_launcher';
   static const notifChannelPwms = 'pwms_notifications';
   static const empty = '';
+  static const deWithSpaces = ' de ';
+  static const strOne = '1';
+  static const pointZero = '.0';
+  static const percent = '%';
+  static const newline = '\n';
 
   // Icon Keyword Constants (for LocationTile & icons)
   static const iconKeywordHome = 'home';
@@ -926,6 +931,10 @@ WHERE id IN (
   static const magDivisaLower = 'divisa';
   static const magMetalLower = 'metal';
   static const magMaterialLower = 'material';
+  static const magComposicionWithAccentLower = 'composición';
+  static const magComposicionWithoutAccentLower = 'composicion';
+  static const magPesoLower = 'peso';
+  static const magWeightLower = 'weight';
   static const magConservacionWithAccentLower = 'conservación';
   static const magConservacionWithoutAccentLower = 'conservacion';
   static const magGradoLower = 'grado';

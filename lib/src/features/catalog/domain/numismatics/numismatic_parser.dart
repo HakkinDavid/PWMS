@@ -2,7 +2,10 @@ import '../catalog_item.dart';
 import '../../../entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'data/numismatic_currencies_registry.dart';
+import 'data/numismatic_materials_registry.dart';
 import 'numismatic_dictionary.dart';
+import 'numismatic_naming_engine.dart';
 
 class NumismaticAttributes {
   final double? faceValueNumber;
@@ -277,7 +280,7 @@ class NumismaticParser {
       );
 
   /// Builds a deterministic subspecies title for coins or banknotes.
-  /// Format: [Denominación] [Divisa Estándar] - [País] ([Año])
+  /// Format: [Denominación y Divisa Completa] - [País] ([Año])
   static String buildSubspeciesName({
     double? faceValueNumber,
     String? faceValueStr,
@@ -294,15 +297,11 @@ class NumismaticParser {
                 : faceValueNumber.toString())
             : AppTechnicalStrings.empty);
 
-    final countVal = double.tryParse(denom) ?? faceValueNumber;
-
-    final rawCurr = (currencyName != null && currencyName.trim().isNotEmpty)
-        ? currencyName.trim()
-        : (currencyCode != null && currencyCode.trim().isNotEmpty
-            ? currencyCode.trim()
-            : AppTechnicalStrings.empty);
-
-    final canonicalCurr = resolveCurrencyName(rawCurr, count: countVal);
+    final denomWithCurr = NumismaticNamingEngine.formatDenominationWithFullCurrency(
+      denomination: denom,
+      currencyCode: currencyCode ?? currencyName,
+      faceValueNumber: faceValueNumber,
+    );
 
     final cty = (country != null && country.trim().isNotEmpty)
         ? country.trim()
@@ -310,16 +309,19 @@ class NumismaticParser {
 
     final yr = (year != null && year.trim().isNotEmpty) ? year.trim() : null;
 
-    final firstPart = [denom, canonicalCurr].where((s) => s.isNotEmpty).join(AppTechnicalStrings.space);
     final titleParts = <String>[];
-    if (firstPart.isNotEmpty) titleParts.add(firstPart);
+    if (denomWithCurr.isNotEmpty) titleParts.add(denomWithCurr);
     if (cty.isNotEmpty) titleParts.add(cty);
 
     var mainText = titleParts.join(AppTechnicalStrings.dashWithSpaces);
     if (yr != null) {
+      final cleanYr = yr
+          .replaceAll(AppTechnicalStrings.openParen, AppTechnicalStrings.empty)
+          .replaceAll(AppTechnicalStrings.closeParen, AppTechnicalStrings.empty)
+          .trim();
       mainText = mainText.isNotEmpty
-          ? mainText + AppTechnicalStrings.openParenSpace + yr + AppTechnicalStrings.closeParen
-          : AppTechnicalStrings.openParen + yr + AppTechnicalStrings.closeParen;
+          ? mainText + AppTechnicalStrings.openParenSpace + cleanYr + AppTechnicalStrings.closeParen
+          : AppTechnicalStrings.openParen + cleanYr + AppTechnicalStrings.closeParen;
     }
 
     if (mainText.isEmpty) {
@@ -385,18 +387,10 @@ class NumismaticParser {
 
   /// Builds a deterministic instance display name from its attributes.
   static String buildInstanceDisplayName(NumismaticAttributes attrs, {String? defaultSpeciesName}) {
-    final title = buildSubspeciesName(
-      faceValueNumber: attrs.faceValueNumber,
-      faceValueStr: attrs.faceValueStr,
-      currencyName: attrs.currencyName,
-      currencyCode: attrs.currencyCode,
-      country: attrs.country,
-      year: attrs.year,
+    return NumismaticNamingEngine.buildSpecimenTitle(
+      attrs: attrs,
+      defaultSpeciesName: defaultSpeciesName,
     );
-    if (title == AppStrings.defaultNumismaticPiece && defaultSpeciesName != null && defaultSpeciesName.isNotEmpty) {
-      return defaultSpeciesName;
-    }
-    return title;
   }
 
   /// Extracts numismatic attributes from an instance's magnitudes.
@@ -498,7 +492,7 @@ class NumismaticParser {
     });
   }
 
-  /// Parses subspecies title to extract denomination, currency, country, year.
+  /// Parses subspecies or specimen title to extract denomination, currency, country, year, and motif.
   static NumismaticAttributes parseSubspeciesName(String name) {
     final yearRegex = RegExp(AppTechnicalStrings.regexParenthesizedEndYear);
     final match = yearRegex.firstMatch(name);
@@ -516,10 +510,15 @@ class NumismaticParser {
     final dashParts = mainText.split(AppTechnicalStrings.dashWithSpaces);
     String denomAndCurr;
     String? country;
+    String? motif;
 
-    if (dashParts.length >= 2) {
+    if (dashParts.length >= 3) {
       denomAndCurr = dashParts[0].trim();
-      country = dashParts.sublist(1).join(AppTechnicalStrings.dashWithSpaces).trim();
+      country = dashParts[1].trim();
+      motif = dashParts.sublist(2).join(AppTechnicalStrings.dashWithSpaces).trim();
+    } else if (dashParts.length == 2) {
+      denomAndCurr = dashParts[0].trim();
+      country = dashParts[1].trim();
     } else {
       denomAndCurr = mainText.trim();
     }
@@ -533,10 +532,31 @@ class NumismaticParser {
       if (firstSpace > 0) {
         final numPart = denomAndCurr.substring(0, firstSpace).trim();
         final parsed = double.tryParse(numPart);
+        final remainder = denomAndCurr.substring(firstSpace + 1).trim();
+
         if (parsed != null) {
           faceValue = parsed;
           faceValStr = numPart;
-          currency = denomAndCurr.substring(firstSpace + 1).trim();
+
+          // Check if remainder is "Centavos de <Currency>" or "Cents de <Currency>"
+          final deIdx = remainder.indexOf(AppTechnicalStrings.deWithSpaces);
+          if (deIdx != -1) {
+            final actualCurr = remainder.substring(deIdx + AppTechnicalStrings.deWithSpaces.length).trim();
+            final currDef = NumismaticCurrenciesRegistry.resolve(actualCurr);
+            if (currDef != null && currDef.hasSubunit) {
+              faceValue = parsed / currDef.subunitRatio;
+              faceValStr = faceValue % 1 == 0 ? faceValue.toInt().toString() : faceValue.toString();
+              currency = currDef.namePlural;
+            } else {
+              currency = actualCurr;
+            }
+          } else {
+            currency = remainder;
+          }
+        } else if (numPart.contains(AppTechnicalStrings.slash)) {
+          faceValStr = numPart;
+          faceValue = NumismaticDenominationsRegistry.parseNumber(numPart);
+          currency = remainder;
         } else {
           currency = denomAndCurr;
         }
@@ -557,6 +577,7 @@ class NumismaticParser {
       currencyName: currency != null ? resolveCurrencyName(currency, count: faceValue) : null,
       country: country,
       year: year,
+      motif: motif,
     );
   }
 }
