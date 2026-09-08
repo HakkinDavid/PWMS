@@ -796,7 +796,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final updatedAtt = await (db.select(db.attachmentsTable)..where((tbl) => tbl.id.equals('att_webp'))).getSingle();
-      expect(updatedAtt.fileName, '10 Pesos Mexicanos - México (2024) (e_coin) (anverso).webp');
+      expect(updatedAtt.fileName, '10 Pesos Mexicanos (2024) (e_coin) (anverso).webp');
       expect(updatedAtt.fileName.endsWith('.jpg'), isFalse);
       expect(updatedAtt.fileName.endsWith('.webp'), isTrue);
       await tester.pump(const Duration(seconds: 4));

@@ -49,7 +49,7 @@ void main() {
       createdAt: DateTime.now(),
     );
 
-    test('derives full canonical name from nominal value, currency, country, and year', () async {
+    test('derives full canonical name from nominal value, currency, and year without redundant country', () async {
       await catalogRepo.saveCatalogItem(monedaSpecies);
 
       final coinEntity = WorldEntity(
@@ -92,7 +92,7 @@ void main() {
 
       // Direct derivation test
       final derivedName = NumismaticDataHelper.deriveInstanceName(coinEntity);
-      expect(derivedName, equals('5 Pesos Mexicanos - México (1985)'));
+      expect(derivedName, equals('5 Pesos Mexicanos (1985)'));
 
       // Persisted test
       await entityRepo.saveEntity(coinEntity);
@@ -100,16 +100,16 @@ void main() {
       expect(loaded, isNotNull);
 
       final customName = EntityDisplayHelper.getInstanceCustomName(loaded!, monedaSpecies);
-      expect(customName, equals('5 Pesos Mexicanos - México (1985)'));
+      expect(customName, equals('5 Pesos Mexicanos (1985)'));
 
       final displayName = EntityDisplayHelper.getDisplayName(
         entity: loaded,
         catalogItems: [monedaSpecies],
       );
-      expect(displayName, equals('5 Pesos Mexicanos - México (1985)'));
+      expect(displayName, equals('5 Pesos Mexicanos (1985)'));
     });
 
-    test('handles singular vs plural correctly (1 Dólar vs 20 Dólares)', () {
+    test('handles singular vs plural correctly (1 Dólar vs 20 Dólares) and named denominations (Penny)', () {
       final singleDollar = WorldEntity(
         id: 'bill_1',
         speciesId: billeteSpecies.id,
@@ -157,13 +157,61 @@ void main() {
         }).toList(),
       );
 
+      final pennyCoin = WorldEntity(
+        id: 'penny_1',
+        speciesId: monedaSpecies.id,
+        magnitudes: const [
+          InstanceMagnitude(
+            id: 'm1',
+            instanceId: 'penny_1',
+            propertyName: AppStrings.nominalValuePropertyName,
+            dataType: AppTechnicalStrings.datatypeRealLower,
+            magnitudeValue: 0.01,
+          ),
+          InstanceMagnitude(
+            id: 'm2',
+            instanceId: 'penny_1',
+            propertyName: AppStrings.currencyPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: 'USD',
+          ),
+          InstanceMagnitude(
+            id: 'm3',
+            instanceId: 'penny_1',
+            propertyName: AppStrings.issuerPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: 'Estados Unidos',
+          ),
+          InstanceMagnitude(
+            id: 'm4',
+            instanceId: 'penny_1',
+            propertyName: AppStrings.mintagePropertyName,
+            dataType: AppTechnicalStrings.datatypeIntegerLower,
+            magnitudeValue: 1943.0,
+          ),
+          InstanceMagnitude(
+            id: 'm5',
+            instanceId: 'penny_1',
+            propertyName: AppStrings.motifPropertyName,
+            dataType: AppTechnicalStrings.datatypeStringLower,
+            stringValue: 'Lincoln Wheat',
+          ),
+        ],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
       expect(
         NumismaticDataHelper.deriveInstanceName(singleDollar),
-        equals('1 Dólar Estadounidense - Estados Unidos (2020)'),
+        equals('1 Dólar Estadounidense (2020)'),
       );
       expect(
         NumismaticDataHelper.deriveInstanceName(twentyDollars),
-        equals('20 Dólares Estadounidenses - Estados Unidos (2020)'),
+        equals('20 Dólares Estadounidenses (2020)'),
+      );
+      expect(
+        NumismaticDataHelper.deriveInstanceName(pennyCoin),
+        equals('Penny de Dólares Estadounidenses (1943) [Lincoln Wheat]'),
       );
     });
 
@@ -223,7 +271,7 @@ void main() {
 
       expect(
         NumismaticDataHelper.deriveInstanceName(coinWithoutYear),
-        equals('10 Euros - España'),
+        equals('10 Euros'),
       );
       expect(
         NumismaticDataHelper.deriveInstanceName(coinOnlyDenom),
@@ -281,14 +329,14 @@ void main() {
         (m) => m.propertyName.trim().toLowerCase() == AppTechnicalStrings.propNombreLower,
       );
       expect(nombreMag.dataType, equals(AppTechnicalStrings.datatypeStringLower));
-      expect(nombreMag.stringValue, equals('10 Pesos Mexicanos - México (1990)'));
-      expect(nombreMag.displayValue, equals('10 Pesos Mexicanos - México (1990)'));
+      expect(nombreMag.stringValue, equals('10 Pesos Mexicanos (1990)'));
+      expect(nombreMag.displayValue, equals('10 Pesos Mexicanos (1990)'));
 
       // Verify row exists directly in Drift DB instance_magnitudes_table
       final dbRows = await (db.select(db.instanceMagnitudesTable)
         ..where((t) => t.instanceId.equals('persisted_coin_1') & t.propertyName.equals(AppStrings.propertyNameNombre))).get();
       expect(dbRows.length, equals(1));
-      expect(dbRows.first.stringValue, equals('10 Pesos Mexicanos - México (1990)'));
+      expect(dbRows.first.stringValue, equals('10 Pesos Mexicanos (1990)'));
     });
 
     test('Updating other properties dynamically updates the Nombre magnitude upon save', () async {
@@ -444,11 +492,23 @@ void main() {
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '5', currencyCode: 'MXN'), equals('5 Pesos'));
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.25', currencyCode: 'USD'), equals('Cuarto'));
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.50', currencyCode: 'EUR'), equals('50 Céntimos de Euro'));
-      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '1/2', currencyCode: 'REAL'), equals('Medio Real (1/2 Real)'));
-      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '8', currencyCode: 'REAL'), equals('8 Reales (Real de a 8)'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '1/2', currencyCode: 'REAL'), equals('Medio Real'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '8', currencyCode: 'REAL'), equals('Real de a 8'));
     });
 
-    test('formatDenominationWithFullCurrency resolves natural subunits and case-consistent plurals', () {
+    test('formatDenominationWithFullCurrency resolves natural subunits, case-consistent plurals, and named denominations', () {
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.01', currencyCode: 'USD'),
+        equals('Penny de Dólares Estadounidenses'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.05', currencyCode: 'USD'),
+        equals('Nickel de Dólares Estadounidenses'),
+      );
+      expect(
+        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.10', currencyCode: 'USD'),
+        equals('Dime de Dólares Estadounidenses'),
+      );
       expect(
         NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.20', currencyCode: 'MXP'),
         equals('20 Centavos de Pesos Mexicanos Antiguos'),
@@ -466,24 +526,20 @@ void main() {
         equals('1 Dólar Estadounidense'),
       );
       expect(
-        NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.25', currencyCode: 'USD'),
-        equals('25 Centavos de Dólares Estadounidenses'),
-      );
-      expect(
         NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.50', currencyCode: 'EUR'),
         equals('50 Céntimos de Euro'),
       );
       expect(
         NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '8', currencyCode: 'MXR'),
-        equals('8 Reales Mexicanos Coloniales e Imperiales'),
+        equals('Real de a 8 de Reales Mexicanos Coloniales e Imperiales'),
       );
       expect(
         NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '1/2', currencyCode: 'REAL'),
-        equals('1/2 Real Español'),
+        equals('Medio Real de Reales Españoles'),
       );
     });
 
-    test('buildSpecimenTitle formats museum-grade title with Country, Year, and Commemorative Motif', () {
+    test('buildSpecimenTitle formats museum-grade title with Year and Commemorative Motif in square brackets without redundant country', () {
       final specimen1 = NumismaticDataHelper.buildSpecimenTitle(
         attrs: const NumismaticAttributes(
           faceValueStr: '0.20',
@@ -493,7 +549,7 @@ void main() {
           motif: 'Francisco I. Madero',
         ),
       );
-      expect(specimen1, equals('20 Centavos de Pesos Mexicanos Antiguos - México (1975) - Francisco I. Madero'));
+      expect(specimen1, equals('20 Centavos de Pesos Mexicanos Antiguos (1975) [Francisco I. Madero]'));
 
       final specimen2 = NumismaticDataHelper.buildSpecimenTitle(
         attrs: const NumismaticAttributes(
@@ -504,7 +560,7 @@ void main() {
           motif: 'Coyolxauhqui',
         ),
       );
-      expect(specimen2, equals('50 Pesos Mexicanos Antiguos - México (1982) - Coyolxauhqui'));
+      expect(specimen2, equals('50 Pesos Mexicanos Antiguos (1982) [Coyolxauhqui]'));
 
       final specimen3 = NumismaticDataHelper.buildSpecimenTitle(
         attrs: const NumismaticAttributes(
@@ -515,7 +571,7 @@ void main() {
           motif: '500 Años de Memoria Histórica de México-Tenochtitlan',
         ),
       );
-      expect(specimen3, equals('20 Pesos Mexicanos - México (2021) - 500 Años de Memoria Histórica de México-Tenochtitlan'));
+      expect(specimen3, equals('20 Pesos Mexicanos (2021) [500 Años de Memoria Histórica de México-Tenochtitlan]'));
 
       final specimen4 = NumismaticDataHelper.buildSpecimenTitle(
         attrs: const NumismaticAttributes(
@@ -526,7 +582,7 @@ void main() {
           motif: 'Morgan',
         ),
       );
-      expect(specimen4, equals('1 Dólar Estadounidense - Estados Unidos (1921) - Morgan'));
+      expect(specimen4, equals('1 Dólar Estadounidense (1921) [Morgan]'));
 
       final specimen5 = NumismaticDataHelper.buildSpecimenTitle(
         attrs: const NumismaticAttributes(
@@ -537,10 +593,21 @@ void main() {
           motif: 'Carlos IV',
         ),
       );
-      expect(specimen5, equals('8 Reales Mexicanos Coloniales e Imperiales - Virreinato de Nueva España (1790) - Carlos IV'));
+      expect(specimen5, equals('Real de a 8 de Reales Mexicanos Coloniales e Imperiales (1790) [Carlos IV]'));
+
+      final specimen6 = NumismaticDataHelper.buildSpecimenTitle(
+        attrs: const NumismaticAttributes(
+          faceValueStr: '0.01',
+          currencyCode: 'USD',
+          country: 'Estados Unidos',
+          year: '1943',
+          motif: 'Lincoln Wheat',
+        ),
+      );
+      expect(specimen6, equals('Penny de Dólares Estadounidenses (1943) [Lincoln Wheat]'));
     });
 
-    test('deriveInstanceName integrates motif from instance magnitudes into dynamic Nombre', () {
+    test('deriveInstanceName integrates motif in square brackets and named denominations into dynamic Nombre', () {
       final monedaSpecies = CatalogItem(
         id: 'sp_moneda_motif',
         name: 'Moneda',
@@ -593,7 +660,7 @@ void main() {
       );
 
       final derived = NumismaticDataHelper.deriveInstanceName(commemorativeCoin);
-      expect(derived, equals('20 Centavos de Pesos Mexicanos Antiguos - México (1975) - Francisco I. Madero'));
+      expect(derived, equals('20 Centavos de Pesos Mexicanos Antiguos (1975) [Francisco I. Madero]'));
     });
   });
 }

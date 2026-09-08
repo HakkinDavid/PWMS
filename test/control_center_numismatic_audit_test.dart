@@ -263,7 +263,7 @@ void main() {
       final expectedDisplayName = NumismaticDataHelper.buildInstanceDisplayName(
         NumismaticDataHelper.extractAttributesFromInstance(updatedInstance),
       );
-      expect(expectedDisplayName, equals('20 Pesos Mexicanos - México (2023)'));
+      expect(expectedDisplayName, equals('20 Pesos Mexicanos (2023)'));
 
       final expectedFileName = NumismaticDataHelper.buildAttachmentFileName(
         subspeciesName: expectedDisplayName,

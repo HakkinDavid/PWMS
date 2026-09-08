@@ -363,7 +363,7 @@ abstract final class NumismaticCurrenciesRegistry {
       subunitSymbol: '¢',
       subunitRatio: 100,
       namedDenominations: {
-        '0.50': '50 Centavos (Tostón)',
+        '0.50': 'Tostón',
       },
     ),
     NumismaticCurrencyDefinition(
@@ -373,14 +373,12 @@ abstract final class NumismaticCurrenciesRegistry {
       symbol: 'R',
       hasSubunit: false,
       namedDenominations: {
-        '1/16': 'Tlaco (1/16 Real)',
-        '1/8': 'Ochavo (1/8 Real)',
-        '1/4': 'Cuartilla (1/4 Real)',
-        '1/2': 'Medio Real (1/2 Real)',
-        '1': '1 Real',
-        '2': '2 Reales',
-        '4': '4 Reales (Tostón)',
-        '8': '8 Reales (Real de a 8 / Peso Fuerte)',
+        '1/16': 'Tlaco',
+        '1/8': 'Ochavo',
+        '1/4': 'Cuartilla',
+        '1/2': 'Medio Real',
+        '4': 'Tostón',
+        '8': 'Real de a 8',
       },
     ),
     NumismaticCurrencyDefinition(
@@ -390,11 +388,9 @@ abstract final class NumismaticCurrenciesRegistry {
       symbol: 'E',
       hasSubunit: false,
       namedDenominations: {
-        '1/2': 'Medio Escudo (Escudito)',
-        '1': '1 Escudo',
-        '2': '2 Escudos (Doblón)',
-        '4': '4 Escudos',
-        '8': '8 Escudos (Onza de Oro)',
+        '1/2': 'Escudito',
+        '2': 'Doblón',
+        '8': 'Onza',
       },
     ),
 
@@ -463,7 +459,7 @@ abstract final class NumismaticCurrenciesRegistry {
       subunitSymbol: 'cts',
       subunitRatio: 100,
       namedDenominations: {
-        '5': '5 Pesetas (Duro)',
+        '5': 'Duro',
       },
     ),
     NumismaticCurrencyDefinition(
@@ -477,10 +473,10 @@ abstract final class NumismaticCurrenciesRegistry {
       subunitSymbol: 'mrv',
       subunitRatio: 34,
       namedDenominations: {
-        '1/4': 'Cuartilla (1/4 Real)',
-        '1/2': 'Medio Real (1/2 Real)',
-        '4': '4 Reales (Tostón)',
-        '8': '8 Reales (Real de a 8)',
+        '1/4': 'Cuartilla',
+        '1/2': 'Medio Real',
+        '4': 'Tostón',
+        '8': 'Real de a 8',
       },
     ),
     NumismaticCurrencyDefinition(
@@ -490,8 +486,8 @@ abstract final class NumismaticCurrenciesRegistry {
       symbol: 'E',
       hasSubunit: false,
       namedDenominations: {
-        '2': '2 Escudos (Doblón)',
-        '8': '8 Escudos (Onza Española)',
+        '2': 'Doblón',
+        '8': 'Onza',
       },
     ),
     NumismaticCurrencyDefinition(
@@ -518,6 +514,9 @@ abstract final class NumismaticCurrenciesRegistry {
       subunitNamePlural: 'Peniques',
       subunitSymbol: 'p',
       subunitRatio: 100,
+      namedDenominations: {
+        '0.01': 'Penny',
+      },
     ),
     NumismaticCurrencyDefinition(
       code: gbpOld,
@@ -530,10 +529,10 @@ abstract final class NumismaticCurrenciesRegistry {
       subunitSymbol: 'd',
       subunitRatio: 240,
       namedDenominations: {
-        '0.05': '1 Chelín (Shilling)',
-        '0.10': '1 Florín (Florin)',
-        '0.125': 'Media Corona (Half Crown)',
-        '0.25': '1 Corona (Crown)',
+        '0.05': 'Chelín',
+        '0.10': 'Florín',
+        '0.125': 'Media Corona',
+        '0.25': 'Corona',
       },
     ),
     NumismaticCurrencyDefinition(
@@ -1210,6 +1209,28 @@ abstract final class NumismaticCurrenciesRegistry {
     'SOS': 'Chelines Somalíes',
     'SDG': 'Libras Sudanesas',
     'SSP': 'Libras Sursudanesas',
+  };
+
+  /// Backward compatibility aliases for historical, abbreviated or colloquial currency mentions.
+  static const Map<String, String> legacyCurrencyAliases = {
+    'eau': 'AED',
+    'los eau': 'AED',
+    'dirham de los eau': 'AED',
+    'dirhams de los eau': 'AED',
+    'dirham de los emiratos arabes unidos': 'AED',
+    'dirhams de los emiratos arabes unidos': 'AED',
+    'emiratos arabes unidos': 'AED',
+    'los emiratos arabes unidos': 'AED',
+    'dolar continental de ee uu': 'USC',
+    'dolares continentales de ee uu': 'USC',
+    'dolar continental de eeuu': 'USC',
+    'dolares continentales de eeuu': 'USC',
+    'dolares continentales de ee.uu.': 'USC',
+    'dolar continental de ee.uu.': 'USC',
+    'marco de la rda': 'DDM',
+    'marcos de la rda': 'DDM',
+    'marcos de la rda (alemania oriental)': 'DDM',
+    'marco de la rda (alemania oriental)': 'DDM',
   };
 
   /// Maps plural currency nouns and nationalities to their singular standard representation.

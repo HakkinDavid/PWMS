@@ -905,6 +905,9 @@ WHERE id IN (
   static const openParenSpace = ' (';
   static const closeParenOpenParen = ') (';
   static const closeParenDot = ').';
+  static const openBracket = '[';
+  static const closeBracket = ']';
+  static const openBracketSpace = ' [';
   static const underscore = '_';
   static const doubleQuote = '"';
   static const singleQuote = "'";
@@ -981,6 +984,8 @@ WHERE id IN (
   static const regexSpaceArgentinos = r'\s+argentinos?';
   static const regexSpaceCubanos = r'\s+cubanos?';
   static const regexSpaceDominicanos = r'\s+dominicanos?';
+  static const regexSquareBrackets = r'\[(.*?)\]';
+  static const regexSubspeciesYearParentheses = r'\(([0-9]{3,4})\)';
 
   // ---------------------------------------------------------------------------
   // Product Lookup Endpoints, Keys & Regexes

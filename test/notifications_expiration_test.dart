@@ -4,6 +4,8 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -33,6 +35,30 @@ class FakePathProviderPlatform extends PathProviderPlatform with MockPlatformInt
   Future<String?> getApplicationDocumentsPath() async => docsPath;
 }
 
+class FakeFlutterLocalNotificationsPlatform extends FlutterLocalNotificationsPlatform with MockPlatformInterfaceMixin {
+  @override
+  Future<bool?> initialize(
+    InitializationSettings initializationSettings, {
+    DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,
+    DidReceiveBackgroundNotificationResponseCallback? onDidReceiveBackgroundNotificationResponse,
+  }) async => true;
+
+  @override
+  Future<void> show(
+    int id,
+    String? title,
+    String? body, {
+    NotificationDetails? notificationDetails,
+    String? payload,
+  }) async {}
+
+  @override
+  Future<void> cancel(int id, {String? tag}) async {}
+
+  @override
+  Future<void> cancelAll() async {}
+}
+
 void main() {
   late AppDatabase db;
   late Directory tempDir;
@@ -44,6 +70,7 @@ void main() {
       tempPath: p.join(tempDir.path, 'temp'),
       docsPath: p.join(tempDir.path, 'docs'),
     );
+    FlutterLocalNotificationsPlatform.instance = FakeFlutterLocalNotificationsPlatform();
 
     db = AppDatabase(NativeDatabase.memory());
   });

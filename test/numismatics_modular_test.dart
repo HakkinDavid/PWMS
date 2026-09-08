@@ -88,7 +88,7 @@ void main() {
         country: 'Virreinato de Nueva España',
         year: '1735',
       );
-      expect(realTitle, '8 Reales Españoles - Virreinato de Nueva España (1735)');
+      expect(realTitle, 'Real de a 8 de Reales Españoles - Virreinato de Nueva España (1735)');
     });
 
     test('NumismaticParser parses subspecies title accurately', () {

@@ -209,7 +209,7 @@ void main() {
     expect(submittedResult!.year, equals('1982'));
     expect(submittedResult!.grade, equals('Muy buena'));
     expect(submittedResult!.composition, equals('Cuproníquel'));
-    expect(submittedResult!.subspeciesName, equals('5 Pesos Mexicanos Antiguos - México (1982)'));
+    expect(submittedResult!.subspeciesName, equals('5 Pesos Mexicanos Antiguos (1982)'));
     expect(submittedResult!.motif, isNull);
   });
 
@@ -279,7 +279,7 @@ void main() {
     expect(submittedResult!.year, equals('1982'));
     expect(submittedResult!.composition, equals('Cuproníquel'));
     expect(submittedResult!.grade, equals('Excelente'));
-    expect(submittedResult!.subspeciesName, equals('50 Pesos Mexicanos Antiguos - México (1982)'));
+    expect(submittedResult!.subspeciesName, equals('50 Pesos Mexicanos Antiguos (1982)'));
   });
 
   testWidgets('NumismaticQuickFillSheet summons numeric decimal text entry when denomination is Otro and validates properly', (WidgetTester tester) async {
@@ -364,7 +364,7 @@ void main() {
 
     expect(submittedResult, isNotNull);
     expect(submittedResult!.faceValueNumber, equals(0.5));
-    expect(submittedResult!.subspeciesName, equals('50 Centavos de Pesos Mexicanos Antiguos - México (1975)'));
+    expect(submittedResult!.subspeciesName, equals('Tostón de Pesos Mexicanos Antiguos (1975)'));
     expect(submittedResult!.country, equals('México'));
     expect(submittedResult!.currencyCode, equals('MXP'));
   });
@@ -630,7 +630,7 @@ void main() {
     expect(submittedResult!.year, equals('1920'));
     expect(submittedResult!.grade, equals('NGC MS-65'));
     expect(submittedResult!.composition, equals('Electrum'));
-    expect(submittedResult!.subspeciesName, equals('1 Denario - Imperio Romano (1920)'));
+    expect(submittedResult!.subspeciesName, equals('1 Denario (1920)'));
   });
 
   testWidgets('NumismaticQuickFillSheet submits successfully when fields are marked null with checkmarks', (WidgetTester tester) async {

@@ -804,71 +804,87 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                 mag.propertyName.toLowerCase() == AppTechnicalStrings.magComposicionWithoutAccentLower;
 
                             return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4.0),
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(mag.type.isNumeric ? Icons.straighten : Icons.label_outlined, size: 18, color: Colors.blueAccent),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 2.0),
+                                    child: Icon(mag.type.isNumeric ? Icons.straighten : Icons.label_outlined, size: 18, color: Colors.blueAccent),
+                                  ),
                                   const SizedBox(width: 8),
                                   Expanded(
-                                    child: Row(
+                                    flex: 2,
+                                    child: Wrap(
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      spacing: 6,
+                                      runSpacing: 4,
                                       children: [
-                                        Flexible(
-                                          child: Text(
-                                            mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
-                                                ? AppStrings.propertyWithUnitOrType(mag.propertyName, mag.unitSymbol!)
-                                                : AppStrings.propertyWithUnitOrType(mag.propertyName, mag.dataType),
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                          ),
+                                        Text(
+                                          mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
+                                              ? AppStrings.propertyWithUnitOrType(mag.propertyName, mag.unitSymbol!)
+                                              : AppStrings.propertyWithUnitOrType(mag.propertyName, mag.dataType),
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                         ),
-                                        if (isMaterialProp) ...[
-                                          const SizedBox(width: 6),
+                                        if (isMaterialProp)
                                           NumismaticMaterialBadge(
                                             material: mag.stringValue ?? mag.displayValue,
                                             compact: true,
                                           ),
-                                        ],
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(width: 12),
                                   if (_isEditingInPlace)
-                                    Row(
-                                      children: [
-                                        InkWell(
-                                          onTap: () => _editMagnitudeDialog(mag),
-                                          borderRadius: BorderRadius.circular(8),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(color: theme.colorScheme.primary),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Flexible(
+                                            child: InkWell(
+                                              onTap: () => _editMagnitudeDialog(mag),
                                               borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: Text(
-                                              mag.displayValue,
-                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: theme.colorScheme.primary),
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(color: theme.colorScheme.primary),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: Text(
+                                                  mag.displayValue,
+                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: theme.colorScheme.primary),
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
-                                          tooltip: AppStrings.deletePropertyFromInstanceTooltip,
-                                          onPressed: () async {
-                                            final confirm = await AppConfirmationDialog.showDeleteConfirmation(
-                                              context: context,
-                                              title: AppStrings.confirmDeletePropertyTitle,
-                                              message: AppStrings.confirmDeleteProperty(mag.propertyName),
-                                            );
-                                            if (confirm && mounted) {
-                                              setState(() => _workingMagnitudes.removeAt(idx));
-                                            }
-                                          },
-                                        ),
-                                      ],
+                                          const SizedBox(width: 4),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                                            tooltip: AppStrings.deletePropertyFromInstanceTooltip,
+                                            onPressed: () async {
+                                              final confirm = await AppConfirmationDialog.showDeleteConfirmation(
+                                                context: context,
+                                                title: AppStrings.confirmDeletePropertyTitle,
+                                                message: AppStrings.confirmDeleteProperty(mag.propertyName),
+                                              );
+                                              if (confirm && mounted) {
+                                                setState(() => _workingMagnitudes.removeAt(idx));
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     )
                                   else
-                                    Text(
-                                      mag.displayValue,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.blueAccent),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        mag.displayValue,
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.blueAccent),
+                                      ),
                                     ),
                                 ],
                               ),

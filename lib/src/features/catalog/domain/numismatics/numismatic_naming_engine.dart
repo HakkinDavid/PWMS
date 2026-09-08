@@ -32,8 +32,18 @@ abstract final class NumismaticNamingEngine {
     final numVal = NumismaticDenominationsRegistry.parseNumber(cleanDenom);
 
     // 1. Check if currency defines a named colloquial override for this exact denomination
-    if (currDef != null && currDef.namedDenominations.containsKey(cleanDenom)) {
-      return currDef.namedDenominations[cleanDenom]!;
+    if (currDef != null && currDef.namedDenominations.isNotEmpty) {
+      if (currDef.namedDenominations.containsKey(cleanDenom)) {
+        return currDef.namedDenominations[cleanDenom]!;
+      }
+      if (numVal != null) {
+        for (final entry in currDef.namedDenominations.entries) {
+          final keyNum = NumismaticDenominationsRegistry.parseNumber(entry.key);
+          if (keyNum != null && (keyNum - numVal).abs() < 0.0001) {
+            return entry.value;
+          }
+        }
+      }
     }
 
     // 2. Fractional denominations (e.g. '1/2', '1/4', '1/8')
@@ -64,16 +74,18 @@ abstract final class NumismaticNamingEngine {
     return cleanDenom;
   }
 
-  /// Formats the denomination paired with the full, case-consistent canonical currency name.
+  /// Formats the denomination paired with the full, case-consistent canonical currency name,
+  /// or returns the named denomination if defined (e.g. 'Penny', 'Nickel', 'Dime').
   ///
   /// Examples:
+  /// - ('0.01', 'USD') -> 'Penny de Dólares Estadounidenses'
+  /// - ('0.50', 'MXP') -> 'Tostón de Pesos Mexicanos Antiguos'
   /// - ('0.20', 'MXP') -> '20 Centavos de Pesos Mexicanos Antiguos'
   /// - ('50', 'MXP') -> '50 Pesos Mexicanos Antiguos'
   /// - ('20', 'MXN') -> '20 Pesos Mexicanos'
   /// - ('1', 'USD') -> '1 Dólar Estadounidense'
-  /// - ('0.25', 'USD') -> '25 Centavos de Dólares Estadounidenses'
   /// - ('0.50', 'EUR') -> '50 Céntimos de Euro'
-  /// - ('8', 'MXR') -> '8 Reales Mexicanos Coloniales e Imperiales'
+  /// - ('8', 'MXR') -> 'Real de a 8 de Reales Mexicanos Coloniales e Imperiales'
   static String formatDenominationWithFullCurrency({
     required String denomination,
     String? currencyCode,
@@ -93,7 +105,26 @@ abstract final class NumismaticNamingEngine {
       return [countStr, canonicalName].where((s) => s.isNotEmpty).join(AppTechnicalStrings.space);
     }
 
-    // 1. Fractional / Subunit case (< 1.0)
+    // 1. Check if currency defines a named denomination override (e.g. '0.01' USD -> 'Penny de Dólares Estadounidenses', '0.50' MXP -> 'Tostón de Pesos Mexicanos Antiguos')
+    if (currDef.namedDenominations.isNotEmpty) {
+      String? named;
+      if (currDef.namedDenominations.containsKey(cleanDenom)) {
+        named = currDef.namedDenominations[cleanDenom]!;
+      } else if (numVal != null) {
+        for (final entry in currDef.namedDenominations.entries) {
+          final keyNum = NumismaticDenominationsRegistry.parseNumber(entry.key);
+          if (keyNum != null && (keyNum - numVal).abs() < 0.0001) {
+            named = entry.value;
+            break;
+          }
+        }
+      }
+      if (named != null) {
+        return [named, currDef.namePlural].join(AppTechnicalStrings.deWithSpaces);
+      }
+    }
+
+    // 2. Fractional / Subunit case (< 1.0)
     if (numVal != null && numVal > 0 && numVal < 1.0 && currDef.hasSubunit && !cleanDenom.contains(AppTechnicalStrings.slash)) {
       final subunitCount = (numVal * currDef.subunitRatio).round();
       final subName = subunitCount == 1 ? currDef.subunitName : currDef.subunitNamePlural;
@@ -106,17 +137,17 @@ abstract final class NumismaticNamingEngine {
           currDef.namePlural;
     }
 
-    // 2. Fractional strings like '1/2', '1/4', '1/8'
+    // 3. Fractional strings like '1/2', '1/4', '1/8'
     if (cleanDenom.contains(AppTechnicalStrings.slash)) {
       return [cleanDenom, currDef.name].join(AppTechnicalStrings.space);
     }
 
-    // 3. Singular unit (= 1.0)
+    // 4. Singular unit (= 1.0)
     if (numVal == 1.0 || cleanDenom == AppTechnicalStrings.strOne) {
       return [AppTechnicalStrings.strOne, currDef.name].join(AppTechnicalStrings.space);
     }
 
-    // 4. Plural units (> 1.0)
+    // 5. Plural units (> 1.0)
     final formattedNum = numVal != null
         ? (numVal % 1 == 0 ? numVal.toInt().toString() : numVal.toString())
         : cleanDenom;
@@ -124,16 +155,20 @@ abstract final class NumismaticNamingEngine {
     return [formattedNum, currDef.namePlural].join(AppTechnicalStrings.space);
   }
 
-  /// Builds the complete, museum-grade specimen display name for a coin or banknote instance.
+  /// Builds the complete specimen display name for a coin or banknote instance.
+  /// Does not include redundant country in instance display name, and formats commemorative
+  /// motif in square brackets `[Motivo]`.
   ///
-  /// Formula: [Denominación con Divisa Completa] - [País] ([Año]) - [Motivo]
+  /// Formula: [Denominación con Divisa / NamedDenom] ([Año]) [[Motivo]]
   ///
   /// Examples:
-  /// - '20 Centavos de Pesos Mexicanos Antiguos - México (1975) - Francisco I. Madero'
-  /// - '50 Pesos Mexicanos Antiguos - México (1982) - Coyolxauhqui'
-  /// - '20 Pesos Mexicanos - México (2021) - 500 Años de Memoria Histórica de México-Tenochtitlan'
-  /// - '1 Dólar Estadounidense - Estados Unidos (1921) - Morgan'
-  /// - '8 Reales Mexicanos Coloniales e Imperiales - Virreinato de Nueva España (1790) - Carlos IV'
+  /// - '20 Centavos de Pesos Mexicanos Antiguos (1975) [Francisco I. Madero]'
+  /// - '50 Pesos Mexicanos Antiguos (1982) [Coyolxauhqui]'
+  /// - '20 Pesos Mexicanos (2021) [500 Años de Memoria Histórica de México-Tenochtitlan]'
+  /// - '1 Dólar Estadounidense (1921) [Morgan]'
+  /// - 'Penny de Dólares Estadounidenses (1943) [Lincoln Wheat]'
+  /// - 'Real de a 8 de Reales Mexicanos Coloniales e Imperiales (1790) [Carlos IV]'
+  /// - 'Tostón de Pesos Mexicanos Antiguos (1975)'
   static String buildSpecimenTitle({
     required NumismaticAttributes attrs,
     String? defaultSpeciesName,
@@ -151,33 +186,35 @@ abstract final class NumismaticNamingEngine {
       faceValueNumber: attrs.faceValueNumber,
     );
 
-    final country = attrs.country?.trim() ?? AppTechnicalStrings.empty;
     final year = attrs.year?.trim();
     final motif = attrs.motif?.trim();
 
-    final parts = <String>[];
-    if (denomWithCurr.isNotEmpty) {
-      parts.add(denomWithCurr);
-    }
-    if (country.isNotEmpty) {
-      parts.add(country);
-    }
-
-    var baseTitle = parts.join(AppTechnicalStrings.dashWithSpaces);
+    var baseTitle = denomWithCurr.trim();
 
     if (year != null && year.isNotEmpty) {
       final cleanYr = year
           .replaceAll(AppTechnicalStrings.openParen, AppTechnicalStrings.empty)
-          .replaceAll(AppTechnicalStrings.closeParen, AppTechnicalStrings.empty);
-      baseTitle = baseTitle.isNotEmpty
-          ? baseTitle + AppTechnicalStrings.openParenSpace + cleanYr + AppTechnicalStrings.closeParen
-          : AppTechnicalStrings.openParen + cleanYr + AppTechnicalStrings.closeParen;
+          .replaceAll(AppTechnicalStrings.closeParen, AppTechnicalStrings.empty)
+          .trim();
+      if (cleanYr.isNotEmpty) {
+        final yearPart = [AppTechnicalStrings.openParen, cleanYr, AppTechnicalStrings.closeParen].join(AppTechnicalStrings.empty);
+        baseTitle = baseTitle.isNotEmpty
+            ? [baseTitle, yearPart].join(AppTechnicalStrings.space)
+            : yearPart;
+      }
     }
 
     if (motif != null && motif.isNotEmpty) {
-      baseTitle = baseTitle.isNotEmpty
-          ? baseTitle + AppTechnicalStrings.dashWithSpaces + motif
-          : motif;
+      final cleanMotif = motif
+          .replaceAll(AppTechnicalStrings.openBracket, AppTechnicalStrings.empty)
+          .replaceAll(AppTechnicalStrings.closeBracket, AppTechnicalStrings.empty)
+          .trim();
+      if (cleanMotif.isNotEmpty) {
+        final motifPart = [AppTechnicalStrings.openBracket, cleanMotif, AppTechnicalStrings.closeBracket].join(AppTechnicalStrings.empty);
+        baseTitle = baseTitle.isNotEmpty
+            ? [baseTitle, motifPart].join(AppTechnicalStrings.space)
+            : motifPart;
+      }
     }
 
     if (baseTitle.isEmpty) {
