@@ -139,6 +139,29 @@ class NumismaticDataHelper {
   static bool matchesDenomination(String d1, String d2) =>
       NumismaticMatrix.matchesDenomination(d1, d2);
 
+  static NumismaticMaterialDefinition? getMaterialDefinition(String? material) =>
+      material != null ? NumismaticMaterialsRegistry.resolve(material) : null;
+
+  static List<NumismaticMaterialDefinition> getMaterialsByFamily(NumismaticMaterialFamily family) =>
+      NumismaticMaterialsRegistry.getMaterialsByFamily(family);
+
+  static List<NumismaticMaterialDefinition> getMaterialsByStructure(NumismaticMaterialStructure structure) =>
+      NumismaticMaterialsRegistry.getMaterialsByStructure(structure);
+
+  static bool isPreciousMetal(String? material) =>
+      material != null && NumismaticMaterialsRegistry.isPreciousMetal(material);
+
+  static double? calculatePureMetalWeight({
+    required String? material,
+    required double totalWeightGrams,
+  }) =>
+      material != null
+          ? NumismaticMaterialsRegistry.calculatePureMetalWeight(
+              material: material,
+              totalWeightGrams: totalWeightGrams,
+            )
+          : null;
+
   // Parsing methods from NumismaticParser
   static String resolveCurrencyIsoCode(String codeOrName) =>
       NumismaticParser.resolveCurrencyIsoCode(codeOrName);

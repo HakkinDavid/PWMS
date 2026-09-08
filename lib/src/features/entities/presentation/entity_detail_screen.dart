@@ -26,6 +26,8 @@ import '../domain/attachment.dart';
 import '../domain/entity_display_helper.dart';
 import '../domain/instance_magnitude.dart';
 import '../domain/world_entity.dart';
+import '../../catalog/domain/numismatic_data_helper.dart';
+import '../../catalog/presentation/widgets/numismatic_material_badge.dart';
 import 'shelf_life_gauge_widget.dart';
 
 
@@ -797,6 +799,8 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                           itemCount: _workingMagnitudes.length,
                           itemBuilder: (ctx, idx) {
                             final mag = _workingMagnitudes[idx];
+                            final isMaterialProp = mag.propertyName.toLowerCase() == 'material' ||
+                                mag.propertyName.toLowerCase() == 'composición';
 
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -805,11 +809,24 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                                   Icon(mag.type.isNumeric ? Icons.straighten : Icons.label_outlined, size: 18, color: Colors.blueAccent),
                                   const SizedBox(width: 8),
                                   Expanded(
-                                    child: Text(
-                                      mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
-                                          ? AppStrings.propertyWithUnitOrType(mag.propertyName, mag.unitSymbol!)
-                                          : AppStrings.propertyWithUnitOrType(mag.propertyName, mag.dataType),
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            mag.unitSymbol != null && mag.unitSymbol!.trim().isNotEmpty
+                                                ? AppStrings.propertyWithUnitOrType(mag.propertyName, mag.unitSymbol!)
+                                                : AppStrings.propertyWithUnitOrType(mag.propertyName, mag.dataType),
+                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                          ),
+                                        ),
+                                        if (isMaterialProp) ...[
+                                          const SizedBox(width: 6),
+                                          NumismaticMaterialBadge(
+                                            material: mag.stringValue ?? mag.displayValue,
+                                            compact: true,
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                   ),
                                   if (_isEditingInPlace)
@@ -857,12 +874,58 @@ class _EntityDetailScreenState extends ConsumerState<EntityDetailScreen> {
                             );
                           },
                         ),
+                      Builder(
+                        builder: (_) {
+                          final materialMag = _workingMagnitudes.where((m) =>
+                              m.propertyName.toLowerCase() == 'material' ||
+                              m.propertyName.toLowerCase() == 'composición').firstOrNull;
+                          final weightMag = _workingMagnitudes.where((m) =>
+                              m.propertyName.toLowerCase() == 'peso' ||
+                              m.propertyName.toLowerCase() == 'weight').firstOrNull;
+
+                          if (materialMag != null && weightMag != null && weightMag.magnitudeValue != null) {
+                            final matString = materialMag.stringValue ?? materialMag.displayValue;
+                            final fineWeight = NumismaticDataHelper.calculatePureMetalWeight(
+                              material: matString,
+                              totalWeightGrams: weightMag.magnitudeValue!,
+                            );
+                            final matDef = NumismaticDataHelper.getMaterialDefinition(matString);
+
+                            if (fineWeight != null && matDef != null && matDef.fineness != null) {
+                              final purityPct = (matDef.fineness! * 100).toStringAsFixed(1).replaceAll('.0', '');
+                              return Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.primaryContainer.withAlpha(45),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: theme.colorScheme.primary.withAlpha(60)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.auto_awesome, size: 16, color: Colors.amber),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Contenido fino estimado: $fineWeight g ${matDef.shortName} (Ley $purityPct%)',
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 14),
             ],
+
           );
 
           // Instance Footer (Notes & Save Action)          // Instance Footer (Notes & Save / Discard Actions)

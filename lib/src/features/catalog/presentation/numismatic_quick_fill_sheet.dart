@@ -13,6 +13,7 @@ import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_or_container_selection_sheet.dart';
 import '../domain/numismatic_recognition_models.dart';
 import '../domain/numismatic_data_helper.dart';
+import 'widgets/numismatic_material_badge.dart';
 
 class NumismaticQuickFillSheet extends ConsumerStatefulWidget {
   final File obversePhoto;
@@ -887,6 +888,13 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   },
                   onChanged: (val) => setState(() => _composition = val),
                 ),
+                if (!_isCompositionNull && _composition != null && _composition != AppStrings.otherSpecifyOption) ...[
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: NumismaticMaterialBadge(material: _composition!),
+                  ),
+                ],
                 if (!_isCompositionNull && _composition == AppStrings.otherSpecifyOption) ...[
                   const SizedBox(height: 10),
                   TextFormField(

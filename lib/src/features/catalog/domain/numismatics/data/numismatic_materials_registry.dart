@@ -1179,6 +1179,36 @@ abstract final class NumismaticMaterialsRegistry {
 
     return false;
   }
+
+  /// Returns all materials belonging to the specified metallurgical or substrate family.
+  static List<NumismaticMaterialDefinition> getMaterialsByFamily(NumismaticMaterialFamily family) =>
+      allMaterials.where((m) => m.family == family).toList();
+
+  /// Returns all materials matching the specified physical configuration or structure.
+  static List<NumismaticMaterialDefinition> getMaterialsByStructure(NumismaticMaterialStructure structure) =>
+      allMaterials.where((m) => m.structure == structure).toList();
+
+  /// Evaluates whether a material belongs to a precious metal family (gold, silver, platinum, palladium).
+  static bool isPreciousMetal(String material) {
+    final def = resolve(material);
+    if (def == null) return false;
+    return def.family == NumismaticMaterialFamily.gold ||
+        def.family == NumismaticMaterialFamily.silver ||
+        def.family == NumismaticMaterialFamily.platinum ||
+        def.family == NumismaticMaterialFamily.palladium;
+  }
+
+  /// Calculates the pure bullion metal weight in grams given the material and total gross weight.
+  /// Returns null if the material is not recognized or has no defined fineness/purity.
+  static double? calculatePureMetalWeight({
+    required String material,
+    required double totalWeightGrams,
+  }) {
+    if (totalWeightGrams <= 0) return null;
+    final def = resolve(material);
+    if (def == null || def.fineness == null) return null;
+    return double.parse((totalWeightGrams * def.fineness!).toStringAsFixed(4));
+  }
 }
 
 /// Convenience facade alias matching PWMS naming conventions.

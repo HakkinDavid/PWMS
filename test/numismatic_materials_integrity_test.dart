@@ -185,5 +185,92 @@ void main() {
       );
       expect(matEuro2, equals('Bimetálica (Centro Níquel-Latón, Anillo Cuproníquel)'));
     });
+
+    test('6. Metallurgical family and structure queries return valid subset definitions', () {
+      final silverList = NumismaticMaterialsRegistry.getMaterialsByFamily(NumismaticMaterialFamily.silver);
+      expect(silverList, isNotEmpty);
+      expect(silverList.every((m) => m.family == NumismaticMaterialFamily.silver), isTrue);
+
+      final goldList = NumismaticDataHelper.getMaterialsByFamily(NumismaticMaterialFamily.gold);
+      expect(goldList, isNotEmpty);
+      expect(goldList.every((m) => m.family == NumismaticMaterialFamily.gold), isTrue);
+
+      final bimetallicList = NumismaticDataHelper.getMaterialsByStructure(NumismaticMaterialStructure.bimetallic);
+      expect(bimetallicList, isNotEmpty);
+      expect(bimetallicList.every((m) => m.structure == NumismaticMaterialStructure.bimetallic), isTrue);
+    });
+
+    test('7. isPreciousMetal accurately classifies precious vs base and substrate materials', () {
+      expect(NumismaticDataHelper.isPreciousMetal('Plata .720'), isTrue);
+      expect(NumismaticDataHelper.isPreciousMetal('Plata .925'), isTrue);
+      expect(NumismaticDataHelper.isPreciousMetal('Oro .900'), isTrue);
+      expect(NumismaticDataHelper.isPreciousMetal('Oro Fino .999'), isTrue);
+      expect(NumismaticDataHelper.isPreciousMetal('Platino'), isTrue);
+      expect(NumismaticDataHelper.isPreciousMetal('Paladio'), isTrue);
+
+      expect(NumismaticDataHelper.isPreciousMetal('Cuproníquel'), isFalse);
+      expect(NumismaticDataHelper.isPreciousMetal('Bronce'), isFalse);
+      expect(NumismaticDataHelper.isPreciousMetal('Acero inoxidable'), isFalse);
+      expect(NumismaticDataHelper.isPreciousMetal('Papel de algodón'), isFalse);
+      expect(NumismaticDataHelper.isPreciousMetal('Polímero'), isFalse);
+      expect(NumismaticDataHelper.isPreciousMetal(null), isFalse);
+      expect(NumismaticDataHelper.isPreciousMetal(''), isFalse);
+    });
+
+    test('8. calculatePureMetalWeight accurately computes net fine bullion weight', () {
+      // Mexico Centenario: 41.666g Oro .900 -> 37.4994g pure gold
+      final centenarioFine = NumismaticDataHelper.calculatePureMetalWeight(
+        material: 'Oro .900',
+        totalWeightGrams: 41.666,
+      );
+      expect(centenarioFine, equals(37.4994));
+
+      // Mexico 1978 100 Pesos Morelos: 27.77g Plata .720 -> 19.9944g pure silver
+      final morelosFine = NumismaticDataHelper.calculatePureMetalWeight(
+        material: 'Plata .720',
+        totalWeightGrams: 27.77,
+      );
+      expect(morelosFine, equals(19.9944));
+
+      // US Morgan Dollar: 26.73g Plata .900 -> 24.057g pure silver
+      final morganFine = NumismaticDataHelper.calculatePureMetalWeight(
+        material: 'Plata .900',
+        totalWeightGrams: 26.73,
+      );
+      expect(morganFine, equals(24.057));
+
+      // Base metal coin or banknote substrate (fineness is null) -> returns null
+      expect(
+        NumismaticDataHelper.calculatePureMetalWeight(
+          material: 'Cuproníquel',
+          totalWeightGrams: 10.0,
+        ),
+        isNull,
+      );
+      expect(
+        NumismaticDataHelper.calculatePureMetalWeight(
+          material: 'Papel de algodón',
+          totalWeightGrams: 1.0,
+        ),
+        isNull,
+      );
+
+      // Invalid / zero weight -> returns null
+      expect(
+        NumismaticDataHelper.calculatePureMetalWeight(
+          material: 'Plata .925',
+          totalWeightGrams: 0.0,
+        ),
+        isNull,
+      );
+      expect(
+        NumismaticDataHelper.calculatePureMetalWeight(
+          material: null,
+          totalWeightGrams: 10.0,
+        ),
+        isNull,
+      );
+    });
   });
 }
+
