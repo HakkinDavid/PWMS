@@ -1,4 +1,12 @@
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'data/numismatic_currencies_registry.dart';
+import 'data/numismatic_denominations_registry.dart';
+import 'data/numismatic_materials_registry.dart';
+import 'models/numismatic_material_definition.dart';
+
+export 'data/numismatic_currencies_registry.dart';
+export 'data/numismatic_denominations_registry.dart';
+export 'data/numismatic_materials_registry.dart';
 
 class NumismaticDictionary {
   NumismaticDictionary._();
@@ -38,6 +46,8 @@ class NumismaticDictionary {
 
   static const List<String> denominations = AppTechnicalNumismatics.denominations;
 
+  static const List<String> allStandardDenominations = NumismaticDenominationsRegistry.allDenominations;
+
   static const List<String> grades = AppTechnicalNumismatics.grades;
 
   static List<String> get coinMaterials => NumismaticMaterialsRegistry.allDisplayNames;
@@ -49,4 +59,10 @@ class NumismaticDictionary {
 
   static bool areMaterialsCompatible(String mat1, String mat2) =>
       NumismaticMaterialsRegistry.areCompatible(mat1, mat2);
+
+  static double? parseDenominationNumber(String raw) =>
+      NumismaticDenominationsRegistry.parseNumber(raw);
+
+  static bool matchesDenomination(String d1, String d2) =>
+      NumismaticDenominationsRegistry.matches(d1, d2);
 }

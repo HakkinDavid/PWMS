@@ -1,3 +1,5 @@
+import 'numismatic_currencies_registry.dart';
+import 'numismatic_denominations_registry.dart';
 import 'numismatic_materials_registry.dart';
 import '../models/numismatic_models.dart';
 
@@ -8,8 +10,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USC',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usc,
         motifs: [
           NumismaticMotifRule(
             'Mind Your Business / We Are One',
@@ -19,8 +21,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '1',
-        currency: 'USC',
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.usc,
         motifs: [
           NumismaticMotifRule(
             'Sun Dial (Continental Currency)',
@@ -30,8 +32,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '8',
-        currency: 'USC',
+        denomination: NumismaticDenominationsRegistry.d8,
+        currency: NumismaticCurrenciesRegistry.usc,
         motifs: [
           NumismaticMotifRule(
             'Spanish Milled Dollar (Libre Circulación)',
@@ -49,8 +51,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.005',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_005,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Liberty Cap / Draped Bust / Classic Head / Braided Hair',
@@ -61,8 +63,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Flowing Hair / Draped Bust / Classic Head / Coronet / Braided Hair',
@@ -73,8 +75,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Plata .892/.900 (Flowing Hair / Draped Bust / Capped Bust / Seated Liberty)',
@@ -85,8 +87,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Plata .892/.900 (Draped Bust / Capped Bust / Seated Liberty)',
@@ -97,8 +99,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Plata .892/.900 (Draped Bust / Capped Bust / Seated Liberty)',
@@ -109,8 +111,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Plata .892/.900 (Flowing Hair / Draped Bust / Capped Bust / Seated Liberty)',
@@ -121,8 +123,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '1',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Silver Dollar Plata .892/.900 (Flowing Hair, Draped Bust, Gobrecht, Seated Liberty)',
@@ -139,8 +141,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '2.5',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d2_5,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Quarter Eagle Oro .900 (Draped Bust, Capped Bust, Classic Head, Coronet Liberty)',
@@ -151,8 +153,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '3',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d3,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Indian Princess Head (Oro .900)',
@@ -163,8 +165,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '5',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d5,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Half Eagle Oro .900 (Draped Bust, Capped Bust, Classic Head, Coronet Liberty)',
@@ -175,8 +177,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Eagle Oro .900 (Draped Bust, Coronet Liberty)',
@@ -187,8 +189,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '20',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d20,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Double Eagle Oro .900 (Coronet Liberty Head)',
@@ -206,8 +208,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Indian Head Cent / Flying Eagle Cent',
@@ -218,8 +220,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.02',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_02,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Shield (In God We Trust)',
@@ -230,8 +232,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.03',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_03,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Star / Liberty Head',
@@ -242,8 +244,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Shield Nickel / Seated Liberty Half Dime',
@@ -254,8 +256,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Seated Liberty Dime Plata .900',
@@ -266,8 +268,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Seated Liberty Quarter Plata .900',
@@ -278,8 +280,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Seated Liberty Half Dollar Plata .900',
@@ -290,8 +292,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '1',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Seated Liberty Dollar Plata .900',
@@ -308,8 +310,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '2.5',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d2_5,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Coronet Liberty Quarter Eagle Oro .900',
@@ -320,8 +322,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '3',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d3,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Indian Princess Head (Oro .900)',
@@ -332,8 +334,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '5',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d5,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Coronet Liberty Half Eagle Oro .900',
@@ -344,8 +346,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Coronet Liberty Eagle Oro .900',
@@ -356,8 +358,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '20',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d20,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Coronet Liberty Double Eagle Oro .900',
@@ -375,8 +377,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Indian Head Cent / Lincoln Wheat Cent',
@@ -387,8 +389,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Shield, Liberty "V", Indian Head / Buffalo Nickel',
@@ -399,8 +401,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Barber Dime / Winged Liberty Head "Mercury" Dime Plata .900',
@@ -411,8 +413,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.20',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_20,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Seated Liberty (Plata .900)',
@@ -423,8 +425,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Barber Quarter / Standing Liberty Quarter / Washington Quarter Plata .900',
@@ -435,8 +437,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Barber Half / Walking Liberty Half Dollar Plata .900',
@@ -447,8 +449,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '1',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Morgan Dollar (1878-1921)',
@@ -477,8 +479,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '2.5',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d2_5,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Quarter Eagle Oro .900 (Coronet Liberty / Indian Head)',
@@ -489,8 +491,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '3',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d3,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Indian Princess Head (Oro .900)',
@@ -501,8 +503,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '4',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d4,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Stella - Flowing Hair / Coiled Hair (Oro .900)',
@@ -513,8 +515,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '5',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d5,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Half Eagle Oro .900 (Coronet Liberty / Indian Head)',
@@ -525,8 +527,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Eagle Oro .900 (Coronet Liberty / Indian Head Saint-Gaudens)',
@@ -537,8 +539,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '20',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d20,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Double Eagle Oro .900 (Coronet Liberty / Saint-Gaudens Walking Liberty)',
@@ -549,8 +551,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Panama-Pacific - Minerva / Búho (Oro .900)',
@@ -567,8 +569,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Lincoln Wheat Cent (1909-1958)',
@@ -590,8 +592,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Buffalo / Indian Head Nickel (1913-1938)',
@@ -614,8 +616,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Winged Liberty Head "Mercury" Dime Plata .900 (1916-1945)',
@@ -632,8 +634,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Washington Quarter Plata .900 (1932-1964)',
@@ -644,8 +646,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Walking Liberty Half Dollar Plata .900 (1916-1947)',
@@ -674,8 +676,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Lincoln Memorial Cent Latón .950 Cu',
@@ -686,8 +688,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Jefferson Nickel Cuproníquel',
@@ -698,8 +700,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Roosevelt Dime Clad Cuproníquel',
@@ -710,8 +712,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Washington Quarter Clad Cuproníquel',
@@ -722,8 +724,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Kennedy Half Dollar Plata .400 (Clad Silver)',
@@ -741,8 +743,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Lincoln Memorial Cent',
@@ -753,8 +755,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Jefferson Nickel',
@@ -765,8 +767,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Roosevelt Dime Clad',
@@ -777,8 +779,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Washington Quarter Clad Estándar (1971-1974, 1977-1981)',
@@ -795,8 +797,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Kennedy Half Dollar Clad Cuproníquel (1971-1974, 1977-1981)',
@@ -813,8 +815,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '1',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Eisenhower Dollar Clad - Águila Apolo 11 (1971-1974, 1977-1978)',
@@ -844,8 +846,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Lincoln Memorial Cent Core Zinc',
@@ -856,8 +858,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Jefferson Nickel',
@@ -868,8 +870,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Roosevelt Dime Clad',
@@ -880,8 +882,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Washington Quarter Clad Estándar (1982-1998)',
@@ -917,8 +919,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Kennedy Half Dollar Clad',
@@ -929,8 +931,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '1',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Susan B. Anthony Dollar',
@@ -947,8 +949,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     country: 'Estados Unidos',
     pieces: [
       NumismaticPieceDefinition(
-        denomination: '0.01',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_01,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Lincoln Memorial (1959-2008)',
@@ -985,8 +987,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.05',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_05,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Jefferson Nickel - Monticello (1938-2003)',
@@ -1023,8 +1025,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.10',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_10,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Roosevelt Dime Clad',
@@ -1035,8 +1037,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.25',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_25,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             '50 State Quarters - Massachusetts',
@@ -1681,8 +1683,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '0.50',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Kennedy Half Dollar Clad',
@@ -1693,8 +1695,8 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         ],
       ),
       NumismaticPieceDefinition(
-        denomination: '1',
-        currency: 'USD',
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
             'Sacagawea Dollar - Águila en Vuelo (2000-2008)',

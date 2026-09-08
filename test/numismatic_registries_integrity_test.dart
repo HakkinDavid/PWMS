@@ -1,0 +1,75 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_currencies_registry.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_denominations_registry.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_dictionary.dart';
+
+void main() {
+  group('NumismaticCurrenciesRegistry Tests', () {
+    test('Currency map contains all registry currencies', () {
+      expect(NumismaticDictionary.currencyMap[NumismaticCurrenciesRegistry.mxn], isNotNull);
+      expect(NumismaticDictionary.currencyMap[NumismaticCurrenciesRegistry.usd], isNotNull);
+      expect(NumismaticDictionary.currencyMap[NumismaticCurrenciesRegistry.eur], isNotNull);
+      expect(NumismaticDictionary.currencyMap[NumismaticCurrenciesRegistry.real], isNotNull);
+      expect(NumismaticDictionary.currencyMap[NumismaticCurrenciesRegistry.gbp], isNotNull);
+      expect(NumismaticDictionary.currencyMap[NumismaticCurrenciesRegistry.esp], isNotNull);
+    });
+
+    test('All emission rules use valid currencies registered in NumismaticDictionary.currencyMap', () {
+      for (final rule in NumismaticRulesRegistry.allRules) {
+        for (final piece in rule.pieces) {
+          expect(
+            NumismaticDictionary.currencyMap.containsKey(piece.currency),
+            isTrue,
+            reason: 'Unknown currency ${piece.currency} in ${rule.country}',
+          );
+        }
+      }
+    });
+  });
+
+  group('NumismaticDenominationsRegistry Tests', () {
+    test('Precomputed numeric values match fractions and decimals accurately', () {
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d1_16], 0.0625);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d1_8], 0.125);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d1_4], 0.25);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d1_2], 0.5);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d0_005], 0.005);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d0_50], 0.5);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d0_5], 0.5);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d1], 1.0);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d2_5], 2.5);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d2_1_2], 2.5);
+      expect(NumismaticDenominationsRegistry.numericValues[NumismaticDenominationsRegistry.d1000], 1000.0);
+    });
+
+    test('parseNumber resolves standard and non-standard strings', () {
+      expect(NumismaticDenominationsRegistry.parseNumber(NumismaticDenominationsRegistry.d1_4), 0.25);
+      expect(NumismaticDenominationsRegistry.parseNumber(NumismaticDenominationsRegistry.d0_50), 0.5);
+      expect(NumismaticDenominationsRegistry.parseNumber('3/4'), 0.75);
+      expect(NumismaticDenominationsRegistry.parseNumber('invalid'), isNull);
+      expect(NumismaticDenominationsRegistry.parseNumber(''), isNull);
+    });
+
+    test('matches correctly equates fractional and decimal equivalents', () {
+      expect(NumismaticDenominationsRegistry.matches(NumismaticDenominationsRegistry.d1_2, '0.5'), isTrue);
+      expect(NumismaticDenominationsRegistry.matches(NumismaticDenominationsRegistry.d1_2, '0.50'), isTrue);
+      expect(NumismaticDenominationsRegistry.matches(NumismaticDenominationsRegistry.d1_4, '0.25'), isTrue);
+      expect(NumismaticDenominationsRegistry.matches(NumismaticDenominationsRegistry.d2_5, '2 1/2'), isTrue);
+      expect(NumismaticDenominationsRegistry.matches(NumismaticDenominationsRegistry.d1, '1.0'), isTrue);
+      expect(NumismaticDenominationsRegistry.matches('1', '2'), isFalse);
+    });
+
+    test('All emission rules use valid denominations in NumismaticDenominationsRegistry', () {
+      for (final rule in NumismaticRulesRegistry.allRules) {
+        for (final piece in rule.pieces) {
+          expect(
+            NumismaticDenominationsRegistry.numericValues.containsKey(piece.denomination),
+            isTrue,
+            reason: 'Denomination ${piece.denomination} in ${rule.country} not precomputed',
+          );
+        }
+      }
+    });
+  });
+}

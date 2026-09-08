@@ -1,4 +1,8 @@
 import '../../../../../core/constants/app_technical_strings.dart';
+import '../data/numismatic_denominations_registry.dart';
+import '../data/numismatic_materials_registry.dart';
+import 'numismatic_motif_rule.dart';
+import 'numismatic_piece_definition.dart';
 
 /// Metadata record representing a country's currency epoch emission rules (Coins or Banknotes).
 class NumismaticEmissionRuleData {
@@ -273,15 +277,6 @@ class NumismaticEmissionRuleData {
     return false;
   }
 
-  static bool matchesDenomination(String d1, String d2) {
-    final s1 = d1.trim().toLowerCase();
-    final s2 = d2.trim().toLowerCase();
-    if (s1 == s2) return true;
-    final num1 = NumismaticPieceDefinition.parseDenominationNumber(s1);
-    final num2 = NumismaticPieceDefinition.parseDenominationNumber(s2);
-    if (num1 != null && num2 != null) {
-      return (num1 - num2).abs() < 0.0001;
-    }
-    return false;
-  }
+  static bool matchesDenomination(String d1, String d2) =>
+      NumismaticDenominationsRegistry.matches(d1, d2);
 }
