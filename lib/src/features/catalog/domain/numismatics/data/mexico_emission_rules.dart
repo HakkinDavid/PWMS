@@ -1969,13 +1969,13 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           NumismaticMotifRule(
             'Francisco I. Madero',
             minYear: 1974,
-            maxYear: 1977,
+            maxYear: 1983,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
             'Cabeza Olmeca',
-            minYear: 1977,
-            maxYear: 1983,
+            minYear: 1983,
+            maxYear: 1984,
             material: NumismaticMaterialsRegistry.nameBrass,
           ),
         ],
