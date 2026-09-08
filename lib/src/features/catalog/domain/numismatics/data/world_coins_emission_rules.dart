@@ -3052,7 +3052,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1868,
             maxYear: 1870,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -3064,7 +3064,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1868,
             maxYear: 1870,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -3076,7 +3076,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1889,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -3088,7 +3088,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1818,
             maxYear: 1832,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -3100,7 +3100,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1871,
             maxYear: 1940,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3112,7 +3112,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1871,
             maxYear: 1940,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3124,7 +3124,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1936,
             maxYear: 1940,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3136,7 +3136,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1901,
             maxYear: 1940,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3148,7 +3148,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1913,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3160,7 +3160,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1695,
             maxYear: 1834,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3184,7 +3184,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1913,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3196,7 +3196,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1935,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3215,7 +3215,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brb,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1942,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -3227,7 +3227,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brb,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1942,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -3239,7 +3239,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brb,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1942,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -3251,7 +3251,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brb,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1942,
             maxYear: 1984,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -3263,7 +3263,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brb,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1942,
             maxYear: 1956,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -3331,7 +3331,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brb,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1981,
             maxYear: 1986,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3350,7 +3350,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1990,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3362,7 +3362,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1990,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3374,7 +3374,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3386,7 +3386,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3398,7 +3398,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3410,7 +3410,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3422,7 +3422,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3434,7 +3434,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1986,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3480,7 +3480,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1992,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3492,7 +3492,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1992,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3504,7 +3504,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1993,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
           ),
@@ -3522,7 +3522,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1994,
             maxYear: 1997,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3534,7 +3534,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1994,
             maxYear: 1997,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3580,7 +3580,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1994,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3616,7 +3616,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1998,
             maxYear: 2004,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -3628,7 +3628,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1998,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -3640,7 +3640,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1998,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameBronzePlatedSteel,
@@ -3652,7 +3652,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1998,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameBronzePlatedSteel,
@@ -3664,7 +3664,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1998,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3810,7 +3810,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1790,
             maxYear: 1808,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3822,7 +3822,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1773,
             maxYear: 1817,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3834,7 +3834,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1773,
             maxYear: 1817,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3846,7 +3846,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1773,
             maxYear: 1817,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3858,7 +3858,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1773,
             maxYear: 1817,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3870,7 +3870,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1773,
             maxYear: 1817,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3889,7 +3889,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1853,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -3901,7 +3901,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1853,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -3913,7 +3913,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1853,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -3925,7 +3925,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1870,
             maxYear: 1942,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3937,7 +3937,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1870,
             maxYear: 1942,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3949,7 +3949,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1870,
             maxYear: 1942,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -3961,7 +3961,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1888,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3973,7 +3973,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1933,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3985,7 +3985,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1880,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -3997,7 +3997,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1894,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4009,7 +4009,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1851,
             maxYear: 1894,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4021,7 +4021,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1926,
             maxYear: 1959,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4033,7 +4033,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1926,
             maxYear: 1959,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4045,7 +4045,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1926,
             maxYear: 1959,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4064,7 +4064,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1960,
             maxYear: 1962,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4076,7 +4076,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1960,
             maxYear: 1971,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4088,7 +4088,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1960,
             maxYear: 1971,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4100,7 +4100,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1960,
             maxYear: 1971,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4112,7 +4112,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 1972,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -4124,7 +4124,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 1972,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -4136,7 +4136,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 1972,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4148,7 +4148,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 1972,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4160,7 +4160,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 1972,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4172,7 +4172,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 1972,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4184,7 +4184,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1974,
             maxYear: 1975,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4196,7 +4196,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1974,
             maxYear: 1975,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4208,7 +4208,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cle,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1974,
             maxYear: 1975,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4318,7 +4318,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1794,
             maxYear: 1808,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -4330,7 +4330,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1772,
             maxYear: 1824,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -4342,7 +4342,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1772,
             maxYear: 1824,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -4354,7 +4354,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1772,
             maxYear: 1824,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -4366,7 +4366,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1772,
             maxYear: 1824,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -4378,7 +4378,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1772,
             maxYear: 1824,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -4397,7 +4397,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1863,
             maxYear: 1949,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -4409,7 +4409,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1863,
             maxYear: 1949,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -4421,7 +4421,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1918,
             maxYear: 1975,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -4433,7 +4433,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1918,
             maxYear: 1975,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -4445,7 +4445,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1918,
             maxYear: 1975,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -4457,7 +4457,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1864,
             maxYear: 1935,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -4487,7 +4487,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1950,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4523,7 +4523,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1950,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4535,7 +4535,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.peh,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1950,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -4566,7 +4566,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pei,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1985,
             maxYear: 1987,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4578,7 +4578,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pei,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1985,
             maxYear: 1987,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4590,7 +4590,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pei,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1985,
             maxYear: 1987,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -4602,7 +4602,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pei,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1985,
             maxYear: 1987,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -4638,7 +4638,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pei,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1988,
             maxYear: 1989,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -4674,7 +4674,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pei,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1990,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
@@ -4692,7 +4692,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1991,
             maxYear: 2011,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4704,7 +4704,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1991,
             maxYear: 2018,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -4716,7 +4716,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1991,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -4728,7 +4728,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1991,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -4740,7 +4740,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1991,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameAlpaca,
@@ -4752,7 +4752,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Escudo de Armas y Ramas de Laurel y Roble (Circulación Estándar)',
+            'Escudo de Armas y Ramas de Laurel y Roble',
             minYear: 1991,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameAlpaca,
@@ -5040,7 +5040,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1860,
             maxYear: 1956,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -5052,7 +5052,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1860,
             maxYear: 1967,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -5064,7 +5064,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1860,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -5076,7 +5076,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1937,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameNickelBrass,
@@ -5088,7 +5088,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1947,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5100,7 +5100,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1947,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5112,7 +5112,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1947,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5124,7 +5124,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1947,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5136,7 +5136,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbpOld,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1951,
             maxYear: 1965,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5155,7 +5155,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 1984,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -5167,7 +5167,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -5179,7 +5179,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1971,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -5191,7 +5191,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1968,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
@@ -5203,7 +5203,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1968,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
@@ -5215,7 +5215,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1982,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5503,7 +5503,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1990,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5522,7 +5522,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 2017,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -5534,7 +5534,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 2017,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -5546,7 +5546,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 2017,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
@@ -5558,7 +5558,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 2017,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
@@ -5570,7 +5570,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 2017,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5711,7 +5711,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 2017,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5730,7 +5730,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1655,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -5742,7 +5742,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1655,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -5754,7 +5754,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1655,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -5766,7 +5766,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1641,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -5778,7 +5778,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1641,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -5790,7 +5790,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1640,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -5802,7 +5802,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1640,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -5814,7 +5814,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1640,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -5826,7 +5826,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1640,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -5838,7 +5838,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.lvt,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1640,
             maxYear: 1793,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -5857,7 +5857,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1795,
             maxYear: 1920,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -5869,7 +5869,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1795,
             maxYear: 1920,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -5881,7 +5881,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1945,
             maxYear: 1959,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -5893,7 +5893,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1945,
             maxYear: 1959,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -5905,7 +5905,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1945,
             maxYear: 1946,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -5917,7 +5917,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1903,
             maxYear: 1940,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5929,7 +5929,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1920,
             maxYear: 1958,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -5941,7 +5941,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1920,
             maxYear: 1958,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -5953,7 +5953,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1920,
             maxYear: 1958,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -5965,7 +5965,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1933,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5977,7 +5977,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1929,
             maxYear: 1939,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -5989,7 +5989,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1929,
             maxYear: 1939,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6001,7 +6001,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1950,
             maxYear: 1958,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6013,7 +6013,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1954,
             maxYear: 1958,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6288,7 +6288,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -6300,7 +6300,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -6312,7 +6312,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1915,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6324,7 +6324,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6336,7 +6336,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1877,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6348,7 +6348,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1909,
             maxYear: 1912,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -6360,7 +6360,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1919,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6372,7 +6372,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6384,7 +6384,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1914,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6396,7 +6396,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1908,
             maxYear: 1918,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6408,7 +6408,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1874,
             maxYear: 1915,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6420,7 +6420,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1914,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -6432,7 +6432,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frg,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1873,
             maxYear: 1914,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -6451,7 +6451,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1923,
             maxYear: 1948,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -6463,7 +6463,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1923,
             maxYear: 1940,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -6475,7 +6475,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1932,
             material: NumismaticMaterialsRegistry.nameBronze,
           ),
@@ -6486,7 +6486,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1923,
             maxYear: 1944,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -6498,7 +6498,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1923,
             maxYear: 1945,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -6510,7 +6510,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1927,
             maxYear: 1939,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -6522,7 +6522,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1924,
             maxYear: 1939,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -6534,7 +6534,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1925,
             maxYear: 1939,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6546,7 +6546,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1924,
             maxYear: 1933,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6558,7 +6558,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.rkm,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1927,
             maxYear: 1939,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6577,7 +6577,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1948,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -6589,7 +6589,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1950,
             maxYear: 1968,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -6601,7 +6601,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1949,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
@@ -6613,7 +6613,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1949,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
@@ -6625,7 +6625,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1949,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6637,7 +6637,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1950,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6649,7 +6649,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1951,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6796,7 +6796,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -6808,7 +6808,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -6820,7 +6820,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
@@ -6832,7 +6832,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
@@ -6844,7 +6844,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6856,7 +6856,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6868,7 +6868,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6880,7 +6880,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1975,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -6892,7 +6892,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Bundesadler - Águila Federal Alemana (Circulación Estándar)',
+            'Bundesadler - Águila Federal Alemana',
             minYear: 1987,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -7046,7 +7046,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1861,
             maxYear: 1918,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -7058,7 +7058,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1861,
             maxYear: 1918,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -7070,7 +7070,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1861,
             maxYear: 1943,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -7082,7 +7082,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1862,
             maxYear: 1943,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -7094,7 +7094,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1894,
             maxYear: 1943,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -7106,7 +7106,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1861,
             maxYear: 1943,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -7118,7 +7118,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1861,
             maxYear: 1943,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -7130,7 +7130,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1861,
             maxYear: 1943,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -7142,7 +7142,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1861,
             maxYear: 1941,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -7154,7 +7154,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1926,
             maxYear: 1936,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -7166,7 +7166,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1927,
             maxYear: 1936,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -7178,7 +7178,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1864,
             maxYear: 1936,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -7190,7 +7190,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Circulación Estándar',
+            '',
             minYear: 1864,
             maxYear: 1937,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,

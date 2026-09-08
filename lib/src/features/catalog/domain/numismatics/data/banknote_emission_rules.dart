@@ -732,7 +732,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nezahualcóyotl / Tenochtitlan (Circulación Estándar)',
+            'Nezahualcóyotl / Tenochtitlan',
             minYear: 2006,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -756,7 +756,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Sor Juana Inés de la Cruz / Hacienda de Panoaya (Circulación Estándar)',
+            'Sor Juana Inés de la Cruz / Hacienda de Panoaya',
             minYear: 2006,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.nameCottonPaper,

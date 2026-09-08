@@ -464,7 +464,7 @@ void main() {
         currencyCode: 'EUR',
         denomination: '2',
       );
-      expect(euroSpain2002, contains('Efigie del Rey Juan Carlos I / Rey Felipe VI (Circulación Estándar)'));
+      expect(euroSpain2002, contains('Efigie del Rey Juan Carlos I / Rey Felipe VI'));
 
       final euroSpain2007 = NumismaticDataHelper.getCommemorativeMotifs(
         country: 'España',

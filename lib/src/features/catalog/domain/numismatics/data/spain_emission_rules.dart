@@ -717,7 +717,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Efigie del Rey Juan Carlos I / Rey Felipe VI (Circulación Estándar)',
+            'Efigie del Rey Juan Carlos I / Rey Felipe VI',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
