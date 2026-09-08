@@ -685,6 +685,12 @@ class AppStrings {
   static const applyRecommendedCorrectionQuestion = '¿Deseas aplicar la corrección recomendada?';
   static String applyRecommendedCorrectionWithValue(String label, String value) =>
       '¿Deseas aplicar la corrección recomendada?\n$label: «$value»';
+  /// "Corregir [property] de [from] a [to]" — used when there is exactly one expected value.
+  static String correctFromTo(String property, String from, String to) =>
+      'Corregir $property de «$from» a «$to»';
+  /// "Corregir [property] de [from] a uno válido" — used when multiple valid values exist.
+  static String correctFromToValid(String property, String from) =>
+      'Corregir $property de «$from» a uno válido';
   static const savingAction = 'Guardando...';
   static const linksCountSuffix = ' vínculos';
   static const noSearchMatchesPrefix = 'No se encontraron coincidencias para "';

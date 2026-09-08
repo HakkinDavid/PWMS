@@ -126,7 +126,7 @@ class NumismaticSubspeciesIncongruityStrategy implements IAuditRuleStrategy {
                 displayName,
                 sub.subspeciesName,
               ),
-              question: AppStrings.applyRecommendedCorrectionWithValue(AppStrings.subspeciesLabel, sub.subspeciesName),
+              question: AppStrings.applyRecommendedCorrectionWithValue(sub.subspeciesName, issueMsg),
               icon: Icons.currency_exchange,
               themeColor: Colors.purple,
               entity: entity,
@@ -540,10 +540,16 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                 outlier.description,
               ),
               question: outlier.foundValue != null && outlier.foundValue!.trim().isNotEmpty
-                  ? AppStrings.applyRecommendedCorrectionWithValue(
-                      outlier.targetPropertyName ?? AppStrings.numismaticEmissionOutlierCardTitle,
-                      outlier.foundValue!.trim(),
-                    )
+                  ? (outlier.expectedValue != null && outlier.expectedValue!.trim().isNotEmpty
+                      ? AppStrings.correctFromTo(
+                          outlier.targetPropertyName ?? AppStrings.numismaticEmissionOutlierCardTitle,
+                          outlier.foundValue!.trim(),
+                          outlier.expectedValue!.trim(),
+                        )
+                      : AppStrings.correctFromToValid(
+                          outlier.targetPropertyName ?? AppStrings.numismaticEmissionOutlierCardTitle,
+                          outlier.foundValue!.trim(),
+                        ))
                   : AppStrings.applyRecommendedCorrectionQuestion,
               icon: Icons.history_edu,
               themeColor: Colors.deepPurple,
