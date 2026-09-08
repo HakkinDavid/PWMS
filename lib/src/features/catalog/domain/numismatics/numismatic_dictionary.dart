@@ -1,9 +1,11 @@
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'data/numismatic_countries_registry.dart';
 import 'data/numismatic_currencies_registry.dart';
 import 'data/numismatic_denominations_registry.dart';
 import 'data/numismatic_materials_registry.dart';
 import 'models/numismatic_material_definition.dart';
 
+export 'data/numismatic_countries_registry.dart';
 export 'data/numismatic_currencies_registry.dart';
 export 'data/numismatic_denominations_registry.dart';
 export 'data/numismatic_materials_registry.dart';

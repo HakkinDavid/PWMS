@@ -1,3 +1,4 @@
+import 'numismatic_countries_registry.dart';
 import 'numismatic_currencies_registry.dart';
 import 'numismatic_denominations_registry.dart';
 import 'numismatic_materials_registry.dart';
@@ -7,7 +8,7 @@ import '../models/numismatic_models.dart';
 const List<NumismaticEmissionRuleData> usaEmissionRules = [
   // 2.1 Estados Unidos - Período Continental y Pre-Federal (1775–1791)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -48,7 +49,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.2 Estados Unidos - Large Cent, Half Cent y Plata/Oro Clásica (1792–1857)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_005,
@@ -205,7 +206,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.3 Estados Unidos - Small Cent, Guerra Civil y Nuevas Denominaciones (1858–1873)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -374,7 +375,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.4 Estados Unidos - Era Clásica Morgan/Peace y Oro Saint-Gaudens (1874–1933)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -566,7 +567,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.5 Estados Unidos - Pre-Clad Estándar Plata .900 (1934–1964)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -673,7 +674,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.6 Estados Unidos - Transición Clad & Kennedy Half Dollar 40% Plata (1965–1970)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -740,7 +741,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.7 Estados Unidos - Era Clad Cuproníquel y Bicentenario (1971–1981)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -843,7 +844,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.8 Estados Unidos - Centavos de Zinc y 50 State Quarters (1982–1999)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -946,7 +947,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
 
   // 2.9 Estados Unidos - Golden Dollar y Programas Modernos (2000–presente)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,

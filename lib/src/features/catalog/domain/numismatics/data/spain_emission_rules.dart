@@ -1,3 +1,4 @@
+import 'numismatic_countries_registry.dart';
 import 'numismatic_currencies_registry.dart';
 import 'numismatic_denominations_registry.dart';
 import 'numismatic_materials_registry.dart';
@@ -7,7 +8,7 @@ import '../models/numismatic_models.dart';
 const List<NumismaticEmissionRuleData> spainEmissionRules = [
   // 3.1 España - Antiguo Régimen y Monarquía Hispánica (1500–1868)
   NumismaticEmissionRuleData(
-    country: 'España',
+    country: NumismaticCountriesRegistry.espana,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_16,
@@ -110,7 +111,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
 
   // 3.2 España - Peseta Clásica (1869–1939)
   NumismaticEmissionRuleData(
-    country: 'España',
+    country: NumismaticCountriesRegistry.espana,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -271,7 +272,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
 
   // 3.3 España - Peseta del Estado Español y Transición (1940–1981)
   NumismaticEmissionRuleData(
-    country: 'España',
+    country: NumismaticCountriesRegistry.espana,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_05,
@@ -389,7 +390,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
 
   // 3.4 España - Peseta Moderna y Monedas Autonómicas (1982–2001)
   NumismaticEmissionRuleData(
-    country: 'España',
+    country: NumismaticCountriesRegistry.espana,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_10,
@@ -625,7 +626,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
 
   // 3.5 España - Época del Euro (grabadas físicamente 1999–presente)
   NumismaticEmissionRuleData(
-    country: 'España',
+    country: NumismaticCountriesRegistry.espana,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -923,7 +924,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
 
   // 3.6 Unión Europea (Zona Euro, grabadas físicamente 1999–presente)
   NumismaticEmissionRuleData(
-    country: 'Unión Europea',
+    country: NumismaticCountriesRegistry.unionEuropea,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,

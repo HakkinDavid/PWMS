@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_countries_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_currencies_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_denominations_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
@@ -69,6 +70,39 @@ void main() {
             reason: 'Denomination ${piece.denomination} in ${rule.country} not precomputed',
           );
         }
+      }
+    });
+  });
+
+  group('NumismaticCountriesRegistry Tests', () {
+    test('Countries list contains primary sovereign countries and historical entities', () {
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.mexico));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.virreinatoDeNuevaEspana));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.estadosUnidos));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.espana));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.unionEuropea));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.reinoUnido));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.alemania));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.francia));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.italia));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.canada));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.guatemala));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.cuba));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.colombia));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.peru));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.brasil));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.chile));
+      expect(NumismaticCountriesRegistry.allCountries, contains(NumismaticCountriesRegistry.argentina));
+    });
+
+    test('All emission rules use valid countries from NumismaticCountriesRegistry', () {
+      final validCountries = NumismaticCountriesRegistry.allCountries.toSet();
+      for (final rule in NumismaticRulesRegistry.allRules) {
+        expect(
+          validCountries.contains(rule.country),
+          isTrue,
+          reason: 'Unknown country "${rule.country}" in emission rule',
+        );
       }
     });
   });

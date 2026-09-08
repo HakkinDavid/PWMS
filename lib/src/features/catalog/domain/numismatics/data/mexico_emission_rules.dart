@@ -1,3 +1,4 @@
+import 'numismatic_countries_registry.dart';
 import 'numismatic_currencies_registry.dart';
 import 'numismatic_denominations_registry.dart';
 import 'numismatic_materials_registry.dart';
@@ -7,7 +8,7 @@ import '../models/numismatic_models.dart';
 const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
   // 1.1 Virreinato de Nueva España (1536–1821)
   NumismaticEmissionRuleData(
-    country: 'Virreinato de Nueva España',
+    country: NumismaticCountriesRegistry.virreinatoDeNuevaEspana,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_16,
@@ -152,7 +153,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.2 Primer Imperio Mexicano - Agustín de Iturbide (1822–1823)
   NumismaticEmissionRuleData(
-    country: 'Imperio Mexicano (Primer y Segundo Imperio)',
+    country: NumismaticCountriesRegistry.imperioMexicano,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_8,
@@ -267,7 +268,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.3 Segundo Imperio Mexicano - Maximiliano (1864–1867)
   NumismaticEmissionRuleData(
-    country: 'Imperio Mexicano (Primer y Segundo Imperio)',
+    country: NumismaticCountriesRegistry.imperioMexicano,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -345,7 +346,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.4 México - Período Virreinal novohispano (1536–1821)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_8,
@@ -466,7 +467,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.5 México - Primer Imperio (1822–1823)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_8,
@@ -581,7 +582,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.6 México - República Mexicana Sistema de Reales y Escudos (1823–1897)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_16,
@@ -684,7 +685,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.7 México - Segundo Imperio Serie Maximiliano Decimal (1864–1867)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -762,7 +763,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.8 México - República Restaurada Sistema Balanza Decimal (1868–1881)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -913,7 +914,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.9 México - Crisis del Níquel (1882–1883)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1004,7 +1005,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.10 México - Porfiriato Decimal Resplandor (1884–1904)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1107,7 +1108,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.11 México - Reforma Monetaria Porfiriana de 1905 (1905–1914)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1228,7 +1229,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.12 México - Período Revolucionario / Constitucionalista (1915–1919)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1377,7 +1378,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.13 México - Ley .720 y Centenario de Oro (1920–1942)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1503,7 +1504,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.14 México - Segunda Guerra y Postguerra (1943–1949)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1600,7 +1601,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.15 México - Década de 1950 (1950–1956)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1736,7 +1737,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.16 México - Período de los Tepalcates y Conmemorativas (1957–1969)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1868,7 +1869,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.17 México - Transición Pirámide de Bronce y Monedas de Cuproníquel (1970–1973)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_05,
@@ -1935,7 +1936,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.18 México - Serie Numismática Cuproníquel, Latón y Plata (1974–1983)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_05,
@@ -2068,7 +2069,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.19 México - Acero Inoxidable, Latón y Valores Medios (1984–1987)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1,
@@ -2180,7 +2181,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.20 México - Grandes Valores de Inflación Pre-N$ (1988–1992)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d10,
@@ -2270,7 +2271,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.21 México - Nuevos Pesos (N$ grabados físicamente 1992–1995)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_05,
@@ -2397,7 +2398,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.22 México - Familia C Primer Período (1996–2007)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_05,
@@ -2571,7 +2572,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.23 México - Familia C Bicentenario y Centenario (2008–2010)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_05,
@@ -2865,7 +2866,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.24 México - Familia C Fraccionarias Acero Inoxidable (2011–2019)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_10,
@@ -3022,7 +3023,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
 
   // 1.25 México - Familia C1 Dodecagonal (2020–presente)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_10,

@@ -1,3 +1,4 @@
+import 'numismatic_countries_registry.dart';
 import 'numismatic_currencies_registry.dart';
 import 'numismatic_denominations_registry.dart';
 import 'numismatic_materials_registry.dart';
@@ -7,7 +8,7 @@ import '../models/numismatic_models.dart';
 const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // B1.1 México Billetes - Época Revolucionaria y Pre-Banco de México (1823–1924)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -171,7 +172,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.2 México Billetes - Primeras Emisiones Banco de México / ABNC (1925–1978)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -311,7 +312,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.3 México Billetes - Familia AA Fábrica de Billetes Banxico (1969–1992)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -403,7 +404,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.4 México Billetes - Familia A Altas Denominaciones Inflacionarias (1979–1992)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -483,7 +484,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.5 México Billetes - Familia B Nuevos Pesos N$ (1993–1995)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -539,7 +540,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.6 México Billetes - Familia C (1994–2001)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -619,7 +620,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.7 México Billetes - Familia D y D1 Introducción de Polímero (2002–2007)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -699,7 +700,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.8 México Billetes - Familia F y Conmemorativos del Centenario/Bicentenario (2006–2019)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -797,7 +798,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B1.9 México Billetes - Familia G en Circulación y Polímeros de Vanguardia (2020–presente)
   NumismaticEmissionRuleData(
-    country: 'México',
+    country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -882,7 +883,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B2.1 Estados Unidos Billetes - Large Size Notes (1861–1927)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1022,7 +1023,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B2.2 Estados Unidos Billetes - Small Size Federal Reserve Notes (1928–presente)
   NumismaticEmissionRuleData(
-    country: 'Estados Unidos',
+    country: NumismaticCountriesRegistry.estadosUnidos,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1173,7 +1174,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B3.1 España Billetes - Era de la Peseta (1874–2001)
   NumismaticEmissionRuleData(
-    country: 'España',
+    country: NumismaticCountriesRegistry.espana,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1337,7 +1338,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
 
   // B3.2 España & Unión Europea Billetes - Era del Euro (2002–presente)
   NumismaticEmissionRuleData(
-    country: 'España',
+    country: NumismaticCountriesRegistry.espana,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1427,7 +1428,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
     ],
   ),
   NumismaticEmissionRuleData(
-    country: 'Unión Europea',
+    country: NumismaticCountriesRegistry.unionEuropea,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1522,7 +1523,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 0.50, 1, 5, 10, 20, 50, 100 Quetzales (Tecún Umán, José María Orellana, Justo Rufino Barrios, Miguel García Granados, Mariano Gálvez, Carlos Mérida, Francisco Marroquín): https://www.banguat.gob.gt
   NumismaticEmissionRuleData(
-    country: 'Guatemala',
+    country: NumismaticCountriesRegistry.guatemala,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1620,7 +1621,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 5 Quetzales (Polímero - General Justo Rufino Barrios): https://www.banguat.gob.gt
   // - 10, 20, 50, 100, 200 Quetzales (Papel de algodón): https://www.banguat.gob.gt
   NumismaticEmissionRuleData(
-    country: 'Guatemala',
+    country: NumismaticCountriesRegistry.guatemala,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1715,7 +1716,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 1 a 10000 Pesos Oro (Santander, Bolívar, Nariño, Caldas, Camilo Torres, Policarpa Salavarrieta): https://www.banrep.gov.co
   NumismaticEmissionRuleData(
-    country: 'Colombia',
+    country: NumismaticCountriesRegistry.colombia,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1889,7 +1890,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 50000 Pesos (Gabriel García Márquez / Ciudad Perdida): https://www.banrep.gov.co/es/billetes-monedas/billetes-circulacion
   // - 100000 Pesos (Carlos Lleras Restrepo / Valle de Cocora): https://www.banrep.gov.co/es/billetes-monedas/billetes-circulacion
   NumismaticEmissionRuleData(
-    country: 'Colombia',
+    country: NumismaticCountriesRegistry.colombia,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -1985,7 +1986,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 1, 2, 5, 10, 20, 50, 100, 1000 Dollars (Scenes of Canada, Birds of Canada, Canadian Journey Series): https://www.bankofcanada.ca/banknotes/bank-note-series/
   NumismaticEmissionRuleData(
-    country: 'Canadá',
+    country: NumismaticCountriesRegistry.canada,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2097,7 +2098,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 50 Dollars (Polímero - W.L. Mackenzie King / CCGS Amundsen): https://www.bankofcanada.ca/banknotes/bank-note-series/polymer-series/
   // - 100 Dollars (Polímero - Sir Robert Borden / Innovación Médica e Insulina): https://www.bankofcanada.ca/banknotes/bank-note-series/polymer-series/
   NumismaticEmissionRuleData(
-    country: 'Canadá',
+    country: NumismaticCountriesRegistry.canada,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2168,7 +2169,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 1 a 1000 Pesos (José Martí, Che Guevara, Antonio Maceo, Máximo Gómez, Camilo Cienfuegos, Calixto García, Frank País, Ignacio Agramonte, Julio Antonio Mella): https://www.bc.gob.cu
   NumismaticEmissionRuleData(
-    country: 'Cuba',
+    country: NumismaticCountriesRegistry.cuba,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2299,7 +2300,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 1 a 1000 Pesos (José Martí, Che Guevara, Antonio Maceo, Máximo Gómez, Camilo Cienfuegos, Calixto García, Frank País, Ignacio Agramonte, Julio Antonio Mella): https://www.bc.gob.cu
   NumismaticEmissionRuleData(
-    country: 'Cuba',
+    country: NumismaticCountriesRegistry.cuba,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2443,7 +2444,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 10000 Pesos (Manuel Belgrano y María Remedios del Valle): https://www.bcra.gob.ar
   // - 20000 Pesos (Juan Bautista Alberdi): https://www.bcra.gob.ar
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2618,7 +2619,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 100 Reais (Garoupa): https://www.bcb.gov.br/cedulasemoedas/cedulasreal
   // - 200 Reais (Lobo-guará): https://www.bcb.gov.br/cedulasemoedas/cedulasreal
   NumismaticEmissionRuleData(
-    country: 'Brasil',
+    country: NumismaticCountriesRegistry.brasil,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2731,7 +2732,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 10000 Pesos (Papel de algodón - Arturo Prat / Parque Alberto de Agostini): https://www.bcentral.cl/billetes-y-monedas/billetes
   // - 20000 Pesos (Papel de algodón - Andrés Bello / Salar de Surire): https://www.bcentral.cl/billetes-y-monedas/billetes
   NumismaticEmissionRuleData(
-    country: 'Chile',
+    country: NumismaticCountriesRegistry.chile,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2819,7 +2820,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 100 Soles (Jorge Basadre / Pedro Paulet): https://www.bcrp.gob.pe
   // - 200 Soles (Santa Rosa de Lima / Tilsa Tsuchiya): https://www.bcrp.gob.pe
   NumismaticEmissionRuleData(
-    country: 'Perú',
+    country: NumismaticCountriesRegistry.peru,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2894,7 +2895,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // - 20 Pounds (Polímero - J.M.W. Turner / Queen Elizabeth II / King Charles III): https://www.bankofengland.co.uk/banknotes
   // - 50 Pounds (Polímero - Alan Turing / Queen Elizabeth II / King Charles III): https://www.bankofengland.co.uk/banknotes
   NumismaticEmissionRuleData(
-    country: 'Reino Unido',
+    country: NumismaticCountriesRegistry.reinoUnido,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -2953,7 +2954,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 5, 10, 20, 50, 100, 200, 500 Francs (Victor Hugo, Voltaire, Berlioz, Debussy, Quentin de La Tour, Saint-Exupéry, Delacroix, Cézanne, Gustave Eiffel, Pierre et Marie Curie): https://www.banque-france.fr
   NumismaticEmissionRuleData(
-    country: 'Francia',
+    country: NumismaticCountriesRegistry.francia,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -3049,7 +3050,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 5, 10, 20, 50, 100, 200, 500, 1000 DM (Bettina von Arnim, Gauss, Droste-Hülshoff, Neumann, Clara Schumann, Paul Ehrlich, Maria Sibylla Merian, Gebrüder Grimm): https://www.bundesbank.de
   NumismaticEmissionRuleData(
-    country: 'Alemania',
+    country: NumismaticCountriesRegistry.alemania,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(
@@ -3156,7 +3157,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
   // Denominación - Modelo / Referencias:
   // - 500, 1000, 2000, 5000, 10000, 50000, 100000, 500000 Liras (Mercurio, Verdi, Montessori, Galilei, Marconi, Colombo, Bellini, Volta, Bernini, Caravaggio, Raffaello): https://www.bancaditalia.it
   NumismaticEmissionRuleData(
-    country: 'Italia',
+    country: NumismaticCountriesRegistry.italia,
     isBanknote: true,
     pieces: [
       NumismaticPieceDefinition(

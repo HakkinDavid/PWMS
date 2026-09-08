@@ -1,3 +1,4 @@
+import 'numismatic_countries_registry.dart';
 import 'numismatic_currencies_registry.dart';
 import 'numismatic_denominations_registry.dart';
 import 'numismatic_materials_registry.dart';
@@ -7,7 +8,7 @@ import '../models/numismatic_models.dart';
 const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
   // 4.1 Guatemala - Época Colonial y Reales Predecimales (1500–1859)
   NumismaticEmissionRuleData(
-    country: 'Guatemala',
+    country: NumismaticCountriesRegistry.guatemala,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_4,
@@ -86,7 +87,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 4.2 Guatemala - Época del Peso (1860–1924)
   NumismaticEmissionRuleData(
-    country: 'Guatemala',
+    country: NumismaticCountriesRegistry.guatemala,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -249,7 +250,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 4.3 Guatemala - Quetzal Clásico de Plata y Oro (1925–1964)
   NumismaticEmissionRuleData(
-    country: 'Guatemala',
+    country: NumismaticCountriesRegistry.guatemala,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_005,
@@ -373,7 +374,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 4.4 Guatemala - Quetzal Moderno (1965–presente)
   NumismaticEmissionRuleData(
-    country: 'Guatemala',
+    country: NumismaticCountriesRegistry.guatemala,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -452,7 +453,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 1.8 Colombia - Virreinato de Nueva Granada y Reales Predecimales (1500–1846)
   NumismaticEmissionRuleData(
-    country: 'Colombia',
+    country: NumismaticCountriesRegistry.colombia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_4,
@@ -531,7 +532,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 5.2 Colombia - Peso Histórico y Decimal Antiguo (1847–1904)
   NumismaticEmissionRuleData(
-    country: 'Colombia',
+    country: NumismaticCountriesRegistry.colombia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -670,7 +671,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 5.3 Colombia - Peso Republicano Clásico (1905–1979)
   NumismaticEmissionRuleData(
-    country: 'Colombia',
+    country: NumismaticCountriesRegistry.colombia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -821,7 +822,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 5.4 Colombia - Familia Tradicional Árbol de Guacarí (1980–2011)
   NumismaticEmissionRuleData(
-    country: 'Colombia',
+    country: NumismaticCountriesRegistry.colombia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1,
@@ -936,7 +937,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 5.5 Colombia - Familia Biodiversidad de Colombia (2012–presente)
   NumismaticEmissionRuleData(
-    country: 'Colombia',
+    country: NumismaticCountriesRegistry.colombia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d50,
@@ -1035,7 +1036,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 6.1 Canadá - Época Victoriana, Jorge V y Jorge VI (1858–1952)
   NumismaticEmissionRuleData(
-    country: 'Canadá',
+    country: NumismaticCountriesRegistry.canada,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1149,7 +1150,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 6.2 Canadá - Era de Plata Isabel II (1953–1967)
   NumismaticEmissionRuleData(
-    country: 'Canadá',
+    country: NumismaticCountriesRegistry.canada,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1243,7 +1244,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 6.3 Canadá - Transición Níquel Puro Pre-Loonie (1968–1986)
   NumismaticEmissionRuleData(
-    country: 'Canadá',
+    country: NumismaticCountriesRegistry.canada,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1357,7 +1358,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 6.4 Canadá - Introducción del Loonie y Toonie (1987–1999)
   NumismaticEmissionRuleData(
-    country: 'Canadá',
+    country: NumismaticCountriesRegistry.canada,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1478,7 +1479,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 6.5 Canadá - Época Multi-Ply Plated Steel (2000–presente)
   NumismaticEmissionRuleData(
-    country: 'Canadá',
+    country: NumismaticCountriesRegistry.canada,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1707,7 +1708,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 7.1 Cuba - Primera República (1915–1961)
   NumismaticEmissionRuleData(
-    country: 'Cuba',
+    country: NumismaticCountriesRegistry.cuba,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1863,7 +1864,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 7.2 Cuba - Período Socialista Pre-CUC (1962–1993)
   NumismaticEmissionRuleData(
-    country: 'Cuba',
+    country: NumismaticCountriesRegistry.cuba,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -1953,7 +1954,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 7.3 Cuba - Régimen Dual CUP / CUC (1994–2020)
   NumismaticEmissionRuleData(
-    country: 'Cuba',
+    country: NumismaticCountriesRegistry.cuba,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -2068,7 +2069,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 7.4 Cuba - Unificación Monetaria (2021–presente)
   NumismaticEmissionRuleData(
-    country: 'Cuba',
+    country: NumismaticCountriesRegistry.cuba,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_05,
@@ -2135,7 +2136,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 8.1 Argentina - Provincias Unidas del Río de la Plata y Confederación (1813–1880)
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_4,
@@ -2214,7 +2215,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 8.2 Argentina - Peso Moneda Nacional (1881–1969)
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -2391,7 +2392,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 8.3 Argentina - Peso Ley 18.188 (1970–1983)
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -2550,7 +2551,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 8.4 Argentina - Peso Argentino (1983–1985)
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -2664,7 +2665,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 8.5 Argentina - Austral (1985–1991)
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_005,
@@ -2813,7 +2814,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 8.6 Argentina - Peso Convertible Series Tradicionales (1992–2016)
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -2989,7 +2990,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 8.7 Argentina - Serie "Árboles de la República Argentina" (2017–presente)
   NumismaticEmissionRuleData(
-    country: 'Argentina',
+    country: NumismaticCountriesRegistry.argentina,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1,
@@ -3044,7 +3045,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 9.1 Brasil - Período Colonial e Imperial (1500–1941)
   NumismaticEmissionRuleData(
-    country: 'Brasil',
+    country: NumismaticCountriesRegistry.brasil,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d10,
@@ -3207,7 +3208,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 9.2 Brasil - Cruzeiro (1942–1985)
   NumismaticEmissionRuleData(
-    country: 'Brasil',
+    country: NumismaticCountriesRegistry.brasil,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_10,
@@ -3342,7 +3343,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 9.3 Brasil - Cruzado, Cruzado Novo y Cruzeiro Real (1986–1993)
   NumismaticEmissionRuleData(
-    country: 'Brasil',
+    country: NumismaticCountriesRegistry.brasil,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -3514,7 +3515,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 9.4 Brasil - Real 1ª Familia Acero Inoxidable (1994–1997)
   NumismaticEmissionRuleData(
-    country: 'Brasil',
+    country: NumismaticCountriesRegistry.brasil,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -3608,7 +3609,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 9.5 Brasil - Real 2ª Familia Bimetálica y Recubrimientos (1998–presente)
   NumismaticEmissionRuleData(
-    country: 'Brasil',
+    country: NumismaticCountriesRegistry.brasil,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -3802,7 +3803,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 10.1 Chile - Período Colonial y Reales (1500–1850)
   NumismaticEmissionRuleData(
-    country: 'Chile',
+    country: NumismaticCountriesRegistry.chile,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_4,
@@ -3881,7 +3882,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 10.2 Chile - Peso Antiguo Decimal (1851–1959)
   NumismaticEmissionRuleData(
-    country: 'Chile',
+    country: NumismaticCountriesRegistry.chile,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_005,
@@ -4056,7 +4057,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 10.3 Chile - Escudo Chileno (1960–1974)
   NumismaticEmissionRuleData(
-    country: 'Chile',
+    country: NumismaticCountriesRegistry.chile,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_005,
@@ -4219,7 +4220,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 10.4 Chile - Peso Actual (1975–presente)
   NumismaticEmissionRuleData(
-    country: 'Chile',
+    country: NumismaticCountriesRegistry.chile,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1,
@@ -4310,7 +4311,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 11.1 Perú - Época Colonial y Reales (1500–1862)
   NumismaticEmissionRuleData(
-    country: 'Perú',
+    country: NumismaticCountriesRegistry.peru,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_4,
@@ -4389,7 +4390,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 11.2 Perú - Sol de Oro (1863–1984)
   NumismaticEmissionRuleData(
-    country: 'Perú',
+    country: NumismaticCountriesRegistry.peru,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -4558,7 +4559,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 11.3 Perú - Inti (1985–1990)
   NumismaticEmissionRuleData(
-    country: 'Perú',
+    country: NumismaticCountriesRegistry.peru,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -4684,7 +4685,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 11.4 Perú - Sol Moderno (1991–presente)
   NumismaticEmissionRuleData(
-    country: 'Perú',
+    country: NumismaticCountriesRegistry.peru,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -5032,7 +5033,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 12.1 Reino Unido - Sistema Pre-Decimal (1500–1970)
   NumismaticEmissionRuleData(
-    country: 'Reino Unido',
+    country: NumismaticCountriesRegistry.reinoUnido,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_4,
@@ -5147,7 +5148,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 12.2 Reino Unido - Sistema Decimal 1ª Fase (1971–2016)
   NumismaticEmissionRuleData(
-    country: 'Reino Unido',
+    country: NumismaticCountriesRegistry.reinoUnido,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_005,
@@ -5514,7 +5515,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 12.3 Reino Unido - Sistema Decimal 2ª Fase Dodecagonal (2017–presente)
   NumismaticEmissionRuleData(
-    country: 'Reino Unido',
+    country: NumismaticCountriesRegistry.reinoUnido,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -5722,7 +5723,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 13.1 Francia - Ancien Régime (1500–1794)
   NumismaticEmissionRuleData(
-    country: 'Francia',
+    country: NumismaticCountriesRegistry.francia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1_12,
@@ -5849,7 +5850,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 13.2 Francia - Franc Ancien (1795–1959)
   NumismaticEmissionRuleData(
-    country: 'Francia',
+    country: NumismaticCountriesRegistry.francia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -6024,7 +6025,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 13.3 Francia - Nouveau Franc (1960–2001)
   NumismaticEmissionRuleData(
-    country: 'Francia',
+    country: NumismaticCountriesRegistry.francia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -6280,7 +6281,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 14.1 Alemania - Imperio Alemán Goldmark (1873–1923)
   NumismaticEmissionRuleData(
-    country: 'Alemania',
+    country: NumismaticCountriesRegistry.alemania,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -6443,7 +6444,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 14.2 Alemania - República de Weimar y Reichsmark (1924–1947)
   NumismaticEmissionRuleData(
-    country: 'Alemania',
+    country: NumismaticCountriesRegistry.alemania,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -6569,7 +6570,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 14.3 Alemania - Deutsche Mark 1ª Era (1948–1974)
   NumismaticEmissionRuleData(
-    country: 'Alemania',
+    country: NumismaticCountriesRegistry.alemania,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -6788,7 +6789,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 14.4 Alemania - Deutsche Mark 2ª Era Magnimat (1975–2001)
   NumismaticEmissionRuleData(
-    country: 'Alemania',
+    country: NumismaticCountriesRegistry.alemania,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -7038,7 +7039,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 15.1 Italia - Reino de Italia (1861–1945)
   NumismaticEmissionRuleData(
-    country: 'Italia',
+    country: NumismaticCountriesRegistry.italia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d0_01,
@@ -7201,7 +7202,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 15.2 Italia - República Italiana 1ª Era Caravelle de Plata (1946–1981)
   NumismaticEmissionRuleData(
-    country: 'Italia',
+    country: NumismaticCountriesRegistry.italia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1,
@@ -7336,7 +7337,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
 
   // 15.3 Italia - República Italiana 2ª Era Bimetálicas (1982–2001)
   NumismaticEmissionRuleData(
-    country: 'Italia',
+    country: NumismaticCountriesRegistry.italia,
     pieces: [
       NumismaticPieceDefinition(
         denomination: NumismaticDenominationsRegistry.d1,
