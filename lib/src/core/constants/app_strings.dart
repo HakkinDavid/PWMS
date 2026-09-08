@@ -682,6 +682,9 @@ class AppStrings {
   static const sqlSecurityErrorSuffix = '" no está permitido.';
   static const sqlSyntaxErrorPrefix = 'Error de sintaxis o ejecución en la consulta SQL: ';
   static const applyCorrectionAction = 'Aplicar corrección';
+  static const applyRecommendedCorrectionQuestion = '¿Deseas aplicar la corrección recomendada?';
+  static String applyRecommendedCorrectionWithValue(String label, String value) =>
+      '¿Deseas aplicar la corrección recomendada?\n$label: «$value»';
   static const savingAction = 'Guardando...';
   static const linksCountSuffix = ' vínculos';
   static const noSearchMatchesPrefix = 'No se encontraron coincidencias para "';

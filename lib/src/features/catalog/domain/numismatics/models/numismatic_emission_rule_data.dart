@@ -198,9 +198,25 @@ class NumismaticEmissionRuleData {
       final mats = matchedPiece.getMaterialsForYear(year);
       if (mats.isNotEmpty) return mats;
     }
-    for (final entry in denominationAllowedMaterials.entries) {
-      if (matchesDenomination(entry.key, targetDenom)) {
-        return entry.value;
+    // If a year was supplied but no piece matched, only return materials from pieces
+    // that are actually active for that year — never fall back to the unfiltered map.
+    if (year != null) {
+      final activePieces = getPiecesForYear(year, currencyCode: currencyCode);
+      final result = <String>[];
+      for (final piece in activePieces) {
+        if (piece.matchesDenomination(targetDenom)) {
+          for (final mat in piece.getMaterialsForYear(year)) {
+            if (!result.contains(mat)) result.add(mat);
+          }
+        }
+      }
+      if (result.isNotEmpty) return result;
+    } else {
+      // No year filter: use legacy unfiltered map for backward-compatibility.
+      for (final entry in denominationAllowedMaterials.entries) {
+        if (matchesDenomination(entry.key, targetDenom)) {
+          return entry.value;
+        }
       }
     }
     final primary = getMaterialForDenomination(targetDenom, year: year, currencyCode: currencyCode);
