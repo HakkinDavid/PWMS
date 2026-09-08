@@ -269,7 +269,7 @@ class NumismaticOutlierDetector {
               title: AppStrings.numismaticEmissionOutlierCardTitle,
               description: desc,
               suggestedFixDescription: AppStrings.fixSetMotifAction,
-              expectedValue: expectedMotif,
+              expectedValue: motifs.length == 1 ? motifs.first : null,
               foundValue: effectiveMotif,
               targetPropertyName: AppStrings.motifPropertyName,
             ));
