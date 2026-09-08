@@ -95,7 +95,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show the card for location conflict
-      expect(find.text('Conflicto de Ubicación en Contenedor'), findsOneWidget);
+      expect(find.text(AppStrings.relationalLocationConflictTitle), findsOneWidget);
     });
 
     testWidgets('Unique species violation card is generated and renders properly per subspecies', (WidgetTester tester) async {
@@ -156,7 +156,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show uniqueness violation card evaluated per subspecies
-      expect(find.text('Subespecie Única Duplicada'), findsOneWidget);
+      expect(find.text(AppStrings.uniqueSubspeciesDuplicatedTitle), findsOneWidget);
     });
 
     testWidgets('Perishable missing expiration card is generated and renders properly', (WidgetTester tester) async {
@@ -199,7 +199,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show perishable missing expiration card
-      expect(find.text('Perecedero sin Caducidad'), findsOneWidget);
+      expect(find.text(AppStrings.perishableWithoutExpirationTitle), findsOneWidget);
     });
 
     testWidgets('Subgroup rule violation card is generated and renders properly', (WidgetTester tester) async {
@@ -251,7 +251,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show subgroup rule violation card
-      expect(find.text('Infracción de Regla de Subgrupo'), findsOneWidget);
+      expect(find.text(AppStrings.subgroupRuleViolationTitle), findsOneWidget);
     });
 
     testWidgets('Location conflict onFix keep_container clears direct locationId', (WidgetTester tester) async {
@@ -308,7 +308,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap "Solo en Contenedor"
-      final keepContainerBtn = find.text('Solo en Contenedor');
+      final keepContainerBtn = find.text(AppStrings.onlyInContainerAction);
       expect(keepContainerBtn, findsOneWidget);
       await tester.tap(keepContainerBtn);
       await tester.pumpAndSettle();
@@ -385,7 +385,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap "Convertir a No Única"
-      final makeNotUniqueBtn = find.text('Convertir a No Única');
+      final makeNotUniqueBtn = find.text(AppStrings.makeNonUniqueAction);
       expect(makeNotUniqueBtn, findsOneWidget);
       await tester.tap(makeNotUniqueBtn);
       await tester.pumpAndSettle();
@@ -508,7 +508,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Magnitud Faltante: Peso Neto'), findsOneWidget);
+      expect(find.text(AppStrings.missingMagnitudeTitle('Peso Neto')), findsOneWidget);
 
       final fixButton = find.text('Ingresar valor');
       expect(fixButton, findsOneWidget);
@@ -593,7 +593,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Card 1: Perecedero sin Caducidad
-      expect(find.text('Perecedero sin Caducidad'), findsOneWidget);
+      expect(find.text(AppStrings.perishableWithoutExpirationTitle), findsOneWidget);
       final fixBtn1 = find.text('Asignar fecha');
       await tester.tap(fixBtn1);
       await tester.pumpAndSettle();
@@ -605,7 +605,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Card 2: Magnitud Faltante: Grasa
-      expect(find.text('Magnitud Faltante: Grasa'), findsOneWidget);
+      expect(find.text(AppStrings.missingMagnitudeTitle('Grasa')), findsOneWidget);
       final fixBtn2 = find.text('Ingresar valor');
       expect(fixBtn2, findsOneWidget);
       await tester.tap(fixBtn2);
@@ -675,11 +675,11 @@ void main() {
       await tester.pumpAndSettle();
 
       // Integrity rules tab is active initially and may be empty
-      expect(find.text('Reglas de Integridad'), findsOneWidget);
-      expect(find.text('Comprobaciones Rutinarias'), findsOneWidget);
+      expect(find.text(AppStrings.ccTabIntegrityRules), findsOneWidget);
+      expect(find.text(AppStrings.ccTabRoutineChecks), findsOneWidget);
 
       // Tap on Comprobaciones Rutinarias tab
-      await tester.tap(find.text('Comprobaciones Rutinarias'));
+      await tester.tap(find.text(AppStrings.ccTabRoutineChecks));
       await tester.pumpAndSettle();
 
       // Should show routine checks (either ownership or location check)
@@ -784,7 +784,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Nombre de Adjunto Desincronizado'), findsOneWidget);
+      expect(find.text(AppStrings.desyncedAttachmentNameTitle), findsOneWidget);
 
       // Tap "Renombrar archivo"
       final renameBtn = find.text('Renombrar archivo');

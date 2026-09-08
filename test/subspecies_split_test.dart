@@ -234,7 +234,8 @@ void main() {
       await tester.tap(find.text('Open Split Modal'));
       await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.splitSubspeciesDialogTitle), findsOneWidget);
+      expect(find.text(AppStrings.splitSubspeciesDialogTitle), findsNWidgets(2));
+      expect(find.widgetWithText(ElevatedButton, AppStrings.splitSubspeciesAction), findsOneWidget);
       expect(find.text(AppStrings.splitSubspeciesDefaultName(originalSub.subspeciesName)), findsOneWidget);
       expect(find.text('TechCorp'), findsOneWidget);
       expect(find.text('998877'), findsOneWidget);
@@ -265,7 +266,7 @@ void main() {
       await tester.enterText(nameField, 'Modelo X Blanco');
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(AppStrings.splitSubspeciesAction));
+      await tester.tap(find.widgetWithText(ElevatedButton, AppStrings.splitSubspeciesAction));
       await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
 
@@ -338,7 +339,7 @@ void main() {
 
       expect(find.text(AppStrings.noInstancesToTransferNotice), findsOneWidget);
 
-      await tester.tap(find.text(AppStrings.splitSubspeciesAction));
+      await tester.tap(find.widgetWithText(ElevatedButton, AppStrings.splitSubspeciesAction));
       await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
 

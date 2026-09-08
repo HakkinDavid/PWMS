@@ -138,7 +138,7 @@ void main() {
 
     // Should NOT submit because fields are null
     expect(submittedResult, isNull);
-    expect(find.text('Por favor completa todos los campos antes de guardar.'), findsOneWidget);
+    expect(find.text(AppStrings.completeAllFieldsPrompt), findsOneWidget);
   });
 
   testWidgets('NumismaticQuickFillSheet submits successfully when all fields are populated', (WidgetTester tester) async {

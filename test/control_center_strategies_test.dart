@@ -1,5 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/database/app_database.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/catalog_item.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/species_magnitude.dart';
@@ -248,9 +249,9 @@ void main() {
       final cards = await strategy.evaluate(context);
       expect(cards.length, 3);
       expect(cards.map((c) => c.title), containsAll([
-        'Magnitud Faltante: Masa Neta',
-        'Magnitud Faltante: Sabor',
-        'Magnitud Faltante: Orgánico',
+        AppStrings.missingMagnitudeTitle('Masa Neta'),
+        AppStrings.missingMagnitudeTitle('Sabor'),
+        AppStrings.missingMagnitudeTitle('Orgánico'),
       ]));
     });
   });

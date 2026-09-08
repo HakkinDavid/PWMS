@@ -163,8 +163,8 @@ void main() {
       final msgUnsatisfied = AppStrings.notifMessageUnsatisfiedNeed('2', 1, 3);
 
       expect(msgExpired.contains('Fecha de caducidad: 28/08/2026'), isTrue);
-      expect(msgExpiringSoon.contains('Caduca en 3 día(s) (28/08/2026)'), isTrue);
-      expect(msgUnsatisfied.contains('Faltan 2 unidad(es) (1.0/3.0 en inventario)'), isTrue);
+      expect(msgExpiringSoon.contains('Caduca en 3 días, fecha: 28/08/2026'), isTrue);
+      expect(msgUnsatisfied.contains('Faltan 2 unidades'), isTrue);
     });
 
     testWidgets('NotificationsScreen renders standardized tiles for entity and species notifications',

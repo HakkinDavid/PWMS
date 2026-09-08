@@ -358,7 +358,7 @@ void main() {
       expect(matOutlier.description.contains('Esperado'), isFalse);
       expect(matOutlier.description.contains('Esperada'), isFalse);
       // Must contain the expected phrasing with current value
-      expect(matOutlier.description, 'La magnitud Material (actual: "Oro") no posee un valor de los esperados para este espécimen');
+      expect(matOutlier.description, AppStrings.numismaticMagnitudeNotAmongExpectedDesc('Material', currentValue: 'Oro'));
     });
 
     test('When only 1 material is valid, text specifies the single expected material and current value', () {

@@ -500,11 +500,14 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: theme.textTheme.labelMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isNull ? theme.disabledColor : null,
+          Flexible(
+            child: Text(
+              title,
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isNull ? theme.disabledColor : null,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           InkWell(
