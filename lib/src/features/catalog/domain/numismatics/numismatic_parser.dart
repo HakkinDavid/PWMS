@@ -143,10 +143,14 @@ class NumismaticParser {
     return clean;
   }
 
-  /// Resolves material to strict canonical item in `coinMaterials`.
+  /// Resolves material to strict canonical item in `coinMaterials` or `NumismaticMaterialsRegistry`.
   static String resolveMaterial(String raw) {
     final clean = raw.trim();
     if (clean.isEmpty) return clean;
+
+    final regMatch = NumismaticMaterialsRegistry.resolve(clean);
+    if (regMatch != null) return regMatch.displayName;
+
     if (NumismaticDictionary.coinMaterials.contains(clean)) return clean;
 
     final lower = clean.toLowerCase();

@@ -209,8 +209,11 @@ class NumismaticOutlierDetector {
             final resolvedFoundMat = NumismaticParser.resolveMaterial(material);
             final isValid = validMaterials.any((m) {
               final cleanM = m.trim().toLowerCase();
-              return cleanM == resolvedFoundMat.toLowerCase() ||
-                  cleanM == material.trim().toLowerCase();
+              if (cleanM == resolvedFoundMat.toLowerCase() ||
+                  cleanM == material.trim().toLowerCase()) {
+                return true;
+              }
+              return NumismaticMaterialsRegistry.areCompatible(m, material);
             });
             if (!isValid) {
               final expectedMat = validMaterials.first;

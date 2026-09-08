@@ -14,16 +14,16 @@ void main() {
       expect(denoms1988, containsAll(['50', '100', '500', '1000', '5000', 'Otro']));
 
       final mat50 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1982, currencyCode: 'MXP', denomination: '50');
-      expect(mat50, equals('Cuproníquel'));
+      expect(mat50, equals(NumismaticMaterialsRegistry.nameCupronickel));
 
       final mat20c = NumismaticDataHelper.inferMaterial(country: 'México', year: 1982, currencyCode: 'MXP', denomination: '0.20');
-      expect(mat20c, equals('Latón'));
+      expect(mat20c, equals(NumismaticMaterialsRegistry.nameBrass));
 
       final mat100Plata = NumismaticDataHelper.inferMaterial(country: 'México', year: 1978, currencyCode: 'MXP', denomination: '100');
-      expect(mat100Plata, equals('Plata'));
+      expect(mat100Plata, equals(NumismaticMaterialsRegistry.nameSilver720));
 
       final mat100AlBr = NumismaticDataHelper.inferMaterial(country: 'México', year: 1985, currencyCode: 'MXP', denomination: '100');
-      expect(mat100AlBr, equals('Bronce de aluminio'));
+      expect(mat100AlBr, equals(NumismaticMaterialsRegistry.nameAluminumBronze));
     });
 
     test('Mexico 1993 infers MXN Nuevos Pesos, bimetallics for standard circulation', () {
@@ -31,10 +31,10 @@ void main() {
       expect(inferredCurr, equals('MXN'));
 
       final mat10 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '10');
-      expect(mat10, equals('Bimetálica'));
+      expect(mat10, equals(NumismaticMaterialsRegistry.nameBimetallicSilver925BronzeAl));
 
       final mat2 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
-      expect(mat2, equals('Bimetálica'));
+      expect(mat2, equals(NumismaticMaterialsRegistry.nameBimetallicBronzeAlStainlessSteel));
 
       final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1993, currencyCode: 'MXN', denomination: '2');
       expect(motifs2, equals(['Nuevo Peso - Anillo de los Días (Piedra del Sol)']));
@@ -45,7 +45,7 @@ void main() {
       expect(inferredCurr, equals('MXP'));
 
       final mat50 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1947, currencyCode: 'MXP', denomination: '50');
-      expect(mat50, equals('Oro'));
+      expect(mat50, equals(NumismaticMaterialsRegistry.nameGold900));
     });
 
     test('Virreinato de Nueva España and Colonial Mexico infer Reales (MXR) and Silver', () {
@@ -53,10 +53,10 @@ void main() {
       expect(currNuevaEspana, equals('MXR'));
 
       final mat8Reales = NumismaticDataHelper.inferMaterial(country: 'Virreinato de Nueva España', year: 1800, denomination: '8');
-      expect(mat8Reales, equals('Plata'));
+      expect(mat8Reales, equals(NumismaticMaterialsRegistry.nameSilverColonial903));
 
       final mat116 = NumismaticDataHelper.inferMaterial(country: 'Virreinato de Nueva España', year: 1800, denomination: '1/16');
-      expect(mat116, equals('Cobre'));
+      expect(mat116, equals(NumismaticMaterialsRegistry.nameCopper));
     });
 
     test('USA Silver vs Clad vs Alloy transitions (1964 vs 1970 vs 1980 vs 1985)', () {
@@ -64,18 +64,18 @@ void main() {
       expect(curr1964, equals('USD'));
 
       final mat1964Quarter = NumismaticDataHelper.inferMaterial(country: 'Estados Unidos', year: 1964, denomination: '0.25');
-      expect(mat1964Quarter, equals('Plata'));
+      expect(mat1964Quarter, equals(NumismaticMaterialsRegistry.nameSilver900));
 
       final mat1970Quarter = NumismaticDataHelper.inferMaterial(country: 'Estados Unidos', year: 1970, denomination: '0.25');
-      expect(mat1970Quarter, equals('Cuproníquel'));
+      expect(mat1970Quarter, equals(NumismaticMaterialsRegistry.nameCupronickel));
 
-      // US Cent 1980 is Red Brass / Gilding Metal (Latón: 95% Cu, 5% Zn)
+      // US Cent 1980 is Red Brass / Gilding Metal (95% Cu, 5% Zn) -> Bronce
       final mat1980Cent = NumismaticDataHelper.inferMaterial(country: 'Estados Unidos', year: 1980, denomination: '0.01');
-      expect(mat1980Cent, equals('Latón'));
+      expect(mat1980Cent, equals(NumismaticMaterialsRegistry.nameBronze));
 
       // US Cent 1985 is Copper-plated Zinc (Zinc bañado en cobre)
       final mat1985Cent = NumismaticDataHelper.inferMaterial(country: 'Estados Unidos', year: 1985, denomination: '0.01');
-      expect(mat1985Cent, equals('Zinc bañado en cobre'));
+      expect(mat1985Cent, equals(NumismaticMaterialsRegistry.nameCopperPlatedZinc));
     });
 
     test('Spain Pesetas vs Euro transition (1975 vs 2005)', () {
@@ -86,7 +86,7 @@ void main() {
       expect(curr2005, equals('EUR'));
 
       final matEuro1 = NumismaticDataHelper.inferMaterial(country: 'España', year: 2005, denomination: '1');
-      expect(matEuro1, equals('Bimetálica'));
+      expect(matEuro1, equals(NumismaticMaterialsRegistry.nameBimetallicEuro1));
     });
 
     test('Mexico 1992 transition supports both MXP (old pesos) and MXN (Nuevos Pesos)', () {
@@ -98,14 +98,14 @@ void main() {
       expect(ruleMxp, isNotNull);
       expect(ruleMxp!.validCurrencies, contains('MXP'));
       final matMxp1000 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXP', denomination: '1000');
-      expect(matMxp1000, equals('Bronce de aluminio'));
+      expect(matMxp1000, equals(NumismaticMaterialsRegistry.nameAluminumBronze));
 
       // MXN check (1992-1995 N$)
       final ruleMxn = NumismaticDataHelper.findRule('México', 1992, currencyCode: 'MXN');
       expect(ruleMxn, isNotNull);
       expect(ruleMxn!.validCurrencies, contains('MXN'));
       final matMxn2 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
-      expect(matMxn2, equals('Bimetálica'));
+      expect(matMxn2, equals(NumismaticMaterialsRegistry.nameBimetallicBronzeAlStainlessSteel));
 
       final motifs2 = NumismaticDataHelper.getCommemorativeMotifs(country: 'México', year: 1992, currencyCode: 'MXN', denomination: '2');
       expect(motifs2, equals(['Nuevo Peso - Anillo de los Días (Piedra del Sol)']));
@@ -116,7 +116,7 @@ void main() {
       expect(curr2017, equals('BRL'));
 
       final mat1Real = NumismaticDataHelper.inferMaterial(country: 'Brasil', year: 2017, denomination: '1');
-      expect(mat1Real, equals('Bimetálica'));
+      expect(mat1Real, equals(NumismaticMaterialsRegistry.nameBimetallicGeneric));
     });
 
     test('Spain 1999 physical stamped year on Euro coins infers EUR and modern alloys', () {
@@ -128,7 +128,7 @@ void main() {
       expect(euroRule!.validCurrencies, contains('EUR'));
 
       final matEuro2 = NumismaticDataHelper.inferMaterial(country: 'España', year: 2002, denomination: '2');
-      expect(matEuro2, equals('Bimetálica'));
+      expect(matEuro2, equals(NumismaticMaterialsRegistry.nameBimetallicEuro2));
     });
 
     test('Modern commemorative editions for Mexico, Canada, and Colombia', () {
@@ -141,17 +141,17 @@ void main() {
 
       // Canada Loonie (1987+) and Toonie (1996+)
       final matLoonie = NumismaticDataHelper.inferMaterial(country: 'Canadá', year: 2000, denomination: '1');
-      expect(matLoonie, equals('Acero bañado en latón'));
+      expect(matLoonie, equals(NumismaticMaterialsRegistry.nameBrassPlatedSteel));
 
       final matToonie = NumismaticDataHelper.inferMaterial(country: 'Canadá', year: 2000, denomination: '2');
-      expect(matToonie, equals('Bimetálica'));
+      expect(matToonie, equals(NumismaticMaterialsRegistry.nameBimetallicToonie));
 
       // Colombia 500 and 1000 Pesos bimetallics
       final matCol500 = NumismaticDataHelper.inferMaterial(country: 'Colombia', year: 2015, denomination: '500');
-      expect(matCol500, equals('Bimetálica'));
+      expect(matCol500, equals(NumismaticMaterialsRegistry.nameBimetallicGeneric));
 
       final matCol1000 = NumismaticDataHelper.inferMaterial(country: 'Colombia', year: 2015, denomination: '1000');
-      expect(matCol1000, equals('Bimetálica'));
+      expect(matCol1000, equals(NumismaticMaterialsRegistry.nameBimetallicGeneric));
     });
 
     test('Decimal coin denominations (0.1, 0.2, 0.5) match 0.10, 0.20, 0.50 and infer correct materials', () {
@@ -279,7 +279,7 @@ void main() {
         currencyCode: 'USD',
         denomination: '1',
       );
-      expect(inferredMat, equals('Latón de manganeso sobre núcleo de cobre'));
+      expect(inferredMat, equals(NumismaticMaterialsRegistry.nameCladManganeseBrassCopper));
 
       final validMats = NumismaticDataHelper.getValidMaterialsForCountry(
         country: 'Estados Unidos',
@@ -287,7 +287,7 @@ void main() {
         currencyCode: 'USD',
         denomination: '1',
       );
-      expect(validMats, containsAll(['Latón de manganeso sobre núcleo de cobre', 'Latón']));
+      expect(validMats, contains(NumismaticMaterialsRegistry.nameCladManganeseBrassCopper));
     });
 
     test('2. Mexico 100 MXN 2019 Banknote infers Cotton Paper (Familia F) and allows Polymer', () {
@@ -317,13 +317,13 @@ void main() {
         currencyCode: 'MXP',
         denomination: '50',
       );
-      expect(validMats1988, containsAll(['Cuproníquel', 'Acero inoxidable']));
+      expect(validMats1988, containsAll([NumismaticMaterialsRegistry.nameCupronickel, NumismaticMaterialsRegistry.nameStainlessSteel]));
 
       final inferred1987 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1987, currencyCode: 'MXP', denomination: '50');
-      expect(inferred1987, equals('Cuproníquel'));
+      expect(inferred1987, equals(NumismaticMaterialsRegistry.nameCupronickel));
 
       final inferred1989 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1989, currencyCode: 'MXP', denomination: '50');
-      expect(inferred1989, equals('Acero inoxidable'));
+      expect(inferred1989, equals(NumismaticMaterialsRegistry.nameStainlessSteel));
     });
 
     test('4. Mexico 20 MXP 1988 and 1989 (Guadalupe Victoria) is in valid denominations and infers Latón', () {
@@ -342,10 +342,10 @@ void main() {
       expect(denoms1989, contains('20'));
 
       final mat20_1988 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1988, currencyCode: 'MXP', denomination: '20');
-      expect(mat20_1988, equals('Latón'));
+      expect(mat20_1988, equals(NumismaticMaterialsRegistry.nameBrass));
 
       final mat20_1989 = NumismaticDataHelper.inferMaterial(country: 'México', year: 1989, currencyCode: 'MXP', denomination: '20');
-      expect(mat20_1989, equals('Latón'));
+      expect(mat20_1989, equals(NumismaticMaterialsRegistry.nameBrass));
     });
 
     test('5. Commemorative motifs are atomic arrays per denomination without concatenated slashes', () {
@@ -583,14 +583,14 @@ void main() {
       );
       expect(coin20_2022, contains('Bicentenario de la Marina-Armada de México (2021-2022)'));
 
-      // 9. Mexico 20 Centavos Madero (1974-1983) Cuproníquel & Latón
+      // 9. Mexico 20 Centavos Madero (1974-1977 Cuproníquel) & Cabeza Olmeca (1977-1983 Latón)
       final madero1983Materials = NumismaticDataHelper.getValidMaterialsForCountry(
         country: 'México',
         year: 1983,
         currencyCode: 'MXP',
         denomination: '0.20',
       );
-      expect(madero1983Materials, containsAll(['Latón', 'Cuproníquel']));
+      expect(madero1983Materials, contains(NumismaticMaterialsRegistry.nameBrass));
 
       final madero1974Materials = NumismaticDataHelper.getValidMaterialsForCountry(
         country: 'México',
@@ -598,7 +598,15 @@ void main() {
         currencyCode: 'MXP',
         denomination: '0.20',
       );
-      expect(madero1974Materials, containsAll(['Latón', 'Cuproníquel']));
+      expect(madero1974Materials, contains(NumismaticMaterialsRegistry.nameCupronickel));
+
+      final madero1977Materials = NumismaticDataHelper.getValidMaterialsForCountry(
+        country: 'México',
+        year: 1977,
+        currencyCode: 'MXP',
+        denomination: '0.20',
+      );
+      expect(madero1977Materials, containsAll([NumismaticMaterialsRegistry.nameBrass, NumismaticMaterialsRegistry.nameCupronickel]));
 
       // 10. Robust motif matching
       expect(

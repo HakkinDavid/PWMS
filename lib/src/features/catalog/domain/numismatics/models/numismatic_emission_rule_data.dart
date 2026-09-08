@@ -1,6 +1,4 @@
 import '../../../../../core/constants/app_technical_strings.dart';
-import 'numismatic_motif_rule.dart';
-import 'numismatic_piece_definition.dart';
 
 /// Metadata record representing a country's currency epoch emission rules (Coins or Banknotes).
 class NumismaticEmissionRuleData {
@@ -228,13 +226,18 @@ class NumismaticEmissionRuleData {
     final allowed = getAllowedMaterialsForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (allowed.isEmpty) return true;
     final cleanTarget = targetMaterial.trim().toLowerCase();
-    return allowed.any((mat) => mat.trim().toLowerCase() == cleanTarget);
+    final resolvedTarget = NumismaticMaterialsRegistry.resolve(targetMaterial);
+    return allowed.any((mat) {
+      if (mat.trim().toLowerCase() == cleanTarget) return true;
+      if (resolvedTarget != null && mat == resolvedTarget.displayName) return true;
+      return NumismaticMaterialsRegistry.areCompatible(mat, targetMaterial);
+    });
   }
 
-  List<String> getCommemorativeMotifsForDenomination(String targetDenom, {int? year, String? currencyCode}) {
+  List<String> getCommemorativeMotifsForDenomination(String targetDenom, {int? year, String? currencyCode, String? material}) {
     final matchedPiece = getPieceForDenomination(targetDenom, year: year, currencyCode: currencyCode);
     if (matchedPiece != null && matchedPiece.motifs.isNotEmpty) {
-      final matching = matchedPiece.getMotifsForYear(year);
+      final matching = matchedPiece.getMotifsForYear(year, material: material);
       if (matching.isNotEmpty) return matching;
     }
 

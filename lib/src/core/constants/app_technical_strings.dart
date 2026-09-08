@@ -1,9 +1,11 @@
 import '../../features/catalog/domain/taxonomy/generated_species_registry.dart';
 import '../../features/catalog/domain/taxonomy/product_taxonomy_dictionary.dart';
+import '../../features/catalog/domain/numismatics/data/numismatic_materials_registry.dart';
 import '../../features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
 import '../../features/catalog/domain/numismatics/models/numismatic_models.dart';
 import 'units_registry.dart';
 
+export '../../features/catalog/domain/numismatics/data/numismatic_materials_registry.dart';
 export '../../features/catalog/domain/numismatics/models/numismatic_models.dart';
 
 /// Centralized technical strings and constants for the PWMS codebase.
@@ -3714,72 +3716,8 @@ abstract final class AppTechnicalNumismatics {
     'Sin circular', 'Excelente', 'Muy buena', 'Buena', 'Regular', 'Otro',
   ];
 
-  /// Comprehensive canonical list of metallic and non-metallic coin compositions from 1500s to date.
-  static const List<String> coinMaterials = [
-    // Metales preciosos y grupo del platino
-    'Plata',
-    'Oro',
-    'Platino',
-    'Paladio',
-    'Rodio',
-    'Rutenio',
-    'Electro (Electrum)',
-    // Metales base y aleaciones tradicionales
-    'Cobre',
-    'Cuproníquel',
-    'Bronce',
-    'Bronce de aluminio',
-    'Bronce fosforoso',
-    'Latón',
-    'Latón de manganeso',
-    'Latón de manganeso (Clad)',
-    'Latón de manganeso sobre núcleo de cobre',
-    'Cuproníquel sobre núcleo de cobre',
-    'Níquel-Latón',
-    'Latón dorado (Tombac)',
-    'Níquel',
-    'Alpaca (Plata alemana)',
-    'Oro nórdico',
-    'Billón (Vellón)',
-    'Zinc',
-    'Zinc bañado en cobre',
-    'Zamak',
-    'Plomo',
-    'Estaño',
-    'Peltre',
-    'Hierro',
-    'Acero',
-    'Acero inoxidable',
-    'Acero bañado en cobre',
-    'Acero bañado en níquel',
-    'Acero bañado en latón',
-    'Acero bañado en bronce',
-    'Acero bañado en zinc',
-    'Cobre bañado en plata',
-    'Cobre bañado en níquel',
-    'Aluminio',
-    'Aluminio-Magnesio (Magnalio)',
-    'Aluminio-Bronce',
-    'Titanio',
-    'Niobio',
-    'Tántalo',
-    // Composiciones bimetálicas y trimetálicas
-    'Bimetálica',
-    'Trimetálica',
-    // Materiales de necesidad, emergencia, Notgeld, papel moneda y polímeros
-    'Papel',
-    'Papel de algodón',
-    'Cartón',
-    'Porcelana',
-    'Cerámica',
-    'Fibra prensada',
-    'Plástico',
-    'Polímero',
-    'Vidrio',
-    'Cuero',
-    'Madera',
-    'Otro',
-  ];
+  /// Comprehensive canonical list of metallic and non-metallic coin compositions derived directly from NumismaticMaterialsRegistry.
+  static List<String> get coinMaterials => NumismaticMaterialsRegistry.allDisplayNames;
 
   /// Maps plural currency nouns and nationalities to their singular standard representation.
   static const Map<String, String> currencySingularReplacements = {

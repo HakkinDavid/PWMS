@@ -3,6 +3,7 @@ import 'package:platinum_world_management_system/src/features/entities/domain/in
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/banknote_emission_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/mexico_emission_rules.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_materials_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/spain_emission_rules.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/usa_emission_rules.dart';
@@ -43,8 +44,8 @@ void main() {
         (r) => r.country == 'Virreinato de Nueva España' && r.minYear == 1536,
       );
       final pieceCuartilla = virreinato.pieces.firstWhere((p) => p.denomination == '1/4');
-      expect(pieceCuartilla.material, equals('Plata'));
-      expect(pieceCuartilla.effectiveAllowedMaterials, containsAll(['Plata', 'Cobre']));
+      expect(pieceCuartilla.material, equals(NumismaticMaterialsRegistry.nameSilverColonial903));
+      expect(pieceCuartilla.effectiveAllowedMaterials, containsAll([NumismaticMaterialsRegistry.nameSilverColonial903, NumismaticMaterialsRegistry.nameCopper]));
 
       // 1.23 Familia C Bicentenario y Centenario (2008–2010)
       final bicentenarioMex = mexicoEmissionRules.firstWhere(
@@ -73,7 +74,7 @@ void main() {
 
     test('Spain rules preserve Pesetas and Euro commemorative motifs', () {
       final pesetaAutonomica = spainEmissionRules.firstWhere(
-        (r) => r.country == 'España' && r.minYear == 1982,
+        (r) => r.country == 'España' && r.minYear == 1980,
       );
       final piece25 = pesetaAutonomica.pieces.firstWhere((p) => p.denomination == '25');
       expect(piece25.motifs.length, equals(11));
@@ -90,11 +91,11 @@ void main() {
 
     test('Banknote rules preserve Bank of Mexico and international families', () {
       final mexicoFamiliaG = banknoteEmissionRules.firstWhere(
-        (r) => r.country == 'México' && r.minYear == 2020,
+        (r) => r.country == 'México' && r.minYear == 2018,
       );
       expect(mexicoFamiliaG.isBanknote, isTrue);
       final piece20 = mexicoFamiliaG.pieces.firstWhere((p) => p.denomination == '20');
-      expect(piece20.material, equals('Polímero'));
+      expect(piece20.material, equals(NumismaticMaterialsRegistry.namePolymer));
       expect(piece20.motifs, isNotEmpty);
     });
 
@@ -107,8 +108,8 @@ void main() {
         currencyCode: 'MXR',
       ));
       expect(res1.matchingPiece, isNotNull);
-      expect(res1.inferredMaterial, equals('Plata'));
-      expect(res1.validMaterials, contains('Plata'));
+      expect(res1.inferredMaterial, equals(NumismaticMaterialsRegistry.nameSilverColonial903));
+      expect(res1.validMaterials, contains(NumismaticMaterialsRegistry.nameSilverColonial903));
 
       final res1Gold = NumismaticMatrix.evaluate(const NumismaticQueryContext(
         country: 'Imperio Mexicano (Primer y Segundo Imperio)',
@@ -117,8 +118,8 @@ void main() {
         currencyCode: 'MXE',
       ));
       expect(res1Gold.matchingPiece, isNotNull);
-      expect(res1Gold.inferredMaterial, equals('Oro'));
-      expect(res1Gold.validMaterials, contains('Oro'));
+      expect(res1Gold.inferredMaterial, equals(NumismaticMaterialsRegistry.nameGoldColonial875));
+      expect(res1Gold.validMaterials, contains(NumismaticMaterialsRegistry.nameGoldColonial875));
 
 
       // Test USA 2004 Quarter (Westward Journey / State Quarters active)

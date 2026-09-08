@@ -876,19 +876,19 @@ void main() {
       expect(reloaded.notes, isNot(contains('Emisión de cambio de régimen')));
     });
 
-    test('Audit detects no outliers for valid 1983 Cuproníquel 20 Centavos Madero coin', () async {
+    test('Audit detects no outliers for valid 1975 Cuproníquel 20 Centavos Madero coin', () async {
       final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final instance = WorldEntity(
-        id: 'madero-1983-cupro',
+        id: 'madero-1975-cupro',
         speciesId: species.id,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(id: 'm1', instanceId: 'madero-1983-cupro', propertyName: 'País', dataType: 'string', stringValue: 'México'),
-          InstanceMagnitude(id: 'm2', instanceId: 'madero-1983-cupro', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1983.0, unitSymbol: 'año'),
-          InstanceMagnitude(id: 'm3', instanceId: 'madero-1983-cupro', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
-          InstanceMagnitude(id: 'm4', instanceId: 'madero-1983-cupro', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 0.20),
-          InstanceMagnitude(id: 'm5', instanceId: 'madero-1983-cupro', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
+          InstanceMagnitude(id: 'm1', instanceId: 'madero-1975-cupro', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'madero-1975-cupro', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1975.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'madero-1975-cupro', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'madero-1975-cupro', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 0.20),
+          InstanceMagnitude(id: 'm5', instanceId: 'madero-1975-cupro', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
         ],
       );
 

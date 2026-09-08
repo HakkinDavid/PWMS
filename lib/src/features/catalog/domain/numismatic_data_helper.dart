@@ -5,12 +5,17 @@ import 'subspecies.dart';
 import '../../entities/domain/world_entity.dart';
 import '../../entities/domain/i_entity_repository.dart';
 import '../infrastructure/catalog_repository.dart';
+import 'numismatics/data/numismatic_materials_registry.dart';
+import 'numismatics/data/numismatic_rules_registry.dart';
 import 'numismatics/numismatic_dictionary.dart';
 import 'numismatics/numismatic_parser.dart';
 import 'numismatics/numismatic_domain_rules.dart';
 import 'numismatics/numismatic_matrix.dart';
 
 export '../../../core/constants/app_technical_strings.dart' show NumismaticEmissionRuleData;
+export 'numismatics/data/numismatic_materials_registry.dart';
+export 'numismatics/data/numismatic_rules_registry.dart';
+export 'numismatics/models/numismatic_material_definition.dart';
 export 'numismatics/numismatic_dictionary.dart';
 export 'numismatics/numismatic_parser.dart';
 export 'numismatics/numismatic_domain_rules.dart';
@@ -27,7 +32,8 @@ class NumismaticDataHelper {
   static const Map<String, List<String>> countryToCurrenciesMap = NumismaticDictionary.countryToCurrenciesMap;
   static const List<String> denominations = NumismaticDictionary.denominations;
   static const List<String> grades = NumismaticDictionary.grades;
-  static const List<String> coinMaterials = NumismaticDictionary.coinMaterials;
+  static List<String> get coinMaterials => NumismaticDictionary.coinMaterials;
+  static List<NumismaticEmissionRuleData> get emissionRules => NumismaticRulesRegistry.allRules;
 
   static List<String> getCurrenciesForCountry(String? country, {int? year, bool? isBanknote}) =>
       NumismaticMatrix.getCurrencies(country: country, year: year, isBanknote: isBanknote ?? false);

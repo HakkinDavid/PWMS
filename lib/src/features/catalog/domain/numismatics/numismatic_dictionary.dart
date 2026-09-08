@@ -40,5 +40,13 @@ class NumismaticDictionary {
 
   static const List<String> grades = AppTechnicalNumismatics.grades;
 
-  static const List<String> coinMaterials = AppTechnicalNumismatics.coinMaterials;
+  static List<String> get coinMaterials => NumismaticMaterialsRegistry.allDisplayNames;
+
+  static List<NumismaticMaterialDefinition> get materials => NumismaticMaterialsRegistry.allMaterials;
+
+  static NumismaticMaterialDefinition? resolveMaterial(String raw) =>
+      NumismaticMaterialsRegistry.resolve(raw);
+
+  static bool areMaterialsCompatible(String mat1, String mat2) =>
+      NumismaticMaterialsRegistry.areCompatible(mat1, mat2);
 }

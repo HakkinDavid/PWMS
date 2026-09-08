@@ -38,18 +38,19 @@ class NumismaticMatrix {
     if (rules.isEmpty) return null;
     if (rules.length == 1) return rules.first;
 
-    // 1. If currencyCode is provided, prioritize matching rule containing this currency
+    // 1. If currencyCode is provided, prioritize matching rule containing this currency (and denomination if present)
     if (currencyCode != null && currencyCode.trim().isNotEmpty) {
       final iso = NumismaticParser.resolveCurrencyIsoCode(currencyCode);
+      if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
+        final cleanDenom = denomination.trim();
+        for (final rule in rules) {
+          if (rule.validCurrencies.contains(iso) && rule.hasDenomination(cleanDenom, year: year)) {
+            return rule;
+          }
+        }
+      }
       for (final rule in rules) {
         if (rule.validCurrencies.contains(iso)) {
-          // If denomination is also provided, verify if denomination matches
-          if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
-            final cleanDenom = denomination.trim();
-            if (rule.hasDenomination(cleanDenom, year: year)) {
-              return rule;
-            }
-          }
           return rule;
         }
       }
@@ -225,12 +226,6 @@ class NumismaticMatrix {
     bool isBanknote = false,
   }) {
     if (country != null && year != null) {
-      if (currencyCode != null && currencyCode.trim().isNotEmpty) {
-        final rule = findRule(country, year, currencyCode: currencyCode, isBanknote: isBanknote);
-        if (rule != null) {
-          return [...rule.getDenominationsForYear(year, currencyCode: currencyCode), AppStrings.otherSpecifyOption];
-        }
-      }
       final rules = findRules(country, year, isBanknote: isBanknote);
       if (rules.isNotEmpty) {
         final allDenoms = <String>[];
@@ -239,7 +234,9 @@ class NumismaticMatrix {
             if (!allDenoms.contains(d)) allDenoms.add(d);
           }
         }
-        return [...allDenoms, AppStrings.otherSpecifyOption];
+        if (allDenoms.isNotEmpty) {
+          return [...allDenoms, AppStrings.otherSpecifyOption];
+        }
       }
     }
     return [...NumismaticDictionary.denominations];
@@ -315,7 +312,7 @@ class NumismaticMatrix {
       }
       if (denomination != null && denomination.trim().isNotEmpty && denomination != AppStrings.otherSpecifyOption) {
         final cleanDenom = denomination.trim();
-        for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom, year: year, currencyCode: currencyCode)) {
+        for (final motif in rule.getCommemorativeMotifsForDenomination(cleanDenom, year: year, currencyCode: currencyCode, material: material)) {
           if (!result.contains(motif)) result.add(motif);
         }
       } else {

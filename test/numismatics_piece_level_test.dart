@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_materials_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/models/numismatic_models.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_matrix.dart';
@@ -239,18 +240,18 @@ void main() {
       final mex92 = NumismaticMatrix.findRule('México', 1993, isBanknote: false);
       expect(mex92, isNotNull);
       final piece10 = mex92!.getPieceForDenomination('10', year: 1993);
-      expect(piece10?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
+      expect(piece10?.effectiveAllowedMaterials, contains(NumismaticMaterialsRegistry.nameBimetallicSilver925BronzeAl));
 
       final piece20 = mex92.getPieceForDenomination('20', year: 1993);
-      expect(piece20?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
+      expect(piece20?.effectiveAllowedMaterials, contains(NumismaticMaterialsRegistry.nameBimetallicSilver925BronzeAl));
 
       final piece50 = mex92.getPieceForDenomination('50', year: 1993);
-      expect(piece50?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
+      expect(piece50?.effectiveAllowedMaterials, contains(NumismaticMaterialsRegistry.nameBimetallicSilver925BronzeAl));
 
       final mex03 = NumismaticMatrix.findRule('México', 2005, isBanknote: false);
       expect(mex03, isNotNull);
       final piece100 = mex03!.getPieceForDenomination('100', year: 2005);
-      expect(piece100?.effectiveAllowedMaterials, contains('Bimetálica (Núcleo Plata)'));
+      expect(piece100?.effectiveAllowedMaterials, contains(NumismaticMaterialsRegistry.nameBimetallicSilver925BronzeAl));
     });
 
     test('All piece definitions in registry have valid non-empty motifs with explicit materials', () {
@@ -308,7 +309,7 @@ void main() {
       expect(usa1850, isNotNull);
       final piece1Dollar = usa1850!.getPieceForDenomination('1', year: 1850);
       expect(piece1Dollar, isNotNull);
-      expect(piece1Dollar!.effectiveAllowedMaterials, containsAll(['Plata', 'Oro']));
+      expect(piece1Dollar!.effectiveAllowedMaterials, containsAll([NumismaticMaterialsRegistry.nameSilver900, NumismaticMaterialsRegistry.nameGold900]));
       expect(piece1Dollar.getMotifsForYear(1840).length, equals(1)); // Only Silver Dollar (1794-1857)
       expect(piece1Dollar.getMotifsForYear(1850).length, equals(2)); // Both Silver and Gold Dollar
     });

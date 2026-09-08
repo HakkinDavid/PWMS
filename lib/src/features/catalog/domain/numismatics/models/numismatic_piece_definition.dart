@@ -1,5 +1,4 @@
 import '../../../../../core/constants/app_technical_strings.dart';
-import 'numismatic_motif_rule.dart';
 
 /// Represents a specific numismatic piece or banknote denomination definition within an epoch.
 class NumismaticPieceDefinition {
@@ -86,13 +85,20 @@ class NumismaticPieceDefinition {
   /// Backward-compatibility alias for effective allowed materials.
   List<String> get allowedMaterials => effectiveAllowedMaterials;
 
-  /// Returns commemorative motif names matching the specified [year].
-  List<String> getMotifsForYear(int? year) {
+  /// Returns commemorative motif names matching the specified [year], optionally filtered by [material].
+  List<String> getMotifsForYear(int? year, {String? material}) {
     if (motifs.isEmpty) return const [];
-    return motifs
-        .where((m) => m.matchesYear(year))
-        .map((m) => m.name)
-        .toList();
+    var active = year == null ? motifs : motifs.where((m) => m.matchesYear(year));
+    if (material != null && material.trim().isNotEmpty) {
+      final cleanMat = material.trim().toLowerCase();
+      final resolvedTarget = NumismaticMaterialsRegistry.resolve(material);
+      active = active.where((m) {
+        if (m.material.trim().toLowerCase() == cleanMat) return true;
+        if (resolvedTarget != null && m.material == resolvedTarget.displayName) return true;
+        return NumismaticMaterialsRegistry.areCompatible(m.material, material);
+      });
+    }
+    return active.map((m) => m.name).toList();
   }
 
   /// Static numeric parser supporting fractions (e.g. '1/4' -> 0.25, '1/8' -> 0.125) and decimals.
