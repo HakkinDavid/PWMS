@@ -238,4 +238,9 @@ abstract final class NumismaticDenominationsRegistry {
     }
     return false;
   }
+
+  /// Standard ordered list of common denominations for wheel pickers and chips.
+  static const List<String> standardDisplayDenominations = [
+    '1/4', '1/2', '1', '2', '2 1/2', '4', '5', '8', '10', '20', '25', '50', '100', '200', '500', '1000', '2000', '5000', 'Otro',
+  ];
 }

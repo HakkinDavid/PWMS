@@ -1,32 +1,37 @@
-import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'data/numismatic_countries_registry.dart';
 import 'data/numismatic_currencies_registry.dart';
 import 'data/numismatic_denominations_registry.dart';
+import 'data/numismatic_grades_registry.dart';
 import 'data/numismatic_materials_registry.dart';
 import 'models/numismatic_material_definition.dart';
 
 export 'data/numismatic_countries_registry.dart';
 export 'data/numismatic_currencies_registry.dart';
 export 'data/numismatic_denominations_registry.dart';
+export 'data/numismatic_grades_registry.dart';
 export 'data/numismatic_materials_registry.dart';
 export 'data/numismatic_rules_registry.dart';
 
 class NumismaticDictionary {
   NumismaticDictionary._();
 
-  static const List<String> numismaticSpeciesNames = AppTechnicalNumismatics.numismaticSpeciesNames;
+  static const List<String> numismaticSpeciesNames = [
+    AppStrings.coinCircularLabel,
+    AppStrings.banknoteRectangleLabel,
+  ];
 
   /// Map of ISO currency codes to standard full Spanish currency names (plural).
-  static const Map<String, String> currencyMap = AppTechnicalNumismatics.currencyMap;
+  static const Map<String, String> currencyMap = NumismaticCurrenciesRegistry.currencyMap;
 
   /// List of sovereign countries / territories for Numismatics.
-  static const List<String> countries = AppTechnicalNumismatics.countries;
+  static const List<String> countries = NumismaticCountriesRegistry.allCountries;
 
   /// Maps sovereign country names to their primary ISO currency codes.
-  static const Map<String, List<String>> countryToCurrenciesMap = AppTechnicalNumismatics.countryToCurrenciesMap;
+  static const Map<String, List<String>> countryToCurrenciesMap = NumismaticCountriesRegistry.countryToCurrenciesMap;
 
   static List<String> getCurrenciesForCountry(String? country) {
-    if (country == null || country.trim().isEmpty || country == AppTechnicalNumismatics.countryOther) {
+    if (country == null || country.trim().isEmpty || country == NumismaticCountriesRegistry.otro) {
       return currencyMap.keys.toList();
     }
     final mapped = countryToCurrenciesMap[country.trim()];
@@ -47,11 +52,11 @@ class NumismaticDictionary {
     return result;
   }
 
-  static const List<String> denominations = AppTechnicalNumismatics.denominations;
+  static const List<String> denominations = NumismaticDenominationsRegistry.standardDisplayDenominations;
 
   static const List<String> allStandardDenominations = NumismaticDenominationsRegistry.allDenominations;
 
-  static const List<String> grades = AppTechnicalNumismatics.grades;
+  static const List<String> grades = NumismaticGradesRegistry.allGrades;
 
   static List<String> get coinMaterials => NumismaticMaterialsRegistry.allDisplayNames;
 

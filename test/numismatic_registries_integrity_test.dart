@@ -105,16 +105,18 @@ void main() {
   });
 
   group('Numismatic Subsystem Connection & Facade Tests', () {
-    test('AppTechnicalNumismatics delegates countries directly to NumismaticCountriesRegistry', () {
-      expect(AppTechnicalNumismatics.countries, equals(NumismaticCountriesRegistry.allCountries));
-      expect(AppTechnicalNumismatics.countryOther, equals(NumismaticCountriesRegistry.otro));
+    test('NumismaticDictionary delegates countries, grades, and currencies to domain registries', () {
+      expect(NumismaticDictionary.countries, equals(NumismaticCountriesRegistry.allCountries));
+      expect(NumismaticDictionary.grades, equals(NumismaticGradesRegistry.allGrades));
+      expect(NumismaticDictionary.currencyMap, equals(NumismaticCurrenciesRegistry.currencyMap));
     });
 
-    test('NumismaticDataHelper re-exports all 5 domain registries', () {
+    test('NumismaticDataHelper re-exports all 6 domain registries', () {
       // Accessing registries to guarantee exports exist in NumismaticDataHelper scope
       expect(NumismaticCountriesRegistry.mexico, equals('México'));
       expect(NumismaticCurrenciesRegistry.mxn, equals('MXN'));
       expect(NumismaticDenominationsRegistry.d1, equals('1'));
+      expect(NumismaticGradesRegistry.sinCircular, equals('Sin circular'));
       expect(NumismaticMaterialsRegistry.allDisplayNames, contains('Plata'));
       expect(NumismaticRulesRegistry.allRules, isNotEmpty);
     });

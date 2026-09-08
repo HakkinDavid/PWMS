@@ -35,7 +35,7 @@ class NumismaticParser {
   NumismaticParser._();
 
   static final List<MapEntry<RegExp, String>> _singularPatterns =
-      (AppTechnicalNumismatics.currencySingularReplacements.entries.toList()
+      (NumismaticCurrenciesRegistry.currencySingularReplacements.entries.toList()
             ..sort((a, b) => b.key.length.compareTo(a.key.length)))
           .map((entry) => MapEntry(
                 RegExp(AppTechnicalStrings.regexWordBoundary + RegExp.escape(entry.key) + AppTechnicalStrings.regexWordBoundary, caseSensitive: false),
@@ -125,52 +125,10 @@ class NumismaticParser {
   }
 
   /// Resolves grade to strict canonical item in `grades`.
-  static String resolveGrade(String raw) {
-    final clean = raw.trim();
-    if (clean.isEmpty) return clean;
-    if (NumismaticDictionary.grades.contains(clean)) return clean;
-
-    final lower = clean.toLowerCase();
-    if (AppTechnicalNumismatics.gradeKeywords.containsKey(lower)) {
-      return NumismaticDictionary.grades[AppTechnicalNumismatics.gradeKeywords[lower]!];
-    }
-    // Check longer keywords first to avoid subword collisions
-    final sortedEntries = AppTechnicalNumismatics.gradeKeywords.entries.toList()
-      ..sort((a, b) => b.key.length.compareTo(a.key.length));
-    for (final entry in sortedEntries) {
-      if (lower.contains(entry.key)) {
-        return NumismaticDictionary.grades[entry.value];
-      }
-    }
-
-    return clean;
-  }
+  static String resolveGrade(String raw) => NumismaticGradesRegistry.resolve(raw);
 
   /// Resolves material to strict canonical item in `coinMaterials` or `NumismaticMaterialsRegistry`.
-  static String resolveMaterial(String raw) {
-    final clean = raw.trim();
-    if (clean.isEmpty) return clean;
-
-    final regMatch = NumismaticMaterialsRegistry.resolve(clean);
-    if (regMatch != null) return regMatch.displayName;
-
-    if (NumismaticDictionary.coinMaterials.contains(clean)) return clean;
-
-    final lower = clean.toLowerCase();
-    if (AppTechnicalNumismatics.materialKeywords.containsKey(lower)) {
-      return AppTechnicalNumismatics.materialKeywords[lower]!;
-    }
-    // Check longer keywords first to prioritize compound phrases (e.g. 'german silver', 'oro nórdico') over base words
-    final sortedEntries = AppTechnicalNumismatics.materialKeywords.entries.toList()
-      ..sort((a, b) => b.key.length.compareTo(a.key.length));
-    for (final entry in sortedEntries) {
-      if (lower.contains(entry.key)) {
-        return entry.value;
-      }
-    }
-
-    return clean;
-  }
+  static String resolveMaterial(String raw) => NumismaticMaterialsRegistry.resolveToDisplayName(raw);
 
   /// Checks if two currency identifiers match strictly after canonical resolution.
   static bool areCurrenciesEquivalent(String? c1, String? c2, {double? count}) {

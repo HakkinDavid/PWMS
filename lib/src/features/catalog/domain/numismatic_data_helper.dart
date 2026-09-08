@@ -8,6 +8,7 @@ import '../infrastructure/catalog_repository.dart';
 import 'numismatics/data/numismatic_countries_registry.dart';
 import 'numismatics/data/numismatic_currencies_registry.dart';
 import 'numismatics/data/numismatic_denominations_registry.dart';
+import 'numismatics/data/numismatic_grades_registry.dart';
 import 'numismatics/data/numismatic_materials_registry.dart';
 import 'numismatics/data/numismatic_rules_registry.dart';
 import 'numismatics/numismatic_dictionary.dart';
@@ -20,6 +21,7 @@ export '../../../core/constants/app_technical_strings.dart' show NumismaticEmiss
 export 'numismatics/data/numismatic_countries_registry.dart';
 export 'numismatics/data/numismatic_currencies_registry.dart';
 export 'numismatics/data/numismatic_denominations_registry.dart';
+export 'numismatics/data/numismatic_grades_registry.dart';
 export 'numismatics/data/numismatic_materials_registry.dart';
 export 'numismatics/data/numismatic_rules_registry.dart';
 export 'numismatics/models/numismatic_currency_definition.dart';
