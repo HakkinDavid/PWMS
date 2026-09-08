@@ -405,16 +405,16 @@ abstract final class NumismaticCurrenciesRegistry {
       namePlural: 'Dólares Estadounidenses',
       symbol: r'$',
       hasSubunit: true,
-      subunitName: 'Cent',
-      subunitNamePlural: 'Cents',
+      subunitName: 'Centavo',
+      subunitNamePlural: 'Centavos',
       subunitSymbol: '¢',
       subunitRatio: 100,
       namedDenominations: {
-        '0.01': '1 Cent (Penny)',
-        '0.05': '5 Cents (Nickel)',
-        '0.10': '10 Cents (Dime)',
-        '0.25': 'Quarter Dollar (25 Cents)',
-        '0.50': 'Half Dollar (50 Cents)',
+        '0.01': 'Penny',
+        '0.05': 'Nickel',
+        '0.10': 'Dime',
+        '0.25': 'Cuarto',
+        '0.50': 'Medio',
       },
     ),
     NumismaticCurrencyDefinition(
@@ -423,8 +423,8 @@ abstract final class NumismaticCurrenciesRegistry {
       namePlural: 'Dólares Continentales de EE.UU.',
       symbol: r'$',
       hasSubunit: true,
-      subunitName: 'Cent',
-      subunitNamePlural: 'Cents',
+      subunitName: 'Centavo',
+      subunitNamePlural: 'Centavos',
       subunitSymbol: '¢',
       subunitRatio: 100,
     ),
@@ -434,8 +434,8 @@ abstract final class NumismaticCurrenciesRegistry {
       namePlural: 'Dólares Canadienses',
       symbol: r'$',
       hasSubunit: true,
-      subunitName: 'Cent',
-      subunitNamePlural: 'Cents',
+      subunitName: 'Centavo',
+      subunitNamePlural: 'Centavos',
       subunitSymbol: '¢',
       subunitRatio: 100,
     ),
@@ -816,8 +816,8 @@ abstract final class NumismaticCurrenciesRegistry {
       namePlural: 'Dólares Australianos',
       symbol: r'$',
       hasSubunit: true,
-      subunitName: 'Cent',
-      subunitNamePlural: 'Cents',
+      subunitName: 'Centavo',
+      subunitNamePlural: 'Centavos',
       subunitSymbol: '¢',
       subunitRatio: 100,
     ),
@@ -827,9 +827,20 @@ abstract final class NumismaticCurrenciesRegistry {
       namePlural: 'Dólares Neozelandeses',
       symbol: r'$',
       hasSubunit: true,
-      subunitName: 'Cent',
-      subunitNamePlural: 'Cents',
+      subunitName: 'Centavo',
+      subunitNamePlural: 'Centavos',
       subunitSymbol: '¢',
+      subunitRatio: 100,
+    ),
+    NumismaticCurrencyDefinition(
+      code: aed,
+      name: 'Dírham de los Emiratos Árabes Unidos',
+      namePlural: 'Dírhams de los Emiratos Árabes Unidos',
+      symbol: 'د.إ',
+      hasSubunit: true,
+      subunitName: 'Fils',
+      subunitNamePlural: 'Fils',
+      subunitSymbol: 'fils',
       subunitRatio: 100,
     ),
   ];
@@ -865,8 +876,13 @@ abstract final class NumismaticCurrenciesRegistry {
     if (nameDirect != null) return nameDirect;
 
     for (final c in allCurrencies) {
-      if (clean.toLowerCase().contains(c.name.toLowerCase()) ||
-          clean.toLowerCase().contains(c.namePlural.toLowerCase())) {
+      final cleanLower = clean.toLowerCase();
+      final cNameLower = c.name.toLowerCase();
+      final cNamePluralLower = c.namePlural.toLowerCase();
+      if (cleanLower.contains(cNameLower) ||
+          cleanLower.contains(cNamePluralLower) ||
+          cNameLower.contains(cleanLower) ||
+          cNamePluralLower.contains(cleanLower)) {
         return c;
       }
     }
@@ -972,7 +988,7 @@ abstract final class NumismaticCurrenciesRegistry {
     'ECU': 'Écus Franceses (Escudos Franceses)',
     'LDO': 'Luises de Oro Franceses (Louis d\'or)',
     'DEM': 'Marcos Alemanes',
-    'DDM': 'Marcos de la RDA (Alemania Oriental)',
+    'DDM': 'Marcos de la República Democrática Alemana (RDA)',
     'RKM': 'Reichsmark Alemanes',
     'RTM': 'Rentenmark Alemanes',
     'PRM': 'Papiermark Alemanes',
@@ -1104,7 +1120,7 @@ abstract final class NumismaticCurrenciesRegistry {
     'PAL': 'Libras Palestinas (Mandato Británico)',
     'SAR': 'Riyales Saudíes',
     'HEJ': 'Riyales de Hiyaz',
-    'AED': 'Dírhams de los EAU',
+    'AED': 'Dírhams de los Emiratos Árabes Unidos',
     'QAR': 'Riyales Cataríes',
     'BHD': 'Dinares Bahreiníes',
     'KWD': 'Dinares Kuwaitíes',

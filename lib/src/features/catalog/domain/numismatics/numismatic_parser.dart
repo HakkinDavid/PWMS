@@ -51,6 +51,31 @@ class NumismaticParser {
       final norm = normalizeCurrencyText(entry.value);
       map.putIfAbsent(norm, () => entry.key);
     }
+    // Backward compatibility aliases for historical, abbreviated or colloquial currency mentions
+    const legacyAliases = <String, String>{
+      'eau': 'AED',
+      'los eau': 'AED',
+      'dirham de los eau': 'AED',
+      'dirhams de los eau': 'AED',
+      'dirham de los emiratos arabes unidos': 'AED',
+      'dirhams de los emiratos arabes unidos': 'AED',
+      'emiratos arabes unidos': 'AED',
+      'los emiratos arabes unidos': 'AED',
+      'dolar continental de ee uu': 'USC',
+      'dolares continentales de ee uu': 'USC',
+      'dolar continental de eeuu': 'USC',
+      'dolares continentales de eeuu': 'USC',
+      'dolares continentales de ee.uu.': 'USC',
+      'dolar continental de ee.uu.': 'USC',
+      'marco de la rda': 'DDM',
+      'marcos de la rda': 'DDM',
+      'marcos de la rda (alemania oriental)': 'DDM',
+      'marco de la rda (alemania oriental)': 'DDM',
+    };
+    for (final entry in legacyAliases.entries) {
+      final normKey = normalizeCurrencyText(entry.key);
+      map.putIfAbsent(normKey, () => entry.value);
+    }
     return map;
   }();
 
@@ -496,20 +521,33 @@ class NumismaticParser {
           faceValue = parsed;
           faceValStr = numPart;
 
-          // Check if remainder is "Centavos de <Currency>" or "Cents de <Currency>"
-          final deIdx = remainder.indexOf(AppTechnicalStrings.deWithSpaces);
-          if (deIdx != -1) {
-            final actualCurr = remainder.substring(deIdx + AppTechnicalStrings.deWithSpaces.length).trim();
-            final currDef = NumismaticCurrenciesRegistry.resolve(actualCurr);
-            if (currDef != null && currDef.hasSubunit) {
-              faceValue = parsed / currDef.subunitRatio;
-              faceValStr = faceValue % 1 == 0 ? faceValue.toInt().toString() : faceValue.toString();
-              currency = currDef.namePlural;
-            } else {
-              currency = actualCurr;
-            }
+          // 1. First, check if remainder is directly a recognized currency (e.g. 'Dírham de los Emiratos Árabes Unidos', 'Dólares de Barbados')
+          final normRemainder = normalizeCurrencyText(remainder);
+          final directIso = _normalizedCurrencyToIsoMap[normRemainder];
+
+          if (directIso != null || NumismaticDictionary.currencyMap.containsKey(remainder.toUpperCase())) {
+            currency = directIso != null ? NumismaticDictionary.currencyMap[directIso] : remainder;
           } else {
-            currency = remainder;
+            // 2. Check if remainder is a subunit phrase like "20 Centavos de Pesos Mexicanos" or "50 Céntimos de Euro"
+            final deIdx = remainder.indexOf(AppTechnicalStrings.deWithSpaces);
+            if (deIdx != -1) {
+              final actualCurr = remainder.substring(deIdx + AppTechnicalStrings.deWithSpaces.length).trim();
+              final normActual = normalizeCurrencyText(actualCurr);
+              final matchedIso = _normalizedCurrencyToIsoMap[normActual];
+              final currDef = NumismaticCurrenciesRegistry.resolve(actualCurr);
+
+              if (currDef != null && currDef.hasSubunit) {
+                faceValue = parsed / currDef.subunitRatio;
+                faceValStr = faceValue % 1 == 0 ? faceValue.toInt().toString() : faceValue.toString();
+                currency = currDef.namePlural;
+              } else if (matchedIso != null) {
+                currency = NumismaticDictionary.currencyMap[matchedIso];
+              } else {
+                currency = remainder;
+              }
+            } else {
+              currency = remainder;
+            }
           }
         } else if (numPart.contains(AppTechnicalStrings.slash)) {
           faceValStr = numPart;

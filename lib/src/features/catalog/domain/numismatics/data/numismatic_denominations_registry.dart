@@ -13,7 +13,7 @@ abstract final class NumismaticDenominationsRegistry {
   static const d1_2 = '1/2';
 
   // ---------------------------------------------------------------------------
-  // 2. Decimal Fractional Denominations (Modern & Historical Cents/Centavos)
+  // 2. Decimal Fractional Denominations (Modern & Historical Centavos)
   // ---------------------------------------------------------------------------
   static const d0_005 = '0.005';
   static const d0_01 = '0.01';

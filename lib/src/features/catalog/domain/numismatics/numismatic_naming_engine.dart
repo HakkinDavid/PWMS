@@ -12,7 +12,7 @@ abstract final class NumismaticNamingEngine {
   /// Examples:
   /// - ('0.20', 'MXP') -> '20 Centavos'
   /// - ('0.50', 'MXN') -> '50 Centavos'
-  /// - ('0.25', 'USD') -> '25 Cents'
+  /// - ('0.25', 'USD') -> '25 Centavos'
   /// - ('0.50', 'EUR') -> '50 Céntimos de Euro'
   /// - ('1', 'MXN') -> '1 Peso'
   /// - ('5', 'MXN') -> '5 Pesos'
@@ -71,7 +71,7 @@ abstract final class NumismaticNamingEngine {
   /// - ('50', 'MXP') -> '50 Pesos Mexicanos Antiguos'
   /// - ('20', 'MXN') -> '20 Pesos Mexicanos'
   /// - ('1', 'USD') -> '1 Dólar Estadounidense'
-  /// - ('0.25', 'USD') -> '25 Cents de Dólares Estadounidenses'
+  /// - ('0.25', 'USD') -> '25 Centavos de Dólares Estadounidenses'
   /// - ('0.50', 'EUR') -> '50 Céntimos de Euro'
   /// - ('8', 'MXR') -> '8 Reales Mexicanos Coloniales e Imperiales'
   static String formatDenominationWithFullCurrency({

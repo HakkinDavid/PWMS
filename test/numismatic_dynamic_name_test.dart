@@ -442,7 +442,7 @@ void main() {
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.50', currencyCode: 'MXN'), equals('50 Centavos'));
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '1', currencyCode: 'MXN'), equals('1 Peso'));
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '5', currencyCode: 'MXN'), equals('5 Pesos'));
-      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.25', currencyCode: 'USD'), equals('Quarter Dollar (25 Cents)'));
+      expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.25', currencyCode: 'USD'), equals('Cuarto'));
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '0.50', currencyCode: 'EUR'), equals('50 Céntimos de Euro'));
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '1/2', currencyCode: 'REAL'), equals('Medio Real (1/2 Real)'));
       expect(NumismaticDataHelper.formatDenominationLabel(denomination: '8', currencyCode: 'REAL'), equals('8 Reales (Real de a 8)'));
@@ -467,7 +467,7 @@ void main() {
       );
       expect(
         NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.25', currencyCode: 'USD'),
-        equals('25 Cents de Dólares Estadounidenses'),
+        equals('25 Centavos de Dólares Estadounidenses'),
       );
       expect(
         NumismaticDataHelper.formatDenominationWithFullCurrency(denomination: '0.50', currencyCode: 'EUR'),

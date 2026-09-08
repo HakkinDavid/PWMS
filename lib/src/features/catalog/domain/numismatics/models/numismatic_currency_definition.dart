@@ -19,7 +19,7 @@ class NumismaticCurrencyDefinition {
   /// Singular subunit name (e.g. 'Centavo', 'Cent', 'Céntimo', 'Penique', 'Paisa', 'Maravedí').
   final String? subunitName;
 
-  /// Plural subunit name (e.g. 'Centavos', 'Cents', 'Céntimos', 'Peniques', 'Paise', 'Maravedíes').
+  /// Plural subunit name (e.g. 'Centavos', 'Céntimos', 'Peniques', 'Paise', 'Maravedíes').
   final String? subunitNamePlural;
 
   /// Subunit symbol (e.g. '¢', 'c', 'p').
@@ -29,7 +29,7 @@ class NumismaticCurrencyDefinition {
   final int subunitRatio;
 
   /// Map of specific numerical values (as strings, e.g. '0.25', '0.10', '0.5', '4', '8')
-  /// to historical or colloquial denomination names (e.g. 'Cuarto de Dólar (Quarter)', 'Dime', 'Medio Real', 'Tostón', 'Real de a 8').
+  /// to historical or colloquial denomination names (e.g. 'Cuarto de Dólar', 'Dime', 'Medio Real', 'Tostón', 'Real de a 8').
   final Map<String, String> namedDenominations;
 
   const NumismaticCurrencyDefinition({
