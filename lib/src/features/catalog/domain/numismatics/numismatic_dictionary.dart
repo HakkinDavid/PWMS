@@ -9,6 +9,7 @@ export 'data/numismatic_countries_registry.dart';
 export 'data/numismatic_currencies_registry.dart';
 export 'data/numismatic_denominations_registry.dart';
 export 'data/numismatic_materials_registry.dart';
+export 'data/numismatic_rules_registry.dart';
 
 class NumismaticDictionary {
   NumismaticDictionary._();

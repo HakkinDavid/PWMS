@@ -1,9 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_countries_registry.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_currencies_registry.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_denominations_registry.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_dictionary.dart';
+import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
+import 'package:platinum_world_management_system/src/features/catalog/domain/numismatic_data_helper.dart';
 
 void main() {
   group('NumismaticCurrenciesRegistry Tests', () {
@@ -106,4 +103,33 @@ void main() {
       }
     });
   });
+
+  group('Numismatic Subsystem Connection & Facade Tests', () {
+    test('AppTechnicalNumismatics delegates countries directly to NumismaticCountriesRegistry', () {
+      expect(AppTechnicalNumismatics.countries, equals(NumismaticCountriesRegistry.allCountries));
+      expect(AppTechnicalNumismatics.countryOther, equals(NumismaticCountriesRegistry.otro));
+    });
+
+    test('NumismaticDataHelper re-exports all 5 domain registries', () {
+      // Accessing registries to guarantee exports exist in NumismaticDataHelper scope
+      expect(NumismaticCountriesRegistry.mexico, equals('México'));
+      expect(NumismaticCurrenciesRegistry.mxn, equals('MXN'));
+      expect(NumismaticDenominationsRegistry.d1, equals('1'));
+      expect(NumismaticMaterialsRegistry.allDisplayNames, contains('Plata'));
+      expect(NumismaticRulesRegistry.allRules, isNotEmpty);
+    });
+
+    test('isBanknote parameter in NumismaticDataHelper correctly filters currencies and denominations', () {
+      final coinCurrencies = NumismaticDataHelper.getCurrenciesForCountry('México', isBanknote: false);
+      final noteCurrencies = NumismaticDataHelper.getCurrenciesForCountry('México', isBanknote: true);
+      expect(coinCurrencies, contains('MXN'));
+      expect(noteCurrencies, contains('MXN'));
+
+      final coinDenoms = NumismaticDataHelper.getDenominationsForCountry(country: 'México', isBanknote: false);
+      final noteDenoms = NumismaticDataHelper.getDenominationsForCountry(country: 'México', isBanknote: true);
+      expect(coinDenoms, isNotEmpty);
+      expect(noteDenoms, isNotEmpty);
+    });
+  });
 }
+

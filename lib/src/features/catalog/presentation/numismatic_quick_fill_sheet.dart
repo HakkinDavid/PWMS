@@ -402,11 +402,20 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   }) {
     final effectiveCountry = _country == AppStrings.otherSpecifyOption ? null : _country;
     final year = _parsedYear;
+    final isBanknote = !widget.isCoin;
 
     // 1. Currency inference / validation
-    final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(effectiveCountry, year: year);
+    final availableCurrencies = NumismaticDataHelper.getCurrenciesForCountry(
+      effectiveCountry,
+      year: year,
+      isBanknote: isBanknote,
+    );
     if (!_isCurrencyNull && !preserveCurrency) {
-      final inferredCurrency = NumismaticDataHelper.inferCurrency(country: effectiveCountry, year: year);
+      final inferredCurrency = NumismaticDataHelper.inferCurrency(
+        country: effectiveCountry,
+        year: year,
+        isBanknote: isBanknote,
+      );
       if (inferredCurrency != null) {
         _currencyCode = inferredCurrency;
       } else if (_currencyCode != null &&
@@ -426,6 +435,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       country: effectiveCountry,
       year: year,
       currencyCode: currCode,
+      isBanknote: isBanknote,
     );
     if (!_isDenominationNull && !preserveDenomination) {
       if (_denomination != null &&
@@ -443,6 +453,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
         year: year,
         currencyCode: currCode,
         denomination: denom,
+        isBanknote: isBanknote,
       );
       if (inferredMat != null) {
         _composition = inferredMat;
@@ -456,7 +467,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
         year: year,
         currencyCode: currCode,
         denomination: denom,
-        isBanknote: !widget.isCoin,
+        isBanknote: isBanknote,
       );
       if (availableMotifs.isNotEmpty) {
         if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized && !availableMotifs.contains(_motif)) {
@@ -719,6 +730,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                   final availableCurrencies = NumismaticDataHelper.getCurrencyMapForCountry(
                     _country == AppStrings.otherSpecifyOption ? null : _country,
                     year: _parsedYear,
+                    isBanknote: !widget.isCoin,
                   );
                   return AppWheelPickerField<String?>(
                     value: _currencyCode,
@@ -788,6 +800,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                     country: _country == AppStrings.otherSpecifyOption ? null : _country,
                     year: _parsedYear,
                     currencyCode: _currencyCode == AppStrings.otherSpecifyOption ? null : _currencyCode,
+                    isBanknote: !widget.isCoin,
                   );
                   return AppWheelPickerField<String?>(
                     value: _denomination,
