@@ -401,9 +401,18 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     });
   }
 
+  void _onMotifChanged(String? val) {
+    setState(() {
+      _motif = val;
+      // Preserve the user's motif choice; only re-infer material
+      _recalculateInferences(preserveCurrency: true, preserveDenomination: true, preserveMotif: true);
+    });
+  }
+
   void _recalculateInferences({
     bool preserveCurrency = false,
     bool preserveDenomination = false,
+    bool preserveMotif = false,
   }) {
     final effectiveCountry = _country == AppStrings.otherSpecifyOption ? null : _country;
     final year = _parsedYear;
@@ -450,8 +459,37 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       }
     }
 
-    // 3. Material inference (for coins)
+    // 3. Commemorative Motif auto-suggestion / validation (runs before material so motif can inform it)
     final denom = _denomination == AppStrings.otherSpecifyOption ? null : _denomination;
+    if (!preserveMotif) {
+      if (denom != null) {
+        final availableMotifs = NumismaticDataHelper.getCommemorativeMotifs(
+          country: effectiveCountry,
+          year: year,
+          currencyCode: currCode,
+          denomination: denom,
+          isBanknote: isBanknote,
+        );
+        if (availableMotifs.length == 1) {
+          // Auto-select when there is exactly one motif
+          _motif = availableMotifs.first;
+        } else if (availableMotifs.isNotEmpty) {
+          if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized && !availableMotifs.contains(_motif)) {
+            _motif = null;
+          }
+        } else {
+          if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized) {
+            _motif = null;
+          }
+        }
+      } else {
+        if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized) {
+          _motif = null;
+        }
+      }
+    }
+
+    // 4. Material inference (for coins) — runs after motif is resolved
     if (widget.isCoin && !_isCompositionNull) {
       final inferredMat = NumismaticDataHelper.inferMaterial(
         country: effectiveCountry,
@@ -462,28 +500,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
       );
       if (inferredMat != null) {
         _composition = inferredMat;
-      }
-    }
-
-    // 4. Commemorative Motif auto-suggestion / validation
-    if (denom != null) {
-      final availableMotifs = NumismaticDataHelper.getCommemorativeMotifs(
-        country: effectiveCountry,
-        year: year,
-        currencyCode: currCode,
-        denomination: denom,
-        isBanknote: isBanknote,
-      );
-      if (availableMotifs.isNotEmpty) {
-        if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized && !availableMotifs.contains(_motif)) {
-          _motif = null;
-        }
-      } else if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized) {
-        _motif = null;
-      }
-    } else {
-      if (_motif != null && _motif != AppStrings.otherSpecifyOption && _motif != AppStrings.otherSpecifyParenthesized) {
-        _motif = null;
       }
     }
   }
@@ -868,7 +884,34 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               ],
               const SizedBox(height: 14),
 
-              // 5. Material / Composición Dropdown (1 campo por fila, sólo para monedas) - Inferencia automática con override manual
+              // 5. Motivo de la emisión (Opcional) — aparece justo después de Denominación
+              AppWheelPickerField<String?>(
+                value: _motif,
+                items: [null, ..._availableMotifs],
+                labelBuilder: (m) => m ?? AppStrings.noSelectionPrompt,
+                title: AppStrings.motifLabel,
+                decoration: InputDecoration(
+                  labelText: AppStrings.motifLabel,
+                  hintText: AppStrings.noSelectionPrompt,
+                  prefixIcon: const Icon(Icons.star_outline),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                onChanged: _onMotifChanged,
+              ),
+              if (_motif == AppStrings.otherSpecifyOption || _motif == AppStrings.otherSpecifyParenthesized) ...[
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _customMotifController,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.customMotifOption,
+                    prefixIcon: const Icon(Icons.edit_note),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 14),
+
+              // 6. Material / Composición Dropdown (1 campo por fila, sólo para monedas) - Inferencia automática con override manual
               if (widget.isCoin) ...[
                 _buildFieldHeader(
                   title: AppStrings.materialPropertyName,
@@ -931,7 +974,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                 const SizedBox(height: 14),
               ],
 
-              // 6. Conservación Dropdown (1 campo por fila)
+              // 7. Conservación Dropdown (1 campo por fila)
               _buildFieldHeader(
                 title: AppStrings.gradePropertyName,
                 isNull: _isGradeNull,
@@ -985,7 +1028,7 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
               ],
               const SizedBox(height: 14),
 
-              // 7. Selector de Ubicación / Contenedor (LocationOrContainerSelectionSheet)
+              // 8. Selector de Ubicación / Contenedor (LocationOrContainerSelectionSheet)
               Text(AppStrings.locationLabel, style: theme.textTheme.labelLarge),
               const SizedBox(height: 8),
               if (_selection.isPhysicalNode) ...[
@@ -1079,33 +1122,6 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
                       ),
                     );
                   },
-                ),
-              ],
-              const SizedBox(height: 14),
-
-              // 8. Motivo de la emisión (Opcional)
-              AppWheelPickerField<String?>(
-                value: _motif,
-                items: [null, ..._availableMotifs],
-                labelBuilder: (m) => m ?? AppStrings.noSelectionPrompt,
-                title: AppStrings.motifLabel,
-                decoration: InputDecoration(
-                  labelText: AppStrings.motifLabel,
-                  hintText: AppStrings.noSelectionPrompt,
-                  prefixIcon: const Icon(Icons.star_outline),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-                onChanged: (val) => setState(() => _motif = val),
-              ),
-              if (_motif == AppStrings.otherSpecifyOption || _motif == AppStrings.otherSpecifyParenthesized) ...[
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _customMotifController,
-                  decoration: InputDecoration(
-                    labelText: AppStrings.customMotifOption,
-                    prefixIcon: const Icon(Icons.edit_note),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
                 ),
               ],
 
