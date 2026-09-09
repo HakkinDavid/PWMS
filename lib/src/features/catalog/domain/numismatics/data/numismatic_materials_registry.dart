@@ -8,6 +8,8 @@ abstract final class NumismaticMaterialsRegistry {
   static const nameSilverFine999 = 'Plata Fina .999';
   static const nameSilverBritannia958 = 'Plata Britannia .958';
   static const nameSilverSterling925 = 'Plata .925';
+  static const nameSilverColonial931 = 'Plata .931';
+  static const nameSilverColonial917 = 'Plata .917';
   static const nameSilverColonial903 = 'Plata .903';
   static const nameSilver900 = 'Plata .900';
   static const nameSilver835 = 'Plata .835';
@@ -22,6 +24,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const nameGoldFine9999 = 'Oro Puro .9999';
   static const nameGoldFine999 = 'Oro Fino .999';
   static const nameGoldCrown9167 = 'Oro Crown .9167';
+  static const nameGold917 = 'Oro .917';
   static const nameGold900 = 'Oro .900';
   static const nameGoldColonial875 = 'Oro .875';
   static const nameGoldGeneric = 'Oro';
@@ -32,6 +35,9 @@ abstract final class NumismaticMaterialsRegistry {
   static const nameElectrum = 'Electro (Electrum)';
   static const nameBimetallicBronzeAlStainlessSteel = 'Bimetálica (Centro Bronce de Aluminio, Anillo Acero Inoxidable)';
   static const nameBimetallicAlpacaBronzeAl = 'Bimetálica (Centro Alpaca, Anillo Bronce de Aluminio)';
+  static const nameBimetallicCuNiBronzeAl = 'Bimetálica (Centro Cuproníquel, Anillo Bronce de Aluminio)';
+  static const nameBimetallicNiBrBronzeAl = 'Bimetálica (Centro Níquel-Bronce, Anillo Bronce de Aluminio)';
+  static const nameBimetallicBronzeCoatedSteelSS = 'Bimetálica (Centro Acero Recubierto de Bronce, Anillo Acero Inoxidable)';
   static const nameBimetallicSilver925BronzeAl = 'Bimetálica (Centro Plata .925, Anillo Bronce de Aluminio)';
   static const nameBimetallicEuro1 = 'Bimetálica (Centro Cuproníquel, Anillo Níquel-Latón)';
   static const nameBimetallicEuro2 = 'Bimetálica (Centro Níquel-Latón, Anillo Cuproníquel)';
@@ -122,6 +128,28 @@ abstract final class NumismaticMaterialsRegistry {
     fineness: 0.925,
     alloyComposition: '92.5% Ag, 7.5% Cu',
     aliases: ['plata sterling', 'sterling silver', '.925', 'plata esterlina', 'plata 925', 'plata .925 ley'],
+  );
+
+  static const silverColonial931 = NumismaticMaterialDefinition(
+    key: 'silver_colonial_931',
+    displayName: nameSilverColonial931,
+    shortName: 'Plata',
+    family: NumismaticMaterialFamily.silver,
+    structure: NumismaticMaterialStructure.monometallic,
+    fineness: 0.931,
+    alloyComposition: '93.1% Ag, 6.9% Cu (Ley colonial temprana)',
+    aliases: ['plata .931', 'plata 931', 'ag931', 'plata virreinal .931', 'plata colonial 931'],
+  );
+
+  static const silverColonial917 = NumismaticMaterialDefinition(
+    key: 'silver_colonial_917',
+    displayName: nameSilverColonial917,
+    shortName: 'Plata',
+    family: NumismaticMaterialFamily.silver,
+    structure: NumismaticMaterialStructure.monometallic,
+    fineness: 0.917,
+    alloyComposition: '91.7% Ag, 8.3% Cu (Ley 11/12)',
+    aliases: ['plata .917', 'plata 917', 'ag917', 'plata virreinal .917', 'plata colonial 917'],
   );
 
   static const silverColonial903 = NumismaticMaterialDefinition(
@@ -279,6 +307,17 @@ abstract final class NumismaticMaterialsRegistry {
     aliases: ['22k', 'oro 22k', 'crown gold', '.9167 gold', 'oro .9167', 'gold eagle', 'american gold eagle', 'sovereign', 'soberano oro'],
   );
 
+  static const gold917 = NumismaticMaterialDefinition(
+    key: 'gold_917',
+    displayName: nameGold917,
+    shortName: 'Oro',
+    family: NumismaticMaterialFamily.gold,
+    structure: NumismaticMaterialStructure.monometallic,
+    fineness: 0.917,
+    alloyComposition: '91.7% Au, 8.3% Cu/Ag (22 Kilates)',
+    aliases: ['au917', 'oro .917', 'oro 917', 'escudo virreinal temprano'],
+  );
+
   static const gold900 = NumismaticMaterialDefinition(
     key: 'gold_900',
     displayName: nameGold900,
@@ -396,11 +435,70 @@ abstract final class NumismaticMaterialsRegistry {
       'bimetálica (alpaca/al-br)',
       'bimetalica alpaca bronce de aluminio',
       'bimetalica 10 pesos',
-      'bimetalica 20 pesos',
       'bimetálica centro alpaca anillo bronce',
       'bimetálica alpaca/al-br',
-      'bimetálica 10 y 20 pesos',
+      'bimetálica 10 pesos',
       'bimetalica centro alpaca, anillo bronce de aluminio',
+      'alpbronal',
+    ],
+  );
+
+  static const bimetallicCuNiBronzeAl = NumismaticMaterialDefinition(
+    key: 'bimetallic_cuni_bronze_al',
+    displayName: nameBimetallicCuNiBronzeAl,
+    shortName: 'Bimetálica',
+    family: NumismaticMaterialFamily.bimetallic,
+    structure: NumismaticMaterialStructure.bimetallic,
+    coreMaterial: 'Cuproníquel',
+    ringMaterial: 'Bronce de aluminio',
+    alloyComposition: 'Centro: 75% Cu, 25% Ni | Anillo: 92% Cu, 6% Al, 2% Ni',
+    aliases: [
+      'cunibronal',
+      'cuni+bronal',
+      'bimetálica cuproníquel bronce de aluminio',
+      'bimetalica cuproniquel bronce aluminio',
+      'bimetálica 20 pesos conmemorativos',
+      'bimetálica 10 pesos conmemorativos',
+    ],
+  );
+
+  static const bimetallicNiBrBronzeAl = NumismaticMaterialDefinition(
+    key: 'bimetallic_nibr_bronze_al',
+    displayName: nameBimetallicNiBrBronzeAl,
+    shortName: 'Bimetálica',
+    family: NumismaticMaterialFamily.bimetallic,
+    structure: NumismaticMaterialStructure.bimetallic,
+    coreMaterial: 'Níquel-Bronce',
+    ringMaterial: 'Bronce de aluminio',
+    alloyComposition: 'Centro: Aleación níquel-bronce | Anillo: 92% Cu, 6% Al, 2% Ni',
+    aliases: [
+      'nibronal',
+      'nibr+bronal',
+      'bimetálica níquel-bronce bronce de aluminio',
+      'bimetalica niquel bronce aluminio',
+      'bimetálica 5 pesos bicentenario',
+      'nibral',
+    ],
+  );
+
+  static const bimetallicBronzeCoatedSteelSS = NumismaticMaterialDefinition(
+    key: 'bimetallic_bronze_coated_steel_ss',
+    displayName: nameBimetallicBronzeCoatedSteelSS,
+    shortName: 'Bimetálica',
+    family: NumismaticMaterialFamily.bimetallic,
+    structure: NumismaticMaterialStructure.bimetallic,
+    coreMaterial: 'Acero recubierto de bronce',
+    ringMaterial: 'Acero inoxidable',
+    alloyComposition: 'Centro: Acero magnético recubierto de bronce | Anillo: Acero inoxidable AISI 430',
+    aliases: [
+      'brsteelss',
+      'brsteel+ss',
+      'bimetálica acero bronce acero inoxidable',
+      'bimetalica acero recubierto bronce anillo acero inoxidable',
+      'bimetálica 1 peso 2025',
+      'bimetálica 2 pesos 2025',
+      'bimetálica 5 pesos 2025',
+      'magnético bronce acero',
     ],
   );
 
@@ -1020,6 +1118,8 @@ abstract final class NumismaticMaterialsRegistry {
     silverFine999,
     silverBritannia958,
     silverSterling925,
+    silverColonial931,
+    silverColonial917,
     silverColonial903,
     silver900,
     silver835,
@@ -1035,6 +1135,7 @@ abstract final class NumismaticMaterialsRegistry {
     goldFine9999,
     goldFine999,
     goldCrown9167,
+    gold917,
     gold900,
     goldColonial875,
     goldGeneric,
@@ -1047,6 +1148,9 @@ abstract final class NumismaticMaterialsRegistry {
     // Bimetálicas
     bimetallicBronzeAlStainlessSteel,
     bimetallicAlpacaBronzeAl,
+    bimetallicCuNiBronzeAl,
+    bimetallicNiBrBronzeAl,
+    bimetallicBronzeCoatedSteelSS,
     bimetallicSilver925BronzeAl,
     bimetallicEuro1,
     bimetallicEuro2,

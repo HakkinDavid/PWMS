@@ -6,7 +6,83 @@ import '../models/numismatic_models.dart';
 
 /// Banknote emission rules across all supported countries and eras.
 const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
-  // B1.1 México Billetes - Época Revolucionaria y Pre-Banco de México (1823–1924)
+  // B1.0 México Billetes - Primer Imperio Mexicano (1823)
+  NumismaticEmissionRuleData(
+    country: NumismaticCountriesRegistry.imperioMexicano,
+    isBanknote: true,
+    pieces: [
+      NumismaticPieceDefinition(
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.mxp,
+        motifs: [
+          NumismaticMotifRule(
+            'Primer Imperio Mexicano - Águila Imperial',
+            minYear: 1823,
+            maxYear: 1823,
+            material: NumismaticMaterialsRegistry.namePaper,
+          ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: NumismaticDenominationsRegistry.d2,
+        currency: NumismaticCurrenciesRegistry.mxp,
+        motifs: [
+          NumismaticMotifRule(
+            'Primer Imperio Mexicano - Águila Imperial',
+            minYear: 1823,
+            maxYear: 1823,
+            material: NumismaticMaterialsRegistry.namePaper,
+          ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: NumismaticDenominationsRegistry.d10,
+        currency: NumismaticCurrenciesRegistry.mxp,
+        motifs: [
+          NumismaticMotifRule(
+            'Primer Imperio Mexicano - Águila Imperial',
+            minYear: 1823,
+            maxYear: 1823,
+            material: NumismaticMaterialsRegistry.namePaper,
+          ),
+        ],
+      ),
+    ],
+  ),
+
+  // B1.0b México Billetes - Comisión Monetaria (1920)
+  NumismaticEmissionRuleData(
+    country: NumismaticCountriesRegistry.mexico,
+    isBanknote: true,
+    pieces: [
+      NumismaticPieceDefinition(
+        denomination: NumismaticDenominationsRegistry.d0_50,
+        currency: NumismaticCurrenciesRegistry.mxp,
+        motifs: [
+          NumismaticMotifRule(
+            'Comisión Monetaria - Escudo Nacional',
+            minYear: 1920,
+            maxYear: 1920,
+            material: NumismaticMaterialsRegistry.namePaper,
+          ),
+        ],
+      ),
+      NumismaticPieceDefinition(
+        denomination: NumismaticDenominationsRegistry.d1,
+        currency: NumismaticCurrenciesRegistry.mxp,
+        motifs: [
+          NumismaticMotifRule(
+            'Comisión Monetaria - Escudo Nacional',
+            minYear: 1920,
+            maxYear: 1920,
+            material: NumismaticMaterialsRegistry.namePaper,
+          ),
+        ],
+      ),
+    ],
+  ),
+
+  // B1.1 México Billetes - Época Revolucionaria y Pre-Banco de México (1913–1924)
   NumismaticEmissionRuleData(
     country: NumismaticCountriesRegistry.mexico,
     isBanknote: true,
