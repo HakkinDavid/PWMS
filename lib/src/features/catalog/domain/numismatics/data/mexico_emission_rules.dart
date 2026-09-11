@@ -1888,7 +1888,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Pirámide',
+            'Pirámide de Teotihuacán',
             minYear: 1970,
             maxYear: 1971,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -1926,7 +1926,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           NumismaticMotifRule(
             'Vicente Guerrero',
             minYear: 1971,
-            maxYear: 1973,
+            maxYear: 1978,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
         ],
@@ -2009,9 +2009,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Vicente Guerrero | Quetzalcóatl',
-            minYear: 1974,
-            maxYear: 1983,
+            'Quetzalcóatl',
+            minYear: 1980,
+            maxYear: 1985,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
         ],
