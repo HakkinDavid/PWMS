@@ -2088,9 +2088,9 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Josefa Ortiz',
+            '\$5',
             minYear: 1985,
-            maxYear: 1987,
+            maxYear: 1988,
             material: NumismaticMaterialsRegistry.nameBrass,
           ),
         ],
