@@ -1620,7 +1620,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Josefa',
+            'Josefa Ortiz de Domínguez',
             minYear: 1950,
             maxYear: 1956,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -1756,7 +1756,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Josefa',
+            'Josefa Ortiz de Domínguez',
             minYear: 1957,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameBrass,
@@ -1943,7 +1943,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Josefa',
+            'Josefa Ortiz de Domínguez',
             minYear: 1974,
             maxYear: 1976,
             material: NumismaticMaterialsRegistry.nameBrass,
