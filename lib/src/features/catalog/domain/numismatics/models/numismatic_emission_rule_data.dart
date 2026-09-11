@@ -280,12 +280,7 @@ class NumismaticEmissionRuleData {
   static bool matchesMotif(String motif1, String motif2) {
     final c1 = motif1.trim().toLowerCase();
     final c2 = motif2.trim().toLowerCase();
-    if (c1 == c2 || c1.contains(c2) || c2.contains(c1)) return true;
-    final b1 = c1.replaceAll(_yearRegex, AppTechnicalStrings.empty).trim();
-    final b2 = c2.replaceAll(_yearRegex, AppTechnicalStrings.empty).trim();
-    if (b1.isNotEmpty && b2.isNotEmpty) {
-      if (b1 == b2 || b1.contains(b2) || b2.contains(b1)) return true;
-    }
+    if (c1 == c2) return true;
     return false;
   }
 
