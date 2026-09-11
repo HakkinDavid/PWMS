@@ -980,7 +980,7 @@ abstract final class NumismaticCountriesRegistry {
     // Medio Oriente y Cáucaso
     'Imperio Otomano': ['OTE'],
     'Turquía': ['TRY', 'OTE'],
-    'Imperio Persa (Safávida / Qajar / Pahlaví)': ['PER_HIST', 'IRR'],
+    'Imperio Persa': ['PER_HIST' 'IRR'],
     'Irán': ['IRR', 'PER_HIST'],
     'Irak': ['IQD', 'OTE'],
     'Reino de Irak': ['IQD'],

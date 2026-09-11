@@ -1777,7 +1777,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtq,
         motifs: [
           NumismaticMotifRule(
-            'Compositores de Marimba (Hurtado, Valverde y Alcántara)',
+            'Compositores de Marimba',
             minYear: 2009,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,

@@ -80,7 +80,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Plata .892/.900 (Flowing Hair / Draped Bust / Capped Bust / Seated Liberty)',
+            'Flowing Hair / Draped Bust / Capped Bust / Seated Liberty',
             minYear: 1794,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -92,7 +92,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Plata .892/.900 (Draped Bust / Capped Bust / Seated Liberty)',
+            'Draped Bust / Capped Bust / Seated Liberty',
             minYear: 1796,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -104,7 +104,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Plata .892/.900 (Draped Bust / Capped Bust / Seated Liberty)',
+            'Draped Bust / Capped Bust / Seated Liberty',
             minYear: 1796,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -116,7 +116,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Plata .892/.900 (Flowing Hair / Draped Bust / Capped Bust / Seated Liberty)',
+            'Flowing Hair / Draped Bust / Capped Bust / Seated Liberty',
             minYear: 1794,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -128,13 +128,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Silver Dollar Plata .892/.900 (Flowing Hair, Draped Bust, Gobrecht, Seated Liberty)',
+            'Silver Dollar',
             minYear: 1794,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Gold Dollar Oro .900 (Liberty Head Type 1 / Indian Princess Type 2)',
+            'Gold Dollar',
             minYear: 1849,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -146,7 +146,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Quarter Eagle Oro .900 (Draped Bust, Capped Bust, Classic Head, Coronet Liberty)',
+            'Quarter Eagle',
             minYear: 1796,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -158,7 +158,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Indian Princess Head (Oro .900)',
+            'Indian Princess Head',
             minYear: 1854,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -170,7 +170,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Half Eagle Oro .900 (Draped Bust, Capped Bust, Classic Head, Coronet Liberty)',
+            'Half Eagle',
             minYear: 1795,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -182,7 +182,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Eagle Oro .900 (Draped Bust, Coronet Liberty)',
+            'Eagle',
             minYear: 1795,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -194,7 +194,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Double Eagle Oro .900',
+            'Double Eagle',
             minYear: 1849,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -261,7 +261,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Seated Liberty Dime Plata .900',
+            'Seated Liberty Dime',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -273,7 +273,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Seated Liberty Quarter Plata .900',
+            'Seated Liberty Quarter',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -285,7 +285,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Seated Liberty Half Dollar Plata .900',
+            'Seated Liberty Half Dollar',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -297,13 +297,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Seated Liberty Dollar Plata .900',
+            'Seated Liberty Dollar',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Gold Dollar Oro .900',
+            'Gold Dollar',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -315,7 +315,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Coronet Liberty Quarter Eagle Oro .900',
+            'Coronet Liberty Quarter Eagle',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -327,7 +327,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Indian Princess Head (Oro .900)',
+            'Indian Princess Head',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -339,7 +339,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Coronet Liberty Half Eagle Oro .900',
+            'Coronet Liberty Half Eagle',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -351,7 +351,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Coronet Liberty Eagle Oro .900',
+            'Coronet Liberty Eagle',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -363,7 +363,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Coronet Liberty Double Eagle Oro .900',
+            'Coronet Liberty Double Eagle',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -406,7 +406,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Barber Dime / Winged Liberty Head "Mercury" Dime Plata .900',
+            'Barber Dime / Winged Liberty Head "Mercury" Dime',
             minYear: 1874,
             maxYear: 1933,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -418,7 +418,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Seated Liberty (Plata .900)',
+            'Seated Liberty',
             minYear: 1875,
             maxYear: 1878,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -430,7 +430,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Barber Quarter / Standing Liberty Quarter / Washington Quarter Plata .900',
+            'Barber Quarter / Standing Liberty Quarter / Washington Quarter',
             minYear: 1874,
             maxYear: 1933,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -442,7 +442,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Barber Half / Walking Liberty Half Dollar Plata .900',
+            'Barber Half / Walking Liberty Half Dollar',
             minYear: 1874,
             maxYear: 1933,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -472,7 +472,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Gold Dollar Oro .900',
+            'Gold Dollar',
             minYear: 1874,
             maxYear: 1889,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -484,7 +484,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Quarter Eagle Oro .900 (Coronet Liberty / Indian Head)',
+            'Quarter Eagle',
             minYear: 1874,
             maxYear: 1929,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -496,7 +496,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Indian Princess Head (Oro .900)',
+            'Indian Princess Head',
             minYear: 1874,
             maxYear: 1889,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -508,7 +508,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Stella - Flowing Hair / Coiled Hair (Oro .900)',
+            'Stella - Flowing Hair / Coiled Hair',
             minYear: 1879,
             maxYear: 1880,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -520,7 +520,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Half Eagle Oro .900 (Coronet Liberty / Indian Head)',
+            'Half Eagle',
             minYear: 1874,
             maxYear: 1929,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -532,7 +532,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Eagle Oro .900 (Coronet Liberty / Indian Head Saint-Gaudens)',
+            'Eagle',
             minYear: 1874,
             maxYear: 1933,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -544,7 +544,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Double Eagle Oro .900 (Coronet Liberty / Saint-Gaudens Walking Liberty)',
+            'Double Eagle',
             minYear: 1874,
             maxYear: 1933,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -556,7 +556,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Panama-Pacific - Minerva / Búho (Oro .900)',
+            'Panama-Pacific - Minerva / Búho',
             minYear: 1915,
             material: NumismaticMaterialsRegistry.nameGold900,
           ),
@@ -565,7 +565,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     ],
   ),
 
-  // 2.5 Estados Unidos - Pre-Clad Estándar Plata .900 (1934–1964)
+  // 2.5 Estados Unidos - Pre-Clad Estándar(1934–1964)
   NumismaticEmissionRuleData(
     country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
@@ -603,13 +603,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Jefferson Nickel Estándar (1938-1942, 1946-1964)',
+            'Jefferson Nickel Estándar',
             minYear: 1938,
             maxYear: 1964,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Jefferson War Nickel Plata .350',
+            'Jefferson War Nickel',
             minYear: 1942,
             maxYear: 1945,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -621,13 +621,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Winged Liberty Head "Mercury" Dime Plata .900',
+            'Winged Liberty Head "Mercury" Dime',
             minYear: 1934,
             maxYear: 1945,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Roosevelt Dime Plata .900',
+            'Roosevelt Dime',
             minYear: 1946,
             maxYear: 1964,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -639,7 +639,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Washington Quarter Plata .900',
+            'Washington Quarter',
             minYear: 1934,
             maxYear: 1964,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -651,19 +651,19 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Walking Liberty Half Dollar Plata .900',
+            'Walking Liberty Half Dollar',
             minYear: 1934,
             maxYear: 1947,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Franklin Half Dollar Plata .900',
+            'Franklin Half Dollar',
             minYear: 1948,
             maxYear: 1963,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Kennedy Half Dollar Plata .900',
+            'Kennedy Half Dollar',
             minYear: 1964,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
@@ -681,7 +681,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Lincoln Memorial Cent Latón .950 Cu',
+            'Lincoln Memorial Cent',
             minYear: 1965,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -693,7 +693,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Jefferson Nickel Cuproníquel',
+            'Jefferson Nickel',
             minYear: 1965,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -705,7 +705,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Roosevelt Dime Clad Cuproníquel',
+            'Roosevelt Dime Clad',
             minYear: 1965,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -717,7 +717,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Washington Quarter Clad Cuproníquel',
+            'Washington Quarter Clad',
             minYear: 1965,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -729,7 +729,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Kennedy Half Dollar Plata .400',
+            'Kennedy Half Dollar',
             minYear: 1965,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -739,7 +739,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
     ],
   ),
 
-  // 2.7 Estados Unidos - Era Clad Cuproníquel y Bicentenario (1971–1981)
+  // 2.7 Estados Unidos - Era Clady Bicentenario (1971–1981)
   NumismaticEmissionRuleData(
     country: NumismaticCountriesRegistry.estadosUnidos,
     pieces: [
@@ -784,7 +784,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Washington Quarter Clad Estándar (1971-1974, 1977-1981)',
+            'Washington Quarter Clad Estándar',
             minYear: 1971,
             maxYear: 1981,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -802,7 +802,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Kennedy Half Dollar Clad Cuproníquel (1971-1974, 1977-1981)',
+            'Kennedy Half Dollar Clad',
             minYear: 1971,
             maxYear: 1981,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -820,7 +820,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Eisenhower Dollar Clad - Águila Apolo 11 (1971-1974, 1977-1978)',
+            'Eisenhower Dollar Clad - Águila Apolo 11',
             minYear: 1971,
             maxYear: 1978,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -980,7 +980,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCopperPlatedZinc,
           ),
           NumismaticMotifRule(
-            'Union Shield - Escudo de la Unión (2010+)',
+            'Union Shield - Escudo de la Unión',
             minYear: 2010,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCopperPlatedZinc,
@@ -1018,7 +1018,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Jefferson Nickel - Return to Monticello (2006+)',
+            'Jefferson Nickel - Return to Monticello',
             minYear: 2006,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCupronickel,

@@ -15,7 +15,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Medio Maravedí / Maravedí Cobre',
+            'Medio Maravedí / Maravedí',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -27,7 +27,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            '2 Maravedís / 4 Maravedís Cobre',
+            '2 Maravedís / 4 Maravedís',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -118,7 +118,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Peseta (León rampante / Hispania)',
+            'Peseta',
             minYear: 1870,
             material: NumismaticMaterialsRegistry.nameBronze,
           ),
@@ -129,7 +129,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Peseta (León rampante / Hispania)',
+            'Peseta',
             minYear: 1870,
             material: NumismaticMaterialsRegistry.nameBronze,
           ),
@@ -164,7 +164,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'con agujero (Carabela / Gallega)',
+            'Con agujero',
             minYear: 1925,
             maxYear: 1937,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -176,7 +176,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Hispania Recostada / Reyes Alfonso XII y XIII (Escudo de España)',
+            'Hispania Recostada / Reyes Alfonso XII y XIII',
             minYear: 1869,
             maxYear: 1926,
             material: NumismaticMaterialsRegistry.nameSilver835,
@@ -188,7 +188,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Plata .835 (Hispania / Reyes)',
+            '',
             minYear: 1869,
             maxYear: 1937,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -212,7 +212,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Duro de Plata (.900)',
+            'Duro',
             minYear: 1869,
             maxYear: 1899,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -224,7 +224,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Alfonso XII (Oro .900)',
+            'Alfonso XII',
             minYear: 1878,
             maxYear: 1879,
             material: NumismaticMaterialsRegistry.nameGoldColonial875,
@@ -236,7 +236,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Alfonso XIII (Oro .900)',
+            'Alfonso XIII',
             minYear: 1889,
             maxYear: 1904,
             material: NumismaticMaterialsRegistry.nameGoldColonial875,
@@ -248,7 +248,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Alfonso XII (Oro .900)',
+            'Alfonso XII',
             minYear: 1876,
             maxYear: 1881,
             material: NumismaticMaterialsRegistry.nameGoldColonial875,
@@ -315,7 +315,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            '(Rubia de Franco / Juan Carlos I)',
+            'Rubia de Franco / Juan Carlos I',
             minYear: 1944,
             maxYear: 1981,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -338,7 +338,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            '(Duro de Franco / Juan Carlos I)',
+            'Duro de Franco / Juan Carlos I',
             minYear: 1949,
             maxYear: 1980,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -350,7 +350,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'con agujero (Corona / Juan Carlos I)',
+            'Agujero',
             minYear: 1957,
             maxYear: 1980,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -362,7 +362,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            '(Franco / Juan Carlos I)',
+            'Franco / Juan Carlos I',
             minYear: 1957,
             maxYear: 1980,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -374,12 +374,12 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Franco Plata .800',
+            'Franco',
             minYear: 1966,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
           ),
           NumismaticMotifRule(
-            'Juan Carlos I Cuproníquel',
+            'Juan Carlos I',
             minYear: 1975,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
           ),
@@ -445,7 +445,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Busto del Rey Juan Carlos I / Numeral 5 PTAS (Duro Pequeño)',
+            'Busto del Rey Juan Carlos I / Numeral 5 PTAS',
             minYear: 1989,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -544,7 +544,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            '(20 Duros)',
+            '20 Duros',
             minYear: 1982,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -864,7 +864,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
+            'Serie Conmemorativa',
             minYear: 2002,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -876,7 +876,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
+            'Serie Conmemorativa',
             minYear: 2002,
             maxYear: 2010,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -888,7 +888,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
+            'Serie Conmemorativa',
             minYear: 2010,
             maxYear: 2011,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -900,7 +900,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
+            'Serie Conmemorativa',
             minYear: 2012,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -912,7 +912,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Serie Conmemorativa de Plata (Casa Real y Efemérides Nacionales)',
+            'Serie Conmemorativa',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -931,7 +931,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común (Globo Terráqueo)',
+            'Globo Terráqueo',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -943,7 +943,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común (Globo Terráqueo)',
+            'Globo Terráqueo',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -955,7 +955,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común (Globo Terráqueo)',
+            'Globo Terráqueo',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCopperPlatedSteel,
@@ -967,7 +967,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común',
+            'Globo Terráqueo',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameNordicGold,
@@ -979,7 +979,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común',
+            'Globo Terráqueo',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameNordicGold,
@@ -991,7 +991,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común',
+            'Globo Terráqueo',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameNordicGold,
