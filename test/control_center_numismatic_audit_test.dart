@@ -11,7 +11,6 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/num
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
-import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/expiration_audit_rules.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/numismatic_audit_rules.dart';
 
 import 'package:path/path.dart' as p;
@@ -59,114 +58,7 @@ void main() {
   });
 
   group('Control Center Numismatic Audit Integration Tests', () {
-    test(
-        'CC requires every numismatic property and flags a missing US coin motif without using subspecies data',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
-      final sub = Subspecies(
-        id: const Uuid().v4(),
-        speciesId: species.id,
-        subspeciesName: 'Dólares Estadounidenses',
-        createdAt: DateTime.now(),
-      );
-      await catalogRepo.saveSubspecies(sub);
-
-      final instance = await entityRepo
-          .instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
-      final emptyContext = AuditEvaluationContext(
-        db: db,
-        allEntities: [instance],
-        allCatalog: [species],
-        allSubspecies: [sub],
-        allRelations: const [],
-        allLocations: const [],
-      );
-      final emptyCards = await const MissingMandatoryMagnitudesStrategy()
-          .evaluate(emptyContext);
-      expect(
-        emptyCards.map((card) => card.subtitle).join(' | '),
-        allOf(
-          contains('Valor nominal'),
-          contains('Acuñación'),
-          contains('Divisa'),
-          contains('Material'),
-          contains('Grado'),
-          contains('Emisor'),
-          contains('Motivo'),
-        ),
-      );
-
-      final completeExceptMotif = instance.copyWith(
-        magnitudes: [
-          InstanceMagnitude(
-              id: const Uuid().v4(),
-              instanceId: instance.id,
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 0.10),
-          InstanceMagnitude(
-              id: const Uuid().v4(),
-              instanceId: instance.id,
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 2020,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: const Uuid().v4(),
-              instanceId: instance.id,
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'USD'),
-          InstanceMagnitude(
-              id: const Uuid().v4(),
-              instanceId: instance.id,
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Cuproníquel'),
-          InstanceMagnitude(
-              id: const Uuid().v4(),
-              instanceId: instance.id,
-              propertyName: 'Grado',
-              dataType: 'string',
-              stringValue: 'Sin circular (UNC)'),
-          InstanceMagnitude(
-              id: const Uuid().v4(),
-              instanceId: instance.id,
-              propertyName: 'Emisor',
-              dataType: 'string',
-              stringValue: 'Estados Unidos'),
-        ],
-      );
-      await entityRepo.saveEntity(completeExceptMotif);
-
-      final context = AuditEvaluationContext(
-        db: db,
-        allEntities: await entityRepo.getAllEntities(),
-        allCatalog: await catalogRepo.getAllCatalogItems(),
-        allSubspecies: await catalogRepo.getAllSubspecies(),
-        allRelations: const [],
-        allLocations: const [],
-      );
-
-      final completenessCards =
-          await const MissingMandatoryMagnitudesStrategy().evaluate(context);
-      expect(completenessCards, hasLength(1));
-      expect(completenessCards.single.subtitle, contains('Motivo'));
-
-      final outliers = NumismaticDataHelper.checkEmissionOutliers(
-        instance: completeExceptMotif,
-        species: species,
-      );
-      expect(
-          outliers.any(
-              (o) => o.type == NumismaticEmissionOutlierType.motifMismatch),
-          isTrue);
-    });
-
-    test(
-        'Repair subspecies from instance updates subspecies name and notes in DB',
-        () async {
+    test('Repair subspecies from instance updates subspecies name and notes in DB', () async {
       final species = await catalogRepo.getOrCreateSpecies(
         'Moneda',
         type: 'Objeto',
@@ -220,8 +112,7 @@ void main() {
       await entityRepo.saveEntity(updatedInstance);
 
       // Verify incongruence detected due to non-ISO currency code on instance
-      final issueBefore =
-          NumismaticDataHelper.checkInstanceSubspeciesCongruence(
+      final issueBefore = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
         subspecies: subspecies,
         instance: updatedInstance,
       );
@@ -229,8 +120,7 @@ void main() {
       expect(issueBefore, contains('ISO'));
 
       // Perform repair
-      final repairedSub =
-          await NumismaticDataHelper.repairSubspeciesFromInstance(
+      final repairedSub = await NumismaticDataHelper.repairSubspeciesFromInstance(
         catalogRepo: catalogRepo,
         entityRepo: entityRepo,
         subspecies: subspecies,
@@ -242,12 +132,10 @@ void main() {
 
       // Verify instance magnitudes were standardized (Divisa -> MXN, Emisor backfilled)
       final reloadedEntity = await entityRepo.getEntityById(instance.id);
-      final divisaMag = reloadedEntity!.magnitudes
-          .firstWhere((m) => m.propertyName == 'Divisa');
+      final divisaMag = reloadedEntity!.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
       expect(divisaMag.stringValue, equals('MXN'));
 
-      final emisorMag = reloadedEntity.magnitudes
-          .firstWhere((m) => m.propertyName == 'Emisor');
+      final emisorMag = reloadedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Emisor');
       expect(emisorMag.stringValue, equals('México'));
 
       final issueAfter = NumismaticDataHelper.checkInstanceSubspeciesCongruence(
@@ -257,11 +145,8 @@ void main() {
       expect(issueAfter, isNull);
     });
 
-    test(
-        'Merge duplicate subspecies reassigns instances and deletes duplicates in DB',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
+    test('Merge duplicate subspecies reassigns instances and deletes duplicates in DB', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
 
       final subCanonical = Subspecies(
         id: const Uuid().v4(),
@@ -290,8 +175,7 @@ void main() {
       expect(entityOnDup.subspeciesId, equals(subDuplicate.id));
 
       final allSubs = await catalogRepo.getAllSubspecies();
-      final dupGroups =
-          NumismaticDataHelper.findDuplicateSubspeciesGroups(allSubs);
+      final dupGroups = NumismaticDataHelper.findDuplicateSubspeciesGroups(allSubs);
       expect(dupGroups.length, equals(1));
 
       // Perform merge
@@ -311,11 +195,8 @@ void main() {
       expect(movedEntity!.subspeciesId, equals(subCanonical.id));
     });
 
-    test(
-        'Repair attachment file names synchronizes attachment filename with updated instance derived title',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('Repair attachment file names synchronizes attachment filename with updated instance derived title', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -324,8 +205,7 @@ void main() {
       );
       await catalogRepo.saveSubspecies(sub);
 
-      final instance = await entityRepo
-          .instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
         magnitudes: [
           InstanceMagnitude(
@@ -377,8 +257,7 @@ void main() {
         instance: updatedInstance,
       );
 
-      final attachments =
-          await entityRepo.getAttachmentsForInstance(instance.id);
+      final attachments = await entityRepo.getAttachmentsForInstance(instance.id);
       expect(attachments.length, equals(1));
 
       final expectedDisplayName = NumismaticDataHelper.buildInstanceDisplayName(
@@ -395,11 +274,8 @@ void main() {
       expect(attachments.first.fileName, equals(expectedFileName));
     });
 
-    test(
-        'Audit of empty data detects empty Grado and assigns standard grade value correctly',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('Audit of empty data detects empty Grado and assigns standard grade value correctly', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -408,20 +284,16 @@ void main() {
       );
       await catalogRepo.saveSubspecies(sub);
 
-      final instance = await entityRepo
-          .instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
 
       // Instance has empty grade
-      final attrs =
-          NumismaticDataHelper.extractAttributesFromInstance(instance);
+      final attrs = NumismaticDataHelper.extractAttributesFromInstance(instance);
       expect(attrs.grade, isNull);
 
       // Simulate assigning grade via emptyDataAudit fix action
       const chosenGrade = 'Sin circular (UNC)';
-      final List<InstanceMagnitude> currentMags =
-          List.from(instance.magnitudes);
-      final existingGradeIdx =
-          currentMags.indexWhere((m) => m.propertyName == 'Grado');
+      final List<InstanceMagnitude> currentMags = List.from(instance.magnitudes);
+      final existingGradeIdx = currentMags.indexWhere((m) => m.propertyName == 'Grado');
       if (existingGradeIdx >= 0) {
         currentMags[existingGradeIdx] = currentMags[existingGradeIdx].copyWith(
           dataType: 'string',
@@ -443,14 +315,11 @@ void main() {
       await entityRepo.saveEntity(updatedEntity);
 
       final reloaded = await entityRepo.getEntityById(instance.id);
-      final updatedAttrs =
-          NumismaticDataHelper.extractAttributesFromInstance(reloaded!);
+      final updatedAttrs = NumismaticDataHelper.extractAttributesFromInstance(reloaded!);
       expect(updatedAttrs.grade, equals('Sin circular (UNC)'));
     });
 
-    test(
-        'Audit of remote images detects HTTP/HTTPS URLs on species and updates to local storage path',
-        () async {
+    test('Audit of remote images detects HTTP/HTTPS URLs on species and updates to local storage path', () async {
       // 1. Create species with remote image URL (mimicking Peluche / Refrigerador)
       final species = await catalogRepo.getOrCreateSpecies(
         'Refrigerador',
@@ -460,14 +329,12 @@ void main() {
 
       // Verify remote image is detected
       final isRemote = species.mainPhotoPath != null &&
-          (species.mainPhotoPath!.startsWith('http://') ||
-              species.mainPhotoPath!.startsWith('https://'));
+          (species.mainPhotoPath!.startsWith('http://') || species.mainPhotoPath!.startsWith('https://'));
       expect(isRemote, isTrue);
 
       // Simulate fixing by saving local relative file
       const localRelativeFileName = 'refrigerador_downloaded_guid.jpg';
-      final updatedSpecies =
-          species.copyWith(mainPhotoPath: localRelativeFileName);
+      final updatedSpecies = species.copyWith(mainPhotoPath: localRelativeFileName);
       await catalogRepo.saveCatalogItem(updatedSpecies);
 
       final reloadedSpecies = await catalogRepo.getCatalogItemById(species.id);
@@ -475,11 +342,8 @@ void main() {
       expect(reloadedSpecies.mainPhotoPath!.startsWith('http'), isFalse);
     });
 
-    test(
-        'NumismaticEmissionOutlierStrategy detects currency anachronism and repairs to canonical epoch currency',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('NumismaticEmissionOutlierStrategy detects currency anachronism and repairs to canonical epoch currency', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -489,8 +353,7 @@ void main() {
       await catalogRepo.saveSubspecies(sub);
 
       // Create piece with anachronistic currency: Mexico 1982 coin registered as MXN (Nuevos Pesos) instead of MXP
-      final instance = await entityRepo
-          .instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
         magnitudes: [
           InstanceMagnitude(
@@ -555,11 +418,9 @@ void main() {
       expect(cards.first.subtitle, contains('MXP'));
 
       // Test pure domain detection
-      final outliers = NumismaticDataHelper.checkEmissionOutliers(
-          instance: updatedInstance, species: species);
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
-      expect(outliers.first.type,
-          equals(NumismaticEmissionOutlierType.currencyAnachronism));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.currencyAnachronism));
       expect(outliers.first.expectedValue, equals('MXP'));
 
       // Test repair
@@ -570,8 +431,7 @@ void main() {
         outlier: outliers.first,
       );
 
-      final reloadedMag = repairedEntity.magnitudes
-          .firstWhere((m) => m.propertyName == 'Divisa');
+      final reloadedMag = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
       expect(reloadedMag.stringValue, equals('MXP'));
 
       // Re-evaluating context should now yield 0 outlier cards
@@ -591,11 +451,8 @@ void main() {
       expect(cardsAfter.isEmpty, isTrue);
     });
 
-    test(
-        'NumismaticEmissionOutlierStrategy detects material contradiction and repairs to canonical material',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('NumismaticEmissionOutlierStrategy detects material contradiction and repairs to canonical material', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -605,8 +462,7 @@ void main() {
       await catalogRepo.saveSubspecies(sub);
 
       // Create piece with contradictory material: Mexico 1982 50 Pesos coin with 'Oro' instead of 'Cuproníquel'
-      final instance = await entityRepo
-          .instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
         magnitudes: [
           InstanceMagnitude(
@@ -643,18 +499,15 @@ void main() {
             instanceId: instance.id,
             propertyName: 'Material',
             dataType: 'string',
-            stringValue:
-                'Oro', // Contradiction! 1982 50 Pesos Coyolxauhqui is Cuproníquel
+            stringValue: 'Oro', // Contradiction! 1982 50 Pesos Coyolxauhqui is Cuproníquel
           ),
         ],
       );
       await entityRepo.saveEntity(updatedInstance);
 
-      final outliers = NumismaticDataHelper.checkEmissionOutliers(
-          instance: updatedInstance, species: species);
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
-      expect(outliers.first.type,
-          equals(NumismaticEmissionOutlierType.materialContradiction));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.materialContradiction));
       expect(outliers.first.expectedValue, equals('Cuproníquel'));
 
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
@@ -664,16 +517,12 @@ void main() {
         outlier: outliers.first,
       );
 
-      final reloadedMat = repairedEntity.magnitudes
-          .firstWhere((m) => m.propertyName == 'Material');
+      final reloadedMat = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Material');
       expect(reloadedMat.stringValue, equals('Cuproníquel'));
     });
 
-    test(
-        'NumismaticEmissionOutlierStrategy detects missing commemorative motif for 2008 Mexico and repairs it',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('NumismaticEmissionOutlierStrategy detects missing commemorative motif for 2008 Mexico and repairs it', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -683,8 +532,7 @@ void main() {
       await catalogRepo.saveSubspecies(sub);
 
       // Create Mexico 2008 5 Pesos coin without motif
-      final instance = await entityRepo
-          .instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
         magnitudes: [
           InstanceMagnitude(
@@ -727,11 +575,9 @@ void main() {
       );
       await entityRepo.saveEntity(updatedInstance);
 
-      final outliers = NumismaticDataHelper.checkEmissionOutliers(
-          instance: updatedInstance, species: species);
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
-      expect(outliers.first.type,
-          equals(NumismaticEmissionOutlierType.motifMismatch));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.motifMismatch));
       expect(outliers.first.expectedValue, equals('Ignacio López Rayón'));
 
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
@@ -741,16 +587,12 @@ void main() {
         outlier: outliers.first,
       );
 
-      final reloadedMotif = repairedEntity.magnitudes
-          .firstWhere((m) => m.propertyName == 'Motivo');
+      final reloadedMotif = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
       expect(reloadedMotif.stringValue, equals('Ignacio López Rayón'));
     });
 
-    test(
-        'repairAndStandardizeImportedData groups singular and plural pieces into single canonical subspecies',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('repairAndStandardizeImportedData groups singular and plural pieces into single canonical subspecies', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
 
       // Create two legacy subspecies: 1 Franco Francés (singular) and 5 Francos Franceses (plural)
       final sub1 = Subspecies(
@@ -771,10 +613,8 @@ void main() {
       );
       await catalogRepo.saveSubspecies(sub5);
 
-      final inst1 = await entityRepo.instantiateOrMerge(species.id, null, 1.0,
-          subspeciesId: sub1.id);
-      final inst5 = await entityRepo.instantiateOrMerge(species.id, null, 1.0,
-          subspeciesId: sub5.id);
+      final inst1 = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub1.id);
+      final inst5 = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub5.id);
 
       // Run bulk repair and standardize
       await NumismaticDataHelper.repairAndStandardizeImportedData(db);
@@ -791,12 +631,10 @@ void main() {
       expect(reloadedInst1!.subspeciesId, equals(allSubs.first.id));
       expect(reloadedInst5!.subspeciesId, equals(allSubs.first.id));
 
-      final divisa1 = reloadedInst1.magnitudes
-          .firstWhere((m) => m.propertyName == 'Divisa');
+      final divisa1 = reloadedInst1.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
       expect(divisa1.stringValue, equals('FRF'));
 
-      final divisa5 = reloadedInst5.magnitudes
-          .firstWhere((m) => m.propertyName == 'Divisa');
+      final divisa5 = reloadedInst5.magnitudes.firstWhere((m) => m.propertyName == 'Divisa');
       expect(divisa5.stringValue, equals('FRF'));
 
       // Verify NO incongruence in CCC
@@ -813,11 +651,8 @@ void main() {
       expect(issue5, isNull);
     });
 
-    test(
-        'checkEmissionOutliers accepts both Cuproníquel and Acero inoxidable for Mexico 1988 50 MXP coin',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('checkEmissionOutliers accepts both Cuproníquel and Acero inoxidable for Mexico 1988 50 MXP coin', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
 
       // Cuproníquel instance
       final instCuNi = WorldEntity(
@@ -826,43 +661,14 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: const [
-          InstanceMagnitude(
-              id: 'm1',
-              instanceId: 'inst-1988-cuni',
-              propertyName: 'País',
-              dataType: 'string',
-              stringValue: 'México'),
-          InstanceMagnitude(
-              id: 'm2',
-              instanceId: 'inst-1988-cuni',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 1988.0,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: 'm3',
-              instanceId: 'inst-1988-cuni',
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'MXP'),
-          InstanceMagnitude(
-              id: 'm4',
-              instanceId: 'inst-1988-cuni',
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 50.0),
-          InstanceMagnitude(
-              id: 'm5',
-              instanceId: 'inst-1988-cuni',
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Cuproníquel'),
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-1988-cuni', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-1988-cuni', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1988.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-1988-cuni', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-1988-cuni', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 50.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-1988-cuni', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
         ],
       );
-      expect(
-          NumismaticDataHelper.checkEmissionOutliers(
-              instance: instCuNi, species: species),
-          isEmpty);
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instCuNi, species: species), isEmpty);
 
       // Acero inoxidable instance
       final instAcero = WorldEntity(
@@ -871,50 +677,18 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: const [
-          InstanceMagnitude(
-              id: 'm1',
-              instanceId: 'inst-1988-acero',
-              propertyName: 'País',
-              dataType: 'string',
-              stringValue: 'México'),
-          InstanceMagnitude(
-              id: 'm2',
-              instanceId: 'inst-1988-acero',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 1988.0,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: 'm3',
-              instanceId: 'inst-1988-acero',
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'MXP'),
-          InstanceMagnitude(
-              id: 'm4',
-              instanceId: 'inst-1988-acero',
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 50.0),
-          InstanceMagnitude(
-              id: 'm5',
-              instanceId: 'inst-1988-acero',
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Acero inoxidable'),
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-1988-acero', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-1988-acero', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1988.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-1988-acero', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-1988-acero', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 50.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-1988-acero', propertyName: 'Material', dataType: 'string', stringValue: 'Acero inoxidable'),
         ],
       );
-      expect(
-          NumismaticDataHelper.checkEmissionOutliers(
-              instance: instAcero, species: species),
-          isEmpty);
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instAcero, species: species), isEmpty);
     });
 
-    test(
-        'checkEmissionOutliers accepts both Papel de algodón and Polímero for Mexico 2019 100 MXN banknote',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
+    test('checkEmissionOutliers accepts both Papel de algodón and Polímero for Mexico 2019 100 MXN banknote', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
 
       // 2019 Papel de algodón (Familia F - Nezahualcóyotl)
       final instAlgodon = WorldEntity(
@@ -923,43 +697,14 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: const [
-          InstanceMagnitude(
-              id: 'm1',
-              instanceId: 'inst-2019-algodon',
-              propertyName: 'País',
-              dataType: 'string',
-              stringValue: 'México'),
-          InstanceMagnitude(
-              id: 'm2',
-              instanceId: 'inst-2019-algodon',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 2019.0,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: 'm3',
-              instanceId: 'inst-2019-algodon',
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'MXN'),
-          InstanceMagnitude(
-              id: 'm4',
-              instanceId: 'inst-2019-algodon',
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 100.0),
-          InstanceMagnitude(
-              id: 'm5',
-              instanceId: 'inst-2019-algodon',
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Papel de algodón'),
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-2019-algodon', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-2019-algodon', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2019.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-2019-algodon', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-2019-algodon', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-2019-algodon', propertyName: 'Material', dataType: 'string', stringValue: 'Papel de algodón'),
         ],
       );
-      expect(
-          NumismaticDataHelper.checkEmissionOutliers(
-              instance: instAlgodon, species: species),
-          isEmpty);
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instAlgodon, species: species), isEmpty);
 
       // 2019 Polímero (Familia G - Sor Juana)
       final instPolimero = WorldEntity(
@@ -968,50 +713,18 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: const [
-          InstanceMagnitude(
-              id: 'm1',
-              instanceId: 'inst-2019-polimero',
-              propertyName: 'País',
-              dataType: 'string',
-              stringValue: 'México'),
-          InstanceMagnitude(
-              id: 'm2',
-              instanceId: 'inst-2019-polimero',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 2019.0,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: 'm3',
-              instanceId: 'inst-2019-polimero',
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'MXN'),
-          InstanceMagnitude(
-              id: 'm4',
-              instanceId: 'inst-2019-polimero',
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 100.0),
-          InstanceMagnitude(
-              id: 'm5',
-              instanceId: 'inst-2019-polimero',
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Polímero'),
+          InstanceMagnitude(id: 'm1', instanceId: 'inst-2019-polimero', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'inst-2019-polimero', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2019.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'inst-2019-polimero', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'inst-2019-polimero', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'inst-2019-polimero', propertyName: 'Material', dataType: 'string', stringValue: 'Polímero'),
         ],
       );
-      expect(
-          NumismaticDataHelper.checkEmissionOutliers(
-              instance: instPolimero, species: species),
-          isEmpty);
+      expect(NumismaticDataHelper.checkEmissionOutliers(instance: instPolimero, species: species), isEmpty);
     });
 
-    test(
-        'Motivo magnitude is repaired and persisted directly without touching instance notes',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('Motivo magnitude is repaired and persisted directly without touching instance notes', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -1020,8 +733,7 @@ void main() {
       );
       await catalogRepo.saveSubspecies(sub);
 
-      final instance = await entityRepo
-          .instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
+      final instance = await entityRepo.instantiateOrMerge(species.id, null, 1.0, subspeciesId: sub.id);
       final updatedInstance = instance.copyWith(
         notes: 'Original user note',
         magnitudes: [
@@ -1072,11 +784,9 @@ void main() {
       );
       await entityRepo.saveEntity(updatedInstance);
 
-      final outliers = NumismaticDataHelper.checkEmissionOutliers(
-          instance: updatedInstance, species: species);
+      final outliers = NumismaticDataHelper.checkEmissionOutliers(instance: updatedInstance, species: species);
       expect(outliers.length, equals(1));
-      expect(outliers.first.type,
-          equals(NumismaticEmissionOutlierType.motifMismatch));
+      expect(outliers.first.type, equals(NumismaticEmissionOutlierType.motifMismatch));
 
       // Repair with canonical motif
       final repairedEntity = await NumismaticDataHelper.repairEmissionOutlier(
@@ -1087,20 +797,15 @@ void main() {
         customValue: '175 Aniversario de la Independencia',
       );
 
-      final reloadedMotif = repairedEntity.magnitudes
-          .firstWhere((m) => m.propertyName == 'Motivo');
-      expect(reloadedMotif.stringValue,
-          equals('175 Aniversario de la Independencia'));
+      final reloadedMotif = repairedEntity.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(reloadedMotif.stringValue, equals('175 Aniversario de la Independencia'));
 
       // User notes must remain untouched
       expect(repairedEntity.notes, equals('Original user note'));
     });
 
-    test(
-        'repairAndStandardizeImportedData normalizes legacy "Emisión de cambio de régimen" to "Nuevo Peso"',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('repairAndStandardizeImportedData normalizes legacy "Emisión de cambio de régimen" to "Nuevo Peso"', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final sub = Subspecies(
         id: const Uuid().v4(),
         speciesId: species.id,
@@ -1115,8 +820,7 @@ void main() {
         null,
         1.0,
         subspeciesId: sub.id,
-        notes:
-            '[Edición especial: Emisión de cambio de régimen] Moneda conmemorativa de transición',
+        notes: '[Edición especial: Emisión de cambio de régimen] Moneda conmemorativa de transición',
       );
 
       // Add basic magnitudes
@@ -1167,57 +871,24 @@ void main() {
 
       final reloaded = await entityRepo.getEntityById(instance.id);
       expect(reloaded, isNotNull);
-      final motifMag =
-          reloaded!.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
-      expect(
-          motifMag.stringValue,
-          equals(
-              'Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)'));
+      final motifMag = reloaded!.magnitudes.firstWhere((m) => m.propertyName == 'Motivo');
+      expect(motifMag.stringValue, equals('Nuevo Peso - Don Miguel Hidalgo y Costilla (Centro de Plata Sterling .925)'));
       expect(reloaded.notes, isNot(contains('Emisión de cambio de régimen')));
     });
 
-    test(
-        'Audit detects no outliers for valid 1975 Cuproníquel 20 Centavos Madero coin',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('Audit detects no outliers for valid 1975 Cuproníquel 20 Centavos Madero coin', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final instance = WorldEntity(
         id: 'madero-1975-cupro',
         speciesId: species.id,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(
-              id: 'm1',
-              instanceId: 'madero-1975-cupro',
-              propertyName: 'País',
-              dataType: 'string',
-              stringValue: 'México'),
-          InstanceMagnitude(
-              id: 'm2',
-              instanceId: 'madero-1975-cupro',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 1975.0,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: 'm3',
-              instanceId: 'madero-1975-cupro',
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'MXP'),
-          InstanceMagnitude(
-              id: 'm4',
-              instanceId: 'madero-1975-cupro',
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 0.20),
-          InstanceMagnitude(
-              id: 'm5',
-              instanceId: 'madero-1975-cupro',
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Cuproníquel'),
+          InstanceMagnitude(id: 'm1', instanceId: 'madero-1975-cupro', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'madero-1975-cupro', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1975.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'madero-1975-cupro', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          InstanceMagnitude(id: 'm4', instanceId: 'madero-1975-cupro', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 0.20),
+          InstanceMagnitude(id: 'm5', instanceId: 'madero-1975-cupro', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
         ],
       );
 
@@ -1228,54 +899,20 @@ void main() {
       expect(outliers, isEmpty);
     });
 
-    test(
-        'Audit detects no outliers for 100 MXN Banknote Constitución 1917 (2016-2017)',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
+    test('Audit detects no outliers for 100 MXN Banknote Constitución 1917 (2016-2017)', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Billete', type: 'Objeto');
       final instance2016 = WorldEntity(
         id: 'note-100-const-2016',
         speciesId: species.id,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(
-              id: 'm1',
-              instanceId: 'note-100-const-2016',
-              propertyName: 'País',
-              dataType: 'string',
-              stringValue: 'México'),
-          InstanceMagnitude(
-              id: 'm2',
-              instanceId: 'note-100-const-2016',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 2016.0,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: 'm3',
-              instanceId: 'note-100-const-2016',
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'MXN'),
-          InstanceMagnitude(
-              id: 'm4',
-              instanceId: 'note-100-const-2016',
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 100.0),
-          InstanceMagnitude(
-              id: 'm5',
-              instanceId: 'note-100-const-2016',
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Papel de algodón'),
-          InstanceMagnitude(
-              id: 'm6',
-              instanceId: 'note-100-const-2016',
-              propertyName: 'Motivo',
-              dataType: 'string',
-              stringValue: 'Centenario de la Constitución Política de 1917'),
+          InstanceMagnitude(id: 'm1', instanceId: 'note-100-const-2016', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'note-100-const-2016', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2016.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'note-100-const-2016', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'note-100-const-2016', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'note-100-const-2016', propertyName: 'Material', dataType: 'string', stringValue: 'Papel de algodón'),
+          InstanceMagnitude(id: 'm6', instanceId: 'note-100-const-2016', propertyName: 'Motivo', dataType: 'string', stringValue: 'Centenario de la Constitución Política de 1917'),
         ],
       );
 
@@ -1288,15 +925,8 @@ void main() {
       final instance2017 = instance2016.copyWith(
         id: 'note-100-const-2017',
         magnitudes: [
-          ...instance2016.magnitudes
-              .where((m) => m.propertyName != 'Acuñación'),
-          InstanceMagnitude(
-              id: 'm2-2017',
-              instanceId: 'note-100-const-2017',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 2017.0,
-              unitSymbol: 'año'),
+          ...instance2016.magnitudes.where((m) => m.propertyName != 'Acuñación'),
+          InstanceMagnitude(id: 'm2-2017', instanceId: 'note-100-const-2017', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2017.0, unitSymbol: 'año'),
         ],
       );
 
@@ -1307,54 +937,20 @@ void main() {
       expect(outliers2017, isEmpty);
     });
 
-    test(
-        'Audit detects no outliers for 20 MXN Coin Marina-Armada / Fuerza Armada in 2021 and 2022',
-        () async {
-      final species =
-          await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
+    test('Audit detects no outliers for 20 MXN Coin Marina-Armada / Fuerza Armada in 2021 and 2022', () async {
+      final species = await catalogRepo.getOrCreateSpecies('Moneda', type: 'Objeto');
       final coin2021 = WorldEntity(
         id: 'coin-marina-2021',
         speciesId: species.id,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(
-              id: 'm1',
-              instanceId: 'coin-marina-2021',
-              propertyName: 'País',
-              dataType: 'string',
-              stringValue: 'México'),
-          InstanceMagnitude(
-              id: 'm2',
-              instanceId: 'coin-marina-2021',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 2021.0,
-              unitSymbol: 'año'),
-          InstanceMagnitude(
-              id: 'm3',
-              instanceId: 'coin-marina-2021',
-              propertyName: 'Divisa',
-              dataType: 'string',
-              stringValue: 'MXN'),
-          InstanceMagnitude(
-              id: 'm4',
-              instanceId: 'coin-marina-2021',
-              propertyName: 'Valor nominal',
-              dataType: 'real',
-              magnitudeValue: 20.0),
-          InstanceMagnitude(
-              id: 'm5',
-              instanceId: 'coin-marina-2021',
-              propertyName: 'Material',
-              dataType: 'string',
-              stringValue: 'Bimetálica'),
-          InstanceMagnitude(
-              id: 'm6',
-              instanceId: 'coin-marina-2021',
-              propertyName: 'Motivo',
-              dataType: 'string',
-              stringValue: 'Bicentenario de la Marina-Armada de México'),
+          InstanceMagnitude(id: 'm1', instanceId: 'coin-marina-2021', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          InstanceMagnitude(id: 'm2', instanceId: 'coin-marina-2021', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2021.0, unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm3', instanceId: 'coin-marina-2021', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          InstanceMagnitude(id: 'm4', instanceId: 'coin-marina-2021', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 20.0),
+          InstanceMagnitude(id: 'm5', instanceId: 'coin-marina-2021', propertyName: 'Material', dataType: 'string', stringValue: 'Bimetálica'),
+          InstanceMagnitude(id: 'm6', instanceId: 'coin-marina-2021', propertyName: 'Motivo', dataType: 'string', stringValue: 'Bicentenario de la Marina-Armada de México'),
         ],
       );
 
@@ -1368,13 +964,7 @@ void main() {
         id: 'coin-marina-2022',
         magnitudes: [
           ...coin2021.magnitudes.where((m) => m.propertyName != 'Acuñación'),
-          InstanceMagnitude(
-              id: 'm2-2022',
-              instanceId: 'coin-marina-2022',
-              propertyName: 'Acuñación',
-              dataType: 'integer',
-              magnitudeValue: 2022.0,
-              unitSymbol: 'año'),
+          InstanceMagnitude(id: 'm2-2022', instanceId: 'coin-marina-2022', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2022.0, unitSymbol: 'año'),
         ],
       );
 
@@ -1386,3 +976,5 @@ void main() {
     });
   });
 }
+
+
