@@ -587,6 +587,7 @@ class AppStrings {
   static const dataTypeIntegerLabel = 'Número entero';
   static const dataTypeStringLabel = 'Texto';
   static const dataTypeBooleanLabel = 'Booleano';
+  static const dataTypeNull = 'Nulo';
 
   // Catálogo y escáner
   static const defaultNonPerishableSubtitle =

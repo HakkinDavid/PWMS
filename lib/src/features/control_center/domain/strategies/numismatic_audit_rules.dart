@@ -484,22 +484,19 @@ class NumismaticEmissionOutlierStrategy implements IAuditRuleStrategy {
                 displayName,
                 outlier.description,
               ),
-              question: outlier.foundValue != null &&
-                      outlier.foundValue!.trim().isNotEmpty
-                  ? (outlier.expectedValue != null &&
+              question: outlier.expectedValue != null &&
                           outlier.expectedValue!.trim().isNotEmpty
                       ? AppStrings.correctFromTo(
                           outlier.targetPropertyName ??
                               AppStrings.numismaticEmissionOutlierCardTitle,
-                          outlier.foundValue!.trim(),
+                          (outlier.foundValue ?? AppStrings.dataTypeNull).trim(),
                           outlier.expectedValue!.trim(),
                         )
                       : AppStrings.correctFromToValid(
                           outlier.targetPropertyName ??
                               AppStrings.numismaticEmissionOutlierCardTitle,
-                          outlier.foundValue!.trim(),
-                        ))
-                  : AppStrings.applyRecommendedCorrectionQuestion,
+                          (outlier.foundValue ?? AppStrings.dataTypeNull).trim(),
+                        ),
               icon: Icons.history_edu,
               themeColor: Colors.deepPurple,
               entity: entity,
