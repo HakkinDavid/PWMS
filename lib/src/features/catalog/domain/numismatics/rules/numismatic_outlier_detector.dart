@@ -37,7 +37,8 @@ class NumismaticEmissionOutlier {
 class NumismaticCongruenceIssue {
   final String subspeciesId;
   final String? instanceId;
-  final String issueType; // 'currency_mismatch', 'duplicate_subspecies', 'attachment_mismatch', 'missing_magnitudes'
+  final String
+      issueType; // 'currency_mismatch', 'duplicate_subspecies', 'attachment_mismatch', 'missing_magnitudes'
   final String description;
   final NumismaticAttributes expectedAttributes;
   final NumismaticAttributes? foundAttributes;
@@ -64,10 +65,12 @@ class NumismaticOutlierDetector {
     final instAttrs = NumismaticParser.extractAttributesFromInstance(instance);
     final mismatches = <String>[];
 
-    final parsedSub = NumismaticParser.parseSubspeciesName(subspecies.subspeciesName);
-    final subCurrency = (parsedSub.currencyName != null && parsedSub.currencyName!.isNotEmpty)
-        ? parsedSub.currencyName!
-        : subspecies.subspeciesName;
+    final parsedSub =
+        NumismaticParser.parseSubspeciesName(subspecies.subspeciesName);
+    final subCurrency =
+        (parsedSub.currencyName != null && parsedSub.currencyName!.isNotEmpty)
+            ? parsedSub.currencyName!
+            : subspecies.subspeciesName;
 
     // 1. Currency congruence check between instance and subspecies
     if (instAttrs.currencyName != null && instAttrs.currencyName!.isNotEmpty) {
@@ -78,16 +81,19 @@ class NumismaticOutlierDetector {
       if (!isEquivalent) {
         final expectedCurr = NumismaticParser.resolveCurrencyName(subCurrency);
         mismatches.add(
-          AppStrings.numisAuditCurrencyMismatch(instAttrs.currencyName!, expectedCurr),
+          AppStrings.numisAuditCurrencyMismatch(
+              instAttrs.currencyName!, expectedCurr),
         );
       }
     }
 
     // 2. Instance magnitude currency standardization check (must be ISO code)
     if (instAttrs.currencyName != null && instAttrs.currencyName!.isNotEmpty) {
-      final isoCode = NumismaticParser.resolveCurrencyIsoCode(instAttrs.currencyName!);
+      final isoCode =
+          NumismaticParser.resolveCurrencyIsoCode(instAttrs.currencyName!);
       if (instAttrs.currencyName!.trim().toUpperCase() != isoCode) {
-        mismatches.add(AppStrings.numisAuditCurrencyNotIso(instAttrs.currencyName!, isoCode));
+        mismatches.add(AppStrings.numisAuditCurrencyNotIso(
+            instAttrs.currencyName!, isoCode));
       }
     }
 
@@ -95,7 +101,8 @@ class NumismaticOutlierDetector {
     if (instAttrs.grade != null && instAttrs.grade!.isNotEmpty) {
       final stdGrade = NumismaticParser.resolveGrade(instAttrs.grade!);
       if (instAttrs.grade!.trim() != stdGrade) {
-        mismatches.add(AppStrings.numisAuditGradeMismatch(instAttrs.grade!, stdGrade));
+        mismatches.add(
+            AppStrings.numisAuditGradeMismatch(instAttrs.grade!, stdGrade));
       }
     }
 
@@ -103,12 +110,14 @@ class NumismaticOutlierDetector {
     if (instAttrs.material != null && instAttrs.material!.isNotEmpty) {
       final stdMat = NumismaticParser.resolveMaterial(instAttrs.material!);
       if (instAttrs.material!.trim() != stdMat) {
-        mismatches.add(AppStrings.numisAuditMaterialMismatch(instAttrs.material!, stdMat));
+        mismatches.add(
+            AppStrings.numisAuditMaterialMismatch(instAttrs.material!, stdMat));
       }
     }
 
     if (mismatches.isNotEmpty) {
-      return AppStrings.numisAuditIncongruence(mismatches.join(AppTechnicalStrings.pipeWithSpaces));
+      return AppStrings.numisAuditIncongruence(
+          mismatches.join(AppTechnicalStrings.pipeWithSpaces));
     }
 
     return null;
@@ -139,12 +148,16 @@ class NumismaticOutlierDetector {
     String? denomStr = attrs.faceValueStr?.trim();
     if (denomStr == null && attrs.faceValueNumber != null) {
       final numVal = attrs.faceValueNumber!;
-      denomStr = (numVal == numVal.toInt()) ? numVal.toInt().toString() : numVal.toString();
+      denomStr = (numVal == numVal.toInt())
+          ? numVal.toInt().toString()
+          : numVal.toString();
     }
 
     final outliers = <NumismaticEmissionOutlier>[];
 
-    if (country == null || country.isEmpty || country == AppStrings.otherSpecifyOption) {
+    if (country == null ||
+        country.isEmpty ||
+        country == AppStrings.otherSpecifyOption) {
       return outliers;
     }
 
@@ -165,17 +178,23 @@ class NumismaticOutlierDetector {
 
     // 2. Emission matrix matching
     if (year != null && year >= 1500 && year <= DateTime.now().year + 1) {
-      final allRules = NumismaticMatrix.findRules(country, year, isBanknote: isBanknote);
+      final allRules =
+          NumismaticMatrix.findRules(country, year, isBanknote: isBanknote);
       if (allRules.isNotEmpty) {
         // A. Currency anachronism check
         if (currency != null && currency.isNotEmpty) {
           final iso = NumismaticParser.resolveCurrencyIsoCode(currency);
-          final allValidCurrencies = allRules.expand((r) => r.validCurrencies).toSet();
+          final allValidCurrencies =
+              allRules.expand((r) => r.validCurrencies).toSet();
           if (!allValidCurrencies.contains(iso)) {
-            final expectedIso = allRules.first.defaultCurrency ?? allRules.first.validCurrencies.first;
+            final expectedIso = allRules.first.defaultCurrency ??
+                allRules.first.validCurrencies.first;
             final desc = allValidCurrencies.length > 1
-                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.currencyPropertyName, currentValue: currency)
-                : AppStrings.numismaticCurrencyAnachronismDesc(iso, expectedIso, year, country);
+                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(
+                    AppStrings.currencyPropertyName,
+                    currentValue: currency)
+                : AppStrings.numismaticCurrencyAnachronismDesc(
+                    iso, expectedIso, year, country);
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.currencyAnachronism,
               title: AppStrings.numismaticEmissionOutlierCardTitle,
@@ -189,15 +208,19 @@ class NumismaticOutlierDetector {
         }
 
         final rule = NumismaticMatrix.findRule(
-          country,
-          year,
-          currencyCode: currency,
-          denomination: denomStr,
-          isBanknote: isBanknote,
-        ) ?? allRules.first;
+              country,
+              year,
+              currencyCode: currency,
+              denomination: denomStr,
+              isBanknote: isBanknote,
+            ) ??
+            allRules.first;
 
         // B. Material contradiction check
-        if (denomStr != null && denomStr.isNotEmpty && material != null && material.isNotEmpty) {
+        if (denomStr != null &&
+            denomStr.isNotEmpty &&
+            material != null &&
+            material.isNotEmpty) {
           final validMaterials = NumismaticMatrix.getValidMaterials(
             country: country,
             year: year,
@@ -218,8 +241,11 @@ class NumismaticOutlierDetector {
             if (!isValid) {
               final expectedMat = validMaterials.first;
               final desc = validMaterials.length > 1
-                  ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.materialPropertyName, currentValue: material)
-                  : AppStrings.numismaticMaterialContradictionDesc(material, expectedMat, denomStr);
+                  ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(
+                      AppStrings.materialPropertyName,
+                      currentValue: material)
+                  : AppStrings.numismaticMaterialContradictionDesc(
+                      material, expectedMat, denomStr);
               outliers.add(NumismaticEmissionOutlier(
                 type: NumismaticEmissionOutlierType.materialContradiction,
                 title: AppStrings.numismaticEmissionOutlierCardTitle,
@@ -248,22 +274,28 @@ class NumismaticOutlierDetector {
           bool isMotifMismatch = false;
           if (effectiveMotif != null && effectiveMotif.trim().isNotEmpty) {
             if (motifs.isNotEmpty) {
-              final matchesAny = motifs.any((m) => NumismaticEmissionRuleData.matchesMotif(m, effectiveMotif));
+              final matchesAny = motifs.any((m) =>
+                  NumismaticEmissionRuleData.matchesMotif(m, effectiveMotif));
               if (!matchesAny) {
                 isMotifMismatch = true;
               }
             } else {
               isMotifMismatch = true;
             }
-          } else if (!isBanknote && motifs.length > 1) {
+          } else if (motifs.isNotEmpty) {
             isMotifMismatch = true;
           }
 
           if (isMotifMismatch) {
-            final expectedMotif = motifs.isNotEmpty ? motifs.first : AppStrings.motifPropertyName;
+            final expectedMotif =
+                motifs.isNotEmpty ? motifs.first : AppStrings.motifPropertyName;
             final desc = motifs.length > 1
-                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.motifPropertyName, currentValue: effectiveMotif)
-                : AppStrings.numismaticMotifMismatchDesc(denomStr, expectedMotif, currentMotif: effectiveMotif);
+                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(
+                    AppStrings.motifPropertyName,
+                    currentValue: effectiveMotif)
+                : AppStrings.numismaticMotifMismatchDesc(
+                    denomStr, expectedMotif,
+                    currentMotif: effectiveMotif);
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.motifMismatch,
               title: AppStrings.numismaticEmissionOutlierCardTitle,
@@ -278,12 +310,16 @@ class NumismaticOutlierDetector {
 
         // D. Denomination anomaly check
         if (denomStr != null && denomStr.isNotEmpty) {
-          final matchesDenom = allRules.any((r) => r.hasDenomination(denomStr!));
+          final matchesDenom =
+              allRules.any((r) => r.hasDenomination(denomStr!));
           if (!matchesDenom) {
             final allDenoms = allRules.expand((r) => r.denominations).toSet();
             final desc = allDenoms.length > 1
-                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(AppStrings.nominalValuePropertyName, currentValue: denomStr)
-                : AppStrings.numismaticDenominationAnomalyDesc(denomStr, country, year);
+                ? AppStrings.numismaticMagnitudeNotAmongExpectedDesc(
+                    AppStrings.nominalValuePropertyName,
+                    currentValue: denomStr)
+                : AppStrings.numismaticDenominationAnomalyDesc(
+                    denomStr, country, year);
             outliers.add(NumismaticEmissionOutlier(
               type: NumismaticEmissionOutlierType.denominationAnomaly,
               title: AppStrings.numismaticEmissionOutlierCardTitle,

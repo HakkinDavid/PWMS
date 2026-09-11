@@ -5,6 +5,9 @@ import 'package:platinum_world_management_system/src/core/domain/property_data_t
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import 'package:uuid/uuid.dart';
+import '../../../catalog/domain/catalog_item.dart';
+import '../../../catalog/domain/numismatic_data_helper.dart';
+import '../../../catalog/domain/species_magnitude.dart';
 import '../../../entities/domain/instance_magnitude.dart';
 import '../audit_rule_strategy.dart';
 import 'audit_rule_helper.dart';
@@ -17,7 +20,8 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.perishableMissingExpiration;
 
   @override
-  String get ruleId => AppTechnicalStrings.ruleExpirationPerishableMissingExpiration;
+  String get ruleId =>
+      AppTechnicalStrings.ruleExpirationPerishableMissingExpiration;
 
   @override
   AuditCategory get category => AuditCategory.integrity;
@@ -66,10 +70,16 @@ class PerishableMissingExpirationStrategy implements IAuditRuleStrategy {
           );
 
           if (picked != null) {
-            final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-            await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(expirationDate: picked));
+            final freshEntity = await ref
+                    .read(entityRepositoryProvider)
+                    .getEntityById(entity.id) ??
+                entity;
+            await ref
+                .read(entityRepositoryProvider)
+                .saveEntity(freshEntity.copyWith(expirationDate: picked));
             if (ctx.mounted) {
-              AppToast.showSuccess(ctx, AppStrings.expirationDateUpdatedSuccess);
+              AppToast.showSuccess(
+                  ctx, AppStrings.expirationDateUpdatedSuccess);
             }
             return true;
           }
@@ -89,7 +99,8 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
   AuditCardType get cardType => AuditCardType.nonPerishableWithExpiration;
 
   @override
-  String get ruleId => AppTechnicalStrings.ruleExpirationNonPerishableWithExpiration;
+  String get ruleId =>
+      AppTechnicalStrings.ruleExpirationNonPerishableWithExpiration;
 
   @override
   AuditCategory get category => AuditCategory.integrity;
@@ -126,8 +137,13 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
         fixLabel: AppStrings.fixRemoveDateAction,
         confirmToastMessage: AppStrings.expirationDateKept,
         onFix: (ctx, ref) async {
-          final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-          await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(expirationDate: null));
+          final freshEntity = await ref
+                  .read(entityRepositoryProvider)
+                  .getEntityById(entity.id) ??
+              entity;
+          await ref
+              .read(entityRepositoryProvider)
+              .saveEntity(freshEntity.copyWith(expirationDate: null));
           if (ctx.mounted) {
             AppToast.showSuccess(ctx, AppStrings.expirationDateRemovedSuccess);
           }
@@ -143,11 +159,94 @@ class NonPerishableWithExpirationStrategy implements IAuditRuleStrategy {
 class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
   const MissingMandatoryMagnitudesStrategy();
 
+  /// These are the complete instance-level numismatic record.  They are
+  /// audited independently from a species template so legacy species cannot
+  /// silently omit a property required by the numismatic policy.
+  static List<SpeciesMagnitude> _requiredMagnitudesFor(CatalogItem species) {
+    final byName = {
+      for (final magnitude in species.magnitudes)
+        magnitude.propertyName.trim().toLowerCase(): magnitude,
+    };
+
+    if (!NumismaticDataHelper.isNumismaticSpecies(species)) {
+      return species.magnitudes;
+    }
+
+    final required = <SpeciesMagnitude>[
+      SpeciesMagnitude(
+        id: 'numismatic-policy-value',
+        speciesId: species.id,
+        propertyName: AppStrings.nominalValuePropertyName,
+        dataType: AppTechnicalStrings.datatypeRealLower,
+        createdAt: species.createdAt,
+      ),
+      SpeciesMagnitude(
+        id: 'numismatic-policy-year',
+        speciesId: species.id,
+        propertyName: AppStrings.mintagePropertyName,
+        dataType: AppTechnicalStrings.datatypeIntegerLower,
+        unitSymbol: AppStrings.yearUnitSymbol,
+        createdAt: species.createdAt,
+      ),
+      SpeciesMagnitude(
+        id: 'numismatic-policy-currency',
+        speciesId: species.id,
+        propertyName: AppStrings.currencyPropertyName,
+        dataType: AppTechnicalStrings.datatypeStringLower,
+        createdAt: species.createdAt,
+      ),
+      SpeciesMagnitude(
+        id: 'numismatic-policy-material',
+        speciesId: species.id,
+        propertyName: AppStrings.materialPropertyName,
+        dataType: AppTechnicalStrings.datatypeStringLower,
+        createdAt: species.createdAt,
+      ),
+      SpeciesMagnitude(
+        id: 'numismatic-policy-grade',
+        speciesId: species.id,
+        propertyName: AppStrings.gradePropertyName,
+        dataType: AppTechnicalStrings.datatypeStringLower,
+        createdAt: species.createdAt,
+      ),
+      SpeciesMagnitude(
+        id: 'numismatic-policy-issuer',
+        speciesId: species.id,
+        propertyName: AppStrings.issuerPropertyName,
+        dataType: AppTechnicalStrings.datatypeStringLower,
+        createdAt: species.createdAt,
+      ),
+      SpeciesMagnitude(
+        id: 'numismatic-policy-motif',
+        speciesId: species.id,
+        propertyName: AppStrings.motifPropertyName,
+        dataType: AppTechnicalStrings.datatypeStringLower,
+        createdAt: species.createdAt,
+      ),
+    ];
+
+    for (final magnitude in required) {
+      byName[magnitude.propertyName.trim().toLowerCase()] = magnitude;
+    }
+    return byName.values.toList();
+  }
+
+  static bool _isMissingValue(InstanceMagnitude? magnitude) {
+    if (magnitude == null) return true;
+    if (magnitude.dataType == AppTechnicalStrings.datatypeStringLower ||
+        magnitude.dataType == AppTechnicalStrings.datatypeBooleanLower) {
+      return magnitude.stringValue == null ||
+          magnitude.stringValue!.trim().isEmpty;
+    }
+    return magnitude.magnitudeValue == null;
+  }
+
   @override
   AuditCardType get cardType => AuditCardType.missingMandatoryMagnitudes;
 
   @override
-  String get ruleId => AppTechnicalStrings.ruleExpirationMissingMandatoryMagnitudes;
+  String get ruleId =>
+      AppTechnicalStrings.ruleExpirationMissingMandatoryMagnitudes;
 
   @override
   AuditCategory get category => AuditCategory.integrity;
@@ -158,25 +257,37 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
 
     for (final entity in context.allEntities) {
       final species = context.speciesById[entity.speciesId];
-      if (species != null && species.magnitudes.isNotEmpty) {
-        final entityPropNames = {
-          for (final im in entity.magnitudes) im.propertyName.trim().toLowerCase()
+      if (species != null) {
+        final requiredMagnitudes = _requiredMagnitudesFor(species);
+        if (requiredMagnitudes.isEmpty) continue;
+        final entityMagnitudesByName = {
+          for (final magnitude in entity.magnitudes)
+            magnitude.propertyName.trim().toLowerCase(): magnitude,
         };
-        final missingMags = species.magnitudes.where((sm) =>
-            !entityPropNames.contains(sm.propertyName.trim().toLowerCase())).toList();
+        final missingMags = requiredMagnitudes
+            .where((sm) => _isMissingValue(
+                entityMagnitudesByName[sm.propertyName.trim().toLowerCase()]))
+            .toList();
 
         for (final missingProp in missingMags) {
-          final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
-          final unitSuffix = (missingProp.unitSymbol != null && missingProp.unitSymbol!.isNotEmpty)
+          final displayName =
+              AuditRuleHelper.getEntityDisplayName(context, entity);
+          final unitSuffix = (missingProp.unitSymbol != null &&
+                  missingProp.unitSymbol!.isNotEmpty)
               ? AppStrings.unitSymbolParentheses(missingProp.unitSymbol!)
               : AppTechnicalStrings.empty;
 
           cards.add(AuditRuleHelper.forEntity(
-            id: AppTechnicalStrings.prefixMissMag + entity.id + AppTechnicalStrings.dash + missingProp.propertyName,
+            id: AppTechnicalStrings.prefixMissMag +
+                entity.id +
+                AppTechnicalStrings.dash +
+                missingProp.propertyName,
             type: AuditCardType.missingMandatoryMagnitudes,
             title: AppStrings.missingMagnitudeTitle(missingProp.propertyName),
-            subtitle: AppStrings.missingMagnitudeSubtitle(displayName, missingProp.propertyName, unitSuffix),
-            question: AppStrings.missingMagnitudeQuestion(displayName, missingProp.propertyName, species.name),
+            subtitle: AppStrings.missingMagnitudeSubtitle(
+                displayName, missingProp.propertyName, unitSuffix),
+            question: AppStrings.missingMagnitudeQuestion(
+                displayName, missingProp.propertyName, species.name),
             icon: Icons.straighten,
             themeColor: Colors.teal,
             entity: entity,
@@ -187,29 +298,38 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
             onFix: (ctx, ref) async {
               final propType = PropertyDataType.fromCode(missingProp.dataType);
 
+              final isNumismatic =
+                  NumismaticDataHelper.isNumismaticSpecies(species);
               final choice = await showDialog<String>(
                 context: ctx,
                 builder: (dialogCtx) => AlertDialog(
-                  title: Text(AppStrings.assignPropertyTitle(missingProp.propertyName)),
-                  content: Text(AppStrings.resolveMissingPropertyPrompt(missingProp.propertyName)),
+                  title: Text(
+                      AppStrings.assignPropertyTitle(missingProp.propertyName)),
+                  content: Text(AppStrings.resolveMissingPropertyPrompt(
+                      missingProp.propertyName)),
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionCancel),
+                      onPressed: () => Navigator.pop(
+                          dialogCtx, AppTechnicalStrings.actionCancel),
                       child: const Text(AppStrings.cancel),
                     ),
-                    OutlinedButton(
-                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionSetNull),
-                      child: const Text(AppStrings.setNullAction),
-                    ),
+                    if (!isNumismatic)
+                      OutlinedButton(
+                        onPressed: () => Navigator.pop(
+                            dialogCtx, AppTechnicalStrings.actionSetNull),
+                        child: const Text(AppStrings.setNullAction),
+                      ),
                     ElevatedButton(
-                      onPressed: () => Navigator.pop(dialogCtx, AppTechnicalStrings.actionEnterValue),
+                      onPressed: () => Navigator.pop(
+                          dialogCtx, AppTechnicalStrings.actionEnterValue),
                       child: const Text(AppStrings.enterValueAction),
                     ),
                   ],
                 ),
               );
 
-              if (choice == null || choice == AppTechnicalStrings.actionCancel) {
+              if (choice == null ||
+                  choice == AppTechnicalStrings.actionCancel) {
                 return false;
               }
 
@@ -230,8 +350,10 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                   final boolVal = await showDialog<bool>(
                     context: ctx,
                     builder: (dialogCtx) => AlertDialog(
-                      title: Text(AppStrings.assignPropertyTitle(missingProp.propertyName)),
-                      content: Text(AppStrings.assignBooleanPrompt(missingProp.propertyName)),
+                      title: Text(AppStrings.assignPropertyTitle(
+                          missingProp.propertyName)),
+                      content: Text(AppStrings.assignBooleanPrompt(
+                          missingProp.propertyName)),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(dialogCtx, null),
@@ -255,7 +377,9 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                       instanceId: entity.id,
                       propertyName: missingProp.propertyName,
                       dataType: AppTechnicalStrings.datatypeBooleanLower,
-                      stringValue: boolVal ? AppTechnicalStrings.boolTrue : AppTechnicalStrings.boolFalse,
+                      stringValue: boolVal
+                          ? AppTechnicalStrings.boolTrue
+                          : AppTechnicalStrings.boolFalse,
                       magnitudeValue: boolVal ? 1.0 : 0.0,
                     );
                   }
@@ -264,11 +388,14 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                       ? TextInputType.number
                       : propType == PropertyDataType.string
                           ? TextInputType.text
-                          : const TextInputType.numberWithOptions(decimal: true);
+                          : const TextInputType.numberWithOptions(
+                              decimal: true);
 
-                  final enteredValue = await AuditRuleHelper.showTextInputDialog(
+                  final enteredValue =
+                      await AuditRuleHelper.showTextInputDialog(
                     ctx,
-                    title: AppStrings.assignPropertyTitle(missingProp.propertyName),
+                    title: AppStrings.assignPropertyTitle(
+                        missingProp.propertyName),
                     labelText: missingProp.propertyName,
                     suffixText: missingProp.unitSymbol,
                     keyboardType: keyboardType,
@@ -310,10 +437,16 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
               }
 
               if (newMag != null) {
-                final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-                final List<InstanceMagnitude> currentMags = List.from(freshEntity.magnitudes);
+                final freshEntity = await ref
+                        .read(entityRepositoryProvider)
+                        .getEntityById(entity.id) ??
+                    entity;
+                final List<InstanceMagnitude> currentMags =
+                    List.from(freshEntity.magnitudes);
                 final existingIdx = currentMags.indexWhere(
-                  (m) => m.propertyName.trim().toLowerCase() == missingProp.propertyName.trim().toLowerCase(),
+                  (m) =>
+                      m.propertyName.trim().toLowerCase() ==
+                      missingProp.propertyName.trim().toLowerCase(),
                 );
 
                 if (existingIdx >= 0) {
@@ -322,12 +455,19 @@ class MissingMandatoryMagnitudesStrategy implements IAuditRuleStrategy {
                   currentMags.add(newMag);
                 }
 
-                await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(magnitudes: currentMags));
+                await ref
+                    .read(entityRepositoryProvider)
+                    .saveEntity(freshEntity.copyWith(magnitudes: currentMags));
                 if (ctx.mounted) {
-                  if (newMag.magnitudeValue == null && newMag.stringValue == null) {
-                    AppToast.showSuccess(ctx, AppStrings.propertyMarkedAsUnknownSuccess);
+                  if (newMag.magnitudeValue == null &&
+                      newMag.stringValue == null) {
+                    AppToast.showSuccess(
+                        ctx, AppStrings.propertyMarkedAsUnknownSuccess);
                   } else {
-                    AppToast.showSuccess(ctx, AppStrings.propertyRegisteredSuccess(missingProp.propertyName));
+                    AppToast.showSuccess(
+                        ctx,
+                        AppStrings.propertyRegisteredSuccess(
+                            missingProp.propertyName));
                   }
                 }
                 return true;
@@ -361,13 +501,16 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
     final cards = <AuditCardData>[];
 
     for (final entity in context.allEntities.take(20)) {
-      final anomalousMags = entity.magnitudes.where((m) =>
-          m.magnitudeValue != null &&
-          m.magnitudeValue! <= 0 &&
-          m.dataType == AppTechnicalStrings.datatypeRealLower).toList();
+      final anomalousMags = entity.magnitudes
+          .where((m) =>
+              m.magnitudeValue != null &&
+              m.magnitudeValue! <= 0 &&
+              m.dataType == AppTechnicalStrings.datatypeRealLower)
+          .toList();
       for (final mag in anomalousMags) {
         final species = context.speciesById[entity.speciesId];
-        final displayName = AuditRuleHelper.getEntityDisplayName(context, entity);
+        final displayName =
+            AuditRuleHelper.getEntityDisplayName(context, entity);
 
         cards.add(AuditRuleHelper.forEntity(
           id: AppTechnicalStrings.prefixAnomMag + mag.id,
@@ -379,7 +522,8 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
             mag.magnitudeValue ?? 0.0,
             mag.unitSymbol ?? AppTechnicalStrings.empty,
           ),
-          question: AppStrings.anomalousMagnitudeQuestion(mag.propertyName, mag.magnitudeValue ?? 0.0),
+          question: AppStrings.anomalousMagnitudeQuestion(
+              mag.propertyName, mag.magnitudeValue ?? 0.0),
           icon: Icons.exposure_zero,
           themeColor: Colors.orange,
           entity: entity,
@@ -392,21 +536,34 @@ class AnomalousMagnitudeStrategy implements IAuditRuleStrategy {
               ctx,
               title: AppStrings.correctPropertyTitle(mag.propertyName),
               labelText: mag.propertyName,
-              initialValue: mag.magnitudeValue?.toString() ?? AppTechnicalStrings.empty,
+              initialValue:
+                  mag.magnitudeValue?.toString() ?? AppTechnicalStrings.empty,
               suffixText: mag.unitSymbol,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
             );
 
             if (enteredValue != null && enteredValue.isNotEmpty) {
               final numVal = double.tryParse(enteredValue) ?? 0.0;
-              final freshEntity = await ref.read(entityRepositoryProvider).getEntityById(entity.id) ?? entity;
-              final updatedMags = freshEntity.magnitudes.map((m) =>
-                  (m.id == mag.id || m.propertyName.trim().toLowerCase() == mag.propertyName.trim().toLowerCase())
+              final freshEntity = await ref
+                      .read(entityRepositoryProvider)
+                      .getEntityById(entity.id) ??
+                  entity;
+              final updatedMags = freshEntity.magnitudes
+                  .map((m) => (m.id == mag.id ||
+                          m.propertyName.trim().toLowerCase() ==
+                              mag.propertyName.trim().toLowerCase())
                       ? m.copyWith(magnitudeValue: numVal)
-                      : m).toList();
-              await ref.read(entityRepositoryProvider).saveEntity(freshEntity.copyWith(magnitudes: updatedMags));
+                      : m)
+                  .toList();
+              await ref
+                  .read(entityRepositoryProvider)
+                  .saveEntity(freshEntity.copyWith(magnitudes: updatedMags));
               if (ctx.mounted) {
-                AppToast.showSuccess(ctx, AppStrings.propertyValueUpdatedSuccess(mag.propertyName, numVal));
+                AppToast.showSuccess(
+                    ctx,
+                    AppStrings.propertyValueUpdatedSuccess(
+                        mag.propertyName, numVal));
               }
               return true;
             }

@@ -10,50 +10,50 @@ class AuditRuleRegistry {
   final List<IAuditRuleStrategy> _strategies;
 
   AuditRuleRegistry([List<IAuditRuleStrategy>? strategies])
-      : _strategies = strategies ?? const [
-          // 1. Relational anomaly rules
-          OrphanEntityStrategy(),
-          LocationConflictStrategy(),
-          CyclicContainmentStrategy(),
-          // 2. Catalog anomaly rules
-          UninstantiatedSubspeciesStrategy(),
-          UniquenessViolationStrategy(),
-          SubgroupRuleViolationStrategy(),
-          UninstantiatedSpeciesStrategy(),
-          IncompleteSpeciesInfoStrategy(),
-          RemoteImageAuditStrategy(),
-          // 3. Expiration and Magnitude rules
-          PerishableMissingExpirationStrategy(),
-          NonPerishableWithExpirationStrategy(),
-          MissingMandatoryMagnitudesStrategy(),
-          AnomalousMagnitudeStrategy(),
-          // 4. Unit and Magnitude rules
-          InvalidUnitSymbolStrategy(),
-          IntegerUnitIncongruityStrategy(),
-          NonNumericWithUnitStrategy(),
-          NegativeMagnitudeViolationStrategy(),
-          PropertyNameSuggestionIncongruityStrategy(),
-          // 5. Numismatic rules
-          NumismaticDuplicateSubspeciesStrategy(),
-          NumismaticSubspeciesIncongruityStrategy(),
-          NumismaticAttachmentIncongruityStrategy(),
-          NumismaticMissingMagnitudesStrategy(),
-          EmptyDataAuditStrategy(),
-          NumismaticEmissionOutlierStrategy(),
-          // 6. Periodic verification sampling
-          OwnershipCheckStrategy(),
-          LocationVerificationStrategy(),
-          // 7. Governance & catalog integrity rules
-          DuplicateSpeciesStrategy(),
-          DuplicatePhotoStrategy(),
-          SpeciesWithoutSubspeciesStrategy(),
-          UnlinkedInstancesStrategy(),
-          AnomalousExpirationStrategy(),
-        ];
+      : _strategies = strategies ??
+            const [
+              // 1. Relational anomaly rules
+              OrphanEntityStrategy(),
+              LocationConflictStrategy(),
+              CyclicContainmentStrategy(),
+              // 2. Catalog anomaly rules
+              UninstantiatedSubspeciesStrategy(),
+              UniquenessViolationStrategy(),
+              SubgroupRuleViolationStrategy(),
+              UninstantiatedSpeciesStrategy(),
+              IncompleteSpeciesInfoStrategy(),
+              RemoteImageAuditStrategy(),
+              // 3. Expiration and Magnitude rules
+              PerishableMissingExpirationStrategy(),
+              NonPerishableWithExpirationStrategy(),
+              MissingMandatoryMagnitudesStrategy(),
+              AnomalousMagnitudeStrategy(),
+              // 4. Unit and Magnitude rules
+              InvalidUnitSymbolStrategy(),
+              IntegerUnitIncongruityStrategy(),
+              NonNumericWithUnitStrategy(),
+              NegativeMagnitudeViolationStrategy(),
+              PropertyNameSuggestionIncongruityStrategy(),
+              // 5. Numismatic rules
+              NumismaticDuplicateSubspeciesStrategy(),
+              NumismaticSubspeciesIncongruityStrategy(),
+              NumismaticAttachmentIncongruityStrategy(),
+              NumismaticEmissionOutlierStrategy(),
+              // 6. Periodic verification sampling
+              OwnershipCheckStrategy(),
+              LocationVerificationStrategy(),
+              // 7. Governance & catalog integrity rules
+              DuplicateSpeciesStrategy(),
+              DuplicatePhotoStrategy(),
+              SpeciesWithoutSubspeciesStrategy(),
+              UnlinkedInstancesStrategy(),
+              AnomalousExpirationStrategy(),
+            ];
 
   List<IAuditRuleStrategy> get strategies => List.unmodifiable(_strategies);
 
-  Future<List<AuditCardData>> evaluateAll(AuditEvaluationContext context) async {
+  Future<List<AuditCardData>> evaluateAll(
+      AuditEvaluationContext context) async {
     final List<AuditCardData> allCards = [];
 
     for (final strategy in _strategies) {
@@ -65,7 +65,8 @@ class AuditRuleRegistry {
     return allCards;
   }
 
-  Future<List<AuditCardData>> evaluateCategory(AuditEvaluationContext context, AuditCategory category) async {
+  Future<List<AuditCardData>> evaluateCategory(
+      AuditEvaluationContext context, AuditCategory category) async {
     final List<AuditCardData> cards = [];
     final categoryStrategies = _strategies.where((s) => s.category == category);
 
