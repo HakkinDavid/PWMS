@@ -165,19 +165,19 @@ bool _isIdentifierChar(String char) {
   if (startQuote != "'" && startQuote != '"') return null;
 
   var isTriple = false;
-  var delimiter = startQuote;
+  // var delimiter = startQuote;
 
   if (cursor + 2 < length &&
       source[cursor + 1] == startQuote &&
       source[cursor + 2] == startQuote) {
     isTriple = true;
-    delimiter = startQuote * 3;
+    // delimiter = startQuote * 3;
     cursor += 3;
   } else {
     cursor += 1;
   }
 
-  final contentStart = cursor;
+  // final contentStart = cursor;
   var linesCrossed = 0;
 
   while (cursor < length) {

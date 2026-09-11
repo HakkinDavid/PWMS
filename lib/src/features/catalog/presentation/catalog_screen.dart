@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/domain/item_view_mode.dart';
 import '../../../core/providers/providers.dart';
-import '../../../core/router/app_navigation_extension.dart';
 import '../../../core/widgets/minecraft_grid_view.dart';
 import '../../../core/widgets/view_mode_toggle_button.dart';
 

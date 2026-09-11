@@ -230,14 +230,12 @@ class _RegisterObjectModalState extends ConsumerState<RegisterObjectModal> {
 
             var matchingSpecies = catalog.where((c) => c.name.trim().toLowerCase() == speciesName.toLowerCase()).firstOrNull;
 
-            if (matchingSpecies == null) {
-              matchingSpecies = await catalogRepo.getOrCreateSpecies(
+            matchingSpecies ??= await catalogRepo.getOrCreateSpecies(
                 speciesName,
                 type: AppStrings.typeObject,
                 description: AppStrings.numismaticSpeciesDescription(result.speciesType),
                 mainPhotoPath: null,
               );
-            }
 
             final currencyUnit = (result.currencyCode != null && result.currencyCode!.trim().isNotEmpty)
                 ? result.currencyCode!.trim()

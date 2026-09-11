@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/data/numismatic_currencies_registry.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_naming_engine.dart';
 import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_parser.dart';
 
@@ -63,8 +62,8 @@ void main() {
 
       for (final entry in testCases.entries) {
         final parsed = NumismaticParser.parseSubspeciesName(entry.key);
-        expect(parsed.faceValueNumber, equals(1.0), reason: 'Failed for ' + entry.key);
-        expect(parsed.currencyName, equals(entry.value), reason: 'Truncation detected for ' + entry.key);
+        expect(parsed.faceValueNumber, equals(1.0), reason: 'Failed for ${entry.key}');
+        expect(parsed.currencyName, equals(entry.value), reason: 'Truncation detected for ${entry.key}');
       }
     });
 

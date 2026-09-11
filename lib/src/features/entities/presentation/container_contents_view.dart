@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import '../../../core/providers/providers.dart';
-import '../../../core/router/app_navigation_extension.dart';
 import '../../locations/domain/location_node.dart';
 import 'entity_tile.dart';
 

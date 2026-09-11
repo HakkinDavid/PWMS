@@ -13,7 +13,6 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/cat
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/catalog/presentation/split_subspecies_modal.dart';
-import 'package:platinum_world_management_system/src/features/catalog/presentation/subspecies_section_widget.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/history/application/activity_logger_service.dart';

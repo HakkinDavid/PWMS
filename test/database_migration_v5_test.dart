@@ -270,7 +270,7 @@ void main() {
                 builder: (ctx) => Consumer(
                   builder: (context, ref, _) => ElevatedButton(
                     onPressed: () async {
-                      await card.onFix?.call(ctx, ref);
+                      await card.onFix.call(ctx, ref);
                     },
                     child: const Text('Resolve'),
                   ),

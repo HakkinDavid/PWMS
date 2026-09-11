@@ -213,11 +213,10 @@ class AppWheelPickerField<T> extends FormField<T> {
     InputDecoration decoration = const InputDecoration(),
     super.validator,
     super.autovalidateMode,
-    bool enabled = true,
+    super.enabled,
     String? placeholder,
   }) : super(
           initialValue: value,
-          enabled: enabled,
           builder: (FormFieldState<T> field) {
             final _AppWheelPickerFieldState<T> state = field as _AppWheelPickerFieldState<T>;
             final context = state.context;

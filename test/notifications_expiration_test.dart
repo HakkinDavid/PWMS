@@ -36,7 +36,7 @@ class FakePathProviderPlatform extends PathProviderPlatform with MockPlatformInt
 }
 
 class FakeFlutterLocalNotificationsPlatform extends FlutterLocalNotificationsPlatform with MockPlatformInterfaceMixin {
-  @override
+  
   Future<bool?> initialize(
     InitializationSettings initializationSettings, {
     DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,

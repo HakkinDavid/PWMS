@@ -9,7 +9,6 @@ import '../domain/species_magnitude.dart';
 import '../domain/species_requirement.dart';
 import '../domain/subspecies.dart';
 import '../../entities/domain/attachment.dart';
-import '../../entities/domain/entity_template.dart';
 
 import '../../../core/storage/file_storage_service.dart';
 

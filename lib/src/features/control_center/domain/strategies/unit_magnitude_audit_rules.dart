@@ -7,8 +7,6 @@ import 'package:platinum_world_management_system/src/core/domain/property_data_t
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_wheel_picker.dart';
-import '../../../catalog/domain/species_magnitude.dart';
-import '../../../entities/domain/instance_magnitude.dart';
 import '../audit_rule_strategy.dart';
 import 'audit_rule_helper.dart';
 

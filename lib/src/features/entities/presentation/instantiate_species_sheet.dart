@@ -13,7 +13,6 @@ import '../../catalog/domain/subspecies.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_or_container_selection_sheet.dart';
 import '../../relations/domain/entity_relation.dart';
-import '../domain/entity_display_helper.dart';
 import '../domain/entity_template.dart';
 import '../../../core/domain/property_data_type.dart';
 import '../domain/instance_magnitude.dart';

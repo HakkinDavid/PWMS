@@ -121,8 +121,8 @@ void main() {
         entities: [containerEntity],
       );
 
-      Object? droppedData;
-      String? targetContainer;
+      // Object? droppedData;
+      // String? targetContainer;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -135,8 +135,8 @@ void main() {
               isContainer: true,
               onTap: () {},
               onDropIntoContainer: (payload, targetId, isCont) {
-                droppedData = payload;
-                targetContainer = targetId;
+                // droppedData = payload;
+                // targetContainer = targetId;
               },
               child: const SizedBox(
                 width: 100,

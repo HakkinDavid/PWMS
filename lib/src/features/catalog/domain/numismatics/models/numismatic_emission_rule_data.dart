@@ -1,8 +1,4 @@
 import '../../../../../core/constants/app_technical_strings.dart';
-import '../data/numismatic_denominations_registry.dart';
-import '../data/numismatic_materials_registry.dart';
-import 'numismatic_motif_rule.dart';
-import 'numismatic_piece_definition.dart';
 
 /// Metadata record representing a country's currency epoch emission rules (Coins or Banknotes).
 class NumismaticEmissionRuleData {

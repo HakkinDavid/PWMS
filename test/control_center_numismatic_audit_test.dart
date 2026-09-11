@@ -7,7 +7,6 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/num
 import 'package:platinum_world_management_system/src/features/catalog/domain/subspecies.dart';
 import 'package:platinum_world_management_system/src/features/catalog/infrastructure/catalog_repository.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
-import 'package:platinum_world_management_system/src/features/catalog/domain/numismatics/numismatic_domain_rules.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/infrastructure/entity_repository.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
@@ -884,11 +883,11 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(id: 'm1', instanceId: 'madero-1975-cupro', propertyName: 'País', dataType: 'string', stringValue: 'México'),
-          InstanceMagnitude(id: 'm2', instanceId: 'madero-1975-cupro', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1975.0, unitSymbol: 'año'),
-          InstanceMagnitude(id: 'm3', instanceId: 'madero-1975-cupro', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
-          InstanceMagnitude(id: 'm4', instanceId: 'madero-1975-cupro', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 0.20),
-          InstanceMagnitude(id: 'm5', instanceId: 'madero-1975-cupro', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
+          const InstanceMagnitude(id: 'm1', instanceId: 'madero-1975-cupro', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          const InstanceMagnitude(id: 'm2', instanceId: 'madero-1975-cupro', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 1975.0, unitSymbol: 'año'),
+          const InstanceMagnitude(id: 'm3', instanceId: 'madero-1975-cupro', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXP'),
+          const InstanceMagnitude(id: 'm4', instanceId: 'madero-1975-cupro', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 0.20),
+          const InstanceMagnitude(id: 'm5', instanceId: 'madero-1975-cupro', propertyName: 'Material', dataType: 'string', stringValue: 'Cuproníquel'),
         ],
       );
 
@@ -907,12 +906,12 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(id: 'm1', instanceId: 'note-100-const-2016', propertyName: 'País', dataType: 'string', stringValue: 'México'),
-          InstanceMagnitude(id: 'm2', instanceId: 'note-100-const-2016', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2016.0, unitSymbol: 'año'),
-          InstanceMagnitude(id: 'm3', instanceId: 'note-100-const-2016', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
-          InstanceMagnitude(id: 'm4', instanceId: 'note-100-const-2016', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
-          InstanceMagnitude(id: 'm5', instanceId: 'note-100-const-2016', propertyName: 'Material', dataType: 'string', stringValue: 'Papel de algodón'),
-          InstanceMagnitude(id: 'm6', instanceId: 'note-100-const-2016', propertyName: 'Motivo', dataType: 'string', stringValue: 'Centenario de la Constitución Política de 1917'),
+          const InstanceMagnitude(id: 'm1', instanceId: 'note-100-const-2016', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          const InstanceMagnitude(id: 'm2', instanceId: 'note-100-const-2016', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2016.0, unitSymbol: 'año'),
+          const InstanceMagnitude(id: 'm3', instanceId: 'note-100-const-2016', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          const InstanceMagnitude(id: 'm4', instanceId: 'note-100-const-2016', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 100.0),
+          const InstanceMagnitude(id: 'm5', instanceId: 'note-100-const-2016', propertyName: 'Material', dataType: 'string', stringValue: 'Papel de algodón'),
+          const InstanceMagnitude(id: 'm6', instanceId: 'note-100-const-2016', propertyName: 'Motivo', dataType: 'string', stringValue: 'Centenario de la Constitución Política de 1917'),
         ],
       );
 
@@ -926,7 +925,7 @@ void main() {
         id: 'note-100-const-2017',
         magnitudes: [
           ...instance2016.magnitudes.where((m) => m.propertyName != 'Acuñación'),
-          InstanceMagnitude(id: 'm2-2017', instanceId: 'note-100-const-2017', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2017.0, unitSymbol: 'año'),
+          const InstanceMagnitude(id: 'm2-2017', instanceId: 'note-100-const-2017', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2017.0, unitSymbol: 'año'),
         ],
       );
 
@@ -945,12 +944,12 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(id: 'm1', instanceId: 'coin-marina-2021', propertyName: 'País', dataType: 'string', stringValue: 'México'),
-          InstanceMagnitude(id: 'm2', instanceId: 'coin-marina-2021', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2021.0, unitSymbol: 'año'),
-          InstanceMagnitude(id: 'm3', instanceId: 'coin-marina-2021', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
-          InstanceMagnitude(id: 'm4', instanceId: 'coin-marina-2021', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 20.0),
-          InstanceMagnitude(id: 'm5', instanceId: 'coin-marina-2021', propertyName: 'Material', dataType: 'string', stringValue: 'Bimetálica'),
-          InstanceMagnitude(id: 'm6', instanceId: 'coin-marina-2021', propertyName: 'Motivo', dataType: 'string', stringValue: 'Bicentenario de la Marina-Armada de México'),
+          const InstanceMagnitude(id: 'm1', instanceId: 'coin-marina-2021', propertyName: 'País', dataType: 'string', stringValue: 'México'),
+          const InstanceMagnitude(id: 'm2', instanceId: 'coin-marina-2021', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2021.0, unitSymbol: 'año'),
+          const InstanceMagnitude(id: 'm3', instanceId: 'coin-marina-2021', propertyName: 'Divisa', dataType: 'string', stringValue: 'MXN'),
+          const InstanceMagnitude(id: 'm4', instanceId: 'coin-marina-2021', propertyName: 'Valor nominal', dataType: 'real', magnitudeValue: 20.0),
+          const InstanceMagnitude(id: 'm5', instanceId: 'coin-marina-2021', propertyName: 'Material', dataType: 'string', stringValue: 'Bimetálica'),
+          const InstanceMagnitude(id: 'm6', instanceId: 'coin-marina-2021', propertyName: 'Motivo', dataType: 'string', stringValue: 'Bicentenario de la Marina-Armada de México'),
         ],
       );
 
@@ -964,7 +963,7 @@ void main() {
         id: 'coin-marina-2022',
         magnitudes: [
           ...coin2021.magnitudes.where((m) => m.propertyName != 'Acuñación'),
-          InstanceMagnitude(id: 'm2-2022', instanceId: 'coin-marina-2022', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2022.0, unitSymbol: 'año'),
+          const InstanceMagnitude(id: 'm2-2022', instanceId: 'coin-marina-2022', propertyName: 'Acuñación', dataType: 'integer', magnitudeValue: 2022.0, unitSymbol: 'año'),
         ],
       );
 

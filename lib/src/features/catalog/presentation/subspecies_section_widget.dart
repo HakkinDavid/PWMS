@@ -145,7 +145,7 @@ class _SubspeciesSectionWidgetState extends ConsumerState<SubspeciesSectionWidge
               final sub = _subspeciesList[index];
               final subInstances = allSpeciesEntities.where((e) => e.subspeciesId == sub.id).toList();
               final hasInstances = subInstances.isNotEmpty;
-              final canDelete = _subspeciesList.length > 1 && !hasInstances;
+              // final canDelete = _subspeciesList.length > 1 && !hasInstances;
 
               return SubspeciesTile(
                 subspecies: sub,

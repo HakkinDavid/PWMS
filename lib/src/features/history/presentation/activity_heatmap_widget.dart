@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/router/app_navigation_extension.dart';
 import '../../../core/theme/app_theme.dart';
@@ -256,7 +255,7 @@ class _HeatmapMatrixGridState extends State<_HeatmapMatrixGrid> {
     final totalDays = end.difference(startSunday).inDays + 1;
     final totalWeeks = (totalDays / 7).ceil();
 
-    final dayLabels = AppStrings.weekdayShortLettersSundayFirst;
+    const dayLabels = AppStrings.weekdayShortLettersSundayFirst;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -13,7 +13,6 @@ import '../../entities/domain/world_entity.dart';
 import '../../entities/presentation/effective_group_tile.dart';
 import '../../entities/presentation/minecraft_tile_widget.dart';
 import '../../locations/presentation/location_tile.dart';
-import '../../locations/presentation/location_tree_picker.dart';
 import '../../locations/presentation/location_or_container_selection_sheet.dart';
 import 'inventory_breadcrumb_bar.dart';
 import 'inventory_item_interaction_wrapper.dart';

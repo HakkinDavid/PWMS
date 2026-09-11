@@ -7,7 +7,6 @@ import 'package:platinum_world_management_system/src/core/constants/app_technica
 import '../../../core/providers/providers.dart';
 import '../../../core/storage/app_settings_repository.dart';
 import '../../../core/widgets/app_wheel_picker.dart';
-import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/presentation/instance_preview_card.dart';
 import '../../locations/domain/location_path_helper.dart';
 import '../../locations/presentation/location_or_container_selection_sheet.dart';
@@ -81,17 +80,17 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
   // Centralized lists and currency map from NumismaticDataHelper
   static Map<String, String> get _currencyMap => NumismaticDataHelper.currencyMap;
   static List<String> get _countries => NumismaticDataHelper.countries;
-  static List<String> get _denominations => NumismaticDataHelper.denominations;
+  //static List<String> get _denominations => NumismaticDataHelper.denominations;
   static List<String> get _grades => NumismaticDataHelper.grades;
   static List<String> get _coinMaterials => NumismaticDataHelper.coinMaterials;
 
   // Static memory cache for auto-fill in active session
   static LocationOrContainerSelection? _lastUsedSelection;
 
-  @visibleForTesting
-  static void resetStaticCache() {
-    _lastUsedSelection = null;
-  }
+  // @visibleForTesting
+  // static void resetStaticCache() {
+  //   _lastUsedSelection = null;
+  // }
 
   // Location / Container selection
   LocationOrContainerSelection _selection = const LocationOrContainerSelection.physicalNode(null);
@@ -567,13 +566,13 @@ class _NumismaticQuickFillSheetState extends ConsumerState<NumismaticQuickFillSh
     final speciesLabel = widget.isCoin ? AppStrings.coinCircularDescriptor : AppStrings.banknoteRectangleDescriptor;
 
     final locationsState = ref.watch(locationNodeListProvider);
-    final catalogState = ref.watch(catalogListProvider);
+    // final catalogState = ref.watch(catalogListProvider);
     final entitiesState = ref.watch(entityListProvider);
-    final subspeciesState = ref.watch(subspeciesListProvider);
+    // final subspeciesState = ref.watch(subspeciesListProvider);
 
-    final catalogItems = catalogState.asData?.value ?? [];
+    // final catalogItems = catalogState.asData?.value ?? [];
     final entities = entitiesState.asData?.value ?? [];
-    final subspeciesList = subspeciesState.asData?.value ?? [];
+    // final subspeciesList = subspeciesState.asData?.value ?? [];
     final locations = locationsState.asData?.value ?? [];
 
     final locationDisplayName = LocationPathHelper.buildBreadcrumbPath(

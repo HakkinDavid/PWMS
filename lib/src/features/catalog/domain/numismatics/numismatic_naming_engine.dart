@@ -1,7 +1,5 @@
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
-import 'data/numismatic_currencies_registry.dart';
-import 'data/numismatic_denominations_registry.dart';
 import 'numismatic_parser.dart';
 
 /// Centralized naming and denomination formatting engine for numismatic specimens and currencies.

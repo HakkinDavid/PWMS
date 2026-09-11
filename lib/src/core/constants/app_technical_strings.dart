@@ -1,12 +1,5 @@
 import '../../features/catalog/domain/taxonomy/generated_species_registry.dart';
 import '../../features/catalog/domain/taxonomy/product_taxonomy_dictionary.dart';
-import '../../features/catalog/domain/numismatics/data/numismatic_countries_registry.dart';
-import '../../features/catalog/domain/numismatics/data/numismatic_currencies_registry.dart';
-import '../../features/catalog/domain/numismatics/data/numismatic_denominations_registry.dart';
-import '../../features/catalog/domain/numismatics/data/numismatic_grades_registry.dart';
-import '../../features/catalog/domain/numismatics/data/numismatic_materials_registry.dart';
-import '../../features/catalog/domain/numismatics/data/numismatic_rules_registry.dart';
-import '../../features/catalog/domain/numismatics/models/numismatic_models.dart';
 import 'units_registry.dart';
 
 export '../../features/catalog/domain/numismatics/data/numismatic_countries_registry.dart';

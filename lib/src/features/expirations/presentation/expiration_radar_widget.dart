@@ -8,7 +8,6 @@ import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart
 import '../../entities/presentation/instance_preview_card.dart';
 import '../application/expiration_providers.dart';
 import '../domain/expiration_item.dart';
-import '../domain/expiration_summary.dart';
 
 class ExpirationRadarWidget extends ConsumerStatefulWidget {
   const ExpirationRadarWidget({super.key});
@@ -409,7 +408,7 @@ class _ExpirationRadarWidgetState extends ConsumerState<ExpirationRadarWidget> {
   }
 
   Widget _buildExpirationTile(BuildContext context, ExpirationItem item) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
     return InstancePreviewCard(
       entity: item.entity,
       onTap: () => context.pushEntityDetail(item.entity.id),

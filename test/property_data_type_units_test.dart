@@ -32,7 +32,7 @@ void main() {
     });
 
     test('InstanceMagnitude formats string, boolean, integer, and real properties correctly', () {
-      final realMag = InstanceMagnitude(
+      const realMag = InstanceMagnitude(
         id: '1',
         instanceId: 'inst1',
         propertyName: 'Valor nominal',
@@ -42,7 +42,7 @@ void main() {
       );
       expect(realMag.displayValue, equals('5'));
 
-      final currencyMag = InstanceMagnitude(
+      const currencyMag = InstanceMagnitude(
         id: '1b',
         instanceId: 'inst1',
         propertyName: 'Divisa',
@@ -53,7 +53,7 @@ void main() {
       );
       expect(currencyMag.displayValue, equals('MXN'));
 
-      final intMag = InstanceMagnitude(
+      const intMag = InstanceMagnitude(
         id: '2',
         instanceId: 'inst1',
         propertyName: 'Acuñación',
@@ -63,7 +63,7 @@ void main() {
       );
       expect(intMag.displayValue, equals('2022 año'));
 
-      final strMaterialMag = InstanceMagnitude(
+      const strMaterialMag = InstanceMagnitude(
         id: '3',
         instanceId: 'inst1',
         propertyName: 'Material',
@@ -74,7 +74,7 @@ void main() {
       );
       expect(strMaterialMag.displayValue, equals('Plata .925'));
 
-      final strGradeMag = InstanceMagnitude(
+      const strGradeMag = InstanceMagnitude(
         id: '4',
         instanceId: 'inst1',
         propertyName: 'Grado',
@@ -85,7 +85,7 @@ void main() {
       );
       expect(strGradeMag.displayValue, equals('MS-65'));
 
-      final boolMag = InstanceMagnitude(
+      const boolMag = InstanceMagnitude(
         id: '5',
         instanceId: 'inst1',
         propertyName: 'Edición Especial',
@@ -96,7 +96,7 @@ void main() {
       );
       expect(boolMag.displayValue, equals('Sí'));
 
-      final unidadMag = InstanceMagnitude(
+      const unidadMag = InstanceMagnitude(
         id: '6',
         instanceId: 'inst1',
         propertyName: 'Cantidad',

@@ -45,7 +45,7 @@ class BackupWorkflowHelper {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.7),
+      barrierColor: Colors.black.withAlpha(178),
       builder: (dialogCtx) => PopScope(
         canPop: false,
         child: Center(

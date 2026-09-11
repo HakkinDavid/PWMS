@@ -68,7 +68,7 @@ class _AutoFillScannerWidgetState extends ConsumerState<AutoFillScannerWidget> {
 
     try {
       final catalogRepo = ref.read(catalogRepositoryProvider);
-      final entityRepo = ref.read(entityRepositoryProvider);
+      //final entityRepo = ref.read(entityRepositoryProvider);
       final lookupService = ref.read(productLookupServiceProvider);
 
       // 1. Buscar en subespecies o especies existentes localmente

@@ -17,7 +17,6 @@ import 'package:platinum_world_management_system/src/features/catalog/domain/sub
 import 'package:platinum_world_management_system/src/features/control_center/domain/audit_rule_strategy.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/governance_audit_rules.dart';
 import 'package:platinum_world_management_system/src/features/control_center/domain/strategies/numismatic_audit_rules.dart';
-import 'package:platinum_world_management_system/src/features/control_center/presentation/control_center_screen.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/instance_magnitude.dart';
 import 'package:platinum_world_management_system/src/features/entities/domain/world_entity.dart';
 
@@ -337,11 +336,11 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(id: '1', instanceId: 'inst_mex_50', propertyName: 'País', stringValue: 'México', dataType: 'string'),
-          InstanceMagnitude(id: '2', instanceId: 'inst_mex_50', propertyName: 'Acuñación', stringValue: '1988', dataType: 'string'),
-          InstanceMagnitude(id: '3', instanceId: 'inst_mex_50', propertyName: 'Divisa', stringValue: 'MXP', dataType: 'string'),
-          InstanceMagnitude(id: '4', instanceId: 'inst_mex_50', propertyName: 'Valor nominal', stringValue: '50', dataType: 'string'),
-          InstanceMagnitude(id: '5', instanceId: 'inst_mex_50', propertyName: 'Material', stringValue: 'Oro', dataType: 'string'),
+          const InstanceMagnitude(id: '1', instanceId: 'inst_mex_50', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+          const InstanceMagnitude(id: '2', instanceId: 'inst_mex_50', propertyName: 'Acuñación', stringValue: '1988', dataType: 'string'),
+          const InstanceMagnitude(id: '3', instanceId: 'inst_mex_50', propertyName: 'Divisa', stringValue: 'MXP', dataType: 'string'),
+          const InstanceMagnitude(id: '4', instanceId: 'inst_mex_50', propertyName: 'Valor nominal', stringValue: '50', dataType: 'string'),
+          const InstanceMagnitude(id: '5', instanceId: 'inst_mex_50', propertyName: 'Material', stringValue: 'Oro', dataType: 'string'),
         ],
       );
 
@@ -369,11 +368,11 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(id: '1', instanceId: 'inst_mex_5', propertyName: 'País', stringValue: 'México', dataType: 'string'),
-          InstanceMagnitude(id: '2', instanceId: 'inst_mex_5', propertyName: 'Acuñación', stringValue: '1980', dataType: 'string'),
-          InstanceMagnitude(id: '3', instanceId: 'inst_mex_5', propertyName: 'Divisa', stringValue: 'MXP', dataType: 'string'),
-          InstanceMagnitude(id: '4', instanceId: 'inst_mex_5', propertyName: 'Valor nominal', stringValue: '5', dataType: 'string'),
-          InstanceMagnitude(id: '5', instanceId: 'inst_mex_5', propertyName: 'Material', stringValue: 'Oro', dataType: 'string'),
+          const InstanceMagnitude(id: '1', instanceId: 'inst_mex_5', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+          const InstanceMagnitude(id: '2', instanceId: 'inst_mex_5', propertyName: 'Acuñación', stringValue: '1980', dataType: 'string'),
+          const InstanceMagnitude(id: '3', instanceId: 'inst_mex_5', propertyName: 'Divisa', stringValue: 'MXP', dataType: 'string'),
+          const InstanceMagnitude(id: '4', instanceId: 'inst_mex_5', propertyName: 'Valor nominal', stringValue: '5', dataType: 'string'),
+          const InstanceMagnitude(id: '5', instanceId: 'inst_mex_5', propertyName: 'Material', stringValue: 'Oro', dataType: 'string'),
         ],
       );
 
@@ -399,12 +398,12 @@ void main() {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         magnitudes: [
-          InstanceMagnitude(id: '1', instanceId: 'inst_mex_n10', propertyName: 'País', stringValue: 'México', dataType: 'string'),
-          InstanceMagnitude(id: '2', instanceId: 'inst_mex_n10', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
-          InstanceMagnitude(id: '3', instanceId: 'inst_mex_n10', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
-          InstanceMagnitude(id: '4', instanceId: 'inst_mex_n10', propertyName: 'Valor nominal', stringValue: '10', dataType: 'string'),
-          InstanceMagnitude(id: '5', instanceId: 'inst_mex_n10', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
-          InstanceMagnitude(id: '6', instanceId: 'inst_mex_n10', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
+          const InstanceMagnitude(id: '1', instanceId: 'inst_mex_n10', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+          const InstanceMagnitude(id: '2', instanceId: 'inst_mex_n10', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
+          const InstanceMagnitude(id: '3', instanceId: 'inst_mex_n10', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
+          const InstanceMagnitude(id: '4', instanceId: 'inst_mex_n10', propertyName: 'Valor nominal', stringValue: '10', dataType: 'string'),
+          const InstanceMagnitude(id: '5', instanceId: 'inst_mex_n10', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
+          const InstanceMagnitude(id: '6', instanceId: 'inst_mex_n10', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
         ],
       );
 
@@ -456,12 +455,12 @@ void main() {
 
       // Add magnitudes for Mexico 1993 10 MXN coin with incorrect motif
       final mags = [
-        InstanceMagnitude(id: 'm1', instanceId: 'e_n10', propertyName: 'País', stringValue: 'México', dataType: 'string'),
-        InstanceMagnitude(id: 'm2', instanceId: 'e_n10', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
-        InstanceMagnitude(id: 'm3', instanceId: 'e_n10', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
-        InstanceMagnitude(id: 'm4', instanceId: 'e_n10', propertyName: 'Valor nominal', stringValue: '10', dataType: 'string'),
-        InstanceMagnitude(id: 'm5', instanceId: 'e_n10', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
-        InstanceMagnitude(id: 'm6', instanceId: 'e_n10', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
+        const InstanceMagnitude(id: 'm1', instanceId: 'e_n10', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+        const InstanceMagnitude(id: 'm2', instanceId: 'e_n10', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
+        const InstanceMagnitude(id: 'm3', instanceId: 'e_n10', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
+        const InstanceMagnitude(id: 'm4', instanceId: 'e_n10', propertyName: 'Valor nominal', stringValue: '10', dataType: 'string'),
+        const InstanceMagnitude(id: 'm5', instanceId: 'e_n10', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
+        const InstanceMagnitude(id: 'm6', instanceId: 'e_n10', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
       ];
 
       for (final m in mags) {
@@ -598,12 +597,12 @@ void main() {
 
       // Add magnitudes for Mexico 1993 2 MXN coin with incorrect motif
       final mags = [
-        InstanceMagnitude(id: 'm1_n2', instanceId: 'e_n2', propertyName: 'País', stringValue: 'México', dataType: 'string'),
-        InstanceMagnitude(id: 'm2_n2', instanceId: 'e_n2', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
-        InstanceMagnitude(id: 'm3_n2', instanceId: 'e_n2', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
-        InstanceMagnitude(id: 'm4_n2', instanceId: 'e_n2', propertyName: 'Valor nominal', stringValue: '2', dataType: 'string'),
-        InstanceMagnitude(id: 'm5_n2', instanceId: 'e_n2', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
-        InstanceMagnitude(id: 'm6_n2', instanceId: 'e_n2', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
+        const InstanceMagnitude(id: 'm1_n2', instanceId: 'e_n2', propertyName: 'País', stringValue: 'México', dataType: 'string'),
+        const InstanceMagnitude(id: 'm2_n2', instanceId: 'e_n2', propertyName: 'Acuñación', stringValue: '1993', dataType: 'string'),
+        const InstanceMagnitude(id: 'm3_n2', instanceId: 'e_n2', propertyName: 'Divisa', stringValue: 'MXN', dataType: 'string'),
+        const InstanceMagnitude(id: 'm4_n2', instanceId: 'e_n2', propertyName: 'Valor nominal', stringValue: '2', dataType: 'string'),
+        const InstanceMagnitude(id: 'm5_n2', instanceId: 'e_n2', propertyName: 'Material', stringValue: 'Bimetálica', dataType: 'string'),
+        const InstanceMagnitude(id: 'm6_n2', instanceId: 'e_n2', propertyName: 'Motivo', stringValue: 'Emisión de cambio de régimen', dataType: 'string'),
       ];
 
       for (final m in mags) {

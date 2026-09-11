@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
-import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import '../../../core/providers/providers.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/subspecies.dart';
@@ -84,9 +83,7 @@ class _EntityPhotoThumbnailState extends ConsumerState<EntityPhotoThumbnail> {
     if (targetSub == null && widget.subspeciesId != null) {
       final subList = ref.read(subspeciesListProvider).asData?.value;
       targetSub = subList?.where((s) => s.id == widget.subspeciesId).firstOrNull;
-      if (targetSub == null) {
-        targetSub = await ref.read(catalogRepositoryProvider).getSubspeciesById(widget.subspeciesId!);
-      }
+      targetSub ??= await ref.read(catalogRepositoryProvider).getSubspeciesById(widget.subspeciesId!);
     }
 
     final relPath = await resolveEffectiveEntityPhotoPath(

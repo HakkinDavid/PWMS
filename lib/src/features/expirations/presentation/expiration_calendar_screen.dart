@@ -4,13 +4,10 @@ import 'package:platinum_world_management_system/src/core/constants/app_strings.
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
 import 'package:platinum_world_management_system/src/core/providers/providers.dart';
 import 'package:platinum_world_management_system/src/core/router/app_navigation_extension.dart';
-import 'package:platinum_world_management_system/src/core/widgets/app_confirmation_dialog.dart';
 import 'package:platinum_world_management_system/src/core/widgets/app_toast.dart';
 import '../../entities/presentation/instance_preview_card.dart';
-import '../../history/domain/activity_event.dart';
 import '../application/expiration_providers.dart';
 import '../domain/expiration_item.dart';
-import '../domain/expiration_summary.dart';
 
 class ExpirationCalendarScreen extends ConsumerStatefulWidget {
   const ExpirationCalendarScreen({super.key});
@@ -253,7 +250,7 @@ class _ExpirationCalendarScreenState extends ConsumerState<ExpirationCalendarScr
   }
 
   Widget _buildExpirationTile(ExpirationItem item) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
     return InstancePreviewCard(
       entity: item.entity,
       onTap: () => context.pushEntityDetail(item.entity.id),

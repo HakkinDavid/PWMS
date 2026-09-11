@@ -2,8 +2,6 @@ import '../catalog_item.dart';
 import '../../../entities/domain/world_entity.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
 import 'package:platinum_world_management_system/src/core/constants/app_technical_strings.dart';
-import 'data/numismatic_currencies_registry.dart';
-import 'data/numismatic_materials_registry.dart';
 import 'numismatic_dictionary.dart';
 import 'numismatic_naming_engine.dart';
 

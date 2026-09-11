@@ -1,5 +1,4 @@
 import 'package:platinum_world_management_system/src/core/constants/app_strings.dart';
-import 'data/numismatic_rules_registry.dart';
 import 'models/numismatic_models.dart';
 import 'numismatic_dictionary.dart';
 import 'numismatic_parser.dart';

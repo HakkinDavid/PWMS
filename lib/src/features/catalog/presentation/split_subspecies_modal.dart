@@ -12,7 +12,6 @@ import '../domain/catalog_item.dart';
 import '../domain/subspecies.dart';
 import '../../entities/domain/entity_display_helper.dart';
 import '../../entities/domain/entity_template.dart';
-import '../../entities/domain/world_entity.dart';
 import '../../locations/domain/location_path_helper.dart';
 import 'species_text_badge_avatar.dart';
 import 'standard_media_picker_sheet.dart';
@@ -505,14 +504,14 @@ class _SplitSubspeciesModalState extends ConsumerState<SplitSubspeciesModal> {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: theme.dividerColor.withAlpha(50)),
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
-                      const Icon(Icons.info_outline, size: 18, color: Colors.grey),
-                      const SizedBox(width: 8),
+                      Icon(Icons.info_outline, size: 18, color: Colors.grey),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           AppStrings.noInstancesToTransferNotice,
-                          style: const TextStyle(fontSize: 11, color: Colors.grey),
+                          style: TextStyle(fontSize: 11, color: Colors.grey),
                         ),
                       ),
                     ],

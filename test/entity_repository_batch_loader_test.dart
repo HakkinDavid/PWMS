@@ -89,7 +89,7 @@ void main() {
         id: 'e_1',
         speciesId: 'sp_1',
         magnitudes: [
-          InstanceMagnitude(
+          const InstanceMagnitude(
             id: 'im_1',
             instanceId: 'e_1',
             propertyName: 'Peso',
@@ -106,7 +106,7 @@ void main() {
         id: 'e_2',
         speciesId: 'sp_1',
         magnitudes: [
-          InstanceMagnitude(
+          const InstanceMagnitude(
             id: 'im_2',
             instanceId: 'e_2',
             propertyName: 'Diámetro',
@@ -114,7 +114,7 @@ void main() {
             magnitudeValue: 32.0,
             unitSymbol: 'mm',
           ),
-          InstanceMagnitude(
+          const InstanceMagnitude(
             id: 'im_3',
             instanceId: 'e_2',
             propertyName: 'Grado',
