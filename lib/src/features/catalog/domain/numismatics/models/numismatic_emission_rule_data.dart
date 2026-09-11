@@ -275,7 +275,7 @@ class NumismaticEmissionRuleData {
     return motifs.any((m) => matchesMotif(m, targetMotif));
   }
 
-  static final _yearRegex = RegExp(AppTechnicalStrings.regexFourDigitYearParentheses);
+  // static final _yearRegex = RegExp(AppTechnicalStrings.regexFourDigitYearParentheses);
 
   static bool matchesMotif(String motif1, String motif2) {
     final c1 = motif1.trim().toLowerCase();
