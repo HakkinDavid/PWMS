@@ -1228,9 +1228,7 @@ abstract final class NumismaticCurrenciesRegistry {
     'dolares continentales de ee.uu.': 'USC',
     'dolar continental de ee.uu.': 'USC',
     'marco de la rda': 'DDM',
-    'marcos de la rda': 'DDM',
-    'marcos de la rda': 'DDM',
-    'marco de la rda': 'DDM',
+    'marcos de la rda': 'DDM'
   };
 
   /// Maps plural currency nouns and nationalities to their singular standard representation.
