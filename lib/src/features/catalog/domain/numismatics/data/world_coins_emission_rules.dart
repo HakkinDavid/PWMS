@@ -15,7 +15,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Castillo y León / Busto',
+            'Castillo y León | Busto',
             minYear: 1796,
             maxYear: 1859,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -39,7 +39,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Columnario y Busto Real / Escudo Coronado',
+            'Columnario y Busto Real | Escudo Coronado',
             minYear: 1733,
             maxYear: 1859,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -51,7 +51,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Columnario de los Dos Mundos / Busto Real',
+            'Columnario de los Dos Mundos | Busto Real',
             minYear: 1733,
             maxYear: 1859,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -63,7 +63,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Columnario de los Dos Mundos / Busto Real',
+            'Columnario de los Dos Mundos | Busto Real',
             minYear: 1733,
             maxYear: 1859,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -75,7 +75,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto / Volcán del Centro de América',
+            'Columnario / Busto | Volcán del Centro de América',
             minYear: 1733,
             maxYear: 1859,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -130,7 +130,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Quetzal y Escudo Nacional',
+            'Busto de Rafael Carrera | Quetzal y Escudo Nacional',
             minYear: 1860,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -142,7 +142,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Quetzal y Escudo Nacional',
+            'Busto de Rafael Carrera | Quetzal y Escudo Nacional',
             minYear: 1860,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -154,7 +154,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Carrera / República de Guatemala',
+            'Carrera | República de Guatemala',
             minYear: 1860,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -166,7 +166,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Escudo Nacional de Guatemala',
+            'Busto de Rafael Carrera | Escudo Nacional de Guatemala',
             minYear: 1860,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -178,7 +178,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Escudo Nacional de Guatemala',
+            'Busto de Rafael Carrera | Escudo Nacional de Guatemala',
             minYear: 1860,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -190,7 +190,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Escudo con Quetzal',
+            'Busto de Rafael Carrera | Escudo con Quetzal',
             minYear: 1869,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -202,7 +202,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Escudo con Quetzal',
+            'Busto de Rafael Carrera | Escudo con Quetzal',
             minYear: 1869,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -214,7 +214,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Escudo con Quetzal',
+            'Busto de Rafael Carrera | Escudo con Quetzal',
             minYear: 1869,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -226,7 +226,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Escudo de la República de Guatemala',
+            'Busto de Rafael Carrera | Escudo de la República de Guatemala',
             minYear: 1860,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -238,7 +238,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtqHist,
         motifs: [
           NumismaticMotifRule(
-            'Busto de Rafael Carrera / Escudo de la República de Guatemala',
+            'Busto de Rafael Carrera | Escudo de la República de Guatemala',
             minYear: 1860,
             maxYear: 1924,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -257,7 +257,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtq,
         motifs: [
           NumismaticMotifRule(
-            'Quetzal sobre Pedestal / Escudo Nacional',
+            'Quetzal sobre Pedestal | Escudo Nacional',
             minYear: 1925,
             maxYear: 1949,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -281,7 +281,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtq,
         motifs: [
           NumismaticMotifRule(
-            'Ceiba / Árbol de la Libertad',
+            'Ceiba | Árbol de la Libertad',
             minYear: 1925,
             maxYear: 1964,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -460,7 +460,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Santa Fe de Bogotá / Popayán',
+            'Santa Fe de Bogotá | Popayán',
             minYear: 1500,
             maxYear: 1846,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -472,7 +472,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Monograma Real Coronado / Columnas de Hércules',
+            'Monograma Real Coronado | Columnas de Hércules',
             minYear: 1500,
             maxYear: 1846,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -484,7 +484,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Real Coronado / Columnario Virreinal',
+            'Escudo Real Coronado | Columnario Virreinal',
             minYear: 1500,
             maxYear: 1846,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -496,7 +496,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Columnario Virreinal / Escudo Real Coronado',
+            'Columnario Virreinal | Escudo Real Coronado',
             minYear: 1500,
             maxYear: 1846,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -508,7 +508,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Columnario Virreinal / Escudo Real Coronado',
+            'Columnario Virreinal | Escudo Real Coronado',
             minYear: 1500,
             maxYear: 1846,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -520,7 +520,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto / Libertad de la Nueva Granada',
+            'Columnario / Busto | Libertad de la Nueva Granada',
             minYear: 1500,
             maxYear: 1846,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -611,7 +611,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.copHist,
         motifs: [
           NumismaticMotifRule(
-            'Estados Unidos de Colombia / República de Colombia',
+            'Estados Unidos de Colombia | República de Colombia',
             minYear: 1847,
             maxYear: 1904,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -623,7 +623,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.copHist,
         motifs: [
           NumismaticMotifRule(
-            'Perfil de la Libertad / Escudo con Cóndor Andino',
+            'Perfil de la Libertad | Escudo con Cóndor Andino',
             minYear: 1847,
             maxYear: 1904,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -635,7 +635,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.copHist,
         motifs: [
           NumismaticMotifRule(
-            'Perfil de la Libertad / Escudo con Cóndor Andino',
+            'Perfil de la Libertad | Escudo con Cóndor Andino',
             minYear: 1847,
             maxYear: 1904,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -647,7 +647,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.copHist,
         motifs: [
           NumismaticMotifRule(
-            'Perfil de la Libertad / Escudo con Cóndor Andino',
+            'Perfil de la Libertad | Escudo con Cóndor Andino',
             minYear: 1847,
             maxYear: 1904,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -678,7 +678,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Cacique Calarcá / República',
+            'Cacique Calarcá | República',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -702,7 +702,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Corona de Laurel',
+            'Escudo Nacional | Corona de Laurel',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -714,7 +714,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Simón Bolívar / Escudo Nacional',
+            'Simón Bolívar | Escudo Nacional',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -726,7 +726,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Simón Bolívar / Escudo Nacional',
+            'Simón Bolívar | Escudo Nacional',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -762,7 +762,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Simón Bolívar / Francisco de Paula Santander',
+            'Simón Bolívar | Francisco de Paula Santander',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -774,7 +774,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Simón Bolívar / Francisco de Paula Santander',
+            'Simón Bolívar | Francisco de Paula Santander',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -786,7 +786,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Simón Bolívar / Escudo de Armas con Cóndor',
+            'Simón Bolívar | Escudo de Armas con Cóndor',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -798,7 +798,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Simón Bolívar / Escudo de Armas con Cóndor',
+            'Simón Bolívar | Escudo de Armas con Cóndor',
             minYear: 1905,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameGoldGeneric,
@@ -810,7 +810,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Camilo Torres / Escudo Nacional',
+            'Camilo Torres | Escudo Nacional',
             minYear: 1970,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -1043,7 +1043,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Large Cent / Small Cent',
+            'Large Cent | Small Cent',
             minYear: 1858,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -1055,7 +1055,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Castor de Níquel / Victory Tombac',
+            'Castor de Níquel | Victory Tombac',
             minYear: 1858,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -1090,7 +1090,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Caribou / Hojas de Arce',
+            'Caribou | Hojas de Arce',
             minYear: 1870,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -1114,7 +1114,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Voyageur / Jorge V / Jorge VI',
+            'Voyageur / Jorge V | Jorge VI',
             minYear: 1935,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -1412,7 +1412,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameNickel,
           ),
           NumismaticMotifRule(
-            'Millennium Series - 12 Diseños Mensuales',
+            'Millennium Series | 12 Diseños Mensuales',
             minYear: 1999,
             material: NumismaticMaterialsRegistry.nameNickel,
           ),
@@ -1435,7 +1435,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Loonie - Colimbo Común Estándar',
+            'Loonie | Colimbo Común Estándar',
             minYear: 1987,
             maxYear: 1999,
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
@@ -1462,7 +1462,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Toonie - Oso Polar Estándar',
+            'Toonie | Oso Polar Estándar',
             minYear: 1996,
             maxYear: 1999,
             material: NumismaticMaterialsRegistry.nameBimetallicToonie,
@@ -1528,7 +1528,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
           ),
           NumismaticMotifRule(
-            'Millennium Series - 12 Diseños',
+            'Millennium Series | 12 Diseños',
             minYear: 2000,
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
           ),
@@ -1550,7 +1550,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
           ),
           NumismaticMotifRule(
-            'Canada 150 - Esperanza por un Futuro Verde',
+            'Canada 150 | Esperanza por un Futuro Verde',
             minYear: 2017,
             material: NumismaticMaterialsRegistry.nameNickelPlatedSteel,
           ),
@@ -1573,7 +1573,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Loonie - Colimbo Común Estándar',
+            'Loonie | Colimbo Común Estándar',
             minYear: 2000,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
@@ -1600,7 +1600,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
           ),
           NumismaticMotifRule(
-            'Canada 150 - Conectando una Nación',
+            'Canada 150 | Conectando una Nación',
             minYear: 2017,
             material: NumismaticMaterialsRegistry.nameBrassPlatedSteel,
           ),
@@ -1626,7 +1626,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Toonie - Oso Polar Estándar',
+            'Toonie | Oso Polar Estándar',
             minYear: 2000,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicToonie,
@@ -1662,7 +1662,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicToonie,
           ),
           NumismaticMotifRule(
-            'Canada 150 - Danza de los Espíritus',
+            'Canada 150 | Danza de los Espíritus',
             minYear: 2017,
             material: NumismaticMaterialsRegistry.nameBimetallicToonie,
           ),
@@ -1687,7 +1687,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicToonie,
           ),
           NumismaticMotifRule(
-            'Homenaje a la Reina Isabel II - Anillo Negro',
+            'Homenaje a la Reina Isabel II | Anillo Negro',
             minYear: 2022,
             material: NumismaticMaterialsRegistry.nameBimetallicToonie,
           ),
@@ -1727,7 +1727,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Estrella de Cinco Puntas / Escudo de la Palma Real',
+            'Estrella de Cinco Puntas | Escudo de la Palma Real',
             minYear: 1915,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -1739,7 +1739,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Estrella de Cinco Puntas / Escudo de la Palma Real',
+            'Estrella de Cinco Puntas | Escudo de la Palma Real',
             minYear: 1915,
             maxYear: 1961,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -1751,7 +1751,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Estrella Radiante / Escudo de la Palma Real',
+            'Estrella Radiante | Escudo de la Palma Real',
             minYear: 1915,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -1763,7 +1763,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Estrella Radiante / Escudo de la Palma Real',
+            'Estrella Radiante | Escudo de la Palma Real',
             minYear: 1915,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -1775,7 +1775,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Estrella Radiante / Escudo de la Palma Real',
+            'Estrella Radiante | Escudo de la Palma Real',
             minYear: 1915,
             maxYear: 1952,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -1871,7 +1871,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Caña de Azúcar',
+            'Escudo Nacional | Caña de Azúcar',
             minYear: 1963,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -1883,7 +1883,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Caña de Azúcar',
+            'Escudo Nacional | Caña de Azúcar',
             minYear: 1963,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -1895,7 +1895,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Caña de Azúcar',
+            'Escudo Nacional | Caña de Azúcar',
             minYear: 1963,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -1907,7 +1907,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Caña de Azúcar',
+            'Escudo Nacional | Caña de Azúcar',
             minYear: 1963,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -1919,7 +1919,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Estrella de Cinco Puntas / Escudo Nacional',
+            'Estrella de Cinco Puntas | Escudo Nacional',
             minYear: 1962,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
@@ -1942,7 +1942,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Ernesto Che Guevara - Hasta la Victoria Siempre',
+            'Ernesto Che Guevara | Hasta la Victoria Siempre',
             minYear: 1990,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -1961,7 +1961,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Numeral con Laureles',
+            'Escudo Nacional | Numeral con Laureles',
             minYear: 1994,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -1973,7 +1973,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Numeral con Laureles',
+            'Escudo Nacional | Numeral con Laureles',
             minYear: 1994,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -1985,7 +1985,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Numeral con Laureles',
+            'Escudo Nacional | Numeral con Laureles',
             minYear: 1994,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -2057,7 +2057,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Antonio Maceo - Protesta de Baraguá',
+            'Antonio Maceo | Protesta de Baraguá',
             minYear: 1994,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
@@ -2076,7 +2076,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Numeral con Laureles',
+            'Escudo Nacional | Numeral con Laureles',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -2143,7 +2143,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'Sol de Mayo / Corona de Laurel',
+            'Sol de Mayo | Corona de Laurel',
             minYear: 1813,
             maxYear: 1880,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -2167,7 +2167,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'Escudo de la Asamblea del Año XIII / Sol de Mayo',
+            'Escudo de la Asamblea del Año XIII | Sol de Mayo',
             minYear: 1813,
             maxYear: 1880,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -2179,7 +2179,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Sol de Mayo Radiante',
+            'Escudo Nacional | Sol de Mayo Radiante',
             minYear: 1813,
             maxYear: 1880,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -2191,7 +2191,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Nacional / Sol de Mayo Radiante',
+            'Escudo Nacional | Sol de Mayo Radiante',
             minYear: 1813,
             maxYear: 1880,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -2246,7 +2246,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'Libertad de Oudiné / Escudo Nacional',
+            'Libertad de Oudiné | Escudo Nacional',
             minYear: 1881,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -2258,7 +2258,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'Libertad de Oudiné / Escudo Nacional',
+            'Libertad de Oudiné | Escudo Nacional',
             minYear: 1881,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -2270,7 +2270,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'Libertad de Oudiné / Escudo Nacional',
+            'Libertad de Oudiné | Escudo Nacional',
             minYear: 1881,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -2306,7 +2306,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arm,
         motifs: [
           NumismaticMotifRule(
-            'General José de San Martín / Escudo Nacional',
+            'General José de San Martín | Escudo Nacional',
             minYear: 1940,
             maxYear: 1969,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -2495,7 +2495,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arl,
         motifs: [
           NumismaticMotifRule(
-            'Mundial de Fútbol Argentina 1978 - Estadio José María Minella',
+            'Mundial de Fútbol Argentina 1978 | Estadio José María Minella',
             minYear: 1977,
             maxYear: 1978,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -2512,7 +2512,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arl,
         motifs: [
           NumismaticMotifRule(
-            'Mundial de Fútbol Argentina 1978 - Estadio Ciudad de Mendoza',
+            'Mundial de Fútbol Argentina 1978 | Estadio Ciudad de Mendoza',
             minYear: 1977,
             maxYear: 1978,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -2529,7 +2529,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arl,
         motifs: [
           NumismaticMotifRule(
-            'Mundial de Fútbol Argentina 1978 - Estadio Monumental',
+            'Mundial de Fútbol Argentina 1978 | Estadio Monumental',
             minYear: 1977,
             maxYear: 1978,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -2558,7 +2558,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arp,
         motifs: [
           NumismaticMotifRule(
-            'Cabildo de Buenos Aires / Escudo Nacional',
+            'Cabildo de Buenos Aires | Escudo Nacional',
             minYear: 1983,
             maxYear: 1985,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -2570,7 +2570,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arp,
         motifs: [
           NumismaticMotifRule(
-            'Casa de Tucumán / Escudo Nacional',
+            'Casa de Tucumán | Escudo Nacional',
             minYear: 1983,
             maxYear: 1985,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -2582,7 +2582,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arp,
         motifs: [
           NumismaticMotifRule(
-            'Casa del Acuerdo de San Nicolás / Escudo Nacional',
+            'Casa del Acuerdo de San Nicolás | Escudo Nacional',
             minYear: 1983,
             maxYear: 1985,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -2594,7 +2594,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.arp,
         motifs: [
           NumismaticMotifRule(
-            'Monumento Nacional a la Bandera / Escudo Nacional',
+            'Monumento Nacional a la Bandera | Escudo Nacional',
             minYear: 1983,
             maxYear: 1985,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -2900,7 +2900,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
           ),
           NumismaticMotifRule(
-            'Fallecimiento de Eva Perón - 50 Aniversario',
+            'Fallecimiento de Eva Perón | 50 Aniversario',
             minYear: 2002,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
           ),
@@ -2917,32 +2917,32 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Bicentenario de la Revolución de Mayo - Pucará de Tilcara',
+            'Bicentenario de la Revolución de Mayo | Pucará de Tilcara',
             minYear: 2010,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Bicentenario de la Revolución de Mayo - El Palmar',
+            'Bicentenario de la Revolución de Mayo | El Palmar',
             minYear: 2010,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Bicentenario de la Revolución de Mayo - Aconcagua',
+            'Bicentenario de la Revolución de Mayo | Aconcagua',
             minYear: 2010,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Bicentenario de la Revolución de Mayo - Mar del Plata',
+            'Bicentenario de la Revolución de Mayo | Mar del Plata',
             minYear: 2010,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Bicentenario de la Revolución de Mayo - Glaciar Perito Moreno',
+            'Bicentenario de la Revolución de Mayo | Glaciar Perito Moreno',
             minYear: 2010,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Bicentenario de la Primera Moneda Patria - Asamblea del Año XIII',
+            'Bicentenario de la Primera Moneda Patria | Asamblea del Año XIII',
             minYear: 2013,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
@@ -3172,7 +3172,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brs,
         motifs: [
           NumismaticMotifRule(
-            'Patacão Colonial/Imperial',
+            'Patacão Colonial|Imperial',
             minYear: 1810,
             maxYear: 1834,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -3452,7 +3452,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
           ),
           NumismaticMotifRule(
-            'Centenário da Abolição da Escravidão - Lei Áurea',
+            'Centenário da Abolição da Escravidão | Lei Áurea',
             minYear: 1988,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
           ),
@@ -3463,7 +3463,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brn,
         motifs: [
           NumismaticMotifRule(
-            'Centenário da República - Efigie da República',
+            'Centenário da República | Efigie da República',
             minYear: 1989,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3552,7 +3552,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
           ),
           NumismaticMotifRule(
-            'FAO - 50 Anos da FAO',
+            'FAO | 50 Anos da FAO',
             minYear: 1995,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
           ),
@@ -3569,7 +3569,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
           ),
           NumismaticMotifRule(
-            'FAO - 50 Anos da FAO',
+            'FAO | 50 Anos da FAO',
             minYear: 1995,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
           ),
@@ -3702,7 +3702,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Entrega de la Bandera Olímpica - Londres 2012 a Río 2016',
+            'Entrega de la Bandera Olímpica | Londres 2012 a Río 2016',
             minYear: 2012,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
@@ -3717,82 +3717,82 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Atletismo',
             minYear: 2014,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Natación',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Natación',
             minYear: 2014,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Paratriatlón',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Paratriatlón',
             minYear: 2014,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Golf',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Golf',
             minYear: 2014,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Baloncesto',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Baloncesto',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Vela',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Vela',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Paracanotaje',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Paracanotaje',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Rugby',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Rugby',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Fútbol',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Fútbol',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Voleibol',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Voleibol',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Atletismo Paralímpico',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Atletismo Paralímpico',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Judo',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Judo',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Boxeo',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Boxeo',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Natación Paralímpica',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Natación Paralímpica',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Olímpica Vinicius',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Mascota Olímpica Vinicius',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos Río 2016 - Mascota Paralímpica Tom',
+            'Juegos Olímpicos y Paralímpicos Río 2016 | Mascota Paralímpica Tom',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
           ),
@@ -4281,7 +4281,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clp,
         motifs: [
           NumismaticMotifRule(
-            'Pueblos Originarios - Mujer Mapuche',
+            'Pueblos Originarios | Mujer Mapuche',
             minYear: 2001,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
@@ -4803,7 +4803,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameAlpaca,
           ),
           NumismaticMotifRule(
-            'Templo del Sol - Vilcashuamán',
+            'Templo del Sol | Vilcashuamán',
             minYear: 2012,
             material: NumismaticMaterialsRegistry.nameAlpaca,
           ),
@@ -4903,7 +4903,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameAlpaca,
           ),
           NumismaticMotifRule(
-            'Casa Nacional de Moneda - 450 Años',
+            'Casa Nacional de Moneda | 450 Años',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameAlpaca,
           ),
@@ -5009,7 +5009,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Líneas de Nazca - El Colibrí',
+            'Líneas de Nazca | El Colibrí',
             minYear: 1994,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
@@ -5021,7 +5021,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Líneas de Nazca - El Ave Fragata',
+            'Líneas de Nazca | El Ave Fragata',
             minYear: 1994,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
@@ -5233,7 +5233,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Royal Shield of Arms - Sección del Escudo Real',
+            'Royal Shield of Arms | Sección del Escudo Real',
             minYear: 2008,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5300,7 +5300,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos y Paralímpicos de Londres 2012 - 29 Deportes',
+            'Juegos Olímpicos y Paralímpicos de Londres 2012 | 29 Deportes',
             minYear: 2011,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
@@ -5325,22 +5325,22 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Serie Beatrix Potter - Peter Rabbit',
+            'Serie Beatrix Potter | Peter Rabbit',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Serie Beatrix Potter - Jemima Puddle-Duck',
+            'Serie Beatrix Potter | Jemima Puddle-Duck',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Serie Beatrix Potter - Squirrel Nutkin',
+            'Serie Beatrix Potter | Squirrel Nutkin',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Serie Beatrix Potter - Mrs. Tiggy-Winkle',
+            'Serie Beatrix Potter | Mrs. Tiggy-Winkle',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
@@ -5351,7 +5351,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Royal Arms - Escudo Real de Armas del Reino Unido',
+            'Royal Arms | Escudo Real de Armas del Reino Unido',
             minYear: 1983,
             maxYear: 2016,
             material: NumismaticMaterialsRegistry.nameNickelBrass,
@@ -5375,7 +5375,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameNickelBrass,
           ),
           NumismaticMotifRule(
-            'Última Emisión Redonda - The Last Round Pound',
+            'Última Emisión Redonda | The Last Round Pound',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameNickelBrass,
           ),
@@ -5386,7 +5386,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Desarrollo de la Tecnología - Anillos de la Historia Industrial',
+            'Desarrollo de la Tecnología | Anillos de la Historia Industrial',
             minYear: 1997,
             maxYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicUk2Pound,
@@ -5482,7 +5482,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicUk2Pound,
           ),
           NumismaticMotifRule(
-            'Centenario de la Primera Guerra Mundial - Tu País te Necesita',
+            'Centenario de la Primera Guerra Mundial | Tu País te Necesita',
             minYear: 2014,
             material: NumismaticMaterialsRegistry.nameBimetallicUk2Pound,
           ),
@@ -5582,13 +5582,13 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Royal Shield of Arms - Sección del Escudo Real',
+            'Royal Shield of Arms | Sección del Escudo Real',
             minYear: 2017,
             maxYear: 2022,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Salmón del Atlántico - Rey Carlos III',
+            'Salmón del Atlántico | Rey Carlos III',
             minYear: 2023,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -5609,17 +5609,17 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Salida del Reino Unido de la Unión Europea - Brexit',
+            'Salida del Reino Unido de la Unión Europea | Brexit',
             minYear: 2020,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Dinosaurios de la Colección del Museo de Historia Natural - Megalosaurus',
+            'Dinosaurios de la Colección del Museo de Historia Natural | Megalosaurus',
             minYear: 2020,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            '50 Aniversario del Orgullo Gay - Pride UK',
+            '50 Aniversario del Orgullo Gay | Pride UK',
             minYear: 2022,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
@@ -5640,13 +5640,13 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Nations of the Crown - Rosa, Puerro, Cardo y Trébol',
+            'Nations of the Crown | Rosa, Puerro, Cardo y Trébol',
             minYear: 2017,
             maxYear: 2022,
             material: NumismaticMaterialsRegistry.nameBimetallicUkPound,
           ),
           NumismaticMotifRule(
-            'Flora y Fauna Británica - Abejas de Carlos III',
+            'Flora y Fauna Británica | Abejas de Carlos III',
             minYear: 2023,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicUkPound,
@@ -5664,7 +5664,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicUk2Pound,
           ),
           NumismaticMotifRule(
-            'Corona de Flora Nacional - Rey Carlos III',
+            'Corona de Flora Nacional | Rey Carlos III',
             minYear: 2023,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicUk2Pound,
@@ -6128,7 +6128,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Génie de la Bastille / Génie de la Liberté',
+            'Génie de la Bastille | Génie de la Liberté',
             minYear: 1988,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBimetallicGeneric,
@@ -6176,7 +6176,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameTrimetallicGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos de Albertville 1992 - Pierre de Coubertin',
+            'Juegos Olímpicos de Albertville 1992 | Pierre de Coubertin',
             minYear: 1992,
             material: NumismaticMaterialsRegistry.nameTrimetallicGeneric,
           ),
@@ -6661,7 +6661,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Bundesadler - Águila Federal Alemana',
+            'Bundesadler | Águila Federal Alemana',
             minYear: 1951,
             maxYear: 1974,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -6758,27 +6758,27 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Juegos Olímpicos de Múnich 1972 - Emblema Espiral',
+            'Juegos Olímpicos de Múnich 1972 | Emblema Espiral',
             minYear: 1972,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos de Múnich 1972 - Rayos de Luz',
+            'Juegos Olímpicos de Múnich 1972 | Rayos de Luz',
             minYear: 1972,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos de Múnich 1972 - Pareja de Atletas',
+            'Juegos Olímpicos de Múnich 1972 | Pareja de Atletas',
             minYear: 1972,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos de Múnich 1972 - Instalaciones Deportivas Estadio Olímpico',
+            'Juegos Olímpicos de Múnich 1972 | Instalaciones Deportivas Estadio Olímpico',
             minYear: 1972,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos de Múnich 1972 - Bucle conmemorativo',
+            'Juegos Olímpicos de Múnich 1972 | Bucle conmemorativo',
             minYear: 1972,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
           ),
@@ -6892,7 +6892,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Bundesadler - Águila Federal Alemana',
+            'Bundesadler | Águila Federal Alemana',
             minYear: 1987,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
@@ -7209,7 +7209,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Italina / Cornucopia',
+            'Italina | Cornucopia',
             minYear: 1946,
             maxYear: 1959,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7221,7 +7221,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Spiga / Olivo',
+            'Spiga | Olivo',
             minYear: 1946,
             maxYear: 1959,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7233,7 +7233,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Timone / Delfino',
+            'Timone | Delfino',
             minYear: 1946,
             maxYear: 1998,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7245,7 +7245,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Spighe / Aratro',
+            'Spighe | Aratro',
             minYear: 1946,
             maxYear: 1998,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7311,7 +7311,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
           ),
           NumismaticMotifRule(
-            'Centenario de la Unificación de Italia - Proclama del Reino de Italia',
+            'Centenario de la Unificación de Italia | Proclama del Reino de Italia',
             minYear: 1961,
             material: NumismaticMaterialsRegistry.nameSilverGeneric,
           ),
@@ -7344,7 +7344,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Italina / Cornucopia',
+            'Italina | Cornucopia',
             minYear: 1982,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7356,7 +7356,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Spiga / Olivo',
+            'Spiga | Olivo',
             minYear: 1982,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7368,7 +7368,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Timone / Delfino',
+            'Timone | Delfino',
             minYear: 1982,
             maxYear: 1998,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7380,7 +7380,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Spighe / Aratro',
+            'Spighe | Aratro',
             minYear: 1982,
             maxYear: 1998,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -7428,7 +7428,7 @@ const List<NumismaticEmissionRuleData> worldCoinsEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Ingranaggio - Engranaje Industrial',
+            'Ingranaggio | Engranaje Industrial',
             minYear: 1982,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,

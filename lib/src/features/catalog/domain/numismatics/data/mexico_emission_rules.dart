@@ -15,7 +15,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Carlos y Juana - Monograma K-I / Columnas de Hércules',
+            'Carlos y Juana | Monograma K-I | Columnas de Hércules',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -27,7 +27,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Carlos y Juana - K-I Coronadas / Castillo y León',
+            'Carlos y Juana | K-I Coronadas | Castillo y León',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -45,7 +45,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
           ),
           NumismaticMotifRule(
-            'Tlaco / Cuartilla',
+            'Tlaco | Cuartilla',
             minYear: 1794,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -57,7 +57,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto',
+            'Columnario | Busto',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -69,7 +69,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto',
+            'Columnario | Busto',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -81,7 +81,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto',
+            'Columnario | Busto',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -93,7 +93,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto',
+            'Columnario | Busto',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -117,7 +117,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Real de a Ocho / 8 Reales',
+            'Real de a Ocho | 8 Reales',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -287,7 +287,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxe,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Imperial / Corona de Laurel y Encino',
+            'Escudo Imperial | Corona de Laurel y Encino',
             minYear: 1864,
             maxYear: 1867,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -299,7 +299,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxe,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Imperial / Corona de Laurel y Encino',
+            'Escudo Imperial | Corona de Laurel y Encino',
             minYear: 1864,
             maxYear: 1867,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -353,7 +353,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Monograma Coronado de Fernando VII / León Rampante',
+            'Monograma Coronado de Fernando VII | León Rampante',
             minYear: 1814,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -395,7 +395,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto',
+            'Columnario | Busto',
             minYear: 1536,
             maxYear: 1821,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -613,7 +613,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Gorro Frigio / Águila Republicana',
+            'Gorro Frigio | Águila Republicana',
             minYear: 1824,
             maxYear: 1863,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -661,7 +661,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Columnario / Busto / Escudos',
+            'Columnario / Busto | Escudos',
             minYear: 1824,
             maxYear: 1863,
             material: NumismaticMaterialsRegistry.nameGoldColonial875,
@@ -673,7 +673,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxr,
         motifs: [
           NumismaticMotifRule(
-            'Resplandor / Escudos',
+            'Resplandor | Escudos',
             minYear: 1823,
             maxYear: 1897,
             material: NumismaticMaterialsRegistry.nameGoldColonial875,
@@ -704,7 +704,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Imperial / Corona de Laurel y Encino',
+            'Escudo Imperial | Corona de Laurel y Encino',
             minYear: 1864,
             maxYear: 1867,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -716,7 +716,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Imperial / Corona de Laurel y Encino',
+            'Escudo Imperial | Corona de Laurel y Encino',
             minYear: 1864,
             maxYear: 1867,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -921,7 +921,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Numeral Romano "I" / Escudo Republicano',
+            'Numeral Romano "I" | Escudo Republicano',
             minYear: 1882,
             maxYear: 1883,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -933,7 +933,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Numeral Romano "II" / Escudo Republicano',
+            'Numeral Romano "II" | Escudo Republicano',
             minYear: 1882,
             maxYear: 1883,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -945,7 +945,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Numeral Romano "V" / Escudo Republicano',
+            'Numeral Romano "V" | Escudo Republicano',
             minYear: 1882,
             maxYear: 1883,
             material: NumismaticMaterialsRegistry.nameNickel,
@@ -1036,7 +1036,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Balanza / Corona',
+            'Balanza | Corona',
             minYear: 1884,
             maxYear: 1904,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -1048,7 +1048,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Balanza / Corona',
+            'Balanza | Corona',
             minYear: 1884,
             maxYear: 1904,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -1193,7 +1193,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
             material: NumismaticMaterialsRegistry.nameSilver800,
           ),
           NumismaticMotifRule(
-            'Caballito - Centenario de la Independencia',
+            'Caballito | Centenario de la Independencia',
             minYear: 1910,
             maxYear: 1914,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -1481,7 +1481,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Victoria Alada - Centenario de la Consumación de la Independencia',
+            'Victoria Alada | Centenario de la Consumación de la Independencia',
             minYear: 1921,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
           ),
@@ -1702,13 +1702,13 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
             material: NumismaticMaterialsRegistry.nameSilver720,
           ),
           NumismaticMotifRule(
-            'Hidalgo - Laurel',
+            'Hidalgo | Laurel',
             minYear: 1951,
             maxYear: 1954,
             material: NumismaticMaterialsRegistry.nameSilver720,
           ),
           NumismaticMotifRule(
-            'Año de Hidalgo - Bicentenario del Natalicio de Miguel Hidalgo',
+            'Año de Hidalgo | Bicentenario del Natalicio de Miguel Hidalgo',
             minYear: 1953,
             material: NumismaticMaterialsRegistry.nameSilver720,
           ),
@@ -1853,12 +1853,12 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Juegos Olímpicos México 68 - Tipo 1',
+            'Juegos Olímpicos México 68 | Tipo 1',
             minYear: 1968,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos México 68 - Tipo 2',
+            'Juegos Olímpicos México 68 | Tipo 2',
             minYear: 1968,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
           ),
@@ -2009,7 +2009,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Vicente Guerrero / Quetzalcóatl',
+            'Vicente Guerrero | Quetzalcóatl',
             minYear: 1974,
             maxYear: 1983,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -2033,7 +2033,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Cultura Maya - Jugador de Pelota',
+            'Cultura Maya | Jugador de Pelota',
             minYear: 1980,
             maxYear: 1983,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -2045,7 +2045,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Coyolxauhqui - Templo Mayor',
+            'Coyolxauhqui | Templo Mayor',
             minYear: 1982,
             maxYear: 1983,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -2302,7 +2302,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Ácatl - Decimotercer Día',
+            'Ácatl | Decimotercer Día',
             minYear: 1992,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -2326,7 +2326,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nuevo Peso - Anillo del Resplandor',
+            'Nuevo Peso | Anillo del Resplandor',
             minYear: 1992,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameBimetallicBronzeAlStainlessSteel,
@@ -2338,7 +2338,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nuevo Peso - Anillo de los Días',
+            'Nuevo Peso | Anillo de los Días',
             minYear: 1992,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameBimetallicBronzeAlStainlessSteel,
@@ -2350,7 +2350,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nuevo Peso - Anillo de las Serpientes',
+            'Nuevo Peso | Anillo de las Serpientes',
             minYear: 1992,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameBimetallicBronzeAlStainlessSteel,
@@ -2362,7 +2362,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nuevo Peso - Tonatiuh / Piedra del Sol',
+            'Nuevo Peso | Tonatiuh | Piedra del Sol',
             minYear: 1992,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
@@ -2374,7 +2374,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nuevo Peso - Miguel Hidalgo y Costilla',
+            'Nuevo Peso | Miguel Hidalgo y Costilla',
             minYear: 1993,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
@@ -2386,7 +2386,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nuevo Peso - Niños Héroes',
+            'Nuevo Peso | Niños Héroes',
             minYear: 1993,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
@@ -2429,7 +2429,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Ácatl - Decimotercer Día',
+            'Ácatl | Decimotercer Día',
             minYear: 1996,
             maxYear: 2007,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -2495,12 +2495,12 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
           ),
           NumismaticMotifRule(
-            'Cambio de Milenio - Glifo Año 2000',
+            'Cambio de Milenio | Glifo Año 2000',
             minYear: 2000,
             material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
           ),
           NumismaticMotifRule(
-            'Cambio de Milenio - Glifo Año 2001',
+            'Cambio de Milenio | Glifo Año 2001',
             minYear: 2001,
             material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
           ),
@@ -2511,13 +2511,13 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Octavio Paz - Cambio de Milenio',
+            'Octavio Paz | Cambio de Milenio',
             minYear: 2000,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
           NumismaticMotifRule(
-            'Fuego Nuevo - Señorío de Xiuhtecuhtli',
+            'Fuego Nuevo | Señorío de Xiuhtecuhtli',
             minYear: 2000,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
@@ -2529,13 +2529,13 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            '32 Estados de la República - Fase 1',
+            '32 Estados de la República | Fase 1',
             minYear: 2003,
             maxYear: 2005,
             material: NumismaticMaterialsRegistry.nameBimetallicSilver925BronzeAl,
           ),
           NumismaticMotifRule(
-            '32 Estados de la República - Fase 2',
+            '32 Estados de la República | Fase 2',
             minYear: 2005,
             maxYear: 2007,
             material: NumismaticMaterialsRegistry.nameBimetallicSilver925BronzeAl,
@@ -2603,7 +2603,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Ácatl - Decimotercer Día',
+            'Ácatl | Decimotercer Día',
             minYear: 2008,
             maxYear: 2010,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -2854,19 +2854,19 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Octavio Paz - Premio Nobel de Literatura',
+            'Octavio Paz | Premio Nobel de Literatura',
             minYear: 1998,
             maxYear: 2000,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
           NumismaticMotifRule(
-            'Octavio Paz - Cambio de Milenio',
+            'Octavio Paz | Cambio de Milenio',
             minYear: 2000,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
           NumismaticMotifRule(
-            'Fuego Nuevo - Señorío de Xiuhtecuhtli',
+            'Fuego Nuevo | Señorío de Xiuhtecuhtli',
             minYear: 2000,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
@@ -2897,7 +2897,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Ácatl - Decimotercer Día',
+            'Ácatl | Decimotercer Día',
             minYear: 2011,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -2963,7 +2963,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
           ),
           NumismaticMotifRule(
-            '150 Aniversario de la Batalla de Puebla - General Ignacio Zaragoza',
+            '150 Aniversario de la Batalla de Puebla | General Ignacio Zaragoza',
             minYear: 2012,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
@@ -3054,7 +3054,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Ácatl - Decimotercer Día',
+            'Ácatl | Decimotercer Día',
             minYear: 2020,
             maxYear: 2026,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
@@ -3187,22 +3187,22 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
           ),
           NumismaticMotifRule(
-            'FIFA World Cup 2026 - México',
+            'FIFA World Cup 2026 | México',
             minYear: 2026,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
           NumismaticMotifRule(
-            'FIFA World Cup 2026 - Guadalajara',
+            'FIFA World Cup 2026 | Guadalajara',
             minYear: 2026,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
           NumismaticMotifRule(
-            'FIFA World Cup 2026 - Monterrey',
+            'FIFA World Cup 2026 | Monterrey',
             minYear: 2026,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
           NumismaticMotifRule(
-            'FIFA World Cup 2026 - Ciudad de México',
+            'FIFA World Cup 2026 | Ciudad de México',
             minYear: 2026,
             material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
           ),
@@ -3220,7 +3220,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Anillo del Resplandor - Núcleo magnético',
+            'Anillo del Resplandor | Núcleo magnético',
             minYear: 2025,
             maxYear: 2026,
             material: NumismaticMaterialsRegistry.nameBimetallicBronzeCoatedSteelSS,
@@ -3232,7 +3232,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Anillo de los Días - Núcleo magnético',
+            'Anillo de los Días | Núcleo magnético',
             minYear: 2025,
             maxYear: 2026,
             material: NumismaticMaterialsRegistry.nameBimetallicBronzeCoatedSteelSS,
@@ -3244,7 +3244,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Anillo de las Serpientes - Núcleo magnético',
+            'Anillo de las Serpientes | Núcleo magnético',
             minYear: 2025,
             maxYear: 2026,
             material: NumismaticMaterialsRegistry.nameBimetallicBronzeCoatedSteelSS,

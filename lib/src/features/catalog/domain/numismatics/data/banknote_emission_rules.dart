@@ -16,7 +16,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Primer Imperio Mexicano - Águila Imperial',
+            'Primer Imperio Mexicano | Águila Imperial',
             minYear: 1823,
             maxYear: 1823,
             material: NumismaticMaterialsRegistry.namePaper,
@@ -28,7 +28,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Primer Imperio Mexicano - Águila Imperial',
+            'Primer Imperio Mexicano | Águila Imperial',
             minYear: 1823,
             maxYear: 1823,
             material: NumismaticMaterialsRegistry.namePaper,
@@ -40,7 +40,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Primer Imperio Mexicano - Águila Imperial',
+            'Primer Imperio Mexicano | Águila Imperial',
             minYear: 1823,
             maxYear: 1823,
             material: NumismaticMaterialsRegistry.namePaper,
@@ -60,7 +60,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Comisión Monetaria - Escudo Nacional',
+            'Comisión Monetaria | Escudo Nacional',
             minYear: 1920,
             maxYear: 1920,
             material: NumismaticMaterialsRegistry.namePaper,
@@ -72,7 +72,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Comisión Monetaria - Escudo Nacional',
+            'Comisión Monetaria | Escudo Nacional',
             minYear: 1920,
             maxYear: 1920,
             material: NumismaticMaterialsRegistry.namePaper,
@@ -140,7 +140,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Cuauhtémoc',
+            'Gobierno Constitucionalista | Cuauhtémoc',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -152,7 +152,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Morelos',
+            'Gobierno Constitucionalista | Morelos',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -164,7 +164,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Hidalgo',
+            'Gobierno Constitucionalista | Hidalgo',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -176,7 +176,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Juárez',
+            'Gobierno Constitucionalista | Juárez',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -188,7 +188,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Madero',
+            'Gobierno Constitucionalista | Madero',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -200,7 +200,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Carranza',
+            'Gobierno Constitucionalista | Carranza',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -212,7 +212,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Zaragoza',
+            'Gobierno Constitucionalista | Zaragoza',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -224,7 +224,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Allende',
+            'Gobierno Constitucionalista | Allende',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -236,7 +236,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Gobierno Constitucionalista / Cuauhtémoc',
+            'Gobierno Constitucionalista | Cuauhtémoc',
             minYear: 1913,
             maxYear: 1916,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -280,7 +280,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'La Gitana / Josefa Ortiz de Domínguez',
+            'La Gitana | Josefa Ortiz de Domínguez',
             minYear: 1925,
             maxYear: 1978,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -292,7 +292,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'La Tehuana / Miguel Hidalgo',
+            'La Tehuana | Miguel Hidalgo',
             minYear: 1925,
             maxYear: 1978,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -784,7 +784,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Benito Juárez / Monte Albán',
+            'Benito Juárez | Monte Albán',
             minYear: 2006,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -796,7 +796,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'José María Morelos / Acueducto de Morelia',
+            'José María Morelos | Acueducto de Morelia',
             minYear: 2006,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -808,7 +808,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Nezahualcóyotl / Tenochtitlan',
+            'Nezahualcóyotl | Tenochtitlan',
             minYear: 2006,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -832,7 +832,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Sor Juana Inés de la Cruz / Hacienda de Panoaya',
+            'Sor Juana Inés de la Cruz | Hacienda de Panoaya',
             minYear: 2006,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -862,7 +862,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Miguel Hidalgo / Universidad de Guanajuato',
+            'Miguel Hidalgo | Universidad de Guanajuato',
             minYear: 2008,
             maxYear: 2019,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -882,7 +882,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Benito Juárez / Monte Albán',
+            'Benito Juárez | Monte Albán',
             minYear: 2020,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -899,7 +899,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Fundación de Tenochtitlan / Ajolote y Xochimilco',
+            'Fundación de Tenochtitlan | Ajolote y Xochimilco',
             minYear: 2020,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -911,7 +911,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Sor Juana Inés de la Cruz / Bosques Templados y Mariposa Monarca',
+            'Sor Juana Inés de la Cruz | Bosques Templados y Mariposa Monarca',
             minYear: 2020,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -923,7 +923,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Miguel Hidalgo y José María Morelos / Reserva El Pinacate',
+            'Miguel Hidalgo y José María Morelos | Reserva El Pinacate',
             minYear: 2019,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -935,7 +935,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Benito Juárez / Ballena Gris El Vizcaíno',
+            'Benito Juárez | Ballena Gris El Vizcaíno',
             minYear: 2018,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -947,7 +947,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Madero, Hermila Galindo y Carmen Serdán / Calakmul',
+            'Madero, Hermila Galindo y Carmen Serdán | Calakmul',
             minYear: 2020,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -967,7 +967,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'George Washington / Chase / History Instructing Youth',
+            'George Washington / Chase | History Instructing Youth',
             minYear: 1862,
             maxYear: 1923,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -979,7 +979,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Alexander Hamilton / Thomas Jefferson',
+            'Alexander Hamilton | Thomas Jefferson',
             minYear: 1862,
             maxYear: 1918,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -991,7 +991,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Chief Onepapa / Abraham Lincoln / Woodchopper',
+            'Chief Onepapa / Abraham Lincoln | Woodchopper',
             minYear: 1861,
             maxYear: 1923,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1003,7 +1003,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Bison / Daniel Webster / Michael Hillegas',
+            'Bison / Daniel Webster | Michael Hillegas',
             minYear: 1861,
             maxYear: 1923,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1015,7 +1015,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Alexander Hamilton / Stephen Decatur / George Washington',
+            'Alexander Hamilton / Stephen Decatur | George Washington',
             minYear: 1861,
             maxYear: 1923,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1027,7 +1027,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Henry Clay / Benjamin Franklin / Ulysses S. Grant',
+            'Henry Clay / Benjamin Franklin | Ulysses S. Grant',
             minYear: 1861,
             maxYear: 1918,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1039,7 +1039,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Abraham Lincoln / Thomas Hart Benton',
+            'Abraham Lincoln | Thomas Hart Benton',
             minYear: 1861,
             maxYear: 1914,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1051,7 +1051,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Alexander Hamilton / John Marshall',
+            'Alexander Hamilton | John Marshall',
             minYear: 1861,
             maxYear: 1918,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1063,7 +1063,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Robert Morris / DeWitt Clinton / Alexander Hamilton',
+            'Robert Morris / DeWitt Clinton | Alexander Hamilton',
             minYear: 1861,
             maxYear: 1918,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1107,7 +1107,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'George Washington / Great Seal',
+            'George Washington | Great Seal',
             minYear: 1928,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1119,7 +1119,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Thomas Jefferson / Declaration of Independence',
+            'Thomas Jefferson | Declaration of Independence',
             minYear: 1928,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1131,7 +1131,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Abraham Lincoln / Lincoln Memorial',
+            'Abraham Lincoln | Lincoln Memorial',
             minYear: 1928,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1143,7 +1143,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Alexander Hamilton / US Treasury',
+            'Alexander Hamilton | US Treasury',
             minYear: 1928,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1155,7 +1155,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Andrew Jackson / White House',
+            'Andrew Jackson | White House',
             minYear: 1928,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1167,7 +1167,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Ulysses S. Grant / US Capitol',
+            'Ulysses S. Grant | US Capitol',
             minYear: 1928,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1179,7 +1179,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Benjamin Franklin / Independence Hall',
+            'Benjamin Franklin | Independence Hall',
             minYear: 1928,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1258,7 +1258,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Dama de Elche / Quijote',
+            'Dama de Elche | Quijote',
             minYear: 1937,
             maxYear: 1953,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1270,7 +1270,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'República / Santa María',
+            'República | Santa María',
             minYear: 1938,
             maxYear: 1951,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1282,7 +1282,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Jaime I / Séneca',
+            'Jaime I | Séneca',
             minYear: 1935,
             maxYear: 1954,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1294,7 +1294,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Rosalía de Castro / Alfonso X',
+            'Rosalía de Castro | Alfonso X',
             minYear: 1935,
             maxYear: 1953,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1306,7 +1306,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Calderón de la Barca / Álvaro de Bazán',
+            'Calderón de la Barca | Álvaro de Bazán',
             minYear: 1928,
             maxYear: 1954,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1318,7 +1318,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Velázquez / Eduardo Rosales',
+            'Velázquez | Eduardo Rosales',
             minYear: 1928,
             maxYear: 1971,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1330,7 +1330,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Cervantes / Manuel de Falla',
+            'Cervantes | Manuel de Falla',
             minYear: 1925,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1354,7 +1354,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Francisco de Zurbarán / Rosalía de Castro / Menéndez Pidal',
+            'Francisco de Zurbarán / Rosalía de Castro | Menéndez Pidal',
             minYear: 1928,
             maxYear: 1979,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1366,7 +1366,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Benito Pérez Galdós / José Celestino Mutis / Hernán Cortés',
+            'Benito Pérez Galdós / José Celestino Mutis | Hernán Cortés',
             minYear: 1874,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1378,7 +1378,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Juan Ramón Jiménez / José Celestino Mutis',
+            'Juan Ramón Jiménez | José Celestino Mutis',
             minYear: 1980,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1390,7 +1390,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Rey Juan Carlos I / Cristóbal Colón',
+            'Rey Juan Carlos I | Cristóbal Colón',
             minYear: 1976,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1607,7 +1607,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtq,
         motifs: [
           NumismaticMotifRule(
-            'Tecún Umán / Templo I de Tikal',
+            'Tecún Umán | Templo I de Tikal',
             minYear: 1972,
             maxYear: 1998,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1920,7 +1920,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Simón Bolívar / Paso del Ejército Libertador',
+            'Simón Bolívar | Paso del Ejército Libertador',
             minYear: 1984,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1932,7 +1932,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Rafael Núñez / Miguel Antonio Caro',
+            'Rafael Núñez | Miguel Antonio Caro',
             minYear: 1986,
             maxYear: 1993,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1986,7 +1986,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Débora Arango / Caño Cristales',
+            'Débora Arango | Caño Cristales',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -1998,7 +1998,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'José Asunción Silva / Páramos',
+            'José Asunción Silva | Páramos',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2010,7 +2010,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Virginia Gutiérrez / Amazonia',
+            'Virginia Gutiérrez | Amazonia',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2022,7 +2022,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Alfonso López Michelsen / Sistema Hidráulico Zenú',
+            'Alfonso López Michelsen | Sistema Hidráulico Zenú',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2034,7 +2034,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Gabriel García Márquez / Ciudad Perdida',
+            'Gabriel García Márquez | Ciudad Perdida',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2046,7 +2046,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cop,
         motifs: [
           NumismaticMotifRule(
-            'Carlos Lleras Restrepo / Valle de Cocora',
+            'Carlos Lleras Restrepo | Valle de Cocora',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2070,7 +2070,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Reina Isabel II / Parlamento de Ottawa',
+            'Reina Isabel II | Parlamento de Ottawa',
             minYear: 1973,
             maxYear: 1989,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2082,7 +2082,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Reina Isabel II / Petirrojos Americanos',
+            'Reina Isabel II | Petirrojos Americanos',
             minYear: 1986,
             maxYear: 1996,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2094,7 +2094,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Sir Wilfrid Laurier / Deportes de Invierno',
+            'Sir Wilfrid Laurier | Deportes de Invierno',
             minYear: 2001,
             maxYear: 2013,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2106,7 +2106,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Sir John A. Macdonald / Recuerdo y Paz',
+            'Sir John A. Macdonald | Recuerdo y Paz',
             minYear: 2001,
             maxYear: 2013,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2118,7 +2118,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Reina Isabel II / Arte Indígena Haida',
+            'Reina Isabel II | Arte Indígena Haida',
             minYear: 2004,
             maxYear: 2012,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2130,7 +2130,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'W.L. Mackenzie King / Las Cinco Valientes',
+            'W.L. Mackenzie King | Las Cinco Valientes',
             minYear: 2004,
             maxYear: 2012,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2142,7 +2142,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Sir Robert Borden / Innovación y Telecomunicaciones',
+            'Sir Robert Borden | Innovación y Telecomunicaciones',
             minYear: 2004,
             maxYear: 2011,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2154,7 +2154,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Reina Isabel II / Picogordos Sombríos',
+            'Reina Isabel II | Picogordos Sombríos',
             minYear: 1988,
             maxYear: 2000,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2182,7 +2182,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Sir Wilfrid Laurier / Innovación Espacial Canadarm2',
+            'Sir Wilfrid Laurier | Innovación Espacial Canadarm2',
             minYear: 2013,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2194,7 +2194,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Viola Desmond / Tren Transcontinental de Canadá',
+            'Viola Desmond | Tren Transcontinental de Canadá',
             minYear: 2013,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2206,7 +2206,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Reina Isabel II / Monumento Conmemorativo de Vimy',
+            'Reina Isabel II | Monumento Conmemorativo de Vimy',
             minYear: 2012,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2218,7 +2218,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'W.L. Mackenzie King / CCGS Amundsen en el Ártico',
+            'W.L. Mackenzie King | CCGS Amundsen en el Ártico',
             minYear: 2012,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2230,7 +2230,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Sir Robert Borden / Descubrimiento de la Insulina',
+            'Sir Robert Borden | Descubrimiento de la Insulina',
             minYear: 2011,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2253,7 +2253,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'José Martí / Entrada de Fidel Castro a La Habana',
+            'José Martí | Entrada de Fidel Castro a La Habana',
             minYear: 1961,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2265,7 +2265,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Ernesto "Che" Guevara / Cortador de Caña',
+            'Ernesto "Che" Guevara | Cortador de Caña',
             minYear: 1983,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2277,7 +2277,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Antonio Maceo / Protesta de Baraguá',
+            'Antonio Maceo | Protesta de Baraguá',
             minYear: 1961,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2289,7 +2289,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Máximo Gómez / Guerra de Todo el Pueblo',
+            'Máximo Gómez | Guerra de Todo el Pueblo',
             minYear: 1961,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2301,7 +2301,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Camilo Cienfuegos / Trabajo Voluntario',
+            'Camilo Cienfuegos | Trabajo Voluntario',
             minYear: 1961,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2313,7 +2313,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Calixto García / Centro de Ingeniería Genética',
+            'Calixto García | Centro de Ingeniería Genética',
             minYear: 1961,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2325,7 +2325,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Carlos Manuel de Céspedes / Estatua de José Martí',
+            'Carlos Manuel de Céspedes | Estatua de José Martí',
             minYear: 1961,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2337,7 +2337,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Frank País / Ciudad Escolar 26 de Julio',
+            'Frank País | Ciudad Escolar 26 de Julio',
             minYear: 2010,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2349,7 +2349,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Ignacio Agramonte / Asamblea de Guáimaro',
+            'Ignacio Agramonte | Asamblea de Guáimaro',
             minYear: 2010,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2361,7 +2361,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Julio Antonio Mella / Universidad de La Habana',
+            'Julio Antonio Mella | Universidad de La Habana',
             minYear: 2010,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2384,7 +2384,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'José Martí / Entrada de Fidel Castro a La Habana',
+            'José Martí | Entrada de Fidel Castro a La Habana',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2396,7 +2396,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Ernesto "Che" Guevara / Cortador de Caña',
+            'Ernesto "Che" Guevara | Cortador de Caña',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2408,7 +2408,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Antonio Maceo / Protesta de Baraguá',
+            'Antonio Maceo | Protesta de Baraguá',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2420,7 +2420,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Máximo Gómez / Guerra de Todo el Pueblo',
+            'Máximo Gómez | Guerra de Todo el Pueblo',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2432,7 +2432,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Camilo Cienfuegos / Trabajo Voluntario',
+            'Camilo Cienfuegos | Trabajo Voluntario',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2444,7 +2444,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Calixto García / Centro de Ingeniería Genética',
+            'Calixto García | Centro de Ingeniería Genética',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2456,7 +2456,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Carlos Manuel de Céspedes / Estatua de José Martí',
+            'Carlos Manuel de Céspedes | Estatua de José Martí',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2468,7 +2468,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Frank País / Ciudad Escolar 26 de Julio',
+            'Frank País | Ciudad Escolar 26 de Julio',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2480,7 +2480,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Ignacio Agramonte / Asamblea de Guáimaro',
+            'Ignacio Agramonte | Asamblea de Guáimaro',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2492,7 +2492,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cup,
         motifs: [
           NumismaticMotifRule(
-            'Julio Antonio Mella / Universidad de La Habana',
+            'Julio Antonio Mella | Universidad de La Habana',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2528,7 +2528,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Carlos Pellegrini / Congreso Nacional',
+            'Carlos Pellegrini | Congreso Nacional',
             minYear: 1992,
             maxYear: 1995,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2540,7 +2540,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Bartolomé Mitre / Museo Mitre',
+            'Bartolomé Mitre | Museo Mitre',
             minYear: 1992,
             maxYear: 2018,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2552,7 +2552,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'General José de San Martín / Monumento Cerro de la Gloria',
+            'General José de San Martín | Monumento Cerro de la Gloria',
             minYear: 1992,
             maxYear: 2020,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2564,7 +2564,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Manuel Belgrano / Monumento a la Bandera',
+            'Manuel Belgrano | Monumento a la Bandera',
             minYear: 1992,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2576,7 +2576,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Guanaco / Estepa Patagónica',
+            'Guanaco | Estepa Patagónica',
             minYear: 1992,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2588,7 +2588,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Cóndor Andino / Cordillera de los Andes',
+            'Cóndor Andino | Cordillera de los Andes',
             minYear: 1992,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2600,7 +2600,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Taruca / Región Noroeste',
+            'Taruca | Región Noroeste',
             minYear: 1992,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2612,7 +2612,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Ballena Franca Austral / Mar Argentino',
+            'Ballena Franca Austral | Mar Argentino',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2624,7 +2624,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Yaguareté / Región Noreste',
+            'Yaguareté | Región Noreste',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2636,7 +2636,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Hornero / Región Pampeana',
+            'Hornero | Región Pampeana',
             minYear: 2017,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2648,7 +2648,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.ars,
         motifs: [
           NumismaticMotifRule(
-            'Cecilia Grierson y Ramón Carrillo / Instituto Malbrán',
+            'Cecilia Grierson y Ramón Carrillo | Instituto Malbrán',
             minYear: 2023,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2703,7 +2703,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Beija-flor',
+            'Efígie da República | Beija-flor',
             minYear: 1994,
             maxYear: 2005,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2715,7 +2715,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Tartaruga-marinha',
+            'Efígie da República | Tartaruga-marinha',
             minYear: 2001,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2727,7 +2727,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Garça',
+            'Efígie da República | Garça',
             minYear: 1994,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2739,7 +2739,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Arara',
+            'Efígie da República | Arara',
             minYear: 1994,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2751,7 +2751,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Mico-leão-dourado',
+            'Efígie da República | Mico-leão-dourado',
             minYear: 2002,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2763,7 +2763,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Onça-pintada',
+            'Efígie da República | Onça-pintada',
             minYear: 1994,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2775,7 +2775,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Garoupa',
+            'Efígie da República | Garoupa',
             minYear: 1994,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2787,7 +2787,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.brl,
         motifs: [
           NumismaticMotifRule(
-            'Efígie da República / Lobo-guará',
+            'Efígie da República | Lobo-guará',
             minYear: 2020,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2816,7 +2816,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clp,
         motifs: [
           NumismaticMotifRule(
-            'Cardenal Raúl Silva Henríquez / Santuario de Maipú',
+            'Cardenal Raúl Silva Henríquez | Santuario de Maipú',
             minYear: 1977,
             maxYear: 2000,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2828,7 +2828,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clp,
         motifs: [
           NumismaticMotifRule(
-            'Ignacio Carrera Pinto / Torres del Paine',
+            'Ignacio Carrera Pinto | Torres del Paine',
             minYear: 2011,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2840,7 +2840,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clp,
         motifs: [
           NumismaticMotifRule(
-            'Manuel Rodríguez / Reserva Nacional Nalcas',
+            'Manuel Rodríguez | Reserva Nacional Nalcas',
             minYear: 2009,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2852,7 +2852,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clp,
         motifs: [
           NumismaticMotifRule(
-            'Gabriela Mistral / Parque Nacional La Campana',
+            'Gabriela Mistral | Parque Nacional La Campana',
             minYear: 2009,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2864,7 +2864,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clp,
         motifs: [
           NumismaticMotifRule(
-            'Arturo Prat / Parque Nacional Alberto de Agostini',
+            'Arturo Prat | Parque Nacional Alberto de Agostini',
             minYear: 2010,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2876,7 +2876,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.clp,
         motifs: [
           NumismaticMotifRule(
-            'Andrés Bello / Salar de Surire',
+            'Andrés Bello | Salar de Surire',
             minYear: 2010,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2904,7 +2904,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Chabuca Granda / Vicuña y Flor de Amancaes',
+            'Chabuca Granda | Vicuña y Flor de Amancaes',
             minYear: 1991,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2916,7 +2916,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'José María Arguedas / Cóndor Andino',
+            'José María Arguedas | Cóndor Andino',
             minYear: 1991,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2928,7 +2928,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'María Rostworowski / Jaguar',
+            'María Rostworowski | Jaguar',
             minYear: 1991,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2940,7 +2940,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Pedro Paulet / Colibrí Cola de Espátula',
+            'Pedro Paulet | Colibrí Cola de Espátula',
             minYear: 1991,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2952,7 +2952,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.pen,
         motifs: [
           NumismaticMotifRule(
-            'Tilsa Tsuchiya / Gallito de las Rocas',
+            'Tilsa Tsuchiya | Gallito de las Rocas',
             minYear: 1991,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -2979,7 +2979,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Sir Winston Churchill / Palacio de Westminster',
+            'Sir Winston Churchill | Palacio de Westminster',
             minYear: 2016,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2991,7 +2991,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Jane Austen / Godmersham Park',
+            'Jane Austen | Godmersham Park',
             minYear: 2017,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -3003,7 +3003,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'J.M.W. Turner / El «Temerario»',
+            'J.M.W. Turner | El «Temerario»',
             minYear: 2020,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -3015,7 +3015,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gbp,
         motifs: [
           NumismaticMotifRule(
-            'Alan Turing / Bombe de Bletchley Park',
+            'Alan Turing | Bombe de Bletchley Park',
             minYear: 2021,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -3038,7 +3038,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Victor Hugo / Plaza de los Vosgos',
+            'Victor Hugo | Plaza de los Vosgos',
             minYear: 1960,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3050,7 +3050,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Hector Berlioz / Capilla de los Inválidos',
+            'Hector Berlioz | Capilla de los Inválidos',
             minYear: 1960,
             maxYear: 1980,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3062,7 +3062,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Claude Debussy / El Mar',
+            'Claude Debussy | El Mar',
             minYear: 1980,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3074,7 +3074,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Antoine de Saint-Exupéry / El Principito',
+            'Antoine de Saint-Exupéry | El Principito',
             minYear: 1976,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3086,7 +3086,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Paul Cézanne / Montagne Sainte-Victoire',
+            'Paul Cézanne | Montagne Sainte-Victoire',
             minYear: 1978,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3098,7 +3098,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Gustave Eiffel / Torre Eiffel',
+            'Gustave Eiffel | Torre Eiffel',
             minYear: 1981,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3110,7 +3110,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.frf,
         motifs: [
           NumismaticMotifRule(
-            'Pierre y Marie Curie / Radium',
+            'Pierre y Marie Curie | Radium',
             minYear: 1968,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3134,7 +3134,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Bettina von Arnim / Castillo Wiepersdorf',
+            'Bettina von Arnim | Castillo Wiepersdorf',
             minYear: 1990,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3146,7 +3146,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Carl Friedrich Gauss / Campana de Gauss',
+            'Carl Friedrich Gauss | Campana de Gauss',
             minYear: 1989,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3158,7 +3158,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Annette von Droste-Hülshoff / Castillo Meersburg',
+            'Annette von Droste-Hülshoff | Castillo Meersburg',
             minYear: 1989,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3170,7 +3170,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Balthasar Neumann / Residencia de Wurzburgo',
+            'Balthasar Neumann | Residencia de Wurzburgo',
             minYear: 1989,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3182,7 +3182,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Clara Schumann / Conservatorio Hoch de Fráncfort',
+            'Clara Schumann | Conservatorio Hoch de Fráncfort',
             minYear: 1989,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3194,7 +3194,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Paul Ehrlich / Microscopio y Quimioterapia',
+            'Paul Ehrlich | Microscopio y Quimioterapia',
             minYear: 1989,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3206,7 +3206,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Maria Sibylla Merian / Diente de León y Oruga',
+            'Maria Sibylla Merian | Diente de León y Oruga',
             minYear: 1991,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3218,7 +3218,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.dem,
         motifs: [
           NumismaticMotifRule(
-            'Wilhelm y Jacob Grimm / Diccionario Alemán',
+            'Wilhelm y Jacob Grimm | Diccionario Alemán',
             minYear: 1991,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3253,7 +3253,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Maria Montessori / Niños en clase',
+            'Maria Montessori | Niños en clase',
             minYear: 1969,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3265,7 +3265,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Guglielmo Marconi / Yate Elettra',
+            'Guglielmo Marconi | Yate Elettra',
             minYear: 1973,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3277,7 +3277,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Vincenzo Bellini / Teatro Massimo Bellini',
+            'Vincenzo Bellini | Teatro Massimo Bellini',
             minYear: 1979,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3289,7 +3289,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Alessandro Volta / Tempio Voltiano',
+            'Alessandro Volta | Tempio Voltiano',
             minYear: 1976,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3301,7 +3301,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Gian Lorenzo Bernini / Escultura de Apolo y Dafne',
+            'Gian Lorenzo Bernini | Escultura de Apolo y Dafne',
             minYear: 1984,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3313,7 +3313,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Michelangelo Merisi da Caravaggio / Cesto de Frutas',
+            'Michelangelo Merisi da Caravaggio | Cesto de Frutas',
             minYear: 1983,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -3325,7 +3325,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.itl,
         motifs: [
           NumismaticMotifRule(
-            'Raffaello Sanzio / Triunfo de Galatea',
+            'Raffaello Sanzio | Triunfo de Galatea',
             minYear: 1997,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCottonPaper,

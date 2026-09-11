@@ -15,7 +15,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Medio Maravedí / Maravedí',
+            'Medio Maravedí | Maravedí',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -27,7 +27,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            '2 Maravedís / 4 Maravedís',
+            '2 Maravedís | 4 Maravedís',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameCopper,
@@ -39,7 +39,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Castillo y León / Maravedís',
+            'Castillo y León | Maravedís',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -51,7 +51,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Monograma Real Coronado / Columnas y Castillo',
+            'Monograma Real Coronado | Columnas y Castillo',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -63,7 +63,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Real Coronado / Columnario y Busto',
+            'Escudo Real Coronado | Columnario y Busto',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -75,7 +75,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Pistolete / Dos Reales',
+            'Pistolete | Dos Reales',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -99,7 +99,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Real de a Ocho / Columnario / Busto / Duro',
+            'Real de a Ocho / Columnario / Busto | Duro',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -176,7 +176,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Hispania Recostada / Reyes Alfonso XII y XIII',
+            'Hispania Recostada | Reyes Alfonso XII y XIII',
             minYear: 1869,
             maxYear: 1926,
             material: NumismaticMaterialsRegistry.nameSilver835,
@@ -200,7 +200,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Hispania / Bustos Reales',
+            'Hispania | Bustos Reales',
             minYear: 1869,
             maxYear: 1905,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -260,7 +260,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Hispania de Pie / Busto de Alfonso XIII Niño',
+            'Hispania de Pie | Busto de Alfonso XIII Niño',
             minYear: 1870,
             maxYear: 1897,
             material: NumismaticMaterialsRegistry.nameGoldColonial875,
@@ -315,7 +315,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Rubia de Franco / Juan Carlos I',
+            'Rubia de Franco | Juan Carlos I',
             minYear: 1944,
             maxYear: 1981,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -338,7 +338,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Duro de Franco / Juan Carlos I',
+            'Duro de Franco | Juan Carlos I',
             minYear: 1949,
             maxYear: 1980,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -362,7 +362,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Franco / Juan Carlos I',
+            'Franco | Juan Carlos I',
             minYear: 1957,
             maxYear: 1980,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -397,7 +397,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Busto del Rey Juan Carlos I / Escudo de España',
+            'Busto del Rey Juan Carlos I | Escudo de España',
             minYear: 1983,
             maxYear: 1998,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -421,7 +421,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Grande / Lenteja',
+            'Grande | Lenteja',
             minYear: 1982,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminum,
@@ -445,7 +445,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Busto del Rey Juan Carlos I / Numeral 5 PTAS',
+            'Busto del Rey Juan Carlos I | Numeral 5 PTAS',
             minYear: 1989,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -457,7 +457,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Busto del Rey Juan Carlos I / Homenajes Culturales',
+            'Busto del Rey Juan Carlos I | Homenajes Culturales',
             minYear: 1983,
             maxYear: 2000,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -532,7 +532,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Flor de Lis / Pantalla',
+            'Flor de Lis | Pantalla',
             minYear: 1990,
             maxYear: 2000,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -556,7 +556,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Rey Juan Carlos I y Príncipe Felipe / Patrimonio Cultural',
+            'Rey Juan Carlos I y Príncipe Felipe | Patrimonio Cultural',
             minYear: 1986,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -568,7 +568,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Reyes Juan Carlos I y Sofía / Escudo Nacional',
+            'Reyes Juan Carlos I y Sofía | Escudo Nacional',
             minYear: 1987,
             maxYear: 2001,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -580,7 +580,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Asamblea del FMI y Banco Mundial - Madrid',
+            'Asamblea del FMI y Banco Mundial | Madrid',
             minYear: 1994,
             material: NumismaticMaterialsRegistry.nameSilverSterling925,
           ),
@@ -615,7 +615,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameSilverSterling925,
           ),
           NumismaticMotifRule(
-            'Última Emisión de la Peseta - Hispania',
+            'Última Emisión de la Peseta | Hispania',
             minYear: 2001,
             material: NumismaticMaterialsRegistry.nameSilverSterling925,
           ),
@@ -705,7 +705,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Rey Juan Carlos I / Rey Felipe VI',
+            'Rey Juan Carlos I | Rey Felipe VI',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro1,
@@ -717,7 +717,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Efigie del Rey Juan Carlos I / Rey Felipe VI',
+            'Efigie del Rey Juan Carlos I | Rey Felipe VI',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
@@ -738,7 +738,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Centro Histórico de Córdoba - Mezquita-Catedral',
+            'Centro Histórico de Córdoba | Mezquita-Catedral',
             minYear: 2010,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -763,7 +763,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Parque Güell - Obras de Antoni Gaudí',
+            'Parque Güell | Obras de Antoni Gaudí',
             minYear: 2014,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -1015,7 +1015,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Mapa de Europa / Unión Europea',
+            'Mapa de Europa | Unión Europea',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
