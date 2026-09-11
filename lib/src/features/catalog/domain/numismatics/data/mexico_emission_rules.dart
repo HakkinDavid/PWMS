@@ -2497,12 +2497,12 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
           NumismaticMotifRule(
             'Cambio de Milenio - Glifo Año 2000',
             minYear: 2000,
-            material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
+            material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
           ),
           NumismaticMotifRule(
             'Cambio de Milenio - Glifo Año 2001',
             minYear: 2001,
-            material: NumismaticMaterialsRegistry.nameBimetallicCuNiBronzeAl,
+            material: NumismaticMaterialsRegistry.nameBimetallicAlpacaBronzeAl,
           ),
         ],
       ),
