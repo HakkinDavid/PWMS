@@ -2076,7 +2076,7 @@ const List<NumismaticEmissionRuleData> mexicoEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Morelos Acero',
+            'Morelos',
             minYear: 1984,
             maxYear: 1987,
             material: NumismaticMaterialsRegistry.nameStainlessSteel,
