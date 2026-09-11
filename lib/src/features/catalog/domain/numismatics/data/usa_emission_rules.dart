@@ -26,7 +26,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usc,
         motifs: [
           NumismaticMotifRule(
-            'Sun Dial (Continental Currency)',
+            'Sun Dial',
             minYear: 1776,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
@@ -37,7 +37,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usc,
         motifs: [
           NumismaticMotifRule(
-            'Spanish Milled Dollar (Libre Circulación)',
+            'Spanish Milled Dollar',
             minYear: 1775,
             maxYear: 1791,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -194,7 +194,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Double Eagle Oro .900 (Coronet Liberty Head)',
+            'Double Eagle Oro .900',
             minYear: 1849,
             maxYear: 1857,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -225,7 +225,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Shield (In God We Trust)',
+            'Shield',
             minYear: 1864,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -303,7 +303,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Gold Dollar Oro .900 (Indian Princess Type 3)',
+            'Gold Dollar Oro .900',
             minYear: 1858,
             maxYear: 1873,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -454,25 +454,25 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Morgan Dollar (1878-1921)',
+            'Morgan Dollar',
             minYear: 1878,
             maxYear: 1921,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Peace Dollar (1921-1935)',
+            'Peace Dollar',
             minYear: 1921,
             maxYear: 1935,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Trade Dollar (1873-1885)',
+            'Trade Dollar',
             minYear: 1873,
             maxYear: 1885,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Gold Dollar Oro .900 (Indian Princess Type 3)',
+            'Gold Dollar Oro .900',
             minYear: 1874,
             maxYear: 1889,
             material: NumismaticMaterialsRegistry.nameGold900,
@@ -574,18 +574,18 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Lincoln Wheat Cent (1909-1958)',
+            'Lincoln Wheat Cent',
             minYear: 1934,
             maxYear: 1958,
             material: NumismaticMaterialsRegistry.nameBronze,
           ),
           NumismaticMotifRule(
-            '1943 Steel Cent (Acero bañado en zinc)',
+            '1943 Steel Cent',
             minYear: 1943,
             material: NumismaticMaterialsRegistry.nameBronze,
           ),
           NumismaticMotifRule(
-            'Lincoln Memorial Cent (1959-1982 Bronce)',
+            'Lincoln Memorial Cent',
             minYear: 1959,
             maxYear: 1964,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -597,7 +597,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Buffalo / Indian Head Nickel (1913-1938)',
+            'Buffalo / Indian Head Nickel',
             minYear: 1934,
             maxYear: 1938,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -609,7 +609,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Jefferson War Nickel Plata .350 (1942-1945 Mintmark sobre Monticello)',
+            'Jefferson War Nickel Plata .350',
             minYear: 1942,
             maxYear: 1945,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -621,13 +621,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Winged Liberty Head "Mercury" Dime Plata .900 (1916-1945)',
+            'Winged Liberty Head "Mercury" Dime Plata .900',
             minYear: 1934,
             maxYear: 1945,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Roosevelt Dime Plata .900 (1946-1964)',
+            'Roosevelt Dime Plata .900',
             minYear: 1946,
             maxYear: 1964,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -639,7 +639,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Washington Quarter Plata .900 (1932-1964)',
+            'Washington Quarter Plata .900',
             minYear: 1934,
             maxYear: 1964,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -651,13 +651,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Walking Liberty Half Dollar Plata .900 (1916-1947)',
+            'Walking Liberty Half Dollar Plata .900',
             minYear: 1934,
             maxYear: 1947,
             material: NumismaticMaterialsRegistry.nameSilver900,
           ),
           NumismaticMotifRule(
-            'Franklin Half Dollar Plata .900 (1948-1963)',
+            'Franklin Half Dollar Plata .900',
             minYear: 1948,
             maxYear: 1963,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -729,7 +729,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Kennedy Half Dollar Plata .400 (Clad Silver)',
+            'Kennedy Half Dollar Plata .400',
             minYear: 1965,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameSilver900,
@@ -790,7 +790,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Bicentenario de los Estados Unidos - Tamborilero Colonial (1776-1976)',
+            'Bicentenario de los Estados Unidos - Tamborilero Colonial',
             minYear: 1975,
             maxYear: 1976,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -808,7 +808,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Bicentenario de los Estados Unidos - Independence Hall (1776-1976)',
+            'Bicentenario de los Estados Unidos - Independence Hall',
             minYear: 1975,
             maxYear: 1976,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -826,13 +826,13 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Eisenhower Bicentennial - Moon and Liberty Bell (1776-1976)',
+            'Eisenhower Bicentennial - Moon and Liberty Bell',
             minYear: 1975,
             maxYear: 1976,
             material: NumismaticMaterialsRegistry.nameCupronickel,
           ),
           NumismaticMotifRule(
-            'Susan B. Anthony Dollar (1979-1981)',
+            'Susan B. Anthony Dollar',
             minYear: 1979,
             maxYear: 1981,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -887,7 +887,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Washington Quarter Clad Estándar (1982-1998)',
+            'Washington Quarter Clad Estándar',
             minYear: 1982,
             maxYear: 1998,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -954,7 +954,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Lincoln Memorial (1959-2008)',
+            'Lincoln Memorial',
             minYear: 2000,
             maxYear: 2008,
             material: NumismaticMaterialsRegistry.nameCopperPlatedZinc,
@@ -992,7 +992,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Jefferson Nickel - Monticello (1938-2003)',
+            'Jefferson Nickel - Monticello',
             minYear: 2000,
             maxYear: 2003,
             material: NumismaticMaterialsRegistry.nameCupronickel,
@@ -1700,7 +1700,7 @@ const List<NumismaticEmissionRuleData> usaEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Sacagawea Dollar - Águila en Vuelo (2000-2008)',
+            'Sacagawea Dollar - Águila en Vuelo',
             minYear: 2000,
             maxYear: 2008,
             material: NumismaticMaterialsRegistry.nameCladManganeseBrassCopper,

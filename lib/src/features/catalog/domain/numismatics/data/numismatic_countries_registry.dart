@@ -3,7 +3,7 @@
 abstract final class NumismaticCountriesRegistry {
   static const mexico = 'México';
   static const virreinatoDeNuevaEspana = 'Virreinato de Nueva España';
-  static const imperioMexicanoPrimerYSegundoImperio = 'Imperio Mexicano (Primer y Segundo Imperio)';
+  static const imperioMexicanoPrimerYSegundoImperio = 'Imperio Mexicano';
   static const imperioMexicano = imperioMexicanoPrimerYSegundoImperio;
   static const republicaDeTexas = 'República de Texas';
   static const republicaDeYucatan = 'República de Yucatán';
@@ -12,7 +12,7 @@ abstract final class NumismaticCountriesRegistry {
   static const treceColoniasBritanicasDeAmerica = 'Trece Colonias Británicas de América';
   static const reinoDeHawai = 'Reino de Hawái';
   static const canada = 'Canadá';
-  static const terranovaNewfoundland = 'Terranova (Newfoundland)';
+  static const terranovaNewfoundland = 'Terranova';
   static const provinciasDeLaAmericaBritanica = 'Provincias de la América Británica';
   static const bermudas = 'Bermudas';
   static const groenlandia = 'Groenlandia';
@@ -109,7 +109,7 @@ abstract final class NumismaticCountriesRegistry {
   static const imperioAleman = 'Imperio Alemán';
   static const republicaDeWeimar = 'República de Weimar';
   static const tercerReichAleman = 'Tercer Reich Alemán';
-  static const republicaDemocraticaAlemanaRda = 'República Democrática Alemana (RDA)';
+  static const republicaDemocraticaAlemanaRda = 'República Democrática Alemana';
   static const republicaFederalDeAlemania = 'República Federal de Alemania';
   static const reinoDePrusia = 'Reino de Prusia';
   static const reinoDeBaviera = 'Reino de Baviera';
@@ -200,7 +200,7 @@ abstract final class NumismaticCountriesRegistry {
   static const rusia = 'Rusia';
   static const zaratoDeRusia = 'Zarato de Rusia';
   static const imperioRuso = 'Imperio Ruso';
-  static const unionSovieticaUrss = 'Unión Soviética (URSS)';
+  static const unionSovieticaUrss = 'Unión Soviética';
   static const imperioOtomano = 'Imperio Otomano';
   static const turquia = 'Turquía';
   static const imperioPersaSafavidaQajarPahlavi = 'Imperio Persa (Safávida / Qajar / Pahlaví)';
@@ -229,14 +229,14 @@ abstract final class NumismaticCountriesRegistry {
   static const china = 'China';
   static const dinastiaMing = 'Dinastía Ming';
   static const dinastiaQing = 'Dinastía Qing';
-  static const republicaDeChina19121949 = 'República de China (1912-1949)';
+  static const republicaDeChina19121949 = 'República de China';
   static const manchukuo = 'Manchukuo';
   static const tibet = 'Tíbet';
   static const taiwan = 'Taiwán';
   static const hongKong = 'Hong Kong';
   static const macao = 'Macao';
   static const japon = 'Japón';
-  static const shogunatoTokugawaPeriodoEdo = 'Shogunato Tokugawa (Período Edo)';
+  static const shogunatoTokugawaPeriodoEdo = 'Shogunato Tokugawa';
   static const imperioDelJapon = 'Imperio del Japón';
   static const corea = 'Corea';
   static const dinastiaJoseon = 'Dinastía Joseon';
@@ -253,7 +253,7 @@ abstract final class NumismaticCountriesRegistry {
   static const indiaFrancesa = 'India Francesa';
   static const pakistan = 'Pakistán';
   static const banglades = 'Bangladés';
-  static const sriLankaCeilan = 'Sri Lanka (Ceilán)';
+  static const sriLankaCeilan = 'Sri Lanka';
   static const nepal = 'Nepal';
   static const butan = 'Bután';
   static const maldivas = 'Maldivas';
@@ -267,7 +267,7 @@ abstract final class NumismaticCountriesRegistry {
   static const filipinas = 'Filipinas';
   static const capitaniaGeneralDeFilipinas = 'Capitanía General de Filipinas';
   static const indonesia = 'Indonesia';
-  static const indiasOrientalesNeerlandesasVoc = 'Indias Orientales Neerlandesas (VOC)';
+  static const indiasOrientalesNeerlandesasVoc = 'Indias Orientales Neerlandesas';
   static const malasia = 'Malasia';
   static const asentamientosDeLosEstrechos = 'Asentamientos de los Estrechos';
   static const malayaBritanica = 'Malaya Británica';
@@ -275,8 +275,8 @@ abstract final class NumismaticCountriesRegistry {
   static const borneoSeptentrionalBritanico = 'Borneo Septentrional Británico';
   static const singapur = 'Singapur';
   static const brunei = 'Brunéi';
-  static const tailandiaSiam = 'Tailandia (Siam)';
-  static const birmaniaMyanmar = 'Birmania (Myanmar)';
+  static const tailandiaSiam = 'Tailandia';
+  static const birmaniaMyanmar = 'Birmania';
   static const vietnam = 'Vietnam';
   static const imperioDeAnnam = 'Imperio de Annam';
   static const indochinaFrancesa = 'Indochina Francesa';
@@ -288,7 +288,7 @@ abstract final class NumismaticCountriesRegistry {
   static const fiyi = 'Fiyi';
   static const papuaNuevaGuinea = 'Papúa Nueva Guinea';
   static const islasSalomon = 'Islas Salomón';
-  static const vanuatuNuevasHebridas = 'Vanuatu (Nuevas Hébridas)';
+  static const vanuatuNuevasHebridas = 'Vanuatu';
   static const samoa = 'Samoa';
   static const samoaAmericana = 'Samoa Americana';
   static const tonga = 'Tonga';
@@ -316,10 +316,10 @@ abstract final class NumismaticCountriesRegistry {
   static const sudan = 'Sudán';
   static const sudanAngloEgipcio = 'Sudán Anglo-Egipcio';
   static const sudanDelSur = 'Sudán del Sur';
-  static const etiopiaAbisinia = 'Etiopía (Abisinia)';
+  static const etiopiaAbisinia = 'Etiopía';
   static const eritrea = 'Eritrea';
   static const eritreaItaliana = 'Eritrea Italiana';
-  static const yibutiSomaliaFrancesa = 'Yibuti (Somalia Francesa)';
+  static const yibutiSomaliaFrancesa = 'Yibuti';
   static const somalia = 'Somalia';
   static const somaliaBritanica = 'Somalia Británica';
   static const somaliaItaliana = 'Somalia Italiana';
@@ -331,16 +331,16 @@ abstract final class NumismaticCountriesRegistry {
   static const africaOrientalAlemana = 'África Oriental Alemana';
   static const tanganica = 'Tanganica';
   static const sudafrica = 'Sudáfrica';
-  static const republicaDeSudafricaTransvaal = 'República de Sudáfrica (Transvaal)';
+  static const republicaDeSudafricaTransvaal = 'República de Sudáfrica';
   static const estadoLibreDeOrange = 'Estado Libre de Orange';
   static const coloniaDelCabo = 'Colonia del Cabo';
   static const coloniaDeNatal = 'Colonia de Natal';
   static const unionSudafricana = 'Unión Sudafricana';
-  static const namibiaAfricaDelSudoeste = 'Namibia (África del Sudoeste)';
-  static const botsuanaBechuanalandia = 'Botsuana (Bechuanalandia)';
-  static const zimbabueRodesia = 'Zimbabue (Rodesia)';
-  static const zambiaRodesiaDelNorte = 'Zambia (Rodesia del Norte)';
-  static const malauiNyasalandia = 'Malaui (Nyasalandia)';
+  static const namibiaAfricaDelSudoeste = 'Namibia';
+  static const botsuanaBechuanalandia = 'Botsuana';
+  static const zimbabueRodesia = 'Zimbabue';
+  static const zambiaRodesiaDelNorte = 'Zambia';
+  static const malauiNyasalandia = 'Malaui';
   static const mozambique = 'Mozambique';
   static const angola = 'Angola';
   static const republicaDemocraticaDelCongo = 'República Democrática del Congo';
@@ -353,10 +353,10 @@ abstract final class NumismaticCountriesRegistry {
   static const camerun = 'Camerún';
   static const republicaCentroafricana = 'República Centroafricana';
   static const chad = 'Chad';
-  static const guineaEcuatorialGuineaEspanola = 'Guinea Ecuatorial (Guinea Española)';
+  static const guineaEcuatorialGuineaEspanola = 'Guinea Ecuatorial';
   static const nigeria = 'Nigeria';
   static const biafra = 'Biafra';
-  static const ghanaCostaDeOro = 'Ghana (Costa de Oro)';
+  static const ghanaCostaDeOro = 'Ghana';
   static const costaDeMarfil = 'Costa de Marfil';
   static const liberia = 'Liberia';
   static const sierraLeona = 'Sierra Leona';
@@ -364,13 +364,13 @@ abstract final class NumismaticCountriesRegistry {
   static const guineaBisau = 'Guinea-Bisáu';
   static const senegal = 'Senegal';
   static const gambia = 'Gambia';
-  static const maliSudanFrances = 'Malí (Sudán Francés)';
+  static const maliSudanFrances = 'Malí';
   static const niger = 'Níger';
-  static const burkinaFasoAltoVolta = 'Burkina Faso (Alto Volta)';
-  static const beninDahomey = 'Benín (Dahomey)';
+  static const burkinaFasoAltoVolta = 'Burkina Faso';
+  static const beninDahomey = 'Benín';
   static const togo = 'Togo';
   static const mauritania = 'Mauritania';
-  static const saharaOccidentalSaharaEspanol = 'Sáhara Occidental (Sáhara Español)';
+  static const saharaOccidentalSaharaEspanol = 'Sáhara Occidental';
   static const caboVerde = 'Cabo Verde';
   static const santoTomeYPrincipe = 'Santo Tomé y Príncipe';
   static const madagascar = 'Madagascar';
@@ -379,8 +379,8 @@ abstract final class NumismaticCountriesRegistry {
   static const comoras = 'Comoras';
   static const ruanda = 'Ruanda';
   static const burundi = 'Burundi';
-  static const lesotoBasutolandia = 'Lesoto (Basutolandia)';
-  static const esuatiniSuazilandia = 'Esuatini (Suazilandia)';
+  static const lesotoBasutolandia = 'Lesoto';
+  static const esuatiniSuazilandia = 'Esuatini';
   static const otro = 'Otro';
 
   /// Canonical list of all registered countries and issuing entities.
@@ -772,7 +772,7 @@ abstract final class NumismaticCountriesRegistry {
     // México y Mesoamérica
     'México': ['MXN', 'MXP', 'MXR', 'MXE'],
     'Virreinato de Nueva España': ['REAL', 'ESC', 'MRV', 'MXR', 'MXE'],
-    'Imperio Mexicano (Primer y Segundo Imperio)': ['MXR', 'MXE', 'MXP'],
+    'Imperio Mexicano': ['MXR', 'MXE', 'MXP'],
     'República de Texas': ['USD'],
     'República de Yucatán': ['REAL', 'MXR'],
 
@@ -782,7 +782,7 @@ abstract final class NumismaticCountriesRegistry {
     'Trece Colonias Británicas de América': ['GBP_OLD', 'REAL', 'USC'],
     'Reino de Hawái': ['HWI', 'USD'],
     'Canadá': ['CAD', 'CAD_HIST'],
-    'Terranova (Newfoundland)': ['NFL', 'CAD'],
+    'Terranova': ['NFL', 'CAD'],
     'Provincias de la América Británica': ['CAD_HIST', 'GBP_OLD'],
     'Bermudas': ['USD', 'GBP'],
     'Groenlandia': ['DKK'],
@@ -884,7 +884,7 @@ abstract final class NumismaticCountriesRegistry {
     'Imperio Alemán': ['FRG'],
     'República de Weimar': ['RKM', 'RTM', 'PRM'],
     'Tercer Reich Alemán': ['RKM'],
-    'República Democrática Alemana (RDA)': ['DDM'],
+    'República Democrática Alemana': ['DDM'],
     'República Federal de Alemania': ['DEM', 'EUR'],
     'Reino de Prusia': ['GTH', 'FRG'],
     'Reino de Baviera': ['GGL', 'GTH', 'FRG'],
@@ -975,7 +975,7 @@ abstract final class NumismaticCountriesRegistry {
     'Rusia': ['RUB', 'RUR', 'SUR'],
     'Zarato de Rusia': ['RUR'],
     'Imperio Ruso': ['RUR'],
-    'Unión Soviética (URSS)': ['SUR'],
+    'Unión Soviética': ['SUR'],
 
     // Medio Oriente y Cáucaso
     'Imperio Otomano': ['OTE'],
@@ -1008,14 +1008,14 @@ abstract final class NumismaticCountriesRegistry {
     'China': ['CNY', 'CHN_QING', 'CHN_REP'],
     'Dinastía Ming': ['CHN_QING'],
     'Dinastía Qing': ['CHN_QING'],
-    'República de China (1912-1949)': ['CHN_REP'],
+    'República de China': ['CHN_REP'],
     'Manchukuo': ['MCK'],
     'Tíbet': ['TIB'],
     'Taiwán': ['TWD', 'JPY', 'CHN_REP'],
     'Hong Kong': ['HKD', 'GBP_OLD'],
     'Macao': ['MOP', 'POR'],
     'Japón': ['JPY', 'JPN_EDO'],
-    'Shogunato Tokugawa (Período Edo)': ['JPN_EDO'],
+    'Shogunato Tokugawa': ['JPN_EDO'],
     'Imperio del Japón': ['JPY'],
     'Corea': ['KOR_JOSEON'],
     'Dinastía Joseon': ['KOR_JOSEON'],
@@ -1032,7 +1032,7 @@ abstract final class NumismaticCountriesRegistry {
     'India Francesa': ['IND_FR', 'FRF'],
     'Pakistán': ['PKR', 'IND_BRIT'],
     'Bangladés': ['BDT', 'PKR', 'IND_BRIT'],
-    'Sri Lanka (Ceilán)': ['LKR', 'CEY', 'GBP_OLD'],
+    'Sri Lanka': ['LKR', 'CEY', 'GBP_OLD'],
     'Nepal': ['NPR'],
     'Bután': ['BTN', 'INR'],
     'Maldivas': ['MVR'],
@@ -1048,7 +1048,7 @@ abstract final class NumismaticCountriesRegistry {
     'Filipinas': ['PHP', 'PHP_HIST', 'REAL', 'USD'],
     'Capitanía General de Filipinas': ['REAL', 'ESC', 'PHP_HIST'],
     'Indonesia': ['IDR', 'NID'],
-    'Indias Orientales Neerlandesas (VOC)': ['NID', 'NLG'],
+    'Indias Orientales Neerlandesas': ['NID', 'NLG'],
     'Malasia': ['MYR', 'STR', 'MAL'],
     'Asentamientos de los Estrechos': ['STR', 'GBP_OLD'],
     'Malaya Británica': ['MAL', 'STR'],
@@ -1056,8 +1056,8 @@ abstract final class NumismaticCountriesRegistry {
     'Borneo Septentrional Británico': ['MAL', 'STR'],
     'Singapur': ['SGD', 'STR', 'MAL'],
     'Brunéi': ['BND', 'SGD', 'MAL'],
-    'Tailandia (Siam)': ['THB', 'THB_HIST'],
-    'Birmania (Myanmar)': ['MMK', 'MMK_HIST', 'IND_BRIT'],
+    'Tailandia': ['THB', 'THB_HIST'],
+    'Birmania': ['MMK', 'MMK_HIST', 'IND_BRIT'],
     'Vietnam': ['VND', 'FIC', 'ANN'],
     'Imperio de Annam': ['ANN', 'FIC'],
     'Indochina Francesa': ['FIC', 'FRF'],
@@ -1071,7 +1071,7 @@ abstract final class NumismaticCountriesRegistry {
     'Fiyi': ['FJD', 'GBP_OLD'],
     'Papúa Nueva Guinea': ['PGK', 'AUD'],
     'Islas Salomón': ['SBD', 'AUD'],
-    'Vanuatu (Nuevas Hébridas)': ['VUV', 'FRF', 'GBP_OLD'],
+    'Vanuatu': ['VUV', 'FRF', 'GBP_OLD'],
     'Samoa': ['WST', 'NZD'],
     'Samoa Americana': ['USD'],
     'Tonga': ['TOP', 'GBP_OLD'],
@@ -1101,10 +1101,10 @@ abstract final class NumismaticCountriesRegistry {
     'Sudán': ['SDG', 'EGP', 'EGY_HIST'],
     'Sudán Anglo-Egipcio': ['EGP', 'SDG'],
     'Sudán del Sur': ['SSP', 'SDG'],
-    'Etiopía (Abisinia)': ['ETB', 'ETB_HIST', 'MTT'],
+    'Etiopía': ['ETB', 'ETB_HIST', 'MTT'],
     'Eritrea': ['ERN', 'ETB', 'ITL'],
     'Eritrea Italiana': ['ITL', 'MTT'],
-    'Yibuti (Somalia Francesa)': ['DJF', 'FRF'],
+    'Yibuti': ['DJF', 'FRF'],
     'Somalia': ['SOS', 'EAS', 'ITL', 'GBP_OLD'],
     'Somalia Británica': ['EAS', 'INR', 'GBP_OLD'],
     'Somalia Italiana': ['ITL', 'SOS'],
@@ -1116,16 +1116,16 @@ abstract final class NumismaticCountriesRegistry {
     'África Oriental Alemana': ['RKM', 'EAS'],
     'Tanganica': ['EAS'],
     'Sudáfrica': ['ZAR', 'ZAR_HIST', 'GBP_OLD'],
-    'República de Sudáfrica (Transvaal)': ['ZAR_HIST', 'GBP_OLD'],
+    'República de Sudáfrica': ['ZAR_HIST', 'GBP_OLD'],
     'Estado Libre de Orange': ['ZAR_HIST', 'GBP_OLD'],
     'Colonia del Cabo': ['GBP_OLD', 'ZAR_HIST'],
     'Colonia de Natal': ['GBP_OLD', 'ZAR_HIST'],
     'Unión Sudafricana': ['ZAR_HIST', 'GBP_OLD'],
-    'Namibia (África del Sudoeste)': ['NAD', 'ZAR', 'RKM'],
-    'Botsuana (Bechuanalandia)': ['BWP', 'ZAR'],
-    'Zimbabue (Rodesia)': ['ZWL', 'RHO', 'USD', 'GBP_OLD'],
-    'Zambia (Rodesia del Norte)': ['ZMW', 'RHO', 'GBP_OLD'],
-    'Malaui (Nyasalandia)': ['MWK', 'RHO', 'GBP_OLD'],
+    'Namibia': ['NAD', 'ZAR', 'RKM'],
+    'Botsuana': ['BWP', 'ZAR'],
+    'Zimbabue': ['ZWL', 'RHO', 'USD', 'GBP_OLD'],
+    'Zambia': ['ZMW', 'RHO', 'GBP_OLD'],
+    'Malaui': ['MWK', 'RHO', 'GBP_OLD'],
     'Mozambique': ['MZN', 'MOZ_POR', 'POR'],
     'Angola': ['AOA', 'ANG_POR', 'POR'],
     'República Democrática del Congo': ['CDF', 'ZAI', 'BEF'],
@@ -1138,10 +1138,10 @@ abstract final class NumismaticCountriesRegistry {
     'Camerún': ['XAF', 'FRF'],
     'República Centroafricana': ['XAF', 'FRF'],
     'Chad': ['XAF', 'FRF'],
-    'Guinea Ecuatorial (Guinea Española)': ['XAF', 'ESP'],
+    'Guinea Ecuatorial': ['XAF', 'ESP'],
     'Nigeria': ['NGN', 'NGA_HIST', 'GBP_OLD'],
     'Biafra': ['BIA'],
-    'Ghana (Costa de Oro)': ['GHS', 'GHA_HIST', 'GBP_OLD'],
+    'Ghana': ['GHS', 'GHA_HIST', 'GBP_OLD'],
     'Costa de Marfil': ['XOF', 'FRF'],
     'Liberia': ['LRD', 'USD'],
     'Sierra Leona': ['SLE', 'SLL', 'GBP_OLD'],
@@ -1149,13 +1149,13 @@ abstract final class NumismaticCountriesRegistry {
     'Guinea-Bisáu': ['XOF', 'POR'],
     'Senegal': ['XOF', 'FRF'],
     'Gambia': ['GMD', 'GBP_OLD'],
-    'Malí (Sudán Francés)': ['XOF', 'FRF'],
+    'Malí': ['XOF', 'FRF'],
     'Níger': ['XOF', 'FRF'],
-    'Burkina Faso (Alto Volta)': ['XOF', 'FRF'],
-    'Benín (Dahomey)': ['XOF', 'FRF'],
+    'Burkina Faso': ['XOF', 'FRF'],
+    'Benín': ['XOF', 'FRF'],
     'Togo': ['XOF', 'FRF'],
     'Mauritania': ['MRU', 'XOF', 'FRF'],
-    'Sáhara Occidental (Sáhara Español)': ['ESP', 'MAD'],
+    'Sáhara Occidental': ['ESP', 'MAD'],
     'Cabo Verde': ['CVE', 'POR'],
     'Santo Tomé y Príncipe': ['STN', 'POR'],
     'Madagascar': ['MGA', 'FRF'],
@@ -1164,8 +1164,8 @@ abstract final class NumismaticCountriesRegistry {
     'Comoras': ['KMF', 'FRF'],
     'Ruanda': ['RWF', 'BEF'],
     'Burundi': ['BIF', 'BEF'],
-    'Lesoto (Basutolandia)': ['LSL', 'ZAR'],
-    'Esuatini (Suazilandia)': ['SZL', 'ZAR'],
+    'Lesoto': ['LSL', 'ZAR'],
+    'Esuatini': ['SZL', 'ZAR'],
   };
 
   /// Retrieves the registered currency codes for a given country or historical entity.

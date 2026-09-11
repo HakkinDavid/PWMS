@@ -51,7 +51,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Monograma Real Coronado / Columnas y Castillo (Medio Real)',
+            'Monograma Real Coronado / Columnas y Castillo',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -63,7 +63,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.real,
         motifs: [
           NumismaticMotifRule(
-            'Escudo Real Coronado / Columnario y Busto (Un Real)',
+            'Escudo Real Coronado / Columnario y Busto',
             minYear: 1500,
             maxYear: 1868,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -140,7 +140,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Peseta (Perra Chica)',
+            'Peseta',
             minYear: 1870,
             maxYear: 1879,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -152,7 +152,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Peseta (Perra Gorda)',
+            'Peseta',
             minYear: 1870,
             maxYear: 1879,
             material: NumismaticMaterialsRegistry.nameBronze,
@@ -200,7 +200,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Hispania / Bustos Reales (Alfonso XII y XIII)',
+            'Hispania / Bustos Reales',
             minYear: 1869,
             maxYear: 1905,
             material: NumismaticMaterialsRegistry.nameSilverColonial903,
@@ -260,7 +260,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Hispania de Pie / Busto de Alfonso XIII Niño (Escudo Real)',
+            'Hispania de Pie / Busto de Alfonso XIII Niño',
             minYear: 1870,
             maxYear: 1897,
             material: NumismaticMaterialsRegistry.nameGoldColonial875,
@@ -469,13 +469,13 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.esp,
         motifs: [
           NumismaticMotifRule(
-            'Corona Real y Letra M (1990-2000)',
+            'Corona Real y Letra M',
             minYear: 1990,
             maxYear: 2000,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
           ),
           NumismaticMotifRule(
-            'Juegos Olímpicos de Barcelona 92 (1990-1992)',
+            'Juegos Olímpicos de Barcelona 92',
             minYear: 1990,
             maxYear: 1992,
             material: NumismaticMaterialsRegistry.nameAluminumBronze,
@@ -738,17 +738,17 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Centro Histórico de Córdoba - Mezquita-Catedral (UNESCO 2010)',
+            'Centro Histórico de Córdoba - Mezquita-Catedral',
             minYear: 2010,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'La Alhambra, Generalife y Albaicín de Granada (UNESCO 2011)',
+            'La Alhambra, Generalife y Albaicín de Granada',
             minYear: 2011,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Catedral de Burgos (UNESCO 2012)',
+            'Catedral de Burgos',
             minYear: 2012,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -758,12 +758,12 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Real Monasterio de San Lorenzo de El Escorial (UNESCO 2013)',
+            'Real Monasterio de San Lorenzo de El Escorial',
             minYear: 2013,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Parque Güell - Obras de Antoni Gaudí (UNESCO 2014)',
+            'Parque Güell - Obras de Antoni Gaudí',
             minYear: 2014,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -773,7 +773,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Cueva de Altamira y Arte Rupestre del Norte de España (UNESCO 2015)',
+            'Cueva de Altamira y Arte Rupestre del Norte de España',
             minYear: 2015,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -783,12 +783,12 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Acueducto de Segovia (UNESCO 2016)',
+            'Acueducto de Segovia',
             minYear: 2016,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Monumentos de Oviedo y del Reino de Asturias (UNESCO 2017)',
+            'Monumentos de Oviedo y del Reino de Asturias',
             minYear: 2017,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -798,27 +798,27 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Ciudad Vieja de Santiago de Compostela (UNESCO 2018)',
+            'Ciudad Vieja de Santiago de Compostela',
             minYear: 2018,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Murallas y Ciudad Vieja de Ávila (UNESCO 2019)',
+            'Murallas y Ciudad Vieja de Ávila',
             minYear: 2019,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Arquitectura Mudéjar de Aragón (UNESCO 2020)',
+            'Arquitectura Mudéjar de Aragón',
             minYear: 2020,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Ciudad Histórica de Toledo (UNESCO 2021)',
+            'Ciudad Histórica de Toledo',
             minYear: 2021,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Parque Nacional de Garajonay (UNESCO 2022)',
+            'Parque Nacional de Garajonay',
             minYear: 2022,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -833,7 +833,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Ciudad Vieja de Cáceres (UNESCO 2023)',
+            'Ciudad Vieja de Cáceres',
             minYear: 2023,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -843,7 +843,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Catedral, Alcázar y Archivo de Indias de Sevilla (UNESCO 2024)',
+            'Catedral, Alcázar y Archivo de Indias de Sevilla',
             minYear: 2024,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -853,7 +853,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
           NumismaticMotifRule(
-            'Paisaje de la Luz de Madrid (UNESCO 2025)',
+            'Paisaje de la Luz de Madrid',
             minYear: 2025,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,
           ),
@@ -967,7 +967,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común (Mapa Europeo)',
+            'Euro Común',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameNordicGold,
@@ -979,7 +979,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común (Mapa Europeo)',
+            'Euro Común',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameNordicGold,
@@ -991,7 +991,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Euro Común (Mapa Europeo)',
+            'Euro Común',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameNordicGold,
@@ -1003,7 +1003,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Común (Mapa Europeo)',
+            'Común',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro1,
@@ -1015,7 +1015,7 @@ const List<NumismaticEmissionRuleData> spainEmissionRules = [
         currency: NumismaticCurrenciesRegistry.eur,
         motifs: [
           NumismaticMotifRule(
-            'Mapa de Europa / Unión Europea (Cara Común Estándar)',
+            'Mapa de Europa / Unión Europea',
             minYear: 1999,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.nameBimetallicEuro2,

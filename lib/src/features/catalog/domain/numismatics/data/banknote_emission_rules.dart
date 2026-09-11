@@ -256,7 +256,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxp,
         motifs: [
           NumismaticMotifRule(
-            'Piedra del Sol (Calendario Azteca)',
+            'Piedra del Sol',
             minYear: 1936,
             maxYear: 1970,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
@@ -716,7 +716,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Benito Juárez (Polímero)',
+            'Benito Juárez',
             minYear: 2002,
             maxYear: 2007,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -882,7 +882,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.mxn,
         motifs: [
           NumismaticMotifRule(
-            'Benito Juárez / Monte Albán (Familia F1)',
+            'Benito Juárez / Monte Albán',
             minYear: 2020,
             maxYear: 2024,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -1239,7 +1239,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.usd,
         motifs: [
           NumismaticMotifRule(
-            'Woodrow Wilson (Gold Certificate)',
+            'Woodrow Wilson',
             minYear: 1934,
             material: NumismaticMaterialsRegistry.nameCottonPaper,
           ),
@@ -1705,7 +1705,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtq,
         motifs: [
           NumismaticMotifRule(
-            'General José María Orellana (Polímero)',
+            'General José María Orellana',
             minYear: 2007,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -1717,7 +1717,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.gtq,
         motifs: [
           NumismaticMotifRule(
-            'General Justo Rufino Barrios (Polímero)',
+            'General Justo Rufino Barrios',
             minYear: 2011,
             maxYear: 2100,
             material: NumismaticMaterialsRegistry.namePolymer,
@@ -2118,7 +2118,7 @@ const List<NumismaticEmissionRuleData> banknoteEmissionRules = [
         currency: NumismaticCurrenciesRegistry.cad,
         motifs: [
           NumismaticMotifRule(
-            'Reina Isabel II / Arte Indígena Haida (Bill Reid)',
+            'Reina Isabel II / Arte Indígena Haida',
             minYear: 2004,
             maxYear: 2012,
             material: NumismaticMaterialsRegistry.nameCottonPaper,

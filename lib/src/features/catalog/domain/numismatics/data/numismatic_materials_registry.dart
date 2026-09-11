@@ -32,7 +32,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const namePalladium = 'Paladio';
   static const nameRhodium = 'Rodio';
   static const nameRuthenium = 'Rutenio';
-  static const nameElectrum = 'Electro (Electrum)';
+  static const nameElectrum = 'Electro';
   static const nameBimetallicBronzeAlStainlessSteel = 'Bimetálica (Centro Bronce de Aluminio, Anillo Acero Inoxidable)';
   static const nameBimetallicAlpacaBronzeAl = 'Bimetálica (Centro Alpaca, Anillo Bronce de Aluminio)';
   static const nameBimetallicCuNiBronzeAl = 'Bimetálica (Centro Cuproníquel, Anillo Bronce de Aluminio)';
@@ -46,7 +46,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const nameBimetallicUk2Pound = 'Bimetálica (Centro Cuproníquel, Anillo Níquel-Latón)';
   static const nameBimetallicGeneric = 'Bimetálica';
   static const nameCladCuNiCopper = 'Cuproníquel sobre núcleo de cobre';
-  static const nameCladSilver400 = 'Plata .400 revestida (Clad)';
+  static const nameCladSilver400 = 'Plata .400 revestida';
   static const nameCladManganeseBrassCopper = 'Latón de manganeso sobre núcleo de cobre';
   static const nameCopperPlatedZinc = 'Zinc bañado en cobre';
   static const nameCopperPlatedSteel = 'Acero bañado en cobre';
@@ -63,11 +63,11 @@ abstract final class NumismaticMaterialsRegistry {
   static const namePhosphorBronze = 'Bronce fosforoso';
   static const nameBrass = 'Latón';
   static const nameNickelBrass = 'Níquel-Latón';
-  static const nameTombac = 'Latón dorado (Tombac)';
+  static const nameTombac = 'Latón dorado';
   static const nameNickel = 'Níquel';
-  static const nameAlpaca = 'Alpaca (Plata alemana)';
+  static const nameAlpaca = 'Alpaca';
   static const nameNordicGold = 'Oro nórdico';
-  static const nameBillon = 'Billón (Vellón)';
+  static const nameBillon = 'Billón';
   static const nameZinc = 'Zinc';
   static const nameZamak = 'Zamak';
   static const nameLead = 'Plomo';
@@ -77,7 +77,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const nameSteel = 'Acero';
   static const nameStainlessSteel = 'Acero inoxidable';
   static const nameAluminum = 'Aluminio';
-  static const nameMagnalium = 'Aluminio-Magnesio (Magnalio)';
+  static const nameMagnalium = 'Aluminio-Magnesio';
   static const nameTitanium = 'Titanio';
   static const nameNiobium = 'Niobio';
   static const nameTantalum = 'Tántalo';
@@ -137,7 +137,7 @@ abstract final class NumismaticMaterialsRegistry {
     family: NumismaticMaterialFamily.silver,
     structure: NumismaticMaterialStructure.monometallic,
     fineness: 0.931,
-    alloyComposition: '93.1% Ag, 6.9% Cu (Ley colonial temprana)',
+    alloyComposition: '93.1% Ag, 6.9% Cu',
     aliases: ['plata .931', 'plata 931', 'ag931', 'plata virreinal .931', 'plata colonial 931'],
   );
 
@@ -281,7 +281,7 @@ abstract final class NumismaticMaterialsRegistry {
     family: NumismaticMaterialFamily.gold,
     structure: NumismaticMaterialStructure.monometallic,
     fineness: 0.9999,
-    alloyComposition: '99.99% Au (24 Kilates)',
+    alloyComposition: '99.99% Au',
     aliases: ['24k', 'oro 24k', '.9999 gold', 'fine gold .9999', 'oro .9999', 'gold buffalo', 'maple leaf gold'],
   );
 
@@ -303,7 +303,7 @@ abstract final class NumismaticMaterialsRegistry {
     family: NumismaticMaterialFamily.gold,
     structure: NumismaticMaterialStructure.monometallic,
     fineness: 0.9167,
-    alloyComposition: '91.67% Au, 8.33% Cu/Ag (22 Kilates)',
+    alloyComposition: '91.67% Au, 8.33% Cu/Ag',
     aliases: ['22k', 'oro 22k', 'crown gold', '.9167 gold', 'oro .9167', 'gold eagle', 'american gold eagle', 'sovereign', 'soberano oro'],
   );
 
@@ -314,7 +314,7 @@ abstract final class NumismaticMaterialsRegistry {
     family: NumismaticMaterialFamily.gold,
     structure: NumismaticMaterialStructure.monometallic,
     fineness: 0.917,
-    alloyComposition: '91.7% Au, 8.3% Cu/Ag (22 Kilates)',
+    alloyComposition: '91.7% Au, 8.3% Cu/Ag',
     aliases: ['au917', 'oro .917', 'oro 917', 'escudo virreinal temprano'],
   );
 
@@ -336,7 +336,7 @@ abstract final class NumismaticMaterialsRegistry {
     family: NumismaticMaterialFamily.gold,
     structure: NumismaticMaterialStructure.monometallic,
     fineness: 0.875,
-    alloyComposition: '87.5% Au, 12.5% Cu/Ag (21 Kilates)',
+    alloyComposition: '87.5% Au, 12.5% Cu/Ag',
     aliases: ['oro virreinal', 'oro virreinal .875', 'oro republicano', 'oro escudos', '21k', 'oro 21k', '.875 gold', 'oro .875', '8 escudos', 'onza de oro virreinal'],
   );
 
@@ -408,7 +408,7 @@ abstract final class NumismaticMaterialsRegistry {
     structure: NumismaticMaterialStructure.bimetallic,
     coreMaterial: 'Bronce de aluminio',
     ringMaterial: 'Acero inoxidable',
-    alloyComposition: 'Centro: 92% Cu, 6% Al, 2% Ni | Anillo: 16-18% Cr (AISI 430)',
+    alloyComposition: 'Centro: 92% Cu, 6% Al, 2% Ni | Anillo: 16-18% Cr',
     aliases: [
       'bimetálica (al-br/acero)',
       'bimetalica al-br acero',
@@ -428,7 +428,7 @@ abstract final class NumismaticMaterialsRegistry {
     shortName: 'Bimetálica',
     family: NumismaticMaterialFamily.bimetallic,
     structure: NumismaticMaterialStructure.bimetallic,
-    coreMaterial: 'Alpaca (Plata alemana)',
+    coreMaterial: 'Alpaca',
     ringMaterial: 'Bronce de aluminio',
     alloyComposition: 'Centro: 65% Cu, 10% Ni, 25% Zn | Anillo: 92% Cu, 6% Al, 2% Ni',
     aliases: [
@@ -513,7 +513,7 @@ abstract final class NumismaticMaterialsRegistry {
     ringMaterial: 'Bronce de aluminio',
     alloyComposition: 'Centro: Plata Sterling .925 (92.5% Ag, 7.5% Cu) | Anillo: 92% Cu, 6% Al, 2% Ni',
     aliases: [
-      'bimetálica (núcleo plata)',
+      'bimetálica',
       'bimetálica núcleo plata',
       'bimetalica nucleo plata',
       'bimetalica nuevos pesos',
@@ -580,7 +580,7 @@ abstract final class NumismaticMaterialsRegistry {
     shortName: 'Bimetálica',
     family: NumismaticMaterialFamily.bimetallic,
     structure: NumismaticMaterialStructure.bimetallic,
-    coreMaterial: 'Alpaca (Plata alemana)',
+    coreMaterial: 'Alpaca',
     ringMaterial: 'Níquel-Latón',
     aliases: ['1 pound bimetallic', 'bimetálica 1 libra', 'uk 1 pound bimetallic'],
   );
@@ -611,7 +611,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const cladCuNiCopper = NumismaticMaterialDefinition(
     key: 'clad_cuni_copper',
     displayName: nameCladCuNiCopper,
-    shortName: 'Cuproníquel (Clad)',
+    shortName: 'Cuproníquel',
     family: NumismaticMaterialFamily.cupronickel,
     structure: NumismaticMaterialStructure.clad,
     coreMaterial: 'Cobre',
@@ -633,7 +633,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const cladSilver400 = NumismaticMaterialDefinition(
     key: 'clad_silver_400',
     displayName: nameCladSilver400,
-    shortName: 'Plata .400 (Clad)',
+    shortName: 'Plata .400',
     family: NumismaticMaterialFamily.silver,
     structure: NumismaticMaterialStructure.clad,
     fineness: 0.400,
@@ -646,14 +646,14 @@ abstract final class NumismaticMaterialsRegistry {
   static const cladManganeseBrassCopper = NumismaticMaterialDefinition(
     key: 'clad_manganese_brass_copper',
     displayName: nameCladManganeseBrassCopper,
-    shortName: 'Latón de manganeso (Clad)',
+    shortName: 'Latón de manganeso',
     family: NumismaticMaterialFamily.brass,
     structure: NumismaticMaterialStructure.clad,
     coreMaterial: 'Cobre',
     platingMaterial: 'Latón de manganeso',
     alloyComposition: 'Capas exteriores 77% Cu, 12% Zn, 7% Mn, 4% Ni, núcleo 100% Cu',
     aliases: [
-      'latón de manganeso (clad)',
+      'latón de manganeso',
       'laton de manganeso',
       'manganese brass',
       'manganese brass clad copper',
@@ -670,7 +670,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const copperPlatedZinc = NumismaticMaterialDefinition(
     key: 'copper_plated_zinc',
     displayName: nameCopperPlatedZinc,
-    shortName: 'Zinc (Bañado en cobre)',
+    shortName: 'Zinc',
     family: NumismaticMaterialFamily.zinc,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Zinc',
@@ -688,7 +688,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const copperPlatedSteel = NumismaticMaterialDefinition(
     key: 'copper_plated_steel',
     displayName: nameCopperPlatedSteel,
-    shortName: 'Acero (Bañado en cobre)',
+    shortName: 'Acero',
     family: NumismaticMaterialFamily.steel,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Acero',
@@ -700,7 +700,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const nickelPlatedSteel = NumismaticMaterialDefinition(
     key: 'nickel_plated_steel',
     displayName: nameNickelPlatedSteel,
-    shortName: 'Acero (Bañado en níquel)',
+    shortName: 'Acero',
     family: NumismaticMaterialFamily.steel,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Acero',
@@ -711,7 +711,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const brassPlatedSteel = NumismaticMaterialDefinition(
     key: 'brass_plated_steel',
     displayName: nameBrassPlatedSteel,
-    shortName: 'Acero (Bañado en latón)',
+    shortName: 'Acero',
     family: NumismaticMaterialFamily.steel,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Acero',
@@ -722,7 +722,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const bronzePlatedSteel = NumismaticMaterialDefinition(
     key: 'bronze_plated_steel',
     displayName: nameBronzePlatedSteel,
-    shortName: 'Acero (Bañado en bronce)',
+    shortName: 'Acero',
     family: NumismaticMaterialFamily.steel,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Acero',
@@ -733,7 +733,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const zincPlatedSteel = NumismaticMaterialDefinition(
     key: 'zinc_plated_steel',
     displayName: nameZincPlatedSteel,
-    shortName: 'Acero (Bañado en zinc)',
+    shortName: 'Acero',
     family: NumismaticMaterialFamily.steel,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Acero',
@@ -744,7 +744,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const silverPlatedCopper = NumismaticMaterialDefinition(
     key: 'silver_plated_copper',
     displayName: nameSilverPlatedCopper,
-    shortName: 'Cobre (Plateado)',
+    shortName: 'Cobre',
     family: NumismaticMaterialFamily.copper,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Cobre',
@@ -755,7 +755,7 @@ abstract final class NumismaticMaterialsRegistry {
   static const nickelPlatedCopper = NumismaticMaterialDefinition(
     key: 'nickel_plated_copper',
     displayName: nameNickelPlatedCopper,
-    shortName: 'Cobre (Niquelado)',
+    shortName: 'Cobre',
     family: NumismaticMaterialFamily.copper,
     structure: NumismaticMaterialStructure.plated,
     coreMaterial: 'Cobre',
@@ -950,7 +950,7 @@ abstract final class NumismaticMaterialsRegistry {
     shortName: 'Acero inoxidable',
     family: NumismaticMaterialFamily.steel,
     structure: NumismaticMaterialStructure.monometallic,
-    alloyComposition: '16-18% Cr, 0.75% Ni max, Fe balance (AISI 430)',
+    alloyComposition: '16-18% Cr, 0.75% Ni max, Fe balance',
     aliases: ['stainless steel', 'acero inox', 'acero inoxidable magnetico'],
   );
 
